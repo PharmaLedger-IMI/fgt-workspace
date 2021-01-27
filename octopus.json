@@ -176,7 +176,37 @@
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd fgt-dsu-fabric && npm install"
+                    "cmd": "cd fgt-mah-ssapp && npm install"
+                }
+            ]
+        },
+        {
+            "name": "fgt-pharmacy-ssapp",
+            "src": "https://gitlab.pdmfc.com/pharmaledger/traceability/ftg-pharmacy-ssapp.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-pharmacy-ssapp && npm install"
+                }
+            ]
+        },
+        {
+            "name": "fgt-wholesaler-ssapp",
+            "src": "https://gitlab.pdmfc.com/pharmaledger/traceability/ftg-wholesaler-ssapp.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-wholesaler-ssapp && npm install"
                 }
             ]
         }
@@ -213,16 +243,16 @@
             ]
         },
         {
-            "name": "fgt-dsu-fabric-wallet_bind_to_menu-wallet-prototype",
+            "name": "bind_fgt-mah-ssapp_to_pharmaledger-wallet",
             "src": "",
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd fgt-mah-wallet && npm run build"
+                    "cmd": "cd pharmaledger-wallet && npm run build"
                 },
                 {
                     "type": "copy",
-                    "src": "./fgt-mah-wallet/seed",
+                    "src": "./pharmaledger-wallet/seed",
                     "target": "./apihub-root/fgt-mah-wallet/wallet-patch/seed",
                     "options": {
                         "overwrite": true
@@ -231,17 +261,17 @@
             ]
         },
         {
-            "name": "dsu-fabric-wallet_bind_to_fgt-dsu-fabric",
+            "name": "bind_ftg_mah_ssapp_to_wallet",
             "src": "",
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd fgt-dsu-fabric && npm run build"
+                    "cmd": "cd fgt-mah-ssapp && npm run build"
                 },
                 {
                     "type": "copy",
-                    "src": "./fgt-dsu-fabric/seed",
-                    "target": "./apihub-root/fgt-mah-wallet/apps-patch/fgt-dsu-fabric/seed",
+                    "src": "./cd fgt-mah-ssapp/seed",
+                    "target": "./apihub-root/fgt-mah-wallet/apps-patch/fgt-mah-ssapp/seed",
                     "options": {
                         "overwrite": true
                     }
