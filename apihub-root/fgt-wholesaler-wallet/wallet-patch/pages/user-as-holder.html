@@ -1,0 +1,45 @@
+<psk-page title="My Credentials">
+    <psk-form controller-name="HolderController">
+        <psk-layout row-gap="1em">
+            <psk-label label="User Identity"></psk-label>
+
+            <psk-layout template-columns="auto auto" align-items="flex-start">
+                <psk-label label="@holderSSI"></psk-label>
+                <psk-button button-class="btn btn-success" event-name="copy-text" event-data="@holderSSI">
+                    <psk-icon icon="copy" color="rgb(255, 255, 255)"></psk-icon>
+                </psk-button>
+            </psk-layout>
+
+            <div id="readableContainer">
+                <psk-card title="Human readable User Identity">
+                    <p>
+                        <psk-label label="@readableHolderSSI"></psk-label>
+                    </p>
+                </psk-card>
+                <psk-condition condition="@isInvalidCredential">
+                    <p><strong>Invalid credential specified</strong></p>
+                </psk-condition>
+            </div>
+
+            <psk-condition condition="@displayCredentialArea">
+                <psk-layout slot="condition-true" row-gap="1em">
+                    <psk-form-row>
+                        <psk-input value="@domain" label="Domain" disabled></psk-input>
+                    </psk-form-row>
+                    <psk-form-row>
+                        <psk-textarea value="@credential" label="Copy/paste your credential here."></psk-textarea>
+                    </psk-form-row>
+                    <psk-form-row>
+                        <psk-button label="Save Credential" event-name="save-credential"></psk-button>
+                    </psk-form-row>
+                </psk-layout>
+
+                <div slot="condition-false">
+                    <p>Everything is fine. Start creating products and batches</p>
+                </div>
+            </psk-condition>
+        </psk-layout>
+
+        <psk-list-feedbacks></psk-list-feedbacks>
+    </psk-form>
+</psk-page>

@@ -1,0 +1,42 @@
+{
+  "name": "ePI-workspace",
+  "version": "1.0.1",
+  "description": "",
+  "scripts": {
+    "dev-install": "node ./bin/mkDevEnv.js && npm install",
+    "postinstall": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run\"",
+    "install-mobile": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run install-mobile\"",
+    "add": "node ./node_modules/octopus/scripts/add",
+    "remove": "node ./node_modules/octopus/scripts/remove",
+    "add-loader": "node ./node_modules/octopus/scripts/add",
+    "build": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/build\"",
+    "build-all": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build\" && node ./bin/seedsBackupTool.js ",
+    "build-mobile": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-mobile\"",
+    "build-android-apk": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-android-apk\"",
+    "update": "node ./node_modules/octopus/scripts/update",
+    "bind-app": "node ./node_modules/octopus/scripts/bind --type=app",
+    "bind-wallet": "node ./node_modules/octopus/scripts/bind --type=wallet",
+    "server": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"cd privatesky && npm run start\"",
+    "apihub": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"cd privatesky && npm run start\"",
+    "switch-to-release": "npm run remove privatesky && npm run add privatesky http://github.com/privatesky/psk-release.git 0",
+    "switch-to-dev": "npm run remove privatesky && npm run add privatesky http://github.com/privatesky/privatesky.git 0",
+    "watch": "node ./bin/watcher/watcher.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "node ./bin/clean.js ./",
+    "clean-build": "npm run clean && npm run build privatesky && npm run build-all",
+    "freeze": "node ./node_modules/octopus/scripts/freeze dependencies install-mobile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PharmaLedger-IMI/epi-workspace.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PharmaLedger-IMI/epi-workspace/issues"
+  },
+  "homepage": "https://github.com/PharmaLedger-IMI/epi-workspace#readme",
+  "dependencies": {
+    "octopus": "git+https://github.com/TiagoVenceslau/octopus.git#d36c9318ec63f3d19e7deee51ce19dcd1fa8679f"
+  }
+}

@@ -1,0 +1,240 @@
+{
+    "workDir": ".",
+    "dependencies": [
+        {
+            "name": "cardinal",
+            "src": "http://github.com/privatesky/cardinal.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "c6e66bc6b46310572e17d66768bffa74546e0989"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd cardinal && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd cardinal && npm run build"
+                }
+            ]
+        },
+        {
+            "name": "privatesky",
+            "src": "http://github.com/privatesky/privatesky.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "ecfc8d3a8f7d0d542fb4c1075f67ee16009684b4"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd privatesky && npm install"
+                }
+            ]
+        },
+        {
+            "name": "build privatesky",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd privatesky && npm run build"
+                }
+            ]
+        },
+        {
+            "name": "fgt-mah-wallet",
+            "src": "https://gitlab.pdmfc.com/pharmaledger/pharmaledger-wallet.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-mah-wallet && npm install"
+                }
+            ]
+        },
+        {
+            "name": "apihub-root/fgt-mah-fabric-wallet/loader",
+            "src": "https://gitlab.pdmfc.com/pharmaledger/pharmaledger-dsu-loader.git ",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/fgt-mah-fabric-wallet/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/fgt-mah-fabric-wallet/loader && npm run build"
+                }
+            ]
+        },
+        {
+            "name": "gtin-resolver",
+            "src": "https://github.com/PharmaLedger-IMI/gtin-resolver.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "7b02f4537a2d5075cf0942f9538e621d3f0982fa"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd gtin-resolver && npm install"
+                }
+            ]
+        },
+        {
+            "name": "gtin-dsu-wizard",
+            "src": "https://github.com/PharmaLedger-IMI/gtin-dsu-wizard.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "2580f69b650c48abf25e20f723667f55cc70d1f1"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd gtin-dsu-wizard && npm install"
+                }
+            ]
+        },
+        {
+            "name": "themes/pharmaledger-theme",
+            "src": "https://gitlab.pdmfc.com/pharmaledger/pharmaledger-theme.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/pharmaledger-theme && npm install"
+                }
+            ]
+        },
+        {
+            "name": "fgt-dsu-fabric",
+            "src": "https://gitlab.pdmfc.com/pharmaledger/fgt-dsu-fabric.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-dsu-fabric && npm install"
+                }
+            ]
+        }
+    ],
+    "build": [
+        {
+            "name": "cardinal-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd cardinal && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "pharmaledger-theme-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/pharmaledger-theme && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "gtin-resolver-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd gtin-resolver && npm run build"
+                }
+            ]
+        },
+        {
+            "name": "fgt-dsu-fabric-wallet_bind_to_menu-wallet-prototype",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-mah-wallet && npm run build"
+                },
+                {
+                    "type": "copy",
+                    "src": "./fgt-mah-wallet/seed",
+                    "target": "./apihub-root/ftg-mah-fabric-wallet/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "dsu-fabric-wallet_bind_to_fgt-dsu-fabric",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-dsu-fabric && npm run build"
+                },
+                {
+                    "type": "copy",
+                    "src": "./traceability-dsu-fabric/seed",
+                    "target": "./apihub-root/fgt-mah-fabric-wallet/apps-patch/fgt-dsu-fabric/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "execute",
+                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/fgt-mah-fabric-wallet/apps-patch/fgt-dsu-fabric/readme"
+                }
+            ]
+        },
+        {
+            "name": "trust-loader-config",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./trust-loader-config",
+                    "target": "./apihub-root",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "copy-bundles",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/fgt-dsu-fabric-wallet/loader && npm install"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,134 @@
+html {
+    background-color: #ffcecc;
+    background-image: linear-gradient(232deg, #ffcecc 0%, #DDD6F3 54%);
+}
+
+.center-aligned-controls {
+    display: flex;
+    justify-content: space-evenly;
+    position: absolute;
+    width: 100%;
+}
+
+.vertical-align {
+    top: 50%;
+    left: 50%;
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.center-aligned-controls a {
+    padding: 50px 70px;
+    width: 15%;
+    height: 10%;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 12px -2px rgba(0, 0, 0, 0.75);
+    border-radius: 10px;
+    text-decoration: none;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.center-aligned-controls a img {
+    height: 60px;
+    width: 60px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.left-side {
+    display: flex;
+    align-items: center;
+    filter: invert(1);
+}
+
+.right-side {
+    margin-left: 10%;
+    width: 70%;
+    display: flex;
+    justify-content: center;
+}
+
+.center-aligned-controls p {
+    font-family: "Open Sans", "Helvetica Neue", sans-serif;
+    font-size: 26px;
+    font-weight: bold;
+    color: white;
+}
+
+.scale-up:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 24px -2px rgba(0, 0, 0, 0.75);
+}
+
+.dsu-fabric_button {
+    background-color: #FEE140;
+    background-image: linear-gradient(125deg, #FEE140 , #fa9570 );
+}
+
+.dsu-fabric_button:hover {
+    background-image: linear-gradient(150deg, #FEE140 , #fa9570 );
+}
+
+.leaflet-wallet_button {
+    background-color: #976ff9;
+    background-image: linear-gradient(125deg, #976ff9 , #784BA0 );
+}
+
+.leaflet-wallet_button:hover {
+    background-image: linear-gradient(150deg, #976ff9 , #784BA0 );
+}
+
+.web-wallet_button {
+    background: #74ebd5;
+    background-image: linear-gradient(125deg, #ACB6E5, #74ebd5);
+}
+
+.web-wallet_button:hover {
+    background-image: linear-gradient(150deg, #ACB6E5, #74ebd5);
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+
+    .center-aligned-controls {
+        display: block;
+    }
+
+    .center-aligned-controls a {
+        margin: 4% 5%;
+        width: auto;
+    }
+
+    .center-aligned-controls p {
+        font-size: 55px;
+    }
+
+    .right-side {
+        margin-left: 0;
+    }
+
+    .scale-up:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 24px -2px rgba(0, 0, 0, 0.75);
+    }
+
+    .center-aligned-controls a img {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1522px) {
+    .right-side {
+        margin-left: 10%;
+    }
+}
+
+@media (min-width: 1323px) and (max-width: 1699.98px) {
+    .center-aligned-controls a {
+        width: 10%;
+    }
+}

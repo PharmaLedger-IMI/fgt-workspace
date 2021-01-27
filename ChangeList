@@ -1,0 +1,49 @@
+7 December 2020
+ Bugs fixed:
+     1	Show the correct error message on the screen if SMPC is not uploaded. 
+     5	Enterprise Wallet for Company 2 (URL is not avaiable): just register a new super use with a different company name
+     6	DSU Fabric doesn’t show pre-existing/existing data (products/batches)
+     12	First Screening results for DSU Fabric 
+     14 Enterprise Wallet Changes	(Audit log needs changes  - add time stamp, user name)
+     16	Mobile app scanning doesn’t work 	"Failed to verify package existence"
+     17	Password verification bugs	(The quality of the password on the login should not be checked/The regular expresion for special charcaters is not complet)
+     18	Error handling when a batch with the same number (and the same GTIN) is created twice:	errors are displayed now
+     19	Scanning should display information from the 2dMatrix
+
+ New features:
+      3	Persistent Vault (same as bugs 5,12)
+      6	Enable smart contract checks
+      7	Adding MAH input in the login 
+ Observations
+     - we have improved error messages and error handling in DSU Fabric
+     - some anticounterfeit checks in place but full implementation in the next interation
+ Known issues:
+     -  sharing of the wallets between users happens only by sharing the login credentials. Sharing only of the data is planed for the next iteration
+     
+ Instalation observations:
+   epi domain should be configured in server and connected with the blockchain adapter
+   the vault and the default domains should remain as FS
+   
+ 
+ 
+14 December 2020
+ Bug fixes: 
+    - bug fixes in the audit log time
+ New features: 
+  - anticounterfeiting check (SN Check)
+  - expiry time checks (product status)
+  - language selection (some visual issues will be imporved next)
+  
+ Observations: better clean old data
+ 
+21 December 2020
+ Bug fixes:
+   - bug fixes in language selection, settings, etc
+ New features:
+    - Blockchain Explorer
+    - GTIN only feature
+ Observations (not impacting directly existing features)
+    - new freeze feature to stable releases
+    - APK building for Android mobile
+ 
+
