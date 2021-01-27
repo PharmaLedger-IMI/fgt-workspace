@@ -48,7 +48,7 @@
         },
         {
             "name": "pharmaledger-wallet",
-            "src": "https://gitlab.pdmfc.com/pharmaledger/traceability/pharmaledger-wallet.git",
+            "src": "https://gitlab.pdmfc.com/pharmaledger/pharmaledger-wallet.git",
             "actions": [
                 {
                     "type": "smartClone",
@@ -182,7 +182,7 @@
         },
         {
             "name": "fgt-pharmacy-ssapp",
-            "src": "https://gitlab.pdmfc.com/pharmaledger/traceability/ftg-pharmacy-ssapp.git",
+            "src": "https://gitlab.pdmfc.com/pharmaledger/traceability/fgt-pharmacy-ssapp.git",
             "actions": [
                 {
                     "type": "smartClone",
@@ -197,7 +197,7 @@
         },
         {
             "name": "fgt-wholesaler-ssapp",
-            "src": "https://gitlab.pdmfc.com/pharmaledger/traceability/ftg-wholesaler-ssapp.git",
+            "src": "https://gitlab.pdmfc.com/pharmaledger/traceability/fgt-wholesaler-ssapp.git",
             "actions": [
                 {
                     "type": "smartClone",
