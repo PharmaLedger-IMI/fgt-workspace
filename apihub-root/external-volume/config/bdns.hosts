@@ -8,6 +8,15 @@
       "$ORIGIN"
     ]
   },
+    "traceability": {
+      "replicas": [],
+      "brickStorages": [
+        "$ORIGIN"
+      ],
+      "anchoringServices": [
+        "$ORIGIN"
+      ]
+    },
   "epi": {
     "replicas": [],
     "brickStorages": [
