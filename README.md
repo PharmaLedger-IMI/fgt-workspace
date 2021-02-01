@@ -111,7 +111,7 @@ mobile/scan-app/android/app/build/outputs/apk/release
 ```
 
 ## Workspace Description
-### pre-install
+### pre-install (before running npm install)
 
 * Apihub-root: Folder containing the root of what is served by the server
     * external-volume: configs directory;
@@ -125,7 +125,7 @@ mobile/scan-app/android/app/build/outputs/apk/release
     * fgt-pharmacy-fabric-wallet/loader;
     * fgt-wholesaler-fabric-wallet/loader;
 
-### post install
+### post install (after running npm install)
 
 * General use:
     * Cardinal: the web framework used for frontend;    
