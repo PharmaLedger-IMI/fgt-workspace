@@ -1,4 +1,4 @@
-# fgt-workspace
+# UC3 Finished Goods Traceability fgt-workspace
 
 *fgt-workspace*  bundles all the necessary dependencies for building and running Finished Goods Traceability SSApps in a single package.
 
