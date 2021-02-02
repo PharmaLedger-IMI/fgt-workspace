@@ -1,6 +1,6 @@
 {
-  "name": "ePI-workspace",
-  "version": "1.0.1",
+  "name": "fgt-workspace",
+  "version": "1.0.0",
   "description": "",
   "scripts": {
     "dev-install": "node ./bin/mkDevEnv.js && npm install",
@@ -28,14 +28,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PharmaLedger-IMI/epi-workspace.git"
+    "url": "git+https://github.com/PharmaLedger-IMI/fgt-workspace.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/PharmaLedger-IMI/epi-workspace/issues"
+    "url": "https://github.com/PharmaLedger-IMI/fgt-workspace/issues"
   },
-  "homepage": "https://github.com/PharmaLedger-IMI/epi-workspace#readme",
+  "homepage": "https://github.com/PharmaLedger-IMI/fgt-workspace#readme",
   "dependencies": {
     "octopus": "git+https://github.com/PrivateSky/octopus.git"
   }
