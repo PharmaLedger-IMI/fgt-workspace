@@ -128,7 +128,7 @@ mobile/scan-app/android/app/build/outputs/apk/release
 ### post install (after running npm install)
 
 * General use:
-    * Cardinal: the web framework used for frontend;    
+    * cardinal: the web framework used for frontend;    
     * pharmaledger-wallet: the default wallet implementation to be used by all ssapps;
     * node_modules: node modules folder (includes the octopus custom builder)
     * privatesky: the openDSU code. notable folders are:
