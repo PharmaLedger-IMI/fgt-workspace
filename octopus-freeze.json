@@ -308,7 +308,7 @@
                 },
                 {
                     "type": "copy",
-                    "src": "./cfgt-pharmacy-ssapp/seed",
+                    "src": "./fgt-pharmacy-ssapp/seed",
                     "target": "./apihub-root/fgt-pharmacy-wallet/apps-patch/fgt-pharmacy-ssapp/seed",
                     "options": {
                         "overwrite": true
