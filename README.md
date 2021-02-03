@@ -8,6 +8,10 @@
 
 In order to use the workspace, we need to follow a list of steps presented below. 
 
+### Step 0: Node v12
+
+You need NodeJS version 12.
+
 ### Step 1: Clone the workspace
 
 ```sh
