@@ -147,6 +147,21 @@
             ]
         },
         {
+            "name": "fgt-dsu-wizard",
+            "src": "https://gitlab.pdmfc.com/pharmaledger/traceability/fgt-dsu-wizard.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-dsu-wizard && npm install"
+                }
+            ]
+        },
+        {
             "name": "themes/pharmaledger-theme",
             "src": "https://gitlab.pdmfc.com/pharmaledger/pharmaledger-theme.git",
             "actions": [
