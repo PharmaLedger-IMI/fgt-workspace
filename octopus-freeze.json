@@ -48,7 +48,7 @@
         },
         {
             "name": "pharmaledger-wallet",
-            "src": "https://gitlab.pdmfc.com/pharmaledger/pharmaledger-wallet.git",
+            "src": "http://github.com/privatesky/menu-wallet-prototype.git,
             "actions": [
                 {
                     "type": "smartClone",
