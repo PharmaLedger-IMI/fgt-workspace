@@ -360,11 +360,11 @@
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npm install"
+                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && npm install"
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npm install"
+                    "cmd": "cd apihub-root/fgt-pharmacy-wallet/loader && npm install"
                 }
             ]
         }
