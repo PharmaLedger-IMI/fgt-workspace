@@ -148,7 +148,7 @@
         },
         {
             "name": "themes/pharmaledger-theme",
-            "src": "https://gitlab.pdmfc.com/pharmaledger/pharmaledger-theme.git",
+            "src": "https://github.com/PrivateSky/blue-fluorite-theme",
             "actions": [
                 {
                     "type": "smartClone",
