@@ -129,7 +129,7 @@ mobile/scan-app/android/app/build/outputs/apk/release
 
 * General use:
     * cardinal: the web framework used for frontend;    
-    * pharmaledger-wallet: the default wallet implementation to be used by all ssapps;
+    * pharmaledger-wallet: the default wallet implementation to be used by all ssapps - comes from http://github.com/privatesky/menu-wallet-prototype.git
     * node_modules: node modules folder (includes the octopus custom builder)
     * privatesky: the openDSU code. notable folders are:
         * privatesky/modules: all the code for the several modules (openDSU is one of them);
