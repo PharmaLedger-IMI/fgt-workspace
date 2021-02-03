@@ -48,7 +48,7 @@
         },
         {
             "name": "pharmaledger-wallet",
-            "src": "https://gitlab.pdmfc.com/pharmaledger/pharmaledger-wallet.git",
+            "src": "http://github.com/privatesky/menu-wallet-prototype.git",
             "actions": [
                 {
                     "type": "smartClone",
@@ -63,7 +63,7 @@
         },
         {
             "name": "apihub-root/fgt-mah-wallet/loader",
-            "src": "https://gitlab.pdmfc.com/pharmaledger/pharmaledger-dsu-loader.git ",
+            "src": "https://github.com/PrivateSky/web-dossier-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
@@ -82,7 +82,7 @@
         },
         {
             "name": "apihub-root/fgt-pharmacy-wallet/loader",
-            "src": "https://gitlab.pdmfc.com/pharmaledger/pharmaledger-dsu-loader.git ",
+            "src": "https://github.com/PrivateSky/web-dossier-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
@@ -101,7 +101,7 @@
         },
         {
             "name": "apihub-root/fgt-wholesaler-wallet/loader",
-            "src": "https://gitlab.pdmfc.com/pharmaledger/pharmaledger-dsu-loader.git ",
+            "src": "https://github.com/PrivateSky/web-dossier-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
@@ -152,7 +152,7 @@
         },
         {
             "name": "themes/pharmaledger-theme",
-            "src": "https://gitlab.pdmfc.com/pharmaledger/pharmaledger-theme.git",
+            "src": "https://github.com/PrivateSky/blue-fluorite-theme",
             "actions": [
                 {
                     "type": "smartClone",
@@ -360,7 +360,15 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd apihub-root/fgt-dsu-fabric-wallet/loader && npm install"
+                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/fgt-pharmacy-wallet/loader && npm install"
                 }
             ]
         }

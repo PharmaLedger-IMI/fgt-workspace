@@ -8,6 +8,10 @@
 
 In order to use the workspace, we need to follow a list of steps presented below. 
 
+### Step 0: Node v12
+
+You need NodeJS version 12.
+
 ### Step 1: Clone the workspace
 
 ```sh
@@ -129,13 +133,13 @@ mobile/scan-app/android/app/build/outputs/apk/release
 
 * General use:
     * cardinal: the web framework used for frontend;    
-    * pharmaledger-wallet: the default wallet implementation to be used by all ssapps;
+    * pharmaledger-wallet: the default wallet implementation to be used by all ssapps - comes from http://github.com/privatesky/menu-wallet-prototype.git
     * node_modules: node modules folder (includes the octopus custom builder)
     * privatesky: the openDSU code. notable folders are:
         * privatesky/modules: all the code for the several modules (openDSU is one of them);
         * privatesky/psknode/bundles: all the code from the previous path, with each module bundled into a single file;
     * themes: the folder with all the installed themes:
-        * pharmaledger-theme: custom theme for the pharmaledger implementation;
+        * pharmaledger-theme: custom theme for the pharmaledger implementation comes from https://github.com/PrivateSky/blue-fluorite-theme;
 * Use case related:
     * Apihub-root: Folder changes:
         * wallet loaders: clones the loader into each of the wallets:
