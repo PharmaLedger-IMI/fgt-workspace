@@ -63,7 +63,7 @@
         },
         {
             "name": "apihub-root/fgt-mah-wallet/loader",
-            "src": "https://gitlab.pdmfc.com/pharmaledger/pharmaledger-dsu-loader.git ",
+            "src": "https://github.com/PrivateSky/web-dossier-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
@@ -82,7 +82,7 @@
         },
         {
             "name": "apihub-root/fgt-pharmacy-wallet/loader",
-            "src": "https://gitlab.pdmfc.com/pharmaledger/pharmaledger-dsu-loader.git ",
+            "src": "https://github.com/PrivateSky/web-dossier-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
@@ -101,7 +101,7 @@
         },
         {
             "name": "apihub-root/fgt-wholesaler-wallet/loader",
-            "src": "https://gitlab.pdmfc.com/pharmaledger/pharmaledger-dsu-loader.git ",
+            "src": "https://github.com/PrivateSky/web-dossier-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
