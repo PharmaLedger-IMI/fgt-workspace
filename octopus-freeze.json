@@ -182,13 +182,7 @@
         },
         {
             "name": "fgt-mah-ssapp",
-            "src": "https://gitlab.pdmfc.com/pharmaledger/traceability/ftg-mah-ssapp.git",
             "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
                 {
                     "type": "execute",
                     "cmd": "cd fgt-mah-ssapp && npm install"

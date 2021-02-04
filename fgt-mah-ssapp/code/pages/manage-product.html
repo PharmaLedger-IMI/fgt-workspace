@@ -1,0 +1,37 @@
+<psk-page title="Manage Product">
+    <psk-container controller-name="ManageProductController">
+        <psk-text-input label="GTIN" value="@product.gtin" required></psk-text-input>
+        <psk-text-input label="MAH" value="@product.manufName" read-only></psk-text-input>
+        <psk-text-input label="Name" value="@product.name" required></psk-text-input>
+        <psk-textarea label="Description" value="@product.description" required></psk-textarea>
+        <psk-img-input src="@product.photo" event-name="product-photo-selected" label="Photo"></psk-img-input>
+        <psk-text-input label="Version" value="@product.version" read-only></psk-text-input>
+        <psk-form class="language-leaflets-grid">
+            <psk-button event-name="add-language-leaflet">
+                <!--<psk-icon icon="plus"></psk-icon>-->
+                <span style="font-weight: bold">+</span>
+            </psk-button>
+            <psk-for-each data-view-model="@languageTypeCards">
+                <psk-card class="language-leaflet-card">
+                    <div class="language-leaflet-card-header">
+                        <psk-label label="@language.label"></psk-label>
+                        <psk-button event-data="@" event-name="delete-language-leaflet">
+                            <!--<psk-icon icon="times" color="rgb(255, 255, 255)"></psk-icon>-->
+                            <span style="font-weight: bold">-</span>
+                        </psk-button>
+                    </div>
+                    <div class="language-leaflet-card-body">
+                        <psk-files-chooser accept="directory" label="@attachLabel" list-files="true"
+                                           event-name="@fileSelectEvent" class="paperclip leaflet-files-chooser"
+                                           required>
+                        </psk-files-chooser>
+                    </div>
+                </psk-card>
+            </psk-for-each>
+        </psk-form>
+        <psk-label label="@attachment.name" class="inline"></psk-label>
+        <psk-text-input label="Report Page URL:" value="@product.reportURL"></psk-text-input>
+        <psk-button label="Save Product" event-name="add-product"></psk-button>
+        <psk-list-feedbacks></psk-list-feedbacks>
+    </psk-container>
+</psk-page>

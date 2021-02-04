@@ -1,0 +1,33 @@
+@import url("./fonts/fontawesome/font-awesome.min.css");
+@import url("./fonts/nunito/nunito.css");
+@import url("./bootstrap/css/bootstrap.min.css");
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family:Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-size: 1rem;
+}
+
+html, body{
+  height: 100%;
+}
+
+pre {
+  overflow: hidden;
+  padding: 10px;
+  background: #E9E9E9;
+  white-space: pre-wrap;
+  color: #005cbf;
+}
+
+header {
+  background: #7aa354;
+}
+
+@media only screen and (max-width: 960px) {
+  .cardinal-logo {
+    position: absolute;
+    margin: 8px;
+  }
+}
