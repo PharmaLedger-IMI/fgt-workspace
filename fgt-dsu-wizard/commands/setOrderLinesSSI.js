@@ -1,6 +1,6 @@
 
 function createOrderLinesSSI(data, domain) {
-    console.log("New ORDERLINESSSI in domain", domain);
+    console.log("New ORDERLINES_SSI in domain", domain);
     const keyssiSpace = require("opendsu").loadApi("keyssi");
     return keyssiSpace.buildTemplateArraySSI(domain, [data.gtin, "ORDERLINES"]);
 }

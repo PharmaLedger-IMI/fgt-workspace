@@ -1,6 +1,6 @@
 
 function createOrderSSI(data, domain) {
-    console.log("New ORDERSSI in domain", domain);
+    console.log("New ORDER_SSI in domain", domain);
     const keyssiSpace = require("opendsu").loadApi("keyssi");
     return keyssiSpace.buildTemplateArraySSI(domain, [data.orderId, data.requesterId]);
 }
