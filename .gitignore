@@ -5,12 +5,23 @@ apihub-root/fgt-pharmacy-wallet/wallet-patch/seed
 apihub-root/fgt-pharmacy-wallet/loader
 apihub-root/fgt-wholesaler-wallet/wallet-patch/seed
 apihub-root/fgt-wholesaler-wallet/loader
-gtin-resolver
-gtin-dsu-wizard
-
 apihub-root/internal-volume/domains
 apihub-root/external-volume/domains
 apihub-root/seedsBackup
+apihub-root/fgt-mah-wallet/apps-patch
+apihub-root/fgt-pharmacy-wallet/apps-patch
+apihub-root/fgt-wholesaler-wallet/apps-patch
+fgt-mah-ssapp/code/constitution
+fgt-mah-ssapp/code/scripts/bundles
+fgt-mah-ssapp/seed
+fgt-pharmacy-ssapp/code/constitution
+fgt-pharmacy-ssapp/code/scripts/bundles
+fgt-pharmacy-ssapp/seed
+fgt-wholesaler-ssapp/code/constitution
+fgt-wholesaler-ssapp/code/scripts/bundles
+fgt-wholesaler-ssapp/seed
+gtin-resolver
+gtin-dsu-wizard
 
 cardinal
 privatesky
