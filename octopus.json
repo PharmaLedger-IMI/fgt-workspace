@@ -187,13 +187,7 @@
         },
         {
             "name": "fgt-pharmacy-ssapp",
-            "src": "https://gitlab.pdmfc.com/pharmaledger/traceability/fgt-pharmacy-ssapp.git",
             "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
                 {
                     "type": "execute",
                     "cmd": "cd fgt-pharmacy-ssapp && npm install"

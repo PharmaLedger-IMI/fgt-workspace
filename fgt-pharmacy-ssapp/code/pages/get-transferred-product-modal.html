@@ -1,0 +1,13 @@
+<psk-container controller-name="GetTransferredProductController">
+    <psk-modal opened>
+        <psk-label slot="title" class="title" label="@title"></psk-label>
+
+        <div class='content'>
+            <psk-input label="Enter transfer code" value="@transferCode"></psk-input>
+                <div class="modal-action-menu">
+                    <psk-button label="@denyButtonText" class="marketplace-manager-button" event-name="deny-button-on-click"></psk-button>
+                    <psk-button label="@acceptButtonText" class="marketplace-manager-button" event-name="accept-button-on-click"></psk-button>
+                </div>
+        </div>
+    </psk-modal>
+</psk-container>
