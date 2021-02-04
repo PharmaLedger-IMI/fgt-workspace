@@ -124,6 +124,7 @@ mobile/scan-app/android/app/build/outputs/apk/release
         * fgt-mah-wallet/wallet-patch;
         * fgt-pharmacy-wallet/wallet-patch;
         * fgt-wholesaler-wallet/wallet-patch;
+* fgt-dsu-wizard: based on gtin-dsu-wizard
 * fgt-mah-wallet
 * fgt-pharmacy-wallet
 * fgt-wholesaler-wallet
