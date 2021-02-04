@@ -1,4 +1,3 @@
-pharmaledger-wallet**
 apihub-root/fgt-mah-wallet/wallet-patch/seed
 apihub-root/fgt-mah-wallet/loader
 apihub-root/fgt-pharmacy-wallet/wallet-patch/seed
@@ -7,10 +6,12 @@ apihub-root/fgt-wholesaler-wallet/wallet-patch/seed
 apihub-root/fgt-wholesaler-wallet/loader
 apihub-root/internal-volume/domains
 apihub-root/external-volume/domains
-apihub-root/seedsBackup
 apihub-root/fgt-mah-wallet/apps-patch
 apihub-root/fgt-pharmacy-wallet/apps-patch
 apihub-root/fgt-wholesaler-wallet/apps-patch
+apihub-root/seedsBackup
+cardinal
+env.json.devel
 fgt-mah-ssapp/code/constitution
 fgt-mah-ssapp/code/scripts/bundles
 fgt-mah-ssapp/seed
@@ -22,14 +23,12 @@ fgt-wholesaler-ssapp/code/scripts/bundles
 fgt-wholesaler-ssapp/seed
 gtin-resolver
 gtin-dsu-wizard
-
-cardinal
+node_modules
+package-lock.json
+pharmaledger-wallet**
 privatesky
 themes
 
-node_modules
-package-lock.json
-env.json.devel
 
 latest-change-set.txt
 .idea
