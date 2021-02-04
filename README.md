@@ -117,13 +117,17 @@ mobile/scan-app/android/app/build/outputs/apk/release
 ## Workspace Description
 ### pre-install (before running npm install)
 
-* Apihub-root: Folder containing the root of what is served by the server
+* apihub-root: Folder containing the root of what is served by the server
     * external-volume: configs directory;
     * internal-volume: volume folder (brick storage). contains the several configured domains
     * wallet patch folders: the folders contain, in the wallet-patch folder and for each case, the custom 'behaviour' that is added to the template folder:
         * fgt-mah-wallet/wallet-patch;
         * fgt-pharmacy-wallet/wallet-patch;
-        * fgt-wholesaler wallet/wallet-patch;
+        * fgt-wholesaler-wallet/wallet-patch;
+* fgt-mah-wallet
+* fgt-pharmacy-wallet
+* fgt-wholesaler-wallet
+    * Wallets for each one of the actors
 * trust-loader-config: custom config to override the wallet loader default ones for each case:
     * fgt-mah-fabric-wallet/loader;
     * fgt-pharmacy-fabric-wallet/loader;
