@@ -8,8 +8,6 @@ apihub-root/fgt-wholesaler-wallet/loader
 gtin-resolver
 gtin-dsu-wizard
 
-fgt-dsu-wizard
-
 apihub-root/internal-volume/domains
 apihub-root/external-volume/domains
 apihub-root/seedsBackup

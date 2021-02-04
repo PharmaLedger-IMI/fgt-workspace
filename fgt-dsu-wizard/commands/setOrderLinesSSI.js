@@ -1,0 +1,13 @@
+
+function createOrderLinesSSI(data, domain) {
+    console.log("New ORDERLINESSSI in domain", domain);
+    const keyssiSpace = require("opendsu").loadApi("keyssi");
+    return keyssiSpace.buildTemplateArraySSI(domain, [data.gtin, "ORDERLINES"]);
+}
+
+function setOrderLinesSSI(server, mah){
+    const setSSI = require('./setSSI');
+    setSSI(server, "orderlines", createOrderLinesSSI, "setOrderLinesSSI", "traceability." + mah);
+}
+
+module.exports = setOrderLinesSSI;
