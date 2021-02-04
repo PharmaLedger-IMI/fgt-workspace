@@ -1,0 +1,30 @@
+{
+  "name": "traceability-dsu-fabric",
+  "version": "1.0.0",
+  "description": "SSApp Template",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "node ./node_modules/octopus/scripts/run",
+    "prebuild": "node ./node_modules/octopus/scripts/run prebuild",
+    "build": "node ./node_modules/octopus/scripts/buildDossier ./bin/build.file --domain=traceability",
+    "postbuild": "node ./node_modules/octopus/scripts/run postbuild",
+    "update": "npm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PrivateSky/ssapp-template.git"
+  },
+  "dependencies": {
+    "octopus": "git+https://github.com/PrivateSky/octopus.git"
+  },
+  "keywords": [
+    "ssapp"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PrivateSky/ssapp-template/issues"
+  },
+  "homepage": "https://github.com/PrivateSky/ssapp-template#readme"
+}

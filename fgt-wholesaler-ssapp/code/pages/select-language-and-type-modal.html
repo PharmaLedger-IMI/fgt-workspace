@@ -1,0 +1,16 @@
+<psk-container controller-name="SelectLanguageAndTypeController">
+    <psk-modal opened>
+        <psk-label slot="title" class="title" label="@title"></psk-label>
+
+        <div class='content'>
+
+                <psk-select view-model="@languages" value="@product.language" required></psk-select>
+                <psk-select view-model="@types" value="@product.type" required></psk-select>
+
+                <div class="modal-action-menu">
+                    <psk-button label="@denyButtonText" class="marketplace-manager-button" event-name="deny-button-on-click"></psk-button>
+                    <psk-button label="@acceptButtonText" class="marketplace-manager-button" event-name="accept-button-on-click"></psk-button>
+                </div>
+        </div>
+    </psk-modal>
+</psk-container>

@@ -1,0 +1,58 @@
+<psk-page title="Batches">
+    <psk-container controller-name="batchesController">
+        <psk-for-each data-view-model="@batches">
+            <psk-layout template-columns="1fr 1fr 1fr 1fr 1fr">
+                <psk-layout-item>
+                    <psk-barcode-generator type="gs1datamatrix" size="16" data="@code"></psk-barcode-generator>
+                </psk-layout-item>
+
+                <psk-layout-item>
+                    <psk-label label="Batch number:"></psk-label>
+                </psk-layout-item>
+                <psk-layout-item>
+                    <b>
+                        <psk-label label="@batchNumber"></psk-label>
+                    </b>
+                </psk-layout-item>
+                <psk-layout-item>
+                    <psk-label label="Expiration date:"></psk-label>
+                </psk-layout-item>
+                <psk-layout-item>
+                    <psk-date-input class="expiryForDisplay-date" value="@expiryForDisplay" read-only></psk-date-input>
+                </psk-layout-item>
+            </psk-layout>
+            <div slot="no-data">No Batches.</div>
+        </psk-for-each>
+        <div style="min-height: 30px;"></div>
+        <psk-button label="Add batch" event-name="add-batch"></psk-button>
+        <psk-list-feedbacks></psk-list-feedbacks>
+
+
+        <psk-label label="WRONG SN for testing "></psk-label>
+        <psk-for-each data-view-model="@batches">
+            <psk-layout template-columns="1fr 1fr 1fr 1fr 1fr">
+                <psk-layout-item>
+                    <psk-barcode-generator type="gs1datamatrix" size="16" data="@wrongCode"></psk-barcode-generator>
+                </psk-layout-item>
+
+                <psk-layout-item>
+                    <psk-label label="Batch number:"></psk-label>
+                </psk-layout-item>
+                <psk-layout-item>
+                    <b>
+                        <psk-label label="@batchNumber"></psk-label>
+                    </b>
+                </psk-layout-item>
+                <psk-layout-item>
+                    <psk-label label="Expiration date:"></psk-label>
+                </psk-layout-item>
+                <psk-layout-item>
+                    <psk-date-input class="expiryForDisplay-date" value="@expiryForDisplay" read-only></psk-date-input>
+                </psk-layout-item>
+            </psk-layout>
+            <div slot="no-data">No Batches.</div>
+        </psk-for-each>
+
+    </psk-container>
+
+</psk-page>

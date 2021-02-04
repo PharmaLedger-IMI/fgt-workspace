@@ -196,13 +196,7 @@
         },
         {
             "name": "fgt-wholesaler-ssapp",
-            "src": "https://gitlab.pdmfc.com/pharmaledger/traceability/fgt-wholesaler-ssapp.git",
             "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
                 {
                     "type": "execute",
                     "cmd": "cd fgt-wholesaler-ssapp && npm install"
