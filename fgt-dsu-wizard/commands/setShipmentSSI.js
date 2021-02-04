@@ -1,7 +1,7 @@
 
 
 function createShipmentSSI(data, domain) {
-    console.log("New SHIPMENTSSI in domain", domain);
+    console.log("New SHIPMENT_SSI in domain", domain);
     const keyssiSpace = require("opendsu").loadApi("keyssi");
     return keyssiSpace.buildTemplateArraySSI(domain, [data.senderId, data.shipmentId]);
 }
