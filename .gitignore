@@ -44,7 +44,6 @@ latest-change-set.txt
 *.class
 
 # Generated files
-bin/
 gen/
 out/
 #  Uncomment the following line in case you need and you don't have the release build type files in your app
@@ -52,7 +51,6 @@ out/
 
 # Gradle files
 .gradle/
-build/
 
 # Local configuration file (sdk path, etc)
 local.properties
