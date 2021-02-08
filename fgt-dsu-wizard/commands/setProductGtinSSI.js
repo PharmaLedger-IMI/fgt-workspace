@@ -7,7 +7,7 @@ function createProductGtinSSI(data, domain) {
 
 function setProductGtinSSI(server, mah){
     const setSSI = require('./setSSI');
-    setSSI(server, "productGtin", createProductGtinSSI, "setProductGtinSSI", "traceability." + mah);
+    setSSI(server, "product", createProductGtinSSI, "setProductGtinSSI", "traceability." + mah);
 }
 
 module.exports = setProductGtinSSI;

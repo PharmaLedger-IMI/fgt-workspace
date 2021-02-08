@@ -7,7 +7,7 @@ function createProductGtinBatchSSI(data, domain) {
 
 function setProductGtinBatchSSI(server, mah){
     const setSSI = require('./setSSI');
-    setSSI(server, "productGtinBatch", createProductGtinBatchSSI, "setProductGtinBatchSSI", "traceability." + mah);
+    setSSI(server, "productBatch", createProductGtinBatchSSI, "setProductGtinBatchSSI", "traceability." + mah);
 }
 
 module.exports = setProductGtinBatchSSI;

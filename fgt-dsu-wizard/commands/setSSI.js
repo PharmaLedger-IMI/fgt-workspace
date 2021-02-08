@@ -1,5 +1,5 @@
 /**
- * Base SetSSI function implementation
+ * Registers with the DSU Wizard the provided endpoints for the various DSU types
  * @param server: the server object
  * @param endpoint: the endpoint to be registered
  * @param factoryMethod: the method that receives a data object with the parameters required to generate the keyssi, and is responsible for the creation of the DSU
