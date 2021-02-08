@@ -11,26 +11,29 @@ const resolver = opendsu.loadApi("resolver");
 const keyssispace = opendsu.loadApi("keyssi");
 
 //Create a template keySSI (for default domain). See /conf/BDNS.hosts.json
-const keySsi = "ssi:sread:default:cGeb7JqYuVMszUTiw471bcnrEVALTa3F4eDwHjALYsh:F9MnSteh1WCM9RWfrirUe6G5kFb3gvRh8kW9sTunzG18:v0";
+const aKeySSI = "ssi:seed:default:637c5f7AYfvLTM76xrQK7bsDe31Ybo9Q7zoP8QSgddYs::v0";
+//const aKeySSI = "ssi:sread:default:cGeb7JqYuVMszUTiw471bcnrEVALTa3F4eDwHjALYsh:F9MnSteh1WCM9RWfrirUe6G5kFb3gvRh8kW9sTunzG18:v0";
 
 //Using an sZaSSI, it is not possible to load
-// const keySsi = "ssi:sza:default::EjgYgxE7bEC4tuVdpRiE3RJzepXFLY3u8urAYgeTHVES:v0"
+// const aKeySsi = "ssi:sza:default::EjgYgxE7bEC4tuVdpRiE3RJzepXFLY3u8urAYgeTHVES:v0"
 
 //Load a DSU
-resolver.loadDSU(keySsi, (err, dsuInstance) =>{
-    //Reached when DSU created
+resolver.loadDSU(aKeySSI, (err, aDsuInstance) =>{
+    //Reached when DSU loaded
     if (err){
+        console.log("DSU loaded BAD");
         throw err;
     }
+    console.log("DSU loaded OK");
 
-    dsuInstance.listFiles("/", function (err,files) {
+    aDsuInstance.listFiles("/", function (err,files) {
         console.log("Files "+files);
     });
-    dsuInstance.listFolders("/", function (err,folders) {
+    aDsuInstance.listFolders("/", function (err,folders) {
         console.log("Folders "+folders);
     });
     
-    dsuInstance.readFile('/dsu-metadata-log', (err, data)=>{
+    aDsuInstance.readFile('/dsu-metadata-log', (err, data)=>{
         //Reached when data loaded
         if(err){
             throw err;
@@ -39,7 +42,7 @@ resolver.loadDSU(keySsi, (err, dsuInstance) =>{
         console.log("dsu-metadata-log load succesfully! :", data.toString());
     });
 
-    dsuInstance.readFile('/data', (err, data)=>{
+    aDsuInstance.readFile('/data', (err, data)=>{
         //Reached when data loaded
         if(err){
             throw err;
@@ -50,7 +53,7 @@ resolver.loadDSU(keySsi, (err, dsuInstance) =>{
         dataObject.message += " ... more!";
         console.log("Data changed :)", dataObject.message); //Print message to console
 
-        dsuInstance.writeFile("/data", JSON.stringify(dataObject), (err) => {
+        aDsuInstance.writeFile("/data", JSON.stringify(dataObject), (err) => {
             if (err) {
                 throw err;
             }
