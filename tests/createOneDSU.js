@@ -13,8 +13,8 @@ const keyssispace = opendsu.loadApi("keyssi");
 //Create a template keySSI (for default domain). See /conf/BDNS.hosts.json
 keyssispace.createSeedSSI('default', function (err, aSeedSSI) {
 
-    console.log("seedSSI object :" , aSeedSSI );
-    console.log("seedSSI identifier :" + aSeedSSI.getIdentifier(true));
+    console.log("seedSSI object: " , aSeedSSI );
+    console.log("seedSSI identifier: " + aSeedSSI.getIdentifier(true));
 
     let aData = { "message": "Hello world!" };
 
@@ -32,7 +32,7 @@ keyssispace.createSeedSSI('default', function (err, aSeedSSI) {
             if (err) {
                 throw err;
             }
-            console.log("Data written succesfully! :)");
+            console.log("Data written succesfully! :) ");
 
 
             dsuInstance.getKeySSIAsString((err, aKeySSIStr) => {
