@@ -13,7 +13,7 @@ const keyssispace = opendsu.loadApi("keyssi");
 //Create a template keySSI (for default domain). See /conf/BDNS.hosts.json
 keyssispace.createSeedSSI('default', function (err, aSeedSSI) {
 
-    console.log("seedSSI object :" + aSeedSSI);
+    console.log("seedSSI object :" , aSeedSSI );
     console.log("seedSSI identifier :" + aSeedSSI.getIdentifier(true));
 
     let aData = { "message": "Hello world!" };
@@ -39,13 +39,13 @@ keyssispace.createSeedSSI('default', function (err, aSeedSSI) {
                 console.log("KeySSI identifier: ", aKeySSIStr); // KeySSI identifier:  BBudGH6ySHG6GUHN8ogNrTWbSXyuv5XvYDpjVH3L973ioh5WqYv39pk5DJMhgCA2WTtoyCP54cZazSg8ozXawX9ZZ
 
                 const anotherSeedSSI = keyssispace.parse(aKeySSIStr);
-                console.log("secretSSIObject = " + anotherSeedSSI); // dsuSecretSSI
+                console.log("secretSSIObject = " , anotherSeedSSI); // dsuSecretSSI
                 const aReadSSI = anotherSeedSSI.derive();
-                console.log("sReadSSI object = " + aReadSSI);
+                console.log("sReadSSI object = " , aReadSSI);
                 console.log("sReadSSI identifier = " + aReadSSI.getIdentifier(true));
 
                 const aZaSSI = aReadSSI.derive();
-                console.log("sZaSSI object = " + aZaSSI);
+                console.log("sZaSSI object = " , aZaSSI);
                 console.log("sZaSSI identifier = " + aZaSSI.getIdentifier(true));
 
                 resolver.loadDSU(aKeySSIStr, (err, anotherDSUInstance) => {
