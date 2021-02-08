@@ -56,7 +56,6 @@ try {
             aDsuInstance.writeFile("/data", JSON.stringify(dataObject), (err) => {
                 if (err) {
                     console.log("DSU write readfile error: ");
-                    console.log( err ); 
                     throw err;
                 }
                 console.log("Data written succesfully! :)");
@@ -68,7 +67,6 @@ try {
     
     console.log("Exception:");
     console.log( ex );
-    
 }
 
 
