@@ -11,56 +11,57 @@ const resolver = opendsu.loadApi("resolver");
 const keyssispace = opendsu.loadApi("keyssi");
 
 //Create a template keySSI (for default domain). See /conf/BDNS.hosts.json
-const aSeedSSI = keyssispace.buildTemplateSeedSSI('default');
-console.log("templateSSI object :"+aSeedSSI);
-console.log("templateSSI identifier :"+aSeedSSI.getIdentifier(true));
-            
-let aData  = {"message": "Hello world!"};
+keyssispace.createSeedSSI('default', function (err, aSeedSSI) {
 
+    console.log("seedSSI object :" + aSeedSSI);
+    console.log("seedSSI identifier :" + aSeedSSI.getIdentifier(true));
 
-//Create a DSU
-resolver.createDSU(aSeedSSI, (err, dsuInstance) =>{
-    //Reached when DSU created
-    if (err){
-        throw err;
-    }
+    let aData = { "message": "Hello world!" };
 
-    //Methods found in: /modules/bar/lib/Archive.js
-    dsuInstance.writeFile('/data', JSON.stringify(aData), (err) => {
-        //Reached when data written to BrickStorage
-
-        if(err){
+    //Create a DSU
+    resolver.createDSU(aSeedSSI, (err, dsuInstance) => {
+        //Reached when DSU created
+        if (err) {
             throw err;
         }
-        console.log("Data written succesfully! :)");
-        
-        
-        dsuInstance.getKeySSI((err, aKeySSI) => {
-            console.log("KeySSI identifier: ", aKeySSI); // KeySSI identifier:  BBudGH6ySHG6GUHN8ogNrTWbSXyuv5XvYDpjVH3L973ioh5WqYv39pk5DJMhgCA2WTtoyCP54cZazSg8ozXawX9ZZ
 
-            const anotherSeedSSI = keyssispace.parse(aKeySSI);
-            console.log("secretSSIObject = "+anotherSeedSSI); // dsuSecretSSI
-            const aReadSSI = anotherSeedSSI.derive();
-            console.log("sReadSSI object = "+aReadSSI);
-            console.log("sReadSSI identifier = "+aReadSSI.getIdentifier(true));
+        //Methods found in: /modules/bar/lib/Archive.js
+        dsuInstance.writeFile('/data', JSON.stringify(aData), (err) => {
+            //Reached when data written to BrickStorage
 
-            const aZaSSI = aReadSSI.derive();
-            console.log("sZaSSI object = "+aZaSSI);
-            console.log("sZaSSI identifier = "+aZaSSI.getIdentifier(true));
+            if (err) {
+                throw err;
+            }
+            console.log("Data written succesfully! :)");
 
-            resolver.loadDSU(aKeySSI, (err, anotherDSUInstance) => {
-                if(err) {
-                    throw err;
-                }
 
-                anotherDSUInstance.readFile('/data', (err, data)=>{
-                    //Reached when data loaded
-                    if(err){
+            dsuInstance.getKeySSIAsString((err, aKeySSIStr) => {
+                console.log("KeySSI identifier: ", aKeySSIStr); // KeySSI identifier:  BBudGH6ySHG6GUHN8ogNrTWbSXyuv5XvYDpjVH3L973ioh5WqYv39pk5DJMhgCA2WTtoyCP54cZazSg8ozXawX9ZZ
+
+                const anotherSeedSSI = keyssispace.parse(aKeySSIStr);
+                console.log("secretSSIObject = " + anotherSeedSSI); // dsuSecretSSI
+                const aReadSSI = anotherSeedSSI.derive();
+                console.log("sReadSSI object = " + aReadSSI);
+                console.log("sReadSSI identifier = " + aReadSSI.getIdentifier(true));
+
+                const aZaSSI = aReadSSI.derive();
+                console.log("sZaSSI object = " + aZaSSI);
+                console.log("sZaSSI identifier = " + aZaSSI.getIdentifier(true));
+
+                resolver.loadDSU(aKeySSIStr, (err, anotherDSUInstance) => {
+                    if (err) {
                         throw err;
                     }
-        
-                    const dataObject = JSON.parse(data.toString()); //Convert data (buffer) to string and then to JSON
-                    console.log("Data load succesfully! :)", dataObject.message); //Print message to console
+
+                    anotherDSUInstance.readFile('/data', (err, data) => {
+                        //Reached when data loaded
+                        if (err) {
+                            throw err;
+                        }
+
+                        const dataObject = JSON.parse(data.toString()); //Convert data (buffer) to string and then to JSON
+                        console.log("Data load succesfully! :)", dataObject.message); //Print message to console
+                    });
                 });
             });
         });
