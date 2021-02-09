@@ -1,4 +1,5 @@
 process.env.NO_LOGS = true;
+process.env.PSK_CONFIG_LOCATION = process.cwd();
 
 const path = require('path');
 
@@ -24,42 +25,34 @@ const agents = [...Array(noOfAgentsPerDomain).keys()].map(getAgentName);
 
 let domain = 'traceability';
 
-//tir.addDomain(domain, agents, './constitution');
 
-// let domainConfig = {
-//     name: "traceability",
-//     workspace: "./testWorkspace",
-//     bundlesSourceFolder: '../../privatesky/psknode/bundles',
-//     constitutionSourceFolder: ""
-// };
-//
-// tir.buildDomainConfiguration(domainConfig, (err) => {
-//     if (err)
-//         throw err;
-//
-// });
+
 
 assert.callback('create ORDER DSU', (cb) => {
+    //tir.addDomain(domain, agents, './constitution');
     dc.createTestFolder('OrderDSUTest', (err, folder) => {
         tir.launchApiHubTestNode(10, folder, err => {
             if (err)
-                return cb(err);
+                throw err;
 
             let initializer = function (ds, callback) {
-                ds.addFileDataToDossier("test", JSON.stringify({"id": 1, "cenas": "cenasasdsa"}), (err) => {
+                ds.addFileDataToDossier("/test", JSON.stringify({"id": 1, "cenas": "cenasasdsa"}), (err) => {
                     if (err)
                         return callback(err);
+                    console.log("test file written");
                     callback();
                 });
                 console.log(ds);
             };
 
-            dsuService.create(domain, initializer, err => {
-                if (err)
-                    return cb(err);
+            // dsuService.create(domain, initializer, (err, keySSI) => {
+            //     if (err)
+            //         throw err;
+            //
+
                 cb();
-            });
+            // });
         });
     });
-}, 10000);
+}, 100000);
 

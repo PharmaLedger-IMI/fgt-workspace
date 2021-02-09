@@ -1,27 +1,20 @@
-function ORDER_DSU_WIZARD(server){
-	const setOrderSSI = require("./commands/setOrderSSI");
-	setOrderSSI(server);
-}
-
-function ORDERLINE_DSU_WIZARD(server){
-	const setOrderLineSSI = require("./commands/setOrderLineSSI");
-	setOrderLineSSI(server);
-}
-
-function SHIPMENT_DSU_WIZARD(server){
-	const setOrderSSI = require("./commands/setShipmentSSI");
-	setOrderSSI(server);
-}
-
-function SHIPMENTLINE_DSU_WIZARD(server){
-	const setOrderLineSSI = require("./commands/setShipmentLineSSI");
-	setOrderLineSSI(server);
+/**
+ * iterates through all the commands in the command folder and registers them
+ * Is called to
+ */
+function Init(server){
+	const path = require('path');
+	const cmdsDir = path.join(__dirname, "commands");
+	require('fs').readdir(cmdsDir, (err, files) => {
+		if (err)
+			throw err;
+		files.filter(f => f !== 'setSSI.js').forEach(f => {
+			require(path.join(cmdsDir, f))(server);
+		});
+	});
 }
 
 module.exports = {
-	ORDER_DSU_WIZARD,
-	ORDERLINE_DSU_WIZARD,
-	SHIPMENT_DSU_WIZARD,
-	SHIPMENTLINE_DSU_WIZARD,
+	Init,
 	DSUService: new (require('./services/DSUService'))
 };

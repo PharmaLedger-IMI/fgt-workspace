@@ -18,15 +18,16 @@
     "anchoring",
     "dsu-wizard",
     "gtin-dsu-wizard",
-    "fgt-dsu-wizard",
+    "order-dsu-wizard",
     "staticServer"
   ],
   "endpointsConfig": {
     "gtin-dsu-wizard": {
       "module": "./../../gtin-dsu-wizard"
     },
-    "fgt-dsu-wizard": {
-      "module": "./../../fgt-dsu-wizard"
+    "order-dsu-wizard": {
+      "module": "./../../fgt-dsu-wizard",
+      "function": "Init"
     },
     "bricking": {
       "domains": {

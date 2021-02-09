@@ -63,6 +63,7 @@ class DSUService {
      * @param {function} initializer: a method with arguments (dsuBuilder, callback)
      * <ul><li>the dsuBuilder provides the api to all operations on the DSU</li></ul>
      * @param {function} callback: the callback function
+     * @return error, keySSI
      */
     create(domain, initializer, callback){
         this.getTransactionId(domain, (err, transactionId) => {
@@ -71,7 +72,7 @@ class DSUService {
             initializer(this.bindToTransaction(domain, transactionId), err => {
                 if (err)
                     return callback(err);
-                callback();
+                callback(undefined);
             });
         });
     }
