@@ -1,9 +1,8 @@
-import utils from "./utils.js";
-import scriptUtils from "../utils.js";
-
+const utils = require("./utils.js");
+//const scriptUtils = require('../utils.js');
 const doPost = utils.getPostHandlerFor("dsu-wizard");
 
-export default class DSUService {
+class DSUService {
     constructor() {
         let crypto = require("opendsu").loadApi("crypto");
         let http = require("opendsu").loadApi("http");
@@ -28,7 +27,7 @@ export default class DSUService {
         //
         // });
     }
-    //
+
     // ensureHolderInfo(callback) {
     //     function getJSON(pth, callback){
     //         scriptUtils.fetch(pth).then((response) => {
@@ -77,6 +76,14 @@ export default class DSUService {
         });
     }
 
+    /**
+     * Creates a DSU and initializes it via the provided initializer
+     * @param {string} domain: the domain where the DSU is meant to be stored
+     * @param {keySSI} keySSI:
+     * @param {function} modifier: a method with arguments (dsuBuilder, callback)
+     * <ul><li>the dsuBuilder provides the api to all operations on the DSU</li></ul>
+     * @param {function} callback: the callback function
+     */
     update(domain, keySSI, modifier, callback){
         this.getTransactionId(domain, (err, transactionId) => {
            if (err)
@@ -94,7 +101,19 @@ export default class DSUService {
     }
 
     read(domain, keySSI, reader, callback){
-
+        this.getTransactionId(domain, (err, transactionId) => {
+            if (err)
+                return callback(err);
+            this.setKeySSI(transactionId, domain, keySSI, err =>{
+                if (err)
+                    return callback(err);
+                reader(this.bindToTransaction(domain, transactionId), (err, data) => {
+                    if (err)
+                        return callback(err);
+                    callback(undefined, data);
+                });
+            });
+        });
     };
 
     bindToTransaction(domain, transactionId){
@@ -127,7 +146,7 @@ export default class DSUService {
         }
     }
 
-    getTransactionId = function (domain, callback) {
+    getTransactionId(domain, callback) {
 
         let obtainTransaction = ()=>{
             doPost(`/${domain}/begin`, (err, transactionId) => {
@@ -144,12 +163,12 @@ export default class DSUService {
             });
         }
 
-        this.ensureHolderInfo( (err)=>{
-            if(err){
-                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Holder missconfiguration in the wallet", err));
-            }
+        // this.ensureHolderInfo( (err)=>{
+        //     if(err){
+        //         return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Holder missconfiguration in the wallet", err));
+        //     }
             obtainTransaction();
-        });
+        // });
     }
 
     setKeySSI(transactionId, domain, keyssi, callback) {
@@ -201,3 +220,5 @@ export default class DSUService {
         doPost(url, "", callback);
     }
 }
+
+module.exports = DSUService;

@@ -359,5 +359,7 @@
                 }
             ]
         }
-    ]
+    ],
+    "install-mobile": [],
+    "build-mobile": []
 }

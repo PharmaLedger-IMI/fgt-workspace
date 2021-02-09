@@ -22,5 +22,6 @@ module.exports = {
 	ORDER_DSU_WIZARD,
 	ORDERLINE_DSU_WIZARD,
 	SHIPMENT_DSU_WIZARD,
-	SHIPMENTLINE_DSU_WIZARD
+	SHIPMENTLINE_DSU_WIZARD,
+	DSUService: new (require('./services/DSUService'))
 };

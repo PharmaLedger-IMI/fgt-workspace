@@ -2,9 +2,16 @@
 function getPostHandlerFor(apiname){
 
 	function getBaseURL() {
-		const protocol = window.location.protocol;
-		const host = window.location.hostname;
-		const port = window.location.port;
+		let protocol, host, port;
+		try {
+			protocol = window.location.protocol;
+			host = window.location.hostname;
+			port = window.location.port;
+		} catch (e){
+			protocol = "http:";
+			host = "localhost";
+			port = "8080";
+		}
 
 		return `${protocol}//${host}:${port}/${apiname}`;
 	}
@@ -41,6 +48,6 @@ function getPostHandlerFor(apiname){
 	}
 	return doPost;
 }
-export default {
+module.exports = {
 	getPostHandlerFor
 }
