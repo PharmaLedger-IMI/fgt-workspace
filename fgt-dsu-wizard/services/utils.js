@@ -7,7 +7,11 @@ function getPostHandlerFor(apiname){
 			protocol = window.location.protocol;
 			host = window.location.hostname;
 			port = window.location.port;
+
 		} catch (e){
+			// Only used in tests
+			if (process.env.BDNS_ROOT_HOSTS)
+				return `${process.env.BDNS_ROOT_HOSTS}/${apiname}`;
 			protocol = "http:";
 			host = "localhost";
 			port = "8080";
@@ -31,6 +35,7 @@ function getPostHandlerFor(apiname){
 
 		const baseURL = getBaseURL();
 		url = `${baseURL}${url}#x-blockchain-domain-request`;
+		console.log($$.environmentType);
 		http.fetch(url, {
 			method: 'POST',
 			headers: options.headers,

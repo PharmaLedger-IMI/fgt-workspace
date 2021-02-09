@@ -18,14 +18,14 @@
     "anchoring",
     "dsu-wizard",
     "gtin-dsu-wizard",
-    "order-dsu-wizard",
+    "fgt-dsu-wizard",
     "staticServer"
   ],
   "endpointsConfig": {
     "gtin-dsu-wizard": {
       "module": "./../../gtin-dsu-wizard"
     },
-    "order-dsu-wizard": {
+    "fgt-dsu-wizard": {
       "module": "./../../fgt-dsu-wizard",
       "function": "Init"
     },
@@ -35,7 +35,7 @@
           "path": "/external-volume/domains/epi/brick-storage"
         },
         "traceability": {
-          "path": "/external-volume/domains/epi/brick-storage"
+          "path": "/external-volume/domains/traceability/brick-storage"
         },
         "default": {
           "path": "/internal-volume/domains/default/brick-storage"
@@ -79,16 +79,6 @@
           "commands": {
             "addAnchor": "anchor"
           }
-        },
-        "epi2": {
-          "type": "ETH",
-          "option": {
-            "endpoint" : "http://a650cecc321a54722a8c32c9a195466a-709616493.eu-west-2.elb.amazonaws.com:3000"
-          },
-          "commands": {
-            "addAnchor": "anchor"
-          }
-
         },
         "predefined": {
           "type": "FS",
