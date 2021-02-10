@@ -1,6 +1,5 @@
 {
   "port": 8080,
-  "storage": "./testWorkspace/apihub-root",
   "logging": {
     "enabled": true
   },
