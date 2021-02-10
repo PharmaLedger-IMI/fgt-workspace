@@ -34,7 +34,6 @@ function setSSI(server, endpoint, factoryMethod, methodName, domain){
                     return callback(undefined, command);
                 });
             });
-            return elemSSI;
         });
     });
 }
