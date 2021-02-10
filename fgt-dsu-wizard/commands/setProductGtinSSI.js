@@ -5,9 +5,12 @@ function createProductGtinSSI(data, domain) {
     return keyssiSpace.buildTemplateArraySSI(domain, [data.gtin]);
 }
 
-function setProductGtinSSI(server, mah){
+function command(server, mah){
     const setSSI = require('./setSSI');
     setSSI(server, "product", createProductGtinSSI, "setProductGtinSSI", "traceability." + mah);
 }
 
-module.exports = setProductGtinSSI;
+module.exports = {
+    command,
+    createProductGtinSSI
+};

@@ -5,9 +5,12 @@ function createOrderLinesSSI(data, domain) {
     return keyssiSpace.buildTemplateArraySSI(domain, [data.gtin, "ORDERLINES"]);
 }
 
-function setOrderLinesSSI(server, mah){
+function command(server, mah){
     const setSSI = require('./setSSI');
     setSSI(server, "orderlines", createOrderLinesSSI, "setOrderLinesSSI", "traceability." + mah);
 }
 
-module.exports = setOrderLinesSSI;
+module.exports = {
+    command,
+    createOrderLinesSSI
+}

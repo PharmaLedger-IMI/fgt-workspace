@@ -5,9 +5,12 @@ function createProductGtinBatchSSI(data, domain) {
     return keyssiSpace.buildTemplateArraySSI(domain, [data.gtin, data.batch]);
 }
 
-function setProductGtinBatchSSI(server, mah){
+function command(server, mah){
     const setSSI = require('./setSSI');
     setSSI(server, "productBatch", createProductGtinBatchSSI, "setProductGtinBatchSSI", "traceability." + mah);
 }
 
-module.exports = setProductGtinBatchSSI;
+module.exports = {
+    command,
+    createProductGtinBatchSSI
+};

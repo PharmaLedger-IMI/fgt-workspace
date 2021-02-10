@@ -15,6 +15,11 @@ const assert = dc.assert;
 let domain = 'traceability';
 let testName = 'TraceabilityDSUFlowTest';
 
+
+function createOrderDSU(){
+
+}
+
 assert.pass(testName, assert.callback('Launch API Hub', (testFinished) => {
     dc.createTestFolder(testName, (err, folder) => {
         tir.launchApiHubTestNode(10, folder, err => {

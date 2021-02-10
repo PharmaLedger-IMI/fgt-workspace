@@ -6,9 +6,12 @@ function createShipmentSSI(data, domain) {
     return keyssiSpace.buildTemplateArraySSI(domain, [data.senderId, data.shipmentId]);
 }
 
-function setShipmentSSI(server){
+function command(server){
     const setSSI = require('./setSSI');
     setSSI(server, "shipment", createShipmentSSI, "setShipmentSSI", "traceability");
 }
 
-module.exports = setShipmentSSI;
+module.exports = {
+    command,
+    createShipmentSSI
+};

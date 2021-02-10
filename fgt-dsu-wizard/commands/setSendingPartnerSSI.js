@@ -5,9 +5,12 @@ function createSendingPartnerSSI(data, domain) {
     return keyssiSpace.buildTemplateArraySSI(domain, [data.gtin, data.batch, data.senderId]);
 }
 
-function setSendingPartnerSSI(server, mah){
+function command(server, mah){
     const setSSI = require('./setSSI');
     setSSI(server, "sendingpartner", createSendingPartnerSSI, "setSendingPartnerSSI", "traceability." + mah);
 }
 
-module.exports = setSendingPartnerSSI;
+module.exports = {
+    command,
+    createSendingPartnerSSI
+};

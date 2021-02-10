@@ -5,9 +5,12 @@ function createOrderingPartnerSSI(data, domain) {
     return keyssiSpace.buildTemplateArraySSI(domain, [data.gtin, data.requesterId]);
 }
 
-function setOrderingPartnerSSI(server, mah){
+function command(server, mah){
     const setSSI = require('./setSSI');
     setSSI(server, "orderingpartner", createOrderingPartnerSSI, "setOrderingPartnerSSI", "traceability." + mah);
 }
 
-module.exports = setOrderingPartnerSSI;
+module.exports = {
+    command,
+    createOrderingPartnerSSI
+};

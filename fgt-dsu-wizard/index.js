@@ -9,7 +9,7 @@ function Init(server){
 		if (err)
 			throw err;
 		files.filter(f => f !== 'setSSI.js').forEach(f => {
-			require(path.join(cmdsDir, f))(server);
+			require(path.join(cmdsDir, f)).command(server);
 		});
 	});
 }

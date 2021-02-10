@@ -5,9 +5,12 @@ function createShipmentLinesSSI(data, domain) {
     return keyssiSpace.buildTemplateArraySSI(domain, [data.gtin, data.batch, "SHIPMENTLINES"]);
 }
 
-function setShipmentLinesSSI(server, mah){
+function command(server, mah){
     const setSSI = require('./setSSI');
     setSSI(server, "shipmentLines", createShipmentLinesSSI, "setShipmentLinesSSI", "traceability." + mah);
 }
 
-module.exports = setShipmentLinesSSI;
+module.exports = {
+    command,
+    createShipmentLinesSSI
+};
