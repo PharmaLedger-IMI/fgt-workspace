@@ -22,7 +22,7 @@ function setSSI(server, endpoint, factoryMethod, methodName, domain){
             const data = JSON.parse(req.body);
             const elemSSI = factoryMethod(data, domain);
 
-            transactionManager.getTransaction(req.params.transactionId, err, transaction => {
+            transactionManager.getTransaction(req.params.transactionId, (err, transaction) => {
                 transaction.context.keySSI = elemSSI.getIdentifier();
                 transaction.context.forceNewDSU = true;                 // TODO: Why? could not find documentation
                 transaction.context.options.useSSIAsIdentifier = true;  // TODO: Why? could not find documentation
@@ -34,6 +34,7 @@ function setSSI(server, endpoint, factoryMethod, methodName, domain){
                     return callback(undefined, command);
                 });
             });
+            return elemSSI;
         });
     });
 }

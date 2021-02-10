@@ -29,6 +29,7 @@ pharmaledger-wallet**
 privatesky
 themes
 
+tests/*/testWorkspace
 
 latest-change-set.txt
 .idea
