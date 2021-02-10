@@ -81,14 +81,18 @@ class DSUService {
             if (err)
                 return callback(err);
 
-            let afterKeyCb = function(err, keySSI){
+            let afterKeyCb = function(err){
                 if (err)
                     return callback(err);
 
                 initializer(self.bindToTransaction(domain, transactionId), err => {
                     if (err)
                         return callback(err);
-                    callback(undefined, keySSI);
+                    self.buildDossier(transactionId, domain, (err, result) => {
+                        if (err)
+                            return callback(err);
+                        callback(undefined, result);
+                    });
                 });
             };
 
@@ -154,12 +158,6 @@ class DSUService {
              */
             mount(path, seed, callback){
                 self.mount(transactionId, domain, path, seed, callback);
-            };
-            /**
-             * @see {@link DSUService.buildDossier} with already filled transactionId and domain
-             */
-            buildDossier(callback){
-                self.buildDossier(transactionId, domain, callback);
             };
         }
     }

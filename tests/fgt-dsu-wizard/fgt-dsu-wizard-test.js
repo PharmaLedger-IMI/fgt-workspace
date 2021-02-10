@@ -20,37 +20,44 @@ function OutputError(error){
     process.exit(1);
 }
 
+let domain = 'traceability';
 
 assert.callback('create ORDER DSU', (cb) => {
     dc.createTestFolder('OrderDSUTest', (err, folder) => {
         tir.launchApiHubTestNode(10, folder, err => {
             if (err)
                 OutputError(err);
-
-            let initializer = function (ds, callback) {
-                ds.addFileDataToDossier("/test", JSON.stringify({"id": 1, "cenas": "cenasasdsa"}), (err) => {
-                    if (err)
-                        return callback(err);
-                    console.log("test file written");
-                    callback();
-                });
-                console.log(ds);
-            };
-
-            let endpointData = {
-                endpoint: 'order',
-                data:{
-                    orderId: 'sadsadsadasd',
-                    requesterId: "sadasdasd"
-                }
-            }
-
-            dsuService.create('default', endpointData, initializer, (err, keySSI) => {
+            tir.addDomainsInBDNS(folder,  [domain], (err, bdns) => {
                 if (err)
                     OutputError(err);
 
-                console.log("Order dsu created with keyssi", keySSI);
-                cb();
+                console.log('Updated bdns', bdns);
+
+                let initializer = function (ds, callback) {
+                    ds.addFileDataToDossier("/test", JSON.stringify({"id": 1, "cenas": "cenasasdsa"}), (err) => {
+                        if (err)
+                            return callback(err);
+                        console.log("test file written");
+                        callback();
+                    });
+                    console.log(ds);
+                };
+
+                let endpointData = {
+                    endpoint: 'order',
+                    data:{
+                        orderId: 'sadsadsadasd',
+                        requesterId: "sadasdasd"
+                    }
+                }
+
+                dsuService.create(domain, endpointData, initializer, (err, keySSI) => {
+                    if (err)
+                        OutputError(err);
+
+                    console.log("Order dsu created with keyssi", keySSI);
+                    cb();
+                });
             });
         });
     });
