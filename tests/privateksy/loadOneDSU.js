@@ -1,5 +1,5 @@
 //Load openDSU enviroment
-require("../privatesky/psknode/bundles/openDSU");
+require("../../privatesky/psknode/bundles/openDSU");
 
 //Load openDSU SDK
 const opendsu = require("opendsu");
