@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://gitlab.pdmfc.com/pharmaledger/traceability/fgt-dsu-wizard/issues"
   },
-  "homepage": "https://gitlab.pdmfc.com/pharmaledger/traceability/fgt-dsu-wizard#readme"
+  "homepage": "https://gitlab.pdmfc.com/pharmaledger/traceability/fgt-dsu-wizard#readme",
+  "devDependencies": {
+    "form-data": "v3.0.0"
+  }
 }

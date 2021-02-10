@@ -8,9 +8,9 @@ const pskruntime_path = path.join('../../privatesky/psknode/bundles', 'pskruntim
 require(test_bundles_path);
 require(pskruntime_path);
 
-//const dc = require("double-check");
-//const assert = dc.assert;
-//const tir = require("../../privatesky/psknode/tests/util/tir");
+const dc = require("double-check");
+const assert = dc.assert;
+const tir = require("../../privatesky/psknode/tests/util/tir");
 
 const wizard = require('../../fgt-dsu-wizard');
 const dsuService = wizard.DSUService;
@@ -20,36 +20,39 @@ function OutputError(error){
     process.exit(1);
 }
 
-dsuService.create('default', undefined, err => {
-    if (err)
-        OutputError(err);
-    console.log("adsa")
-})
-//
-// assert.callback('create ORDER DSU', (cb) => {
-//     dc.createTestFolder('OrderDSUTest', (err, folder) => {
-//         tir.launchApiHubTestNode(10, folder, err => {
-//             if (err)
-//                 OutputError(err);
-//
-//             let initializer = function (ds, callback) {
-//                 ds.addFileDataToDossier("/test", JSON.stringify({"id": 1, "cenas": "cenasasdsa"}), (err) => {
-//                     if (err)
-//                         return callback(err);
-//                     console.log("test file written");
-//                     callback();
-//                 });
-//                 console.log(ds);
-//             };
-//
-//             dsuService.create('default', initializer, (err, keySSI) => {
-//                 if (err)
-//                     OutputError(err);
-//
-//
-//                 cb();
-//             });
-//         });
-//     });
-// }, 100000);
-//
+
+assert.callback('create ORDER DSU', (cb) => {
+    dc.createTestFolder('OrderDSUTest', (err, folder) => {
+        tir.launchApiHubTestNode(10, folder, err => {
+            if (err)
+                OutputError(err);
+
+            let initializer = function (ds, callback) {
+                ds.addFileDataToDossier("/test", JSON.stringify({"id": 1, "cenas": "cenasasdsa"}), (err) => {
+                    if (err)
+                        return callback(err);
+                    console.log("test file written");
+                    callback();
+                });
+                console.log(ds);
+            };
+
+            let endpointData = {
+                endpoint: 'order',
+                data:{
+                    orderId: 'sadsadsadasd',
+                    requesterId: "sadasdasd"
+                }
+            }
+
+            dsuService.create('default', endpointData, initializer, (err, keySSI) => {
+                if (err)
+                    OutputError(err);
+
+
+                cb();
+            });
+        });
+    });
+}, 100000);
+

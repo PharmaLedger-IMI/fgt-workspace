@@ -2,6 +2,13 @@ const utils = require("./utils.js");
 //const scriptUtils = require('../utils.js');
 const doPost = utils.getPostHandlerFor("dsu-wizard");
 
+function getEnv(){
+    return $$.environmentType;
+}
+
+if (getEnv() === 'nodejs')
+    FormData = require('form-data');    // needed because nodejs does not have FormData. we can remove it after testing
+
 class DSUService {
     constructor() {
         let crypto = require("opendsu").loadApi("crypto");
@@ -60,20 +67,36 @@ class DSUService {
     /**
      * Creates a DSU and initializes it via the provided initializer
      * @param {string} domain: the domain where the DSU is meant to be stored
+     * @param {string|object} keySSIOrEndpoint: the keySSI string or endpoint object {endpoint: 'gtin', data: 'data'}
      * @param {function} initializer: a method with arguments (dsuBuilder, callback)
      * <ul><li>the dsuBuilder provides the api to all operations on the DSU</li></ul>
      * @param {function} callback: the callback function
      * @return error, keySSI
      */
-    create(domain, initializer, callback){
-        this.getTransactionId(domain, (err, transactionId) => {
+    create(domain, keySSIOrEndpoint, initializer, callback){
+        let self = this;
+        let simpleKeySSI = typeof keySSIOrEndpoint === 'string';
+
+        self.getTransactionId(domain, (err, transactionId) => {
             if (err)
                 return callback(err);
-            initializer(this.bindToTransaction(domain, transactionId), err => {
+
+            let afterKeyCb = function(err, keySSI){
                 if (err)
                     return callback(err);
-                callback(undefined);
-            });
+
+                initializer(self.bindToTransaction(domain, transactionId), err => {
+                    if (err)
+                        return callback(err);
+                    callback(undefined, keySSI);
+                });
+            };
+
+            if (simpleKeySSI){
+                self.setKeySSI(transactionId, domain, keySSIOrEndpoint, afterKeyCb);
+            } else {
+                self.setCustomSSI(transactionId, domain, keySSIOrEndpoint.endpoint, keySSIOrEndpoint.data, afterKeyCb);
+            }
         });
     }
 
@@ -121,12 +144,6 @@ class DSUService {
         let self = this;
         return new class {
             /**
-             * @see {@link DSUService.setKeySSI} with already filled transactionId and domain
-             */
-            setKeySSI(keySSI, callback){
-                self.setKeySSI(transactionId, domain, keySSI, callback);
-            };
-            /**
              * @see {@link DSUService.addFileDataToDossier} with already filled transactionId and domain
              */
             addFileDataToDossier(fileName, fileData, callback){
@@ -150,15 +167,15 @@ class DSUService {
     getTransactionId(domain, callback) {
 
         let obtainTransaction = ()=>{
-            doPost(`/${domain}/begin`, (err, transactionId) => {
+            doPost(`/${domain}/begin`, '',(err, transactionId) => {
                 if (err) {
                     return callback(err);
                 }
                 const url = `/${domain}/setDLDomain/${transactionId}`;
                 doPost(url, domain, (err) => {
-                    if (err) {
+                    if (err)
                         return callback(err);
-                    }
+
                     return callback(undefined, transactionId);
                 });
             });
@@ -176,22 +193,11 @@ class DSUService {
         const url = `/${domain}/setKeySSI/${transactionId}`;
         doPost(url, keyssi, callback);
     }
-    //
-    // setGtinSSI(transactionId, dlDomain, gtin, batch, expiration, callback) {
-    //     if (typeof expiration === "function") {
-    //         callback = expiration;
-    //         expiration = undefined;
-    //     }
-    //
-    //     if (typeof batch === "function") {
-    //         callback = batch;
-    //         batch = undefined;
-    //     }
-    //
-    //     const body = {dlDomain, gtin, batch, expiration};
-    //     const url = `/${this.holderInfo.domain}/gtin/${transactionId}`;
-    //     doPost(url, JSON.stringify(body), callback);
-    // }
+
+    setCustomSSI(transactionId, domain, endpoint, data, callback){
+        const url = `/${domain}/${endpoint}/${transactionId}`;
+        doPost(url, JSON.stringify(data), callback);
+    }
 
     addFileDataToDossier(transactionId, domain, fileName, fileData, callback) {
         const url = `/${domain}/addFile/${transactionId}`;

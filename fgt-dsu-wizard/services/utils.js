@@ -34,21 +34,11 @@ function getPostHandlerFor(apiname){
 		}
 
 		const baseURL = getBaseURL();
-		url = `${baseURL}${url}#x-blockchain-domain-request`;
-		console.log($$.environmentType);
-		http.fetch(url, {
-			method: 'POST',
-			headers: options.headers,
-			body: data
-		}).then((response) => {
-			return response.text().then((data) => {
-				if (!response.ok) {
-					return callback(new Error(`Post to ${url} request failed.` + response.statusText));
-				}
-				callback(undefined, data);
-			})
-		}).catch(err => {
-			return callback(err);
+		url = `${baseURL}${url}#x-blockchain-domain-request`
+		http.doPost(url, data, options, (err, response) => {
+			if (err)
+				return callback(err);
+			callback(undefined, response);
 		});
 	}
 	return doPost;
