@@ -35,7 +35,7 @@ const gtinsToOrder = [
 function dummyCreateOrderSSI(data, domain){
     console.log("New ORDER_SSI in domain", domain);
     const keyssiSpace = require("opendsu").loadApi("keyssi");
-    return keyssiSpace.buildTemplateSeedSSI(domain, [data.orderId, data.requesterId]);
+    return keyssiSpace.buildTemplateArraySSI(domain, [data.orderId, data.requesterId]);
 }
 
 function createOrderLineDSU(gtin, quantity, requesterId, callback){
@@ -74,7 +74,7 @@ function createOrderDSU(callback){
     }
     let order = getDummyOrder();
 
-    let keyGen = require('../../fgt-dsu-wizard/commands/setOrderSSI').createOrderSSI;
+    let keyGen = dummyCreateOrderSSI; //require('../../fgt-dsu-wizard/commands/setOrderSSI').createOrderSSI;
     let keySSI = keyGen(order, domain);
     console.log(keySSI)
     console.log(keySSI.getIdentifier(true));
