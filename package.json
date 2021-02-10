@@ -21,7 +21,7 @@
     "switch-to-release": "npm run remove privatesky && npm run add privatesky http://github.com/privatesky/psk-release.git 0",
     "switch-to-dev": "npm run remove privatesky && npm run add privatesky http://github.com/privatesky/privatesky.git 0",
     "watch": "node ./bin/watcher/watcher.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run build && node ./privatesky/bin/scripts/testrunner.js --directory=./tests",
     "clean": "node ./bin/clean.js ./",
     "clean-build": "npm run clean && npm run build privatesky && npm run build-all",
     "freeze": "node ./node_modules/octopus/scripts/freeze dependencies install-mobile"

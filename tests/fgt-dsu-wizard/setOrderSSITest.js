@@ -33,6 +33,6 @@ assert.pass(testName, assert.callback('Launch API Hub', (cb) => {
             });
         });
     });
-}, 100000));
+}, 3000));
 
 

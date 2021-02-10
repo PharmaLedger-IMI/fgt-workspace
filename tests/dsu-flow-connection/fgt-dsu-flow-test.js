@@ -32,6 +32,15 @@ const gtinsToOrder = [
     {"5": 5}
 ]
 
+function fail(reason, err){
+    if (typeof reason === 'object'){
+        err = reason;
+        reason = "Unexpected error"
+    }
+
+    assert.forceFailTest(reason, err);
+}
+
 function dummyCreateOrderSSI(data, domain){
     console.log("New ORDER_SSI in domain", domain);
     const keyssiSpace = require("opendsu").loadApi("keyssi");
@@ -110,26 +119,26 @@ function createOrderDSU(callback){
     });
 }
 
-assert.pass(testName, assert.callback('Launch API Hub', (testFinished) => {
+assert.callback(testName, (testFinished) => {
     dc.createTestFolder(testName, (err, folder) => {
         tir.launchApiHubTestNode(10, folder, err => {
             if (err)
-                throw err;
+                fail("Could not launch Apihub", err);
             tir.addDomainsInBDNS(folder,  [domain], (err, bdns) => {    // not needed if you're not working on a custom domain
                 if (err)
-                    throw err;
+                    fail("Could not add domain", err);
 
                 console.log('Updated bdns', bdns);
 
                 createOrderDSU((err, result) => {
                    if (err)
-                       throw err;
-                   console.log(result);
+                       fail("could not create order", err);
+                   console.log("test finished: ", result);
                    testFinished();
                 });
             });
         });
     });
-}, 10000));    // you have 10 seconds for it to happen
+}, 5000);    // you have 5 seconds for it to happen
 
 

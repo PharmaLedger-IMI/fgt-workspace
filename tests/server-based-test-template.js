@@ -12,17 +12,26 @@ const tir = require("../privatesky/psknode/tests/util/tir");                // t
 const dc = require("double-check");
 const assert = dc.assert;
 
+function fail(reason, err){
+    if (typeof reason === 'object'){
+        err = reason;
+        reason = "Unexpected error"
+    }
+
+    assert.forceFailTest(reason, err);
+}
+
 let domain = 'test_domain';
 let testName = 'Test Template';
 
-assert.pass(testName, assert.callback('Launch API Hub', (testFinished) => {
+assert.callback('Launch API Hub', (testFinished) => {
     dc.createTestFolder(testName, (err, folder) => {
         tir.launchApiHubTestNode(10, folder, err => {
             if (err)
-                throw err;
+                fail("Could not launch Apihub", err);
             tir.addDomainsInBDNS(folder,  [domain], (err, bdns) => {    // not needed if you're not working on a custom domain
                 if (err)
-                    throw err;
+                    fail("could not add domain", err);
 
                 console.log('Updated bdns', bdns);
 
@@ -32,6 +41,6 @@ assert.pass(testName, assert.callback('Launch API Hub', (testFinished) => {
             });
         });
     });
-}, 100000));    // you have 10 seconds for it to happen
+}, 3000);    // you have 3 seconds for it to happen
 
 
