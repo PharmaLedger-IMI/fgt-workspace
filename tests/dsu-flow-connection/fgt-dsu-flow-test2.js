@@ -15,7 +15,6 @@ const assert = dc.assert;
 let domain = 'traceability';
 let testName = 'TraceabilityDSUFlowTest';
 
-
 const resolver = require('opendsu').loadApi('resolver');
 
 const model = require('../../fgt-dsu-wizard/model')
@@ -32,24 +31,34 @@ const gtinsToOrder = [
     {"5": 5}
 ]
 
-function dummyCreateOrderSSI(data, domain){
+function dummyCreateOrderSSI(data, domain, callback){
     console.log("New ORDER_SSI in domain", domain);
     const keyssiSpace = require("opendsu").loadApi("keyssi");
-    return keyssiSpace.buildTemplateSeedSSI(domain, [data.orderId, data.requesterId]);
+    return keyssiSpace.createSeedSSI(domain, callback);
+}
+
+function dummyCreateOrderLineSSI(data, domain, callback){
+    console.log("new OREDERLINE_SSI in domain", domain);
+    const keyssiSpace = require("opendsu").loadApi("keyssi");
+    return keyssiSpace.createSeedSSI(domain, callback);
 }
 
 function createOrderLineDSU(gtin, quantity, requesterId, callback){
-    let keyGen = dummyCreateOrderSSI;//require('../../fgt-dsu-wizard/commands/setOrderSSI').createOrderSSI;
-    let keySSI = keyGen({"gtin": gtin, "quantity": quantity, "requesterId": requesterId}, domain);
-    resolver.createDSU(keySSI, (err, dsu) => {
+    let keyGen = dummyCreateOrderLineSSI;//require('../../fgt-dsu-wizard/commands/setOrderSSI').createOrderSSI;
+    //let keySSI = keyGen({"gtin": gtin, "quantity": quantity, "requesterId": requesterId}, domain);
+    keyGen({"gtin": gtin, "quantity": quantity, "requesterId": requesterId}, domain, (err, keySSI) => {
         if (err)
             return callback(err);
-        let orderLine = new OrderLine(gtin, quantity, requesterId);
-        dsu.writeFile('/data', JSON.stringify(orderLine), (err, result) => {
-           if (err)
-               return callback(err);
-           let updatedKeySSI = dsu.getKeySSIAsString();
-           console.log(`OrderLine of gtin ${gtin} times ${quantity}`, result);
+        resolver.createDSU(keySSI, (err, dsu) => {
+            if (err)
+                return callback(err);
+            let orderLine = new OrderLine(gtin, quantity, requesterId);
+            dsu.writeFile('/data', JSON.stringify(orderLine), (err, result) => {
+                if (err)
+                    return callback(err);
+                let updatedKeySSI = dsu.getKeySSIAsString();
+                console.log(`OrderLine of gtin ${gtin} times ${quantity}`, result);
+            });
         });
     });
 }
@@ -58,7 +67,8 @@ function createOrderLinesFromItems(requesterId, items, callback){
     let orderLine = items.shift();
     if (!orderLine)
         return callback();
-    createOrderLineDSU(orderLine[0], orderLine[1], requesterId, (err, result) => {
+    let gtin = Object.keys(orderLine)[0];
+    createOrderLineDSU(gtin, orderLine[gtin], requesterId, (err, result) => {
        if (err)
            return callback(err);
        createOrderLinesFromItems(requesterId, items, callback);
@@ -74,38 +84,42 @@ function createOrderDSU(callback){
     }
     let order = getDummyOrder();
 
-    let keyGen = require('../../fgt-dsu-wizard/commands/setOrderSSI').createOrderSSI;
-    let keySSI = keyGen(order, domain);
-    console.log(keySSI)
-    console.log(keySSI.getIdentifier(true));
-
-    resolver.createDSU(keySSI, (err, dsu) => {
+    let keyGen = dummyCreateOrderSSI; //require('../../fgt-dsu-wizard/commands/setOrderSSI').createOrderSSI;
+    // let keySSI = keyGen(order, domain);
+    keyGen(order, domain, (err, keySSI) => {
         if (err)
             return callback(err);
+        console.log(keySSI)
+        console.log(keySSI.getIdentifier(true));
 
-        dsu.writeFile("/data", JSON.stringify(order), (err) => {
+        resolver.createDSU(keySSI, (err, dsu) => {
             if (err)
                 return callback(err);
 
-            dsu.getKeySSIAsString((err, strKeySSI) => {
+            dsu.writeFile("/data", JSON.stringify(order), (err) => {
                 if (err)
                     return callback(err);
 
-                resolver.loadDSU(strKeySSI, (err, updatedDsu) => {
+                dsu.getKeySSIAsString((err, strKeySSI) => {
                     if (err)
                         return callback(err);
-                    updatedDsu.getKeySSIAsString((err, updatedKeySSI) => {
+
+                    resolver.loadDSU(strKeySSI, (err, updatedDsu) => {
                         if (err)
                             return callback(err);
-                        callback(undefined, updatedKeySSI);
+                        updatedDsu.getKeySSIAsString((err, updatedKeySSI) => {
+                            if (err)
+                                return callback(err);
+                            callback(undefined, updatedKeySSI);
+                        });
                     });
                 });
+                // createOrderLinesFromItems(order.requesterId, order.items, (err, keySSI) => {
+                //     if (err)
+                //         return callback(err);
+                //    callback(undefined, keySSI);
+                // });
             });
-            // createOrderLinesFromItems(order.requesterId, order.items, (err, result) => {
-            //     if (err)
-            //         return callback(err);
-            //     callback(undefined, keySSI);
-            // });
         });
     });
 }
@@ -130,6 +144,6 @@ assert.pass(testName, assert.callback('Launch API Hub', (testFinished) => {
             });
         });
     });
-}, 10000));    // you have 10 seconds for it to happen
+}, 5000));    // you have 5 seconds for it to happen
 
 
