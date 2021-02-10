@@ -88,10 +88,10 @@ class DSUService {
                 initializer(self.bindToTransaction(domain, transactionId), err => {
                     if (err)
                         return callback(err);
-                    self.buildDossier(transactionId, domain, (err, result) => {
+                    self.buildDossier(transactionId, domain, (err, keySSI) => {
                         if (err)
                             return callback(err);
-                        callback(undefined, result);
+                        callback(undefined, keySSI);
                     });
                 });
             };
@@ -119,10 +119,10 @@ class DSUService {
            this.setKeySSI(transactionId, domain, keySSI, err =>{
                if (err)
                    return callback(err);
-               modifier(this.bindToTransaction(domain, transactionId), err => {
+               modifier(this.bindToTransaction(domain, transactionId), (err, keySSI) => {
                     if (err)
                         return callback(err);
-                    callback();
+                    callback(undefined, keySSI);
                });
            });
         });
