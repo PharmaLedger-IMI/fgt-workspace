@@ -49,7 +49,7 @@ assert.callback('create ORDER DSU', (cb) => {
                 if (err)
                     OutputError(err);
 
-
+                console.log("Order dsu created with keyssi", keySSI);
                 cb();
             });
         });
