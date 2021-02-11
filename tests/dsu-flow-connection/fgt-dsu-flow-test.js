@@ -91,11 +91,11 @@ function createOrderDSU(callback){
                     updatedDsu.getKeySSIAsString((err, updatedKeySSI) => {
                         if (err)
                             return callback(err);
-                        // createOrderLinesFromItems(order.requesterId, order.items, (err, result) => {
-                        //     if (err)
-                        //         return callback(err);
+                        createOrderLinesFromItems(order.requesterId, order.items, (err, result) => {
+                            if (err)
+                                return callback(err);
                             callback(undefined, updatedKeySSI);
-                        // });
+                        });
                     });
                 });
             });
