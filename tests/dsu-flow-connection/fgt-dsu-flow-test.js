@@ -52,7 +52,8 @@ function createOrderLinesFromItems(requesterId, items, callback){
     let orderLine = items.shift();
     if (!orderLine)
         return callback();
-    createOrderLineDSU(orderLine[0], orderLine[1], requesterId, (err, result) => {
+    let gtin = Object.keys(items)[0];
+    createOrderLineDSU(gtin, orderLine[gtin], requesterId, (err, result) => {
        if (err)
            return callback(err);
        createOrderLinesFromItems(requesterId, items, callback);
