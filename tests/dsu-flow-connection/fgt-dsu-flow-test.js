@@ -32,17 +32,8 @@ const gtinsToOrder = [
     {"5": 5}
 ]
 
-function fail(reason, err){
-    if (typeof reason === 'object'){
-        err = reason;
-        reason = "Unexpected error"
-    }
-
-    assert.forceFailTest(reason, err);
-}
-
 function createOrderLineDSU(gtin, quantity, requesterId, callback){
-    let keyGen = require('../../fgt-dsu-wizard/commands/setOrderSSI').createOrderSSI;
+    let keyGen = require('../../fgt-dsu-wizard/commands/setOrderLineSSI').createOrderLineSSI;
     let keySSI = keyGen({"gtin": gtin, "quantity": quantity, "requesterId": requesterId}, domain);
     resolver.createDSUForExistingSSI(keySSI, (err, dsu) => {
         if (err)
@@ -117,16 +108,16 @@ assert.callback(testName, (testFinished) => {
     dc.createTestFolder(testName, (err, folder) => {
         tir.launchApiHubTestNode(10, folder, err => {
             if (err)
-                fail("Could not launch Apihub", err);
+                throw err;
             tir.addDomainsInBDNS(folder,  [domain], (err, bdns) => {    // not needed if you're not working on a custom domain
                 if (err)
-                    fail("Could not add domain", err);
+                    throw err;
 
                 console.log('Updated bdns', bdns);
 
                 createOrderDSU((err, result) => {
                    if (err)
-                       fail("could not create order", err);
+                       throw err;
                    console.log("test finished: ", result);
                    testFinished();
                 });

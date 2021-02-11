@@ -13,15 +13,6 @@ const assert = dc.assert;
 const tir = require("../../privatesky/psknode/tests/util/tir");
 const resolver = require('opendsu').loadApi('resolver');
 
-function fail(reason, err){
-    if (typeof reason === 'object'){
-        err = reason;
-        reason = "Unexpected error"
-    }
-
-    assert.forceFailTest(reason, err);
-}
-
 const wizard = require('../../fgt-dsu-wizard');
 const dsuService = wizard.DSUService;
 
@@ -32,10 +23,10 @@ assert.callback(testName, (cb) => {
     dc.createTestFolder(testName, (err, folder) => {
         tir.launchApiHubTestNode(10, folder, err => {
             if (err)
-                fail("Could not launch Apihub", err);
+                throw err;
             tir.addDomainsInBDNS(folder,  [domain], (err, bdns) => {
                 if (err)
-                    fail("Could not add domain", err);
+                    throw err;
 
                 console.log('Updated bdns', bdns);
 
@@ -60,24 +51,20 @@ assert.callback(testName, (cb) => {
 
                 dsuService.create(domain, endpointData, initializer, (err, keySSI) => {
                     if (err)
-                        fail("could not create dsu", err);
+                        throw err;
                     console.log("Order dsu created with keyssi", keySSI);
 
                     resolver.loadDSU(keySSI, (err, dsu) => {
                         if (err)
-                            fail("could not re-load dsu", err);
+                            throw err;
                         assert.notNull(dsu, "loaded DSU can't be null");
 
                         dsu.readFile('/test', (err, data) => {
                             if (err)
-                                fail("could not re-read data", err);
-                            try{
-                                assert.test("data equality test", () => {
-                                    return JSON.stringify(testData) === data;
-                                });
-                            } catch (e){
-                                fail("could not parse data", e);
-                            }
+                                throw err;
+                            assert.test("data equality test", () => {
+                                return JSON.stringify(testData) === data;
+                            });
 
                             cb();
                         });

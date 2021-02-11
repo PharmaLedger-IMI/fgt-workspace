@@ -18,24 +18,14 @@ const dsuService = wizard.DSUService;
 let domain = 'traceability';
 let testName = 'setOrderSSITest'
 
-function fail(reason, err){
-    if (typeof reason === 'object'){
-        err = reason;
-        reason = "Unexpected error"
-    }
-
-    assert.forceFailTest(reason, err);
-}
-
 assert.callback('Launch API Hub', (cb) => {
     dc.createTestFolder(testName, (err, folder) => {
         tir.launchApiHubTestNode(10, folder, err => {
             if (err)
-                fail(err);
+                throw err;
             tir.addDomainsInBDNS(folder,  [domain], (err, bdns) => {
                 if (err)
-                    fail(err);
-
+                    throw err;
                 console.log('Updated bdns', bdns);
 
                 console.log("Done");
