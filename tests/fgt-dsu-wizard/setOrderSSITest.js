@@ -18,14 +18,23 @@ const dsuService = wizard.DSUService;
 let domain = 'traceability';
 let testName = 'setOrderSSITest'
 
-assert.pass(testName, assert.callback('Launch API Hub', (cb) => {
+function fail(reason, err){
+    if (typeof reason === 'object'){
+        err = reason;
+        reason = "Unexpected error"
+    }
+
+    assert.forceFailTest(reason, err);
+}
+
+assert.callback('Launch API Hub', (cb) => {
     dc.createTestFolder(testName, (err, folder) => {
         tir.launchApiHubTestNode(10, folder, err => {
             if (err)
-                throw err;
+                fail(err);
             tir.addDomainsInBDNS(folder,  [domain], (err, bdns) => {
                 if (err)
-                    throw err;
+                    fail(err);
 
                 console.log('Updated bdns', bdns);
 
@@ -34,6 +43,6 @@ assert.pass(testName, assert.callback('Launch API Hub', (cb) => {
             });
         });
     });
-}, 3000));
+}, 3000);
 
 

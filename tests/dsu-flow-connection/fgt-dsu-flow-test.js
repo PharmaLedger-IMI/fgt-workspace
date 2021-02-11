@@ -41,16 +41,10 @@ function fail(reason, err){
     assert.forceFailTest(reason, err);
 }
 
-function dummyCreateOrderSSI(data, domain){
-    console.log("New ORDER_SSI in domain", domain);
-    const keyssiSpace = require("opendsu").loadApi("keyssi");
-    return keyssiSpace.buildTemplateArraySSI(domain, [data.orderId, data.requesterId]);
-}
-
 function createOrderLineDSU(gtin, quantity, requesterId, callback){
-    let keyGen = dummyCreateOrderSSI;//require('../../fgt-dsu-wizard/commands/setOrderSSI').createOrderSSI;
+    let keyGen = require('../../fgt-dsu-wizard/commands/setOrderSSI').createOrderSSI;
     let keySSI = keyGen({"gtin": gtin, "quantity": quantity, "requesterId": requesterId}, domain);
-    resolver.createDSU(keySSI, (err, dsu) => {
+    resolver.createDSUForExistingSSI(keySSI, (err, dsu) => {
         if (err)
             return callback(err);
         let orderLine = new OrderLine(gtin, quantity, requesterId);
@@ -83,7 +77,7 @@ function createOrderDSU(callback){
     }
     let order = getDummyOrder();
 
-    let keyGen = dummyCreateOrderSSI; //require('../../fgt-dsu-wizard/commands/setOrderSSI').createOrderSSI;
+    let keyGen = require('../../fgt-dsu-wizard/commands/setOrderSSI').createOrderSSI;
     let keySSI = keyGen(order, domain);
     console.log(keySSI)
     console.log(keySSI.getIdentifier(true));
@@ -106,15 +100,15 @@ function createOrderDSU(callback){
                     updatedDsu.getKeySSIAsString((err, updatedKeySSI) => {
                         if (err)
                             return callback(err);
-                        callback(undefined, updatedKeySSI);
+                        // createOrderLinesFromItems(order.requesterId, order.items, (err, result) => {
+                        //     if (err)
+                        //         return callback(err);
+                            callback(undefined, updatedKeySSI);
+                        // });
                     });
                 });
             });
-            // createOrderLinesFromItems(order.requesterId, order.items, (err, result) => {
-            //     if (err)
-            //         return callback(err);
-            //     callback(undefined, keySSI);
-            // });
+
         });
     });
 }
