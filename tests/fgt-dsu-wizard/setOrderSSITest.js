@@ -29,7 +29,9 @@ assert.callback('Launch API Hub', (cb) => {
                     throw err;
                 console.log('Updated bdns', bdns);
                 let aKeySSI = setOrderSSI.createOrderSSI({"orderId": "ORDER001", "requesterId": "TPPH0124"}, domain);
-
+                assert.notNull(aKeySSI);
+                assert.true(aKeySSI instanceof Object);
+                assert.true(typeof aKeySSI.getIdentifier(true) === 'string');
                 console.log("Done "+aKeySSI.getIdentifier(true));
                 cb();
             });
