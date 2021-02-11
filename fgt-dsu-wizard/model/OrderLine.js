@@ -1,7 +1,9 @@
 class OrderLine{
     gtin;
     quantity;
-    requesterId
+    requesterId;
+    senderId;
+    status;
 
     constructor(gtin, quantity, requesterId){
         this.gtin = gtin;

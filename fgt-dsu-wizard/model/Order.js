@@ -4,7 +4,7 @@ class Order{
     senderId;
     shipToAddress;
     status;
-    items;
+    orderLines;
 
     constructor(orderId, requesterId, senderId, shipToAddress) {
         this.orderId = orderId;
@@ -12,7 +12,7 @@ class Order{
         this.senderId = senderId;
         this.shipToAddress = shipToAddress;
         this.status = "created";
-        this.items = [];
+        this.orderLines = [];
     }
 }
 

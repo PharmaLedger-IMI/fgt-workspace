@@ -34,7 +34,15 @@ const gtinsToOrder = [
     {"5": 5}
 ]
 
-function createOrderLineDSU(gtin, quantity, requesterId, callback){
+/**
+ * Creates
+ * @param gtin
+ * @param quantity
+ * @param requesterId
+ * @param orderId
+ * @param callback
+ */
+function createOrderLineDSU(gtin, quantity, requesterId, orderId, callback){
     let keyGen = require('../../fgt-dsu-wizard/commands/setOrderLineSSI').createOrderLineSSI;
     let keySSI = keyGen({"gtin": gtin, "quantity": quantity, "requesterId": requesterId}, domain);
     resolver.createDSUForExistingSSI(keySSI, (err, dsu) => {
@@ -44,41 +52,46 @@ function createOrderLineDSU(gtin, quantity, requesterId, callback){
         dsu.writeFile('/data', JSON.stringify(orderLine), (err, result) => {
            if (err)
                return callback(err);
-           dsu.getKeySSIAsString((err, updatedKeySSI) => {
-               if (err)
-                   return callback(err);
-               console.log(`OrderLine of gtin ${gtin} times ${quantity}`, result);
-               callback(undefined, updatedKeySSI);
-           });
+           console.log(`OrderLine of gtin ${gtin} times ${quantity}`, result);
+           callback(undefined, keySSI);
         });
     });
 }
 
-function createOrderLinesFromItems(requesterId, items, callback){
-    let orderLine = items.shift();
-    if (!orderLine)
-        return callback();
-    let gtin = Object.keys(items)[0];
-    createOrderLineDSU(gtin, orderLine[gtin], requesterId, (err, result) => {
-       if (err)
-           return callback(err);
-       createOrderLinesFromItems(requesterId, items, callback);
-    });
+/**
+ * Creates, based on the item list in the provided order, an OrderLine DSU for each item
+ * @param {Order} order the order object
+ * @param {function} callback (err, list of created dsu's keyssi's)
+ */
+function createOrderLinesFromItems(order, callback){
+    let orderLines = [];
+
+    let iterator = function(order, items, callback){
+        let orderLine = items.shift();
+        if (!orderLine)
+            return callback(undefined, orderLines);
+        let gtin = Object.keys(orderLine)[0];
+        createOrderLineDSU(gtin, orderLine[gtin], order.requesterId, order.orderId,(err, keySSI) => {
+            if (err)
+                return callback(err);
+            orderLines.push(keySSI);
+            iterator(order, items, callback);
+        });
+    }
+    iterator(order, order.orderLines, callback);
 }
 
 function createOrderDSU(callback){
 
     function getDummyOrder(){
         let order = new Order(refOrderId++, refRequesterId, refSenderId, 'address')
-        order.items = gtinsToOrder;
+        order.orderLines = gtinsToOrder;
         return order;
     }
     let order = getDummyOrder();
 
     let keyGen = require('../../fgt-dsu-wizard/commands/setOrderSSI').createOrderSSI;
     let keySSI = keyGen(order, domain);
-    console.log(keySSI)
-    console.log(keySSI.getIdentifier(true));
 
     resolver.createDSUForExistingSSI(keySSI, (err, dsu) => {
         if (err)
@@ -88,11 +101,16 @@ function createOrderDSU(callback){
             if (err)
                 return callback(err);
 
-            createOrderLinesFromItems(order.requesterId, order.items, (err, result) => {
+            createOrderLinesFromItems(order, (err, orderLines) => {
                 if (err)
                     return callback(err);
-
-                callback(undefined, keySSI);
+                console.log(`Created the following OrderLines: ${orderLines}`)
+                dsu.writeFile("/orderLines", JSON.stringify(orderLines), (err) => {
+                    if (err)
+                        return callback(err);
+                    console.log("OrderLine data saved to order DSU");
+                    callback(undefined, keySSI);
+                });
             });
         });
     });
