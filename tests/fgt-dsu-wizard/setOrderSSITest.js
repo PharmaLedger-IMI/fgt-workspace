@@ -14,6 +14,7 @@ const tir = require("../../privatesky/psknode/tests/util/tir");
 
 const wizard = require('../../fgt-dsu-wizard');
 const dsuService = wizard.DSUService;
+const setOrderSSI = require('../../fgt-dsu-wizard/commands/setOrderSSI.js');
 
 let domain = 'traceability';
 let testName = 'setOrderSSITest'
@@ -27,8 +28,9 @@ assert.callback('Launch API Hub', (cb) => {
                 if (err)
                     throw err;
                 console.log('Updated bdns', bdns);
+                let aKeySSI = setOrderSSI.createOrderSSI({"orderId": "ORDER001", "requesterId": "TPPH0124"}, domain);
 
-                console.log("Done");
+                console.log("Done "+aKeySSI.getIdentifier(true));
                 cb();
             });
         });
