@@ -44,7 +44,7 @@ const gtinsToOrder = [
  */
 function createOrderLineDSU(gtin, quantity, requesterId, orderId, callback){
     let keyGen = require('../../fgt-dsu-wizard/commands/setOrderLineSSI').createOrderLineSSI;
-    let keySSI = keyGen({"gtin": gtin, "quantity": quantity, "requesterId": requesterId}, domain);
+    let keySSI = keyGen({"gtin": gtin, "orderId": orderId, "requesterId": requesterId}, domain);
     resolver.createDSUForExistingSSI(keySSI, (err, dsu) => {
         if (err)
             return callback(err);
