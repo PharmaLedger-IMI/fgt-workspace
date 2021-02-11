@@ -88,7 +88,7 @@ function createOrderDSU(callback){
     console.log(keySSI)
     console.log(keySSI.getIdentifier(true));
 
-    resolver.createDSU(keySSI, (err, dsu) => {
+    resolver.createDSUForExistingSSI(keySSI, (err, dsu) => {
         if (err)
             return callback(err);
 
