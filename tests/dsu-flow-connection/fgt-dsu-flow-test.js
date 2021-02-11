@@ -17,6 +17,8 @@ let testName = 'TraceabilityDSUFlowTest';
 
 
 const resolver = require('opendsu').loadApi('resolver');
+const keyssispace = require('opendsu').loadApi('keyssi');
+
 
 const model = require('../../fgt-dsu-wizard/model')
 const Order = model.Order;
@@ -89,7 +91,7 @@ function createOrderDSU(callback){
             dsu.getKeySSIAsString((err, strKeySSI) => {
                 if (err)
                     return callback(err);
-
+                console.log("After write "+keyssispace.parse(strKeySSI).getIdentifier(true));
                 resolver.loadDSU(strKeySSI, (err, updatedDsu) => {
                     if (err)
                         return callback(err);
