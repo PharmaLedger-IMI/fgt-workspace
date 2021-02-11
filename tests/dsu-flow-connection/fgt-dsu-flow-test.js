@@ -46,7 +46,7 @@ function createOrderLineDSU(gtin, quantity, requesterId, callback){
                if (err)
                    return callback(err);
                console.log(`OrderLine of gtin ${gtin} times ${quantity}`, result);
-               callback(updatedKeySSI);
+               callback(undefined, updatedKeySSI);
            });
         });
     });
