@@ -30,6 +30,7 @@ assert.pass(testName, assert.callback('Launch API Hub', (cb) => {
                 console.log('Updated bdns', bdns);
 
                 console.log("Done");
+                cb();
             });
         });
     });
