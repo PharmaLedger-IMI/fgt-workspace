@@ -88,25 +88,12 @@ function createOrderDSU(callback){
             if (err)
                 return callback(err);
 
-            dsu.getKeySSIAsString((err, strKeySSI) => {
+            createOrderLinesFromItems(order.requesterId, order.items, (err, result) => {
                 if (err)
                     return callback(err);
-                console.log("After write "+keyssispace.parse(strKeySSI).getIdentifier(true));
-                resolver.loadDSU(strKeySSI, (err, updatedDsu) => {
-                    if (err)
-                        return callback(err);
-                    updatedDsu.getKeySSIAsString((err, updatedKeySSI) => {
-                        if (err)
-                            return callback(err);
-                        createOrderLinesFromItems(order.requesterId, order.items, (err, result) => {
-                            if (err)
-                                return callback(err);
-                            callback(undefined, updatedKeySSI);
-                        });
-                    });
-                });
-            });
 
+                callback(undefined, keySSI);
+            });
         });
     });
 }
