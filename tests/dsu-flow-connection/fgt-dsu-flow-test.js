@@ -42,8 +42,12 @@ function createOrderLineDSU(gtin, quantity, requesterId, callback){
         dsu.writeFile('/data', JSON.stringify(orderLine), (err, result) => {
            if (err)
                return callback(err);
-           let updatedKeySSI = dsu.getKeySSIAsString();
-           console.log(`OrderLine of gtin ${gtin} times ${quantity}`, result);
+           dsu.getKeySSIAsString((err, updatedKeySSI) => {
+               if (err)
+                   return callback(err);
+               console.log(`OrderLine of gtin ${gtin} times ${quantity}`, result);
+               callback(updatedKeySSI);
+           });
         });
     });
 }
