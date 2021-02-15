@@ -17,8 +17,6 @@ let testName = 'TraceabilityDSUFlowTest';
 
 
 const resolver = require('opendsu').loadApi('resolver');
-const keyssispace = require('opendsu').loadApi('keyssi');
-
 
 const model = require('../../fgt-dsu-wizard/model')
 const Order = model.Order;
@@ -33,6 +31,12 @@ const gtinsToOrder = [
     {"2": 300},
     {"5": 5}
 ]
+
+function getDummyOrder(){
+    let order = new Order(refOrderId, refRequesterId, refSenderId, 'address')
+    order.orderLines = JSON.parse(JSON.stringify(gtinsToOrder));
+    return order;
+}
 
 /**
  * Creates
@@ -83,11 +87,6 @@ function createOrderLinesFromItems(order, callback){
 
 function createOrderDSU(callback){
 
-    function getDummyOrder(){
-        let order = new Order(refOrderId++, refRequesterId, refSenderId, 'address')
-        order.orderLines = gtinsToOrder;
-        return order;
-    }
     let order = getDummyOrder();
 
     let keyGen = require('../../fgt-dsu-wizard/commands/setOrderSSI').createOrderSSI;
@@ -105,7 +104,7 @@ function createOrderDSU(callback){
                 if (err)
                     return callback(err);
                 console.log(`Created the following OrderLines: ${orderLines}`)
-                dsu.writeFile("/orderLines", JSON.stringify(orderLines), (err) => {
+                dsu.writeFile("/orderLines", JSON.stringify(orderLines.map(o => o.getIdentifier())), (err) => {
                     if (err)
                         return callback(err);
                     console.log("OrderLine data saved to order DSU");
@@ -113,6 +112,76 @@ function createOrderDSU(callback){
                 });
             });
         });
+    });
+}
+
+/**
+ *
+ * @param {function} keySSI
+ * @param {function} callback
+ */
+function validateOrder(keySSI, callback){
+    console.log("Validating dsu...");
+    let newlyGenKeySSI = require('../../fgt-dsu-wizard/commands/setOrderSSI').createOrderSSI(getDummyOrder(), "traceability");
+    assert.equal(keySSI.getIdentifier(true), newlyGenKeySSI.getIdentifier(true), "Keys do not match")
+    console.log("OK - Keys match")
+
+    let order = getDummyOrder();
+
+    resolver.loadDSU(keySSI, (err, dsu) => {
+        if (err)
+            return callback(err);
+        assert.notNull(dsu, "DSU cannot be null");
+        dsu.readFile("/data", (err, data) => {
+            if (err)
+                return callback(err);
+            if (!data)
+                return callback("no data found");
+
+            try {
+                assert.equal(JSON.stringify(order), data.toString(), "data does not match");
+                console.log("OK - data matches");
+            } catch (e){
+                return callback(e);
+            }
+
+            dsu.readFile("/orderLines", (err, orderLines) => {
+                if (err)
+                    return callback(err);
+                assert.notNull(orderLines);
+                orderLines = JSON.parse(orderLines);
+                validateOrderLines(order.orderLines, orderLines, callback);
+            });
+        });
+    });
+}
+
+function validateOrderLines(orderLines, keySSIs, callback){
+    let orderLine = orderLines.shift();
+    let keySSI = keySSIs.shift();
+
+    if (!orderLine || !keySSI)
+        return callback();
+
+    resolver.loadDSU(keySSI, (err, dsu) => {
+       if (err)
+           return callback(err);
+       console.log(`OK - orderline ${keySSI} loaded`);
+       dsu.readFile("/data", (err, data) => {
+           if (err)
+               return callback(err);
+           try {
+               let dataObj = JSON.parse(data);
+               let gtin = Object.keys(orderLine)[0];
+               assert.equal(gtin, dataObj.gtin, "gtins do not match");
+               assert.equal(orderLine[gtin], dataObj.quantity, "quantities do not match");
+
+               console.log(`OK - Orderline data matches ${data}`);
+               validateOrderLines(orderLines, keySSIs, callback);
+           } catch (e){
+               return callback(e);
+           }
+       })
     });
 }
 
@@ -127,11 +196,16 @@ assert.callback(testName, (testFinished) => {
 
                 console.log('Updated bdns', bdns);
 
-                createOrderDSU((err, result) => {
+                createOrderDSU((err, keySSI) => {
                    if (err)
                        throw err;
-                   console.log("test finished: ", result);
-                   testFinished();
+                   console.log("Order DSU created: ", keySSI);
+                   validateOrder(keySSI, (err, result) => {
+                       if (err)
+                           throw err;
+
+                       testFinished();
+                   });
                 });
             });
         });
