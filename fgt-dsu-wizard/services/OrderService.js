@@ -1,4 +1,4 @@
-const DSUService = require('./DSUService');
+const wizard = require('../../fgt-dsu-wizard');
 const strategies = require('./strategy');
 const resolver = require('opendsu').loadApi('resolver');
 
@@ -52,7 +52,7 @@ function OrderService(strategy){
     }
 
     let createAuthorized = function(order, callback){
-        let DSUService = new DSUService();
+        const DSUService = wizard.DSUService;
         DSUService.create(domain, endpoint, (builder, cb) => {
             builder.addFileDataToDossier("/data", JSON.stringify(order), (err)=> {
                 if (err)

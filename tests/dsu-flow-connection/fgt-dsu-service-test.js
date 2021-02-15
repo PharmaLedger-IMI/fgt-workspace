@@ -31,8 +31,8 @@ function getOrder(){
 }
 
 function createOrderDSU(strategy, order, callback){
-    const dsuService = new (require('../../fgt-dsu-wizard/services/OrderService'))(strategy);
-    dsuService.create(order, callback);
+    const orderService = new (require('../../fgt-dsu-wizard/services/OrderService'))(strategy);
+    orderService.create(order, callback);
 }
 
 /**
@@ -92,7 +92,6 @@ function validateOrderLines(orderLines, keySSIs, callback){
                 return callback(err);
             try {
                 let dataObj = JSON.parse(data);
-                let gtin = Object.keys(orderLine)[0];
                 assert.equal(orderLine.gtin, dataObj.gtin, "gtins do not match");
                 assert.equal(orderLine.quantity, dataObj.quantity, "quantities do not match");
 
@@ -116,7 +115,7 @@ assert.callback('Launch API Hub', (testFinished) => {
 
                 console.log('Updated bdns', bdns);
 
-                createOrderDSU(strategies.SIMPLE, getOrder(), (err, keySSI) => {
+                createOrderDSU(strategies.AUTHORIZED, getOrder(), (err, keySSI) => {
                     if (err)
                         throw err;
                     validateOrder(keySSI, (err) => {
