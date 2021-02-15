@@ -3,12 +3,12 @@ class OrderLine{
     quantity;
     requesterId;
     senderId;
-    status;
 
-    constructor(gtin, quantity, requesterId){
+    constructor(gtin, quantity, requesterId, senderId){
         this.gtin = gtin;
         this.quantity = quantity;
         this.requesterId = requesterId;
+        this.senderId = senderId;
     }
 }
 

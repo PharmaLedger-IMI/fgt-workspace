@@ -6,13 +6,13 @@ class Order{
     status;
     orderLines;
 
-    constructor(orderId, requesterId, senderId, shipToAddress) {
+    constructor(orderId, requesterId, senderId, shipToAddress, status, orderLines) {
         this.orderId = orderId;
         this.requesterId = requesterId;
         this.senderId = senderId;
         this.shipToAddress = shipToAddress;
-        this.status = "created";
-        this.orderLines = [];
+        this.status = status || "created";
+        this.orderLines = orderLines || [];
     }
 }
 
