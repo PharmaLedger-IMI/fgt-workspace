@@ -41,9 +41,12 @@ function createOrderDSU(strategy, order, callback){
  * @param {function} callback
  */
 function validateOrder(keySSI, callback){
+    if (typeof keySSI !== 'string')
+        keySSI = keySSI.getIdentifier();
+
     console.log("Validating dsu...");
     let newlyGenKeySSI = require('../../fgt-dsu-wizard/commands/setOrderSSI').createOrderSSI(getOrder(), "traceability");
-    assert.equal(keySSI.getIdentifier(true), newlyGenKeySSI.getIdentifier(true), "Keys do not match")
+    assert.equal(keySSI, newlyGenKeySSI.getIdentifier(), "Keys do not match")
     console.log("OK - Keys match")
 
     let order = getOrder();
@@ -112,15 +115,14 @@ assert.callback('Launch API Hub', (testFinished) => {
 
                 console.log('Updated bdns', bdns);
 
-                createOrderDSU(strategies.SIMPLE, getOrder(), (err, keySSI) => {
+                createOrderDSU(strategies.AUTHORIZED, getOrder(), (err, keySSI) => {
                     if (err)
                         throw err;
                     validateOrder(keySSI, (err) => {
                         if (err)
                             throw err;
-
+                        testFinished();
                     });
-                    testFinished();
                 });
             });
         });

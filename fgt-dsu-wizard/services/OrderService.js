@@ -51,21 +51,31 @@ function OrderService(strategy){
         });
     }
 
+    let getEndpointData = function (order){
+        return {
+            endpoint: endpoint,
+            data:{
+                orderId: order.orderId,
+                requesterId: order.requesterId
+            }
+        }
+    }
+
     let createAuthorized = function(order, callback){
         const DSUService = wizard.DSUService;
-        DSUService.create(domain, endpoint, (builder, cb) => {
+        DSUService.create(domain, getEndpointData(order), (builder, cb) => {
             builder.addFileDataToDossier("/data", JSON.stringify(order), (err)=> {
                 if (err)
                     return cb(err);
-                createOrderLines(order, (err, orderLines) => {
-                    if (err)
-                        return cb(err);
-                    builder.addFileDataToDossier('/orderlines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
-                        if (err)
-                            return callback(err);
+                // createOrderLines(order, (err, orderLines) => {
+                //     if (err)
+                //         return cb(err);
+                //     builder.addFileDataToDossier('/orderlines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
+                //         if (err)
+                //             return callback(err);
                         cb();
-                    });
-                })
+                //     });
+                // });
             });
         }, callback);
     }
