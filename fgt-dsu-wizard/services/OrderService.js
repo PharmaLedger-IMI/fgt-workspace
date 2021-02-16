@@ -54,7 +54,7 @@ function OrderService(strategy){
     let getEndpointData = function (order){
         return {
             endpoint: endpoint,
-            data:{
+            data: {
                 orderId: order.orderId,
                 requesterId: order.requesterId
             }
