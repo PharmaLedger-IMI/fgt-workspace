@@ -90,7 +90,8 @@ function OrderService(strategy){
                 iterator(order, items, callback);
             });
         }
-        iterator(order, order.orderLines, callback);
+        // the slice() clones the array, so that the shitf() does not destroy it.
+        iterator(order, order.orderLines.slice(), callback);
     }
 }
 
