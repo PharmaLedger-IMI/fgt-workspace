@@ -71,37 +71,46 @@ class DSUService {
      * @param {function} initializer: a method with arguments (dsuBuilder, callback)
      * <ul><li>the dsuBuilder provides the api to all operations on the DSU</li></ul>
      * @param {function} callback: the callback function
+     * @param {string} transactionId: (optional) when defined, the same transaction will be used
      * @return error, keySSI
      */
-    create(domain, keySSIOrEndpoint, initializer, callback){
+    create(domain, keySSIOrEndpoint, initializer, callback, transactionId){
         let self = this;
-        let simpleKeySSI = typeof keySSIOrEndpoint === 'string';
 
-        self.getTransactionId(domain, (err, transactionId) => {
+        let afterKeyCb = function (err) {
             if (err)
                 return callback(err);
 
-            let afterKeyCb = function(err){
+            initializer(self.bindToTransaction(domain, transactionId), err => {
                 if (err)
                     return callback(err);
-
-                initializer(self.bindToTransaction(domain, transactionId), err => {
+                self.buildDossier(transactionId, domain, (err, keySSI) => {
                     if (err)
                         return callback(err);
-                    self.buildDossier(transactionId, domain, (err, keySSI) => {
-                        if (err)
-                            return callback(err);
-                        callback(undefined, keySSI);
-                    });
+                    callback(undefined, keySSI);
                 });
-            };
+            });
+        };
 
-            if (simpleKeySSI){
-                self.setKeySSI(transactionId, domain, keySSIOrEndpoint, afterKeyCb);
-            } else {
-                self.setCustomSSI(transactionId, domain, keySSIOrEndpoint.endpoint, keySSIOrEndpoint.data, afterKeyCb);
-            }
-        });
+        if (!transactionId) {
+            self.getTransactionId(domain, (err, tId) => {
+                if (err)
+                    return callback(err);
+                transactionId = tId;
+                self._createDSU(domain, transactionId, keySSIOrEndpoint, afterKeyCb);
+            });
+        } else {
+            self._createDSU(domain, transactionId, keySSIOrEndpoint, afterKeyCb);
+        }
+    }
+
+    _createDSU = function(domain, transactionId, keySSIOrEndpoint, callback){
+        let self = this;
+        if (typeof keySSIOrEndpoint === 'string'){
+            self.setKeySSI(transactionId, domain, keySSIOrEndpoint, callback);
+        } else {
+            self.setCustomSSI(transactionId, domain, keySSIOrEndpoint.endpoint, keySSIOrEndpoint.data, callback);
+        }
     }
 
     /**
@@ -159,6 +168,10 @@ class DSUService {
             mount(path, seed, callback){
                 self.mount(transactionId, domain, path, seed, callback);
             };
+
+            create(keySSIOrEndpoint, initializer, callback){
+                self.create(domain, transactionId, keySSIOrEndpoint, initializer, callback);
+            }
         }
     }
 

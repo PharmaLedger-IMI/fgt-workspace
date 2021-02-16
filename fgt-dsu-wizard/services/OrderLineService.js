@@ -15,17 +15,24 @@ function OrderLineService(strategy){
 
     /**
      * Creates an order DSU
+     * @param {string} orderId
      * @param {OrderLine} orderLine
      * @param {function} callback
      * @return {string} keySSI
      */
-    this.create = function(orderLine, callback){
+    this.create = function(orderId, orderLine, callback){
 
         let data = typeof orderLine == 'object' ? JSON.stringify(orderLine) : orderLine;
 
+        let keyGenData = {
+            gtin: orderLine.gtin,
+            requesterId: orderLine.requesterId,
+            orderId: orderId
+        }
+
         if (isSimple){
             let keyGenFunction = require('../commands/setOrderLineSSI').createOrderLineSSI;
-            let keySSI = keyGenFunction(orderLine, domain);
+            let keySSI = keyGenFunction(keyGenData, domain);
             resolver.createDSUForExistingSSI(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);

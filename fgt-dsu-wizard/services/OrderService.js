@@ -83,7 +83,7 @@ function OrderService(strategy){
             let orderLine = items.shift();
             if (!orderLine)
                 return callback(undefined, orderLines);
-            orderLineService.create(orderLine, (err, keySSI) => {
+            orderLineService.create(order.orderId, orderLine, (err, keySSI) => {
                 if (err)
                     return callback(err);
                 orderLines.push(keySSI);
