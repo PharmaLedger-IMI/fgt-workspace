@@ -61,7 +61,7 @@
         },
         {
             "name": "apihub-root/fgt-mah-wallet/loader",
-            "src": "https://github.com/PrivateSky/web-dossier-loader.git",
+            "src": "https://github.com/PrivateSky/trust-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
@@ -80,7 +80,7 @@
         },
         {
             "name": "apihub-root/fgt-pharmacy-wallet/loader",
-            "src": "https://github.com/PrivateSky/web-dossier-loader.git",
+            "src": "https://github.com/PrivateSky/trust-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
@@ -99,7 +99,7 @@
         },
         {
             "name": "apihub-root/fgt-wholesaler-wallet/loader",
-            "src": "https://github.com/PrivateSky/web-dossier-loader.git",
+            "src": "https://github.com/PrivateSky/trust-loader.git",
             "actions": [
                 {
                     "type": "smartClone",

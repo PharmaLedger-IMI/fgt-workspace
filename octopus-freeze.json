@@ -29,7 +29,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "7072790cf995b0ed565d0b6cff01ad3392a18fd4"
+                    "commit": "af26517102dbe5b0e15c6be5be001a0d6ffda787"
                 },
                 {
                     "type": "execute",
@@ -64,7 +64,7 @@
         },
         {
             "name": "apihub-root/fgt-mah-wallet/loader",
-            "src": "https://github.com/PrivateSky/web-dossier-loader.git",
+            "src": "https://github.com/PrivateSky/trust-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
@@ -84,7 +84,7 @@
         },
         {
             "name": "apihub-root/fgt-pharmacy-wallet/loader",
-            "src": "https://github.com/PrivateSky/web-dossier-loader.git",
+            "src": "https://github.com/PrivateSky/trust-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
@@ -104,7 +104,7 @@
         },
         {
             "name": "apihub-root/fgt-wholesaler-wallet/loader",
-            "src": "https://github.com/PrivateSky/web-dossier-loader.git",
+            "src": "https://github.com/PrivateSky/trust-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
