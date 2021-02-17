@@ -63,6 +63,7 @@ assert.callback(testName, (cb) => {
                             if (err)
                                 throw err;
                             assert.equal(JSON.stringify(testData), JSON.stringify(JSON.parse(data.toString())), "data equality 2");
+                            assert.equal(JSON.stringify(testData), data.toString(), "data equality 3");
                             cb();
                         });
                     });
