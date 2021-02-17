@@ -75,15 +75,8 @@ class DSUService {
 
     /**
      * This function is called by DSUService class to initialize/update DSU Structure.
-     * @class DSUService~DsuBuilder
-     * @param {DSUService} dsuBuilder
-     * @param {DSUService~callback} callback
-     */
-
-    /**
-     * This function is called by DSUService class to initialize/update DSU Structure.
      * @callback DSUService~modifier
-     * @param {DSUService~DsuBuilder} dsuBuilder
+     * @param {DSUBuilder} dsuBuilder
      * @param {DSUService~callback} callback
      */
 
@@ -151,9 +144,18 @@ class DSUService {
         });
     }
 
+    /**
+     * Binds the DSU<service to the transaction and outputs a DSUBuilder
+     * @param {string} domain
+     * @param {string} transactionId
+     * @returns {DSUBuilder} the dsu builder
+     */
     bindToTransaction(domain, transactionId){
         let self = this;
-        return new class {
+        /**
+         * Wrapper class around DSUService with binded transactionId and domain
+         */
+        return new class DSUBuilder {
             /**
              * @see {@link DSUService.addFileDataToDossier} with already filled transactionId and domain
              */
@@ -166,10 +168,6 @@ class DSUService {
             mount(path, seed, callback){
                 self.mount(transactionId, domain, path, seed, callback);
             };
-
-            create(keySSIOrEndpoint, initializer, callback){
-                self.create(domain, transactionId, keySSIOrEndpoint, initializer, callback);
-            }
         }
     }
 
