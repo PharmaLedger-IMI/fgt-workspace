@@ -67,15 +67,15 @@ function OrderService(strategy){
             builder.addFileDataToDossier("/data", JSON.stringify(order), (err)=> {
                 if (err)
                     return cb(err);
-                // createOrderLines(order, (err, orderLines) => {
-                //     if (err)
-                //         return cb(err);
-                //     builder.addFileDataToDossier('/orderlines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
-                //         if (err)
-                //             return callback(err);
+                createOrderLines(order, (err, orderLines) => {
+                    if (err)
+                        return cb(err);
+                    builder.addFileDataToDossier('/orderlines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
+                        if (err)
+                            return callback(err);
                         cb();
-                //     });
-                // });
+                    });
+                });
             });
         }, callback);
     }

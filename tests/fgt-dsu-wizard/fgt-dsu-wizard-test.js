@@ -62,7 +62,7 @@ assert.callback(testName, (cb) => {
                         dsu.readFile('/test', (err, data) => {
                             if (err)
                                 throw err;
-                            assert.equal(JSON.stringify(testData), data.toString(), "data equlity test");
+                            assert.equal(JSON.stringify(testData), JSON.stringify(JSON.parse(data.toString())), "data equality 2");
                             cb();
                         });
                     });
