@@ -51,18 +51,19 @@ function OrderService(strategy){
         });
     }
 
-    let getEndpointData = function (order){
-        return {
-            endpoint: endpoint,
-            data: {
-                orderId: order.orderId,
-                requesterId: order.requesterId
-            }
-        }
-    }
-
     let createAuthorized = function(order, callback){
         const DSUService = wizard.DSUService;
+
+        let getEndpointData = function (order){
+            return {
+                endpoint: endpoint,
+                data: {
+                    orderId: order.orderId,
+                    requesterId: order.requesterId
+                }
+            }
+        }
+
         DSUService.create(domain, getEndpointData(order), (builder, cb) => {
             builder.addFileDataToDossier("/data", JSON.stringify(order), (err)=> {
                 if (err)

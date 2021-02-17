@@ -44,7 +44,19 @@ function OrderLineService(strategy){
             });
         } else {
             const DSUService = wizard.DSUService;
-            DSUService.create(domain, endpoint, (builder, cb) => {
+
+            let getEndpointData = function (orderLine){
+                return {
+                    endpoint: endpoint,
+                    data: {
+                        orderId: orderId,
+                        gtin: orderLine.gtin,
+                        requesterId: orderLine.requesterId
+                    }
+                }
+            }
+
+            DSUService.create(domain, getEndpointData(orderLine), (builder, cb) => {
                 builder.addFileDataToDossier("/data", data, cb);
             }, callback);
         }

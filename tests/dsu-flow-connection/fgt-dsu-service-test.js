@@ -19,6 +19,8 @@ const strategies = require('../../fgt-dsu-wizard/services/strategy');
 const OrderLine = model.OrderLine;
 const Order =  model.Order;
 
+let strategyInUse = strategies.AUTHORIZED;
+
 let orderLines = [];
 
 for (let i = 0; i< 3; i++){
@@ -98,6 +100,7 @@ function validateOrderLines(orderLines, keySSIs, callback){
                 return callback(err);
             try {
                 let dataObj = JSON.parse(data);
+                assert.equal()
                 console.log(`OK - Orderline data matches ${data}`);
                 validateOrderLines(orderLines, keySSIs, callback);
             } catch (e){
@@ -118,7 +121,7 @@ assert.callback('Launch API Hub', (testFinished) => {
 
                 console.log('Updated bdns', bdns);
 
-                createOrderDSU(strategies.AUTHORIZED, getOrder(), (err, keySSI) => {
+                createOrderDSU(strategyInUse, getOrder(), (err, keySSI) => {
                     if (err)
                         throw err;
                     validateOrder(keySSI, (err) => {

@@ -11,8 +11,10 @@ if (getEnv() === 'nodejs')
 
 class DSUService {
     constructor() {
-        let crypto = require("opendsu").loadApi("crypto");
-        let http = require("opendsu").loadApi("http");
+        let openDSU = require('opendsu');
+        let crypto = openDSU.loadApi("crypto");
+        let http = openDSU.loadApi("http");
+        this.keyssiSpace = openDSU.loadApi('keyssi');
 
         // http.registerInterceptor((data, callback)=>{
         //     let {url, headers} = data;
@@ -65,70 +67,82 @@ class DSUService {
     // }
 
     /**
+     * This callback is displayed as part of the DSUService class.
+     * @callback DSUService~callback
+     * @param {string|object|undefined} error
+     * @param {string|undefined} [keySSI]: not in human readable form
+     */
+
+    /**
+     * This function is called by DSUService class to initialize/update DSU Structure.
+     * @class DSUService~DsuBuilder
+     * @param {DSUService} dsuBuilder
+     * @param {DSUService~callback} callback
+     */
+
+    /**
+     * This function is called by DSUService class to initialize/update DSU Structure.
+     * @callback DSUService~modifier
+     * @param {DSUService~DsuBuilder} dsuBuilder
+     * @param {DSUService~callback} callback
+     */
+
+    /**
      * Creates a DSU and initializes it via the provided initializer
      * @param {string} domain: the domain where the DSU is meant to be stored
      * @param {string|object} keySSIOrEndpoint: the keySSI string or endpoint object {endpoint: 'gtin', data: 'data'}
-     * @param {function} initializer: a method with arguments (dsuBuilder, callback)
+     * @param {DSUService~modifier} initializer: a method with arguments (dsuBuilder, callback)
      * <ul><li>the dsuBuilder provides the api to all operations on the DSU</li></ul>
-     * @param {function} callback: the callback function
-     * @param {string} transactionId: (optional) when defined, the same transaction will be used
-     * @return error, keySSI
+     * @param {DSUService~callback} callback: the callback function
      */
-    create(domain, keySSIOrEndpoint, initializer, callback, transactionId){
+    create(domain, keySSIOrEndpoint, initializer, callback){
         let self = this;
+        let simpleKeySSI = typeof keySSIOrEndpoint === 'string';
 
-        let afterKeyCb = function (err) {
+        self.getTransactionId(domain, (err, transactionId) => {
             if (err)
                 return callback(err);
 
-            initializer(self.bindToTransaction(domain, transactionId), err => {
+            let afterKeyCb = function(err){
                 if (err)
                     return callback(err);
-                self.buildDossier(transactionId, domain, (err, keySSI) => {
+
+                initializer(self.bindToTransaction(domain, transactionId), err => {
                     if (err)
                         return callback(err);
-                    callback(undefined, keySSI);
+                    self.buildDossier(transactionId, domain, (err, keySSI) => {
+                        if (err)
+                            return callback(err);
+                        callback(undefined, self.keyssiSpace.parse(keySSI));
+                    });
                 });
-            });
-        };
+            };
 
-        if (!transactionId) {
-            self.getTransactionId(domain, (err, tId) => {
-                if (err)
-                    return callback(err);
-                transactionId = tId;
-                self._createDSU(domain, transactionId, keySSIOrEndpoint, afterKeyCb);
-            });
-        } else {
-            self._createDSU(domain, transactionId, keySSIOrEndpoint, afterKeyCb);
-        }
-    }
-
-    _createDSU = function(domain, transactionId, keySSIOrEndpoint, callback){
-        let self = this;
-        if (typeof keySSIOrEndpoint === 'string'){
-            self.setKeySSI(transactionId, domain, keySSIOrEndpoint, callback);
-        } else {
-            self.setCustomSSI(transactionId, domain, keySSIOrEndpoint.endpoint, keySSIOrEndpoint.data, callback);
-        }
+            if (simpleKeySSI){
+                self.setKeySSI(transactionId, domain, keySSIOrEndpoint, afterKeyCb);
+            } else {
+                self.setCustomSSI(transactionId, domain, keySSIOrEndpoint.endpoint, keySSIOrEndpoint.data, afterKeyCb);
+            }
+        });
     }
 
     /**
      * Creates a DSU and initializes it via the provided initializer
      * @param {string} domain: the domain where the DSU is meant to be stored
      * @param {keySSI} keySSI:
-     * @param {function} modifier: a method with arguments (dsuBuilder, callback)
+     * @param {DSUService~modifier} modifier: a method with arguments (dsuBuilder, callback)
      * <ul><li>the dsuBuilder provides the api to all operations on the DSU</li></ul>
-     * @param {function} callback: the callback function
+     * @param {DSUService~callback} callback: the callback function
      */
     update(domain, keySSI, modifier, callback){
-        this.getTransactionId(domain, (err, transactionId) => {
+        let self = this;
+        self.getTransactionId(domain, (err, transactionId) => {
            if (err)
                return callback(err);
-           this.setKeySSI(transactionId, domain, keySSI, err =>{
+           self.setKeySSI(transactionId, domain, keySSI, err =>{
                if (err)
                    return callback(err);
-               modifier(this.bindToTransaction(domain, transactionId), (err, keySSI) => {
+               modifier(self.bindToTransaction(domain, transactionId), (err, keySSI) => {
                     if (err)
                         return callback(err);
                     callback(undefined, keySSI);
@@ -136,22 +150,6 @@ class DSUService {
            });
         });
     }
-
-    read(domain, keySSI, reader, callback){
-        this.getTransactionId(domain, (err, transactionId) => {
-            if (err)
-                return callback(err);
-            this.setKeySSI(transactionId, domain, keySSI, err =>{
-                if (err)
-                    return callback(err);
-                reader(this.bindToTransaction(domain, transactionId), (err, data) => {
-                    if (err)
-                        return callback(err);
-                    callback(undefined, data);
-                });
-            });
-        });
-    };
 
     bindToTransaction(domain, transactionId){
         let self = this;
