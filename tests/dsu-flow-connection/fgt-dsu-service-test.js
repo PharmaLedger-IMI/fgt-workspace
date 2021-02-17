@@ -67,7 +67,7 @@ function validateOrder(keySSI, callback){
                 // data may have a trailing 0x0d carriage-return
                 // Uncommenting the line below, does not help to pin-point where the 0x0d was added...
                 // data = Buffer.from(JSON.stringify(JSON.parse(data.toString())));
-                assert.equal(JSON.stringify(order), JSON.stringify(JSON.parse(data.toString())), "data does not match");
+                assert.equal(JSON.stringify(order), data.toString(), "data does not match");
                 console.log("OK - data matches");
             } catch (e){
                 return callback(e);
@@ -99,8 +99,7 @@ function validateOrderLines(orderLines, keySSIs, callback){
             if (err)
                 return callback(err);
             try {
-                let dataObj = JSON.parse(data);
-                assert.equal()
+                assert.equal(JSON.stringify(orderLine), data.toString());
                 console.log(`OK - Orderline data matches ${data}`);
                 validateOrderLines(orderLines, keySSIs, callback);
             } catch (e){
