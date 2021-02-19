@@ -26,6 +26,12 @@ $ cd fgt-workspace
 #in the file env.json before you run the installation!
 $ npm install
 ```
+
+For latest privatesky/epi versions, instead of "npm install" do:
+```
+$ npm run dev-install
+```
+
 **Note:** this command might take quite some time depending on your internet connection and you machine processing power.
 
 ### Step 2: Launch the "server"
