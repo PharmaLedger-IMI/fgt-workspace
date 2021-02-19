@@ -18,6 +18,8 @@ const model = require('../../fgt-dsu-wizard/model');
 
 const WalletBuilderService = require('../../fgt-dsu-wizard/services/WalletService');
 
+const MAH_WALLET_NAME = 'fgt-mah-wallet';
+
 function createMockApiHubStructure(appName, testFolder, callback){
     try{
         let apiHubRootFolder = "../../apihub-root";
@@ -42,7 +44,7 @@ function createMAHWallet(callback){
     const walletBuilder = new WalletBuilderService({
         codeFolderName: "code",
         walletTemplateFolderName: "wallet-patch",
-        appFolderName: "fgt-mah-wallet",
+        appFolderName: MAH_WALLET_NAME,
         appsFolderName: "apps-patch",
         ssiFileName: "seed",
         environmentDomain: "default",
@@ -58,7 +60,7 @@ function createMAHWallet(callback){
 
 assert.callback(testName, (testFinished) => {
     dc.createTestFolder(testName, (err, folder) => {
-        createMockApiHubStructure("fgt-mah-wallet", folder, (err) => {
+        createMockApiHubStructure(MAH_WALLET_NAME, folder, (err) => {
             if (err)
                 throw err;
             tir.launchApiHubTestNode(10, folder, err => {
@@ -80,18 +82,3 @@ assert.callback(testName, (testFinished) => {
         })
     });
 }, 3000);    // you have 3 seconds for it to happen
-
-// /**
-//  * Requires the running server
-//  */
-// assert.callback(testName, (testFinished) => {
-//
-//         // do stuff
-//         createMAHWallet((err, wallet) => {
-//             if (err)
-//                 throw err;
-//             console.log(wallet);
-//             testFinished();
-//         });
-//
-// }, 3000);    // you have 3 seconds for it to happen
