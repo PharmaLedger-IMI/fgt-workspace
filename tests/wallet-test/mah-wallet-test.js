@@ -2,7 +2,6 @@ process.env.NO_LOGS = true;
 process.env.PSK_CONFIG_LOCATION = process.cwd();
 
 const path = require('path');
-const testUtils = require('../testUtils');
 
 require(path.join('../../privatesky/psknode/bundles', 'testsRuntime.js'));     // test runtime
 require(path.join('../../privatesky/psknode/bundles', 'pskruntime.js'));       // the whole 9 yards, can be replaced if only smaller modules are needed
@@ -26,8 +25,8 @@ function createMockApiHubStructure(appName, testFolder, callback){
     try{
         let apiHubRootFolder = "../../apihub-root";
         console.log(`Replicating ${appName}`);
-        testUtils.copyFolderRecursiveSync(path.join(apiHubRootFolder, appName), testFolder);
-        console.log(`Recreation of environment at ${testFolder} complete`);
+        require('fs').symlinkSync(path.join(process.cwd(), apiHubRootFolder, appName), path.join(testFolder, appName));
+        console.log(`Recreation of environment for ${appName} complete`);
         callback();
     } catch (err){
         return callback(err);
@@ -52,7 +51,12 @@ function replicateEnvironment(testFolder, callback){
     createAuthoritiesList(testFolder, (err) => {
         if (err)
             return callback(err);
-        createMockApiHubStructure(MAH_WALLET_NAME, testFolder, callback);
+        createMockApiHubStructure(MAH_WALLET_NAME, testFolder, (err) => {
+            if (err)
+                return callback(err);
+            console.log(`Recreation of environment at ${testFolder} complete`);
+            callback();
+        });
     });
 }
 
