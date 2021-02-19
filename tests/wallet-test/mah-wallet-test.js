@@ -18,11 +18,14 @@ const model = require('../../fgt-dsu-wizard/model');
 
 const WalletBuilderService = require('../../fgt-dsu-wizard/services/WalletService');
 
+const CLEAR_DATA_AT_END = true;
+
 const MAH_WALLET_NAME = 'fgt-mah-wallet';
 
 function createMockApiHubStructure(appName, testFolder, callback){
     try{
         let apiHubRootFolder = "../../apihub-root";
+        console.log(`Replicating ${appName}`);
         testUtils.copyFolderRecursiveSync(path.join(apiHubRootFolder, appName), testFolder);
         console.log(`Recreation of environment at ${testFolder} complete`);
         callback();
@@ -31,6 +34,48 @@ function createMockApiHubStructure(appName, testFolder, callback){
     }
 }
 
+function createAuthoritiesList(testFolder, callback){
+    const fs = require('fs');
+    if (!fs.existsSync(testFolder))
+        return callback("path does not exist");
+    console.log("Adding authorities lists")
+    let authPath = path.join(testFolder, 'external-volume/config/authorities');
+    fs.mkdirSync(authPath, {recursive: true});
+    fs.writeFileSync(path.join(authPath, "mah"), '');
+    fs.writeFileSync(path.join(authPath, "pharmacy"), '');
+    fs.writeFileSync(path.join(authPath, "wholesaler"), '');
+    callback();
+}
+
+function replicateEnvironment(testFolder, callback){
+    console.log("Replicating Environment")
+    createAuthoritiesList(testFolder, (err) => {
+        if (err)
+            return callback(err);
+        createMockApiHubStructure(MAH_WALLET_NAME, testFolder, callback);
+    });
+}
+
+function clearFiles(testFolder, callback){
+    const fs = require('fs');
+    if (!fs.existsSync(testFolder))
+        return callback();
+    console.log("Clearing test files...")
+    fs.rmdirSync(testFolder, {recursive: true})
+    callback();
+}
+
+function bindCallbackBehaviour(folder, callback){
+    if (CLEAR_DATA_AT_END)
+        return () => {
+            clearFiles(folder, (err) => {
+                if (err)
+                    console.log("Could not delete test files...");
+                callback();
+            });
+        }
+    return callback;
+}
 
 function createMAHWallet(callback){
 
@@ -60,7 +105,8 @@ function createMAHWallet(callback){
 
 assert.callback(testName, (testFinished) => {
     dc.createTestFolder(testName, (err, folder) => {
-        createMockApiHubStructure(MAH_WALLET_NAME, folder, (err) => {
+        testFinished = bindCallbackBehaviour(folder, testFinished);
+        replicateEnvironment(folder, (err) => {
             if (err)
                 throw err;
             tir.launchApiHubTestNode(10, folder, err => {
@@ -75,7 +121,7 @@ assert.callback(testName, (testFinished) => {
                         if (err)
                             throw err;
                         console.log(wallet);
-                        testFinished();
+                        testFinished()
                     });
                 });
             });
