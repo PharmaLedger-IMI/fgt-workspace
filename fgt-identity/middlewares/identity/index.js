@@ -76,7 +76,7 @@ function authorization(urlsToSkip){
 function registration(req, res){
     let {url} = req;
     let sRead = request.params
-    console.log("HERE");
+    console.log(sRead);
 }
 
 function Identity(server){

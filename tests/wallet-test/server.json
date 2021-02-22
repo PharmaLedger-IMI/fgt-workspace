@@ -25,12 +25,12 @@
         "roles": ["receiver", "administerer", "dispenser"],
         "endpoints": ["order", "orderline"]
       }
-    ],
-    "common": ["begin", "setKeySSI", "setDLDomain", "build"]
+    ]
   },
   "preventRateLimit": true,
   "enableRequestLogger": true,
   "activeEndpoints": [
+    "fgt-identity",
     "virtualMQ",
     "messaging",
     "notifications",
@@ -40,7 +40,6 @@
     "bricksFabric",
     "bricking",
     "anchoring",
-    "fgt-identity",
     "dsu-wizard",
     "fgt-dsu-wizard",
     "gtin-dsu-wizard",
