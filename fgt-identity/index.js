@@ -5,6 +5,7 @@ function Init(server){
     files.forEach(f => {
         require(path.join(middlewaresDir, f))(server);
     });
+    //server.use("/THIS_IS_A_TEST", function(){});
 }
 
 module.exports = {

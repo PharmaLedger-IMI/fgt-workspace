@@ -89,13 +89,14 @@ function Identity(server){
 
     const skipAuthorisation = config.getConfig("skipAuthorisation");
     const urlsToSkip = skipAuthorisation && Array.isArray(skipAuthorisation) ? skipAuthorisation : [];
-
-    verifyIdentitiesCache(identityCfg, (err) => {
-        if (err)
-            throw err;
-        server.use(authorization(urlsToSkip));
-        server.post(`/:domain/register/:role`, registration);
-    });
+    server.use(authorization(urlsToSkip));
+    server.post(`/:domain/register/:role`, registration);
+    console.log("after registering to server")
+    // verifyIdentitiesCache(identityCfg, (err) => {
+    //     if (err)
+    //         throw err;
+    //     console.log("here");
+    // });
 }
 
 module.exports = Identity

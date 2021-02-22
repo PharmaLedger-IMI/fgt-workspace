@@ -1,0 +1,9 @@
+{
+  "appName": "MAH",
+  "vault": "browser",
+  "agent": "browser",
+  "system":   "any",
+  "browser":  "any",
+  "stage":  "release",
+  "legenda for properties": " vault:(server, browser) agent:(mobile,  browser)  system:(iOS, Android, any) browser:(Chrome, Firefox, any) stage:(development, release)"
+}
