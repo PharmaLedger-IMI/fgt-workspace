@@ -5,25 +5,32 @@
     "enabled": true
   },
   "identity": {
-    "roles": [
-      "mah",
-      "sender",
-      "receiver",
-      "dispenser",
-      "administerer"
-    ],
-    "actors": [
-      { "name": "mah",
-        "roles": ["mah"],
+    "roles": {
+      "mah": {
         "endpoints": ["gtin", "batch", "orderlines", "shipmentlines", "orderingtradingpartner", "sendingtradingpartner"]
       },
-      { "name": "wholesaler",
-        "roles": ["sender", "receiver"],
+      "sender": {
         "endpoints": ["shipment", "shipmentline"]
       },
-      { "name": "pharmacy",
-        "roles": ["receiver", "administerer", "dispenser"],
+      "receiver": {
         "endpoints": ["order", "orderline"]
+      },
+      "dispenser": {
+        "endpoints": ["dispense"]
+      },
+      "administerer": {
+        "endpoints": ["administer"]
+      }
+    },
+    "actors": [
+      { "name": "mah",
+        "roles": ["mah"]
+      },
+      { "name": "wholesaler",
+        "roles": ["sender", "receiver"]
+      },
+      { "name": "pharmacy",
+        "roles": ["receiver", "administerer", "dispenser"]
       }
     ]
   },
