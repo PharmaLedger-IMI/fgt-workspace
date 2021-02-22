@@ -17,6 +17,7 @@
     "bricking",
     "anchoring",
     "dsu-wizard",
+    "fgt-dsu-wizard",
     "gtin-dsu-wizard",
     "staticServer"
   ],

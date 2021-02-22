@@ -41,7 +41,7 @@ function OrderService(strategy){
                 createOrderLines(order, (err, orderLines) => {
                     if (err)
                         return callback(err);
-                    dsu.writeFile('/orderlines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
+                    dsu.writeFile('/lines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
                         if (err)
                             return callback(err);
                         callback(undefined, keySSI);
@@ -71,7 +71,7 @@ function OrderService(strategy){
                 createOrderLines(order, (err, orderLines) => {
                     if (err)
                         return cb(err);
-                    builder.addFileDataToDossier('/orderlines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
+                    builder.addFileDataToDossier('/lines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
                         if (err)
                             return callback(err);
                         cb();

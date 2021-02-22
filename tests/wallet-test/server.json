@@ -1,7 +1,32 @@
 {
   "port": 8080,
+  "storage": "./apihub-root",
   "logging": {
     "enabled": true
+  },
+  "identity": {
+    "roles": [
+      "mah",
+      "sender",
+      "receiver",
+      "dispenser",
+      "administerer"
+    ],
+    "actors": [
+      { "name": "mah",
+        "roles": ["mah"],
+        "endpoints": ["gtin", "batch", "orderlines", "shipmentlines", "orderingtradingpartner", "sendingtradingpartner"]
+      },
+      { "name": "wholesaler",
+        "roles": ["sender", "receiver"],
+        "endpoints": ["shipment", "shipmentline"]
+      },
+      { "name": "pharmacy",
+        "roles": ["receiver", "administerer", "dispenser"],
+        "endpoints": ["order", "orderline"]
+      }
+    ],
+    "common": ["begin", "setKeySSI", "setDLDomain", "build"]
   },
   "preventRateLimit": true,
   "enableRequestLogger": true,
@@ -15,25 +40,31 @@
     "bricksFabric",
     "bricking",
     "anchoring",
+    "fgt-identity",
     "dsu-wizard",
+    "fgt-dsu-wizard",
     "gtin-dsu-wizard",
     "staticServer"
   ],
   "endpointsConfig": {
+    "fgt-identity": {
+      "module": "./../../fgt-identity",
+      "function": "Init"
+    },
     "gtin-dsu-wizard": {
       "module": "./../../gtin-dsu-wizard"
     },
-    "dsu-wizard": {
-      "module": "dsu-wizard",
-      "function": "initWizard",
-      "storage": "./external-volume/dsu-wizard/transactions",
-      "workers": 5,
-      "bundle": "./../../privatesky/psknode/bundles/openDSU.js"
+    "fgt-dsu-wizard": {
+      "module": "./../../fgt-dsu-wizard",
+      "function": "Init"
     },
     "bricking": {
       "domains": {
         "epi": {
           "path": "/external-volume/domains/epi/brick-storage"
+        },
+        "traceability": {
+          "path": "/external-volume/domains/traceability/brick-storage"
         },
         "default": {
           "path": "/internal-volume/domains/default/brick-storage"
@@ -52,6 +83,16 @@
           "type": "FS",
           "option": {
             "path": "/external-volume/domains/epi/anchors",
+            "enableBricksLedger": false
+          },
+          "commands": {
+            "addAnchor": "anchor"
+          }
+        },
+        "traceability": {
+          "type": "FS",
+          "option": {
+            "path": "/external-volume/domains/traceability/anchors",
             "enableBricksLedger": false
           },
           "commands": {

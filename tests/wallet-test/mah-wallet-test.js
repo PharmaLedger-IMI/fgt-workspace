@@ -38,11 +38,11 @@ function createAuthoritiesList(testFolder, callback){
     if (!fs.existsSync(testFolder))
         return callback("path does not exist");
     console.log("Adding authorities lists")
-    let authPath = path.join(testFolder, 'external-volume/config/authorities');
+    let configPath = path.join(testFolder,'external-volume/config');
+    let authPath = path.join(configPath, 'identity');
     fs.mkdirSync(authPath, {recursive: true});
-    fs.writeFileSync(path.join(authPath, "mah"), '');
-    fs.writeFileSync(path.join(authPath, "pharmacy"), '');
-    fs.writeFileSync(path.join(authPath, "wholesaler"), '');
+    fs.copyFileSync('server.json', path.join(configPath, 'server.json'));
+    process.env.PSK_CONFIG_LOCATION = configPath;
     callback();
 }
 
@@ -81,7 +81,14 @@ function bindCallbackBehaviour(folder, callback){
     return callback;
 }
 
+function register(role, sReadSSI, callback){
+    let url = `${process.env.BDNS_ROOT_HOSTS}/register/${role}`
+    doPost(url, sReadSSI, callback);
+}
+
 function createMAHWallet(callback){
+
+    let role = 'mah';
 
     let arrayWithSecrets = [
         "MAH Legal Name",
@@ -103,7 +110,38 @@ function createMAHWallet(callback){
     walletBuilder.build(arrayWithSecrets, (err, wallet) => {
         if (err)
             return callback(err);
-        callback(undefined, wallet);
+        wallet.getKeySSIAsString((err, keySSI) => {
+            if (err)
+                return callback(err);
+            console.log(`${role}'s wallet has been created with keyssi: ${keySSI}`);
+            let sReadSSI = require('opendsu').loadApi('keyssi').parse(keySSI).derive();
+            register('mah', sReadSSI, (err) => {
+                if (err)
+                    return callback(err);
+                callback(undefined, wallet);
+            });
+        });
+    });
+}
+
+function doPost(url, data, options, callback) {
+    const http = require("opendsu").loadApi("http");
+    if (typeof options === "function") {
+        callback = options;
+        options = {};
+    }
+
+    if (typeof data === "function") {
+        callback = data;
+        options = {};
+        data = undefined;
+    }
+
+    url = `${url}#x-blockchain-domain-request`
+    http.doPost(url, data, options, (err, response) => {
+        if (err)
+            return callback(err);
+        callback(undefined, response);
     });
 }
 
@@ -119,13 +157,12 @@ assert.callback(testName, (testFinished) => {
                 tir.addDomainsInBDNS(folder,  [domain], (err, bdns) => {    // not needed if you're not working on a custom domain
                     if (err)
                         throw err;
-
                     console.log('Updated bdns', bdns);
                     createMAHWallet((err, wallet) => {
                         if (err)
                             throw err;
                         console.log(wallet);
-                        testFinished()
+                        testFinished();
                     });
                 });
             });
