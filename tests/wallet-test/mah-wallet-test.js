@@ -13,8 +13,6 @@ const assert = dc.assert;
 let domain = 'traceability';
 let testName = 'MAH_wallet_test';
 
-const model = require('../../fgt-dsu-wizard/model');
-
 const WalletBuilderService = require('../../fgt-dsu-wizard/services/WalletService');
 
 const CLEAR_DATA_AT_END = true;
@@ -33,14 +31,12 @@ function createMockApiHubStructure(appName, testFolder, callback){
     }
 }
 
-function createAuthoritiesList(testFolder, callback){
+function copyConfigs(testFolder, callback){
     const fs = require('fs');
     if (!fs.existsSync(testFolder))
         return callback("path does not exist");
-    console.log("Adding authorities lists")
     let configPath = path.join(testFolder,'external-volume/config');
-    let authPath = path.join(configPath, 'identity');
-    fs.mkdirSync(authPath, {recursive: true});
+    fs.mkdirSync(configPath, {recursive: true});
     fs.copyFileSync('server.json', path.join(configPath, 'server.json'));
     process.env.PSK_CONFIG_LOCATION = configPath;
     callback();
@@ -48,7 +44,7 @@ function createAuthoritiesList(testFolder, callback){
 
 function replicateEnvironment(testFolder, callback){
     console.log("Replicating Environment")
-    createAuthoritiesList(testFolder, (err) => {
+    copyConfigs(testFolder, (err) => {
         if (err)
             return callback(err);
         createMockApiHubStructure(MAH_WALLET_NAME, testFolder, (err) => {
@@ -82,8 +78,8 @@ function bindCallbackBehaviour(folder, callback){
 }
 
 function register(role, sReadSSI, callback){
-    let url = `${process.env.BDNS_ROOT_HOSTS}/register/${role}`
-    doPost(url, sReadSSI, callback);
+    let url = `${process.env.BDNS_ROOT_HOSTS}/${domain}/register/${role}`
+    doPost(url, sReadSSI.getIdentifier(true), callback);
 }
 
 function createMAHWallet(callback){
@@ -103,14 +99,14 @@ function createMAHWallet(callback){
         appFolderName: MAH_WALLET_NAME,
         appsFolderName: "apps-patch",
         ssiFileName: "seed",
-        environmentDomain: "default",
+        environmentDomain: "traceability",
         vault: "vault"
     });
 
     walletBuilder.build(arrayWithSecrets, (err, wallet) => {
         if (err)
             return callback(err);
-        wallet.getKeySSIAsString((err, keySSI) => {
+        wallet.getKeySSIAsObject((err, keySSI) => {
             if (err)
                 return callback(err);
             console.log(`${role}'s wallet has been created with keyssi: ${keySSI}`);

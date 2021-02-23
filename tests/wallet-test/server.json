@@ -5,34 +5,39 @@
     "enabled": true
   },
   "identity": {
-    "roles": {
-      "mah": {
-        "endpoints": ["gtin", "batch", "orderlines", "shipmentlines", "orderingtradingpartner", "sendingtradingpartner"]
-      },
-      "sender": {
-        "endpoints": ["shipment", "shipmentline"]
-      },
-      "receiver": {
-        "endpoints": ["order", "orderline"]
-      },
-      "dispenser": {
-        "endpoints": ["dispense"]
-      },
-      "administerer": {
-        "endpoints": ["administer"]
+    "baseFolder": "identity",
+    "domains": {
+      "traceability": {
+        "roles": {
+          "mah": {
+            "endpoints": ["gtin", "batch", "orderlines", "shipmentlines", "orderingtradingpartner", "sendingtradingpartner"]
+          },
+          "sender": {
+            "endpoints": ["shipment", "shipmentline"]
+          },
+          "receiver": {
+            "endpoints": ["order", "orderline"]
+          },
+          "dispenser": {
+            "endpoints": ["dispense"]
+          },
+          "administerer": {
+            "endpoints": ["administer"]
+          }
+        },
+        "actors": [
+          { "name": "mah",
+            "roles": ["mah"]
+          },
+          { "name": "whs",
+            "roles": ["sender", "receiver"]
+          },
+          { "name": "pha",
+            "roles": ["receiver", "administerer", "dispenser"]
+          }
+        ]
       }
-    },
-    "actors": [
-      { "name": "mah",
-        "roles": ["mah"]
-      },
-      { "name": "wholesaler",
-        "roles": ["sender", "receiver"]
-      },
-      { "name": "pharmacy",
-        "roles": ["receiver", "administerer", "dispenser"]
-      }
-    ]
+    }
   },
   "preventRateLimit": true,
   "enableRequestLogger": true,

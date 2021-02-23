@@ -1,42 +1,11 @@
 const openDSU = require("opendsu");
 const crypto = openDSU.loadApi("crypto");
+//const keyssi = openDSU.loadApi('keyssi');
+let idManager;
 let config;
 
-const IDENTITIES_FOLDER = "identity"
-
-function verifyIdentitiesCache(idConfig, callback){
-    const fs = require('fs');
-    const path = require('swarmutils').path;
-    const configLocation = process.env.PSK_CONFIG_LOCATION
-    let createRoles = function(actors, callback){
-        let actor = actors.shift();
-        if (!actor)
-            return callback(undefined, actors);
-        fs.access(path.join(path.resolve(configLocation), IDENTITIES_FOLDER, actor.name), fs.F_OK, (err) => {
-            if (err){
-                console.log(`Could not find ${actor.name}, creating now...`);
-                try {
-                    fs.closeSync(fs.openSync(path.join(path.resolve(configLocation), IDENTITIES_FOLDER, actor.name), 'w'));
-                    console.log(`Created actor ${actor.name}`);
-                    createRoles(actors, callback);
-                } catch (e){
-                    return callback(err);
-                }
-            } else {
-                console.log(`Found actor ${actor.name}`);
-                createRoles(actors, callback);
-            }
-        });
-    };
-
-    fs.access(path.join(path.resolve(configLocation), IDENTITIES_FOLDER), err => {
-        if (err){
-            if (!fs.mkdirSync(path.join(path.resolve(configLocation), IDENTITIES_FOLDER)))
-                return callback("could not create base identity folder");
-        }
-        createRoles(idConfig.actors.slice(), callback);
-    });
-
+function startIdManager(idConfig, callback){
+    idManager = new (require('./IdentityManager'))(idConfig, callback);
 }
 
 function sendUnauthorizedResponse(req, res, reason, error) {
@@ -74,9 +43,27 @@ function authorization(urlsToSkip){
 }
 
 function registration(req, res){
-    let {url} = req;
-    let sRead = request.params
-    console.log(sRead);
+    let {url, params} = req;
+    let {domain, role} = params;
+    let data = [];
+
+    req.on('data', (chunk) => {
+        data.push(chunk);
+    });
+
+    req.on('end', () => {
+        try{
+            data = JSON.parse(data);
+        } catch (e){
+            data = data.toString();
+        }
+        //let keySSI = keyssi.parse(data);
+        idManager.register(domain, role, data, (err, summary) => {
+            if (err)
+                res.send('503', `Error registering as ${role}: ${err}`);
+            res.send('200', summary);
+        });
+    });
 }
 
 function Identity(server){
@@ -86,17 +73,16 @@ function Identity(server){
         return;
 
     console.log(`Registering Identity middleware`);
-
     const skipAuthorisation = config.getConfig("skipAuthorisation");
     const urlsToSkip = skipAuthorisation && Array.isArray(skipAuthorisation) ? skipAuthorisation : [];
-    server.use(authorization(urlsToSkip));
+    //server.use(authorization(urlsToSkip));
     server.post(`/:domain/register/:role`, registration);
-    console.log("after registering to server")
-    // verifyIdentitiesCache(identityCfg, (err) => {
-    //     if (err)
-    //         throw err;
-    //     console.log("here");
-    // });
+
+    startIdManager(identityCfg, (err) => {
+        if (err)
+            throw err;
+        console.log("loaded Id Manager. server is now ready to use...");
+    });
 }
 
 module.exports = Identity
