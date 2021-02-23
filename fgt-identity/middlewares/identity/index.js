@@ -1,6 +1,3 @@
-const openDSU = require("opendsu");
-const crypto = openDSU.loadApi("crypto");
-//const keyssi = openDSU.loadApi('keyssi');
 let idManager;
 let config;
 
@@ -15,6 +12,7 @@ function sendUnauthorizedResponse(req, res, reason, error) {
 }
 
 function authorization(urlsToSkip){
+    const crypto = require("opendsu").loadApi("crypto");
     return function(req, res, next) {
         let {url} = req;
         let jwt = req.headers['authorization'];
@@ -57,13 +55,15 @@ function registration(req, res){
         } catch (e){
             data = data.toString();
         }
-        //let keySSI = keyssi.parse(data);
+
+        console.log(`Registration request in ${domain} for ${role}`)
         idManager.register(domain, role, data, (err, summary) => {
             if (err) {
-               // res.send('503', `Error registering as ${role}: ${err}`);
+                console.log(`Registration request in ${domain} for ${role} failed!`);
                 res.writeHead(500, `Error registering as ${role}: ${err}`);
                 res.end();
             }
+            console.log(`Registration in ${domain} for ${role} successful!`);
             res.writeHead(200, {'content-Type': 'application/json'});
             res.write(JSON.stringify(summary));
             res.end();

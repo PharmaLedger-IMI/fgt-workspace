@@ -3,7 +3,7 @@ function IdentityManager(config, cb){
     const path = require('swarmutils').path;
     const configLocation = process.env.PSK_CONFIG_LOCATION
 
-    let verifyIdentitiesCache = function(cb2){
+    let verifyIdentitiesCache = function(callback){
         let createRoles = function(domain, actors, callback){
             let actor = actors.shift();
             if (!actor)
@@ -34,7 +34,7 @@ function IdentityManager(config, cb){
             if (!domain)
                 return callback();
             let domainFolder = path.join(path.resolve(configLocation), config.baseFolder, domain.domain);
-            fs.access(domainFolder, (err) => {
+            fs.access(domainFolder, fs.F_OK, (err) => {
                 if (err)
                     try {
                         fs.mkdirSync(domainFolder)
@@ -51,12 +51,12 @@ function IdentityManager(config, cb){
         };
 
         let baseFolder = path.join(path.resolve(configLocation), config.baseFolder);
-        fs.access(baseFolder, err => {
+        fs.access(baseFolder, fs.F_OK,err => {
             if (err)
                 try{
                     fs.mkdirSync(baseFolder);
                 } catch (e){
-                    return cb2("could not create identity folder");
+                    return callback("could not create identity folder");
                 }
 
             let domains = Object.keys(config.domains)
@@ -69,8 +69,8 @@ function IdentityManager(config, cb){
 
             createDomainsAndRoles(domains, (err) => {
                 if (err)
-                    return cb2(err);
-                cb2();
+                    return callback(err);
+                callback();
             });
         });
     }
@@ -137,7 +137,7 @@ function IdentityManager(config, cb){
 
     let getActorFilePath = function(domain, actor, callback){
         let actorFilePath = path.join(path.resolve(configLocation), config.baseFolder, domain, actor);
-        fs.access(actorFilePath, (err) =>{
+        fs.access(actorFilePath, fs.F_OK, (err) =>{
             if (err)
                 return callback(err);
             callback(undefined, actorFilePath);
@@ -164,16 +164,17 @@ function IdentityManager(config, cb){
     let addCredentialsToActor = function(domain, actor, keySSI, callback){
         let saveCredential = function(domain, actor, callback){
             getActorFilePath(domain, actor, (err, actorFilePath) => {
-                fs.appendFile(actorFilePath, keySSI + require('os').EOL, err => {
-                    if (err)
-                        return callback("Could not append new credential");
-                    callback();
-                });
+                try {
+                    fs.appendFileSync(actorFilePath, keySSI + require('os').EOL);
+                } catch (e){
+                    return callback("Could not append new credential");
+                }
+                callback();
             });
         }
 
         getCredentialsByActor(domain, actor, (err, credentials) => {
-            if (err || !keySSI in credentials)
+            if (err || !(keySSI in credentials))
                 return saveCredential(domain, actor, callback);
             return callback(undefined, credentials);
         });
@@ -192,6 +193,13 @@ function IdentityManager(config, cb){
         });
     }
 
+    /**
+     * Verifies if the registration already exists
+     * @param {string} domain: the domain name
+     * @param {string} actor: the actor name
+     * @param {string} keySSI: the keySSI that identifies the actor in a human readable form, i.e: from getIdentifier(true)
+     * @param {function} callback: the callback function (err, true/false, summary)
+     */
     this.verify = function(domain, actor, keySSI, callback){
         getCredentialsByActor(domain, actor, (err, identities) => {
            if (err)
@@ -209,11 +217,11 @@ function IdentityManager(config, cb){
      * @param {string} domain: the domain name
      * @param {string} actor: the actor name
      * @param {string} keySSI: the keySSI that identifies the actor in a human readable form, i.e: from getIdentifier(true)
-     * @param {function} callback: the callback function (err, authorities object)
+     * @param {function} callback: the callback function (err, authorities summary)
      */
     this.register = function(domain, actor, keySSI, callback){
         this.verify(domain, actor, keySSI, (err, result) => {
-            if (err || !result)
+            if (err || !result) {
                 addCredentialsToActor(domain, actor, keySSI, (err, authorities) => {
                     if (err)
                         return callback(err);
@@ -223,8 +231,9 @@ function IdentityManager(config, cb){
                         return callback(undefined, summary);
                     });
                 });
-            else
+            } else {
                 return callback("Actor already registered", result);
+            }
         });
     };
 

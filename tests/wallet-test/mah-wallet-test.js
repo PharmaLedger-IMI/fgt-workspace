@@ -13,8 +13,6 @@ const assert = dc.assert;
 let domain = 'traceability';
 let testName = 'MAH_wallet_test';
 
-const WalletBuilderService = require('../../fgt-dsu-wizard/services/WalletService');
-
 const CLEAR_DATA_AT_END = true;
 
 const MAH_WALLET_NAME = 'fgt-mah-wallet';
@@ -92,6 +90,8 @@ function createMAHWallet(callback){
         "MAH company id reference",
         "MAH other stuff"
     ]
+
+    const WalletBuilderService = require('../../fgt-dsu-wizard/services/WalletService');
 
     const walletBuilder = new WalletBuilderService({
         codeFolderName: "code",
