@@ -59,9 +59,14 @@ function registration(req, res){
         }
         //let keySSI = keyssi.parse(data);
         idManager.register(domain, role, data, (err, summary) => {
-            if (err)
-                res.send('503', `Error registering as ${role}: ${err}`);
-            res.send('200', summary);
+            if (err) {
+               // res.send('503', `Error registering as ${role}: ${err}`);
+                res.writeHead(500, `Error registering as ${role}: ${err}`);
+                res.end();
+            }
+            res.writeHead(200, {'content-Type': 'application/json'});
+            res.write(JSON.stringify(summary));
+            res.end();
         });
     });
 }

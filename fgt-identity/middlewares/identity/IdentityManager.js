@@ -127,9 +127,9 @@ function IdentityManager(config, cb){
                return callback(err);
            let endpoints = [];
            roles.forEach(role => {
-               if (!role in domainCfg.roles || !'endpoints' in role)
+               if (!role in domainCfg.roles || !domainCfg.roles[role].endpoints)
                    return callback(`Could nof find endpoints for role ${role}`);
-               endpoints = endpoints.concat(domainCfg[role].endpoints);
+               endpoints = endpoints.concat(domainCfg.roles[role].endpoints);
            });
            callback(undefined, endpoints);
         });
@@ -175,11 +175,11 @@ function IdentityManager(config, cb){
         getCredentialsByActor(domain, actor, (err, credentials) => {
             if (err || !keySSI in credentials)
                 return saveCredential(domain, actor, callback);
-            return callback("Actor already registered");
+            return callback(undefined, credentials);
         });
     }
 
-    let getSummary = function(domain, actor){
+    let getSummary = function(domain, actor, callback){
         getActor(domain, actor, (err, actorCfg) => {
             if (err)
                 return callback(err);
@@ -196,7 +196,11 @@ function IdentityManager(config, cb){
         getCredentialsByActor(domain, actor, (err, identities) => {
            if (err)
                return callback(err);
-           callback(undefined, keySSI in identities, getSummary(domain, actor));
+           getSummary(domain, actor, (err, summary) => {
+               if (err)
+                   return callback(err);
+               callback(undefined, keySSI in identities, summary);
+           });
         });
     }
 
@@ -209,13 +213,17 @@ function IdentityManager(config, cb){
      */
     this.register = function(domain, actor, keySSI, callback){
         this.verify(domain, actor, keySSI, (err, result) => {
-            if (err)
-                addCredentialsToActor(domain, actor, keySSI, (e, authorities) => {
-                    if (e)
-                        return callback(e);
-                    return callback(undefined, getSummary(domain, actor));
+            if (err || !result)
+                addCredentialsToActor(domain, actor, keySSI, (err, authorities) => {
+                    if (err)
+                        return callback(err);
+                    getSummary(domain, actor, (err, summary) => {
+                        if (err)
+                            return callback(err);
+                        return callback(undefined, summary);
+                    });
                 });
-            if (result)
+            else
                 return callback("Actor already registered", result);
         });
     };
