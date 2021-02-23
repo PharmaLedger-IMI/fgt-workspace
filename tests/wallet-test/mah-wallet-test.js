@@ -109,8 +109,8 @@ function createMAHWallet(callback){
         wallet.getKeySSIAsObject((err, keySSI) => {
             if (err)
                 return callback(err);
-            console.log(`${role}'s wallet has been created with keyssi: ${keySSI}`);
-            let sReadSSI = require('opendsu').loadApi('keyssi').parse(keySSI).derive();
+            console.log(`${role}'s wallet has been created with keyssi: ${keySSI.getIdentifier(true)}`);
+            let sReadSSI = keySSI.derive();
             register('mah', sReadSSI, (err) => {
                 if (err)
                     return callback(err);
