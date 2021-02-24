@@ -1,7 +1,7 @@
 {
-  "name": "traceability-dsu-fabric",
+  "name": "fgt-mah-ssapp",
   "version": "1.0.0",
-  "description": "SSApp Template",
+  "description": "The Pharmaledger Traceability Application for Marketing Authorization Holders",
   "main": "index.js",
   "scripts": {
     "postinstall": "node ./node_modules/octopus/scripts/run",
@@ -21,7 +21,7 @@
   "keywords": [
     "ssapp"
   ],
-  "author": "",
+  "author": "PDM&FC",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/PrivateSky/ssapp-template/issues"

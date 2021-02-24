@@ -157,7 +157,7 @@
         },
         {
             "name": "themes/pharmaledger-theme",
-            "src": "https://github.com/PrivateSky/blue-fluorite-theme",
+            "src": "https://github.com/PrivateSky/pharmaledger-theme",
             "actions": [
                 {
                     "type": "smartClone",
@@ -240,14 +240,6 @@
                 {
                     "type": "copy",
                     "src": "./pharmaledger-wallet/seed",
-                    "target": "./apihub-root/fgt-mah-wallet/wallet-patch/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "./pharmaledger-wallet/seed",
                     "target": "./apihub-root/fgt-pharmacy-wallet/wallet-patch/seed",
                     "options": {
                         "overwrite": true
@@ -270,6 +262,14 @@
                 {
                     "type": "execute",
                     "cmd": "cd fgt-mah-ssapp && npm run build"
+                },
+                {
+                    "type": "copy",
+                    "src": "./fgt-mah-ssapp/seed",
+                    "target": "./apihub-root/fgt-mah-wallet/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
                 },
                 {
                     "type": "copy",

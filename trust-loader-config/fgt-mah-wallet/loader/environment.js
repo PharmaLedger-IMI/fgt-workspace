@@ -1,5 +1,5 @@
 export default {
-  "appName": "MAH_DSU_Fabric",
+  "appName": "MAH Traceability App",
   "vault": "server",
   "agent": "browser",
   "system":   "any",

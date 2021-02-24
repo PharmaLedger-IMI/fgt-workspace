@@ -1,48 +1,25 @@
-<psk-container>
-    <link rel="stylesheet" href="assets/css/home.css">
+<psk-page>
+    <div class="page-title-container">
+        <psk-label class="page-title" label="To Do App"></psk-label>
+    </div>
+    <hr>
+    <psk-container controller-name="TodoListController">
 
-    <script>
-        // Send the finished loading event to Loader
-        let currentWindow = window;
-        let parentWindow = currentWindow.parent;
+        <div class="todo-container">
+            <!-- Form control for adding a new item -->
+            <div class="todo-row todo-input">
+                <psk-text-input id="todo-creator-field" view-model="item"></psk-text-input>
+            </div>
 
-        while (currentWindow !== parentWindow) {
-            currentWindow = parentWindow;
-            parentWindow = currentWindow.parent;
-        }
+            <!-- Render each list item from the model -->
+            <psk-for-each id="items-foreach" data-view-model="items">
+                <div class="todo-row">
+                    <psk-checkbox class="item-checkbox" view-model="checkbox"></psk-checkbox>
+                    <psk-text-input class="item-input" view-model="input"></psk-text-input>
+                </div>
 
-        parentWindow.document.dispatchEvent(new CustomEvent('ssapp:loading:progress', {
-            detail: {
-                progress: 100
-            }
-        }));
-    </script>
-
-    <psk-layout class="menu" columns="2">
-        <psk-link page="Batches">
-            <span>
-                <img src="assets/images/cube.png" alt="Batches">
-                <p>Manage Batches</p>
-            </span>
-        </psk-link>
-        <psk-link page="Products">
-            <span>
-                <img src="assets/images/factory.png" alt="Products">
-                <p>Manage Products</p>
-            </span>
-        </psk-link>
-        <psk-link page="Holder">
-            <span>
-                <img src="assets/images/patient.png" alt="My Account">
-                <p>My Account</p>
-            </span>
-        </psk-link>
-        <psk-link page="Issuer">
-            <span>
-                <img src="assets/images/factory.png" alt="My Company">
-                <p>My Company</p>
-            </span>
-        </psk-link>
-    </psk-layout>
-
-</psk-container>
+                <psk-label slot="no-data">No data available</psk-label>
+            </psk-for-each>
+        </div>
+    </psk-container>
+</psk-page>

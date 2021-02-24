@@ -4,7 +4,6 @@
     "type": "route",
     "component": "psk-page-loader",
     "exact": true,
-    "historyType": "browser",
     "404": "/pages/404.html"
   },
   "pages": [
