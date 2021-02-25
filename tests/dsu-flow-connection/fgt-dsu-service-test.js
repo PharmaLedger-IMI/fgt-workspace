@@ -73,7 +73,7 @@ function validateOrder(keySSI, callback){
                 return callback(e);
             }
 
-            dsu.readFile("/orderlines", (err, orderLines) => {
+            dsu.readFile("/lines", (err, orderLines) => {
                 if (err)
                     return callback(err);
                 assert.notNull(orderLines);
