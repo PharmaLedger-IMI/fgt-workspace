@@ -51,17 +51,60 @@
 			  }
 		  }
 	  ]
-	}
-  ],
-  "postbuild": [
-	{
-	  "name": "post build clean up",
-	  "actions": [
-		{
-		  "type": "remove",
-		  "target": "./builds"
-		}
-	  ]
-	}
+	},
+	  {
+		  "name": "fgt-dsu-wizard",
+		  "src": "",
+		  "actions": [
+			  {
+				  "type": "copy",
+				  "src": "../fgt-dsu-wizard/model",
+				  "target": "code/scripts/model",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "../fgt-dsu-wizard/services/DSUService.js",
+				  "target": "code/scripts/services/DSUService.js",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "../fgt-dsu-wizard/services/MAHService.js",
+				  "target": "code/scripts/services/MAHService.js",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "../fgt-dsu-wizard/services/strategy.js",
+				  "target": "code/scripts/services/strategy.js",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "../fgt-dsu-wizard/services/utils.js",
+				  "target": "code/scripts/services/utils.js",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "../fgt-dsu-wizard/commands/setMAHSSI.js",
+				  "target": "code/scripts/commands/setMAHSSI.js",
+				  "options": {
+					  "overwrite": true
+				  }
+			  }
+		  ]
+	  }
   ]
 }

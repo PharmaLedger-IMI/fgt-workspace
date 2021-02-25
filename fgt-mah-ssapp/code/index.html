@@ -29,7 +29,16 @@
 
 <body>
 <psk-app-root>
-    <psk-app-router failRedirectTo="/home"></psk-app-router>
+    <div class="global_container">
+        <aside>
+            <app-menu item-renderer="sidebar-renderer">
+                <psk-user-profile slot="before"></psk-user-profile>
+            </app-menu>
+        </aside>
+        <section>
+            <psk-app-router failRedirectTo="/home"></psk-app-router>
+        </section>
+    </div>
 </psk-app-root>
 </body>
 

@@ -31,8 +31,8 @@ function OrderService(strategy){
 
     let createSimple = function(order, callback){
         let keyGenFunction = require('../commands/setOrderSSI').createOrderSSI;
-        let keySSI = keyGenFunction(order, domain);
-        resolver.createDSUForExistingSSI(keySSI, (err, dsu) => {
+        let templateKeySSI = keyGenFunction(order, domain);
+        resolver.createDSUForExistingSSI(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);
             dsu.writeFile('/data', JSON.stringify(order), (err) => {
@@ -44,7 +44,11 @@ function OrderService(strategy){
                     dsu.writeFile('/lines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
                         if (err)
                             return callback(err);
-                        callback(undefined, keySSI);
+                        dsu.getKeySSIAsObject((err, keySSI) => {
+                            if (err)
+                                return callback(err);
+                            callback(undefined, keySSI);
+                        });
                     });
                 });
             });

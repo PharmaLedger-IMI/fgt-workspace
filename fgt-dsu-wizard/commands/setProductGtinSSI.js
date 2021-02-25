@@ -2,7 +2,7 @@
 function createProductGtinSSI(data, domain) {
     console.log("New PRODUCT_GTIN_SSI in domain", domain);
     const keyssiSpace = require("opendsu").loadApi("keyssi");
-    return keyssiSpace.buildTemplateArraySSI(domain, [data.gtin]);
+    return keyssiSpace.createArraySSI(domain, [data.gtin]);
 }
 
 function command(server, mah){

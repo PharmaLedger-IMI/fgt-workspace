@@ -7,7 +7,6 @@
     "postinstall": "node ./node_modules/octopus/scripts/run",
     "prebuild": "node ./node_modules/octopus/scripts/run prebuild",
     "build": "node ./node_modules/octopus/scripts/buildDossier ./bin/build.file --domain=traceability",
-    "postbuild": "node ./node_modules/octopus/scripts/run postbuild",
     "update": "npm install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,8 +15,7 @@
     "url": "git+https://github.com/PrivateSky/ssapp-template.git"
   },
   "dependencies": {
-    "octopus": "git+https://github.com/PrivateSky/octopus.git",
-    "chart.js": "^2.9.4"
+    "octopus": "git+https://github.com/PrivateSky/octopus.git"
   },
   "keywords": [
     "ssapp"

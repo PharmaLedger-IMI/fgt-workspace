@@ -8,7 +8,7 @@
 function createOrderSSI(data, domain) {
     console.log("New ORDER_SSI in domain", domain);
     const keyssiSpace = require("opendsu").loadApi("keyssi");
-    return keyssiSpace.buildTemplateArraySSI(domain, [data.orderId, data.requesterId]);
+    return keyssiSpace.createArraySSI(domain, [data.orderId, data.requesterId]);
 }
 
 function command(server){

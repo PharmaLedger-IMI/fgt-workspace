@@ -12,7 +12,6 @@ const endpoint = 'orderline';
  */
 function OrderLineService(strategy){
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
-
     /**
      * Creates an order DSU
      * @param {string} orderId
