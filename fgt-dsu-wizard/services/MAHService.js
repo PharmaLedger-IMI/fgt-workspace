@@ -1,3 +1,8 @@
+
+/**
+ * @param {string} domain: anchoring domain. defaults to 'default'
+ * @param {strategy} strategy
+ */
 function MAHService(domain, strategy){
     const strategies = require('./strategy');
     const resolver = require('opendsu').loadApi('resolver');

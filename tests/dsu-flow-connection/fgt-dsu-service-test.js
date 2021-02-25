@@ -33,7 +33,7 @@ function getOrder(){
 }
 
 function createOrderDSU(strategy, order, callback){
-    const orderService = new (require('../../fgt-dsu-wizard/services/OrderService'))(strategy);
+    const orderService = new (require('../../fgt-dsu-wizard/services/OrderService'))(domain, strategy);
     orderService.create(order, callback);
 }
 

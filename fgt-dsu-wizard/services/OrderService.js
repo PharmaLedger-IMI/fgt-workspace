@@ -4,14 +4,15 @@ const resolver = require('opendsu').loadApi('resolver');
 
 const model = require('../model');
 const Order = model.Order;
-const domain = 'traceability';
 const endpoint = 'order';
 
 /**
- * @param {strategies} strategy (defaults to strategies.SIMPLE)
+ * @param {string} domain: anchoring domain. defaults to 'default'
+ * @param {strategy} strategy
  */
-function OrderService(strategy){
-    const orderLineService = new (require('./OrderLineService'))(strategy);
+function OrderService(domain, strategy){
+    domain = domain || "default";
+    const orderLineService = new (require('./OrderLineService'))(domain, strategy);
 
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
 
