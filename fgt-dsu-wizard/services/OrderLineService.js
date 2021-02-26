@@ -1,16 +1,14 @@
-const wizard = require('../../fgt-dsu-wizard');
-const strategies = require('./strategy');
-const resolver = require('opendsu').loadApi('resolver');
-
-const OrderLine = require('../model').OrderLine;
-const endpoint = 'orderline';
-
+const utils = require('./utils');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
  */
 function OrderLineService(domain, strategy){
+    const strategies = require('./strategy');
+    const OrderLine = require('../model').OrderLine;
+    const endpoint = 'orderline';
+
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
     /**
@@ -33,6 +31,7 @@ function OrderLineService(domain, strategy){
         if (isSimple){
             let keyGenFunction = require('../commands/setOrderLineSSI').createOrderLineSSI;
             let keySSI = keyGenFunction(keyGenData, domain);
+            const resolver = utils.getResolver();
             resolver.createDSUForExistingSSI(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);
@@ -47,7 +46,7 @@ function OrderLineService(domain, strategy){
                 });
             });
         } else {
-            const DSUService = wizard.DSUService;
+            const DSUService = utils.getDSUService();
 
             let getEndpointData = function (orderLine){
                 return {

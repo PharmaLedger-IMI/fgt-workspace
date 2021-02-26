@@ -1,16 +1,15 @@
-const wizard = require('../../fgt-dsu-wizard');
-const strategies = require('./strategy');
-const resolver = require('opendsu').loadApi('resolver');
-
-const model = require('../model');
-const Order = model.Order;
-const endpoint = 'order';
+const utils = require('./utils');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
  */
 function OrderService(domain, strategy){
+    const strategies = require('./strategy');
+    const model = require('../model');
+    const Order = model.Order;
+    const endpoint = 'order';
+
     domain = domain || "default";
     const orderLineService = new (require('./OrderLineService'))(domain, strategy);
 
@@ -33,6 +32,7 @@ function OrderService(domain, strategy){
     let createSimple = function(order, callback){
         let keyGenFunction = require('../commands/setOrderSSI').createOrderSSI;
         let templateKeySSI = keyGenFunction(order, domain);
+        const resolver = utils.getResolver();
         resolver.createDSUForExistingSSI(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);
@@ -57,7 +57,7 @@ function OrderService(domain, strategy){
     }
 
     let createAuthorized = function(order, callback){
-        const DSUService = wizard.DSUService;
+        const DSUService = utils.getDSUService();
 
         let getEndpointData = function (order){
             return {

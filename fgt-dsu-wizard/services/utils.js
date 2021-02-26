@@ -1,3 +1,17 @@
+let resolver, DSUService;
+
+function getResolver(){
+	if (!resolver)
+		resolver = require('opendsu').loadApi('resolver');
+	return resolver;
+}
+
+function getDSUService(){
+	if (!DSUService)
+		DSUService = new (require('./DSUService'));
+	return DSUService;
+}
+
 
 function getPostHandlerFor(apiname){
 
@@ -43,6 +57,9 @@ function getPostHandlerFor(apiname){
 	}
 	return doPost;
 }
+
 module.exports = {
+	getResolver,
+	getDSUService,
 	getPostHandlerFor
 }

@@ -11,10 +11,10 @@ function IdService(domain, strategy){
     domain = domain || "default";
 
     /**
-     * Creates an order
+     * Creates an Actor's Id DSU
      * @param {Actor} actor
      * @param {function} callback
-     * @return {string} keySSI;
+     * @return {Object} keySSI;
      */
     this.create = function(actor, callback){
         if (isSimple){
@@ -33,7 +33,7 @@ function IdService(domain, strategy){
             dsu.writeFile('/', JSON.stringify(actor), (err) => {
                 if (err)
                     return callback(err);
-                dsu.getKeySSIAsString((err, keySSI) => {
+                dsu.getKeySSIAsObject((err, keySSI) => {
                     if (err)
                         return callback(err);
                     callback(undefined, keySSI);
