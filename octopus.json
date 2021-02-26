@@ -156,8 +156,8 @@
             ]
         },
         {
-            "name": "themes/pharmaledger-theme",
-            "src": "http://github.com/privatesky/citrus-theme.git",
+            "name": "themes/pdm-theme",
+            "src": "http://github.com/PharmaLedger-IMI/pdm-theme.git",
             "actions": [
                 {
                     "type": "smartClone",
@@ -166,7 +166,7 @@
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd themes/pharmaledger-theme && npm install"
+                    "cmd": "cd themes/pdm-theme && npm install"
                 }
             ]
         },
@@ -210,12 +210,12 @@
             ]
         },
         {
-            "name": "pharmaledger-theme-wallet-build",
+            "name": "pdm-theme-wallet-build",
             "src": "",
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd themes/pharmaledger-theme && npm run build-dossier"
+                    "cmd": "cd themes/pdm-theme && npm run build-dossier"
                 }
             ]
         },

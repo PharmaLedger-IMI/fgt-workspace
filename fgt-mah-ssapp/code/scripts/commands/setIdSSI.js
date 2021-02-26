@@ -9,9 +9,9 @@
  * @returns {Object} a SeedSSI
  */
 function createIdSSI(actor, domain) {
-    console.log("New MAH_SSI in domain", domain);
+    console.log("New Actor_SSI in domain", domain);
     const keyssiSpace = require("opendsu").loadApi("keyssi");
-    return keyssiSpace.buildTemplateSeedSSI(domain, actor.id + actor.name, undefined, undefined, {"subDomain": actor.name});
+    return keyssiSpace.buildTemplateSeedSSI(domain, actor.id + actor.name + actor.nif, undefined, undefined, {"subDomain": actor.name});
 }
 
 function command(server){

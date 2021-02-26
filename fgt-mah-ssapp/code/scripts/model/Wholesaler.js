@@ -5,8 +5,11 @@ class Wholesaler extends Actor{
     deliveryAddress = "";
 
     constructor(wholesaler) {
-        super(wholesaler);
-        this._copyProps(wholesaler);
+        super();
+        if (typeof wholesaler !== undefined)
+            for (let prop in wholesaler)
+                if (wholesaler.hasOwnProperty(prop))
+                    this[prop] = wholesaler[prop];
     }
 }
 

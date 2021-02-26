@@ -5,8 +5,7 @@ module.exports = {
     ShipmentLine: require('./ShipmentLine'),
     Product: require('./Product'),
     Batch: require('./Batch'),
-    // MAH: require('./MAH'),
-    // Pharmacy: require('./Pharmacy'),
-    // Wholesaler: require('./Wholesaler'),
-    Actor: require('./Actor')
+    MAH: require('./MAH'),
+    Pharmacy: require('./Pharmacy'),
+    Wholesaler: require('./Wholesaler')
 }
