@@ -16,9 +16,9 @@ fgt-mah-ssapp/code/constitution
 fgt-mah-ssapp/code/scripts/bundles
 fgt-mah-ssapp/seed
 
-fgt-mah-ssapp/code/scripts/services
-fgt-mah-ssapp/code/scripts/model
-fgt-mah-ssapp/code/scripts/commands
+fgt-mah-ssapp/code/scripts/services/*.js
+fgt-mah-ssapp/code/scripts/model/*.js
+fgt-mah-ssapp/code/scripts/commands/*.js
 
 fgt-pharmacy-ssapp/code/constitution
 fgt-pharmacy-ssapp/code/scripts/bundles
