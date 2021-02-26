@@ -175,16 +175,10 @@ class DSUService {
 
         let obtainTransaction = ()=>{
             doPost(`/${domain}/begin`, '',(err, transactionId) => {
-                if (err) {
+                if (err)
                     return callback(err);
-                }
-                const url = `/${domain}/setDLDomain/${transactionId}`;
-                doPost(url, domain, (err) => {
-                    if (err)
-                        return callback(err);
 
-                    return callback(undefined, transactionId);
-                });
+                return callback(undefined, transactionId);
             });
         }
 

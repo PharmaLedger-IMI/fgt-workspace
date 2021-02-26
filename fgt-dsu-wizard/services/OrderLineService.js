@@ -39,7 +39,11 @@ function OrderLineService(domain, strategy){
                 dsu.writeFile('/data', data, (err) => {
                     if (err)
                         return callback(err);
-                    callback(undefined, keySSI);
+                    dsu.getKeySSIAsObject((err, keySSI) => {
+                        if (err)
+                            return callback(err);
+                        callback(undefined, keySSI);
+                    });
                 });
             });
         } else {

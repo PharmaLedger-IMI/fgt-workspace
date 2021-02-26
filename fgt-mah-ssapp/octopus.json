@@ -49,11 +49,15 @@
 			  "options": {
 				  "overwrite": true
 			  }
+		  },
+		  {
+			  "type": "remove",
+			  "target": "./builds"
 		  }
 	  ]
 	},
 	  {
-		  "name": "fgt-dsu-wizard",
+		  "name": "Copy Model & services from fgt-dsu-wizard",
 		  "src": "",
 		  "actions": [
 			  {
@@ -98,8 +102,8 @@
 			  },
 			  {
 				  "type": "copy",
-				  "src": "../fgt-dsu-wizard/commands/setMAHSSI.js",
-				  "target": "code/scripts/commands/setMAHSSI.js",
+				  "src": "../fgt-dsu-wizard/commands/setIdSSI.js",
+				  "target": "code/scripts/commands/setIdSSI.js",
 				  "options": {
 					  "overwrite": true
 				  }

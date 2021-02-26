@@ -49,7 +49,7 @@ let LOADER_GLOBALS = {
 	},
 	NEW_OR_RESTORE_CONTAINER_ID: "restore-new-container",
 	PASSWORD_CONTAINER_ID: "credentials-container",
-	MODE: 'secure',
+	MODE: 'dev-secure',
 	PASSWORD_MIN_LENGTH: 12,
 	USERNAME_MIN_LENGTH: 6,
 	USERNAME_REGEX: /^[a-zA-Z]([A-Za-z0-9]+[\\._]{0,1}[A-Za-z0-9]+){2,10}$/,

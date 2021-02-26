@@ -12,12 +12,6 @@
       "path": "/home",
       "icon": "fa-home",
       "pageSrc": "home.html"
-    },
-    {
-      "name": "Manage Product",
-      "path": "/",
-      "icon": "fa-home",
-      "pageSrc": "product.html"
     }
   ]
 }
