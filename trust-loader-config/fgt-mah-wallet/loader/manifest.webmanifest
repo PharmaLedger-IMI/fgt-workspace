@@ -56,6 +56,5 @@
     }
   ],
   "start_url": "/fgt-mah-wallet/loader/",
-  "display": "standalone",
   "scope": "/fgt-mah-wallet/loader/"
 }

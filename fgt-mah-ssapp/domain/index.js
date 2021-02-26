@@ -5,6 +5,20 @@ const keyssiresolver = openDSU.loadApi("resolver");
 const securityContext = openDSU.loadApi("sc");
 let mainDSU;
 
+$$.swarm.describe("leafletLoader", {
+    mountDSU: function (mountPath, gtinSSI) {
+        rawDossier.readFile("/code/constitution/gtinResolver.js", (err, content) => {
+            eval(content.toString());
+            let gtinResolver = require("gtin-resolver");
+            rawDossier.mount(mountPath, gtinSSI, (err) => {
+                rawDossier.listFiles(`${mountPath}/batch/product`, (err, files) => {
+                    this.return(err);
+                });
+            });
+        });
+    }
+});
+
 $$.swarms.describe('toDoSwarm', {
     start: function (data) {
         this.__initMainDSU();

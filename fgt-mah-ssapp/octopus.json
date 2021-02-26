@@ -102,6 +102,14 @@
 			  },
 			  {
 				  "type": "copy",
+				  "src": "../fgt-dsu-wizard/services/LocaleService.js",
+				  "target": "code/scripts/services/LocaleService.js",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
 				  "src": "../fgt-dsu-wizard/commands/setIdSSI.js",
 				  "target": "code/scripts/commands/setIdSSI.js",
 				  "options": {

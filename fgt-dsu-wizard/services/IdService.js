@@ -1,4 +1,3 @@
-
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
@@ -41,5 +40,6 @@ function IdService(domain, strategy){
             });
         });
     }
-
 }
+
+module.exports = IdService;

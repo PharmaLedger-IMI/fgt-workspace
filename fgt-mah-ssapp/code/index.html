@@ -22,6 +22,7 @@
                         status: 'completed'
                     }
                 }));
+                console.log("Index page Event Dispatched...")
             }
         }
     </script>
@@ -30,13 +31,9 @@
 <body>
 <psk-app-root>
     <div class="global_container">
-        <aside>
-            <app-menu item-renderer="sidebar-renderer">
-                <psk-user-profile slot="before"></psk-user-profile>
-            </app-menu>
-        </aside>
+        <app-menu item-renderer="sidebar-renderer"></app-menu>
         <section>
-            <psk-app-router failRedirectTo="/home"></psk-app-router>
+            <psk-app-router failRedirectTo="/home2"></psk-app-router>
         </section>
     </div>
 </psk-app-root>
