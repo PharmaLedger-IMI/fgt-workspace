@@ -1,7 +1,7 @@
 import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
 console.log(ContainerController);
 
-import {IdService} from '../services/IdService.js';
+
 
 export default class IdController extends ContainerController {
     constructor(element) {
@@ -10,7 +10,7 @@ export default class IdController extends ContainerController {
             identified: true,
             reason: "pending",
         });
-        this.idService = new IdService('traceability');
+        //this.idService = new IdService('traceability');
         console.log("Id controller initialized");
         this.__testId(this.__updateId);
     }
