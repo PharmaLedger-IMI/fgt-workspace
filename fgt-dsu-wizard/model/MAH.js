@@ -1,8 +1,6 @@
 const Actor = require('./Actor');
 
 class MAH extends Actor{
-    name = "";
-    nif = "";
 
     constructor(mah) {
         super();

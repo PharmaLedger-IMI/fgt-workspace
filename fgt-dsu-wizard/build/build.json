@@ -1,0 +1,3 @@
+{
+  "wizard": {"deps": "../../model,../../services,../../commands", "autoload":  true}
+}

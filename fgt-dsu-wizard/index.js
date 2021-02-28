@@ -8,7 +8,7 @@ function Init(server){
 	require('fs').readdir(cmdsDir, (err, files) => {
 		if (err)
 			throw err;
-		files.filter(f => f !== 'setSSI.js').forEach(f => {
+		files.filter(f => f !== 'setSSI.js' && f !== 'index.js').forEach(f => {
 			require(path.join(cmdsDir, f)).command(server);
 		});
 	});

@@ -57,61 +57,13 @@
 	  ]
 	},
 	  {
-		  "name": "Copy Model & services from fgt-dsu-wizard",
+		  "name": "Copy fgt-dsu-wizard-bundle",
 		  "src": "",
 		  "actions": [
 			  {
 				  "type": "copy",
-				  "src": "../fgt-dsu-wizard/model",
-				  "target": "code/scripts/model",
-				  "options": {
-					  "overwrite": true
-				  }
-			  },
-			  {
-				  "type": "copy",
-				  "src": "../fgt-dsu-wizard/services/DSUService.js",
-				  "target": "code/scripts/services/DSUService.js",
-				  "options": {
-					  "overwrite": true
-				  }
-			  },
-			  {
-				  "type": "copy",
-				  "src": "../fgt-dsu-wizard/services/MAHService.js",
-				  "target": "code/scripts/services/MAHService.js",
-				  "options": {
-					  "overwrite": true
-				  }
-			  },
-			  {
-				  "type": "copy",
-				  "src": "../fgt-dsu-wizard/services/strategy.js",
-				  "target": "code/scripts/services/strategy.js",
-				  "options": {
-					  "overwrite": true
-				  }
-			  },
-			  {
-				  "type": "copy",
-				  "src": "../fgt-dsu-wizard/services/utils.js",
-				  "target": "code/scripts/services/utils.js",
-				  "options": {
-					  "overwrite": true
-				  }
-			  },
-			  {
-				  "type": "copy",
-				  "src": "../fgt-dsu-wizard/services/LocaleService.js",
-				  "target": "code/scripts/services/LocaleService.js",
-				  "options": {
-					  "overwrite": true
-				  }
-			  },
-			  {
-				  "type": "copy",
-				  "src": "../fgt-dsu-wizard/commands/setIdSSI.js",
-				  "target": "code/scripts/commands/setIdSSI.js",
+				  "src": "../fgt-dsu-wizard/build/bundles/wizard.js",
+				  "target": "code/scripts/bundles/wizard.js",
 				  "options": {
 					  "overwrite": true
 				  }

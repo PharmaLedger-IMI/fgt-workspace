@@ -220,6 +220,16 @@
             ]
         },
         {
+            "name": "Bundle_dsu_wizard",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-dsu-wizard && npm run prebuild"
+                }
+            ]
+        },
+        {
             "name": "gtin-resolver-build",
             "src": "",
             "actions": [

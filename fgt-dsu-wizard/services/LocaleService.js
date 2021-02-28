@@ -18,7 +18,7 @@ function LocaleService(dsuStorage, lang){
      */
     this.loadLocale = function(locale){
         let path = `${LOCALE_PATH}${locale}.json`;
-        let localeFile = dsuStorage.getObject(path, (err, result) => {
+        dsuStorage.getObject(path, (err, result) => {
             if (err)
                 throw new Error("Could not load locale file");
             console.log(`Loaded locale ${locale}`);

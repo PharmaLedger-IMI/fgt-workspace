@@ -30,12 +30,21 @@
 
 <body>
 <psk-app-root>
-    <div class="global_container">
-        <app-menu item-renderer="sidebar-renderer"></app-menu>
-        <section>
-            <psk-app-router failRedirectTo="/home2"></psk-app-router>
-        </section>
-    </div>
+    <psk-container controller-name="IdController">
+        <psk-condition condition="@identified">
+            <div slot="condition-true">
+                <div class="global_container">
+                    <app-menu item-renderer="sidebar-renderer"></app-menu>
+                    <section>
+                        <psk-app-router failRedirectTo="/home2"></psk-app-router>
+                    </section>
+                </div>
+            </div>
+            <div slot="condition-false">
+                <h1>THE CONDITION WAS FALSE</h1>
+            </div>
+        </psk-condition>
+    </psk-container>
 </psk-app-root>
 </body>
 
