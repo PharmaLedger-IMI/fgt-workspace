@@ -16,5 +16,8 @@ function Init(server){
 
 module.exports = {
 	Init,
-	DSUService: new (require('./services/DSUService'))
+	Model: require("./model"),
+	Commands: require("./commands"),
+	DSUService: new (require('./services/DSUService')),
+	Services: require("./services"),
 };

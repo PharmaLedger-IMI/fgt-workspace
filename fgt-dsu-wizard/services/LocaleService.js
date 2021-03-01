@@ -1,14 +1,50 @@
-const LOCALE_PATH = "/resources/locale/";
-
-const SUPPORTED = {
+let SUPPORTED = {
     en_US: "en_US"
-}
+};
 
 /**
- * @param {DSUStorage} dsuStorage: the Controller's DSU Storage
+ * This service needs a Global called LOCALE with the locale strings as such:
+ * <pre>{
+ *     "en_US": {
+ *         "pageX": {
+ *             "key1": "...",
+ *             "component1": {
+ *                 "title": "...",
+ *                 "placeholder": "..."
+ *             }
+ *         },
+ *         "pageY": {...}
+ *     },
+ *     "pt_PT": {
+ *         "pageX": {
+ *             "key1": "...",
+ *             "component1": {
+ *                 "title": "...",
+ *                 "placeholder": "..."
+ *             }
+ *         },
+ *         "pageY": {...}
+ *     }
+ * }</pre>
+ * <strong>locale.js should be included in index.html via</strong>
+ * <pre>
+ *     <script src="resources/locale/locale.js"></script>
+ * </pre>
+ * And will provide access to the strings via '@locale.pageX.key1'
  * @param {SUPPORTED} lang
  */
-function LocaleService(dsuStorage, lang){
+function LocaleService(lang){
+    let _genSupported = function(){
+        if (!LOCALE)
+            throw new Error("Could not find Locale Resource");
+        let available = Object.keys(LOCALE);
+        available.forEach(a => {
+            SUPPORTED[a] = a;
+        })
+    };
+
+    _genSupported();
+
     lang = lang || SUPPORTED.en_US;
     let localeObj;
 
@@ -17,13 +53,9 @@ function LocaleService(dsuStorage, lang){
      * @param {SUPPORTED} locale
      */
     this.loadLocale = function(locale){
-        let path = `${LOCALE_PATH}${locale}.json`;
-        dsuStorage.getObject(path, (err, result) => {
-            if (err)
-                throw new Error("Could not load locale file");
-            console.log(`Loaded locale ${locale}`);
-            localeObj = result;
-        });
+        if (!SUPPORTED.hasOwnProperty(locale))
+            throw new Error("Unsupported Locale");
+        localeObj = LOCALE[locale];
     }
 
     /**
@@ -34,17 +66,37 @@ function LocaleService(dsuStorage, lang){
         if (!model || typeof model !== 'object')
             throw new Error("Model is not suitable for locale binding");
         model.locale = localeObj;
+        return model;
     }
+
     this.loadLocale(lang);
+}
+
+let bindToController = function(controller){
+    if (!controller.localized) {
+        let func = controller.setModel;
+        controller.setModel = function (model) {
+            localeService.bindToModel(model);
+            return func(model);
+        };
+        controller.localized = true;
+    }
 }
 
 let localeService;
 
 module.exports = {
-    getInstance: function (dsuStorage, lang){
+    /**
+     * Returns the instance of the LocaleService and binds the SetModel method of the controller to always include the locale info
+     * @param {SUPPORTED} lang: the language to use
+     * @param {ContainerController} controller: the current controller
+     * @returns {LocaleService}
+     */
+    getInstance: function (lang, controller){
         if (!localeService)
-            localeService = new LocaleService(dsuStorage, lang);
+            localeService = new LocaleService(lang);
+        bindToController(controller);
         return localeService;
     },
-    supported: SUPPORTED
+    supported: {...SUPPORTED}
 }

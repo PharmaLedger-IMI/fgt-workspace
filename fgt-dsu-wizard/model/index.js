@@ -1,3 +1,5 @@
+console.log("Now in MODELLL");
+
 module.exports = {
     Order: require('./Order'),
     OrderLine: require('./OrderLine'),
@@ -7,6 +9,5 @@ module.exports = {
     Batch: require('./Batch'),
     MAH: require('./MAH'),
     Pharmacy: require('./Pharmacy'),
-    Wholesaler: require('./Wholesaler'),
-    Actor: require('./Actor')
+    Wholesaler: require('./Wholesaler')
 }

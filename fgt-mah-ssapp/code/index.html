@@ -11,6 +11,7 @@
     <script src="scripts/bundles/iframeBoot.js"></script>
     <script src="scripts/bundles/webshims.js"></script>
     <script src="scripts/bundles/pskruntime.js"></script>
+    <script src="resources/locale/locale.js"></script>
     <script src="scripts/bundles/wizard.js"></script>
     <script type="module" src="cardinal/cardinal.esm.js"></script>
     <script>
@@ -42,7 +43,7 @@
                 </div>
             </div>
             <div slot="condition-false">
-                <h1>THE CONDITION WAS FALSE</h1>
+                <psk-label class="page-title" label="@locale.home.title"></psk-label>
             </div>
         </psk-condition>
     </psk-container>

@@ -1,18 +1,22 @@
 import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
-console.log(ContainerController);
 
-
+const wizard = require('wizard');
+const IdService = wizard.Services.IdService;
+const LocaleService = wizard.Services.LocaleService;
 
 export default class IdController extends ContainerController {
     constructor(element) {
         super(element);
+        this.self = this;
+        this.locale = LocaleService.getInstance(LocaleService.supported.en_US, this);
         this.model = this.setModel({
-            identified: true,
+            identified: false,
             reason: "pending",
         });
-        //this.idService = new IdService('traceability');
+        this.idService = new IdService('traceability');
         console.log("Id controller initialized");
-        this.__testId(this.__updateId);
+        let bindedFunc = this.__updateId.bind(this);
+        this.__testId(bindedFunc);
     }
 
     __updateId(err, actorId){
@@ -31,8 +35,8 @@ export default class IdController extends ContainerController {
 
     __testId(callback){
         this.DSUStorage.getObject('/actorId', (err, actorId) => {
-            if (err)
-                return callback(err);
+            if (err || !actorId)
+                return callback("No actorId found");
             callback(undefined, actorId);
         });
     }
