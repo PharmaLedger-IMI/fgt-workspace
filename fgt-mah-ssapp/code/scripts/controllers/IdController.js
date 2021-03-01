@@ -4,10 +4,11 @@ const wizard = require('wizard');
 const IdService = wizard.Services.IdService;
 const LocaleService = wizard.Services.LocaleService;
 
+const id_path = "/actorId";
+
 export default class IdController extends ContainerController {
     constructor(element) {
         super(element);
-        this.self = this;
         this.locale = LocaleService.getInstance(LocaleService.supported.en_US, this);
         this.model = this.setModel({
             identified: false,
@@ -17,6 +18,29 @@ export default class IdController extends ContainerController {
         console.log("Id controller initialized");
         let bindedFunc = this.__updateId.bind(this);
         this.__testId(bindedFunc);
+    }
+
+    /**
+     * Creates the ID DSU and mounts it to the id_path
+     * @param {Actor} actor
+     * @param {function} callback
+     */
+    register(actor, callback){
+        this.__testId((err, actorId) => {
+            if (!err)
+                return callback("Registration already exists");
+            this.idService.create(actor, (err, keySSI) => {
+                if (err)
+                    return callback(err);
+                console.log(`Id DSU created with ssi: ${keySSI.getIdentifier(true)}`);
+                this.DSUStorage.call('mount', id_path, keySSI.derive(), (err) => {
+                    if (err)
+                        return callback(err);
+                    console.log(`Id DSU mounted in ${id_path}`);
+                    callback();
+                });
+            });
+        });
     }
 
     __updateId(err, actorId){
@@ -34,7 +58,7 @@ export default class IdController extends ContainerController {
     }
 
     __testId(callback){
-        this.DSUStorage.getObject('/actorId', (err, actorId) => {
+        this.DSUStorage.getObject(id_path, (err, actorId) => {
             if (err || !actorId)
                 return callback("No actorId found");
             callback(undefined, actorId);
