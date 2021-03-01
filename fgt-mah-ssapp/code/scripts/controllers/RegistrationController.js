@@ -1,4 +1,4 @@
-import ModalController from '../../../cardinal/controllers/base-controllers/ModalController.js';
+import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
 
 export default class RegistrationController extends ContainerController {
     constructor(element) {
