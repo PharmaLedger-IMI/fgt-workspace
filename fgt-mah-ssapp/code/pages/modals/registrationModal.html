@@ -1,16 +1,11 @@
-<psk-container controller-name="ModalController.js">
+<psk-container controller-name="RegistrationController">
     <psk-modal opened="@modal.opened">
-        <psk-tab-navigator>
-            <psk-tab title="@locale.registration.title">
-                <psk-form controller-name="RegistrationController" form-actions="submit">
-                    <psk-text-input view-model="locale.registration.fullName"></psk-text-input>
-                    <psk-email-input view-model="locale.registration.email"></psk-email-input>
-                    <psk-number-input view-model="locale.registration.nif"></psk-number-input>
-                    <psk-password-input view-model="locale.registration.password"></psk-password-input>
-                    <psk-password-input view-model="locale.registration.password2"></psk-password-input>
-                    <psk-button type="submit" event-name="submit" label="@locale.registration.register"></psk-button>
-                </psk-form>
-            </psk-tab>
-        </psk-tab-navigator>
+        <psk-label slot="title" class="title" label="@locale.registration.title"></psk-label>
+        <psk-text-input view-model="locale.registration.fullName"></psk-text-input>
+        <psk-email-input view-model="locale.registration.email"></psk-email-input>
+        <psk-number-input view-model="locale.registration.nif"></psk-number-input>
+        <psk-password-input view-model="locale.registration.password"></psk-password-input>
+        <psk-password-input view-model="locale.registration.password2"></psk-password-input>
+        <psk-button slot="footer" event-name="registerActor" label="@locale.registration.register"></psk-button>
     </psk-modal>
 </psk-container>

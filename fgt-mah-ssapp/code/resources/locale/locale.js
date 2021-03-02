@@ -8,13 +8,13 @@ const LOCALE = {
             fullName: {
                 label: "Registered MAH's name:",
                 placeholder: 'Please enter your name here...',
-                value: 'PDM sells drugs',
+                value: 'PDM the Manufacturer',
                 required: true
             },
             email: {
                 label: 'Registered Email:',
                 placeholder: 'Please enter your email here...',
-                value: 'drug_sellers@pdmfc.com',
+                value: 'mah@pdmfc.com',
                 required: true
             },
             nif: {
@@ -25,15 +25,15 @@ const LOCALE = {
             },
             password: {
                 label: 'Password:',
-                required: true
+                required: true,
+                value: 123456
             },
             password2: {
                 label: 'Please repeat your password:',
-                required: true
+                required: true,
+                value: 123456
             },
             register: "Register"
         }
     }
 }
-
-module.exports = LOCALE;

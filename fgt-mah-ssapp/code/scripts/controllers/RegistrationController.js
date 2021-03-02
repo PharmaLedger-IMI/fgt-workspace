@@ -1,11 +1,11 @@
-import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
+import ModalController from "../../cardinal/controllers/base-controllers/ModalController.js";
+const LocaleService = require('wizard').Services.LocaleService;
 
-export default class RegistrationController extends ContainerController {
+
+export default class RegistrationController extends ModalController {
     constructor(element) {
         super(element);
-        this.model = this.setModel(this.getModel());
-
-        this.on('openModal', _ => this.model.modal.opened = true);
-        this.on('closeModal', _ => this.model.modal.opened = false);
+        this.locale = LocaleService.getInstance(LocaleService.supported.en_US, this);
+        this.model = this.setModel({});
     }
 }

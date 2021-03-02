@@ -16,8 +16,14 @@ export default class IdController extends ContainerController {
         });
         this.idService = new IdService('traceability');
         console.log("Id controller initialized");
-        let bindedFunc = this.__updateId.bind(this);
-        this.__testId(bindedFunc);
+        element.addEventListener('registerActor', (event) => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            console.log(event);
+            this.closeModal()
+        }, true)
+
+        this.__testId();
     }
 
     /**
@@ -43,25 +49,37 @@ export default class IdController extends ContainerController {
         });
     }
 
-    __updateId(err, actorId){
-        if (err) {
-            this.model = this.setModel({
-                identified: false,
-                reason: "invalid"
+    __showRegistrationModal(){
+        let self = this;
+        this.showModal('registration-modal', {}, (err, result) => {
+            if (err)
+                throw err;
+            console.log("return", result);
+            this.register(result, (err) => {
+                if (err) {
+                    console.log("Could not register...");
+                    return;
+                }
+                self.__testId();
             });
-            return;
-        }
-        this.model = this.setModel({
-            identified: true,
-            actor: actorId
         });
     }
 
-    __testId(callback){
+    __testId(){
+        let self = this;
         this.DSUStorage.getObject(id_path, (err, actorId) => {
-            if (err || !actorId)
-                return callback("No actorId found");
-            callback(undefined, actorId);
+            if (err || !actorId) {
+                self.model = self.setModel({
+                    identified: false,
+                    reason: "invalid"
+                });
+                self.__showRegistrationModal();
+            } else {
+                self.model = self.setModel({
+                    identified: true,
+                    actor: actorId
+                });
+            }
         });
     }
 }

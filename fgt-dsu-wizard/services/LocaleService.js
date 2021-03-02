@@ -55,7 +55,7 @@ function LocaleService(lang){
     this.loadLocale = function(locale){
         if (!SUPPORTED.hasOwnProperty(locale))
             throw new Error("Unsupported Locale");
-        localeObj = LOCALE[locale];
+        localeObj = JSON.stringify(LOCALE[locale]);
     }
 
     /**
@@ -65,7 +65,7 @@ function LocaleService(lang){
     this.bindToModel = function(model){
         if (!model || typeof model !== 'object')
             throw new Error("Model is not suitable for locale binding");
-        model.locale = localeObj;
+        model.locale = JSON.parse(localeObj);
         return model;
     }
 
