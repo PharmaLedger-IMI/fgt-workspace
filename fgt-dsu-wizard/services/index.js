@@ -5,5 +5,6 @@ module.exports = {
     OrderLineService: require("./OrderLineService"),
     OrderService: require("./OrderService"),
     ShipmentService: require("./ShipmentService"),
+    StatusService: require("./StatusService"),
     Strategy: require("./strategy")
 }

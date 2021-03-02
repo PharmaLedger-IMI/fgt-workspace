@@ -4,6 +4,7 @@ module.exports = {
     createOrderLineSSI: require("./setOrderLineSSI").createOrderLineSSI,
     createOrderLinesSSI: require("./setOrderLinesSSI").createOrderLinesSSI,
     createOrderSSI: require("./setOrderSSI").createOrderSSI,
+    createStatusSSI: require('./setStatusSSI').createStatusSSI,
     createProductGtinBatchSSI: require("./setProductGtinBatchSSI").createProductGtinBatchSSI,
     createProductGtinSSI: require("./setProductGtinSSI").createProductGtinSSI,
     createSendingPartnerSSI: require("./setSendingPartnerSSI").createSendingPartnerSSI,

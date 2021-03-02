@@ -1,3 +1,5 @@
+const OrderStatus = require('./OrderStatus');
+
 class Order{
     orderId;
     requesterId;
@@ -11,7 +13,7 @@ class Order{
         this.requesterId = requesterId;
         this.senderId = senderId;
         this.shipToAddress = shipToAddress;
-        this.status = status || "created";
+        this.status = status || OrderStatus.CREATED;
         this.orderLines = orderLines || [];
     }
 }

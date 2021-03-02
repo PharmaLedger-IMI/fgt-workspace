@@ -8,10 +8,12 @@ function OrderService(domain, strategy){
     const strategies = require('./strategy');
     const model = require('../model');
     const Order = model.Order;
+    const OrderStatus = model.OrderStatus;
     const endpoint = 'order';
 
     domain = domain || "default";
     const orderLineService = new (require('./OrderLineService'))(domain, strategy);
+    const statusService = new (require('./StatusService'))(domain, strategy);
 
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
 
@@ -27,6 +29,23 @@ function OrderService(domain, strategy){
         } else {
             createAuthorized(order, callback);
         }
+    }
+
+    let createOrderStatus = function(dsu, status, callback){
+        if (typeof status === 'function'){
+            callback = status;
+            status = OrderStatus.CREATED;
+        }
+        statusService.create(status, (err, keySSI) => {
+            if (err)
+                return callback(err);
+            dsu.mount("/status", keySSI, (err) => {
+               if (err)
+                   return callback(err);
+               console.log(`Status DSU (${keySSI.getIdentifier(true)}) mounted at '/status'`)
+               callback();
+            });
+        });
     }
 
     let createSimple = function(order, callback){
@@ -45,10 +64,14 @@ function OrderService(domain, strategy){
                     dsu.writeFile('/lines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
                         if (err)
                             return callback(err);
-                        dsu.getKeySSIAsObject((err, keySSI) => {
+                        createOrderStatus(dsu, (err) => {
                             if (err)
                                 return callback(err);
-                            callback(undefined, keySSI);
+                            dsu.getKeySSIAsObject((err, keySSI) => {
+                                if (err)
+                                    return callback(err);
+                                callback(undefined, keySSI);
+                            });
                         });
                     });
                 });

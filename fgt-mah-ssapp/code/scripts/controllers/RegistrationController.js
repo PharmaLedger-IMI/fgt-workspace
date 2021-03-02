@@ -1,6 +1,6 @@
 import ModalController from "../../cardinal/controllers/base-controllers/ModalController.js";
 const LocaleService = require('wizard').Services.LocaleService;
-const Actor = require('wizard').Model.MAH;
+const MAH = require('wizard').Model.MAH;
 
 
 export default class RegistrationController extends ModalController {
@@ -22,6 +22,6 @@ export default class RegistrationController extends ModalController {
         Object.keys(this.model)
             .filter(k => !!this.model[k].value)
             .map(k => info[k] = this.model[k].value);
-        return new Actor(info);
+        return new MAH(info);
     }
 }

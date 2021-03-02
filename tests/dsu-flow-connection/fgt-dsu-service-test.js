@@ -18,6 +18,7 @@ const model = require('../../fgt-dsu-wizard/model');
 const strategies = require('../../fgt-dsu-wizard/services/strategy');
 const OrderLine = model.OrderLine;
 const Order =  model.Order;
+const OrderStatus = model.OrderStatus;
 
 let strategyInUse = strategies.AUTHORIZED;
 
@@ -73,12 +74,17 @@ function validateOrder(keySSI, callback){
                 return callback(e);
             }
 
-            dsu.readFile("/lines", (err, orderLines) => {
+            dsu.readFile("/status", (err, data) => {
                 if (err)
                     return callback(err);
-                assert.notNull(orderLines);
-                orderLines = JSON.parse(orderLines);
-                validateOrderLines(order.orderLines, orderLines, callback);
+                assert.equal(JSON.stringify(OrderStatus.CREATED), data.toString(), "Mounted status do not match");
+                dsu.readFile("/lines", (err, orderLines) => {
+                    if (err)
+                        return callback(err);
+                    assert.notNull(orderLines);
+                    orderLines = JSON.parse(orderLines);
+                    validateOrderLines(order.orderLines, orderLines, callback);
+                });
             });
         });
     });

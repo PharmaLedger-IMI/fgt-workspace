@@ -171,7 +171,7 @@ function WalletBuilderService(options) {
         const instantiateNewDossier = (files) => {
             let resolver = require("opendsu").loadApi("resolver");
             let keyssi = require("opendsu").loadApi("keyssi");
-            resolver.createDSU(keyssi.buildTemplateSeedSSI(VAULT_DOMAIN, undefined, undefined,undefined,VAULT_DOMAIN), (err, appDSU) => {
+            resolver.createDSU(keyssi.createTemplateSeedSSI(VAULT_DOMAIN, undefined, undefined,undefined,VAULT_DOMAIN), (err, appDSU) => {
                 if (err) {
                     return callback(err);
                 }
@@ -445,7 +445,7 @@ function WalletBuilderService(options) {
                 if (err) {
                     return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to read wallet dsu type from ${WALLET_TEMPLATE_FOLDER + "/" + SSI_FILE_NAME}`,err));
                 }
-                resolver.createDSU(keySSISpace.buildTemplateWalletSSI(domain, arrayWithSecrets, options.vault), {useSSIAsIdentifier:true, dsuTypeSSI: dsuType.toString()}, (err, walletDSU) => {
+                resolver.createDSU(keySSISpace.createTemplateWalletSSI(domain, arrayWithSecrets, options.vault), {useSSIAsIdentifier:true, dsuTypeSSI: dsuType.toString()}, (err, walletDSU) => {
                     if (err) {
                         return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to create wallet of type  ${dsuType}`,err));
                     }
@@ -480,7 +480,7 @@ function WalletBuilderService(options) {
             });
         }
 
-        resolver.loadDSU(keySSISpace.buildTemplateWalletSSI(domain, arrayWithSecrets, options.vault), (err, walletDSU) => {
+        resolver.loadDSU(keySSISpace.createTemplateWalletSSI(domain, arrayWithSecrets, options.vault), (err, walletDSU) => {
             if(err){
                 _build();
             } else {
