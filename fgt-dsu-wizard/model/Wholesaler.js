@@ -5,7 +5,7 @@ class Wholesaler extends Actor{
     deliveryAddress = "";
 
     constructor(wholesaler) {
-        super();
+        super(wholesaler);
         if (typeof wholesaler !== undefined)
             for (let prop in wholesaler)
                 if (wholesaler.hasOwnProperty(prop))

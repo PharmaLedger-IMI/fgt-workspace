@@ -4,7 +4,7 @@ class Pharmacy extends Actor{
     deliveryAddress = "";
 
     constructor(pharmacy) {
-        super();
+        super(pharmacy);
         if (typeof pharmacy !== undefined)
             for (let prop in pharmacy)
                 if (pharmacy.hasOwnProperty(prop))

@@ -9,7 +9,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "e7ef47b355e041ccc5ea1779547654eb37c91d2d"
+                    "commit": "789d47f654f35af129302e1f921a6a93b991f25f"
                 },
                 {
                     "type": "execute",
@@ -29,7 +29,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "af26517102dbe5b0e15c6be5be001a0d6ffda787"
+                    "commit": "c1d1f7bc7efac14272b82d770e068c8269ed7ab1"
                 },
                 {
                     "type": "execute",
@@ -70,7 +70,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "dc55ae7e4b199f5e63cd0906d5a956a76b7ff83e"
+                    "commit": "06cdf72a7e2537aafc9731604a1ec9acf291e8c4"
                 },
                 {
                     "type": "execute",
@@ -90,7 +90,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "dc55ae7e4b199f5e63cd0906d5a956a76b7ff83e"
+                    "commit": "06cdf72a7e2537aafc9731604a1ec9acf291e8c4"
                 },
                 {
                     "type": "execute",
@@ -110,7 +110,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "dc55ae7e4b199f5e63cd0906d5a956a76b7ff83e"
+                    "commit": "06cdf72a7e2537aafc9731604a1ec9acf291e8c4"
                 },
                 {
                     "type": "execute",
@@ -164,18 +164,18 @@
             ]
         },
         {
-            "name": "themes/pharmaledger-theme",
-            "src": "https://github.com/PrivateSky/blue-fluorite-theme.git",
+            "name": "themes/pdm-theme",
+            "src": "http://github.com/PharmaLedger-IMI/pdm-theme.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "347d1aceaf1f06b09d0307f9b78049f313b783aa"
+                    "commit": "f1ae758a43a2b8d2fd87909ead1dedc6cbd2a483"
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd themes/pharmaledger-theme && npm install"
+                    "cmd": "cd themes/pdm-theme && npm install"
                 }
             ]
         },
@@ -219,12 +219,22 @@
             ]
         },
         {
-            "name": "pharmaledger-theme-wallet-build",
+            "name": "pdm-theme-wallet-build",
             "src": "",
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd themes/pharmaledger-theme && npm run build-dossier"
+                    "cmd": "cd themes/pdm-theme && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "Bundle_dsu_wizard",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-dsu-wizard && npm run prebuild"
                 }
             ]
         },

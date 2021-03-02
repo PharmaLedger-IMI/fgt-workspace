@@ -23,10 +23,16 @@ function IdService(domain, strategy){
         }
     }
 
+    let selectMethod = function(templateKeySSI){
+        if (templateKeySSI.getTypeName() === 'array')
+            return resolver.createDSUForExistingSSI;
+        return resolver.createDSU;
+    }
+
     let createSimple = function(actor, callback){
         let keyGenFunction = require('../commands/setIdSSI').createIdSSI;
         let templateKeySSI = keyGenFunction(actor, domain);
-        resolver.createDSUForExistingSSI(templateKeySSI, (err, dsu) => {
+        selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);
             dsu.writeFile('/', JSON.stringify(actor), (err) => {

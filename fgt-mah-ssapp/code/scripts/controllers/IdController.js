@@ -9,20 +9,24 @@ const id_path = "/actorId";
 export default class IdController extends ContainerController {
     constructor(element) {
         super(element);
-        this.locale = LocaleService.getInstance(LocaleService.supported.en_US, this);
+        LocaleService.bindToLocale(this, LocaleService.supported.en_US);
         this.model = this.setModel({
             identified: false,
-            reason: "pending",
+            reason: "pending"
         });
         this.idService = new IdService('traceability');
         console.log("Id controller initialized");
-        element.addEventListener('registerActor', (event) => {
+
+        element.addEventListener('perform-registration', (event) => {
             event.preventDefault();
             event.stopImmediatePropagation();
-            console.log(event);
-            this.closeModal()
+            this.closeModal();
+            this.register(event.detail, (err) => {
+                if (err)
+                    console.log("ERROR - Could not register - Should not be possible!");
+                this.__testId();
+            });
         }, true)
-
         this.__testId();
     }
 
@@ -32,20 +36,21 @@ export default class IdController extends ContainerController {
      * @param {function} callback
      */
     register(actor, callback){
-        this.__testId((err, actorId) => {
-            if (!err)
-                return callback("Registration already exists");
-            this.idService.create(actor, (err, keySSI) => {
+        let self = this;
+        self.idService.create(actor, (err, keySSI) => {
+            if (err)
+                return callback(err);
+            console.log(`Id DSU created with ssi: ${keySSI.getIdentifier(true)}`);
+            self.DSUStorage.enableDirectAccess(err => {
                 if (err)
                     return callback(err);
-                console.log(`Id DSU created with ssi: ${keySSI.getIdentifier(true)}`);
-                this.DSUStorage.call('mount', id_path, keySSI.derive(), (err) => {
+                self.DSUStorage.mount(id_path, keySSI.derive(), (err) => {
                     if (err)
                         return callback(err);
                     console.log(`Id DSU mounted in ${id_path}`);
                     callback();
                 });
-            });
+            })
         });
     }
 

@@ -7,8 +7,8 @@ let SUPPORTED = {
  * <pre>{
  *     "en_US": {
  *         "pageX": {
- *             "key1": "...",
- *             "component1": {
+ *             "stringKey1": "...",
+ *             "formComponent1": {
  *                 "title": "...",
  *                 "placeholder": "..."
  *             }
@@ -17,8 +17,8 @@ let SUPPORTED = {
  *     },
  *     "pt_PT": {
  *         "pageX": {
- *             "key1": "...",
- *             "component1": {
+ *             "stringKey1": "...",
+ *             "formComponent1": {
  *                 "title": "...",
  *                 "placeholder": "..."
  *             }
@@ -55,28 +55,47 @@ function LocaleService(lang){
     this.loadLocale = function(locale){
         if (!SUPPORTED.hasOwnProperty(locale))
             throw new Error("Unsupported Locale");
-        localeObj = JSON.stringify(LOCALE[locale]);
+        localeObj = LOCALE[locale];
     }
 
     /**
-     * Binds the locale object the the controller's model so it's accessible in every controller
+     * binds the SetModel method of the controller to always include the locale info in one of two ways:
+     *  <ul>
+     *     <li>No page is provided: The model will have the whole locale object under the 'locale' key</li>
+     *     <li>A page is provided: the entries under that key will be applied directly to the model, being overwritten by the provided model<br>
+     *         Useful for forms</li>
+     * </ul>
      * @param {Object} model
+     * @param {string} [page]
      */
-    this.bindToModel = function(model){
+    this.bindToModel = function(model, page){
         if (!model || typeof model !== 'object')
             throw new Error("Model is not suitable for locale binding");
-        model.locale = JSON.parse(localeObj);
+        if (!page)
+            model.locale = JSON.parse(JSON.stringify(localeObj));
+        else {
+            let tempObj = JSON.parse(JSON.stringify(localeObj[page]));
+            model = merge(tempObj, model);
+        }
         return model;
     }
 
     this.loadLocale(lang);
 }
 
-let bindToController = function(controller){
+
+const merge = function(target, source){
+    for (const key of Object.keys(source))
+        if (source[key] instanceof Object) Object.assign(source[key], merge(target[key], source[key]))
+    Object.assign(target || {}, source)
+    return target;
+}
+
+const bindToController = function(controller, page){
     if (!controller.localized) {
         let func = controller.setModel;
         controller.setModel = function (model) {
-            localeService.bindToModel(model);
+            model = localeService.bindToModel(model, page);
             return func(model);
         };
         controller.localized = true;
@@ -87,15 +106,16 @@ let localeService;
 
 module.exports = {
     /**
-     * Returns the instance of the LocaleService and binds the SetModel method of the controller to always include the locale info
-     * @param {SUPPORTED} lang: the language to use
+     * Returns the instance of the LocaleService and binds the locale info to the controller via {@link LocaleService#bindToModel}
      * @param {ContainerController} controller: the current controller
+     * @param {SUPPORTED} locale: the supported language to use
+     * @param {string} [page]: the name of the view. Must match an existing key in LOCALE
      * @returns {LocaleService}
      */
-    getInstance: function (lang, controller){
+    bindToLocale: function (controller,locale, page){
         if (!localeService)
-            localeService = new LocaleService(lang);
-        bindToController(controller);
+            localeService = new LocaleService(locale);
+        bindToController(controller, page);
         return localeService;
     },
     supported: {...SUPPORTED}

@@ -5,10 +5,16 @@ const LOCALE = {
         },
         registration: {
             title: "Please register as a Marketing Authorization Holder",
-            fullName: {
+            name: {
                 label: "Registered MAH's name:",
                 placeholder: 'Please enter your name here...',
                 value: 'PDM the Manufacturer',
+                required: true
+            },
+            id: {
+                label: 'Registered Id:',
+                placeholder: 'Please enter your id here...',
+                value: '#ThIsIsApArTnErId=',
                 required: true
             },
             email: {
@@ -23,15 +29,11 @@ const LOCALE = {
                 value: 500000000,
                 required: true
             },
-            password: {
-                label: 'Password:',
+            address: {
+                label: 'Registered Address:',
+                placeholder: "Enter your address...",
                 required: true,
-                value: 123456
-            },
-            password2: {
-                label: 'Please repeat your password:',
-                required: true,
-                value: 123456
+                value: "This in an Address"
             },
             register: "Register"
         }
