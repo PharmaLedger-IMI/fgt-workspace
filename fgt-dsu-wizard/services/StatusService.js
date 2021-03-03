@@ -33,7 +33,7 @@ function StatusService(domain, strategy){
             selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);
-                dsu.writeFile('/', data, (err) => {
+                dsu.writeFile('/info', data, (err) => {
                     if (err)
                         return callback(err);
                     dsu.getKeySSIAsObject((err, keySSI) => {
@@ -52,7 +52,7 @@ function StatusService(domain, strategy){
                 }
 
             DSUService.create(domain, endpointData, (builder, cb) => {
-                builder.addFileDataToDossier("/", data, cb);
+                builder.addFileDataToDossier("/info", data, cb);
             }, callback);
         }
     };

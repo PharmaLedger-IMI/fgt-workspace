@@ -82,9 +82,9 @@ function validateOrder(keySSI, callback){
                 validateOrderLines(order.orderLines, orderLines, (err) => {
                     if (err)
                         return callback(err);
-                    dsu.readFile("/status", (err, data) => {
+                    dsu.readFile("/status/info", (err, data) => {
                         if (err) {
-                            console.log("error reading status")
+                            console.log("error reading status");
                             return callback(err);
                         }
                         assert.equal(JSON.stringify(OrderStatus.CREATED), data.toString(), "Mounted status do not match");

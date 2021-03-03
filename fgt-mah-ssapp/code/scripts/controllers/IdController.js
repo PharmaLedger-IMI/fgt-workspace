@@ -4,7 +4,7 @@ const wizard = require('wizard');
 const IdService = wizard.Services.IdService;
 const LocaleService = wizard.Services.LocaleService;
 
-const id_path = "/actorId";
+const id_path = "/actor";
 
 export default class IdController extends ContainerController {
     constructor(element) {
@@ -12,11 +12,10 @@ export default class IdController extends ContainerController {
         LocaleService.bindToLocale(this, LocaleService.supported.en_US);
         this.model = this.setModel({
             identified: false,
-            reason: "pending"
+            actor: undefined
         });
         this.idService = new IdService('traceability');
         console.log("Id controller initialized");
-
         element.addEventListener('perform-registration', (event) => {
             event.preventDefault();
             event.stopImmediatePropagation();
@@ -24,10 +23,10 @@ export default class IdController extends ContainerController {
             this.register(event.detail, (err) => {
                 if (err)
                     console.log("ERROR - Could not register - Should not be possible!");
-                this.__testId();
+                this._testId();
             });
         }, true)
-        this.__testId();
+       this._testId();
     }
 
     /**
@@ -54,7 +53,7 @@ export default class IdController extends ContainerController {
         });
     }
 
-    __showRegistrationModal(){
+    _showRegistrationModal(){
         let self = this;
         this.showModal('registration-modal', {}, (err, result) => {
             if (err)
@@ -65,25 +64,20 @@ export default class IdController extends ContainerController {
                     console.log("Could not register...");
                     return;
                 }
-                self.__testId();
+                self._testId();
             });
         });
     }
 
-    __testId(){
+    _testId(){
         let self = this;
-        this.DSUStorage.getObject(id_path, (err, actorId) => {
-            if (err || !actorId) {
-                self.model = self.setModel({
-                    identified: false,
-                    reason: "invalid"
-                });
-                self.__showRegistrationModal();
+        this.DSUStorage.getObject(id_path + "/info", (err, actor) => {
+            if (err || !actor) {
+                self.model.identified = false;
+                self._showRegistrationModal();
             } else {
-                self.model = self.setModel({
-                    identified: true,
-                    actor: actorId
-                });
+                self.model.actor = actor;
+                self.model.identified = true;
             }
         });
     }

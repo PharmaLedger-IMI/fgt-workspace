@@ -37,7 +37,7 @@ function IdService(domain, strategy){
         selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);
-            dsu.writeFile('/', JSON.stringify(actor), (err) => {
+            dsu.writeFile('/info', JSON.stringify(actor), (err) => {
                 if (err)
                     return callback(err);
                 dsu.getKeySSIAsObject((err, keySSI) => {
