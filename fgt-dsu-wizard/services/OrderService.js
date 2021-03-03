@@ -108,9 +108,16 @@ function OrderService(domain, strategy){
                         return cb(err);
                     builder.addFileDataToDossier('/lines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
                         if (err)
-                            return callback(err);
-                        createOrderStatus()
-                        cb();
+                            return cb(err);
+                        createOrderStatus((err, keySSI) => {
+                            if (err)
+                                return cb(err);
+                            builder.mount('/status', keySSI.getIdentifier(), (err) => {
+                                if (err)
+                                    return cb(err);
+                                cb();
+                            })
+                        });
                     });
                 });
             });
