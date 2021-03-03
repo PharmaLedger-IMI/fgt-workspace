@@ -9,28 +9,25 @@
   },
   "pages": [
     {
-      "name": "Home",
-      "path": "/home",
-      "icon": "fa-home",
-      "pageSrc": "home.html"
-    },
-    {
-      "name": "Home2",
-      "path": "/home2",
-      "icon": "fa-home",
-      "pageSrc": "home2.html"
-    },
-    {
-      "name": "Product",
-      "path": "/product",
-      "icon": "fa-home",
-      "pageSrc": "product.html"
-    },
-    {
       "name": "Dashboard",
       "path": "/dashboard",
       "icon": "fa-home",
-      "pageSrc": "dashboard.html"
+      "pageSrc": "dashboard.html",
+      "indexed": true
+    },
+    {
+      "name": "ManageProducts",
+      "path": "/products",
+      "icon": "fa-home",
+      "pageSrc": "products.html",
+      "indexed": true
+    },
+    {
+      "name": "ManageBatches",
+      "path": "/managebatch",
+      "icon": "fa-home",
+      "pageSrc": "batches.html",
+      "indexed": true
     }
   ]
 }

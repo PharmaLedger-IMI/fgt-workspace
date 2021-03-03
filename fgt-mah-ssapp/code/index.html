@@ -36,9 +36,11 @@
         <psk-condition condition="@identified">
             <div slot="condition-true">
                 <div class="global_container">
-                    <app-menu item-renderer="sidebar-renderer"></app-menu>
+                    <psk-app-menu hamburger-max-width="0" class="demo">
+                        <psk-label slot="before" class="title" label="@locale.home.title"></psk-label>
+                    </psk-app-menu>
                     <section>
-                        <psk-app-router failRedirectTo="/home2"></psk-app-router>
+                        <psk-app-router failRedirectTo="/Dashboard"></psk-app-router>
                     </section>
                 </div>
             </div>

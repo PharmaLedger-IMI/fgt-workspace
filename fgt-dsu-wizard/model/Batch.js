@@ -7,7 +7,7 @@ const Utils = require("./Utils.js");
  */
 class Batch {
     batchNumber;
-    expiryForDisplay;
+    expiry;
     serialNumbers = ["430239925150"];
 
     constructor(batch) {
@@ -28,7 +28,7 @@ class Batch {
         if (!this.batchNumber) {
             return 'Batch number is mandatory field';
         }
-        if (!this.expiryForDisplay) {
+        if (!this.expiry) {
             return  'Expiration date is a mandatory field.';
         }
         return undefined;

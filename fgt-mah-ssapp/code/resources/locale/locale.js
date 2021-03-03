@@ -36,6 +36,55 @@ const LOCALE = {
                 value: "This in an Address"
             },
             register: "Register"
+        },
+        dashboard:{
+            title: "This is a Dashboard"
+        },
+        product: {
+            title: "Fill new Product Details:",
+            add: "Add Product",
+            name: {
+                label: "Product name:",
+                placeholder: 'Please enter the product name here...',
+                value: 'PDM product',
+                required: true
+            },
+            gtin: {
+                label: "Product gtin:",
+                placeholder: 'Please enter your name here...',
+                value: '05290931025615',
+                required: true
+            },
+            description: {
+                label: "Product description:",
+                placeholder: 'Please enter the product description here...',
+                value: 'This product is very good for you'
+            },
+            mah: {
+                label: "Marketing Authorization Holder:"
+            }
+        },
+        batch: {
+            title: "Fill in new Batch Details:",
+            add: "Add Batch",
+            batchNumber: {
+                label: "Batch Number:",
+                placeholder: 'Please enter the batch number here...',
+                required: true
+            },
+            gtin: {
+                label: "Product gtin:",
+                required: true
+            },
+            expiry: {
+                label: "Product description:",
+                placeholder: 'Please enter the product description here...',
+                value: 'This product is very good for you'
+            },
+            serialNumbers: {
+                label: "Enter Serial Numbers here:",
+                placeholder: '(comma separated or ranges)'
+            }
         }
     }
 }
