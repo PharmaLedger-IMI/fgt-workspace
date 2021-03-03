@@ -34,7 +34,6 @@ class Batch {
         return undefined;
     }
 
-
     addSerialNumbers(serials){
         throw new Error("Not implemented");
     }

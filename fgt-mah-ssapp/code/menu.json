@@ -24,10 +24,10 @@
     },
     {
       "name": "ManageBatches",
-      "path": "/managebatch",
+      "path": "/batches",
       "icon": "fa-home",
       "pageSrc": "batches.html",
-      "indexed": true
+      "indexed": false
     }
   ]
 }

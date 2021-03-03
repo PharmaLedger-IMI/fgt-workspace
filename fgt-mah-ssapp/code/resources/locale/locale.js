@@ -85,6 +85,15 @@ const LOCALE = {
                 label: "Enter Serial Numbers here:",
                 placeholder: '(comma separated or ranges)'
             }
+        },
+        products: {
+            title: "Product Manager",
+            nameHeader: "Name",
+            gtinHeader: "Gtin",
+            batchesHeader: "Manage Batches"
+        },
+        batches: {
+            title: "Batch Manager"
         }
     }
 }

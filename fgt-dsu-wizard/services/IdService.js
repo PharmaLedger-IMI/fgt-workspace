@@ -6,7 +6,6 @@ const utils = require('./utils');
  */
 function IdService(domain, strategy){
     const strategies = require('./strategy');
-    const resolver = utils.getResolver();
 
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
     domain = domain || "default";
@@ -25,16 +24,10 @@ function IdService(domain, strategy){
         }
     }
 
-    let selectMethod = function(templateKeySSI){
-        if (templateKeySSI.getTypeName() === 'array')
-            return resolver.createDSUForExistingSSI;
-        return resolver.createDSU;
-    }
-
     let createSimple = function(actor, callback){
         let keyGenFunction = require('../commands/setIdSSI').createIdSSI;
         let templateKeySSI = keyGenFunction(actor, domain);
-        selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
+        utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);
             dsu.writeFile('/info', JSON.stringify(actor), (err) => {

@@ -52,8 +52,7 @@ function OrderService(domain, strategy){
     let createSimple = function(order, callback){
         let keyGenFunction = require('../commands/setOrderSSI').createOrderSSI;
         let templateKeySSI = keyGenFunction(order, domain);
-        const resolver = utils.getResolver();
-        resolver.createDSUForExistingSSI(templateKeySSI, (err, dsu) => {
+        utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);
             dsu.writeFile('/data', JSON.stringify(order), (err) => {

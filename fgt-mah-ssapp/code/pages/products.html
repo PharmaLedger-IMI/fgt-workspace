@@ -1,11 +1,21 @@
-<psk-page title="Add Product">
-    <psk-container controller-name="ProductController">
-        <psk-text-input label="GTIN" value="@product.gtin" required></psk-text-input>
-        <psk-text-input label="MAH" value="@product.manufName" read-only></psk-text-input>
-        <psk-text-input label="Name" value="@product.name" required></psk-text-input>
-        <psk-textarea label="Description" value="@product.description" required></psk-textarea>
-        <psk-text-input label="Report Page URL:" value="@product.reportURL"></psk-text-input>
-        <psk-button label="Save Product" event-name="add-product"></psk-button>
-        <psk-list-feedbacks></psk-list-feedbacks>
+<psk-page title="@title">
+    <psk-container controller-name="ProductsController">
+        <psk-label class="title" label="@title"></psk-label>
+        <psk-card id="tableHeader">
+            <psk-form-row class="productHeader" layout="xs=[12,12,12] m=[12,12,12] l=[12,12,12] xl=[4,4,4]">
+                <psk-label label="@nameHeader"></psk-label>
+                <psk-label label="@gtinHeader"></psk-label>
+                <psk-label label="@batchesHeader"></psk-label>
+            </psk-form-row>
+        </psk-card>
+        <psk-for-each data-view-model="products">
+            <psk-card id="@gtin">
+                <psk-form-row class="productEntry" layout="xs=[12,12,12] m=[12,12,12] l=[12,12,12] xl=[4,4,4]">
+                    <psk-label label="@name"></psk-label>
+                    <psk-label label="@gtin"></psk-label>
+                    <psk-button label="@manage" event-name="manage-batches"></psk-button>
+                </psk-form-row>
+            </psk-card>
+        </psk-for-each>
     </psk-container>
 </psk-page>

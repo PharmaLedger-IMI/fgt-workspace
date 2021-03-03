@@ -6,6 +6,8 @@
     "avatar": "resources/images/factory.png"
   },
   "modals": {
-    "registration-modal": "/modals/registrationModal.html"
+    "registration-modal": "/modals/registrationModal.html",
+    "product-modal": "/modals/productModal.html",
+    "batch-modal": "/modals/batchModal.html"
   }
 }

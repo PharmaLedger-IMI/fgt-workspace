@@ -1,17 +1,35 @@
 let resolver, DSUService;
 
+/**
+ * for singleton use
+ * @returns {*}
+ */
 function getResolver(){
 	if (!resolver)
 		resolver = require('opendsu').loadApi('resolver');
 	return resolver;
 }
 
+/**
+ * for singleton use
+ * @returns {DSUService}
+ */
 function getDSUService(){
 	if (!DSUService)
 		DSUService = new (require('./DSUService'));
 	return DSUService;
 }
 
+/**
+ * Convenience method to select the appropriate resolver method to use depending on the key
+ * @param keySSI
+ * @returns {function} the appropriate resolver method for creating dsus {@link resolver#createDSU}/{@link resolver#createDSUForExistingSSI}
+ */
+function selectMethod(keySSI){
+	if (['array', 'const'].indexOf(keySSI.getTypeName()) > -1)
+		return getResolver().createDSUForExistingSSI;
+	return getResolver().createDSU;
+}
 
 function getPostHandlerFor(apiname){
 
@@ -61,5 +79,6 @@ function getPostHandlerFor(apiname){
 module.exports = {
 	getResolver,
 	getDSUService,
-	getPostHandlerFor
+	getPostHandlerFor,
+	selectMethod
 }

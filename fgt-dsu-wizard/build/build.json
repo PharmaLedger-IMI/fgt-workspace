@@ -2,9 +2,5 @@
   "wizard": {
     "deps": "../../../fgt-dsu-wizard:wizard",
     "autoLoad":  true
-  },
-  "model": {
-    "deps": "../../model:model",
-    "autoLoad":  true
   }
 }

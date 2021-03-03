@@ -4,32 +4,28 @@ const utils = require('./utils');
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
  */
-function OrderLineService(domain, strategy){
+function ProductService(domain, strategy){
     const strategies = require('./strategy');
-    const OrderLine = require('../model').OrderLine;
-    const endpoint = 'orderline';
+    const OrderLine = require('../model').Product;
+    const endpoint = 'product';
 
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
     /**
-     * Creates an order DSU
-     * @param {string} orderId
-     * @param {OrderLine} orderLine
-     * @param {function} callback
-     * @return {string} keySSI
+     * Creates a {@link Product} DSU
+     * @param {Product} product
+     * @param {function<err, keySSI>} callback
      */
-    this.create = function(orderId, orderLine, callback){
+    this.create = function(product, callback){
 
-        let data = typeof orderLine == 'object' ? JSON.stringify(orderLine) : orderLine;
+        let data = typeof product == 'object' ? JSON.stringify(product) : product;
 
         let keyGenData = {
-            gtin: orderLine.gtin,
-            requesterId: orderLine.requesterId,
-            orderId: orderId
+            gtin: product.gtin
         }
 
         if (isSimple){
-            let keyGenFunction = require('../commands/setOrderLineSSI').createOrderLineSSI;
+            let keyGenFunction = require('../commands/setProductSSI').createProductSSI;
             let keySSI = keyGenFunction(keyGenData, domain);
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
@@ -58,11 +54,11 @@ function OrderLineService(domain, strategy){
                 }
             }
 
-            DSUService.create(domain, getEndpointData(orderLine), (builder, cb) => {
+            DSUService.create(domain, getEndpointData(product), (builder, cb) => {
                 builder.addFileDataToDossier("/data", data, cb);
             }, callback);
         }
     };
 }
 
-module.exports = OrderLineService;
+module.exports = ProductService;
