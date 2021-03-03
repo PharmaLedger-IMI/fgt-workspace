@@ -45,8 +45,6 @@ function OrderLineService(domain, strategy){
                 });
             });
         } else {
-            const DSUService = utils.getDSUService();
-
             let getEndpointData = function (orderLine){
                 return {
                     endpoint: endpoint,
@@ -58,7 +56,7 @@ function OrderLineService(domain, strategy){
                 }
             }
 
-            DSUService.create(domain, getEndpointData(orderLine), (builder, cb) => {
+            utils.getDSUService().create(domain, getEndpointData(orderLine), (builder, cb) => {
                 builder.addFileDataToDossier("/data", data, cb);
             }, callback);
         }

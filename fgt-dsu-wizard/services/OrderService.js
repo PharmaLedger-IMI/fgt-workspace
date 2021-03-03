@@ -86,8 +86,6 @@ function OrderService(domain, strategy){
     }
 
     let createAuthorized = function(order, callback){
-        const DSUService = utils.getDSUService();
-
         let getEndpointData = function (order){
             return {
                 endpoint: endpoint,
@@ -98,7 +96,7 @@ function OrderService(domain, strategy){
             }
         }
 
-        DSUService.create(domain, getEndpointData(order), (builder, cb) => {
+        utils.getDSUService().create(domain, getEndpointData(order), (builder, cb) => {
             builder.addFileDataToDossier("/data", JSON.stringify(order), (err)=> {
                 if (err)
                     return cb(err);

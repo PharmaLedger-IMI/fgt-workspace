@@ -44,14 +44,12 @@ function StatusService(domain, strategy){
                 });
             });
         } else {
-            const DSUService = utils.getDSUService();
-
             let endpointData = {
                     endpoint: endpoint,
                     data: data
                 }
 
-            DSUService.create(domain, endpointData, (builder, cb) => {
+            utils.getDSUService().create(domain, endpointData, (builder, cb) => {
                 builder.addFileDataToDossier("/info", data, cb);
             }, callback);
         }
