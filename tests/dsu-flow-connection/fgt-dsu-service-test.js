@@ -20,7 +20,7 @@ const OrderLine = model.OrderLine;
 const Order =  model.Order;
 const OrderStatus = model.OrderStatus;
 
-let strategyInUse = strategies.AUTHORIZED;
+let strategyInUse = strategies.SIMPLE;
 
 let orderLines = [];
 
@@ -74,16 +74,22 @@ function validateOrder(keySSI, callback){
                 return callback(e);
             }
 
-            dsu.readFile("/status", (err, data) => {
+            dsu.readFile("/lines", (err, orderLines) => {
                 if (err)
                     return callback(err);
-                assert.equal(JSON.stringify(OrderStatus.CREATED), data.toString(), "Mounted status do not match");
-                dsu.readFile("/lines", (err, orderLines) => {
+                assert.notNull(orderLines);
+                orderLines = JSON.parse(orderLines);
+                validateOrderLines(order.orderLines, orderLines, (err) => {
                     if (err)
                         return callback(err);
-                    assert.notNull(orderLines);
-                    orderLines = JSON.parse(orderLines);
-                    validateOrderLines(order.orderLines, orderLines, callback);
+                    dsu.readFile("/status", (err, data) => {
+                        if (err) {
+                            console.log("error reading status")
+                            return callback(err);
+                        }
+                        assert.equal(JSON.stringify(OrderStatus.CREATED), data.toString(), "Mounted status do not match");
+                        callback();
+                    });
                 });
             });
         });

@@ -28,7 +28,7 @@ function StatusService(domain, strategy){
         let data = JSON.stringify(status);
 
         if (isSimple){
-            let keyGenFunction = require('../commands/setOrderLineSSI').createOrderLineSSI;
+            let keyGenFunction = require('../commands/setStatusSSI').createStatusSSI;
             let keySSI = keyGenFunction(status, domain);
             selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)

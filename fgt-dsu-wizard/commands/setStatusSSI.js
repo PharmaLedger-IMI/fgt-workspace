@@ -10,7 +10,7 @@ function createStatusSSI(status, domain) {
     console.log("New OrderStatus_SSI in domain", domain);
     const keyssiSpace = require("opendsu").loadApi("keyssi");
     let hint = status.anchoring ? {brickStorage: status.anchoring} : undefined;
-    return keyssiSpace.buildTemplateSeedSSI(domain, status, undefined, undefined, hint);
+    return keyssiSpace.createTemplateSeedSSI(domain, status, undefined, undefined, hint);
 }
 
 function command(server){

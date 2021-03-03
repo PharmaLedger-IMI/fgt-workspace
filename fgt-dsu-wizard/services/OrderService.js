@@ -31,7 +31,12 @@ function OrderService(domain, strategy){
         }
     }
 
-    let createOrderStatus = function(dsu, status, callback){
+    /**
+     * Creates the original OrderStatus DSU
+     * @param {OrderStatus} [status]: defaults to OrderStatus.CREATED
+     * @param {function<err, keySSI>} callback
+     */
+    let createOrderStatus = function(status, callback){
         if (typeof status === 'function'){
             callback = status;
             status = OrderStatus.CREATED;
@@ -39,12 +44,8 @@ function OrderService(domain, strategy){
         statusService.create(status, (err, keySSI) => {
             if (err)
                 return callback(err);
-            dsu.mount("/status", keySSI, (err) => {
-               if (err)
-                   return callback(err);
-               console.log(`Status DSU (${keySSI.getIdentifier(true)}) mounted at '/status'`)
-               callback();
-            });
+            console.log(`Status DSU created with SSI ${keySSI.getIdentifier(true)}`);
+            callback(undefined, keySSI);
         });
     }
 
@@ -64,13 +65,19 @@ function OrderService(domain, strategy){
                     dsu.writeFile('/lines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
                         if (err)
                             return callback(err);
-                        createOrderStatus(dsu, (err) => {
+                        createOrderStatus((err, keySSI) => {
                             if (err)
                                 return callback(err);
-                            dsu.getKeySSIAsObject((err, keySSI) => {
+                            // Mount must take string version of keyssi
+                            dsu.mount("/status", keySSI.getIdentifier(), (err) => {
                                 if (err)
                                     return callback(err);
-                                callback(undefined, keySSI);
+                                console.log(`Status DSU (${keySSI.getIdentifier(true)}) mounted at '/status'`)
+                                dsu.getKeySSIAsObject((err, keySSI) => {
+                                    if (err)
+                                        return callback(err);
+                                    callback(undefined, keySSI);
+                                });
                             });
                         });
                     });
@@ -102,6 +109,7 @@ function OrderService(domain, strategy){
                     builder.addFileDataToDossier('/lines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
                         if (err)
                             return callback(err);
+                        createOrderStatus()
                         cb();
                     });
                 });
