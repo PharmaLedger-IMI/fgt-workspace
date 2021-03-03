@@ -44,7 +44,7 @@ export default class IdController extends ContainerController {
             self.DSUStorage.enableDirectAccess(err => {
                 if (err)
                     return callback(err);
-                self.DSUStorage.mount(id_path, keySSI, (err) => {
+                self.DSUStorage.mount(id_path, keySSI.getIdentifier(), (err) => {
                     if (err)
                         return callback(err);
                     console.log(`Id DSU mounted in ${id_path}`);
