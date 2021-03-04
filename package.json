@@ -25,7 +25,7 @@
     "clean": "node ./bin/clean.js ./",
     "clean-build": "npm run clean && npm run build privatesky && npm run build-all",
     "freeze": "node ./node_modules/octopus/scripts/freeze dependencies install-mobile",
-    "docs": "jsdoc -c jsdocs.json -r"
+    "docs": "jsdoc -c jsdocs.json"
   },
   "repository": {
     "type": "git",
