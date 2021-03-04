@@ -6,7 +6,7 @@
   "scripts": {
     "prebuild": "node ./node_modules/octopus/scripts/run prebuild devmode",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docs": "jsdoc -c jsdocs.json"
+    "docs": "./node_modules/markdown-include/bin/cli.js ./mdCompile.json && jsdoc -c jsdocs.json"
   },
   "repository": {
     "type": "git",
@@ -22,7 +22,9 @@
     "octopus": "git+https://github.com/PrivateSky/octopus.git"
   },
   "devDependencies": {
+    "docdash": "^1.2.0",
     "form-data": "v3.0.0",
-    "jsdoc": "^3.6.6"
+    "jsdoc": "^3.6.6",
+    "markdown-include": "^0.4.3"
   }
 }
