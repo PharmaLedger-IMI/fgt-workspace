@@ -21,7 +21,7 @@ class ProductManagerService {
 
     /**
      * Ensures the DSU Storage is properly Initialized and the necessary structure of the SSApp (Product wise) is set
-     * @param {function<err>}callback
+     * @param {function(err)}callback
      * @private
      */
     _initialize(callback){
@@ -39,7 +39,7 @@ class ProductManagerService {
 
     /**
      * Initializes the mount points required for Products
-     * @param {function<err, string[]>} callback
+     * @param {function(err, string[])} callback
      * @private
      */
     _createMountFolders(callback){
@@ -76,7 +76,7 @@ class ProductManagerService {
     /**
      * Creates a {@link Product} dsu
      * @param {Product} product
-     * @param {function<err, keySSI, string>} callback where the string is the mount path
+     * @param {function(err, keySSI, string)} callback where the string is the mount path
      */
     createProduct(product, callback) {
         this._initialize(() => {
@@ -97,7 +97,7 @@ class ProductManagerService {
     /**
      * reads the product information from a given gtin (if exists and is registered to the mah)
      * @param {string} gtin
-     * @param {function<err, Product>} callback
+     * @param {function(err, Product)} callback
      */
     getProduct(gtin, callback){
         this.DSUStorage.getObject(`${this._getMountPath(product.gtin)}/info`, (err, product) => {
@@ -110,7 +110,7 @@ class ProductManagerService {
     /**
      * Removes a product from the list (does not delete/invalidate DSU, simply 'forgets' the reference)
      * @param {string} gtin
-     * @param {function<err>} callback
+     * @param {function(err)} callback
      */
     removeProduct(gtin, callback) {
         this._initialize(() => {
@@ -127,7 +127,7 @@ class ProductManagerService {
     /**
      * Edits/Overwrites the product details
      * @param {string} gtin
-     * @param {function<err>} callback
+     * @param {function(err)} callback
      */
     editProduct(gtin, callback) {
         this._initialize(() => {
@@ -143,7 +143,7 @@ class ProductManagerService {
 
     /**
      * Lists all registered products
-     * @param {function<err, Product[]>} callback
+     * @param {function(err, Product[])} callback
      */
     listProducts(callback) {
         this._initialize(() => {
@@ -165,7 +165,7 @@ class ProductManagerService {
      *         identifier: keySSI
      *     }
      * </pre>
-     * @param {function<err, Product[]>} callback
+     * @param {function(err, Product[])} callback
      * @private
      */
     _readAll(mounts, callback){

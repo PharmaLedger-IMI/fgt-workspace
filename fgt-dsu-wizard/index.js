@@ -29,7 +29,7 @@ module.exports = {
 	 */
 	Commands: require("./commands"),
 	/**
-	 * instantiates a nre DSUService
+	 * instantiates a new DSUService
 	 */
 	DSUService: new (require('./services/DSUService')),
 	/**
