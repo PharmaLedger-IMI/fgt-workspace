@@ -41,7 +41,7 @@ export default class IdController extends ContainerController {
     }
 
     _showRegistrationModal(){
-        this.showModal('registration-modal');
+        this.showModal('registration-modal', {});
     }
 
     _testId(){
