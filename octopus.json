@@ -3,12 +3,13 @@
     "dependencies": [
         {
             "name": "cardinal",
-            "src": "http://github.com/privatesky/cardinal.git",
+            "src": "http://github.com/TiagoVenceslau/cardinal.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false
+                    "collectLog": false,
+                    "commit": "8a5b0f5ee9db93b0c694980aeb210e18a20a06f8"
                 },
                 {
                     "type": "execute",

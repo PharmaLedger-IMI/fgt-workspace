@@ -1,23 +1,43 @@
 import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
 import {getProductManager} from "../managers/ProductManager.js"
 
-const wizard = require('wizard');
-const LocaleService = wizard.Services.LocaleService;
 
 export default class ProductsController extends ContainerController {
     constructor(element, history) {
         super(element, history);
         this.manager = getProductManager(this.DSUStorage);
+        const LocaleService = require('wizard').Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "products");
         this.model = this.setModel({
             mah: {},
+            hasProducts: false,
             products: {}
         });
 
-        element.addEventListener('new-product', (event) => {
+        element.addEventListener('add-product', (event) => {
             event.preventDefault();
             event.stopImmediatePropagation();
             this.showModal('product-modal', {});
+        });
+
+        element.addEventListener('perform-add-product', (event) => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            console.log(event);
+        });
+
+        this.getProductsAsync();
+    }
+
+    /**
+     * Adds a product
+     * @param product
+     * @param callback
+     * @private
+     */
+    _addProduct(product, callback){
+        this.manager.createProduct(product, (err, keySSI, path) => {
+
         });
     }
 
@@ -31,7 +51,8 @@ export default class ProductsController extends ContainerController {
      * </ul>
      */
     updateProducts(products){
-        this.model.products = this.setModel(products);
+        this.model.products = products;
+        this.model.hasContent = products.length > 0;
     }
 
     /**

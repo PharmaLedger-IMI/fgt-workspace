@@ -1,23 +1,22 @@
 import ModalController from "../../cardinal/controllers/base-controllers/ModalController.js";
-const LocaleService = require('wizard').Services.LocaleService;
 const MAH = require('wizard').Model.MAH;
-
 
 export default class RegistrationController extends ModalController {
     constructor(element) {
         super(element);
+        const LocaleService = require('wizard').Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "registration");
         this.model = this.setModel({});
-        element.addEventListener('submit-registration', this.__submitRegistration.bind(this), true)
+        element.addEventListener('submit-registration', this._submitRegistration.bind(this), true)
     }
 
-    __submitRegistration = function(event){
+    _submitRegistration = function(event){
         event.preventDefault();
         event.stopImmediatePropagation();
-        this.send('perform-registration', this.__modelToActor());
+        this.send('perform-registration', this._modelToActor());
     }
 
-    __modelToActor = function(){
+    _modelToActor = function(){
         let info = {};
         Object.keys(this.model)
             .filter(k => !!this.model[k].value)

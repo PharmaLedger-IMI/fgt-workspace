@@ -1,5 +1,5 @@
 /**
- * @module fgt-mah-ssapp.managers
+ * @module fgt-dsu-wizard.managers
  */
 
 /**
@@ -14,11 +14,6 @@
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
  */
-
-import {getProductManager} from "./ProductManager.js";
-import {getBatchManager} from "./BatchManager.js";
-
-export{
-    getBatchManager,
-    getProductManager
+module.exports = {
+    getIdManager: require('./IdManager')
 }

@@ -98,7 +98,8 @@ const LOCALE = {
             nameHeader: "Name",
             gtinHeader: "Gtin",
             batchesHeader: "Manage Batches",
-            add: "Add Product"
+            add: "Add Product",
+            none: "No registered products..."
         },
         batches: {
             title: "Batch Manager"

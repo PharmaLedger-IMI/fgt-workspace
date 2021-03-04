@@ -1,26 +1,34 @@
 <psk-page>
     <psk-container controller-name="ProductsController">
         <psk-card id="productsTitle">
-            <psk-form-row class="page-header" layout="xs=[12,12] m=[12,12], l=[12,12], xl=[4,4]">
+            <psk-form-row class="page-header" layout="xs=[10,2] m=[10,2], l=[11,1], xl=[4,4]">
                 <psk-label class="title" label="@title"></psk-label>
-                <psk-button label="@add" event-name="new-product"></psk-button>
+                <psk-button label="@add" event-name="add-product"></psk-button>
             </psk-form-row>
         </psk-card>
-        <psk-card class="table-header" id="tableHeader">
-            <psk-form-row class="productHeader" layout="xs=[12,12,12] m=[12,12,12] l=[12,12,12] xl=[4,4,4]">
-                <psk-label label="@nameHeader"></psk-label>
-                <psk-label label="@gtinHeader"></psk-label>
-                <psk-label label="@batchesHeader"></psk-label>
-            </psk-form-row>
-        </psk-card>
-        <psk-for-each data-view-model="products">
-            <psk-card class ="table-line" id="@gtin">
-                <psk-form-row class="productEntry" layout="xs=[12,12,12] m=[12,12,12] l=[12,12,12] xl=[4,4,4]">
-                    <psk-label label="@name"></psk-label>
-                    <psk-label label="@gtin"></psk-label>
-                    <psk-button label="@manage" event-name="manage-batches"></psk-button>
-                </psk-form-row>
-            </psk-card>
-        </psk-for-each>
+        <psk-condition condition="@hasProducts">
+            <div slot="condition-true">
+                <psk-card class="table-header" id="tableHeader">
+                    <psk-form-row class="productHeader" layout="xs=[12,12,12] m=[12,12,12] l=[12,12,12] xl=[4,4,4]">
+                        <psk-label label="@nameHeader"></psk-label>
+                        <psk-label label="@gtinHeader"></psk-label>
+                        <psk-label label="@batchesHeader"></psk-label>
+                    </psk-form-row>
+                </psk-card>
+                <psk-for-each data-view-model="products">
+                    <psk-card class ="table-line" id="@gtin">
+                        <psk-form-row class="productEntry" layout="xs=[12,12,12] m=[12,12,12] l=[12,12,12] xl=[4,4,4]">
+                            <psk-label label="@name"></psk-label>
+                            <psk-label label="@gtin"></psk-label>
+                            <psk-button label="@manage" event-name="manage-batches"></psk-button>
+                        </psk-form-row>
+                    </psk-card>
+                </psk-for-each>
+            </div>
+            <div slot="condition-false">
+                <psk-label label="@none"></psk-label>
+            </div>
+        </psk-condition>
+
     </psk-container>
 </psk-page>

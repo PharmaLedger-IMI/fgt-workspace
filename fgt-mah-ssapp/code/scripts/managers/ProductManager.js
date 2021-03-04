@@ -1,8 +1,19 @@
 const PRODUCT_MOUNT_PATH = "/products";
 
 /**
- * Helper Class to handle product creation and its mount on the MAH ssapp.
- * Basically a specialized wrapper around {@link DSUStorage}
+ * Product Manager Class
+ *
+ * Manager Classes in this context should do the bridge between the controllers
+ * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
+ *
+ * All Manager Classes should be singletons.
+ *
+ * This complete separation of concerts is very beneficial for 2 reasons:
+ * <ul>
+ *     <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
+ *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
+ * </ul>
+ *
  * @param {DSUStorage} dsuStorage the controllers dsu storage
  */
 class ProductManager {
@@ -45,14 +56,15 @@ class ProductManager {
     _createMountFolders(callback){
         let mount_folders = [PRODUCT_MOUNT_PATH];
         let folders = [];
+        let self = this;
         let iterator = function(folderList){
             let folder = folderList.shift();
             if (!folder)
                 return callback(undefined, folders);
-            this.DSUStorage.readDir(folder, (err, files) => {
+            self.DSUStorage.readDir(folder, (err, files) => {
                 if (!err)
                     return iterator(folderList);
-                this.DSUStorage.createFolder(folder, (err) => {
+                self.DSUStorage.createFolder(folder, (err) => {
                     if (err)
                         return callback(err);
                     folders.push(folder);
@@ -79,12 +91,13 @@ class ProductManager {
      * @param {function(err, keySSI, string)} callback where the string is the mount path
      */
     createProduct(product, callback) {
-        this._initialize(() => {
-            this.productService.create(product, (err, keySSI) => {
+        let self = this;
+        self._initialize(() => {
+            self.productService.create(product, (err, keySSI) => {
                 if (err)
                     return callback(err);
                 let mount_path = this._getMountPath(product.gtin);
-                this.DSUStorage.mount(mount_path, keySSI.getIdentifier(), (err) => {
+                self.DSUStorage.mount(mount_path, keySSI.getIdentifier(), (err) => {
                     if (err)
                         return callback(err);
                     console.log(`Product ${product.gtin} created and mounted at '${mount_path}'`);
@@ -113,9 +126,10 @@ class ProductManager {
      * @param {function(err)} callback
      */
     removeProduct(gtin, callback) {
-        this._initialize(() => {
+        let self = this;
+        self._initialize(() => {
             let mount_path = this._getMountPath(gtin);
-            this.DSUStorage.unmount(mount_path, (err) => {
+            self.DSUStorage.unmount(mount_path, (err) => {
                 if (err)
                     return callback(err);
                 console.log(`Product ${gtin} removed from mount point ${mount_path}`);
@@ -130,9 +144,10 @@ class ProductManager {
      * @param {function(err)} callback
      */
     editProduct(gtin, callback) {
-        this._initialize(() => {
+        let self = this;
+        self._initialize(() => {
             let mount_path = this._getMountPath(gtin);
-            this.DSUStorage.writeFile(`${mount_path}/info`, (err) => {
+            self.DSUStorage.writeFile(`${mount_path}/info`, (err) => {
                 if (err)
                     return callback(err);
                 console.log(`Product ${gtin} updated`);
@@ -146,12 +161,13 @@ class ProductManager {
      * @param {function(err, Product[])} callback
      */
     listProducts(callback) {
-        this._initialize(() => {
-            this.DSUStorage.listMountedDossiers(PRODUCT_MOUNT_PATH, (err, mounts) => {
+        let self = this;
+        self._initialize(() => {
+            self.DSUStorage.listMountedDossiers(PRODUCT_MOUNT_PATH, (err, mounts) => {
                 if (err)
                     return callback(err);
                 console.log(`Found ${mounts.length} products at ${PRODUCT_MOUNT_PATH}`);
-                this._readAll(mounts, callback);
+                self._readAll(mounts, callback);
             });
         });
     }

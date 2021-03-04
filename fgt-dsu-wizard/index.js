@@ -36,4 +36,8 @@ module.exports = {
 	 * Exposes the Services Module
 	 */
 	Services: require("./services"),
+	/**
+	 * Exposes the Managers module
+	 */
+	Managers: require("./managers")
 };

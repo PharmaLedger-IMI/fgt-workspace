@@ -1,17 +1,15 @@
 import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
-import {getIdManager} from "../managers/IdManager.js"
-
-const LocaleService = require('wizard').Services.LocaleService;
 
 export default class IdController extends ContainerController {
     constructor(element) {
         super(element);
+        const LocaleService = require('wizard').Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US);
         this.model = this.setModel({
             identified: false,
             actor: undefined
         });
-        this.idManager = getIdManager(this.DSUStorage, "traceability");
+        this.idManager = require('wizard').Managers.getIdManager(this.DSUStorage, "traceability");
         console.log("Id controller initialized");
         element.addEventListener('perform-registration', (event) => {
             event.preventDefault();
