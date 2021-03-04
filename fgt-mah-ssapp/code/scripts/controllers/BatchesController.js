@@ -5,6 +5,5 @@ export default class BatchesController extends ContainerController {
         super(element, history);
         const LocaleService = require('wizard').Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "batches");
-        this.model = this.setModel({});
     }
 }

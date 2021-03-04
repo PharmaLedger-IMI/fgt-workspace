@@ -97,10 +97,12 @@ const merge = function(target, source){
 const bindToController = function(controller, page){
     if (!controller.localized) {
         let func = controller.setModel;
+        let m = controller.model;
         controller.setModel = function (model) {
             model = localeService.bindToModel(model, page);
             return func(model);
         };
+        controller.setModel(m ? m : {});
         controller.localized = true;
     }
 }

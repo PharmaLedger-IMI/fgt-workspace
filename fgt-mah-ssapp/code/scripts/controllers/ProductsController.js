@@ -1,12 +1,14 @@
 import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
 import {getProductManager} from "../managers/ProductManager.js"
-
+const Product = require('wizard').Model.Product;
 
 export default class ProductsController extends ContainerController {
     constructor(element, history) {
         super(element, history);
-        this.manager = getProductManager(this.DSUStorage);
-        const LocaleService = require('wizard').Services.LocaleService;
+        this.productManager = getProductManager(this.DSUStorage);
+        const wizard = require('wizard');
+        this.idManager = wizard.Managers.getIdManager(this.DSUStorage, "traceability");
+        const LocaleService = wizard.Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "products");
         this.model = this.setModel({
             mah: {},
@@ -14,30 +16,60 @@ export default class ProductsController extends ContainerController {
             products: {}
         });
 
+        let self = this;
         element.addEventListener('add-product', (event) => {
             event.preventDefault();
             event.stopImmediatePropagation();
-            this.showModal('product-modal', {});
+            self._showProductModal();
         });
 
         element.addEventListener('perform-add-product', (event) => {
             event.preventDefault();
             event.stopImmediatePropagation();
-            console.log(event);
+            self._addProductAsync(event.detail, (err) => {
+                if (err)
+                    throw err;
+                self.getProductsAsync();
+            });
         });
 
         this.getProductsAsync();
     }
 
+    _showProductModal(){
+        let self = this;
+        self.idManager.getId((err, actor) => {
+           if (err)
+               throw err;
+            self.showModal('product-modal', self._productToModel(new Product({
+                manufName: actor.name
+            })), true);
+        });
+    }
+
+    _productToModel(product){
+        let model = {};
+        Object.keys(product).forEach(k => {
+                if (product.hasOwnProperty(k))
+                    model[k] = {
+                        value: product[k]
+                    };
+            });
+        return model;
+    }
+
     /**
-     * Adds a product
+     *
      * @param product
      * @param callback
      * @private
      */
-    _addProduct(product, callback){
-        this.manager.createProduct(product, (err, keySSI, path) => {
-
+    _addProductAsync(product, callback){
+        let self = this;
+        self.productManager.createProduct(product, (err, keySSI, path) => {
+            if (err)
+                return callback(err);
+            callback();
         });
     }
 
@@ -78,7 +110,7 @@ export default class ProductsController extends ContainerController {
      */
     getProductsAsync(){
         let self = this;
-        self.manager.listProducts((err, products) => {
+        self.productManager.listProducts((err, products) => {
             if (err)
                 throw err;
             self.updateProducts(products);

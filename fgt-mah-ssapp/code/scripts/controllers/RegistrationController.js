@@ -6,7 +6,6 @@ export default class RegistrationController extends ModalController {
         super(element);
         const LocaleService = require('wizard').Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "registration");
-        this.model = this.setModel({});
         element.addEventListener('submit-registration', this._submitRegistration.bind(this), true)
     }
 

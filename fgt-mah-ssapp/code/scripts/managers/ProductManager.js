@@ -19,7 +19,7 @@ const PRODUCT_MOUNT_PATH = "/products";
 class ProductManager {
     constructor(dsuStorage) {
         this.DSUStorage = dsuStorage;
-        this.productService = require('wizard').Services.ProductService;
+        this.productService = new (require('wizard').Services.ProductService)("traceability");
     }
 
     /**
@@ -36,10 +36,11 @@ class ProductManager {
      * @private
      */
     _initialize(callback){
-        this._enableDirectAccess((err) => {
+        let self = this;
+        self._enableDirectAccess((err) => {
             if (err)
                 return callback(err);
-            this._createMountFolders((err, created) => {
+            self._createMountFolders((err, created) => {
                 if (err)
                     return callback(err);
                 console.log(`Folders ${created} have been created`);
@@ -194,7 +195,7 @@ class ProductManager {
             self.DSUStorage.getObject(`${mount.path}/info`, (err, product) => {
                 if (err)
                     return callback(err);
-                product.push(product);
+                products.push(product);
                 iterator(m);
             });
         }
@@ -202,18 +203,18 @@ class ProductManager {
     }
 }
 
-let productManagerService;
+let productManager;
 /**
  * @param {DSUStorage} dsuStorage
  * @returns {ProductManager}
  */
 const getProductManager = function (dsuStorage) {
-    if (!productManagerService) {
+    if (!productManager) {
         if (!dsuStorage)
             throw new Error("No DSUStorage provided");
-        productManagerService = new ProductManager(dsuStorage);
+        productManager = new ProductManager(dsuStorage);
     }
-    return productManagerService;
+    return productManager;
 }
 
 export {

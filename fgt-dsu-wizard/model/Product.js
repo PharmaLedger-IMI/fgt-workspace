@@ -5,20 +5,14 @@ class Product {
     name = "";
     gtin = "";
     description = "";
-    manufName = " ";
+    manufName = "";
     reportURL = `${window.top.location.origin}/default-report.html`;
 
     constructor(product) {
-        if (typeof product !== undefined) {
-            for (let prop in product) {
+        if (typeof product !== undefined)
+            for (let prop in product)
                 if (product.hasOwnProperty(prop))
                     this[prop] = product[prop];
-            }
-        }
-
-        if (this.gtin === "") {
-            this.gtin = '05290931025615';
-        }
     }
 
     validate() {

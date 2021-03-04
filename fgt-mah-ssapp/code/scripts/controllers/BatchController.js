@@ -5,7 +5,6 @@ export default class BatchController extends ModalController {
         super(element, history);
         const LocaleService = require('wizard').Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "batch");
-        this.model = this.setModel({});
 
         let state = this.History.getState();
     }

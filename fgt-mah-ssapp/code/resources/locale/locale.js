@@ -67,7 +67,7 @@ const LOCALE = {
                 placeholder: 'Please enter the product description here...',
                 value: 'This product is very good for you'
             },
-            mah: {
+            manufName: {
                 label: "Marketing Authorization Holder:"
             }
         },
