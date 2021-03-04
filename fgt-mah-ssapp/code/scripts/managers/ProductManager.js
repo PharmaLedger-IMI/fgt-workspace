@@ -1,14 +1,14 @@
 const PRODUCT_MOUNT_PATH = "/products";
 
 /**
- * Helper Class to handle batch creation and its mount on the MAH ssapp.
+ * Helper Class to handle product creation and its mount on the MAH ssapp.
  * Basically a specialized wrapper around {@link DSUStorage}
  * @param {DSUStorage} dsuStorage the controllers dsu storage
  */
-class BatchManagerService {
+class ProductManager {
     constructor(dsuStorage) {
         this.DSUStorage = dsuStorage;
-        this.batchService = require('wizard').Services.BatchService;
+        this.productService = require('wizard').Services.ProductService;
     }
 
     /**
@@ -80,7 +80,7 @@ class BatchManagerService {
      */
     createProduct(product, callback) {
         this._initialize(() => {
-            this.batchService.create(product, (err, keySSI) => {
+            this.productService.create(product, (err, keySSI) => {
                 if (err)
                     return callback(err);
                 let mount_path = this._getMountPath(product.gtin);
@@ -186,13 +186,20 @@ class BatchManagerService {
     }
 }
 
-let batchManagerService;
-const getInstance = function (dsuStorage) {
-    if (!batchManagerService)
-        batchManagerService = new BatchManagerService(dsuStorage);
-    return batchManagerService;
+let productManagerService;
+/**
+ * @param {DSUStorage} dsuStorage
+ * @returns {ProductManager}
+ */
+const getProductManager = function (dsuStorage) {
+    if (!productManagerService) {
+        if (!dsuStorage)
+            throw new Error("No DSUStorage provided");
+        productManagerService = new ProductManager(dsuStorage);
+    }
+    return productManagerService;
 }
 
 export {
-    getInstance
+    getProductManager
 }

@@ -1,10 +1,7 @@
 import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
+import {getIdManager} from "../managers/IdManager.js"
 
-const wizard = require('wizard');
-const IdService = wizard.Services.IdService;
-const LocaleService = wizard.Services.LocaleService;
-
-const id_path = "/actor";
+const LocaleService = require('wizard').Services.LocaleService;
 
 export default class IdController extends ContainerController {
     constructor(element) {
@@ -14,7 +11,7 @@ export default class IdController extends ContainerController {
             identified: false,
             actor: undefined
         });
-        this.idService = new IdService('traceability');
+        this.idManager = getIdManager(this.DSUStorage, "traceability");
         console.log("Id controller initialized");
         element.addEventListener('perform-registration', (event) => {
             event.preventDefault();
@@ -36,42 +33,20 @@ export default class IdController extends ContainerController {
      */
     register(actor, callback){
         let self = this;
-        self.idService.create(actor, (err, keySSI) => {
+        self.idManager.create(actor, (err, keySSI) => {
             if (err)
                 return callback(err);
-            console.log(`Id DSU created with ssi: ${keySSI.getIdentifier(true)}`);
-            self.DSUStorage.enableDirectAccess(err => {
-                if (err)
-                    return callback(err);
-                self.DSUStorage.mount(id_path, keySSI.getIdentifier(), (err) => {
-                    if (err)
-                        return callback(err);
-                    console.log(`Id DSU mounted in ${id_path}`);
-                    callback();
-                });
-            })
+            callback();
         });
     }
 
     _showRegistrationModal(){
-        let self = this;
-        this.showModal('registration-modal', {}, (err, result) => {
-            if (err)
-                throw err;
-            console.log("return", result);
-            this.register(result, (err) => {
-                if (err) {
-                    console.log("Could not register...");
-                    return;
-                }
-                self._testId();
-            });
-        });
+        this.showModal('registration-modal');
     }
 
     _testId(){
         let self = this;
-        this.DSUStorage.getObject(id_path + "/info", (err, actor) => {
+        this.idManager.getId((err, actor) => {
             if (err || !actor) {
                 self.model.identified = false;
                 self._showRegistrationModal();

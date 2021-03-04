@@ -1,3 +1,10 @@
+/**
+ * @module fgt-mah-ssapp.LOCALE
+ */
+
+/**
+ * defines the localizes strings for the whole ssapp
+ */
 const LOCALE = {
     en_US: {
         home: {
@@ -90,7 +97,8 @@ const LOCALE = {
             title: "Product Manager",
             nameHeader: "Name",
             gtinHeader: "Gtin",
-            batchesHeader: "Manage Batches"
+            batchesHeader: "Manage Batches",
+            add: "Add Product"
         },
         batches: {
             title: "Batch Manager"
