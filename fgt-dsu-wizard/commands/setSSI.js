@@ -1,4 +1,8 @@
 /**
+ * @module fgt-dsu-wizard.commands
+ */
+
+/**
  * Registers with the DSU Wizard the provided endpoints for the various DSU types
  * @param server: the server object
  * @param endpoint: the endpoint to be registered

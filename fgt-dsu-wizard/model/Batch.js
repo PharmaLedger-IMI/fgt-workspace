@@ -1,3 +1,7 @@
+/**
+ * @module fgt-dsu-wizard.model
+ */
+
 const Utils = require("./Utils.js");
 
 /**

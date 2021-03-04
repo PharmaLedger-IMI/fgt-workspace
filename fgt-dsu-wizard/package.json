@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "prebuild": "node ./node_modules/octopus/scripts/run prebuild devmode",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "doc": "jsdoc -c jsdocs.json -r"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,7 @@
     "octopus": "git+https://github.com/PrivateSky/octopus.git"
   },
   "devDependencies": {
-    "form-data": "v3.0.0"
+    "form-data": "v3.0.0",
+    "jsdoc": "^3.6.6"
   }
 }

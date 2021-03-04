@@ -1,6 +1,10 @@
 /**
+ * @module fgt-dsu-wizard
+ */
+
+/**
  * iterates through all the commands in the command folder and registers them
- * Is called to
+ * Is called by the apihub via the server.json
  */
 function Init(server){
 	const path = require('path');
@@ -16,8 +20,20 @@ function Init(server){
 
 module.exports = {
 	Init,
+	/**
+	 * Exposes the Model module
+	 */
 	Model: require("./model"),
+	/**
+	 * exposes the Commands module
+	 */
 	Commands: require("./commands"),
+	/**
+	 * instantiates a nre DSUService
+	 */
 	DSUService: new (require('./services/DSUService')),
+	/**
+	 * Exposes the Services Module
+	 */
 	Services: require("./services"),
 };

@@ -1,3 +1,6 @@
+/**
+ * @module fgt-dsu-wizard.services
+ */
 let SUPPORTED = {
     en_US: "en_US"
 };

@@ -1,4 +1,8 @@
 /**
+ * @module fgt-dsu-wizard.commands
+ */
+
+/**
  * Defines how to create the keyssi for a sendingPartner dsu
  * @param {object} data necessary properties:
  * <ul>

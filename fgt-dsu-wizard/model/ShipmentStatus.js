@@ -1,3 +1,6 @@
+/**
+ * @module fgt-dsu-wizard.model
+ */
 const ShipmentStatus = {
     CREATED: "created",
     ACKNOWLEDGED: "acknowledged",

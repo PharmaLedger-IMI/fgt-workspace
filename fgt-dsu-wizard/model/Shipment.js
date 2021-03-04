@@ -1,3 +1,6 @@
+/**
+ * @module fgt-dsu-wizard.model
+ */
 class Shipment {
     shipmentId;
     requesterId;

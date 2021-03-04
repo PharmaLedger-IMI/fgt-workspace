@@ -1,3 +1,6 @@
+/**
+ * @module fgt-dsu-wizard.services
+ */
 const utils = require('./utils');
 
 /**

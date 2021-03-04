@@ -1,3 +1,6 @@
+/**
+ * @module fgt-dsu-wizard.commands
+ */
 
 /**
  * Creates a seedSSI meant to contain participant 'personal' data (in this case MAH)

@@ -1,3 +1,6 @@
+/**
+ * @module fgt-dsu-wizard.model
+ */
 const Actor = require('./Actor');
 
 class Wholesaler extends Actor{

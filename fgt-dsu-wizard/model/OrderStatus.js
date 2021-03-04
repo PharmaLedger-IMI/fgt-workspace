@@ -1,3 +1,6 @@
+/**
+ * @module fgt-dsu-wizard.model
+ */
 const OrderStatus = {
     CREATED: "created",
     ACKNOWLEDGED: "acknowledged",

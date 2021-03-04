@@ -1,3 +1,6 @@
+/**
+ * @module fgt-dsu-wizard.model
+ */
 module.exports = {
     Order: require('./Order'),
     OrderStatus: require('./OrderStatus'),

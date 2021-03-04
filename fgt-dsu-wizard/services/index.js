@@ -1,3 +1,6 @@
+/**
+ * @module fgt-dsu-wizard.services
+ */
 module.exports = {
     DSUService: require('./DSUService'),
     IdService: require('./IdService'),
@@ -7,5 +10,6 @@ module.exports = {
     ShipmentService: require("./ShipmentService"),
     StatusService: require("./StatusService"),
     ProductService: require("./ProductService"),
+    BatchService: require("./BatchService"),
     Strategy: require("./strategy")
 }

@@ -38,5 +38,8 @@
   "homepage": "https://github.com/PharmaLedger-IMI/fgt-workspace#readme",
   "dependencies": {
     "octopus": "git+https://github.com/PrivateSky/octopus.git"
+  },
+  "devDependencies": {
+    "jsdoc": "^3.6.6"
   }
 }

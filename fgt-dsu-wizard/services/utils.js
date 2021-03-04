@@ -1,3 +1,6 @@
+/**
+ * @module fgt-dsu-wizard.services
+ */
 let resolver, DSUService;
 
 /**
@@ -31,6 +34,42 @@ function selectMethod(keySSI){
 	return getResolver().createDSU;
 }
 
+/**
+ * Util method to recursively create folders from a list.
+ * Useful to create mount folders
+ * @param {Archive} dsu
+ * @param {string[]} folders
+ * @param {function(err, string[])} callback the folders there where actually created (didn't already exist)
+ */
+function createDSUFolders(dsu, folders, callback){
+	let created = [];
+	let iterator = function(folderList){
+		let folder = folderList.shift();
+		if (!folder)
+			return callback(undefined, created);
+		dsu.readDir(folder, (err, files) => {
+			if (!err) {
+				console.log(`Found already existing folder at ${folder}. No need to create...`)
+				return iterator(folderList);
+			}
+			dsu.createFolder(folder, (err) => {
+				if (err)
+					return callback(err);
+				created.push(folder);
+				iterator(folderList);
+			});
+		});
+	}
+	iterator(folders.slice());
+}
+
+/**
+ * Util Method to select POST strategy per DSU api.
+ * - Copied from PrivateSky
+ * - refactored for server side use compatibility in <strong>tests</strong>
+ * @param {string} apiname
+ * @returns {doPost} postHandler
+ */
 function getPostHandlerFor(apiname){
 
 	function getBaseURL() {
@@ -80,5 +119,6 @@ module.exports = {
 	getResolver,
 	getDSUService,
 	getPostHandlerFor,
-	selectMethod
+	selectMethod,
+	createDSUFolders
 }

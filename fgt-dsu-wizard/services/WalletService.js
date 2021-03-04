@@ -1,3 +1,6 @@
+/**
+ * @module fgt-dsu-wizard.services
+ */
 'use strict';
 
 const FileService = require("./FileService");

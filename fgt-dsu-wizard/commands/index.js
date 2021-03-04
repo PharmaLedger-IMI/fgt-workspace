@@ -1,3 +1,6 @@
+/**
+ * @module commands
+ */
 module.exports = {
     createIdSSI: require("./setIdSSI").createIdSSI,
     createOrderingPartnerSSI: require("./setOrderingPartnerSSI").createOrderingPartnerSSI,

@@ -1,4 +1,8 @@
 /**
+ * @module fgt-dsu-wizard.commands
+ */
+
+/**
  * Defines how to create the keyssi for a orderLine dsu
  * @param {OrderStatus|ShipmentStatus} status. if status has the properties:
  * <ul>

@@ -1,3 +1,6 @@
+/**
+ * @module fgt-dsu-wizard.services
+ */
 function FileService() {
 
     function constructUrlBase(appName, prefix){

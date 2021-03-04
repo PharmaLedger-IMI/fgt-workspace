@@ -1,3 +1,6 @@
+/**
+ * @module fgt-dsu-wizard.model
+ */
 const OrderStatus = require('./OrderStatus');
 
 class Order{

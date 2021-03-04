@@ -1,3 +1,6 @@
+/**
+ * @module fgt-dsu-wizard.services
+ */
 const utils = require('./utils');
 
 /**
@@ -34,7 +37,7 @@ function OrderService(domain, strategy){
     /**
      * Creates the original OrderStatus DSU
      * @param {OrderStatus} [status]: defaults to OrderStatus.CREATED
-     * @param {function<err, keySSI>} callback
+     * @param {function(err, keySSI)} callback
      */
     let createOrderStatus = function(status, callback){
         if (typeof status === 'function'){
@@ -71,7 +74,7 @@ function OrderService(domain, strategy){
                             dsu.mount("/status", keySSI.getIdentifier(), (err) => {
                                 if (err)
                                     return callback(err);
-                                console.log(`Status DSU (${keySSI.getIdentifier(true)}) mounted at '/status'`)
+                                console.log(`Status DSU (${keySSI.getIdentifier(true)}) mounted at '/status'`);
                                 dsu.getKeySSIAsObject((err, keySSI) => {
                                     if (err)
                                         return callback(err);

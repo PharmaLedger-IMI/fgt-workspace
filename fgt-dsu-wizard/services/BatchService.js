@@ -7,28 +7,30 @@ const utils = require('./utils');
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
  */
-function ProductService(domain, strategy){
+function BatchService(domain, strategy){
     const strategies = require('./strategy');
-    const Product = require('../model').Product;
-    const endpoint = 'product';
+    const Batch = require('../model').Batch;
+    const endpoint = 'batch';
 
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
     /**
-     * Creates a {@link Product} DSU
-     * @param {Product} product
+     * Creates a {@link Batch} DSU
+     * @param {string} gtin
+     * @param {Batch} batch
      * @param {function(err, keySSI)} callback
      */
-    this.create = function(product, callback){
+    this.create = function(gtin, batch, callback){
 
-        let data = typeof product === 'object' ? JSON.stringify(product) : product;
+        let data = typeof batch === 'object' ? JSON.stringify(batch) : batch;
 
         let keyGenData = {
-            gtin: product.gtin
+            gtin: gtin,
+            batch: batch.batchNumber
         }
 
         if (isSimple){
-            let keyGenFunction = require('../commands/setProductSSI').createProductSSI;
+            let keyGenFunction = require('../commands/setBatchSSI').createBatchSSI;
             let keySSI = keyGenFunction(keyGenData, domain);
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
@@ -36,7 +38,6 @@ function ProductService(domain, strategy){
                 dsu.writeFile('/info', data, (err) => {
                     if (err)
                         return callback(err);
-                    dsu.createFolder('/')
                     dsu.getKeySSIAsObject((err, keySSI) => {
                         if (err)
                             return callback(err);
@@ -45,20 +46,21 @@ function ProductService(domain, strategy){
                 });
             });
         } else {
-            let getEndpointData = function (product){
+            let getEndpointData = function (batch){
                 return {
                     endpoint: endpoint,
                     data: {
-                        gtin: product.gtin,
+                        gtin: gtin,
+                        batch: batch.batchNumber
                     }
                 }
             }
 
-            utils.getDSUService().create(domain, getEndpointData(product), (builder, cb) => {
+            utils.getDSUService().create(domain, getEndpointData(batch), (builder, cb) => {
                 builder.addFileDataToDossier("/info", data, cb);
             }, callback);
         }
     };
 }
 
-module.exports = ProductService;
+module.exports = BatchService;

@@ -1,3 +1,6 @@
+/**
+ * @module fgt-dsu-wizard.model
+ */
 function generate(charactersSet, length){
     let result = '';
     const charactersLength = charactersSet.length;
