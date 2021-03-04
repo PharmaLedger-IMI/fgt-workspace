@@ -1,5 +1,5 @@
 {
-  "build": "./.README.md",
+  "build": "./tmp_doc/README.md",
   "files": [
     "./README.md"
   ]

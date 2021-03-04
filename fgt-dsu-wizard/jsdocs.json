@@ -27,7 +27,7 @@
     "opts": {
         "template": "node_modules/docdash",
         "destination": "./docs/",
-        "readme": ".README.md",
+        "readme": "./tmp_doc/README.md",
         "recurse": true,
         "verbose": true,
         "docdash": {
