@@ -36,7 +36,6 @@ function ProductService(domain, strategy){
                 dsu.writeFile('/info', data, (err) => {
                     if (err)
                         return callback(err);
-                    dsu.createFolder('/')
                     dsu.getKeySSIAsObject((err, keySSI) => {
                         if (err)
                             return callback(err);

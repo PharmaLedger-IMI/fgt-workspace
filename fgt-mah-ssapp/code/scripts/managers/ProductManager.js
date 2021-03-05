@@ -40,12 +40,7 @@ class ProductManager {
         self._enableDirectAccess((err) => {
             if (err)
                 return callback(err);
-            self._createMountFolders((err, created) => {
-                if (err)
-                    return callback(err);
-                console.log(`Folders ${created} have been created`);
-                callback();
-            })
+            callback();
         });
     }
 
@@ -55,7 +50,7 @@ class ProductManager {
      * @private
      */
     _createMountFolders(callback){
-        let mount_folders = [PRODUCT_MOUNT_PATH];
+        let mount_folders = [PRODUCT_MOUNT_PATH].map(p => p[0] === '/' ? p.substr(1) : p);
         let folders = [];
         let self = this;
         let iterator = function(folderList){
@@ -168,6 +163,12 @@ class ProductManager {
                 if (err)
                     return callback(err);
                 console.log(`Found ${mounts.length} products at ${PRODUCT_MOUNT_PATH}`);
+                mounts = mounts.map(m => {
+                    return {
+                        path: `${PRODUCT_MOUNT_PATH}/${m.path}`,
+                        identifier: m.identifier
+                    };
+                })
                 self._readAll(mounts, callback);
             });
         });
@@ -182,7 +183,7 @@ class ProductManager {
      *         identifier: keySSI
      *     }
      * </pre>
-     * @param {function(err, Product[])} callback
+     * @param {function(err, Product[])} callbackasfda
      * @private
      */
     _readAll(mounts, callback){
@@ -191,7 +192,7 @@ class ProductManager {
         let iterator = function(m){
             let mount = m.shift();
             if (!mount)
-                return callback(undefined, products);
+                return callback(undefined, Object.keys(products).map(key => products[key]));
             self.DSUStorage.getObject(`${mount.path}/info`, (err, product) => {
                 if (err)
                     return callback(err);

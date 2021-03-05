@@ -29,6 +29,7 @@ export default class ProductsController extends ContainerController {
             self._addProductAsync(event.detail, (err) => {
                 if (err)
                     throw err;
+                self.closeModal('product-modal');
                 self.getProductsAsync();
             });
         });
