@@ -33,6 +33,12 @@ export default class ProductsController extends ContainerController {
             });
         });
 
+        this.on('manage-batches', (event) => {
+            event.stopImmediatePropagation();
+            const gtin = event.target.getAttribute("gtin");
+            this.History.navigateToPageByUrl("/batches", {gtin: gtin});
+        });
+
         this.getProductsAsync();
     }
 
