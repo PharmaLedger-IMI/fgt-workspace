@@ -1,26 +1,44 @@
 <psk-page>
     <psk-container controller-name="ProductsController">
-        <psk-card id="productsTitle">
-            <psk-form-row class="page-header" layout="xs=[10,2] m=[10,2], l=[11,1], xl=[4,4]">
-                <psk-label class="title" label="@title"></psk-label>
-                <psk-button label="@add" event-name="add-product"></psk-button>
-            </psk-form-row>
+        <psk-card class="page-header" id="productsTitle">
+            <psk-layout templace-columns="6fr 1fr" align-contents="space-between" column-gap="10px">
+                <psk-layout-item>
+                    <psk-label class="title" label="@title"></psk-label>
+                </psk-layout-item>
+                <psk-layout-item>
+                    <psk-button label="@add" event-name="add-product"></psk-button>
+                </psk-layout-item>
+            </psk-layout>
         </psk-card>
         <psk-condition condition="@hasProducts">
             <div slot="condition-true">
                 <psk-card class="table-header" id="tableHeader">
-                    <psk-layout template-columns="4fr 4fr 1fr">
-                        <psk-label label="@nameHeader"></psk-label>
-                        <psk-label label="@gtinHeader"></psk-label>
-                        <psk-label label="@batchesHeader"></psk-label>
+                    <psk-layout template-columns="4fr 4fr 1fr" align-contents="space-between" column-gap="10px">
+                        <psk-layout-intem>
+                            <psk-label label="@nameHeader"></psk-label>
+                        </psk-layout-intem>
+                        <psk-layout-intem>
+                            <psk-label label="@gtinHeader"></psk-label>
+                        </psk-layout-intem>
+                        <psk-layout-intem>
+                            <psk-label label="@batchesHeader"></psk-label>
+                        </psk-layout-intem>
                     </psk-layout>
                 </psk-card>
                 <psk-for-each data-view-model="products">
                     <psk-card class="table-line" id="@gtin">
-                        <psk-layout template-columns="4fr 4fr 1fr">
-                            <psk-label label="@name"></psk-label>
-                            <psk-label label="@gtin"></psk-label>
-                            <psk-button label="@manage" event-name="manage-batches" gtin="@gtin"></psk-button>
+                        <psk-layout template-columns="4fr 4fr 1fr" align-contents="space-between" column-gap="10px">
+                            <psk-layout-item>
+                                <psk-label label="@name"></psk-label>
+                            </psk-layout-item>
+                            <psk-layout-item>
+                                <psk-label label="@gtin"></psk-label>
+                            </psk-layout-item>
+                            <psk-layout-item>
+                                <psk-button event-name="manage-batches" gtin="@gtin">
+                                    <i class="fa fa-stack-exchange" aria-hidden="true"></i>
+                                </psk-button>
+                            </psk-layout-item>
                         </psk-layout>
                     </psk-card>
                 </psk-for-each>

@@ -13,11 +13,8 @@ export default class ProductsController extends ContainerController {
 
         this.model = this.setModel({
             mah: {},
-            products: {}
-        });
-
-        this.model.addExpression('hasProducts', () => {
-           return typeof this.model.products !== undefined && this.model.products.length > 0;
+            products: [],
+            hasProducts: false
         });
 
         let self = this;
@@ -75,10 +72,8 @@ export default class ProductsController extends ContainerController {
      * </ul>
      */
     updateProducts(products){
-        this.model = this.setModel({
-            products: products,
-            hasContent: products.length > 0
-        });
+        this.model['products'] = products;
+        this.model['hasProducts'] = products.length > 0;
     }
 
     /**

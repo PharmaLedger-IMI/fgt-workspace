@@ -215,7 +215,7 @@ class ProductManager {
             name: model.name.value,
             description: model.description.value,
             manufName: model.manufName.value
-        })
+        });
     }
 
     productToModel(product, model){
