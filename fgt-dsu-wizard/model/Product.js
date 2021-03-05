@@ -6,7 +6,6 @@ class Product {
     gtin = "";
     description = "";
     manufName = "";
-    reportURL = `${window.top.location.origin}/default-report.html`;
 
     constructor(product) {
         if (typeof product !== undefined)

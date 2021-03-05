@@ -21,7 +21,7 @@ export default class IdController extends ContainerController {
                 this._testId();
             });
         }, true)
-       this._testId();
+        this._testId();
     }
 
     /**

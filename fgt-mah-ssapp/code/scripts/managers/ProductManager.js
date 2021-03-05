@@ -1,4 +1,5 @@
 const PRODUCT_MOUNT_PATH = "/products";
+const Product = require('wizard').Model.Product;
 
 /**
  * Product Manager Class
@@ -183,7 +184,7 @@ class ProductManager {
      *         identifier: keySSI
      *     }
      * </pre>
-     * @param {function(err, Product[])} callbackasfda
+     * @param {function(err, Product[])} callback
      * @private
      */
     _readAll(mounts, callback){
@@ -201,6 +202,32 @@ class ProductManager {
             });
         }
         iterator(mounts.slice());
+    }
+
+    /**
+     *
+     * @param model
+     * @returns {Product}
+     */
+    modelToProduct(model){
+        return new Product({
+            gtin: model.gtin.value,
+            name: model.name.value,
+            description: model.description.value,
+            manufName: model.manufName.value
+        })
+    }
+
+    productToModel(product, model){
+        model = model || {};
+        for (let prop in product)
+            if (product.hasOwnProperty(prop)){
+                if (!model[prop])
+                    model[prop] = {};
+                model[prop].value = product[prop];
+            }
+
+        return model;
     }
 }
 

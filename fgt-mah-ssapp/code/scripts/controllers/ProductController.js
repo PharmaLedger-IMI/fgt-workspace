@@ -1,4 +1,5 @@
 import ModalController from "../../cardinal/controllers/base-controllers/ModalController.js";
+import {getProductManager} from "../managers/ProductManager.js"
 const Product = require('wizard').Model.Product;
 
 export default class ProductController extends ModalController {
@@ -6,6 +7,7 @@ export default class ProductController extends ModalController {
         super(element, history);
         const LocaleService = require('wizard').Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "product");
+        this.productManager = getProductManager(this.DSUStorage);
 
         let state = this.History.getState();
 
@@ -16,18 +18,8 @@ export default class ProductController extends ModalController {
         element.addEventListener('submit-product', this._handleSubmit.bind(this));
     }
 
-    _modelToProduct(){
-        const model = this.model;
-        return new Product({
-            gtin: model.gtin.value,
-            name: model.name.value,
-            description: model.description.value,
-            manufName: model.manufName.value
-        })
-    }
-
     _handleSubmit(event){
-        let product = this._modelToProduct();
+        let product = this.productManager.modelToProduct(this.model);
         this.send('perform-add-product', product);
     }
 }

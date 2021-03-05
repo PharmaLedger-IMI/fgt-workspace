@@ -5,26 +5,28 @@ const Product = require('wizard').Model.Product;
 export default class ProductsController extends ContainerController {
     constructor(element, history) {
         super(element, history);
-        this.productManager = getProductManager(this.DSUStorage);
         const wizard = require('wizard');
-        this.idManager = wizard.Managers.getIdManager(this.DSUStorage, "traceability");
         const LocaleService = wizard.Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "products");
+        this.productManager = getProductManager(this.DSUStorage);
+        this.idManager = wizard.Managers.getIdManager(this.DSUStorage, "traceability");
+
         this.model = this.setModel({
             mah: {},
-            hasProducts: false,
             products: {}
         });
 
+        this.model.addExpression('hasProducts', () => {
+           return typeof this.model.products !== undefined && this.model.products.length > 0;
+        });
+
         let self = this;
-        element.addEventListener('add-product', (event) => {
-            event.preventDefault();
+        this.on('add-product', (event) => {
             event.stopImmediatePropagation();
             self._showProductModal();
         });
 
-        element.addEventListener('perform-add-product', (event) => {
-            event.preventDefault();
+        this.on('perform-add-product', (event) => {
             event.stopImmediatePropagation();
             self._addProductAsync(event.detail, (err) => {
                 if (err)
@@ -42,21 +44,10 @@ export default class ProductsController extends ContainerController {
         self.idManager.getId((err, actor) => {
            if (err)
                throw err;
-            self.showModal('product-modal', self._productToModel(new Product({
+            self.showModal('product-modal', this.productManager.productToModel(new Product({
                 manufName: actor.name
             })), true);
         });
-    }
-
-    _productToModel(product){
-        let model = {};
-        Object.keys(product).forEach(k => {
-                if (product.hasOwnProperty(k))
-                    model[k] = {
-                        value: product[k]
-                    };
-            });
-        return model;
     }
 
     /**
@@ -84,8 +75,10 @@ export default class ProductsController extends ContainerController {
      * </ul>
      */
     updateProducts(products){
-        this.model.products = products;
-        this.model.hasContent = products.length > 0;
+        this.model = this.setModel({
+            products: products,
+            hasContent: products.length > 0
+        });
     }
 
     /**
