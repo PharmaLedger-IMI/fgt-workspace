@@ -11,9 +11,18 @@ function ProductService(domain, strategy){
     const strategies = require('./strategy');
     const Product = require('../model').Product;
     const endpoint = 'product';
+    const keyGenFunction = require('../commands/setProductSSI').createProductSSI;
 
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
+
+    this.generateKey = function(gtin){
+        let keyGenData = {
+            gtin: gtin
+        }
+        return keyGenFunction(keyGenData, domain);
+    }
+
     /**
      * Creates a {@link Product} DSU
      * @param {Product} product
@@ -23,13 +32,8 @@ function ProductService(domain, strategy){
 
         let data = typeof product === 'object' ? JSON.stringify(product) : product;
 
-        let keyGenData = {
-            gtin: product.gtin
-        }
-
         if (isSimple){
-            let keyGenFunction = require('../commands/setProductSSI').createProductSSI;
-            let keySSI = keyGenFunction(keyGenData, domain);
+            let keySSI = this.generateKey(product.gtin);
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);

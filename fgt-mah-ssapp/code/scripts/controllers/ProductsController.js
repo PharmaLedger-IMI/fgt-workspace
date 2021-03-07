@@ -61,7 +61,7 @@ export default class ProductsController extends ContainerController {
      */
     _addProductAsync(product, callback){
         let self = this;
-        self.productManager.createProduct(product, (err, keySSI, path) => {
+        self.productManager.create(product, (err, keySSI, path) => {
             if (err)
                 return callback(err);
             callback();

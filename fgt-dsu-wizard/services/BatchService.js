@@ -11,9 +11,18 @@ function BatchService(domain, strategy){
     const strategies = require('./strategy');
     const Batch = require('../model').Batch;
     const endpoint = 'batch';
-
+    const keyGenFunction = require('../commands/setBatchSSI').createBatchSSI;
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
+
+    this.generateKey = function(gtin, batchNumber){
+        let keyGenData = {
+            gtin: gtin,
+            batch: batchNumber
+        }
+        return keyGenFunction(keyGenData, domain);
+    }
+
     /**
      * Creates a {@link Batch} DSU
      * @param {string} gtin
@@ -24,14 +33,8 @@ function BatchService(domain, strategy){
 
         let data = typeof batch === 'object' ? JSON.stringify(batch) : batch;
 
-        let keyGenData = {
-            gtin: gtin,
-            batch: batch.batchNumber
-        }
-
         if (isSimple){
-            let keyGenFunction = require('../commands/setBatchSSI').createBatchSSI;
-            let keySSI = keyGenFunction(keyGenData, domain);
+            let keySSI = this.generateKey(gtin, batch.batchNumber);
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);

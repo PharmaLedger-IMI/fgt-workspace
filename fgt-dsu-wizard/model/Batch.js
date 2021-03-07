@@ -42,3 +42,5 @@ class Batch {
         throw new Error("Not implemented");
     }
 }
+
+module.exports = Batch;

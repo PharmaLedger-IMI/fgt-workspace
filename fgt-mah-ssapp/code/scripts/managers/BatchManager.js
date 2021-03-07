@@ -1,5 +1,3 @@
-const PRODUCT_MOUNT_PATH = "/products";
-
 /**
  * Batch Manager Class
  *
@@ -19,16 +17,9 @@ const PRODUCT_MOUNT_PATH = "/products";
 class BatchManager {
     constructor(dsuStorage) {
         this.DSUStorage = dsuStorage;
-        this.batchService = require('wizard').Services.BatchService;
+        this.batchService = new (require('wizard').Services.BatchService)('traceability');
     }
 
-    /**
-     * Returns the mount path for a given gtin
-     * @private
-     */
-    _getMountPath(gtin){
-        return `${PRODUCT_MOUNT_PATH}/${gtin}`;
-    }
 
     /**
      * Ensures the DSU Storage is properly Initialized and the necessary structure of the SSApp (Product wise) is set
@@ -39,39 +30,8 @@ class BatchManager {
         this._enableDirectAccess((err) => {
             if (err)
                 return callback(err);
-            this._createMountFolders((err, created) => {
-                if (err)
-                    return callback(err);
-                console.log(`Folders ${created} have been created`);
-                callback();
-            })
+            callback();
         });
-    }
-
-    /**
-     * Initializes the mount points required for Products
-     * @param {function(err, string[])} callback
-     * @private
-     */
-    _createMountFolders(callback){
-        let mount_folders = [PRODUCT_MOUNT_PATH];
-        let folders = [];
-        let iterator = function(folderList){
-            let folder = folderList.shift();
-            if (!folder)
-                return callback(undefined, folders);
-            this.DSUStorage.readDir(folder, (err, files) => {
-                if (!err)
-                    return iterator(folderList);
-                this.DSUStorage.createFolder(folder, (err) => {
-                    if (err)
-                        return callback(err);
-                    folders.push(folder);
-                    iterator(folderList);
-                });
-            });
-        }
-        iterator(mount_folders.slice());
     }
 
     /**
@@ -85,36 +45,32 @@ class BatchManager {
     }
 
     /**
-     * Creates a {@link Product} dsu
-     * @param {Product} product
-     * @param {function(err, keySSI, string)} callback where the string is the mount path
+     * Creates a {@link Batch} dsu
+     * @param gtin
+     * @param {Batch} batch
+     * @param {function(err, keySSI, string)} callback where the string is the mount path relative to the main DSU
      */
-    createProduct(product, callback) {
-        this._initialize(() => {
-            this.batchService.create(product, (err, keySSI) => {
-                if (err)
-                    return callback(err);
-                let mount_path = this._getMountPath(product.gtin);
-                this.DSUStorage.mount(mount_path, keySSI.getIdentifier(), (err) => {
-                    if (err)
-                        return callback(err);
-                    console.log(`Product ${product.gtin} created and mounted at '${mount_path}'`);
-                    callback(undefined, keySSI, mount_path);
-                });
-            });
+    create(gtin, batch, callback) {
+        this.batchService.create(gtin, batch, (err, keySSI) => {
+            if (err)
+                return callback(err);
+            console.log(`Batch ${batch.batchNumber} created for product '${gtin}'`);
+            callback(undefined, keySSI);
         });
     }
 
     /**
-     * reads the product information from a given gtin (if exists and is registered to the mah)
+     * reads the specific Batch information from a given gtin (if exists and is registered to the mah)
+     *
      * @param {string} gtin
-     * @param {function(err, Product)} callback
+     * @param {string} batchNumber
+     * @param {function(err, Batch)} callback
      */
-    getProduct(gtin, callback){
-        this.DSUStorage.getObject(`${this._getMountPath(product.gtin)}/info`, (err, product) => {
+    getOne(gtin, batchNumber, callback){
+        this.DSUStorage.getObject(`${PRODUCT_MOUNT_PATH}/gtin${this._getMountPath(batchNumber)}/${batchNumber}`, (err, batch) => {
             if (err)
                 return callback(err);
-            callback(undefined, product);
+            callback(undefined, batch);
         });
     }
 
@@ -197,11 +153,11 @@ class BatchManager {
     }
 }
 
-let batchManagerService;
+let batchManager;
 const getBatchManager = function (dsuStorage) {
-    if (!batchManagerService)
-        batchManagerService = new BatchManager(dsuStorage);
-    return batchManagerService;
+    if (!batchManager)
+        batchManager = new BatchManager(dsuStorage);
+    return batchManager;
 }
 
 export {

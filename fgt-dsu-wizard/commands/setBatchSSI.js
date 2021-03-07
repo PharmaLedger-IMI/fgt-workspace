@@ -15,7 +15,13 @@
  */
 function createBatchSSI(data, domain) {
     console.log("New BATCH_SSI in domain", domain);
-
+    const openDSU = require('opendsu');
+    const keyssiSpace = openDSU.loadApi("keyssi");
+    let hint;
+    if (data[openDSU.constants.BRICKS_DOMAIN_KEY]) {
+        hint = {};
+        hint[openDSU.constants.BRICKS_DOMAIN_KEY] = [domain, data[openDSU.constants.BRICKS_DOMAIN_KEY]].join('.');
+    }
     return keyssiSpace.createArraySSI(domain, [data.gtin, data.batch], 'v0', hint ? JSON.stringify(hint) : undefined);
 }
 
