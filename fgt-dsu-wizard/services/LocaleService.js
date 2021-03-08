@@ -78,7 +78,7 @@ function LocaleService(lang){
             model.locale = JSON.parse(JSON.stringify(localeObj));
         else {
             let tempObj = JSON.parse(JSON.stringify(localeObj[page]));
-            model = merge(tempObj, model);
+            model = merge(tempObj, JSON.parse(JSON.stringify(model)));
         }
         return model;
     }

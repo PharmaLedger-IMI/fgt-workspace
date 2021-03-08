@@ -9,8 +9,6 @@ export default class ProductController extends ModalController {
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "product");
         this.productManager = getProductManager(this.DSUStorage);
 
-        let state = this.History.getState();
-
         this.on('showModalEvent', data => {
             console.log(data.details);
         });

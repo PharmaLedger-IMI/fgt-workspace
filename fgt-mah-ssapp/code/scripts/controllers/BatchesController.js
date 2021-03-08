@@ -27,18 +27,19 @@ export default class BatchesController extends ContainerController {
                 self.getBatchesAsync();
             });
         });
-        //
-        // this.model.addExpression('hasBatches', () => {
-        //     return typeof this.model.batches !== 'undefined' && this.mode.batches.length > 0;
-        // }, 'batches');
 
         let state = this.History.getState();
 
         this.model = this.setModel({
             gtin: state.gtin,
-            batches: [],
-            hasBatches: false
+            batches: []
         });
+
+        this.model.addExpression('hasBatches', () => {
+            return typeof this.model.batches !== 'undefined' && this.model.batches.length > 0;
+        }, 'batches');
+
+
     }
 
     _showBatchModal(){
