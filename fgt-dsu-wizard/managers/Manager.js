@@ -25,6 +25,13 @@
 class Manager{
     constructor(dsuStorage){
         this.DSUStorage = dsuStorage;
+        this.resolver = undefined;
+    }
+
+    loadDSU(keySSI, callback){
+        if (!this.resolver)
+            this.resolver = require('opendsu').loadApi('resolver');
+        this.resolver.loadDSU(keySSI, callback);
     }
 
     /**

@@ -39,7 +39,7 @@ export default class BatchesController extends ContainerController {
             return typeof this.model.batches !== 'undefined' && this.model.batches.length > 0;
         }, 'batches');
 
-
+        this.getBatchesAsync();
     }
 
     _showBatchModal(){
@@ -56,10 +56,10 @@ export default class BatchesController extends ContainerController {
      */
     _addBatchAsync(batch, callback){
         let self = this;
-        self.productManager.addBatch(this.model.gtin, batch, (err, keySSI, mount) => {
+        self.batchManager.create(this.model.gtin, batch, (err, keySSI, productSSI) => {
             if (err)
-                return callback(err);
-            callback();
+                callback(err);
+            callback()
         });
     }
 
