@@ -1,8 +1,7 @@
 import {getBatchManager} from "./BatchManager.js";
+import {PRODUCT_MOUNT_PATH, BATCH_MOUNT_PATH} from './constants.js'
 const Manager = require('wizard').Managers.Manager;
 
-const PRODUCT_MOUNT_PATH = "/products";
-const BATCH_MOUNT_PATH = "/batches";
 const Product = require('wizard').Model.Product;
 
 /**

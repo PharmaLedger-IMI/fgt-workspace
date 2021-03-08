@@ -74,7 +74,6 @@ export default class BatchesController extends ContainerController {
      */
     updateBatches(batches){
         this.model['batches'] = batches;
-        //this.model['hasProducts'] = products.length > 0;
     }
 
     /**

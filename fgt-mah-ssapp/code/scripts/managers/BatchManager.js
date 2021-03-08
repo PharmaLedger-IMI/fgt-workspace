@@ -1,5 +1,7 @@
+import {PRODUCT_MOUNT_PATH, BATCH_MOUNT_PATH} from './constants.js'
 const Manager = require('wizard').Managers.Manager;
 const Batch = require('wizard').Model.Batch;
+
 /**
  * Batch Manager Class
  *
@@ -20,6 +22,14 @@ class BatchManager extends Manager{
     constructor(dsuStorage) {
         super(dsuStorage);
         this.batchService = new (require('wizard').Services.BatchService)('traceability');
+    }
+
+    /**
+     * Returns the mount path for a given gtin & batch
+     * @private
+     */
+    _getMountPath(gtin, batchNumber){
+        return `${PRODUCT_MOUNT_PATH}/${gtin}${BATCH_MOUNT_PATH}/${batchNumber}`;
     }
 
     /**
@@ -85,16 +95,31 @@ class BatchManager extends Manager{
     /**
      * Edits/Overwrites the product details
      * @param {string} gtin
+     * @param {string} batchNumber
      * @param {function(err)} callback
      */
-    editBatch(gtin, callback) {
+    editBatch(gtin, batchNumber,  callback) {
         super.initialize(() => {
-            let mount_path = this._getMountPath(gtin);
+            let mount_path = this._getMountPath(gtin, batchNumber);
             this.DSUStorage.writeFile(`${mount_path}/info`, (err) => {
                 if (err)
                     return callback(err);
                 console.log(`Product ${gtin} updated`);
                 callback();
+            });
+        });
+    }
+
+    listBatches(gtin, callback){
+        super.initialize(() => {
+            super.listMounts(`${PRODUCT_MOUNT_PATH}/${gtin}${BATCH_MOUNT_PATH}`, (err, mounts) => {
+                if (err)
+                    return callback(err);
+                super.readAll(mounts, (err, batches) => {
+                   if (err)
+                       return callback(err);
+                   callback(undefined, batches);
+                });
             });
         });
     }
