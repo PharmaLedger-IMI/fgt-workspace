@@ -1,5 +1,5 @@
 import {getBatchManager} from "./BatchManager.js";
-import {PRODUCT_MOUNT_PATH, BATCH_MOUNT_PATH} from './constants.js'
+import {PRODUCT_MOUNT_PATH, BATCH_MOUNT_PATH, ANCHORING_DOMAIN} from './constants.js'
 const Manager = require('wizard').Managers.Manager;
 
 const Product = require('wizard').Model.Product;
@@ -23,7 +23,7 @@ const Product = require('wizard').Model.Product;
 class ProductManager extends Manager{
     constructor(dsuStorage) {
         super(dsuStorage);
-        this.productService = new (require('wizard').Services.ProductService)("traceability");
+        this.productService = new (require('wizard').Services.ProductService)(ANCHORING_DOMAIN);
         this.batchManager = getBatchManager(this.DSUStorage);
     }
 
@@ -106,20 +106,6 @@ class ProductManager extends Manager{
         });
     }
 
-    addBatch(gtin, batch, callback){
-        let self = this;
-        self.batchManager.create(gtin, batch, (err, keySSI) => {
-            if (err)
-                return callback(err);
-            self.DSUStorage.mount(`${PRODUCT_MOUNT_PATH}/${gtin}${BATCH_MOUNT_PATH}/${batch.batchNumber}`, keySSI, (err, mount) => {
-                if (err)
-                    return callback(err);
-                console.log(`Batch ${batch.batchNumber} mounted at '${mount}'`);
-                callback(undefined, keySSI, mount);
-            });
-        });
-    }
-
     /**
      * Lists all registered products
      * @param {function(err, Product[])} callback
@@ -133,7 +119,7 @@ class ProductManager extends Manager{
                 m.gtin = m.path;
                 m.path = `${PRODUCT_MOUNT_PATH}/${m.path}`;
                 return m;
-            })
+            });
             super.readAll(mounts, callback);
         });
     }

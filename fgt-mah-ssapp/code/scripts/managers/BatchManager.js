@@ -1,4 +1,4 @@
-import {PRODUCT_MOUNT_PATH, BATCH_MOUNT_PATH} from './constants.js'
+import {PRODUCT_MOUNT_PATH, BATCH_MOUNT_PATH, ANCHORING_DOMAIN} from './constants.js'
 const Manager = require('wizard').Managers.Manager;
 const Batch = require('wizard').Model.Batch;
 
@@ -21,7 +21,9 @@ const Batch = require('wizard').Model.Batch;
 class BatchManager extends Manager{
     constructor(dsuStorage) {
         super(dsuStorage);
-        this.batchService = new (require('wizard').Services.BatchService)('traceability');
+        this.productService = new (require('wizard').Services.ProductService)(ANCHORING_DOMAIN);
+        this.batchService = new (require('wizard').Services.BatchService)(ANCHORING_DOMAIN);
+        this.keyCache = {};
     }
 
     /**
@@ -32,18 +34,42 @@ class BatchManager extends Manager{
         return `${PRODUCT_MOUNT_PATH}/${gtin}${BATCH_MOUNT_PATH}/${batchNumber}`;
     }
 
+    _getProductKey(gtin){
+        if (!this.keyCache[gtin])
+            this.keyCache[gtin] = this.productService.generateKey(gtin);
+        return this.keyCache[gtin];
+    }
+
+    _getBatchKey(gtin, batch){
+        let key = gtin + '' + batch;
+        if (!this.keyCache[key])
+            this.keyCache[key] = this.batchService.generateKey(gtin, batch);
+        return this.keyCache[key];
+    }
+
     /**
      * Creates a {@link Batch} dsu
      * @param gtin
      * @param {Batch} batch
-     * @param {function(err, keySSI, string)} callback where the string is the mount path relative to the main DSU
+     * @param {function(err, keySSI, keySSI)} callback first keySSI if for the batch, the second for its' product dsu
      */
     create(gtin, batch, callback) {
         this.batchService.create(gtin, batch, (err, keySSI) => {
             if (err)
                 return callback(err);
             console.log(`Batch ${batch.batchNumber} created for product '${gtin}'`);
-            callback(undefined, keySSI);
+            let key = this._getProductKey(gtin);
+            super.loadDSU(key, (err, dsu) => {
+                if (err)
+                    return callback(err);
+                let path = `${BATCH_MOUNT_PATH}/${batch.batchNumber}`
+                dsu.mount(path, keySSI.getIdentifier(), (err) => {
+                    if (err)
+                        return callback(err);
+                    console.log(`Batch ${batch.batchNumber} mounted at '${path}' for product ${gtin}`);
+                    callback(undefined, keySSI, key);
+                });
+            });
         });
     }
 
@@ -55,7 +81,7 @@ class BatchManager extends Manager{
      * @param {function(err, Batch)} callback
      */
     getOne(gtin, batchNumber, callback){
-        this.DSUStorage.getObject(`${PRODUCT_MOUNT_PATH}/gtin${this._getMountPath(batchNumber)}/${batchNumber}`, (err, batch) => {
+        this.DSUStorage.getObject(this._getMountPath(gtin, batchNumber), (err, batch) => {
             if (err)
                 return callback(err);
             callback(undefined, batch);
@@ -88,7 +114,7 @@ class BatchManager extends Manager{
         return new Batch({
             batchNumber: model.batchNumber.value,
             expiry: model.expiry.value,
-            serialNumbers: model.serialNumbers.value
+            serialNumbers: JSON.parse(JSON.stringify(model.serialNumbers.value))
         });
     }
 
@@ -111,16 +137,21 @@ class BatchManager extends Manager{
     }
 
     listBatches(gtin, callback){
-        super.initialize(() => {
-            super.listMounts(`${PRODUCT_MOUNT_PATH}/${gtin}${BATCH_MOUNT_PATH}`, (err, mounts) => {
-                if (err)
-                    return callback(err);
-                super.readAll(mounts, (err, batches) => {
-                   if (err)
-                       return callback(err);
-                   callback(undefined, batches);
-                });
-            });
+        let self = this;
+        let key = this._getProductKey(gtin);
+        this.loadDSU(key, (err, dsu) => {
+           if (err)
+               return callback(err);
+           dsu.listMountedDossiers(BATCH_MOUNT_PATH, (err, mounts) => {
+               if (err)
+                   return callback(err);
+               mounts = mounts.map(m => {
+                   m.batchNumber = m.path;
+                   m.path = self._getMountPath(gtin, m.path);
+                   return m;
+               });
+               super.readAll(mounts, callback);
+           });
         });
     }
 }
