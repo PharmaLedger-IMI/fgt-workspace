@@ -26,8 +26,10 @@ export default class ProductsController extends ContainerController {
         this.on('perform-add-product', (event) => {
             event.stopImmediatePropagation();
             self._addProductAsync(event.detail, (err) => {
-                if (err)
-                    throw err;
+                if (err) {
+                    this.showError(err);
+                    return;
+                }
                 self.closeModal('product-modal');
                 self.getProductsAsync();
             });

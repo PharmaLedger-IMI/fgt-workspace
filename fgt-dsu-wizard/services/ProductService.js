@@ -31,6 +31,12 @@ function ProductService(domain, strategy){
     this.create = function(product, callback){
 
         let data = typeof product === 'object' ? JSON.stringify(product) : product;
+        // if product is invalid, abort immediatly.
+        if (typeof product === 'object') {
+            let err = product.validate();
+            if (err)
+                return callback(err);
+        }
 
         if (isSimple){
             let keySSI = this.generateKey(product.gtin);
