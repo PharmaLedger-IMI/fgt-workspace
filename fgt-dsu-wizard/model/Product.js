@@ -16,7 +16,7 @@ class Product {
 
     /**
      * Validate if everything seems ok with the properties of this object.
-     * @returns false if all ok. An arry of errors if not all ok.
+     * @returns undefined if all ok. An arry of errors if not all ok.
      */
     validate() {
         const errors = [];
@@ -28,7 +28,7 @@ class Product {
             errors.push('GTIN is required.');
         }
 
-        return errors.length === 0 ? false : errors;
+        return errors.length === 0 ? undefined : errors;
     }
 
     generateViewModel() {
