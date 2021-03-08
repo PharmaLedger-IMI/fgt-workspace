@@ -1,4 +1,5 @@
 import {getBatchManager} from "./BatchManager.js";
+const Manager = require('wizard').Managers.Manager;
 
 const PRODUCT_MOUNT_PATH = "/products";
 const BATCH_MOUNT_PATH = "/batches";
@@ -20,9 +21,9 @@ const Product = require('wizard').Model.Product;
  *
  * @param {DSUStorage} dsuStorage the controllers dsu storage
  */
-class ProductManager {
+class ProductManager extends Manager{
     constructor(dsuStorage) {
-        this.DSUStorage = dsuStorage;
+        super(dsuStorage);
         this.productService = new (require('wizard').Services.ProductService)("traceability");
         this.batchManager = getBatchManager(this.DSUStorage);
     }
@@ -36,37 +37,13 @@ class ProductManager {
     }
 
     /**
-     * Ensures the DSU Storage is properly Initialized and the necessary structure of the SSApp (Product wise) is set
-     * @param {function(err)}callback
-     * @private
-     */
-    _initialize(callback){
-        let self = this;
-        self._enableDirectAccess((err) => {
-            if (err)
-                return callback(err);
-            callback();
-        });
-    }
-
-    /**
-     * @see DSUStorage#enableDirectAccess
-     * @private
-     */
-    _enableDirectAccess(callback){
-        if(!this.DSUStorage.directAccessEnabled)
-            return this.DSUStorage.enableDirectAccess(callback);
-        callback();
-    }
-
-    /**
      * Creates a {@link Product} dsu
      * @param {Product} product
      * @param {function(err, keySSI, string)} callback where the string is the mount path relative to the main DSU
      */
     create(product, callback) {
         let self = this;
-        self._initialize(() => {
+        super.initialize(() => {
             self.productService.create(product, (err, keySSI) => {
                 if (err)
                     return callback(err);
@@ -101,7 +78,7 @@ class ProductManager {
      */
     removeProduct(gtin, callback) {
         let self = this;
-        self._initialize(() => {
+        super.initialize(() => {
             let mount_path = this._getMountPath(gtin);
             self.DSUStorage.unmount(mount_path, (err) => {
                 if (err)
@@ -119,7 +96,7 @@ class ProductManager {
      */
     editProduct(gtin, callback) {
         let self = this;
-        self._initialize(() => {
+        super.initialize(() => {
             let mount_path = this._getMountPath(gtin);
             self.DSUStorage.writeFile(`${mount_path}/info`, (err) => {
                 if (err)
@@ -132,7 +109,7 @@ class ProductManager {
 
     addBatch(gtin, batch, callback){
         let self = this;
-        let keySSI = self.batchManager.create(gtin, batch, (err, dsu) => {
+        self.batchManager.create(gtin, batch, (err, keySSI) => {
             if (err)
                 return callback(err);
             self.DSUStorage.mount(`${PRODUCT_MOUNT_PATH}/${gtin}${BATCH_MOUNT_PATH}/${batch.batchNumber}`, keySSI, (err, mount) => {
@@ -142,25 +119,6 @@ class ProductManager {
                 callback(undefined, keySSI, mount);
             });
         });
-        // let keySSI = this.productService.generateKey(gtin);
-        // require('resolver').loadDSUForExistingSSI(keySSI, (err, dsu) => {
-        //     if (err)
-        //         return callback(err);
-        // }
-        // self._listProductMounts((err, mounts) => {
-        //     if (err)
-        //         return callback(err);
-        //     let filtered = mounts.filter(m => m.gtin === gtin);
-        //     if (!filtered || filtered.length !== 1)
-        //         return callback("Error fetching product");
-        //     let productSSI = filtered[0].identifier;
-        //     self.batchManager.create(productSSI, batch ,(err, keySSI, mount) => {
-        //         if (err)
-        //             return callback(err);
-        //         console.log(`Batch number ${batch.batchNumber} created and mounted onto product ${gtin} at ${mount}`);
-        //         callback(undefined, keySSI, mount);
-        //     });
-        // });
     }
 
     /**
@@ -168,60 +126,17 @@ class ProductManager {
      * @param {function(err, Product[])} callback
      */
     listProducts(callback) {
-        let self = this;
-        self._listProductMounts((err,mounts) => {
+        super.listMounts(PRODUCT_MOUNT_PATH, (err, mounts) => {
             if (err)
                 return callback(err);
-            self._readAll(mounts, callback);
+            console.log(`Found ${mounts.length} products at ${PRODUCT_MOUNT_PATH}`);
+            mounts = mounts.map(m => {
+                m.gtin = m.path;
+                m.path = `${PRODUCT_MOUNT_PATH}/${m.path}`;
+                return m;
+            })
+            super.readAll(mounts, callback);
         });
-    }
-
-    _listProductMounts(callback){
-        let self = this;
-        self._initialize(() => {
-            self.DSUStorage.listMountedDossiers(PRODUCT_MOUNT_PATH, (err, mounts) => {
-                if (err)
-                    return callback(err);
-                console.log(`Found ${mounts.length} products at ${PRODUCT_MOUNT_PATH}`);
-                mounts = mounts.map(m => {
-                    return {
-                        gtin: m.path,
-                        path: `${PRODUCT_MOUNT_PATH}/${m.path}`,
-                        identifier: m.identifier
-                    };
-                })
-                callback(undefined, mounts);
-            });
-        });
-    }
-
-    /**
-     * Resolve mounts and read DSUs
-     * @param {object[]} mounts where each object is:
-     * <pre>
-     *     {
-     *         path: mountPath,
-     *         identifier: keySSI
-     *     }
-     * </pre>
-     * @param {function(err, Product[])} callback
-     * @private
-     */
-    _readAll(mounts, callback){
-        let self = this;
-        let products = [];
-        let iterator = function(m){
-            let mount = m.shift();
-            if (!mount)
-                return callback(undefined, Object.keys(products).map(key => products[key]));
-            self.DSUStorage.getObject(`${mount.path}/info`, (err, product) => {
-                if (err)
-                    return callback(err);
-                products.push(product);
-                iterator(m);
-            });
-        }
-        iterator(mounts.slice());
     }
 
     /**
@@ -229,25 +144,13 @@ class ProductManager {
      * @param model
      * @returns {Product}
      */
-    modelToProduct(model){
+    fromModel(model){
         return new Product({
             gtin: model.gtin.value,
             name: model.name.value,
             description: model.description.value,
             manufName: model.manufName.value
         });
-    }
-
-    productToModel(product, model){
-        model = model || {};
-        for (let prop in product)
-            if (product.hasOwnProperty(prop)){
-                if (!model[prop])
-                    model[prop] = {};
-                model[prop].value = product[prop];
-            }
-
-        return model;
     }
 }
 
@@ -267,5 +170,6 @@ const getProductManager = function (dsuStorage) {
 
 export {
     getProductManager,
-    PRODUCT_MOUNT_PATH
+    PRODUCT_MOUNT_PATH,
+    BATCH_MOUNT_PATH
 }

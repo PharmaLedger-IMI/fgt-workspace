@@ -1,5 +1,6 @@
 import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
 import {getProductManager} from "../managers/ProductManager.js";
+import {getBatchManager} from "../managers/BatchManager.js";
 const Batch = require('wizard').Model.Batch;
 
 export default class BatchesController extends ContainerController {
@@ -9,6 +10,7 @@ export default class BatchesController extends ContainerController {
         const LocaleService = wizard.Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "batches");
         this.productManager = getProductManager(this.DSUStorage);
+        this.batchManager = getBatchManager(this.DSUStorage);
 
         let self = this;
         this.on('add-batch', (event) => {
@@ -29,33 +31,52 @@ export default class BatchesController extends ContainerController {
         this.model.addExpression('hasBatches', () => {
             return typeof this.model.batches !== 'undefined' && this.mode.batches.length > 0;
         }, 'batches');
-
-
     }
 
     _showBatchModal(){
-        let self = this;
-        self.idManager.getId((err, actor) => {
-            if (err)
-                throw err;
-            self.showModal('batch-modal', this.batchManager.batchToModel(new Batch({
-                manufName: actor.name
-            })), true);
-        });
+        this.showModal('batch-modal', this.batchManager.toModel(new Batch({
+            gtin: this.model.gtin
+        })), true);
     }
 
     /**
      *
-     * @param batch
-     * @param callback
+     * @param {Batch} batch
+     * @param {function(err)} callback
      * @private
      */
     _addBatchAsync(batch, callback){
         let self = this;
-        self.productManager.addBatch(model.gtin, batch, (err, keySSI), mount => {
+        self.productManager.addBatch(this.model.gtin, batch, (err, keySSI, mount) => {
             if (err)
                 return callback(err);
             callback();
+        });
+    }
+
+    /**
+     * Updates the batches model
+     * @param {object[]} batches where the properties must be:
+     * <ul>
+     *     <li>*batchNumber:* {@link Batch#batchNumber}</li>
+     *     <li>*expiry:* {@link Batch#expiry}</li>
+     *     <li>*serials:* serial numbers</li>
+     * </ul>
+     */
+    updateBatches(batches){
+        this.model['batches'] = batches;
+        //this.model['hasProducts'] = products.length > 0;
+    }
+
+    /**
+     * Retrieves the batches from the product DSU and updates the model
+     */
+    getBatchesAsync(){
+        let self = this;
+        self.batchManager.listBatches(this.model.gtin, (err, batches) => {
+            if (err)
+                throw err;
+            self.updateBatches(batches);
         });
     }
 }

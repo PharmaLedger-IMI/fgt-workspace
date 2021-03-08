@@ -1,3 +1,5 @@
+const Manager = require('wizard').Managers.Manager;
+const Batch = require('wizard').Model.Batch;
 /**
  * Batch Manager Class
  *
@@ -14,34 +16,10 @@
  *
  * @param {DSUStorage} dsuStorage the controllers dsu storage
  */
-class BatchManager {
+class BatchManager extends Manager{
     constructor(dsuStorage) {
-        this.DSUStorage = dsuStorage;
+        super(dsuStorage);
         this.batchService = new (require('wizard').Services.BatchService)('traceability');
-    }
-
-
-    /**
-     * Ensures the DSU Storage is properly Initialized and the necessary structure of the SSApp (Product wise) is set
-     * @param {function(err)}callback
-     * @private
-     */
-    _initialize(callback){
-        this._enableDirectAccess((err) => {
-            if (err)
-                return callback(err);
-            callback();
-        });
-    }
-
-    /**
-     * @see DSUStorage#enableDirectAccess
-     * @private
-     */
-    _enableDirectAccess(callback){
-        if(!this.DSUStorage.directAccessEnabled)
-            return this.DSUStorage.enableDirectAccess(callback);
-        callback();
     }
 
     /**
@@ -79,8 +57,8 @@ class BatchManager {
      * @param {string} gtin
      * @param {function(err)} callback
      */
-    removeProduct(gtin, callback) {
-        this._initialize(() => {
+    removeBatch(gtin, callback) {
+        super.initialize(() => {
             let mount_path = this._getMountPath(gtin);
             this.DSUStorage.unmount(mount_path, (err) => {
                 if (err)
@@ -96,25 +74,12 @@ class BatchManager {
      * @param model
      * @returns {Batch}
      */
-    modelToBatch(model){
+    fromModel(model){
         return new Batch({
-            gtin: model.gtin.value,
-            name: model.name.value,
-            description: model.description.value,
-            manufName: model.manufName.value
+            batchNumber: model.batchNumber.value,
+            expiry: model.expiry.value,
+            serialNumbers: model.serialNumbers.value
         });
-    }
-
-    batchToModel(product, model){
-        model = model || {};
-        for (let prop in product)
-            if (product.hasOwnProperty(prop)){
-                if (!model[prop])
-                    model[prop] = {};
-                model[prop].value = product[prop];
-            }
-
-        return model;
     }
 
     /**
@@ -122,8 +87,8 @@ class BatchManager {
      * @param {string} gtin
      * @param {function(err)} callback
      */
-    editProduct(gtin, callback) {
-        this._initialize(() => {
+    editBatch(gtin, callback) {
+        super.initialize(() => {
             let mount_path = this._getMountPath(gtin);
             this.DSUStorage.writeFile(`${mount_path}/info`, (err) => {
                 if (err)
@@ -132,50 +97,6 @@ class BatchManager {
                 callback();
             });
         });
-    }
-
-    /**
-     * Lists all registered products
-     * @param {function(err, Product[])} callback
-     */
-    listProducts(callback) {
-        this._initialize(() => {
-            this.DSUStorage.listMountedDossiers(PRODUCT_MOUNT_PATH, (err, mounts) => {
-                if (err)
-                    return callback(err);
-                console.log(`Found ${mounts.length} products at ${PRODUCT_MOUNT_PATH}`);
-                this._readAll(mounts, callback);
-            });
-        });
-    }
-
-    /**
-     * Resolve mounts and read DSUs
-     * @param {object[]} mounts where each object is:
-     * <pre>
-     *     {
-     *         path: mountPath,
-     *         identifier: keySSI
-     *     }
-     * </pre>
-     * @param {function(err, Product[])} callback
-     * @private
-     */
-    _readAll(mounts, callback){
-        let self = this;
-        let products = [];
-        let iterator = function(m){
-            let mount = m.shift();
-            if (!mount)
-                return callback(undefined, products);
-            self.DSUStorage.getObject(`${mount.path}/info`, (err, product) => {
-                if (err)
-                    return callback(err);
-                product.push(product);
-                iterator(m);
-            });
-        }
-        iterator(mounts.slice());
     }
 }
 

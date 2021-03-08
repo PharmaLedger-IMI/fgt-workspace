@@ -19,7 +19,7 @@ export default class ProductController extends ModalController {
     }
 
     _handleSubmit(event){
-        let product = this.productManager.modelToProduct(this.model);
+        let product = this.productManager.fromModel(this.model);
         this.send('perform-add-product', product);
     }
 }

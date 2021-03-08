@@ -2,6 +2,7 @@
  * @module fgt-mah-ssapp.managers
  */
 
+const Manager = require('./Manager');
 const ACTOR_MOUNT_PATH = "/actor";
 
 /**
@@ -23,35 +24,10 @@ const ACTOR_MOUNT_PATH = "/actor";
  * @param {DSUStorage} dsuStorage the controllers dsu storage
  * @param {string} domain the anchoring domain
  */
-class IdManager {
+class IdManager extends Manager{
     constructor(dsuStorage, domain) {
-        this.DSUStorage = dsuStorage;
+        super(dsuStorage)
         this.IdService = new (require('wizard').Services.IdService)(domain);
-
-        this.idCache;
-    }
-
-    /**
-     * Ensures the DSU Storage is properly Initialized and the necessary structure of the SSApp (IdWise) is set
-     * @param {function(err)}callback
-     * @private
-     */
-    _initialize(callback){
-        this._enableDirectAccess((err) => {
-            if (err)
-                return callback(err);
-            callback();
-        });
-    }
-
-    /**
-     * @see DSUStorage#enableDirectAccess
-     * @private
-     */
-    _enableDirectAccess(callback){
-        if(!this.DSUStorage.directAccessEnabled)
-            return this.DSUStorage.enableDirectAccess(callback);
-        callback();
     }
 
     /**
@@ -60,7 +36,7 @@ class IdManager {
      * @param {function(err, keySSI, string)} callback where the string is the mount path
      */
     create(actor, callback) {
-        this._initialize(() => {
+        super.initialize(() => {
             this.IdService.create(actor, (err, keySSI) => {
                 if (err)
                     return callback(err);
@@ -92,7 +68,7 @@ class IdManager {
      * @param {function(err)} callback
      */
     removeId(callback) {
-        this._initialize(() => {
+        super.initialize(() => {
             this.DSUStorage.unmount(ACTOR_MOUNT_PATH, (err) => {
                 if (err)
                     return callback(err);
@@ -107,7 +83,7 @@ class IdManager {
      * @param {function(err)} callback
      */
     editId(callback) {
-        this._initialize(() => {
+        super.initialize(() => {
             this.DSUStorage.writeFile(`${ACTOR_MOUNT_PATH}/info`, (err) => {
                 if (err)
                     return callback(err);
