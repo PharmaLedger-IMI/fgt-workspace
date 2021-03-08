@@ -17,7 +17,7 @@ function NewController() {
             LOADER_GLOBALS.credentials.isValid = true;
             LOADER_GLOBALS.credentials.username = "devpharmacyuser"
             LOADER_GLOBALS.credentials.email = "dev@pharmacyuser.dev";
-            LOADER_GLOBALS.credentials.company = "Company Inc";
+            LOADER_GLOBALS.credentials.company = "Pharmacy Company Inc";
             LOADER_GLOBALS.credentials.password = "PharmacyUserSecurePassword1!";
             LOADER_GLOBALS.saveCredentials();
             console.log("Initialising credentials for develoment mode");

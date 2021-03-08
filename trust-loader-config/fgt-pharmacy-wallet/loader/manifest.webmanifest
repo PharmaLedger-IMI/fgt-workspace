@@ -1,0 +1,12 @@
+{
+  "short_name": "FGT for Pharmacy",
+  "name": "Pharmaledger's Finished Goods Traceability App for Pharmacies",
+  "description": "Dossiers' User Interface",
+  "theme_color": "rgb(0,52,91)",
+  "background_color": "rgb(0,52,91)",
+  "display": "standalone",
+  "icons": [
+  ],
+  "start_url": "/fgt-pharmacy-wallet/loader/",
+  "scope": "/fgt-pharmacy-wallet/loader/"
+}
