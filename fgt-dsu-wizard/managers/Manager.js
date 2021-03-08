@@ -97,7 +97,7 @@ class Manager{
             this.DSUStorage.listMountedDossiers(path, (err, mounts) => {
                 if (err)
                     return callback(err);
-                console.log(`Found ${mounts.length} batches at ${path}`);
+                console.log(`Found ${mounts.length} mounts at ${path}`);
                 callback(undefined, mounts);
             });
         });

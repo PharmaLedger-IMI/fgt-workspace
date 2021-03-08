@@ -47,7 +47,7 @@ export default class ProductsController extends ContainerController {
         self.idManager.getId((err, actor) => {
            if (err)
                throw err;
-            self.showModal('product-modal', this.productManager.toModel(new Product({
+            self.showModal('product-modal', self.productManager.toModel(new Product({
                 manufName: actor.name
             })), true);
         });

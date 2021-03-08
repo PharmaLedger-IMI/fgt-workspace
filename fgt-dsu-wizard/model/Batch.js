@@ -11,7 +11,7 @@ const Utils = require("./Utils.js");
  */
 class Batch {
     batchNumber;
-    expiry;
+    expiry = "";
     serialNumbers = ["430239925150"];
 
     constructor(batch) {
