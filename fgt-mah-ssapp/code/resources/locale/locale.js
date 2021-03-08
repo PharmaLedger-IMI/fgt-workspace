@@ -102,7 +102,12 @@ const LOCALE = {
             none: "No registered products..."
         },
         batches: {
-            title: "Batch Manager"
+            title: "Batch Manager",
+            add: "Add Batch",
+            none: "No Batches",
+            batchNumberHeader: "Batch Number",
+            expiryHeader: "Expiration Date",
+            serialNumbersHeader: "Serial Numbers"
         }
     }
 }

@@ -92,6 +92,32 @@ class BatchManager {
     }
 
     /**
+     *
+     * @param model
+     * @returns {Batch}
+     */
+    modelToBatch(model){
+        return new Batch({
+            gtin: model.gtin.value,
+            name: model.name.value,
+            description: model.description.value,
+            manufName: model.manufName.value
+        });
+    }
+
+    batchToModel(product, model){
+        model = model || {};
+        for (let prop in product)
+            if (product.hasOwnProperty(prop)){
+                if (!model[prop])
+                    model[prop] = {};
+                model[prop].value = product[prop];
+            }
+
+        return model;
+    }
+
+    /**
      * Edits/Overwrites the product details
      * @param {string} gtin
      * @param {function(err)} callback

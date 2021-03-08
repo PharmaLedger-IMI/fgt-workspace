@@ -83,23 +83,6 @@ export default class ProductsController extends ContainerController {
     }
 
     /**
-     * Util method to transform List into updatable objects
-     * @param {Product[]} products
-     * @private
-     */
-    _toUpdatableModel(products){
-        let result = [];
-        products.forEach((product, i) => {
-            result.push({
-                gtin: product.gtin,
-                product: product,
-                index: i
-            });
-        });
-        return result;
-    }
-
-    /**
      * Retrieves the products from the DSU and updates the model
      * by calling {@link ProductsController#updateProducts} after retrieval
      */
