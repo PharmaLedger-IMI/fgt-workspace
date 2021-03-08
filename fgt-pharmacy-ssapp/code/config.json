@@ -1,15 +1,12 @@
 {
-  "theme": "citrus-theme",
-  "appVersion": "1.0.0-alpha",
+  "basePagesUrl": "/pages/",
+  "theme" : "pdm-theme",
+  "appVersion": "0.0.1",
   "profile": {
-    "username": "DSU Fabric",
-    "avatar": "assets/images/factory.png"
+    "username": "Finished Goods Traceability Pharmacy",
+    "avatar": "assets/images/pharmacy.png"
   },
   "modals": {
-    "selectLanguageAndType": "select-language-and-type-modal.html",
-    "viewKeySSIModal": "view-keyssi-modal.html",
-    "loadingModal": "loading-modal.html",
-    "transferProductModal": "transfer-product-modal.html",
-    "getTransferredProductModal": "get-transferred-product-modal.html"
+    "registration-modal": "/modals/registrationModal.html",
   }
 }

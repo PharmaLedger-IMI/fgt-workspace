@@ -4,35 +4,16 @@
     "type": "route",
     "component": "psk-page-loader",
     "exact": true,
-    "404": "pages/404.html"
+    "indexed": true,
+    "404": "/pages/404.html"
   },
   "pages": [
     {
-      "name": "Products",
-      "tags": "products"
-    },
-    {
-      "name": "Batches",
-      "tags": "batches"
-    },
-    {
-      "name": "Audit",
-      "tags": "audit"
-    },
-    {
-      "name": "Add batch",
-      "tags": "add-batch",
-      "indexed": false
-    },
-    {
-      "name": "Manage product",
-      "tags": "manage-product",
-      "indexed": false
-    },
-    {
-      "name": "Add product",
-      "tags": "add-product",
-      "indexed": false
+      "name": "Dashboard",
+      "path": "/dashboard",
+      "icon": "fa-home",
+      "pageSrc": "dashboard.html",
+      "indexed": true
     }
   ]
 }
