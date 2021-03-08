@@ -251,14 +251,6 @@
                 {
                     "type": "copy",
                     "src": "./pharmaledger-wallet/seed",
-                    "target": "./apihub-root/fgt-pharmacy-wallet/wallet-patch/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "./pharmaledger-wallet/seed",
                     "target": "./apihub-root/fgt-wholesaler-wallet/wallet-patch/seed",
                     "options": {
                         "overwrite": true
