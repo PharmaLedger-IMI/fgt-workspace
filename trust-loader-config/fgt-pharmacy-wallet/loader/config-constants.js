@@ -17,9 +17,9 @@ let LOADER_GLOBALS = {
 		SET_UP_EMAIL_HELP: "Enter a valid email address",
 		ENTER_EMAIL: "Email",
 
-		SET_UP_COMPANY: "Enter your company name",
-		SET_UP_COMPANY_HELP: "Company name is optional",
-		ENTER_COMPANY: "Company Name",
+		SET_UP_COMPANY: "Enter your pharmacy company name",
+		SET_UP_COMPANY_HELP: "Pharmacy company name is optional",
+		ENTER_COMPANY: "Pharmacy company Name",
 
 		SET_UP_PASSWORD: "Enter your password",
 		SET_UP_PASSWORD_HELP: "Password min. 12 chars including 1xUpper char, 1xDigit, 1xSpecial char",
