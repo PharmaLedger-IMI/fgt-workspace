@@ -4,7 +4,7 @@
   "appVersion": "0.0.1",
   "profile": {
     "username": "Finished Goods Traceability Pharmacy",
-    "avatar": "assets/images/pharmacy.png"
+    "avatar": "resources/images/pharmacy.png"
   },
   "modals": {
     "registration-modal": "/modals/registrationModal.html",
