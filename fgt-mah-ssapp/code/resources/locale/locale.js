@@ -31,8 +31,8 @@ const LOCALE = {
                 required: true
             },
             nif: {
-                label: 'Registered fiscal number:',
-                placeholder: "Enter your fiscal number...",
+                label: 'Registered TIN (Tax Identification Number):',
+                placeholder: "Enter your TIN (Tax Identification Number)...",
                 value: 500000000,
                 required: true
             },
