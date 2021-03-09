@@ -31,8 +31,8 @@ const LOCALE = {
                 required: true
             },
             nif: {
-                label: 'Registered VAT ID:',
-                placeholder: "Enter your VAT identifier...",
+                label: 'Registered TIN (Tax Identification Number):',
+                placeholder: "Enter your TIN (Tax Idendifier Number)...",
                 value: 500000000,
                 required: true
             },
