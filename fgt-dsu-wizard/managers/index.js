@@ -16,5 +16,5 @@
  */
 module.exports = {
     Manager: require('./Manager'),
-    getIdManager: require('./IdManager')
+    getIdManager: require('./ParticipantManager')
 }

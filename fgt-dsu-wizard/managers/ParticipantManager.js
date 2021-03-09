@@ -24,7 +24,7 @@ const ACTOR_MOUNT_PATH = "/actor";
  * @param {DSUStorage} dsuStorage the controllers dsu storage
  * @param {string} domain the anchoring domain
  */
-class IdManager extends Manager{
+class ParticipantManager extends Manager{
     constructor(dsuStorage, domain) {
         super(dsuStorage)
         this.IdService = new (require('wizard').Services.IdService)(domain);
@@ -99,13 +99,13 @@ let idManager;
 /**
  * @param {DSUStorage} dsuStorage
  * @param {string} domain
- * @returns {IdManager}
+ * @returns {ParticipantManager}
  */
 const getIdManager = function (dsuStorage, domain) {
     if (!idManager) {
         if (!dsuStorage)
             throw new Error("No DSUStorage provided");
-        idManager = new IdManager(dsuStorage, domain);
+        idManager = new ParticipantManager(dsuStorage, domain);
     }
     return idManager;
 }
