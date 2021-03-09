@@ -44,7 +44,14 @@ const LOCALE = {
             },
             register: "Register"
         },
-        dashboard:{
+        orders: {
+            title: "Order Manager",
+            numberHeader: "OrderID",
+            orderingPartnerHeader: "Requester",
+            supplyingPartnerHeader: "Supplier",
+            none: "No orders..."
+        },
+       dashboard:{
             title: "This is a Dashboard"
         },
    }

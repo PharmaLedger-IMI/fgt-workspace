@@ -2,6 +2,9 @@
  * @module fgt-mah-ssapp.managers
  */
 
+
+const Order = require('../model/Order');
+const OrderStatus = require('../model/OrderStatus');
 const Manager = require('./Manager');
 const PARTICIPANT_MOUNT_PATH = "/participant";
 
@@ -92,6 +95,17 @@ class ParticipantManager extends Manager{
                 callback();
             });
         });
+    }
+
+    /**
+     * Fetches the orders of this Participant
+     * @param {Participant} participant
+     * @param {function(err,orders)} callback
+     */
+    getOrders(participant, callback) {
+        // TODO
+        let orders = new Order("ORDER001", "ReqID-TPPH0124", "SendID-TPPH4822", "ShipToAddress1", OrderStatus.CREATED, []);
+        callback(undefined, orders);
     }
 }
 
