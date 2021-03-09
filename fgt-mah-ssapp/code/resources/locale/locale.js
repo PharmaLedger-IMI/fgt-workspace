@@ -30,7 +30,7 @@ const LOCALE = {
                 value: 'mah@pdmfc.com',
                 required: true
             },
-            nif: {
+            tin: {
                 label: 'Registered TIN (Tax Identification Number):',
                 placeholder: "Enter your TIN (Tax Identification Number)...",
                 value: 500000000,
