@@ -12,10 +12,10 @@ export default class RegistrationController extends ModalController {
     _submitRegistration = function(event){
         event.preventDefault();
         event.stopImmediatePropagation();
-        this.send('perform-registration', this._modelToActor());
+        this.send('perform-registration', this._modelToParticipant());
     }
 
-    _modelToActor = function(){
+    _modelToParticipant = function(){
         let info = {};
         Object.keys(this.model)
             .filter(k => !!this.model[k].value)

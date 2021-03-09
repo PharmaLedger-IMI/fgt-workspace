@@ -1,16 +1,16 @@
 import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
 
-export default class IdController extends ContainerController {
+export default class ParticipantController extends ContainerController {
     constructor(element) {
         super(element);
         const LocaleService = require('wizard').Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US);
         this.model = this.setModel({
             identified: false,
-            actor: undefined
+            participant: undefined
         });
-        this.idManager = require('wizard').Managers.getIdManager(this.DSUStorage, "traceability");
-        console.log("Id controller initialized");
+        this.participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, "traceability");
+        console.log("Participant controller initialized");
         element.addEventListener('perform-registration', (event) => {
             event.preventDefault();
             event.stopImmediatePropagation();
@@ -18,20 +18,20 @@ export default class IdController extends ContainerController {
             this.register(event.detail, (err) => {
                 if (err)
                     console.log("ERROR - Could not register - Should not be possible!");
-                this._testId();
+                this._testParticipant();
             });
         }, true)
-        this._testId();
+        this._testParticipant();
     }
 
     /**
      * Creates the ID DSU and mounts it to the id_path
-     * @param {Actor} actor
+     * @param {Participant} participant
      * @param {function} callback
      */
-    register(actor, callback){
+    register(participant, callback){
         let self = this;
-        self.idManager.create(actor, (err, keySSI) => {
+        self.participantManager.create(participant, (err, keySSI) => {
             if (err)
                 return callback(err);
             callback();
@@ -42,14 +42,14 @@ export default class IdController extends ContainerController {
         this.showModal('registration-modal', {});
     }
 
-    _testId(){
+    _testParticipant(){
         let self = this;
-        this.idManager.getId((err, actor) => {
-            if (err || !actor) {
+        this.participantManager.getParticipant((err, participant) => {
+            if (err || !participant) {
                 self.model.identified = false;
                 self._showRegistrationModal();
             } else {
-                self.model.actor = actor;
+                self.model.participant = participant;
                 self.model.identified = true;
             }
         });

@@ -4,7 +4,6 @@
 const Participant = require('./Participant');
 
 class MAH extends Participant{
-    email = "";
 
     constructor(mah) {
         super(mah);

@@ -1,5 +1,5 @@
 import ModalController from "../../cardinal/controllers/base-controllers/ModalController.js";
-const MAH = require('wizard').Model.MAH;
+const Pharmacy = require('wizard').Model.Pharmacy;
 
 export default class RegistrationController extends ModalController {
     constructor(element) {
@@ -12,14 +12,14 @@ export default class RegistrationController extends ModalController {
     _submitRegistration = function(event){
         event.preventDefault();
         event.stopImmediatePropagation();
-        this.send('perform-registration', this._modelToActor());
+        this.send('perform-registration', this._modelToParticipant());
     }
 
-    _modelToActor = function(){
+    _modelToParticipant = function(){
         let info = {};
         Object.keys(this.model)
             .filter(k => !!this.model[k].value)
             .map(k => info[k] = this.model[k].value);
-        return new MAH(info);
+        return new Pharmacy(info);
     }
 }
