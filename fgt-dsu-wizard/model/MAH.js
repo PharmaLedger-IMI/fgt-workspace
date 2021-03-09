@@ -1,9 +1,9 @@
 /**
  * @module fgt-dsu-wizard.model
  */
-const Actor = require('./Actor');
+const Participant = require('./Participant');
 
-class MAH extends Actor{
+class MAH extends Participant{
     email = "";
 
     constructor(mah) {

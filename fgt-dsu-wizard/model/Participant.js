@@ -1,22 +1,22 @@
 /**
  * @module fgt-dsu-wizard.model
  */
-class Actor{
+class Participant{
     id = "";
     name = "";
-    nif = "";
+    tin = "";
     address = "";
 
-    constructor(actor){
-        console.log("actor:" + actor);
-        this._copyProps(actor);
+    constructor(participant){
+        console.log("actor:" + participant);
+        this._copyProps(participant);
     }
 
-    _copyProps(actor){
-        if (typeof actor !== undefined)
-            for (let prop in actor)
-                if (actor.hasOwnProperty(prop))
-                    this[prop] = actor[prop];
+    _copyProps(participant){
+        if (typeof participant !== undefined)
+            for (let prop in participant)
+                if (participant.hasOwnProperty(prop))
+                    this[prop] = participant[prop];
     }
 
     validate() {
@@ -25,7 +25,7 @@ class Actor{
             errors.push('Name is required.');
         if (!this.id)
             errors.push('id is required');
-        if (!this.nif)
+        if (!this.tin)
             errors.push('nif is required');
 
         return errors.length === 0 ? true : errors;
@@ -36,4 +36,4 @@ class Actor{
     }
 }
 
-module.exports = Actor;
+module.exports = Participant;

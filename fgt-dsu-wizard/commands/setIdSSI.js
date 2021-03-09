@@ -13,7 +13,7 @@ function createIdSSI(actor, domain) {
     console.log("New Actor_SSI in domain", domain);
     const openDSU = require('opendsu');
     const keyssiSpace = openDSU.loadApi("keyssi");
-    return keyssiSpace.buildTemplateSeedSSI(domain, actor.id + actor.name + actor.nif, undefined, 'v0', undefined);
+    return keyssiSpace.buildTemplateSeedSSI(domain, actor.id + actor.name + actor.tin, undefined, 'v0', undefined);
 }
 
 /**

@@ -1,9 +1,9 @@
 /**
  * @module fgt-dsu-wizard.model
  */
-const Actor = require('./Actor');
+const Participant = require('./Participant');
 
-class Wholesaler extends Actor{
+class Wholesaler extends Participant{
     originAddress = "";
     deliveryAddress = "";
 
