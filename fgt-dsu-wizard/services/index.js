@@ -3,7 +3,7 @@
  */
 module.exports = {
     DSUService: require('./DSUService'),
-    IdService: require('./IdService'),
+    ParticipantService: require('./ParticipantService'),
     LocaleService: require("./LocaleService"),
     OrderLineService: require("./OrderLineService"),
     OrderService: require("./OrderService"),

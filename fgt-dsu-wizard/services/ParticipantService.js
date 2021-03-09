@@ -7,33 +7,33 @@ const utils = require('./utils');
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
  */
-function IdService(domain, strategy){
+function ParticipantService(domain, strategy){
     const strategies = require('./strategy');
 
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
     domain = domain || "default";
 
     /**
-     * Creates an Actor's Id DSU
-     * @param {Actor} actor
+     * Creates an Participant's DSU
+     * @param {Participant} participant
      * @param {function} callback
      * @return {Object} keySSI;
      */
-    this.create = function(actor, callback){
+    this.create = function(participant, callback){
         if (isSimple){
-            createSimple(actor, callback);
+            createSimple(participant, callback);
         } else {
             throw new Error("Not implemented"); // createAuthorized(order, callback);
         }
     }
 
-    let createSimple = function(actor, callback){
-        let keyGenFunction = require('../commands/setIdSSI').createIdSSI;
-        let templateKeySSI = keyGenFunction(actor, domain);
+    let createSimple = function(participant, callback){
+        let keyGenFunction = require('../commands/setParticipantSSI').createParticipantSSI;
+        let templateKeySSI = keyGenFunction(participant, domain);
         utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);
-            dsu.writeFile('/info', JSON.stringify(actor), (err) => {
+            dsu.writeFile('/info', JSON.stringify(participant), (err) => {
                 if (err)
                     return callback(err);
                 dsu.getKeySSIAsObject((err, keySSI) => {
@@ -46,4 +46,4 @@ function IdService(domain, strategy){
     }
 }
 
-module.exports = IdService;
+module.exports = ParticipantService;
