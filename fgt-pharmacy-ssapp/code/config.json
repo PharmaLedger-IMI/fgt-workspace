@@ -7,6 +7,6 @@
     "avatar": "resources/images/pharmacy.png"
   },
   "modals": {
-    "registration-modal": "/modals/registrationModal.html",
+    "registration-modal": "/modals/registrationModal.html"
   }
 }
