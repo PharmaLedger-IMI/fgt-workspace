@@ -3,7 +3,7 @@
  */
 
 const Manager = require('./Manager');
-const ACTOR_MOUNT_PATH = "/actor";
+const PARTICIPANT_MOUNT_PATH = "/participant";
 
 /**
  * Id Manager Class
@@ -27,87 +27,87 @@ const ACTOR_MOUNT_PATH = "/actor";
 class ParticipantManager extends Manager{
     constructor(dsuStorage, domain) {
         super(dsuStorage)
-        this.IdService = new (require('wizard').Services.IdService)(domain);
+        this.ParticipantService = new (require('wizard').Services.ParticipantService)(domain);
     }
 
     /**
-     * Creates a {@link Actor} dsu
-     * @param {Actor} actor
+     * Creates a {@link Participant} dsu
+     * @param {Participant} participant
      * @param {function(err, keySSI, string)} callback where the string is the mount path
      */
-    create(actor, callback) {
+    create(participant, callback) {
         super.initialize(() => {
-            this.IdService.create(actor, (err, keySSI) => {
+            this.ParticipantService.create(participant, (err, keySSI) => {
                 if (err)
                     return callback(err);
-                console.log(`Id DSU created with ssi: ${keySSI.getIdentifier(true)}`);
-                this.DSUStorage.mount(ACTOR_MOUNT_PATH, keySSI.getIdentifier(), (err) => {
+                console.log(`Participant DSU created with ssi: ${keySSI.getIdentifier(true)}`);
+                this.DSUStorage.mount(PARTICIPANT_MOUNT_PATH, keySSI.getIdentifier(), (err) => {
                     if (err)
                         return callback(err);
-                    console.log(`Actor ${actor.id} created and mounted at '${ACTOR_MOUNT_PATH}'`);
-                    callback(undefined, keySSI, ACTOR_MOUNT_PATH);
+                    console.log(`Participant ${participant.id} created and mounted at '${PARTICIPANT_MOUNT_PATH}'`);
+                    callback(undefined, keySSI, PARTICIPANT_MOUNT_PATH);
                 });
             });
         });
     }
 
     /**
-     * reads the id information (if exists)
-     * @param {function(err, Actor)} callback
+     * reads the participant information (if exists)
+     * @param {function(err, PARTICIPANT_MOUNT_PATH)} callback
      */
-    getId(callback){
-        this.DSUStorage.getObject(`${ACTOR_MOUNT_PATH}/info`, (err, actor) => {
+    getParticipant(callback){
+        this.DSUStorage.getObject(`${PARTICIPANT_MOUNT_PATH}/info`, (err, participant) => {
             if (err)
                 return callback(err);
-            callback(undefined, actor);
+            callback(undefined, participant);
         });
     }
 
     /**
-     * Removes the Id DSU (does not delete/invalidate DSU, simply 'forgets' the reference)
+     * Removes the PARTICIPANT_MOUNT_PATH DSU (does not delete/invalidate DSU, simply 'forgets' the reference)
      * @param {function(err)} callback
      */
-    removeId(callback) {
+    removeParticipant(callback) {
         super.initialize(() => {
-            this.DSUStorage.unmount(ACTOR_MOUNT_PATH, (err) => {
+            this.DSUStorage.unmount(PARTICIPANT_MOUNT_PATH, (err) => {
                 if (err)
                     return callback(err);
-                console.log(`Id removed from mount point ${ACTOR_MOUNT_PATH}`);
+                console.log(`Participant removed from mount point ${PARTICIPANT_MOUNT_PATH}`);
                 callback();
             });
         });
     }
 
     /**
-     * Edits/Overwrites the id details
+     * Edits/Overwrites the Participant details
      * @param {function(err)} callback
      */
-    editId(callback) {
+    editParticipant(callback) {
         super.initialize(() => {
-            this.DSUStorage.writeFile(`${ACTOR_MOUNT_PATH}/info`, (err) => {
+            this.DSUStorage.writeFile(`${PARTICIPANT_MOUNT_PATH}/info`, (err) => {
                 if (err)
                     return callback(err);
-                console.log(`Id updated`);
+                console.log(`Participant updated`);
                 callback();
             });
         });
     }
 }
 
-let idManager;
+let participantManager;
 
 /**
  * @param {DSUStorage} dsuStorage
  * @param {string} domain
  * @returns {ParticipantManager}
  */
-const getIdManager = function (dsuStorage, domain) {
-    if (!idManager) {
+const getParticipantManager = function (dsuStorage, domain) {
+    if (!participantManager) {
         if (!dsuStorage)
             throw new Error("No DSUStorage provided");
-        idManager = new ParticipantManager(dsuStorage, domain);
+        participantManager = new ParticipantManager(dsuStorage, domain);
     }
-    return idManager;
+    return participantManager;
 }
 
-module.exports = getIdManager;
+module.exports = getParticipantManager;

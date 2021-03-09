@@ -4,11 +4,12 @@
 class Participant{
     id = "";
     name = "";
+    email = "";
     tin = "";
     address = "";
 
     constructor(participant){
-        console.log("actor:" + participant);
+        console.log("participant:" + participant);
         this._copyProps(participant);
     }
 
@@ -21,10 +22,12 @@ class Participant{
 
     validate() {
         const errors = [];
-        if (!this.name)
-            errors.push('Name is required.');
         if (!this.id)
             errors.push('id is required');
+        if (!this.name)
+            errors.push('Name is required.');
+        if (!this.email)
+            errors.push('email is required');
         if (!this.tin)
             errors.push('nif is required');
 
