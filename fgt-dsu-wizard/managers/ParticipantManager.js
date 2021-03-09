@@ -6,7 +6,7 @@ const Manager = require('./Manager');
 const PARTICIPANT_MOUNT_PATH = "/participant";
 
 /**
- * Id Manager Class
+ * Participant Manager Class
  *
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
@@ -80,11 +80,12 @@ class ParticipantManager extends Manager{
 
     /**
      * Edits/Overwrites the Participant details
+     * @param {Participant} participant
      * @param {function(err)} callback
      */
-    editParticipant(callback) {
+    editParticipant(participant, callback) {
         super.initialize(() => {
-            this.DSUStorage.writeFile(`${PARTICIPANT_MOUNT_PATH}/info`, (err) => {
+            this.DSUStorage.writeFile(`${PARTICIPANT_MOUNT_PATH}/info`, JSON.stringify(participant), (err) => {
                 if (err)
                     return callback(err);
                 console.log(`Participant updated`);

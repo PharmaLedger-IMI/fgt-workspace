@@ -118,7 +118,7 @@ class Manager{
      *         path: mountPath,
      *         identifier: keySSI
      *     }
-     * </pre>
+     * </pre> The array is consumed (mutated).
      * @param {function(err, Batch[])} callback
      * @private
      */
