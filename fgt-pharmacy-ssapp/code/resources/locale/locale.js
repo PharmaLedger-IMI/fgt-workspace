@@ -46,6 +46,7 @@ const LOCALE = {
         },
         orders: {
             title: "Order Manager",
+            add: "Create Order",
             numberHeader: "OrderID",
             orderingPartnerHeader: "Requester",
             supplyingPartnerHeader: "Supplier",

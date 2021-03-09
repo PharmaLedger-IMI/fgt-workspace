@@ -103,9 +103,9 @@ class ParticipantManager extends Manager{
      * @param {function(err,orders)} callback
      */
     getOrders(participant, callback) {
-        // TODO
-        let orders = new Order("ORDER001", "ReqID-TPPH0124", "SendID-TPPH4822", "ShipToAddress1", OrderStatus.CREATED, []);
-        callback(undefined, orders);
+        // TODO fetch this from the DSU ?
+        let order1 = new Order("ORDER001", "ReqID-TPPH0124", "SendID-TPPH4822", "ShipToAddress1", OrderStatus.CREATED, []);
+        callback(undefined, [order1]);
     }
 }
 

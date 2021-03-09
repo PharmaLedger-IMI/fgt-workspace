@@ -93,8 +93,7 @@ export default class OrdersController extends ContainerController {
                 console.log("getOrdersAsync gotOrders ", orders);
                 if (err)
                     return self.showError(err);
-                self.model.orders = orders;
-                self.model.hasOrders = orders.length > 0;
+                self.updateOrders(orders);
             })
         }
     }
