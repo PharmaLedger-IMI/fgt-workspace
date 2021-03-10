@@ -1,6 +1,5 @@
 import ModalController from "../../cardinal/controllers/base-controllers/ModalController.js";
 import {getBatchManager} from "../managers/BatchManager.js"
-import {getProductManager} from "../managers";
 const Managers = require('wizard').Managers
 
 export default class BatchController extends ModalController {
@@ -8,7 +7,7 @@ export default class BatchController extends ModalController {
         super(element, history);
         const LocaleService = require('wizard').Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "batch");
-        let rootDSU = Managers.getParticipantManager(this.DSUStorage).getRootDSU();
+        let rootDSU = Managers.getParticipantManager(this.DSUStorage);
         this.batchManager = getBatchManager(rootDSU);
         this.on('submit-batch', this._handleSubmit.bind(this));
     }
