@@ -6,7 +6,8 @@ export default class ProductController extends ModalController {
         super(element, history);
         const LocaleService = require('wizard').Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "product");
-        this.productManager = getProductManager(this.DSUStorage);
+        const participantManager = require('wizard').Managers.getParticipantManager();
+        this.productManager = getProductManager(participantManager.getParticipantDSU());
         this.on('submit-product', this._handleSubmit.bind(this));
     }
 

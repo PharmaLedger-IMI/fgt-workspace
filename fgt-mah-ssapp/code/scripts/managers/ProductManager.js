@@ -17,13 +17,13 @@ const Product = require('wizard').Model.Product;
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
  *
- * @param {Archive} dsuStorage the controllers dsu storage
+ * @param {Archive} storageDSU the DSU where the storage should happen
  */
 class ProductManager extends Manager{
-    constructor() {
-        super();
+    constructor(storageDSU) {
+        super(storageDSU);
         this.productService = new (require('wizard').Services.ProductService)(ANCHORING_DOMAIN);
-        this.batchManager = getBatchManager();
+        this.batchManager = getBatchManager(storageDSU);
     }
 
     /**
@@ -45,7 +45,7 @@ class ProductManager extends Manager{
             if (err)
                 return callback(err);
             let mount_path = this._getMountPath(product.gtin);
-            self.DSUStorage.mount(mount_path, keySSI.getIdentifier(), (err) => {
+            self.storage.mount(mount_path, keySSI.getIdentifier(), (err) => {
                 if (err)
                     return callback(err);
                 console.log(`Product ${product.gtin} created and mounted at '${mount_path}'`);
@@ -60,7 +60,7 @@ class ProductManager extends Manager{
      * @param {function(err, Product)} callback
      */
     getOne(gtin, callback){
-        this.DSUStorage.getObject(`${this._getMountPath(gtin)}/info`, (err, product) => {
+        this.storage.getObject(`${this._getMountPath(gtin)}/info`, (err, product) => {
             if (err)
                 return callback(err);
             callback(undefined, product);
@@ -75,7 +75,7 @@ class ProductManager extends Manager{
     removeProduct(gtin, callback) {
         let self = this;
         let mount_path = this._getMountPath(gtin);
-        self.DSUStorage.unmount(mount_path, (err) => {
+        self.storage.unmount(mount_path, (err) => {
             if (err)
                 return callback(err);
             console.log(`Product ${gtin} removed from mount point ${mount_path}`);
@@ -91,7 +91,7 @@ class ProductManager extends Manager{
     editProduct(gtin, callback) {
         let self = this;
         let mount_path = this._getMountPath(gtin);
-        self.DSUStorage.writeFile(`${mount_path}/info`, (err) => {
+        self.storage.writeFile(`${mount_path}/info`, (err) => {
             if (err)
                 return callback(err);
             console.log(`Product ${gtin} updated`);
@@ -135,12 +135,12 @@ class ProductManager extends Manager{
 
 let productManager;
 /**
- * @param {DSUStorage} dsuStorage
+ * @param {Archive} dsu
  * @returns {ProductManager}
  */
-const getProductManager = function () {
+const getProductManager = function (dsu) {
     if (!productManager)
-        productManager = new ProductManager();
+        productManager = new ProductManager(dsu);
     return productManager;
 }
 

@@ -9,7 +9,7 @@ export default class ProductsController extends ContainerController {
         const LocaleService = wizard.Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "products");
         this.participantManager = wizard.Managers.getParticipantManager(this.DSUStorage, "traceability");
-        this.productManager = getProductManager();
+        this.productManager = getProductManager(this.participantManager.getParticipantDSU());
 
         this.model = this.setModel({
             mah: {},

@@ -15,10 +15,12 @@ const Batch = require('wizard').Model.Batch;
  *     <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
+ *
+ * @param {Archive} storageDSU the DSU where the storage should happen
  */
 class BatchManager extends Manager{
-    constructor() {
-        super();
+    constructor(storageDSU) {
+        super(storageDSU);
         this.productService = new (require('wizard').Services.ProductService)(ANCHORING_DOMAIN);
         this.batchService = new (require('wizard').Services.BatchService)(ANCHORING_DOMAIN);
         this.keyCache = {};
@@ -79,7 +81,7 @@ class BatchManager extends Manager{
      * @param {function(err, Batch)} callback
      */
     getOne(gtin, batchNumber, callback){
-        this.DSUStorage.getObject(this._getMountPath(gtin, batchNumber), (err, batch) => {
+        this.storage.getObject(this._getMountPath(gtin, batchNumber), (err, batch) => {
             if (err)
                 return callback(err);
             callback(undefined, batch);
@@ -94,7 +96,7 @@ class BatchManager extends Manager{
     removeBatch(gtin, callback) {
         super.initialize(() => {
             let mount_path = this._getMountPath(gtin);
-            this.DSUStorage.unmount(mount_path, (err) => {
+            this.storage.unmount(mount_path, (err) => {
                 if (err)
                     return callback(err);
                 console.log(`Product ${gtin} removed from mount point ${mount_path}`);
@@ -125,7 +127,7 @@ class BatchManager extends Manager{
     editBatch(gtin, batchNumber,  callback) {
         super.initialize(() => {
             let mount_path = this._getMountPath(gtin, batchNumber);
-            this.DSUStorage.writeFile(`${mount_path}/info`, (err) => {
+            this.storage.writeFile(`${mount_path}/info`, (err) => {
                 if (err)
                     return callback(err);
                 console.log(`Product ${gtin} updated`);
@@ -155,9 +157,13 @@ class BatchManager extends Manager{
 }
 
 let batchManager;
-const getBatchManager = function () {
+/**
+ * @param {Archive} dsu
+ * @returns {BatchManager}
+ */
+const getBatchManager = function (dsu) {
     if (!batchManager)
-        batchManager = new BatchManager();
+        batchManager = new BatchManager(dsu);
     return batchManager;
 }
 

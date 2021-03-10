@@ -20,14 +20,17 @@
  * </pre>
  * This will make the DSU handle as a DSUStorage after binding
  *
- * @param {Archive} the root DSU
+ * @param {Archive} storageDSU the DSU where the storage should happen
  */
 class Manager{
-    constructor(){
-        const getParticipantManager = require('./ParticipantManager');
-        this.DSUStorage = getParticipantManager().getParticipantDSU();
-        this.DSUStorage.getObject = this._getObject(this.DSUStorage);
+    constructor(storageDSU){
+        this.storage = storageDSU;
+        this.storage.getObject = this._getObject(this.storage);
         this.resolver = undefined;
+    }
+
+    getParticipant(callback){
+        this.storage.getObject('/participant', callback);
     }
 
     _getObject(dsu){
@@ -99,7 +102,7 @@ class Manager{
      * </pre>
      */
     listMounts(path, callback) {
-        this.DSUStorage.listMountedDossiers(path, (err, mounts) => {
+        this.storage.listMountedDossiers(path, (err, mounts) => {
             if (err)
                 return callback(err);
             console.log(`Found ${mounts.length} mounts at ${path}`);
@@ -126,7 +129,7 @@ class Manager{
             let mount = m.shift();
             if (!mount)
                 return callback(undefined, Object.keys(batches).map(key => batches[key]));
-            self.DSUStorage.getObject(`${mount.path}/info`, (err, batch) => {
+            self.storage.getObject(`${mount.path}/info`, (err, batch) => {
                 if (err)
                     return callback(err);
                 batches.push(batch);

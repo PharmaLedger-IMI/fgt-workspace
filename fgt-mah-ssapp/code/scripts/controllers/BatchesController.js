@@ -10,7 +10,7 @@ export default class BatchesController extends ContainerController {
         const wizard = require('wizard');
         const LocaleService = wizard.Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "batches");
-        let rootDSU = Managers.getParticipantManager(this.DSUStorage);
+        let rootDSU = Managers.getParticipantManager().getParticipantDSU();
         this.productManager = getProductManager(rootDSU);
         this.batchManager = getBatchManager(rootDSU);
 
