@@ -41,8 +41,9 @@ class OrderManager extends Manager{
      * @returns {Order}
      */
      newBlankOrderSync(orderId, orderingTradingPartnerId) {
-        let orderLine1 = new OrderLine('', 0, '', '');
-        return new Order(orderId, orderingTradingPartnerId, '', '', OrderStatus.CREATED, [orderLine1]);
+        let orderLine1 = new OrderLine('123', 1, '', '');
+        let orderLine2 = new OrderLine('321', 5, '', '');
+        return new Order(orderId, orderingTradingPartnerId, '', '', OrderStatus.CREATED, [orderLine1, orderLine2]);
     }
 
     /**
@@ -136,27 +137,54 @@ class OrderManager extends Manager{
     }
 
     /**
-     *
+     * Convert the OrderController view model into an Order.
      * @param model
      * @returns {Order}
      */
     fromModel(model){
-        return new Order(model.orderId.value, model.requesterId.value, model.senderId.value, model.shipToAddress.value, OrderStatus.CREATED, []);
+        // convert orderLines into an array of OrderLines
+        let orderLines = [];
+        let orderLinesStr = model.orderLines.value;
+        if (orderLinesStr) {
+            orderLinesStr.split(";").forEach((gtinCommaQuant) => {
+                let gtinAndQuant = gtinCommaQuant.split(",");
+                if (gtinAndQuant.length===2) {
+                    let gtin = gtinAndQuant[0];
+                    let quantity = parseInt(gtinAndQuant[1]);
+                    if (gtin && quantity) {
+                        orderLines.push(new OrderLine(gtin, quantity, model.requesterId.value, model.senderId.value));
+                    }
+                }
+            });
+        }
+        console.log("model.orderLines.value=", model.orderLines.value, "converted to=", orderLines);
+        return new Order(model.orderId.value, model.requesterId.value, model.senderId.value, model.shipToAddress.value, OrderStatus.CREATED, orderLines);
     }
 
     /**
-     * @param {object} object the business model object
+     * Convert an Order into a OrderControler view model. 
+     * The order.orderLines are converted to a special format. See locale.js
+     * @param {Order} object the business model object
      * @param model the Controller's model object
      * @returns {{}}
      */
      toModel(object, model){
         model = model || {};
         for (let prop in object) {
-            console.log("prop", prop);
+            //console.log("prop", prop, "=='orderLines'", prop=="orderLines");
             if (object.hasOwnProperty(prop)){
                 if (!model[prop])
                     model[prop] = {};
-                model[prop].value = object[prop];
+                if (prop=="orderLines") {
+                    model[prop].value = "";
+                    let sep = "";
+                    object[prop].forEach((orderLine) => {
+                        model[prop].value += sep+orderLine.gtin+","+orderLine.quantity;
+                        sep = ";";
+                    });
+                } else {
+                    model[prop].value = object[prop];
+                }
             }
         }
         return model;

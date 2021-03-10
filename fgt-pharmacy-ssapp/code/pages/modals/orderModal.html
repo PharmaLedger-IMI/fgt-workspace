@@ -5,11 +5,11 @@
         <psk-text-input view-model="requesterId" required></psk-text-input>
         <psk-text-input view-model="senderId" required></psk-text-input>
         <!-- psk-text-input view-model="shipToAddress" required></psk-text-input -->
-        <!-- psk-label label="@orderLines"></psk-label -->
-        <psk-for-each data-view-model="orderLines">
+        <psk-text-input view-model="orderLines" required></psk-text-input>
+        <!-- psk-for-each data-view-model="orderLines">
             <psk-text-input view-model="gtin" required></psk-text-input>
             <psk-text-input view-model="quantity" required></psk-text-input>
-        </psk-for-each>
+        </psk-for-each -->
         <psk-button slot="footer" event-name="submit-order" label="@add"></psk-button>
     </psk-modal>
 </psk-container>

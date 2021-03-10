@@ -71,12 +71,12 @@ const LOCALE = {
                 value: 'Street of TPHH2437, door 1, floor 2',
                 required: true
             },
-            //orderLines: {
-            //    label: "OrderLines:",
-            //    placeholder: '????',
-            //    value: '?2',
-            //    required: true
-            //},
+            orderLines: {
+                label: "OrderLines:",
+                placeholder: 'gtin1,quant1;gtin2,quant2;gtin3,quant3',
+                value: '',
+                required: true
+            },
         },
         orders: {
             title: "Order Manager",
