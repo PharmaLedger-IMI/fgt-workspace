@@ -44,6 +44,22 @@ const LOCALE = {
             },
             register: "Register"
         },
+        order: {
+            title: "Fill new Order Details:",
+            add: "Submit Order",
+            requester: {
+                label: "Ordering partner name:",
+                placeholder: 'Please enter the ordering partner name here...',
+                value: 'PDM Pharmacy',
+                required: true
+            },
+            sender: {
+                label: "Ordering partner name:",
+                placeholder: 'Please enter the ordering partner name here...',
+                value: 'PDM Wholesaler',
+                required: true
+            },
+        },
         orders: {
             title: "Order Manager",
             add: "Create Order",

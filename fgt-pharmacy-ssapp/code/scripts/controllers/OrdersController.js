@@ -1,14 +1,14 @@
 import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
-//import {getOrderManager} from "../managers/OrderManager.js"
-const Order = require('wizard').Model.Order;
 
+/**
+ * List all the orders, and allows the creation of new orders.
+ */
 export default class OrdersController extends ContainerController {
     constructor(element, history) {
         super(element, history);
         const wizard = require('wizard');
         const LocaleService = wizard.Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "orders");
-        //this.orderManager = getOrderManager(this.DSUStorage);
         this.participantManager = wizard.Managers.getParticipantManager(this.DSUStorage, "traceability");
 
         this.model = this.setModel({
@@ -23,14 +23,12 @@ export default class OrdersController extends ContainerController {
             self._showOrderModal();
         });
 
-        this.on('perform-add-orders', (event) => {
+        this.on('perform-add-order', (event) => {
             event.stopImmediatePropagation();
             self._addOrderAsync(event.detail, (err) => {
-                if (err) {
-                    this.showError(err);
-                    return;
-                }
-                self.closeModal('product-modal');
+                if (err)
+                    return this.showError(err);
+                self.closeModal('order-modal');
                 self.getOrdersAsync();
             });
         });
@@ -42,10 +40,8 @@ export default class OrdersController extends ContainerController {
         let self = this;
         self.participantManager.getParticipant((err, participant) => {
             if (err)
-                throw err;
-            self.showModal('order-modal', self.orderManager.toModel(new Order({
-                manufName: participant.name
-            })), true);
+                return this.showError(err);
+            self.showModal('order-modal', self.participantManager.newBlankOrder(), true);
         });
     }
 
@@ -57,7 +53,7 @@ export default class OrdersController extends ContainerController {
      */
     _addOrderAsync(order, callback) {
         let self = this;
-        self.orderManager.create(order, (err, keySSI, path) => {
+        self.participantManager.createOrder(order, (err, keySSI, path) => {
             if (err)
                 return callback(err);
             callback();
