@@ -131,9 +131,11 @@ class Manager{
             let mount = m.shift();
             if (!mount)
                 return callback(undefined, Object.keys(batches).map(key => batches[key]));
+            console.log(`getObject ${mount.path}/info`);
             self.storage.getObject(`${mount.path}/info`, (err, batch) => {
                 if (err)
                     return callback(err);
+                console.log("gotObject", batch);
                 batches.push(batch);
                 iterator(m);
             });

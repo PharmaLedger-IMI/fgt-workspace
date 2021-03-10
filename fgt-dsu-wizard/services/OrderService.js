@@ -58,7 +58,7 @@ function OrderService(domain, strategy){
         utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);
-            dsu.writeFile('/data', JSON.stringify(order), (err) => {
+            dsu.writeFile('/info', JSON.stringify(order), (err) => {
                 if (err)
                     return callback(err);
                 createOrderLines(order, (err, orderLines) => {
@@ -100,7 +100,7 @@ function OrderService(domain, strategy){
         }
 
         utils.getDSUService().create(domain, getEndpointData(order), (builder, cb) => {
-            builder.addFileDataToDossier("/data", JSON.stringify(order), (err)=> {
+            builder.addFileDataToDossier("/info", JSON.stringify(order), (err)=> {
                 if (err)
                     return cb(err);
                 createOrderLines(order, (err, orderLines) => {

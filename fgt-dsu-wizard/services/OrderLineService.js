@@ -37,7 +37,7 @@ function OrderLineService(domain, strategy){
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);
-                dsu.writeFile('/data', data, (err) => {
+                dsu.writeFile('/info', data, (err) => {
                     if (err)
                         return callback(err);
                     dsu.getKeySSIAsObject((err, keySSI) => {
@@ -60,7 +60,7 @@ function OrderLineService(domain, strategy){
             }
 
             utils.getDSUService().create(domain, getEndpointData(orderLine), (builder, cb) => {
-                builder.addFileDataToDossier("/data", data, cb);
+                builder.addFileDataToDossier("/info", data, cb);
             }, callback);
         }
     };

@@ -4,7 +4,7 @@ const Order = require('../model').Order;
 const OrderLine = require('../model').OrderLine;
 const OrderStatus = require('../model').OrderStatus;
 /**
- * Product Manager Class
+ * Order Manager Class
  *
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
@@ -41,9 +41,10 @@ class OrderManager extends Manager{
      * @returns {Order}
      */
      newBlankOrderSync(orderId, orderingTradingPartnerId) {
-        let orderLine1 = new OrderLine('123', 1, '', '');
-        let orderLine2 = new OrderLine('321', 5, '', '');
-        return new Order(orderId, orderingTradingPartnerId, '', '', OrderStatus.CREATED, [orderLine1, orderLine2]);
+        //let orderLine1 = new OrderLine('123', 1, '', '');
+        //let orderLine2 = new OrderLine('321', 5, '', '');
+        //return new Order(orderId, orderingTradingPartnerId, '', '', OrderStatus.CREATED, [orderLine1, orderLine2]);
+        return new Order(orderId, orderingTradingPartnerId, '', '', OrderStatus.CREATED, []);
     }
 
     /**
@@ -126,9 +127,9 @@ class OrderManager extends Manager{
         super.listMounts(ORDER_MOUNT_PATH, (err, mounts) => {
             if (err)
                 return callback(err);
-            console.log(`Found ${mounts.length} products at ${ORDER_MOUNT_PATH}`);
+            console.log(`Found ${mounts.length} orders at ${ORDER_MOUNT_PATH}`);
             mounts = mounts.map(m => {
-                m.gtin = m.path;
+                console.log("Listing mounted m", m);
                 m.path = `${ORDER_MOUNT_PATH}/${m.path}`;
                 return m;
             });

@@ -82,22 +82,11 @@ export default class OrdersController extends ContainerController {
      */
     getOrdersAsync() {
         let self = this;
-        if (!self.model.pharmacy) {
-            console.log("getOrdersAsync getParticipant");
-            self.participantManager.getParticipant((err, participant) => {
-                if (err)
-                    return self.showError(err);
-                self.model.pharmacy = participant;
-                self.getOrdersAsync();
-            });
-        } else {
-            console.log("getOrdersAsync getOrders");
-            self.participantManager.getOrders(self.model.pharmacy, (err, orders) => {
-                console.log("getOrdersAsync gotOrders ", orders);
-                if (err)
-                    return self.showError(err);
-                self.updateOrders(orders);
-            })
-        }
+        self.orderManager.list((err, orders) => {
+            console.log("getOrdersAsync gotOrders ", orders);
+            if (err)
+                return self.showError(err);
+            self.updateOrders(orders);
+        });
     }
 }
