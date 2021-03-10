@@ -1,6 +1,4 @@
 import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
-import {getProductManager} from "../managers/ProductManager.js";
-import {getBatchManager} from "../managers/BatchManager.js";
 const Batch = require('wizard').Model.Batch;
 const Managers = require('wizard').Managers
 
@@ -11,8 +9,8 @@ export default class BatchesController extends ContainerController {
         const LocaleService = wizard.Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "batches");
         let rootDSU = Managers.getParticipantManager().getParticipantDSU();
-        this.productManager = getProductManager(rootDSU);
-        this.batchManager = getBatchManager(rootDSU);
+        this.productManager = Managers.getProductManager(rootDSU);
+        this.batchManager = Managers.getBatchManager(rootDSU);
 
         let self = this;
         this.on('add-batch', (event) => {

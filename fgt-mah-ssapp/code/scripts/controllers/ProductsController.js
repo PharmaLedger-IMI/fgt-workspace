@@ -1,5 +1,4 @@
 import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
-import {getProductManager} from "../managers/ProductManager.js"
 const Product = require('wizard').Model.Product;
 
 export default class ProductsController extends ContainerController {
@@ -9,7 +8,7 @@ export default class ProductsController extends ContainerController {
         const LocaleService = wizard.Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "products");
         this.participantManager = wizard.Managers.getParticipantManager();
-        this.productManager = getProductManager(this.participantManager.getParticipantDSU());
+        this.productManager = wizard.Managers.getProductManager(this.participantManager.getParticipantDSU());
 
         this.model = this.setModel({
             mah: {},

@@ -1,13 +1,13 @@
 import ModalController from "../../cardinal/controllers/base-controllers/ModalController.js";
-import {getProductManager} from "../managers/ProductManager.js"
 
 export default class ProductController extends ModalController {
     constructor(element, history) {
         super(element, history);
-        const LocaleService = require('wizard').Services.LocaleService;
+        const wizard = require('wizard');
+        const LocaleService = wizard.Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "product");
-        const participantManager = require('wizard').Managers.getParticipantManager();
-        this.productManager = getProductManager(participantManager.getParticipantDSU());
+        const participantManager = wizard.Managers.getParticipantManager();
+        this.productManager = wizard.Managers.getProductManager(participantManager.getParticipantDSU());
         this.on('submit-product', this._handleSubmit.bind(this));
     }
 

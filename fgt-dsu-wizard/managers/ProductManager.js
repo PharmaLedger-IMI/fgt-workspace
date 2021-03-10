@@ -1,8 +1,6 @@
-import {getBatchManager} from "./BatchManager.js";
-import {PRODUCT_MOUNT_PATH, BATCH_MOUNT_PATH, ANCHORING_DOMAIN} from './constants.js'
-const Manager = require('wizard').Managers.Manager;
-const Product = require('wizard').Model.Product;
-
+const {PRODUCT_MOUNT_PATH, BATCH_MOUNT_PATH, ANCHORING_DOMAIN} = require('./constants');
+const Manager = require('./Manager')
+const Product = require('../model').Product;
 /**
  * Product Manager Class
  *
@@ -22,8 +20,8 @@ const Product = require('wizard').Model.Product;
 class ProductManager extends Manager{
     constructor(storageDSU) {
         super(storageDSU);
-        this.productService = new (require('wizard').Services.ProductService)(ANCHORING_DOMAIN);
-        this.batchManager = getBatchManager(storageDSU);
+        this.productService = new (require('../services').ProductService)(ANCHORING_DOMAIN);
+        this.batchManager = require('./BatchManager')(storageDSU);
     }
 
     /**
@@ -144,8 +142,4 @@ const getProductManager = function (dsu) {
     return productManager;
 }
 
-export {
-    getProductManager,
-    PRODUCT_MOUNT_PATH,
-    BATCH_MOUNT_PATH
-}
+module.exports = getProductManager;

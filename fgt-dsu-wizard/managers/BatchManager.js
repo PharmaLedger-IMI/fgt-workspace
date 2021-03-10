@@ -1,6 +1,6 @@
-import {PRODUCT_MOUNT_PATH, BATCH_MOUNT_PATH, ANCHORING_DOMAIN} from './constants.js'
-const Manager = require('wizard').Managers.Manager;
-const Batch = require('wizard').Model.Batch;
+const {PRODUCT_MOUNT_PATH, BATCH_MOUNT_PATH, ANCHORING_DOMAIN} = require('./constants');
+const Manager = require('./Manager');
+const Batch = require('../model').Batch;
 
 /**
  * Batch Manager Class
@@ -167,6 +167,4 @@ const getBatchManager = function (dsu) {
     return batchManager;
 }
 
-export {
-    getBatchManager
-}
+module.exports = getBatchManager;

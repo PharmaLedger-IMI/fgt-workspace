@@ -3,7 +3,7 @@
  */
 const Order = require('../model/Order');
 const OrderStatus = require('../model/OrderStatus');
-const PARTICIPANT_MOUNT_PATH = "/participant";
+const {PARTICIPANT_MOUNT_PATH} = require('./constants');
 /**
  * Participant Manager Class
  *
@@ -26,7 +26,7 @@ const PARTICIPANT_MOUNT_PATH = "/participant";
 class ParticipantManager{
     constructor(dsuStorage, domain) {
         this.DSUStorage = dsuStorage;
-        this.ParticipantService = new (require('wizard').Services.ParticipantService)(domain);
+        this.ParticipantService = new (require('../services').ParticipantService)(domain);
         this.resolver = undefined;
         this.participantDSU = undefined;
     }
