@@ -123,7 +123,7 @@ class ParticipantManager{
      * Removes the PARTICIPANT_MOUNT_PATH DSU (does not delete/invalidate DSU, simply 'forgets' the reference)
      * @param {function(err)} callback
      */
-    removeParticipant(callback) {
+    remove(callback) {
         this.DSUStorage.enableDirectAccess(() => {
             this.DSUStorage.unmount(PARTICIPANT_MOUNT_PATH, (err) => {
                 if (err)
@@ -139,7 +139,7 @@ class ParticipantManager{
      * @param {Participant} participant
      * @param {function(err)} callback
      */
-    editParticipant(participant, callback) {
+    edit(participant, callback) {
         this.DSUStorage.enableDirectAccess(() => {
             this.DSUStorage.writeFile(`${PARTICIPANT_MOUNT_PATH}/info`, JSON.stringify(participant), (err) => {
                 if (err)

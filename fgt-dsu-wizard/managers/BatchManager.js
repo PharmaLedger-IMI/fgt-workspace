@@ -93,15 +93,13 @@ class BatchManager extends Manager{
      * @param {string} gtin
      * @param {function(err)} callback
      */
-    removeBatch(gtin, callback) {
-        super.initialize(() => {
-            let mount_path = this._getMountPath(gtin);
-            this.storage.unmount(mount_path, (err) => {
-                if (err)
-                    return callback(err);
-                console.log(`Product ${gtin} removed from mount point ${mount_path}`);
-                callback();
-            });
+    remove(gtin, callback) {
+        let mount_path = this._getMountPath(gtin);
+        this.storage.unmount(mount_path, (err) => {
+            if (err)
+                return callback(err);
+            console.log(`Product ${gtin} removed from mount point ${mount_path}`);
+            callback();
         });
     }
 
@@ -124,7 +122,7 @@ class BatchManager extends Manager{
      * @param {string} batchNumber
      * @param {function(err)} callback
      */
-    editBatch(gtin, batchNumber,  callback) {
+    edit(gtin, batchNumber,  callback) {
         super.initialize(() => {
             let mount_path = this._getMountPath(gtin, batchNumber);
             this.storage.writeFile(`${mount_path}/info`, (err) => {
@@ -136,7 +134,7 @@ class BatchManager extends Manager{
         });
     }
 
-    listBatches(gtin, callback){
+    getAll(gtin, callback){
         let self = this;
         let key = this._getProductKey(gtin);
         this.loadDSU(key, (err, dsu) => {

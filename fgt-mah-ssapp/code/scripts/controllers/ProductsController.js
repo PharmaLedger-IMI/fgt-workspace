@@ -24,7 +24,7 @@ export default class ProductsController extends ContainerController {
 
         this.on('perform-add-product', (event) => {
             event.stopImmediatePropagation();
-            self._addProductAsync(event.detail, (err) => {
+            self._addProduct(event.detail, (err) => {
                 if (err) {
                     this.showError(err);
                     return;
@@ -60,7 +60,7 @@ export default class ProductsController extends ContainerController {
      * @param callback
      * @private
      */
-    _addProductAsync(product, callback){
+    _addProduct(product, callback){
         let self = this;
         self.productManager.create(product, (err, keySSI, path) => {
             if (err)
@@ -89,7 +89,7 @@ export default class ProductsController extends ContainerController {
      */
     getProductsAsync(){
         let self = this;
-        self.productManager.listProducts((err, products) => {
+        self.productManager.getAll((err, products) => {
             if (err)
                 throw err;
             self.updateProducts(products);

@@ -2,12 +2,10 @@
   "basePagesUrl": "/pages/",
   "theme" : "pdm-theme",
   "profile": {
-    "username": "Finished Goods Traceability MAH",
+    "username": "Finished Goods Traceability Wholesaler",
     "avatar": "resources/images/factory.png"
   },
   "modals": {
-    "registration-modal": "/modals/registrationModal.html",
-    "product-modal": "/modals/productModal.html",
-    "batch-modal": "/modals/batchModal.html"
+    "registration-modal": "/modals/registrationModal.html"
   }
 }

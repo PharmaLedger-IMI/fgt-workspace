@@ -20,7 +20,7 @@ export default class BatchesController extends ContainerController {
 
         this.on('perform-add-batch', (event) => {
             event.stopImmediatePropagation();
-            self._addBatchAsync(event.detail, (err) => {
+            self._addBatch(event.detail, (err) => {
                 if (err)
                     throw err;
                 self.closeModal('batch-modal');
@@ -54,7 +54,7 @@ export default class BatchesController extends ContainerController {
      * @param {function(err)} callback
      * @private
      */
-    _addBatchAsync(batch, callback){
+    _addBatch(batch, callback){
         let self = this;
         self.batchManager.create(this.model.gtin, batch, (err, keySSI, productSSI) => {
             if (err)
@@ -81,7 +81,7 @@ export default class BatchesController extends ContainerController {
      */
     getBatchesAsync(){
         let self = this;
-        self.batchManager.listBatches(this.model.gtin, (err, batches) => {
+        self.batchManager.getAll(this.model.gtin, (err, batches) => {
             if (err)
                 throw err;
             self.updateBatches(batches);
