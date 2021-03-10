@@ -70,7 +70,7 @@ class ProductManager extends Manager{
      * @param {string} gtin
      * @param {function(err)} callback
      */
-    removeProduct(gtin, callback) {
+    remove(gtin, callback) {
         let self = this;
         let mount_path = this._getMountPath(gtin);
         self.storage.unmount(mount_path, (err) => {
@@ -86,7 +86,7 @@ class ProductManager extends Manager{
      * @param {string} gtin
      * @param {function(err)} callback
      */
-    editProduct(gtin, callback) {
+    edit(gtin, callback) {
         let self = this;
         let mount_path = this._getMountPath(gtin);
         self.storage.writeFile(`${mount_path}/info`, (err) => {
@@ -101,7 +101,7 @@ class ProductManager extends Manager{
      * Lists all registered products
      * @param {function(err, Product[])} callback
      */
-    listProducts(callback) {
+    getAll(callback) {
         super.listMounts(PRODUCT_MOUNT_PATH, (err, mounts) => {
             if (err)
                 return callback(err);
@@ -121,7 +121,6 @@ class ProductManager extends Manager{
      * @returns {Product}
      */
     fromModel(model){
-        // return new Product(super.fromModel(model));
         return new Product({
             gtin: model.gtin.value,
             name: model.name.value,
