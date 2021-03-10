@@ -39,16 +39,17 @@ class ParticipantManager{
      * @param {function(err, keySSI, string)} callback where the string is the mount path
      */
     create(participant, callback) {
-        this.DSUStorage.enableDirectAccess(() => {
-            this.ParticipantService.create(participant, (err, keySSI) => {
+        let self = this;
+        self.DSUStorage.enableDirectAccess(() => {
+            self.ParticipantService.create(participant, (err, keySSI) => {
                 if (err)
                     return callback(err);
                 console.log(`Participant DSU created with ssi: ${keySSI.getIdentifier(true)}`);
-                this.DSUStorage.mount(PARTICIPANT_MOUNT_PATH, keySSI.getIdentifier(), (err) => {
+                self.DSUStorage.mount(PARTICIPANT_MOUNT_PATH, keySSI.getIdentifier(), (err) => {
                     if (err)
                         return callback(err);
                     console.log(`Participant ${participant.id} created and mounted at '${PARTICIPANT_MOUNT_PATH}'`);
-                    this._getParticipantSSI((err, mainSSI) => {
+                    self._getParticipantSSI((err, mainSSI) => {
                         if (err)
                             console.log(err);
                         else
