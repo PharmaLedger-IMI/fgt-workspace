@@ -64,6 +64,8 @@ class ParticipantManager{
     }
 
     _cacheParticipantDSU(callback){
+        if (this.participantDSU)
+            return callback();
         let self = this;
         self.DSUStorage.enableDirectAccess(() => {
             self.DSUStorage.listMountedDossiers('/', (err, mounts) => {
