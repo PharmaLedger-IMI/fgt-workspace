@@ -1,7 +1,7 @@
 let LOADER_GLOBALS = {
 	THEME: "app",
 	LABELS_DICTIONARY: {
-		APP_NAME: "Wholesaler Fabric",
+		APP_NAME: "Traceability Wholesaler App",
 		APP_DESCRIPTION: "The traceability application for Wholesalers",
 		NEW_WALLET: "New Account",
 		ACCESS_WALLET: "Access Account",
@@ -49,15 +49,15 @@ let LOADER_GLOBALS = {
 	},
 	NEW_OR_RESTORE_CONTAINER_ID: "restore-new-container",
 	PASSWORD_CONTAINER_ID: "credentials-container",
-	MODE: 'secure',
+	MODE: 'dev-secure',
 	PASSWORD_MIN_LENGTH: 12,
 	USERNAME_MIN_LENGTH: 6,
 	USERNAME_REGEX: /^[a-zA-Z]([A-Za-z0-9]+[\\._]{0,1}[A-Za-z0-9]+){2,10}$/,
 	EMAIL_REGEX: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
 	PASSWORD_REGEX: /^(?=.*[A-Z])(?=.*[`~:;\'\"\.,<>/\?\!@#$%\^&\*\(\)\[\]\{\}|\\\-_\=\+])(?=.*[0-9])(?=.*[a-z].*[a-z].*[a-z]).*$/,
 	NEW_WALLET_MORE_INFORMATION: `<div class="jumbotron p-0 m-0" align="center">
-  <h1 class="display-6">Welcome to Wholesaler traceability app!</h1>
-  <p class="lead">After completing the following wizard you will gain access to Wholesaler app.</p>
+  <h1 class="display-6">Welcome to Pharmacy traceability app!</h1>
+  <p class="lead">After completing the following wizard you will gain access to Pharmacy app.</p>
   <p class="m-0">In order to gain access you have to set up your credentials.</p>
   <hr/>
 </div>`

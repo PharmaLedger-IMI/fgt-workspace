@@ -328,6 +328,14 @@
                 {
                     "type": "copy",
                     "src": "./fgt-wholesaler-ssapp/seed",
+                    "target": "./apihub-root/fgt-wholesaler-wallet/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "./fgt-wholesaler-ssapp/seed",
                     "target": "./apihub-root/fgt-wholesaler-wallet/apps-patch/fgt-wholesaler-ssapp/seed",
                     "options": {
                         "overwrite": true
