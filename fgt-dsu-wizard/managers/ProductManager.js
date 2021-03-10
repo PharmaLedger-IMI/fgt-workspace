@@ -121,12 +121,7 @@ class ProductManager extends Manager{
      * @returns {Product}
      */
     fromModel(model){
-        return new Product({
-            gtin: model.gtin.value,
-            name: model.name.value,
-            description: model.description.value,
-            manufName: model.manufName.value
-        });
+        return new Product(super.fromModel(model));
     }
 }
 

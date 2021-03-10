@@ -45,7 +45,19 @@ const LOCALE = {
             register: "Register"
         },
         dashboard:{
-            title: "This is a Dashboard"
+            title: "This is a Dashboard",
+            none: "There are no pending orders"
+        },
+        processorders: {
+            title: "Pending Orders",
+            requesterIdHeader: "Requester Id",
+            orderIdHeader: "Order Id",
+            orderLinesHeader: "Order lines",
+            actionsHeader: "Actions",
+            gtinHeader: "Gtin",
+            nameHeader: "Name",
+            quantityHeader: "Quantity",
+            none: "No pending orders..."
         },
         shipment: {
             title: "Fill new Shipment Details:",
@@ -76,6 +88,14 @@ const LOCALE = {
             shipmentIdHeader: "Shipment Id",
             productsHeader: "Products",
             shipmentStatusHeader: "Status"
+        },
+        stock: {
+            title: "Stock Manager",
+            gtinHeader: "Gtin",
+            nameHeader: "Name",
+            batchesHeader: "Batches",
+            quantityHeader: "Quantity",
+            none: "No products in stock..."
         }
     }
 }

@@ -14,6 +14,20 @@
       "icon": "fa-home",
       "pageSrc": "dashboard.html",
       "indexed": true
+    },
+    {
+      "name": "ProcessOrders",
+      "path": "/processorders",
+      "icon": "fa-home",
+      "pageSrc": "processorders.html",
+      "indexed": true
+    },
+    {
+      "name": "Stock",
+      "path": "/stock",
+      "icon": "fa-home",
+      "pageSrc": "stock.html",
+      "indexed": true
     }
   ]
 }
