@@ -3,14 +3,16 @@ import ModalController from "../../cardinal/controllers/base-controllers/ModalCo
 export default class OrderController extends ModalController {
     constructor(element, history) {
         super(element, history);
-        const LocaleService = require('wizard').Services.LocaleService;
+        const wizard = require('wizard');
+        const LocaleService = wizard.Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "order");
-        this.participantManager = wizard.Managers.getParticipantManager(this.DSUStorage, "traceability");
+        const participantManager = wizard.Managers.getParticipantManager();
+        this.orderManager = wizard.Managers.getOrderManager(participantManager.getParticipantDSU());
         this.on('submit-order', this._handleSubmit.bind(this));
     }
 
     _handleSubmit(event){
-        let order = this.participantManager.fromOrderModel(this.model);
+        let order = this.orderManager.fromModel(this.model);
         this.send('perform-add-order', order);
     }
 }

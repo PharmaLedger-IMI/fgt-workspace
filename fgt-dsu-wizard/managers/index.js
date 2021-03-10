@@ -16,6 +16,7 @@
  */
 module.exports = {
     Manager: require('./Manager'),
+    getOrderManager: require('./OrderManager'),
     getParticipantManager: require('./ParticipantManager'),
     getProductManager: require('./ProductManager'),
     getBatchManager: require('./BatchManager')

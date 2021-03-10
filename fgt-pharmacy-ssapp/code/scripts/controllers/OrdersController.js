@@ -10,6 +10,7 @@ export default class OrdersController extends ContainerController {
         const LocaleService = wizard.Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "orders");
         this.participantManager = wizard.Managers.getParticipantManager(this.DSUStorage, "traceability");
+        this.orderManager = wizard.Managers.getOrderManager(this.participantManager.getParticipantDSU());
 
         this.model = this.setModel({
             pharmacy: undefined,
@@ -41,7 +42,12 @@ export default class OrdersController extends ContainerController {
         self.participantManager.getParticipant((err, participant) => {
             if (err)
                 return this.showError(err);
-            self.showModal('order-modal', self.participantManager.newBlankOrder(), true);
+            // jpsl technical protest: The self.orderManager.newBlankOrder(...)
+            // should be self.participantManager.newBlankOrder(...) and the complexity
+            // of this inicialization code be inside that method.
+            let orderId = Math.floor(Math.random() * Math.floor(99999999999)); // TODO sequential numbering ? It should comes from the ERP anyway.
+            let requestorId = participant.id;
+            self.showModal('order-modal', self.orderManager.newBlankOrderSync(orderId, requestorId), true);
         });
     }
 
@@ -53,7 +59,7 @@ export default class OrdersController extends ContainerController {
      */
     _addOrderAsync(order, callback) {
         let self = this;
-        self.participantManager.createOrder(order, (err, keySSI, path) => {
+        self.orderManager.createOrder(order, (err, keySSI, path) => {
             if (err)
                 return callback(err);
             callback();
