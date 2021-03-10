@@ -8,17 +8,11 @@
  *
  * All Manager Classes should be singletons.
  *
- * This complete separation of concerts is very beneficial for 2 reasons:
+ * This complete separation of concerns is very beneficial for 2 reasons:
  * <ul>
  *     <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
- *
- * For testing, instead of the DSUStorage provide the DSU itself after:
- * <pre>
- *     dsu.directAccessEnabled = true;
- * </pre>
- * This will make the DSU handle as a DSUStorage after binding
  *
  * @param {Archive} storageDSU the DSU where the storage should happen
  */
@@ -29,6 +23,10 @@ class Manager{
         this.resolver = undefined;
     }
 
+    /**
+     * Retrieves the {@link participant}
+     * @param {function(err, Participant)}callback
+     */
     getParticipant(callback){
         this.storage.getObject('/participant', callback);
     }
@@ -48,6 +46,11 @@ class Manager{
         }
     }
 
+    /**
+     * Util function. Loads a DSU
+     * @param {KeySSI} keySSI
+     * @param {function(err, Archive)} callback
+     */
     loadDSU(keySSI, callback){
         if (!this.resolver)
             this.resolver = require('opendsu').loadApi('resolver');
@@ -69,7 +72,6 @@ class Manager{
     }
 
     /**
-     *
      * @param {object} object the business model object
      * @param model the Controller's model object
      * @returns {{}}
@@ -119,7 +121,7 @@ class Manager{
      *         identifier: keySSI
      *     }
      * </pre> The array is consumed (mutated).
-     * @param {function(err, Batch[])} callback
+     * @param {function(err, object[])} callback
      * @private
      */
     readAll(mounts, callback){

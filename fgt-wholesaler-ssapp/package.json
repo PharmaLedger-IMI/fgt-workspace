@@ -1,13 +1,12 @@
 {
-  "name": "traceability-dsu-fabric",
+  "name": "fgt-wholesaler-ssapp",
   "version": "1.0.0",
-  "description": "SSApp Template",
+  "description": "The Pharmaledger Traceability Application for Marketing Authorization Holders",
   "main": "index.js",
   "scripts": {
     "postinstall": "node ./node_modules/octopus/scripts/run",
     "prebuild": "node ./node_modules/octopus/scripts/run prebuild",
     "build": "node ./node_modules/octopus/scripts/buildDossier ./bin/build.file --domain=traceability",
-    "postbuild": "node ./node_modules/octopus/scripts/run postbuild",
     "update": "npm install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,7 +20,7 @@
   "keywords": [
     "ssapp"
   ],
-  "author": "",
+  "author": "PDM&FC",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/PrivateSky/ssapp-template/issues"
