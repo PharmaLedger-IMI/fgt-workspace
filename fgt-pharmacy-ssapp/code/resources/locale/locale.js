@@ -47,16 +47,28 @@ const LOCALE = {
         order: {
             title: "Fill new Order Details:",
             add: "Submit Order",
-            requester: {
-                label: "Ordering partner name:",
-                placeholder: 'Please enter the ordering partner name here...',
-                value: 'PDM Pharmacy',
+            orderId: {
+                label: "Order Number:",
+                placeholder: 'Please enter the Order Number here...',
+                value: '123',
                 required: true
             },
-            sender: {
-                label: "Ordering partner name:",
-                placeholder: 'Please enter the ordering partner name here...',
-                value: 'PDM Wholesaler',
+            requesterId: {
+                label: "Ordering partner ID:",
+                placeholder: 'Please enter the ordering partner ID here...',
+                value: 'TPHH2437',
+                required: true
+            },
+            senderId: {
+                label: "Supplying partner ID:",
+                placeholder: 'Please enter the supplying partner ID here...',
+                value: 'WHS3572',
+                required: true
+            },
+            shipToAddress: {
+                label: "Ship-to Address:",
+                placeholder: 'Please enter an address here...',
+                value: 'Street of TPHH2437, door 1, floor 2',
                 required: true
             },
         },

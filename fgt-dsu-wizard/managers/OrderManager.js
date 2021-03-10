@@ -64,7 +64,7 @@ class OrderManager extends Manager{
             self.storage.mount(mount_path, keySSI.getIdentifier(), (err) => {
                 if (err)
                     return callback(err);
-                console.log(`Product ${order.orderId} created and mounted at '${mount_path}'`);
+                console.log(`Order ${order.orderId} created and mounted at '${mount_path}'`);
                 callback(undefined, keySSI, mount_path);
             });
         });
@@ -139,7 +139,7 @@ class OrderManager extends Manager{
      * @returns {Order}
      */
     fromModel(model){
-        return new Order(model.orderId, model.requesterId, model.senderId, model.shipToAddress, model.status, model.orderLines);
+        return new Order(model.orderId.value, model.requesterId.value, model.senderId.value, model.shipToAddress.value, OrderStatus.CREATED, []);
     }
 }
 

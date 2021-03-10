@@ -45,9 +45,10 @@ export default class OrdersController extends ContainerController {
             // jpsl technical protest: The self.orderManager.newBlankOrder(...)
             // should be self.participantManager.newBlankOrder(...) and the complexity
             // of this inicialization code be inside that method.
-            let orderId = Math.floor(Math.random() * Math.floor(99999999999)); // TODO sequential numbering ? It should comes from the ERP anyway.
+            let orderId = Math.floor(Math.random() * Math.floor(99999999999)); // TODO sequential unique numbering ? It should comes from the ERP anyway.
             let requestorId = participant.id;
-            self.showModal('order-modal', self.orderManager.newBlankOrderSync(orderId, requestorId), true);
+            let order = self.orderManager.newBlankOrderSync(orderId, requestorId);
+            self.showModal('order-modal', self.orderManager.toModel(order), true);
         });
     }
 
@@ -59,7 +60,7 @@ export default class OrdersController extends ContainerController {
      */
     _addOrderAsync(order, callback) {
         let self = this;
-        self.orderManager.createOrder(order, (err, keySSI, path) => {
+        self.orderManager.create(order, (err, keySSI, path) => {
             if (err)
                 return callback(err);
             callback();
