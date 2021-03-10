@@ -8,8 +8,8 @@ export default class ProductsController extends ContainerController {
         const wizard = require('wizard');
         const LocaleService = wizard.Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US, "products");
+        this.participantManager = wizard.Managers.getParticipantManager(this.DSUStorage, "traceability");
         this.productManager = getProductManager(this.DSUStorage);
-        this.idManager = wizard.Managers.getIdManager(this.DSUStorage, "traceability");
 
         this.model = this.setModel({
             mah: {},
@@ -46,7 +46,7 @@ export default class ProductsController extends ContainerController {
 
     _showProductModal(){
         let self = this;
-        self.idManager.getId((err, actor) => {
+        self.participantManager.getParticipant((err, actor) => {
            if (err)
                throw err;
             self.showModal('product-modal', self.productManager.toModel(new Product({

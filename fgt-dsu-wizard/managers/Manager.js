@@ -25,7 +25,7 @@
 class Manager{
     constructor(dsu){
         this.DSUStorage = dsu;
-        this.DSUStorage.getObject = this._getObject(this.DSUStorage);
+        //this.DSUStorage.getObject = this._getObject(this.DSUStorage);
         this.resolver = undefined;
     }
 
@@ -98,12 +98,15 @@ class Manager{
      * </pre>
      */
     listMounts(path, callback) {
-        this.DSUStorage.listMountedDossiers(path, (err, mounts) => {
-            if (err)
-                return callback(err);
-            console.log(`Found ${mounts.length} mounts at ${path}`);
-            callback(undefined, mounts);
-        });
+        this.DSUStorage.enableDirectAccess(() => {
+            this.DSUStorage.listMountedDossiers(path, (err, mounts) => {
+                if (err)
+                    return callback(err);
+                console.log(`Found ${mounts.length} mounts at ${path}`);
+                callback(undefined, mounts);
+            });
+        })
+
     }
 
     /**

@@ -27,9 +27,9 @@ const PARTICIPANT_MOUNT_PATH = "/participant";
  * @param {DSUStorage} dsuStorage the controllers dsu storage
  * @param {string} domain the anchoring domain
  */
-class ParticipantManager extends Manager{
+class ParticipantManager{
     constructor(dsuStorage, domain) {
-        super(dsuStorage)
+        this.DSUStorage = dsuStorage;
         this.ParticipantService = new (require('wizard').Services.ParticipantService)(domain);
     }
 
@@ -39,7 +39,7 @@ class ParticipantManager extends Manager{
      * @param {function(err, keySSI, string)} callback where the string is the mount path
      */
     create(participant, callback) {
-        super.initialize(() => {
+        this.DSUStorage.enableDirectAccess(() => {
             this.ParticipantService.create(participant, (err, keySSI) => {
                 if (err)
                     return callback(err);
@@ -48,9 +48,26 @@ class ParticipantManager extends Manager{
                     if (err)
                         return callback(err);
                     console.log(`Participant ${participant.id} created and mounted at '${PARTICIPANT_MOUNT_PATH}'`);
-                    callback(undefined, keySSI, PARTICIPANT_MOUNT_PATH);
+                    this._getParticipantSSI((err, mainSSI) => {
+                        if (err)
+                            console.log(err);
+                        else
+                            console.log("THIS IS THE MAIN SSI " + mainSSI);
+                        callback(undefined, keySSI, PARTICIPANT_MOUNT_PATH);
+                    });
                 });
             });
+        });
+    }
+
+    _getParticipantSSI(callback){
+        this.DSUStorage.listMountedDossiers(PARTICIPANT_MOUNT_PATH, (err, mounts) =>{
+           if (err)
+               return callback(err);
+           if (!mounts)
+               return callback("no mounts found!");
+           console.log(mounts);
+           callback(mounts[0].identifier);
         });
     }
 
@@ -71,7 +88,7 @@ class ParticipantManager extends Manager{
      * @param {function(err)} callback
      */
     removeParticipant(callback) {
-        super.initialize(() => {
+        this.DSUStorage.enableDirectAccess(() => {
             this.DSUStorage.unmount(PARTICIPANT_MOUNT_PATH, (err) => {
                 if (err)
                     return callback(err);
@@ -87,7 +104,7 @@ class ParticipantManager extends Manager{
      * @param {function(err)} callback
      */
     editParticipant(participant, callback) {
-        super.initialize(() => {
+        this.DSUStorage.enableDirectAccess(() => {
             this.DSUStorage.writeFile(`${PARTICIPANT_MOUNT_PATH}/info`, JSON.stringify(participant), (err) => {
                 if (err)
                     return callback(err);
