@@ -17,7 +17,7 @@ export default class ParticipantController extends ContainerController {
             this.closeModal();
             this.register(event.detail, (err) => {
                 if (err)
-                    console.log("ERROR - Could not register - Should not be possible!");
+                    console.log("ERROR - Could not register - Should not be possible!", err);
                 this._testParticipant();
             });
         }, true)
