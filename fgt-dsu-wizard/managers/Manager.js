@@ -102,7 +102,7 @@ class Manager{
      * </pre>
      */
     listMounts(path, callback) {
-        this.storage.listMountedDossiers(path, (err, mounts) => {
+        this.storage.listMountedDSUs(path, (err, mounts) => {
             if (err)
                 return callback(err);
             console.log(`Found ${mounts.length} mounts at ${path}`);

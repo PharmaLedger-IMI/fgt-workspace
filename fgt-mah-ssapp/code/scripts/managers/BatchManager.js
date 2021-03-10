@@ -142,7 +142,7 @@ class BatchManager extends Manager{
         this.loadDSU(key, (err, dsu) => {
            if (err)
                return callback(err);
-           dsu.listMountedDossiers(BATCH_MOUNT_PATH, (err, mounts) => {
+           dsu.listMountedDSUs(BATCH_MOUNT_PATH, (err, mounts) => {
                if (err)
                    return callback(err);
                mounts = mounts.map(m => {
