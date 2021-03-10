@@ -20,12 +20,28 @@
  * </pre>
  * This will make the DSU handle as a DSUStorage after binding
  *
- * @param {DSUStorage} dsuStorage the controllers dsu storage
+ * @param {Archive} the root DSU
  */
 class Manager{
-    constructor(dsuStorage){
-        this.DSUStorage = dsuStorage;
+    constructor(dsu){
+        this.DSUStorage = dsu;
+        this.DSUStorage.getObject = this._getObject(this.DSUStorage);
         this.resolver = undefined;
+    }
+
+    _getObject(dsu){
+        return function(path, callback) {
+            dsu.readFile(path, function (err, res) {
+                if (err)
+                    return callback(err);
+                try {
+                    res = JSON.parse(res.toString());
+                } catch (err) {
+                    return callback(err);
+                }
+                callback(undefined, res);
+            });
+        }
     }
 
     loadDSU(keySSI, callback){
@@ -35,35 +51,17 @@ class Manager{
     }
 
     /**
-     * Ensures the DSU Storage is properly Initialized
-     * and access to the main dsu's methods are given
-     * @param {function(err)}callback
-     */
-    initialize(callback){
-        this._enableDirectAccess((err) => {
-            if (err)
-                return callback(err);
-            callback();
-        });
-    }
-
-    /**
-     * @see DSUStorage#enableDirectAccess
-     * @private
-     */
-    _enableDirectAccess(callback){
-        if(!this.DSUStorage.directAccessEnabled)
-            return this.DSUStorage.enableDirectAccess(callback);
-        callback();
-    }
-
-    /**
      * Should translate the Controller Model into the Business Model
      * @param model the Controller's Model
-     * @returns {...} the Business Model object
+     * @returns {dict} the Business Model object ready to feed to the constructor
      */
     fromModel(model){
-        throw new Error("Each subclass must implement this!");
+        let result = {};
+        Object.keys(model).forEach(key => {
+            if (model.hasOwnProperty(key) && model[key].value)
+                result[key] = model[key].value;
+        });
+        return result
     }
 
     /**
@@ -100,13 +98,11 @@ class Manager{
      * </pre>
      */
     listMounts(path, callback) {
-        this.initialize(() => {
-            this.DSUStorage.listMountedDossiers(path, (err, mounts) => {
-                if (err)
-                    return callback(err);
-                console.log(`Found ${mounts.length} mounts at ${path}`);
-                callback(undefined, mounts);
-            });
+        this.DSUStorage.listMountedDossiers(path, (err, mounts) => {
+            if (err)
+                return callback(err);
+            console.log(`Found ${mounts.length} mounts at ${path}`);
+            callback(undefined, mounts);
         });
     }
 

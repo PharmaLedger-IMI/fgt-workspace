@@ -18,11 +18,11 @@ const Product = require('wizard').Model.Product;
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
  *
- * @param {DSUStorage} dsuStorage the controllers dsu storage
+ * @param {Archive} dsuStorage the controllers dsu storage
  */
 class ProductManager extends Manager{
-    constructor(dsuStorage) {
-        super(dsuStorage);
+    constructor(dsu) {
+        super(dsu);
         this.productService = new (require('wizard').Services.ProductService)(ANCHORING_DOMAIN);
         this.batchManager = getBatchManager(this.DSUStorage);
     }
@@ -42,17 +42,15 @@ class ProductManager extends Manager{
      */
     create(product, callback) {
         let self = this;
-        super.initialize(() => {
-            self.productService.create(product, (err, keySSI) => {
+        self.productService.create(product, (err, keySSI) => {
+            if (err)
+                return callback(err);
+            let mount_path = this._getMountPath(product.gtin);
+            self.DSUStorage.mount(mount_path, keySSI.getIdentifier(), (err) => {
                 if (err)
                     return callback(err);
-                let mount_path = this._getMountPath(product.gtin);
-                self.DSUStorage.mount(mount_path, keySSI.getIdentifier(), (err) => {
-                    if (err)
-                        return callback(err);
-                    console.log(`Product ${product.gtin} created and mounted at '${mount_path}'`);
-                    callback(undefined, keySSI, mount_path);
-                });
+                console.log(`Product ${product.gtin} created and mounted at '${mount_path}'`);
+                callback(undefined, keySSI, mount_path);
             });
         });
     }
@@ -77,14 +75,12 @@ class ProductManager extends Manager{
      */
     removeProduct(gtin, callback) {
         let self = this;
-        super.initialize(() => {
-            let mount_path = this._getMountPath(gtin);
-            self.DSUStorage.unmount(mount_path, (err) => {
-                if (err)
-                    return callback(err);
-                console.log(`Product ${gtin} removed from mount point ${mount_path}`);
-                callback();
-            });
+        let mount_path = this._getMountPath(gtin);
+        self.DSUStorage.unmount(mount_path, (err) => {
+            if (err)
+                return callback(err);
+            console.log(`Product ${gtin} removed from mount point ${mount_path}`);
+            callback();
         });
     }
 
@@ -95,14 +91,12 @@ class ProductManager extends Manager{
      */
     editProduct(gtin, callback) {
         let self = this;
-        super.initialize(() => {
-            let mount_path = this._getMountPath(gtin);
-            self.DSUStorage.writeFile(`${mount_path}/info`, (err) => {
-                if (err)
-                    return callback(err);
-                console.log(`Product ${gtin} updated`);
-                callback();
-            });
+        let mount_path = this._getMountPath(gtin);
+        self.DSUStorage.writeFile(`${mount_path}/info`, (err) => {
+            if (err)
+                return callback(err);
+            console.log(`Product ${gtin} updated`);
+            callback();
         });
     }
 
@@ -130,6 +124,7 @@ class ProductManager extends Manager{
      * @returns {Product}
      */
     fromModel(model){
+        // return new Product(super.fromModel(model));
         return new Product({
             gtin: model.gtin.value,
             name: model.name.value,

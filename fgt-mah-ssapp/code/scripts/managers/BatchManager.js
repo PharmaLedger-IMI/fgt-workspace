@@ -16,11 +16,11 @@ const Batch = require('wizard').Model.Batch;
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
  *
- * @param {DSUStorage} dsuStorage the controllers dsu storage
+ * @param {Archive} dsu the root dsu
  */
 class BatchManager extends Manager{
-    constructor(dsuStorage) {
-        super(dsuStorage);
+    constructor(dsu) {
+        super(dsu);
         this.productService = new (require('wizard').Services.ProductService)(ANCHORING_DOMAIN);
         this.batchService = new (require('wizard').Services.BatchService)(ANCHORING_DOMAIN);
         this.keyCache = {};
