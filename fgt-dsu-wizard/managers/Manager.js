@@ -135,7 +135,7 @@ class Manager{
             self.storage.getObject(`${mount.path}/info`, (err, batch) => {
                 if (err)
                     return callback(err);
-                console.log("gotObject", batch);
+                //console.log("gotObject", batch);
                 batches.push(batch);
                 iterator(m);
             });
