@@ -84,6 +84,7 @@ class ParticipantManager{
     }
 
     _matchParticipantDSU(mounts, callback){
+        // m.path has "participant". PARTICIPANT_MOUNT_PATH has "/participant".
         let mount = mounts.filter(m => m.path === PARTICIPANT_MOUNT_PATH.substr(1));
         if (!mount || mount.length !== 1)
             return callback("No participant mount found");
