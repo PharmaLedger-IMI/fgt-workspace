@@ -1,6 +1,7 @@
 const {ORDER_MOUNT_PATH, ANCHORING_DOMAIN} = require('./constants');
 const Manager = require('./Manager')
 const Order = require('../model').Order;
+const OrderLine = require('../model').OrderLine;
 const OrderStatus = require('../model').OrderStatus;
 /**
  * Product Manager Class
@@ -40,7 +41,8 @@ class OrderManager extends Manager{
      * @returns {Order}
      */
      newBlankOrderSync(orderId, orderingTradingPartnerId) {
-        return new Order(orderId, orderingTradingPartnerId, '', '', OrderStatus.CREATED, []);
+        let orderLine1 = new OrderLine('', 0, '', '');
+        return new Order(orderId, orderingTradingPartnerId, '', '', OrderStatus.CREATED, [orderLine1]);
     }
 
     /**
@@ -140,6 +142,24 @@ class OrderManager extends Manager{
      */
     fromModel(model){
         return new Order(model.orderId.value, model.requesterId.value, model.senderId.value, model.shipToAddress.value, OrderStatus.CREATED, []);
+    }
+
+    /**
+     * @param {object} object the business model object
+     * @param model the Controller's model object
+     * @returns {{}}
+     */
+     toModel(object, model){
+        model = model || {};
+        for (let prop in object) {
+            console.log("prop", prop);
+            if (object.hasOwnProperty(prop)){
+                if (!model[prop])
+                    model[prop] = {};
+                model[prop].value = object[prop];
+            }
+        }
+        return model;
     }
 }
 
