@@ -1,7 +1,6 @@
 import {getBatchManager} from "./BatchManager.js";
 import {PRODUCT_MOUNT_PATH, BATCH_MOUNT_PATH, ANCHORING_DOMAIN} from './constants.js'
 const Manager = require('wizard').Managers.Manager;
-
 const Product = require('wizard').Model.Product;
 
 /**
@@ -21,10 +20,10 @@ const Product = require('wizard').Model.Product;
  * @param {Archive} dsuStorage the controllers dsu storage
  */
 class ProductManager extends Manager{
-    constructor(dsu) {
-        super(dsu);
+    constructor() {
+        super();
         this.productService = new (require('wizard').Services.ProductService)(ANCHORING_DOMAIN);
-        this.batchManager = getBatchManager(this.DSUStorage);
+        this.batchManager = getBatchManager();
     }
 
     /**
@@ -139,12 +138,9 @@ let productManager;
  * @param {DSUStorage} dsuStorage
  * @returns {ProductManager}
  */
-const getProductManager = function (dsuStorage) {
-    if (!productManager) {
-        if (!dsuStorage)
-            throw new Error("No DSUStorage provided");
-        productManager = new ProductManager(dsuStorage);
-    }
+const getProductManager = function () {
+    if (!productManager)
+        productManager = new ProductManager();
     return productManager;
 }
 

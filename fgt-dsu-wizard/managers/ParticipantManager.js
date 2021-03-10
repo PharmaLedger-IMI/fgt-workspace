@@ -1,13 +1,9 @@
 /**
  * @module fgt-mah-ssapp.managers
  */
-
-
 const Order = require('../model/Order');
 const OrderStatus = require('../model/OrderStatus');
-const Manager = require('./Manager');
 const PARTICIPANT_MOUNT_PATH = "/participant";
-
 /**
  * Participant Manager Class
  *
@@ -31,6 +27,14 @@ class ParticipantManager{
     constructor(dsuStorage, domain) {
         this.DSUStorage = dsuStorage;
         this.ParticipantService = new (require('wizard').Services.ParticipantService)(domain);
+        this.resolver = undefined;
+        this.participantDSU = undefined;
+    }
+
+    getParticipantDSU(){
+        if (!this.participantDSU)
+            throw new Error("ParticipantDSU not cached");
+        return this.participantDSU;
     }
 
     /**
@@ -49,11 +53,9 @@ class ParticipantManager{
                     if (err)
                         return callback(err);
                     console.log(`Participant ${participant.id} created and mounted at '${PARTICIPANT_MOUNT_PATH}'`);
-                    self._getParticipantSSI((err, mainSSI) => {
+                    self._cacheParticipantDSU((err) => {
                         if (err)
-                            console.log(err);
-                        else
-                            console.log("THIS IS THE MAIN SSI " + mainSSI);
+                            return callback(err);
                         callback(undefined, keySSI, PARTICIPANT_MOUNT_PATH);
                     });
                 });
@@ -61,15 +63,40 @@ class ParticipantManager{
         });
     }
 
-    _getParticipantSSI(callback){
-        this.DSUStorage.listMountedDossiers(PARTICIPANT_MOUNT_PATH, (err, mounts) =>{
-           if (err)
-               return callback(err);
-           if (!mounts || mounts.length !== 1)
-               return callback("no mounts found!");
-           console.log(mounts);
-           callback(undefined, mounts[0].identifier);
+    _cacheParticipantDSU(callback){
+        let self = this;
+        self.DSUStorage.enableDirectAccess(() => {
+            self.DSUStorage.listMountedDossiers('/', (err, mounts) => {
+                if (err)
+                    return callback(err);
+                if (!mounts)
+                    return callback("no mounts found!");
+                self._matchParticipantDSU(mounts, (err, dsu) => {
+                    if (err)
+                        return callback(err);
+                    self.participantDSU = dsu;
+                    callback();
+                });
+            });
         });
+    }
+
+    _matchParticipantDSU(mounts, callback){
+        let mount = mounts.filter(m => m.path === PARTICIPANT_MOUNT_PATH.substr(1));
+        if (!mount || mount.length !== 1)
+            return callback("No participant mount found");
+        this._loadDSU(mount[0].identifier, (err, dsu) => {
+            if (err)
+                return callback(err);
+            console.log(`Participant DSU Successfully cached: ${mount[0].identifier}`);
+            callback(undefined, dsu);
+        });
+    }
+
+    _loadDSU(keySSI, callback){
+        if (!this.resolver)
+            this.resolver = require('opendsu').loadApi('resolver');
+        this.resolver.loadDSU(keySSI, callback);
     }
 
     /**
@@ -77,10 +104,15 @@ class ParticipantManager{
      * @param {function(err, PARTICIPANT_MOUNT_PATH)} callback
      */
     getParticipant(callback){
-        this.DSUStorage.getObject(`${PARTICIPANT_MOUNT_PATH}/info`, (err, participant) => {
+        let self = this;
+        self._cacheParticipantDSU((err) => {
             if (err)
                 return callback(err);
-            callback(undefined, participant);
+            self.DSUStorage.getObject(`${PARTICIPANT_MOUNT_PATH}/info`, (err, participant) => {
+                if (err)
+                    return callback(err);
+                callback(undefined, participant);
+            });
         });
     }
 
@@ -130,14 +162,16 @@ class ParticipantManager{
 let participantManager;
 
 /**
- * @param {DSUStorage} dsuStorage
- * @param {string} domain
+ * @param {DSUStorage} [dsuStorage]
+ * @param {string} [domain]
  * @returns {ParticipantManager}
  */
 const getParticipantManager = function (dsuStorage, domain) {
     if (!participantManager) {
         if (!dsuStorage)
             throw new Error("No DSUStorage provided");
+        if (!domain)
+            throw new Error("No domain provided");
         participantManager = new ParticipantManager(dsuStorage, domain);
     }
     return participantManager;

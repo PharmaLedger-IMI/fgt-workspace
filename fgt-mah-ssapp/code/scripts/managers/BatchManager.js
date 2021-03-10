@@ -15,12 +15,10 @@ const Batch = require('wizard').Model.Batch;
  *     <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
- *
- * @param {Archive} dsu the root dsu
  */
 class BatchManager extends Manager{
-    constructor(dsu) {
-        super(dsu);
+    constructor() {
+        super();
         this.productService = new (require('wizard').Services.ProductService)(ANCHORING_DOMAIN);
         this.batchService = new (require('wizard').Services.BatchService)(ANCHORING_DOMAIN);
         this.keyCache = {};
@@ -157,9 +155,9 @@ class BatchManager extends Manager{
 }
 
 let batchManager;
-const getBatchManager = function (dsuStorage) {
+const getBatchManager = function () {
     if (!batchManager)
-        batchManager = new BatchManager(dsuStorage);
+        batchManager = new BatchManager();
     return batchManager;
 }
 
