@@ -64,10 +64,10 @@ class ParticipantManager{
         this.DSUStorage.listMountedDossiers(PARTICIPANT_MOUNT_PATH, (err, mounts) =>{
            if (err)
                return callback(err);
-           if (!mounts)
+           if (!mounts || mounts.length !== 1)
                return callback("no mounts found!");
            console.log(mounts);
-           callback(mounts[0].identifier);
+           callback(undefined, mounts[0].identifier);
         });
     }
 
