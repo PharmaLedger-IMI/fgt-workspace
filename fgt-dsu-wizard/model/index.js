@@ -8,6 +8,7 @@ module.exports = {
     Shipment: require('./Shipment'),
     ShipmentStatus: require('./ShipmentStatus'),
     ShipmentLine: require('./ShipmentLine'),
+    Participant: require('./Participant'),
     Product: require('./Product'),
     Batch: require('./Batch'),
     MAH: require('./MAH'),
