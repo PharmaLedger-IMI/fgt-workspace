@@ -1,6 +1,6 @@
 const INFO_PATH = '/info';
+const ISSUED_ORDERS_MOUNT_PATH = "/issuedorders";
 const STOCK_PATH = '/stock';
-const ORDER_MOUNT_PATH = "/orders";
 const PARTICIPANT_MOUNT_PATH = "/participant";
 const PRODUCT_MOUNT_PATH = "/products";
 const BATCH_MOUNT_PATH = "/batches";
@@ -9,8 +9,8 @@ const ANCHORING_DOMAIN = "traceability"
 
 module.exports = {
     INFO_PATH,
+    ISSUED_ORDERS_MOUNT_PATH,
     STOCK_PATH,
-    ORDER_MOUNT_PATH,
     PARTICIPANT_MOUNT_PATH,
     PRODUCT_MOUNT_PATH,
     BATCH_MOUNT_PATH,
