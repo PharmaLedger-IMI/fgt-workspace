@@ -1,0 +1,23 @@
+{
+  "name": "privatesky.xyz",
+  "version": "1.0.0",
+  "description": "PrivateSky Development Hub.",
+  "scripts": {
+    "postinstall": "npm run bundle-webcardinal",
+    "bundle-webcardinal": "node node_modules/octopus/scripts/run bundle-webcardinal devmode",
+    "build": "node node_modules/octopus/scripts/run build",
+    "dev": "node node_modules/octopus/scripts/run build-webcardinal.dev devmode",
+    "docs": "node docs/bin/indes.js",
+    "start": "ws --spa ./index.html",
+    "clean": "rm -rf .webcardinal/ node_modules/"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "octopus": "git+https://github.com/webcardinal/octopus"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webcardinal/privatesky.xyz.git"
+  },
+  "license": "MIT"
+}
