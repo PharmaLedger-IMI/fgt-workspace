@@ -44,7 +44,7 @@ const LOCALE = {
             },
             register: "Register"
         },
-        order: {
+        issuedOrder: {
             title: "Fill new Order Details:",
             add: "Submit Order",
             orderId: {
@@ -78,8 +78,8 @@ const LOCALE = {
                 required: true
             },
         },
-        orders: {
-            title: "Order Manager",
+        issuedOrders: {
+            title: "Issued Order Manager",
             add: "Create Order",
             numberHeader: "OrderID",
             orderingPartnerHeader: "Requester",

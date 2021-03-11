@@ -8,6 +8,6 @@
   },
   "modals": {
     "registration-modal": "/modals/registrationModal.html",
-    "order-modal": "/modals/orderModal.html"
+    "issued-order-modal": "/modals/issuedOrderModal.html"
   }
 }
