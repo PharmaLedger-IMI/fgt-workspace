@@ -9,7 +9,7 @@
     "docs": "node docs/bin/indes.js",
     "start": "ws --spa ./index.html",
     "clean": "rm -rf .webcardinal/ node_modules/",
-    "build-dossier": "node ./node_modules/octopus/scripts/buildDossier.js"
+    "build": "node node_modules/octopus/scripts/run build devmode"
   },
   "dependencies": {},
   "devDependencies": {

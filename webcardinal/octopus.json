@@ -182,7 +182,7 @@
       "actions": [
         {
           "type": "execute",
-          "cmd": "node ./node_modules/octopus/scripts/buildDossier.js --bundles=./../../privatesky/psknode/bundles"
+          "cmd": "node ./node_modules/octopus/scripts/buildDossier.js --bundles=./../privatesky/psknode/bundles"
         }
       ]
     },
@@ -196,5 +196,4 @@
       ]
     }
   ]
-
 }
