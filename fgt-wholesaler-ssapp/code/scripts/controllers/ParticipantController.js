@@ -1,6 +1,7 @@
-import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
+//import WebcController from "../../webcardinal/base/controllers/WebcController.js";
+const {WebcController} = WebCardinal.controllers;
 
-export default class ParticipantController extends ContainerController {
+export default class ParticipantController extends WebcController {
     constructor(element) {
         super(element);
         const LocaleService = require('wizard').Services.LocaleService;

@@ -1,9 +1,9 @@
-import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
+const {WebcController} = WebCardinal.controllers;
 const Order = require('wizard').Model.Order;
 const OrderLine = require('wizard').Model.OrderLine;
 const Shipment = require('wizard').Model.Shipment;
 
-export default class BatchesController extends ContainerController {
+export default class BatchesController extends WebcController {
     constructor(element, history) {
         super(element, history);
         const wizard = require('wizard');
