@@ -38,6 +38,7 @@
   },
   "homepage": "https://github.com/PharmaLedger-IMI/fgt-workspace#readme",
   "dependencies": {
+    "@ionic/core": "^5.6.0",
     "octopus": "git+https://github.com/PrivateSky/octopus.git"
   }
 }
