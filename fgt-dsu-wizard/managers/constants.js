@@ -1,5 +1,5 @@
 const INFO_PATH = '/info';
-const ISSUED_ORDERS_MOUNT_PATH = "/issuedorders";
+const ISSUED_ORDERS_MOUNT_PATH = "/issuedOrders";
 const STOCK_PATH = '/stock';
 const PARTICIPANT_MOUNT_PATH = "/participant";
 const PRODUCT_MOUNT_PATH = "/products";
