@@ -19,7 +19,9 @@ docs
 
 webcardinal/*
 !webcardinal/octopus.json
-!wecardinal/package.json
+!webcardinal/package.json
+!webcardinal/bin
+!.gitignore
 
 fgt-dsu-wizard/build/bundles
 
