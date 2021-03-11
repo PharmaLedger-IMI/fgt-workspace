@@ -38,13 +38,14 @@ class OrderManager extends Manager{
      * Creates a blacnk {@link Order} with some specific initializations.
      * @param {string} orderId
      * @param {string} orderingTradingPartnerId
+     * @param {string} shippingAddress
      * @returns {Order}
      */
-     newBlankOrderSync(orderId, orderingTradingPartnerId) {
+     newBlankOrderSync(orderId, orderingTradingPartnerId, shippingAddress) {
         //let orderLine1 = new OrderLine('123', 1, '', '');
         //let orderLine2 = new OrderLine('321', 5, '', '');
-        //return new Order(orderId, orderingTradingPartnerId, '', '', OrderStatus.CREATED, [orderLine1, orderLine2]);
-        return new Order(orderId, orderingTradingPartnerId, '', '', OrderStatus.CREATED, []);
+        //return new Order(orderId, orderingTradingPartnerId, '', shippingAddress, OrderStatus.CREATED, [orderLine1, orderLine2]);
+        return new Order(orderId, orderingTradingPartnerId, '', shippingAddress, OrderStatus.CREATED, []);
     }
 
     /**

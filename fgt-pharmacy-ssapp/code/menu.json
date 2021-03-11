@@ -16,10 +16,10 @@
       "indexed": true
     },
     {
-      "name": "Orders",
-      "path": "/orders",
+      "name": "IssuedOrders",
+      "path": "/issuedOrders",
       "icon": "fa-home",
-      "pageSrc": "orders.html",
+      "pageSrc": "issuedOrders.html",
       "indexed": true
     }
   ]
