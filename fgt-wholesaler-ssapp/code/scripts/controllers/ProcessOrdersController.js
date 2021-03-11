@@ -42,19 +42,8 @@ export default class BatchesController extends ContainerController {
 
     _genOrder(index) {
         let gtins = [1, 435, 1241, 435346]
-        return new Order({
-            orderId: index,
-            requestedId: 1,
-            senderId: 2,
-            shipToAddress: "cenas",
-            orderLines: gtins.map(gtin => {
-                return new OrderLine({
-                    gtin: gtin,
-                    quantity: 100,
-                    requesterId: 1,
-                    senderId: 2
-                });
-            })
-        });
+        return new Order(index, 1, 2, "address", undefined, gtins.map(gtin => {
+                return new OrderLine(gtin, 100, 1, 2);
+            }));
     }
 }

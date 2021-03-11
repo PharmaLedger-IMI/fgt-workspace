@@ -17,6 +17,12 @@ fgt-mah-ssapp/code/scripts/bundles
 fgt-mah-ssapp/seed
 docs
 
+webcardinal/*
+!webcardinal/octopus.json
+!webcardinal/package.json
+!webcardinal/bin
+!.gitignore
+
 fgt-dsu-wizard/build/bundles
 
 fgt-pharmacy-ssapp/code/constitution

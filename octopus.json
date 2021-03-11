@@ -21,6 +21,19 @@
             ]
         },
         {
+            "name": "webcardinal",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd webcardinal && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd webcardinal && npm run build"
+                }
+            ]
+        },
+        {
             "name": "privatesky",
             "src": "http://github.com/privatesky/privatesky.git",
             "actions": [
@@ -206,6 +219,16 @@
                 {
                     "type": "execute",
                     "cmd": "cd cardinal && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "webcardinal-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd webcardinal && npm run build"
                 }
             ]
         },
