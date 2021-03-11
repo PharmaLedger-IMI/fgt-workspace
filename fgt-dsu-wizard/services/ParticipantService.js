@@ -14,10 +14,9 @@ function ParticipantService(domain, strategy){
     domain = domain || "default";
 
     /**
-     * Creates an Participant's DSU
+     * Creates an Participant's DSU, including the const and MQ.
      * @param {Participant} participant
-     * @param {function} callback
-     * @return {Object} keySSI;
+     * @param {function(err, participantKeySSI)} callback
      */
     this.create = function(participant, callback){
         if (isSimple){
@@ -28,18 +27,42 @@ function ParticipantService(domain, strategy){
     }
 
     let createSimple = function(participant, callback){
-        let keyGenFunction = require('../commands/setParticipantSSI').createParticipantSSI;
-        let templateKeySSI = keyGenFunction(participant, domain);
-        utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
+        let participantKeyGenFunction = require('../commands/setParticipantSSI').createParticipantSSI;
+        let participantConstKeyGenFunction = require('../commands/setParticipantConstSSI').createParticipantConstSSI;
+        let participantTemplateKeySSI = participantKeyGenFunction(participant, domain);
+        let participantConstTemplateKeySSI = participantConstKeyGenFunction(participant, domain);
+        // Test of the const already exists for the given participant.id.
+        // Commented out because error messages are not very good!
+        // Let it fail on creating a dup const.
+        //
+        // TODO better error message for duplicate id ?
+        //
+        //const openDSU = require('opendsu');
+        //const resolver = openDSU.loadApi("resolver");
+        //resolver.loadDSU(participantConstTemplateKeySSI, undefined, (err, participantConstDsu) => {
+        //    console.log("loadDSU error", err);
+        //    if (!err) {
+        //        callback("There is already a ParticipantConst DSU id=" + participant.id);
+        //    }
+        // Create the const first. As it is non-transactional, if it fails, stop right away.
+        utils.selectMethod(participantConstTemplateKeySSI)(participantConstTemplateKeySSI, (err, participantConstDsu) => {
             if (err)
                 return callback(err);
-            dsu.writeFile('/info', JSON.stringify(participant), (err) => {
+            participantConstDsu.writeFile('/info', JSON.stringify({ id: participant.id }), (err) => {
                 if (err)
                     return callback(err);
-                dsu.getKeySSIAsObject((err, keySSI) => {
+                utils.selectMethod(participantTemplateKeySSI)(participantTemplateKeySSI, (err, participantDsu) => {
                     if (err)
                         return callback(err);
-                    callback(undefined, keySSI);
+                    participantDsu.writeFile('/info', JSON.stringify(participant), (err) => {
+                        if (err)
+                            return callback(err);
+                        participantDsu.getKeySSIAsObject((err, participantKeySSI) => {
+                            if (err)
+                                return callback(err);
+                            callback(undefined, participantKeySSI);
+                        });
+                    });
                 });
             });
         });

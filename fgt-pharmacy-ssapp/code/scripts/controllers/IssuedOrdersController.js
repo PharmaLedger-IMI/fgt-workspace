@@ -3,12 +3,12 @@ import ContainerController from "../../cardinal/controllers/base-controllers/Con
 /**
  * List all the orders, and allows the creation of new orders.
  */
-export default class OrdersController extends ContainerController {
+export default class IssuedOrdersController extends ContainerController {
     constructor(element, history) {
         super(element, history);
         const wizard = require('wizard');
         const LocaleService = wizard.Services.LocaleService;
-        LocaleService.bindToLocale(this, LocaleService.supported.en_US, "orders");
+        LocaleService.bindToLocale(this, LocaleService.supported.en_US, "issuedOrders");
         this.participantManager = wizard.Managers.getParticipantManager(this.DSUStorage, "traceability");
         this.orderManager = wizard.Managers.getOrderManager(this.participantManager.getParticipantDSU());
 
@@ -19,17 +19,17 @@ export default class OrdersController extends ContainerController {
         });
 
         let self = this;
-        this.on('add-order', (event) => {
+        this.on('add-issued-order', (event) => {
             event.stopImmediatePropagation();
             self._showOrderModal();
         });
 
-        this.on('perform-add-order', (event) => {
+        this.on('perform-add-issued-order', (event) => {
             event.stopImmediatePropagation();
             self._addOrderAsync(event.detail, (err) => {
                 if (err)
                     return this.showError(err);
-                self.closeModal('order-modal');
+                self.closeModal('issued-order-modal');
                 self.getOrdersAsync();
             });
         });
@@ -47,8 +47,9 @@ export default class OrdersController extends ContainerController {
             // of this inicialization code be inside that method.
             let orderId = Math.floor(Math.random() * Math.floor(99999999999)); // TODO sequential unique numbering ? It should comes from the ERP anyway.
             let requestorId = participant.id;
-            let order = self.orderManager.newBlankOrderSync(orderId, requestorId);
-            self.showModal('order-modal', self.orderManager.toModel(order), true);
+            let shippingAddress = participant.address;
+            let order = self.orderManager.newBlankOrderSync(orderId, requestorId, shippingAddress);
+            self.showModal('issued-order-modal', self.orderManager.toModel(order), true);
         });
     }
 
