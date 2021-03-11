@@ -23,10 +23,16 @@ function OrderService(domain, strategy){
     /**
      * Creates an order
      * @param {Order} order
-     * @param {function} callback
-     * @return {string} keySSI;
+     * @param {function(err, keySSI)} callback
      */
     this.create = function(order, callback){
+        // if product is invalid, abort immediatly.
+        if (typeof order === 'object') {
+            let err = order.validate();
+            if (err)
+                return callback(err);
+        }
+
         if (isSimple){
             createSimple(order, callback);
         } else {
