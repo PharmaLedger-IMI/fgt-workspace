@@ -32,10 +32,11 @@ assert.callback('Launch API Hub', (cb) => {
                     throw err;
                 console.log('Updated bdns', bdns);
                 let participant1a = new Participant({id: "MAH332", name: "PName", email: "usr@dom", tin: "123456", address: "address etc..."});
-                participantService.create(participant1a, (err, participant1aKeySSI) => {
+                let inbox1a = { orderLines: [ "sRead1", "sRead2" ], shipmentLines: [], receivedOrders: [], receivedShipments: []};
+                participantService.create(participant1a, inbox1a, (err, participant1aKeySSI) => {
                     assert.notNull(participant1aKeySSI);
                     // creating a dup participant must fail
-                    participantService.create(participant1a, (err, participant1bKeySSI) => {
+                    participantService.create(participant1a, undefined, (err, participant1bKeySSI) => {
                         //console.log("ERROR ",err);
                         assert.notNull(err);
                         cb();
