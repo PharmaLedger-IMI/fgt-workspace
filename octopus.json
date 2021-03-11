@@ -26,10 +26,6 @@
                 {
                     "type": "execute",
                     "cmd": "cd webcardinal && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd webcardinal && npm run build"
                 }
             ]
         },
@@ -228,7 +224,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd webcardinal && npm run build"
+                    "cmd": "cd webcardinal && npm run build-dossier"
                 }
             ]
         },

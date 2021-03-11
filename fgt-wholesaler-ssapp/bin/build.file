@@ -1,4 +1,4 @@
 delete /
 addfolder code
-mount ../cardinal/seed /cardinal
+mount ../webcardinal/seed /webcardinal
 mount ../themes/*/seed /themes/*
