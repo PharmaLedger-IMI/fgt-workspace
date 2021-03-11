@@ -1,4 +1,4 @@
-const {ISSUED_ORDERS_MOUNT_PATH: ISSUED_ORDERS_MOUNT_PATH, ANCHORING_DOMAIN} = require('./constants');
+const {INFO_PATH, ISSUED_ORDERS_MOUNT_PATH: ISSUED_ORDERS_MOUNT_PATH, ANCHORING_DOMAIN} = require('../constants');
 const Manager = require('./Manager')
 const Order = require('../model').Order;
 const OrderLine = require('../model').OrderLine;
@@ -81,7 +81,7 @@ class OrderManager extends Manager{
      * @param {function(err, Product)} callback
      */
     getOne(orderId, callback){
-        this.storage.getObject(`${this._getMountPath(orderId)}/info`, (err, order) => {
+        this.storage.getObject(`${this._getMountPath(orderId)}${INFO_PATH}`, (err, order) => {
             if (err)
                 return callback(err);
             callback(undefined, order);
@@ -112,7 +112,7 @@ class OrderManager extends Manager{
     edit(order, callback) {
         let self = this;
         let mount_path = this._getMountPath(order.orderId);
-        self.storage.writeFile(`${mount_path}/info`, order, (err) => {
+        self.storage.writeFile(`${mount_path}${INFO_PATH}`, order, (err) => {
             if (err)
                 return callback(err);
             console.log(`Product ${order} updated`);

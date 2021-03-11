@@ -1,4 +1,4 @@
-const {PRODUCT_MOUNT_PATH, BATCH_MOUNT_PATH, ANCHORING_DOMAIN} = require('./constants');
+const {INFO_PATH, PRODUCT_MOUNT_PATH, ANCHORING_DOMAIN} = require('../constants');
 const Manager = require('./Manager')
 const Product = require('../model').Product;
 /**
@@ -58,7 +58,7 @@ class ProductManager extends Manager{
      * @param {function(err, Product)} callback
      */
     getOne(gtin, callback){
-        this.storage.getObject(`${this._getMountPath(gtin)}/info`, (err, product) => {
+        this.storage.getObject(`${this._getMountPath(gtin)}${INFO_PATH}`, (err, product) => {
             if (err)
                 return callback(err);
             callback(undefined, product);
@@ -89,7 +89,7 @@ class ProductManager extends Manager{
     edit(gtin, callback) {
         let self = this;
         let mount_path = this._getMountPath(gtin);
-        self.storage.writeFile(`${mount_path}/info`, (err) => {
+        self.storage.writeFile(`${mount_path}${INFO_PATH}`, (err) => {
             if (err)
                 return callback(err);
             console.log(`Product ${gtin} updated`);

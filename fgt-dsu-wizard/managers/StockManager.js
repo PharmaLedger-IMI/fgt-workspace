@@ -1,7 +1,7 @@
 const Manager = require('./Manager')
 const Product = require('../model').Product;
 const Batch = require('../model').Batch;
-const STOCK_PATH = require('./constants').STOCK_PATH;
+const STOCK_PATH = require('../constants').STOCK_PATH;
 
 const STATUS = {
     IN_STOCK: "instock",
