@@ -26,6 +26,10 @@
                 {
                     "type": "execute",
                     "cmd": "cd webcardinal && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd webcardinal && npm run build"
                 }
             ]
         },

@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "npm run bundle-webcardinal",
     "bundle-webcardinal": "node node_modules/octopus/scripts/run bundle-webcardinal devmode",
-    "build": "node node_modules/octopus/scripts/run build",
+    "build": "node node_modules/octopus/scripts/buildDossier.js",
     "dev": "node node_modules/octopus/scripts/run build-webcardinal.dev devmode",
     "docs": "node docs/bin/indes.js",
     "start": "ws --spa ./index.html",
