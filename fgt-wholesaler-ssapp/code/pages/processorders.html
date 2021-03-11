@@ -21,7 +21,7 @@
                         </psk-layout-item>
                     </psk-layout>
                 </psk-card>
-                <psk-for-each data-view-model="stock">
+                <psk-for-each data-view-model="pendingOrders">
                     <psk-card class="table-line" id="@orderId">
                         <psk-layout template-columns="2fr 1fr 6fr 2fr" align-contents="space-between" column-gap="10px">
                             <psk-layout-item>
@@ -31,8 +31,8 @@
                                 <psk-label label="@orderId"></psk-label>
                             </psk-layout-item>
                             <psk-layout-item>
-                                <psk-for-each data-view-model="orderlines">
-                                    <psk-layout template-columns="5fr 5fr" align-contents="space-between" column-gap="10px">
+                                <psk-for-each data-view-model="@orderLines">
+                                    <psk-layout template-columns="3fr 2fr" align-contents="space-between" column-gap="10px">
                                         <psk-layout-item>
                                             <psk-label label="@gtin"></psk-label>
                                         </psk-layout-item>

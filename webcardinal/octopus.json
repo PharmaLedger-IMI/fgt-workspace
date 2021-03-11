@@ -1,0 +1,191 @@
+{
+  "workDir": ".",
+  "bundle-webcardinal": [
+    {
+      "name": "clone-webcardinal-dependencies",
+      "actions": [
+        {
+          "name": "cardinal-internals",
+          "type": "smartClone",
+          "src": "https://github.com/webcardinal/cardinal-internals",
+          "target": "./.webcardinal/dependencies",
+          "collectLog": false
+        },
+        {
+          "name": "webcardinal-internals",
+          "type": "smartClone",
+          "src": "https://github.com/webcardinal/webcardinal-internals",
+          "target": "./.webcardinal/dependencies",
+          "collectLog": false
+        }
+      ]
+    },
+    {
+      "name": "clone-webcardinal-components",
+      "actions": [
+        {
+          "name": "webcardinal-core",
+          "type": "smartClone",
+          "src": "https://github.com/webcardinal/webcardinal-core",
+          "target": "./.webcardinal/components",
+          "collectLog": false
+        },
+        {
+          "name": "cardinal-core",
+          "type": "smartClone",
+          "src": "https://github.com/webcardinal/cardinal-core",
+          "target": "./.webcardinal/components",
+          "collectLog": false
+        },
+        {
+          "name": "cardinal-essentials",
+          "type": "smartClone",
+          "src": "https://github.com/webcardinal/cardinal-essentials",
+          "target": "./.webcardinal/components",
+          "collectLog": false
+        },
+        {
+          "name": "cardinal-forms",
+          "type": "smartClone",
+          "src": "https://github.com/webcardinal/cardinal-forms",
+          "target": "./.webcardinal/components",
+          "collectLog": false
+        },
+        {
+          "name": "cardinal-wiki",
+          "type": "smartClone",
+          "src": "https://github.com/webcardinal/cardinal-wiki",
+          "target": "./.webcardinal/components",
+          "collectLog": false
+        },
+        {
+          "name": "cardinal-barcode",
+          "type": "smartClone",
+          "src": "https://github.com/webcardinal/cardinal-barcode",
+          "target": "./.webcardinal/components",
+          "collectLog": false
+        }
+      ]
+    },
+    {
+      "name": "clone-webcardinal-themes",
+      "actions": [
+        {
+          "name": "clear-sky-theme",
+          "type": "smartClone",
+          "src": "https://github.com/PrivateSky/clear-sky-theme.git",
+          "target": "./.webcardinal/themes",
+          "collectLog": false
+        }
+      ]
+    },
+    {
+      "name": "install-webcardinal-dependencies",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd ./.webcardinal/dependencies/cardinal-internals && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd ./.webcardinal/dependencies/webcardinal-internals && npm install"
+        }
+      ]
+    },
+    {
+      "name": "build-webcardinal-dependencies",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd ./.webcardinal/dependencies/cardinal-internals && npm run build"
+        }
+      ]
+    },
+    {
+      "name": "install-webcardinal-components",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd ./.webcardinal/components/webcardinal-core && npm install --save-dev ../../dependencies/webcardinal-internals && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd ./.webcardinal/components/cardinal-core && npm install --save-dev ../../dependencies/webcardinal-internals ../../dependencies/cardinal-internals && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd ./.webcardinal/components/cardinal-essentials && npm install --save-dev ../../dependencies/webcardinal-internals ../../dependencies/cardinal-internals && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd ./.webcardinal/components/cardinal-forms && npm install --save-dev ../../dependencies/webcardinal-internals ../../dependencies/cardinal-internals && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd ./.webcardinal/components/cardinal-wiki && npm install --save-dev ../../dependencies/webcardinal-internals ../../dependencies/cardinal-internals && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd ./.webcardinal/components/cardinal-barcode && npm install --save-dev ../../dependencies/webcardinal-internals ../../dependencies/cardinal-internals && npm install"
+        }
+      ]
+    },
+    {
+      "name": "build-webcardinal-components",
+      "actions": [
+        {
+          "type": "buildWebCardinalComponents",
+          "src": "./.webcardinal",
+          "target": "./webcardinal"
+        }
+      ]
+    },
+    {
+      "name": "copy-themes",
+      "actions": [
+        {
+          "type": "copy",
+          "src": "./.webcardinal/themes/clear-sky-theme",
+          "target": "../themes/clear-sky-theme",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "execute",
+          "cmd": "cd ../themes/clear-sky-theme && npm install"
+        }
+      ]
+    }
+  ],
+  "build-webcardinal.dev": [
+    {
+      "name": "build-webcardinal-components",
+      "actions": [
+        {
+          "type": "buildWebCardinalComponents",
+          "src": "./.webcardinal",
+          "target": "./webcardinal",
+          "options": {
+            "DEV": true,
+            "devComponents": [
+              "webcardinal-core"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "build": [
+    {
+      "name": "build-webcardinal-theme",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd ../themes/clear-sky-theme && node ./node_modules/octopus/scripts/buildDossier.js --bundles=./../../privatesky/psknode/bundles"
+        }
+      ]
+    }
+  ]
+
+}
