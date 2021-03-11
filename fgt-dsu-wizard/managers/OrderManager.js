@@ -1,4 +1,4 @@
-const {ORDER_MOUNT_PATH, ANCHORING_DOMAIN} = require('./constants');
+const {ISSUED_ORDERS_MOUNT_PATH: ISSUED_ORDERS_MOUNT_PATH, ANCHORING_DOMAIN} = require('./constants');
 const Manager = require('./Manager')
 const Order = require('../model').Order;
 const OrderLine = require('../model').OrderLine;
@@ -31,7 +31,7 @@ class OrderManager extends Manager{
      */
     _getMountPath(orderId){
         // jpsl technical protest: I disagree with Tiago in coding the mount path here. See create().
-        return `${ORDER_MOUNT_PATH}/${orderId}`;
+        return `${ISSUED_ORDERS_MOUNT_PATH}/${orderId}`;
     }
 
     /**
@@ -125,13 +125,13 @@ class OrderManager extends Manager{
      * @param {function(err, Order[])} callback
      */
     list(callback) {
-        super.listMounts(ORDER_MOUNT_PATH, (err, mounts) => {
+        super.listMounts(ISSUED_ORDERS_MOUNT_PATH, (err, mounts) => {
             if (err)
                 return callback(err);
-            console.log(`Found ${mounts.length} orders at ${ORDER_MOUNT_PATH}`);
+            console.log(`Found ${mounts.length} orders at ${ISSUED_ORDERS_MOUNT_PATH}`);
             mounts = mounts.map(m => {
                 console.log("Listing mounted m", m);
-                m.path = `${ORDER_MOUNT_PATH}/${m.path}`;
+                m.path = `${ISSUED_ORDERS_MOUNT_PATH}/${m.path}`;
                 return m;
             });
             super.readAll(mounts, callback);
