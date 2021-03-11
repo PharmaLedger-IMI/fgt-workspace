@@ -3,6 +3,7 @@
  */
 module.exports = {
     createParticipantSSI: require("./setParticipantSSI").createParticipantSSI,
+    createParticipantConstSSI: require("./setParticipantConstSSI").createParticipantConstSSI,
     createOrderingPartnerSSI: require("./setOrderingPartnerSSI").createOrderingPartnerSSI,
     createOrderLineSSI: require("./setOrderLineSSI").createOrderLineSSI,
     createOrderLinesSSI: require("./setOrderLinesSSI").createOrderLinesSSI,
