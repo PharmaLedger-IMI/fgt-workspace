@@ -3,7 +3,7 @@
  */
 const Order = require('../model/Order');
 const OrderStatus = require('../model/OrderStatus');
-const {PARTICIPANT_MOUNT_PATH} = require('./constants');
+const {INFO_PATH, PARTICIPANT_MOUNT_PATH} = require('../constants');
 /**
  * Participant Manager Class
  *
@@ -111,7 +111,7 @@ class ParticipantManager{
         self._cacheParticipantDSU((err) => {
             if (err)
                 return callback(err);
-            self.DSUStorage.getObject(`${PARTICIPANT_MOUNT_PATH}/info`, (err, participant) => {
+            self.DSUStorage.getObject(`${PARTICIPANT_MOUNT_PATH}${INFO_PATH}`, (err, participant) => {
                 if (err)
                     return callback(err);
                 callback(undefined, participant);
@@ -141,24 +141,13 @@ class ParticipantManager{
      */
     edit(participant, callback) {
         this.DSUStorage.enableDirectAccess(() => {
-            this.DSUStorage.writeFile(`${PARTICIPANT_MOUNT_PATH}/info`, JSON.stringify(participant), (err) => {
+            this.DSUStorage.writeFile(`${PARTICIPANT_MOUNT_PATH}${INFO_PATH}`, JSON.stringify(participant), (err) => {
                 if (err)
                     return callback(err);
                 console.log(`Participant updated`);
                 callback();
             });
         });
-    }
-
-    /**
-     * Fetches the orders of this Participant
-     * @param {Participant} participant
-     * @param {function(err,orders)} callback
-     */
-    getOrders(participant, callback) {
-        // TODO fetch this from the DSU ?
-        let order1 = new Order("ORDER001", "ReqID-TPPH0124", "SendID-TPPH4822", "ShipToAddress1", OrderStatus.CREATED, []);
-        callback(undefined, [order1]);
     }
 }
 

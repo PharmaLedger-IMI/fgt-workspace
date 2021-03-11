@@ -1,7 +1,8 @@
 /**
  * @module fgt-dsu-wizard.services
  */
-const utils = require('./utils');
+ const {INFO_PATH, PUBLIC_ID_MOUNT_PATH} = require('../constants');
+ const utils = require('./utils');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
@@ -44,23 +45,28 @@ function ParticipantService(domain, strategy){
         //    if (!err) {
         //        callback("There is already a ParticipantConst DSU id=" + participant.id);
         //    }
+        //
         // Create the const first. As it is non-transactional, if it fails, stop right away.
         utils.selectMethod(participantConstTemplateKeySSI)(participantConstTemplateKeySSI, (err, participantConstDsu) => {
             if (err)
                 return callback(err);
-            participantConstDsu.writeFile('/info', JSON.stringify({ id: participant.id }), (err) => {
+            participantConstDsu.writeFile(INFO_PATH, JSON.stringify({ id: participant.id }), (err) => {
                 if (err)
                     return callback(err);
                 utils.selectMethod(participantTemplateKeySSI)(participantTemplateKeySSI, (err, participantDsu) => {
                     if (err)
                         return callback(err);
-                    participantDsu.writeFile('/info', JSON.stringify(participant), (err) => {
+                    participantDsu.writeFile(INFO_PATH, JSON.stringify(participant), (err) => {
                         if (err)
                             return callback(err);
                         participantDsu.getKeySSIAsObject((err, participantKeySSI) => {
                             if (err)
                                 return callback(err);
-                            callback(undefined, participantKeySSI);
+                            participantDsu.mount(PUBLIC_ID_MOUNT_PATH, participantKeySSI.getIdentifier(), (err) => {
+                                if (err)
+                                    return callback(err);
+                                callback(undefined, participantKeySSI);
+                            });
                         });
                     });
                 });

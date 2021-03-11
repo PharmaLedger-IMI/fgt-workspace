@@ -1,4 +1,4 @@
-const {PRODUCT_MOUNT_PATH, BATCH_MOUNT_PATH, ANCHORING_DOMAIN} = require('./constants');
+const {INFO_PATH, PRODUCT_MOUNT_PATH, BATCH_MOUNT_PATH, ANCHORING_DOMAIN} = require('../constants');
 const Manager = require('./Manager');
 const Batch = require('../model').Batch;
 
@@ -125,7 +125,7 @@ class BatchManager extends Manager{
     edit(gtin, batchNumber,  callback) {
         super.initialize(() => {
             let mount_path = this._getMountPath(gtin, batchNumber);
-            this.storage.writeFile(`${mount_path}/info`, (err) => {
+            this.storage.writeFile(`${mount_path}${INFO_PATH}`, (err) => {
                 if (err)
                     return callback(err);
                 console.log(`Product ${gtin} updated`);
