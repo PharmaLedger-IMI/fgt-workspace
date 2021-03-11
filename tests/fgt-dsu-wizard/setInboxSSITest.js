@@ -14,13 +14,10 @@ const tir = require("../../privatesky/psknode/tests/util/tir");
 
 const wizard = require('../../fgt-dsu-wizard');
 const dsuService = wizard.DSUService;
-const Participant = wizard.Model.Participant;
-const ParticipantService = wizard.Services.ParticipantService;
+const setInboxSSI = require('../../fgt-dsu-wizard/commands/setInboxSSI.js');
 
 let domain = 'traceability';
-let testName = 'ParticipantServiceTest'
-
-let participantService = new ParticipantService(domain);
+let testName = 'setInboxSSITest'
 
 assert.callback('Launch API Hub', (cb) => {
     dc.createTestFolder(testName, (err, folder) => {
@@ -31,17 +28,13 @@ assert.callback('Launch API Hub', (cb) => {
                 if (err)
                     throw err;
                 console.log('Updated bdns', bdns);
-                let participant1a = new Participant({id: "MAH332", name: "PName", email: "usr@dom", tin: "123456", address: "address etc..."});
-                let inbox1a = { orderLines: [ "sRead1", "sRead2" ], shipmentLines: [], receivedOrders: [], receivedShipments: []};
-                participantService.create(participant1a, inbox1a, (err, participant1aKeySSI) => {
-                    assert.notNull(participant1aKeySSI);
-                    // creating a dup participant must fail
-                    participantService.create(participant1a, undefined, (err, participant1bKeySSI) => {
-                        //console.log("ERROR ",err);
-                        assert.notNull(err);
-                        cb();
-                    });
-                });
+                let inbox1 =  {stuff: "some stuff"};
+                let aKeySSI1 = setInboxSSI.createInboxSSI(inbox1, domain);
+                assert.notNull(aKeySSI1);
+                assert.true(aKeySSI1 instanceof Object);
+                assert.true(typeof aKeySSI1.getIdentifier(true) === 'string');
+                console.log("Done "+aKeySSI1.getIdentifier(true));
+                cb();
             });
         });
     });

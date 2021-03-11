@@ -4,6 +4,7 @@
 module.exports = {
     DSUService: require('./DSUService'),
     ParticipantService: require('./ParticipantService'),
+    InboxService: require("./InboxService"),
     LocaleService: require("./LocaleService"),
     OrderLineService: require("./OrderLineService"),
     OrderService: require("./OrderService"),
