@@ -21,6 +21,10 @@ function Init(server){
 module.exports = {
 	Init,
 	/**
+	 * Exposes constants.
+	 */
+	Constants: require("./constants"),
+	/**
 	 * Exposes the Model module
 	 */
 	Model: require("./model"),

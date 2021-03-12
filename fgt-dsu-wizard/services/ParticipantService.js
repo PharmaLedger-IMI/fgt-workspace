@@ -37,7 +37,7 @@ function ParticipantService(domain, strategy){
         }
     }
 
-    let createSimple = function(participant, inbox, callback){
+    let createSimple = function (participant, inbox, callback) {
         inboxService.create(inbox, (err, inboxSSI) => {
             if (err)
                 return err;
@@ -63,25 +63,30 @@ function ParticipantService(domain, strategy){
             utils.selectMethod(participantConstTemplateKeySSI)(participantConstTemplateKeySSI, (err, participantConstDsu) => {
                 if (err)
                     return callback(err);
-                participantConstDsu.writeFile(INFO_PATH, JSON.stringify({ id: participant.id }), (err) => {
+                participantConstDsu.getKeySSIAsObject((err, participantConstKeySSI) => {
                     if (err)
                         return callback(err);
-                    participantConstDsu.mount(INBOX_MOUNT_PATH, inboxSSI, (err) => {
+                    console.log("participantConstKeySSI ", participantConstKeySSI.getIdentifier());
+                    participantConstDsu.writeFile(INFO_PATH, JSON.stringify({ id: participant.id }), (err) => {
                         if (err)
                             return callback(err);
-                        utils.selectMethod(participantTemplateKeySSI)(participantTemplateKeySSI, (err, participantDsu) => {
+                        participantConstDsu.mount(INBOX_MOUNT_PATH, inboxSSI.getIdentifier(), (err) => {
                             if (err)
                                 return callback(err);
-                            participantDsu.writeFile(INFO_PATH, JSON.stringify(participant), (err) => {
+                            utils.selectMethod(participantTemplateKeySSI)(participantTemplateKeySSI, (err, participantDsu) => {
                                 if (err)
                                     return callback(err);
-                                participantDsu.getKeySSIAsObject((err, participantKeySSI) => {
+                                participantDsu.writeFile(INFO_PATH, JSON.stringify(participant), (err) => {
                                     if (err)
                                         return callback(err);
-                                    participantDsu.mount(PUBLIC_ID_MOUNT_PATH, participantKeySSI.getIdentifier(), (err) => {
+                                    participantDsu.getKeySSIAsObject((err, participantKeySSI) => {
                                         if (err)
                                             return callback(err);
-                                        callback(undefined, participantKeySSI);
+                                        participantDsu.mount(PUBLIC_ID_MOUNT_PATH, participantConstKeySSI.getIdentifier(), (err) => {
+                                            if (err)
+                                                return callback(err);
+                                            callback(undefined, participantKeySSI);
+                                        });
                                     });
                                 });
                             });
