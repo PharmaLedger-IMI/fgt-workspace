@@ -40,12 +40,21 @@ class ParticipantManager{
     /**
      * Creates a {@link Participant} dsu
      * @param {Participant} participant
+     * @param {object} [inbox] - optional initial inbox contents.
      * @param {function(err, keySSI, string)} callback where the string is the mount path
      */
-    create(participant, callback) {
+    create(participant, inbox, callback) {
         let self = this;
+        if (!inbox)
+            inbox = {};
+        if (!callback) {
+            callback = inbox;
+            inbox = {};
+        }
+        if (typeof callback != "function")
+            throw new Error("callback must be a function!");
         self.DSUStorage.enableDirectAccess(() => {
-            self.ParticipantService.create(participant, (err, keySSI) => {
+            self.ParticipantService.create(participant, inbox, (err, keySSI) => {
                 if (err)
                     return callback(err);
                 console.log(`Participant DSU created with ssi: ${keySSI.getIdentifier(true)}`);

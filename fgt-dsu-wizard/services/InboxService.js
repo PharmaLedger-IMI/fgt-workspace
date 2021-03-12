@@ -2,7 +2,7 @@
  * @module fgt-dsu-wizard.services
  */
 const utils = require('./utils');
-const {ORDER_LINES_PATH, RECEIVED_ORDERS_PATH, RECEIVED_SHIPMENTS_PATH, SHIPMENT_LINES_PATH} = require('../constants');
+const {INBOX_PATHS_AND_PROPS} = require('../constants');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
@@ -37,12 +37,7 @@ function InboxService(domain, strategy){
             inboxDsu.getKeySSIAsObject((err, inboxKeySSI) => {
                 if (err)
                     return callback(err);
-                let writeInfoArray = [
-                    {path: ORDER_LINES_PATH, prop: "orderLines"},
-                    {path: SHIPMENT_LINES_PATH, prop: "shipmentLines"},
-                    {path: RECEIVED_ORDERS_PATH, prop: "receivedOrders"},
-                    {path: RECEIVED_SHIPMENTS_PATH, prop: "receivedShipments"},
-                ];
+                let writeInfoArray = [...INBOX_PATHS_AND_PROPS];
                 let writeInboxProp = function() {
                     if (!writeInfoArray || writeInfoArray.length == 0) {
                         return callback(undefined, inboxKeySSI);
@@ -50,8 +45,8 @@ function InboxService(domain, strategy){
                         const writeInfo = writeInfoArray.shift();
                         const propPath = writeInfo.path;
                         const propValue = inbox[writeInfo.prop];
+                        console.log("Writing "+writeInfo.prop+" to "+propPath+" as "+JSON.stringify(propValue));
                         if (propValue) {
-                            console.log("Writing "+writeInfo.prop+" to "+propPath+" as "+JSON.stringify(propValue));
                             inboxDsu.writeFile(propPath, JSON.stringify(propValue), (err) => {
                                 if (err)
                                     return callback(err);

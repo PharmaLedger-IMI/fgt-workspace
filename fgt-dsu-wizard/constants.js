@@ -1,6 +1,10 @@
 const ANCHORING_DOMAIN = "traceability";
 const BATCH_MOUNT_PATH = "/batches";
 const INBOX_MOUNT_PATH = '/inbox';
+const INBOX_ORDER_LINES_PROP = 'orderLines';
+const INBOX_SHIPMENT_LINES_PROP = 'shipmentLines';
+const INBOX_RECEIVED_ORDERS_PROP = 'receivedOrders';
+const INBOX_RECEIVED_SHIPMENTS_PROP = 'receivedShipments';
 const INFO_PATH = '/info';
 const ISSUED_ORDERS_MOUNT_PATH = "/issuedOrders";
 const ORDER_LINES_PATH = '/orderLines';
@@ -12,11 +16,23 @@ const RECEIVED_SHIPMENTS_PATH = '/receivedShipments';
 const SHIPMENT_LINES_PATH = '/shipmentLines';
 const STOCK_PATH = '/stock';
 
+// these constants depend on the previous constants
+const INBOX_PATHS_AND_PROPS = [
+    {path: ORDER_LINES_PATH, prop: INBOX_ORDER_LINES_PROP},
+    {path: SHIPMENT_LINES_PATH, prop: INBOX_SHIPMENT_LINES_PROP},
+    {path: RECEIVED_ORDERS_PATH, prop: INBOX_RECEIVED_ORDERS_PROP},
+    {path: RECEIVED_SHIPMENTS_PATH, prop: INBOX_RECEIVED_SHIPMENTS_PROP},
+];
 
 module.exports = {
     ANCHORING_DOMAIN,
     BATCH_MOUNT_PATH,
+    INBOX_ORDER_LINES_PROP,
     INBOX_MOUNT_PATH,
+    INBOX_PATHS_AND_PROPS,
+    INBOX_RECEIVED_ORDERS_PROP,
+    INBOX_RECEIVED_SHIPMENTS_PROP,
+    INBOX_SHIPMENT_LINES_PROP,
     INFO_PATH,
     ISSUED_ORDERS_MOUNT_PATH,
     ORDER_LINES_PATH,
