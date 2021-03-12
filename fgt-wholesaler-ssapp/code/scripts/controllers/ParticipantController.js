@@ -15,8 +15,8 @@ export default class ParticipantController extends LocalizedController {
         }, "participant");
 
 
-        // this.participantManager = wizard.Managers.getParticipantManager(this.DSUStorage, "traceability");
-        // console.log("Participant controller initialized");
+        this.participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, "traceability");
+        console.log("Participant controller initialized");
         // this.on('perform-registration', (event) => {
         //         event.preventDefault();
         //         this.closeModal();
@@ -27,7 +27,7 @@ export default class ParticipantController extends LocalizedController {
         //         });
         // })
         //
-        // this._testParticipant();
+        this._testParticipant();
     }
 
     /**
@@ -45,8 +45,14 @@ export default class ParticipantController extends LocalizedController {
     }
 
     _showRegistrationModal(){
-        const onConfirm = (evt) => {
-            console.log(evt);
+        const onConfirm = (event) => {
+            event.preventDefault();
+            this.closeModal();
+            this.register(event.detail, (err) => {
+                if (err)
+                    console.log("ERROR - Could not register - Should not be possible!");
+                this._testParticipant();
+            });
         };
         this.showModalFromTemplate('registrationModal', onConfirm);
     }
@@ -55,11 +61,9 @@ export default class ParticipantController extends LocalizedController {
         let self = this;
         this.participantManager.getParticipant((err, participant) => {
             if (err || !participant) {
-                self.model.identified = false;
                 self._showRegistrationModal();
             } else {
                 self.model.participant = participant;
-                self.model.identified = true;
             }
         });
     }

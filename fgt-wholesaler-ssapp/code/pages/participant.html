@@ -1,11 +1,9 @@
 <webc-container controller="ParticipantController" enable-translations="true">
     <div data-if="@identified">
-<!--        <psk-label label="@teste"></psk-label>-->
-<!--        <psk-label label="@tests2"></psk-label>-->
-<!--        <psk-label>{{ @teste }}</psk-label>-->
-<!--        <psk-label>{{ @teste2 }}</psk-label>-->
         <container slot="true">
-            identified
+            <ion-item>
+                <ion-label>{{ @welcome }}</ion-label>
+            </ion-item>
         </container>
         <container slot="false">
             <ion-item>

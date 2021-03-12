@@ -1,12 +1,15 @@
-const {WebcController} = WebCardinal.controllers;
+import LocalizedController from "./LocalizedController.js";
 const MAH = require('wizard').Model.MAH;
 
-export default class RegistrationController extends WebcController {
+export default class RegistrationController extends LocalizedController {
+
+    getModel = () => ({
+    });
 
     constructor(element) {
         super(element);
-        const LocaleService = require('wizard').Services.LocaleService;
-        //LocaleService.bindToLocale(this, LocaleService.supported.en_US, "registration");
+        super.bindLocale(this, "participant.registration");
+        this.setModel(this.getModel());
         //element.addEventListener('submit-registration', this._submitRegistration.bind(this), true)
     }
 

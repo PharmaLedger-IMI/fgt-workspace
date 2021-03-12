@@ -36,13 +36,17 @@ function LocaleService(){
     }
 
     /**
-     *
-     * @param {string} pageName
-     * @returns {object} the translation object for the prof«vided page in the current language
+     * Retrieves the translation information from WebCardinal
+     * @param {string} pageName if contains '.' it will be translated into hierarchy in json object (just one level currently supported)
+     * @returns {object} the translation object for the provided page in the current language
      */
     this.getByPage = function(pageName){
         if (pageName[0] !== "/")
             pageName = "/" + pageName;
+        if (pageName.includes(".")){
+            let temp = pageName.split(".");
+            return this._loadLocale()[temp[0]][temp[1]];
+        }
         return this._loadLocale()[pageName];
     }
 }
