@@ -3,7 +3,8 @@
  */
 const Order = require('../model/Order');
 const OrderStatus = require('../model/OrderStatus');
-const {INFO_PATH, PARTICIPANT_MOUNT_PATH} = require('../constants');
+const {INBOX_RECEIVED_SHIPMENTS_PROP, INFO_PATH, PARTICIPANT_MOUNT_PATH} = require('../constants');
+
 /**
  * Participant Manager Class
  *
@@ -72,6 +73,16 @@ class ParticipantManager{
         });
     }
 
+    /**
+     * Creates a {@link IssuedOrder} dsu
+     * @param {Order} order
+     * @param {object} [inbox] - optional initial inbox contents.
+     * @param {function(err, keySSI, string)} callback where the string is the mount path
+     */
+     createIssuedOrder(order, callback) {
+         callback("Not implemented!");
+     }
+
     _cacheParticipantDSU(callback){
         if (this.participantDSU)
             return callback();
@@ -125,6 +136,23 @@ class ParticipantManager{
                     return callback(err);
                 callback(undefined, participant);
             });
+        });
+    }
+
+    /**
+     * Register a Participant for a Pharmacy and and mounts it to the participant path.
+     * @param {Participant} participant 
+     * @param {function(err)} callback 
+     */
+    registerPharmacy(participant, callback) {
+        let self = this;
+        // The Pharmacy has a receivedShipments inbox
+        let inbox = {};
+        inbox[INBOX_RECEIVED_SHIPMENTS_PROP] = [];
+        self.create(participant, inbox, (err, keySSI, mountPath) => {
+            if (err)
+                return callback(err);
+            callback();
         });
     }
 

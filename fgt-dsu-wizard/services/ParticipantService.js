@@ -73,6 +73,7 @@ function ParticipantService(domain, strategy){
                         participantConstDsu.mount(INBOX_MOUNT_PATH, inboxSSI.getIdentifier(), (err) => {
                             if (err)
                                 return callback(err);
+                            console.log(`Inbox ${inboxSSI.getIdentifier()} mounted at ${INBOX_MOUNT_PATH}`);
                             utils.selectMethod(participantTemplateKeySSI)(participantTemplateKeySSI, (err, participantDsu) => {
                                 if (err)
                                     return callback(err);

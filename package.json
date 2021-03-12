@@ -41,6 +41,10 @@
     "octopus": "git+https://github.com/PrivateSky/octopus.git"
   },
   "devDependencies": {
-    "@ionic/core": "^5.6.0"
+    "@ionic/core": "^5.6.0",
+    "docdash": "^1.2.0",
+    "form-data": "v3.0.0",
+    "jsdoc": "^3.6.6",
+    "markdown-include": "^0.4.3"
   }
 }
