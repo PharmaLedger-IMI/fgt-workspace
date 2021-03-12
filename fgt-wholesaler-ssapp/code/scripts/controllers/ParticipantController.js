@@ -14,21 +14,21 @@ export default class ParticipantController extends LocalizedController {
             return this.model.participant !== undefined;
         }, "participant");
 
+        this.on('perform-registration', (event) => {
+            event.preventDefault();
+            this.register(event.detail, (err) => {
+                if (err)
+                    return this.showError(err);
+                this._testParticipant();
+            });
+        }, true)
 
         this.participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, "traceability");
         console.log("Participant controller initialized");
-        // this.on('perform-registration', (event) => {
-        //         event.preventDefault();
-        //         this.closeModal();
-        //         this.register(event.detail, (err) => {
-        //             if (err)
-        //                 console.log("ERROR - Could not register - Should not be possible!");
-        //             this._testParticipant();
-        //         });
-        // })
-        //
-        this._testParticipant();
+        //this._testParticipant();
     }
+
+
 
     /**
      * Creates the ID DSU and mounts it to the id_path
@@ -44,7 +44,7 @@ export default class ParticipantController extends LocalizedController {
         });
     }
 
-    _showRegistrationModal(){
+    _showRegistrationModal() {
         const onConfirm = (event) => {
             event.preventDefault();
             this.register(event.detail, (err) => {
@@ -53,7 +53,14 @@ export default class ParticipantController extends LocalizedController {
                 this._testParticipant();
             });
         };
-        this.showModalFromTemplate('registrationModal', onConfirm);
+        this.createWebcModal({
+            modelTitle: "",
+            modalName: 'registrationModal',
+            showFooter: false,
+            canClose: false,
+            showCancelButton: false,
+            onConfirm: onConfirm
+        });
     }
 
     _testParticipant(){

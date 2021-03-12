@@ -1,5 +1,4 @@
 {
-  "title": "Pharmaledger's Finished Goods Traceability for Wholesalers",
   "welcome": "Welcome back",
   "none": "You are not identified as a Marketing Authorization holder. Please register",
   "registration": {
@@ -34,12 +33,6 @@
       "required": true,
       "value": "This in an Address"
     },
-    "register":{
-      "label": "Register",
-      "html:": "<h1>Registerhtml<h1>",
-      "expand": "block",
-      "color": "success",
-      "tag": "register-button"
-    }
+    "register": "Register"
   }
 }

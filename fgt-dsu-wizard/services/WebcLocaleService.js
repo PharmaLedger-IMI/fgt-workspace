@@ -41,13 +41,19 @@ function LocaleService(){
      * @returns {object} the translation object for the provided page in the current language
      */
     this.getByPage = function(pageName){
+        let locale = this._loadLocale();
+        if (!locale){
+            console.log("no locale set");
+            return {};
+        }
+
         if (pageName[0] !== "/")
             pageName = "/" + pageName;
         if (pageName.includes(".")){
             let temp = pageName.split(".");
-            return this._loadLocale()[temp[0]][temp[1]];
+            return locale[temp[0]][temp[1]];
         }
-        return this._loadLocale()[pageName];
+        return locale[pageName];
     }
 }
 

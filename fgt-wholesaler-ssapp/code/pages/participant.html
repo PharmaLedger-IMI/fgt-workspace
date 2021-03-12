@@ -1,14 +1,119 @@
 <webc-container controller="ParticipantController" enable-translations="true">
-    <div data-if="@identified">
-        <container slot="true">
-            <ion-item>
-                <ion-label>{{ @welcome }}</ion-label>
-            </ion-item>
-        </container>
-        <container slot="false">
-            <ion-item>
-                <ion-label>{{ @none }}</ion-label>
-            </ion-item>
-        </container>
-    </div>
+    <ion-app>
+        <ion-menu side="start" content-id="main-content">
+            <ion-header>
+                <ion-toolbar translucent>
+                    <div data-if="@identified">
+                        <ion-buttons slot="start">
+                            <ion-back-button></ion-back-button>
+                        </ion-buttons>
+                    </div>
+                    <ion-label color="primary">Pharmaledger</ion-label>
+                </ion-toolbar>
+            </ion-header>
+<!--            <div data-if="@identified">-->
+                <ion-content>
+                    <ion-list>
+                        <ion-item>
+                            <ion-icon name="paper-plane" slot="start"></ion-icon>
+                            <ion-label>Outbox</ion-label>
+                        </ion-item>
+                        <ion-item>
+                            <ion-icon name="heart" slot="start"></ion-icon>
+                            <ion-label>Favorites</ion-label>
+                        </ion-item>
+                        <ion-item>
+                            <ion-icon name="archive" slot="start"></ion-icon>
+                            <ion-label>Archived</ion-label>
+                        </ion-item>
+                        <ion-item>
+                            <ion-icon name="trash" slot="start"></ion-icon>
+                            <ion-label>Trash</ion-label>
+                        </ion-item>
+                        <ion-item>
+                            <ion-icon name="warning" slot="start"></ion-icon>
+                            <ion-label>Spam</ion-label>
+                        </ion-item>
+                        <ion-item>
+                            <ion-icon name="log-out" slot="start"></ion-icon>
+                            <ion-router-link href="/login">Log out</ion-router-link>
+                        </ion-item>
+                    </ion-list>
+                </ion-content>
+<!--            </div>-->
+        </ion-menu>
+<!--        <ion-content>-->
+<!--            <div data-if="@identified">-->
+<!--                <div slot="true">-->
+<!--                    <ion-item>-->
+<!--                        <ion-label>true</ion-label>-->
+<!--                    </ion-item>-->
+<!--                </div>-->
+<!--                <div slot="false">-->
+<!--                    <ion-item>-->
+<!--                        <ion-title>{{ @none }}</ion-title>-->
+<!--                    </ion-item>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </ion-content>-->
+<!--        <ion-footer>-->
+<!--            this is a footer-->
+<!--        </ion-footer>-->
+        <ion-tabs id="main-content">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button auto-hide="false"></ion-menu-button>
+                    </ion-buttons>
+                    <ion-img class="main-logo" slot="start" src="../resources/images/pharmaledger-logo.svg"></ion-img>
+<!--                    <ion-img slot="start" [scr]="../resources/images/pharmaledger-logo.svg"></ion-img>-->
+                    <ion-title class="title">{{ @title }}</ion-title>
+                </ion-toolbar>
+            </ion-header>
+
+            <ion-content class="main-content">
+                <ion-item>
+                    <ion-label>halfeafesg</ion-label>
+                </ion-item>
+<!--                <ion-tab tab="tab-home">-->
+<!--                    <webc-template template-name="tab-home"></webc-template>-->
+<!--                </ion-tab>-->
+
+<!--                <ion-tab tab="tab-schedule">-->
+<!--                    <webc-template template-name="tab-schedule" data-model="@"></webc-template>-->
+<!--                </ion-tab>-->
+
+<!--                <ion-tab tab="tab-map">-->
+<!--                    <webc-template template-name="tab-map"></webc-template>-->
+<!--                </ion-tab>-->
+
+<!--                <ion-tab tab="tab-about" component="page-about">-->
+<!--                    <webc-template template-name="tab-about"></webc-template>-->
+<!--                </ion-tab>-->
+            </ion-content>
+
+            <ion-tab-bar slot="bottom">
+                <ion-tab-button tab="tab-home">
+                    <ion-icon name="home"></ion-icon>
+                    <ion-label>Home</ion-label>
+                </ion-tab-button>
+
+                <ion-tab-button tab="tab-schedule">
+                    <ion-icon name="calendar"></ion-icon>
+                    <ion-label>Schedule</ion-label>
+                    <ion-badge data-model="@scheduleCounter"></ion-badge>
+                </ion-tab-button>
+
+                <ion-tab-button tab="tab-map">
+                    <ion-icon name="map"></ion-icon>
+                    <ion-label>Map</ion-label>
+                </ion-tab-button>
+
+                <ion-tab-button tab="tab-about">
+                    <ion-icon name="information-circle"></ion-icon>
+                    <ion-label>About</ion-label>
+                </ion-tab-button>
+            </ion-tab-bar>
+        </ion-tabs>
+    </ion-app>
 </webc-container>

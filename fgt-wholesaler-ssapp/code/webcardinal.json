@@ -4,16 +4,18 @@
     "name": " ",
     "email": " "
   },
-  "basePath": "/pages",
   "theme": "pdm-theme",
   "pagesFallback": {
-    "name": "404"
+    "name": "index",
+    "path": "./"
   },
   "pages": [
     {
-      "name": "Marketing Authorization Holder",
+      "name": "Home",
       "path": "/participant",
-      "src": "participant.html"
+      "src": "participant.html",
+      "indexed": false,
+      "tag": "participant"
     }
   ]
 }
