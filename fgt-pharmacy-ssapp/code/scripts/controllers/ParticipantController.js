@@ -15,7 +15,7 @@ export default class ParticipantController extends ContainerController {
             event.preventDefault();
             event.stopImmediatePropagation();
             this.closeModal();
-            this.register(event.detail, (err) => {
+            this.participantManager.registerPharmacy(event.detail, (err) => {
                 if (err)
                     return this.showError(err);
                 this._testParticipant();
@@ -24,28 +24,13 @@ export default class ParticipantController extends ContainerController {
         this._testParticipant();
     }
 
-    /**
-     * Creates the Participant DSU and mounts it to the id_path
-     * @param {Participant} participant
-     * @param {function} callback
-     */
-    register(participant, callback){
-        let self = this;
-        // The Pharmacy has a receivedShipments inbox
-        const {INBOX_RECEIVED_SHIPMENTS_PROP} = require('wizard').Constants;
-        let inbox = {};
-        inbox[INBOX_RECEIVED_SHIPMENTS_PROP] = [];
-        self.participantManager.create(participant, inbox, (err, keySSI) => {
-            if (err)
-                return callback(err);
-            callback();
-        });
-    }
-
     _showRegistrationModal(){
         this.showModal('registration-modal', {});
     }
 
+    /**
+     * Update model.participant and model.identified.
+     */
     _testParticipant(){
         let self = this;
         this.participantManager.getParticipant((err, participant) => {
