@@ -10,6 +10,10 @@ export default class RegistrationController extends LocalizedController {
         super(element);
         super.bindLocale(this, "participant.registration");
         this.setModel(this.getModel());
+
+        this.onTagClick('registration', (event) => {
+            console.log(event);
+        });
         //element.addEventListener('submit-registration', this._submitRegistration.bind(this), true)
     }
 
@@ -25,5 +29,14 @@ export default class RegistrationController extends LocalizedController {
             .filter(k => !!this.model[k].value)
             .map(k => info[k] = this.model[k].value);
         return new MAH(info);
+    }
+
+    onClick(){
+        console.log("click")
+    }
+
+    onTagClick(tag, listener, options) {
+        console.log(tag);
+        super.onTagClick(tag, listener, options);
     }
 }

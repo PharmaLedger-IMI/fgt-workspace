@@ -47,7 +47,6 @@ export default class ParticipantController extends LocalizedController {
     _showRegistrationModal(){
         const onConfirm = (event) => {
             event.preventDefault();
-            this.closeModal();
             this.register(event.detail, (err) => {
                 if (err)
                     console.log("ERROR - Could not register - Should not be possible!");
