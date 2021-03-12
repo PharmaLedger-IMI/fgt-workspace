@@ -1,0 +1,46 @@
+{
+  "identity": {
+    "avatar": "/resources/images/mah.jpeg",
+    "name": "",
+    "email": ""
+  },
+  "theme": "pdm-theme",
+  "pagesFallback": {
+    "name": "404"
+  },
+  "pages": [
+      {
+        "name": "Home",
+        "path": "./home",
+        "src": "index.html",
+        "indexed": true
+      },
+      {
+        "name": "404",
+        "path": "./",
+        "src": "404.html",
+        "indexed": false
+      },
+      {
+        "name": "Dashboard",
+        "path": "./pages/dashboard",
+        "icon": "fa-home",
+        "pageSrc": "dashboard.html",
+        "indexed": true
+      },
+      {
+        "name": "ProcessOrders",
+        "path": "./pages/processorders",
+        "icon": "fa-home",
+        "pageSrc": "processorders.html",
+        "indexed": true
+      },
+      {
+        "name": "Stock",
+        "path": "./pages/stock",
+        "icon": "fa-home",
+        "pageSrc": "stock.html",
+        "indexed": true
+      }
+  ]
+}

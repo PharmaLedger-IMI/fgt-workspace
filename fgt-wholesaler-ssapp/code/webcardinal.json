@@ -1,44 +1,19 @@
 {
   "identity": {
-    "avatar": "/resources/images/mah.jpeg"
+    "avatar": "/resources/images/mah.jpeg",
+    "name": " ",
+    "email": " "
   },
+  "basePath": "/pages",
   "theme": "pdm-theme",
   "pagesFallback": {
     "name": "404"
   },
   "pages": [
-      {
-        "name": "Home",
-        "path": "./",
-        "src": "index.html",
-        "indexed": false
-      },
-      {
-        "name": "404",
-        "path": "./",
-        "src": "404.html",
-        "indexed": false
-      },
-      {
-        "name": "Dashboard",
-        "path": "./pages/dashboard",
-        "icon": "fa-home",
-        "pageSrc": "dashboard.html",
-        "indexed": true
-      },
-      {
-        "name": "ProcessOrders",
-        "path": "./pages/processorders",
-        "icon": "fa-home",
-        "pageSrc": "processorders.html",
-        "indexed": true
-      },
-      {
-        "name": "Stock",
-        "path": "./pages/stock",
-        "icon": "fa-home",
-        "pageSrc": "stock.html",
-        "indexed": true
-      }
+    {
+      "name": "Marketing Authorization Holder",
+      "path": "./mah",
+      "src": "participant.html"
+    }
   ]
 }

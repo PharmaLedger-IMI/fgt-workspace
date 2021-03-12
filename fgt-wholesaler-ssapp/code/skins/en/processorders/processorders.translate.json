@@ -1,0 +1,11 @@
+{
+  "title": "Pending Orders",
+  "requesterIdHeader": "Requester Id",
+  "orderIdHeader": "Order Id",
+  "orderLinesHeader": "Order lines",
+  "actionsHeader": "Actions",
+  "gtinHeader": "Gtin",
+  "nameHeader": "Name",
+  "quantityHeader": "Quantity",
+  "none": "No pending orders..."
+}

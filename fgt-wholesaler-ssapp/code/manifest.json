@@ -1,0 +1,15 @@
+{
+  "name": "Pharmaledger Finished Good Traceability for Wholesalers",
+  "short_name": "FGT for Wholesalers",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/resources/images/mah.jpeg",
+      "sizes": "96x96",
+      "type": "image/jpeg"
+    }
+  ],
+  "background_color": "#16161d",
+  "theme_color": "#16161d"
+}

@@ -1,0 +1,10 @@
+<webc-container controller="ParticipantController" enable-translations="true">
+    <div data-if="@identified">
+        <container slot="true">
+            identified
+        </container>
+        <container slot="false">
+            <ion-label>{{ @none }}</ion-label>
+        </container>
+    </div>
+</webc-container>

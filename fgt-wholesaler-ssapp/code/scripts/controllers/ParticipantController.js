@@ -1,27 +1,28 @@
-//import WebcController from "../../webcardinal/base/controllers/WebcController.js";
-const {WebcController} = WebCardinal.controllers;
+const { WebcController } = WebCardinal.controllers;
 
 export default class ParticipantController extends WebcController {
-    constructor(element) {
-        super(element);
-        const LocaleService = require('wizard').Services.LocaleService;
-        LocaleService.bindToLocale(this, LocaleService.supported.en_US);
-        this.model = this.setModel({
-            identified: false,
-            participant: undefined
-        });
+
+    _getModel = (_) => ({
+        identified: false,
+        participant: undefined
+    });
+
+    constructor(element, history) {
+        super(element, history);
+        this.setModel(this._getModel());
         this.participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, "traceability");
         console.log("Participant controller initialized");
-        element.addEventListener('perform-registration', (event) => {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            this.closeModal();
-            this.register(event.detail, (err) => {
-                if (err)
-                    console.log("ERROR - Could not register - Should not be possible!");
-                this._testParticipant();
-            });
-        }, true)
+        this.on('perform-registration', (event) => {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                this.closeModal();
+                this.register(event.detail, (err) => {
+                    if (err)
+                        console.log("ERROR - Could not register - Should not be possible!");
+                    this._testParticipant();
+                });
+        })
+
         this._testParticipant();
     }
 
@@ -40,7 +41,10 @@ export default class ParticipantController extends WebcController {
     }
 
     _showRegistrationModal(){
-        this.showModal('registration-modal', {});
+        const onConfirm = (evt) => {
+            console.log(evt);
+        };
+        this.showModalFromTemplate('registrationModal', onConfirm);
     }
 
     _testParticipant(){

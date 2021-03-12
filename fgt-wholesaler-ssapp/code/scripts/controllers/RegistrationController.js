@@ -1,12 +1,13 @@
-import ModalController from "../../cardinal/controllers/base-controllers/ModalController.js";
+const {WebcController} = WebCardinal.controllers;
 const MAH = require('wizard').Model.MAH;
 
-export default class RegistrationController extends ModalController {
+export default class RegistrationController extends WebcController {
+
     constructor(element) {
         super(element);
         const LocaleService = require('wizard').Services.LocaleService;
-        LocaleService.bindToLocale(this, LocaleService.supported.en_US, "registration");
-        element.addEventListener('submit-registration', this._submitRegistration.bind(this), true)
+        //LocaleService.bindToLocale(this, LocaleService.supported.en_US, "registration");
+        //element.addEventListener('submit-registration', this._submitRegistration.bind(this), true)
     }
 
     _submitRegistration = function(event){

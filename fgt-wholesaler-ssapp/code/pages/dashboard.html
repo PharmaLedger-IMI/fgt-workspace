@@ -1,9 +1,9 @@
 <psk-page>
-    <psk-container controller-name="DashboardController">
+    <psk-container controller-name="DashboardController" enable-translations="true">
         <psk-label class="title" label="@title"></psk-label>
-<!--        <ion-item>-->
-<!--            <ion-label position="stacked"><psk-label label="@title"></psk-label></ion-label>-->
-<!--            <ion-input [(ngModel)]="@title"></ion-input>-->
-<!--        </ion-item>-->
+        <ion-item>
+            <ion-label position="stacked">{{ @title }}</ion-label>
+            <ion-input>{{ @title }}</ion-input>
+        </ion-item>
     </psk-container>
 </psk-page>

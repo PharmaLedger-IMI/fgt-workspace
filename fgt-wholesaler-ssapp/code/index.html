@@ -13,7 +13,6 @@
     <script src="scripts/bundles/iframeBoot.js"></script>
     <script src="scripts/bundles/webshims.js"></script>
     <script src="scripts/bundles/pskruntime.js"></script>
-    <script src="resources/locale/locale.js"></script>
     <script src="scripts/bundles/wizard.js"></script>
 <!--        <script type="module" src="cardinal/cardinal.esm.js"></script>-->
     <link href="webcardinal/webcardinal.css" rel="stylesheet" type="text/css">
@@ -38,26 +37,13 @@
 
 <body>
 <webc-app-root>
-    <webc-app-container controller="ParticipantController">
-        <custom-header slot="before">
-<!--            <psk-label label="@participant.name"></psk-label>-->
-<!--            <ion-label>tetsetsetsetset</ion-label>-->
-        </custom-header>
+    <webc-app-container>
+        <custom-header slot="before"></custom-header>
         <custom-main>
-            <div data-if="@identified">
-                <container slot="true">
-                    <webc-app-menu disable-identify="true" mode="horizontal"></webc-app-menu>
-                    <section>
-                        <webc-app-router></webc-app-router>
-                    </section>
-                </container>
-                <container slot="false">
-
-
-                </container>
-            </div>
+            <webc-app-menu disable-identity="true" mode="horizontal"></webc-app-menu>
+            <webc-app-router fallback-page="/mah"></webc-app-router>
         </custom-main>
-        <custom-footer slot="after">after</custom-footer>
+        <custom-footer slot="after"></custom-footer>
     </webc-app-container>
 </webc-app-root>
 <!--<psk-app-root>-->
