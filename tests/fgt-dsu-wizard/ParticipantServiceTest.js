@@ -35,6 +35,7 @@ assert.callback('Launch API Hub', (cb) => {
                 let inbox1a = { orderLines: [ "sRead1", "sRead2" ], shipmentLines: [], receivedOrders: [], receivedShipments: []};
                 participantService.create(participant1a, inbox1a, (err, participant1aKeySSI) => {
                     assert.notNull(participant1aKeySSI);
+                    console.log("participant key=",participant1aKeySSI.getIdentifier());
                     // creating a dup participant must fail
                     participantService.create(participant1a, undefined, (err, participant1bKeySSI) => {
                         //console.log("ERROR ",err);
