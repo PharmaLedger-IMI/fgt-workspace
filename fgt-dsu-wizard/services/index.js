@@ -6,6 +6,7 @@ module.exports = {
     ParticipantService: require('./ParticipantService'),
     InboxService: require("./InboxService"),
     LocaleService: require("./LocaleService"),
+    WebcLocaleService: require("./WebcLocaleService"),
     OrderLineService: require("./OrderLineService"),
     OrderService: require("./OrderService"),
     ShipmentService: require("./ShipmentService"),

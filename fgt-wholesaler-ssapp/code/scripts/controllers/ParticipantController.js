@@ -4,17 +4,28 @@ export default class ParticipantController extends WebcController {
 
     _getModel = (_) => ({
         identified: false,
-        participant: undefined
+        participant: undefined,
+        teste: "hardcodedr",
+        teste2: "hardcoded2",
+        none: "noooone"
     });
 
     constructor(element, history) {
         super(element, history);
-        this.setModel(this._getModel());
-        this.participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, "traceability");
+        this.setModel({
+            identified: false,
+            participant: undefined,
+            teste: "hardcodedr",
+            teste2: "hardcoded2",
+            none: "noooone"
+        });
+        // const wizard = require('wizard');
+        // const LocaleService = wizard.Services.WebcLocaleService;
+        // LocaleService.bindToLocale(this, LocaleService.supported.en_US, "participant");
+        this.participantManager = wizard.Managers.getParticipantManager(this.DSUStorage, "traceability");
         console.log("Participant controller initialized");
         this.on('perform-registration', (event) => {
                 event.preventDefault();
-                event.stopImmediatePropagation();
                 this.closeModal();
                 this.register(event.detail, (err) => {
                     if (err)
