@@ -1,40 +1,33 @@
-const { WebcController } = WebCardinal.controllers;
+import LocalizedController from "./LocalizedController.js";
 
-export default class ParticipantController extends WebcController {
+export default class ParticipantController extends LocalizedController {
 
-    _getModel = (_) => ({
-        identified: false,
-        participant: undefined,
-        teste: "hardcodedr",
-        teste2: "hardcoded2",
-        none: "noooone"
+    getModel = () => ({
+        participant: undefined
     });
 
     constructor(element, history) {
         super(element, history);
-        this.setModel({
-            identified: false,
-            participant: undefined,
-            teste: "hardcodedr",
-            teste2: "hardcoded2",
-            none: "noooone"
-        });
-        // const wizard = require('wizard');
-        // const LocaleService = wizard.Services.WebcLocaleService;
-        // LocaleService.bindToLocale(this, LocaleService.supported.en_US, "participant");
-        this.participantManager = wizard.Managers.getParticipantManager(this.DSUStorage, "traceability");
-        console.log("Participant controller initialized");
-        this.on('perform-registration', (event) => {
-                event.preventDefault();
-                this.closeModal();
-                this.register(event.detail, (err) => {
-                    if (err)
-                        console.log("ERROR - Could not register - Should not be possible!");
-                    this._testParticipant();
-                });
-        })
+        super.bindLocale(this, "participant");
+        this.setModel(this.getModel());
+        this.model.addExpression('identified', () => {
+            return this.model.participant !== undefined;
+        }, "participant");
 
-        this._testParticipant();
+
+        // this.participantManager = wizard.Managers.getParticipantManager(this.DSUStorage, "traceability");
+        // console.log("Participant controller initialized");
+        // this.on('perform-registration', (event) => {
+        //         event.preventDefault();
+        //         this.closeModal();
+        //         this.register(event.detail, (err) => {
+        //             if (err)
+        //                 console.log("ERROR - Could not register - Should not be possible!");
+        //             this._testParticipant();
+        //         });
+        // })
+        //
+        // this._testParticipant();
     }
 
     /**

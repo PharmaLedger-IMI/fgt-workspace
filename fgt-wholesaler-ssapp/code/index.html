@@ -41,33 +41,33 @@
         <custom-header slot="before"></custom-header>
         <custom-main>
             <webc-app-menu disable-identity="true" mode="horizontal"></webc-app-menu>
-            <webc-app-router fallback-page="/mah"></webc-app-router>
-        </custom-main>
-        <custom-footer slot="after"></custom-footer>
-    </webc-app-container>
-</webc-app-root>
-
-
-<webc-app-root>
-    <webc-app-container>
-        <custom-header slot="before"></custom-header>
-        <custom-main>
-            <webc-container controller="ParticipantController" enable-translations="true">
-                <div data-if="@identified">
-                    <container slot="true">
-                        <webc-app-menu disable-identity="true" mode="horizontal"></webc-app-menu>
-                        identified
-                    </container>
-                    <container slot="false">
-                        Not identified
-                    </container>
-                </div>
-            </webc-container>
             <webc-app-router fallback-page="/"></webc-app-router>
         </custom-main>
         <custom-footer slot="after"></custom-footer>
     </webc-app-container>
 </webc-app-root>
+
+
+<!--<webc-app-root>-->
+<!--    <webc-app-container>-->
+<!--        <custom-header slot="before"></custom-header>-->
+<!--        <custom-main>-->
+<!--            <webc-container controller="ParticipantController" enable-translations="true">-->
+<!--                <div data-if="@identified">-->
+<!--                    <container slot="true">-->
+<!--                        <webc-app-menu disable-identity="true" mode="horizontal"></webc-app-menu>-->
+<!--                        identified-->
+<!--                    </container>-->
+<!--                    <container slot="false">-->
+<!--                        Not identified-->
+<!--                    </container>-->
+<!--                </div>-->
+<!--            </webc-container>-->
+<!--            <webc-app-router fallback-page="/"></webc-app-router>-->
+<!--        </custom-main>-->
+<!--        <custom-footer slot="after"></custom-footer>-->
+<!--    </webc-app-container>-->
+<!--</webc-app-root>-->
 
 
 </body>

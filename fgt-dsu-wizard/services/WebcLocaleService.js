@@ -1,93 +1,51 @@
 /**
  * @module fgt-dsu-wizard.services
  */
-let SUPPORTED = {
-    en: "en"
-};
 
 /**
- * This service needs a Global called LOCALE with the locale strings as such:
- * <pre>{
- *     "en_US": {
- *         "pageX": {
- *             "stringKey1": "...",
- *             "formComponent1": {
- *                 "title": "...",
- *                 "placeholder": "..."
- *             }
- *         },
- *         "pageY": {...}
- *     },
- *     "pt_PT": {
- *         "pageX": {
- *             "stringKey1": "...",
- *             "formComponent1": {
- *                 "title": "...",
- *                 "placeholder": "..."
- *             }
- *         },
- *         "pageY": {...}
- *     }
- * }</pre>
- * <strong>locale.js should be included in index.html via</strong>
- * <pre>
- *     <script src="resources/locale/locale.js"></script>
- * </pre>
- * And will provide access to the strings via '@locale.pageX.key1'
- * @param {SUPPORTED} lang
+ * Integrates with {@link WebCardinal}'s translation model, and natively integrates into controllers
  */
-function LocaleService(lang){
-    const LOCALE = {};
+function LocaleService(){
+    if (!WebCardinal)
+        throw new Error("Could not find WebCardinal");
 
-    let _genSupported = function(){
-        if (!WebCardinal)
-            throw new Error("Could not find WebCardinal");
-        let available = Object.keys(WebCardinal.translations);
-        available.forEach(a => {
-            SUPPORTED[a] = a;
+    const supported = [];
+
+    const getLocale = () => WebCardinal.language;
+
+    const setLocale = (locale) => {
+        if (!(locale in supported))
+            throw new Error("Provided locale not supported");
+        WebCardinal.language = locale;
+        this.loadLocale();
+    }
+
+    const _genSupported = () => {
+        Object.keys(WebCardinal.translations).forEach(a => {
+            supported.push(a);
         })
     };
 
     _genSupported();
 
-    lang = lang || SUPPORTED.en;
-    let localeObj;
-
     /**
-     * Loads the selected locale
-     * @param {SUPPORTED} locale
+     * Loads the current locale
      */
-    this.loadLocale = function(locale){
-        if (!SUPPORTED.hasOwnProperty(locale))
-            throw new Error("Unsupported Locale");
-        localeObj = LOCALE[locale];
+    this._loadLocale = function(){
+        return WebCardinal.translations[getLocale()];
     }
 
     /**
-     * binds the SetModel method of the controller to always include the locale info in one of two ways:
-     *  <ul>
-     *     <li>No page is provided: The model will have the whole locale object under the 'locale' key</li>
-     *     <li>A page is provided: the entries under that key will be applied directly to the model, being overwritten by the provided model<br>
-     *         Useful for forms</li>
-     * </ul>
-     * @param {Object} model
-     * @param {string} [page]
+     *
+     * @param {string} pageName
+     * @returns {object} the translation object for the prof«vided page in the current language
      */
-    this.bindToModel = function(model, page){
-        if (!model || typeof model !== 'object')
-            throw new Error("Model is not suitable for locale binding");
-        if (!page)
-            model.locale = JSON.parse(JSON.stringify(localeObj));
-        else {
-            let tempObj = JSON.parse(JSON.stringify(localeObj[page]));
-            model = merge(tempObj, JSON.parse(JSON.stringify(model)));
-        }
-        return model;
+    this.getByPage = function(pageName){
+        if (pageName[0] !== "/")
+            pageName = "/" + pageName;
+        return this._loadLocale()[pageName];
     }
-
-    this.loadLocale(lang);
 }
-
 
 const merge = function(target, source){
     for (const key of Object.keys(source))
@@ -99,13 +57,17 @@ const merge = function(target, source){
 
 const bindToController = function(controller, page){
     if (!controller.localized) {
-        let func = controller.setModel;
-        let m = controller.model;
-        controller.setModel = function (model) {
-            model = localeService.bindToModel(model, page);
-            return func(model);
+        let getter = controller.getModel;
+        controller.getModel = () => {
+            let locale = localeService.getByPage(page);
+            if (!locale){
+                console.log(`No translations found for page ${page}`);
+                return getter();
+            }
+            locale = JSON.parse(JSON.stringify(locale));
+            let model = getter();
+            return merge(locale, model);
         };
-        controller.setModel(m ? m : {});
         controller.localized = true;
     }
 }
@@ -114,17 +76,15 @@ let localeService;
 
 module.exports = {
     /**
-     * Returns the instance of the LocaleService and binds the locale info to the controller via {@link LocaleService#bindToModel}
-     * @param {ContainerController} controller: the current controller
-     * @param {SUPPORTED} locale: the supported language to use
-     * @param {string} [page]: the name of the view. Must match an existing key in LOCALE
+     * Returns the instance of the LocaleService and binds the locale info to the controller via {@link bindToController}
+     * @param {WebcController} controller: the current controller
+     * @param {string} page: the name of the view. Must match an existing key in {@link WebCardinal#translations}
      * @returns {LocaleService}
      */
-    bindToLocale: function (controller,locale, page){
+    bindToLocale: function (controller, page){
         if (!localeService)
-            localeService = new LocaleService(locale);
+            localeService = new LocaleService();
         bindToController(controller, page);
         return localeService;
-    },
-    supported: {...SUPPORTED}
+    }
 }

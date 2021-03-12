@@ -12,7 +12,7 @@
   "pages": [
     {
       "name": "Marketing Authorization Holder",
-      "path": "/",
+      "path": "/participant",
       "src": "participant.html"
     }
   ]
