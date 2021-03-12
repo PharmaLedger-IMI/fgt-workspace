@@ -39,16 +39,9 @@ export default class IssuedOrdersController extends ContainerController {
 
     _showOrderModal() {
         let self = this;
-        self.participantManager.getParticipant((err, participant) => {
+        self.participantManager.newBlankOrder(self.orderManager, (err, order) => {
             if (err)
                 return this.showError(err);
-            // jpsl technical protest: The self.orderManager.newBlankOrder(...)
-            // should be self.participantManager.newBlankOrder(...) and the complexity
-            // of this inicialization code be inside that method.
-            let orderId = Math.floor(Math.random() * Math.floor(99999999999)); // TODO sequential unique numbering ? It should comes from the ERP anyway.
-            let requestorId = participant.id;
-            let shippingAddress = participant.address;
-            let order = self.orderManager.newBlankOrderSync(orderId, requestorId, shippingAddress);
             self.showModal('issued-order-modal', self.orderManager.toModel(order), true);
         });
     }

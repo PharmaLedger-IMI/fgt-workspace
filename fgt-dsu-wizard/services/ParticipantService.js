@@ -97,6 +97,24 @@ function ParticipantService(domain, strategy){
             });
         });
     }
+
+    /**
+     * Locate the const DSU of a participant, given the id.
+     * @param {string} id - a Participant.id
+     * @param {function(err, participantConstDsu)} callback
+     */
+    this.locateConstDsu = function(id, callback) {
+        const opendsu = require("opendsu");
+        const resolver = opendsu.loadApi("resolver");
+        const participantConstKeyGenFunction = require('../commands/setParticipantConstSSI').createParticipantConstSSI;
+        const participantConstKeySSI = participantConstKeyGenFunction({id: id}, domain);
+        resolver.loadDSU(participantConstKeySSI, (err, participantConstDsu) => {
+            if (err)
+                return callback(err);
+            callback(undefined, participantConstDsu);
+        });
+    }
+
 }
 
 module.exports = ParticipantService;
