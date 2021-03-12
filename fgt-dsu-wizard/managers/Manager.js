@@ -20,6 +20,7 @@ class Manager{
     constructor(storageDSU){
         this.storage = storageDSU;
         this.storage.getObject = this._getObject(this.storage);
+        this.storage.directAccessEnabled = true;
         this.resolver = undefined;
     }
 

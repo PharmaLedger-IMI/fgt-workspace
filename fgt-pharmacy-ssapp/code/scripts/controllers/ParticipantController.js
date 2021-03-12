@@ -31,7 +31,11 @@ export default class ParticipantController extends ContainerController {
      */
     register(participant, callback){
         let self = this;
-        self.participantManager.create(participant, (err, keySSI) => {
+        // The Pharmacy has a receivedShipments inbox
+        const {INBOX_RECEIVED_SHIPMENTS_PROP} = require('wizard').Constants;
+        let inbox = {};
+        inbox[INBOX_RECEIVED_SHIPMENTS_PROP] = [];
+        self.participantManager.create(participant, inbox, (err, keySSI) => {
             if (err)
                 return callback(err);
             callback();
