@@ -70,7 +70,7 @@ function ParticipantService(domain, strategy){
                     participantConstDsu.writeFile(INFO_PATH, JSON.stringify({ id: participant.id }), (err) => {
                         if (err)
                             return callback(err);
-                        participantConstDsu.mount(INBOX_MOUNT_PATH, inboxSSI, (err) => {
+                        participantConstDsu.mount(INBOX_MOUNT_PATH, inboxSSI.getIdentifier(), (err) => {
                             if (err)
                                 return callback(err);
                             utils.selectMethod(participantTemplateKeySSI)(participantTemplateKeySSI, (err, participantDsu) => {
