@@ -3,7 +3,7 @@
  */
 const Order = require('../model/Order');
 const OrderStatus = require('../model/OrderStatus');
-const {INBOX_RECEIVED_SHIPMENTS_PROP, INFO_PATH, PARTICIPANT_MOUNT_PATH} = require('../constants');
+const {INBOX_RECEIVED_ORDERS_PROP, INBOX_RECEIVED_SHIPMENTS_PROP, INFO_PATH, PARTICIPANT_MOUNT_PATH, INBOX_MOUNT_PATH} = require('../constants');
 
 /**
  * Participant Manager Class
@@ -27,7 +27,8 @@ const {INBOX_RECEIVED_SHIPMENTS_PROP, INFO_PATH, PARTICIPANT_MOUNT_PATH} = requi
 class ParticipantManager{
     constructor(dsuStorage, domain) {
         this.DSUStorage = dsuStorage;
-        this.ParticipantService = new (require('../services').ParticipantService)(domain);
+        this.inboxService = new (require('../services').InboxService)(domain);
+        this.participantService = new (require('../services').ParticipantService)(domain);
         this.resolver = undefined;
         this.participantDSU = undefined;
     }
@@ -55,7 +56,7 @@ class ParticipantManager{
         if (typeof callback != "function")
             throw new Error("callback must be a function!");
         self.DSUStorage.enableDirectAccess(() => {
-            self.ParticipantService.create(participant, inbox, (err, keySSI) => {
+            self.participantService.create(participant, inbox, (err, keySSI) => {
                 if (err)
                     return callback(err);
                 console.log(`Participant DSU created with ssi: ${keySSI.getIdentifier(true)}`);
@@ -75,13 +76,24 @@ class ParticipantManager{
 
     /**
      * Creates a {@link IssuedOrder} dsu
+     * @param {OrderManager} orderManager 
      * @param {Order} order
-     * @param {object} [inbox] - optional initial inbox contents.
-     * @param {function(err, keySSI, string)} callback where the string is the mount path
+     * @param {function(err, keySSI, mountPath)} callback
      */
-     createIssuedOrder(order, callback) {
-         callback("Not implemented!");
-     }
+    createIssuedOrder(orderManager, order, callback) {
+        let self = this;
+        orderManager.create(order, (err, keySSI, mountPath) => {
+            if (err)
+                return callback(err);
+            const readSSI = keySSI.derive();
+            // order.requesterId is me. order.senderId is the supplier.
+            self.locateInboxAndAppend(order.senderId, INBOX_RECEIVED_ORDERS_PROP, readSSI, (err) => {
+                if (err)
+                    callback(err); // TODO rollback order creation ??
+                callback(undefined, keySSI, mountPath);
+            });
+        });
+    }
 
     _cacheParticipantDSU(callback){
         if (this.participantDSU)
@@ -140,6 +152,52 @@ class ParticipantManager{
     }
 
     /**
+     * Locate an Inbox from another participant.
+     * The Inbox must have .propName data.
+     * The propName is parsed in JSON into an array, message appended, and written back.
+     * If not, and error is signaled.
+     * @param {string} participantId 
+     * @param {string} inboxPropName 
+     * @param {function(err, participantConstDsu)} callback
+     */
+    locateInboxAndAppend(participantId, inboxPropName, message, callback) {
+        let self = this;
+        self.participantService.locateConstDsu(participantId, (err, participantConstDsu) => {
+            if (err)
+                return callback(err); // TODO extend error ?
+            participantConstDsu.readFile(`${INBOX_MOUNT_PATH}/${inboxPropName}`, (err, buffer) => {
+                if (err)
+                    return callback(err);
+                let inboxPropNameContents = JSON.parse(buffer);
+                inboxPropNameContents.push(message);
+                participantConstDsu.writeFile(`${INBOX_MOUNT_PATH}/${inboxPropName}`, inboxPropNameContents, (err) => {
+                    if (err)
+                        return callback(err);
+                    callback(undefined, participantConstDsu);
+                });
+            });
+        });
+    }
+    
+    /**
+     * Creates a blank Order filled up with the details of this participant.
+     * @param {OrderManager} orderManager 
+     * @param {function(err, order)} callback
+     */
+    newBlankOrder(orderManager, callback) {
+        let self = this;
+        self.getParticipant((err, participant) => {
+            if (err)
+                return callback(err);
+            let orderId = Math.floor(Math.random() * Math.floor(99999999999)); // TODO sequential unique numbering ? It should comes from the ERP anyway.
+            let requestorId = participant.id;
+            let shippingAddress = participant.address;
+            let order = orderManager.newBlankOrderSync(orderId, requestorId, shippingAddress);
+            callback(undefined, order);
+        });
+    }
+
+    /**
      * Register a Participant for a Pharmacy and and mounts it to the participant path.
      * @param {Participant} participant 
      * @param {function(err)} callback 
@@ -149,6 +207,24 @@ class ParticipantManager{
         // The Pharmacy has a receivedShipments inbox
         let inbox = {};
         inbox[INBOX_RECEIVED_SHIPMENTS_PROP] = [];
+        self.create(participant, inbox, (err, keySSI, mountPath) => {
+            if (err)
+                return callback(err);
+            callback();
+        });
+    }
+
+    /**
+     * Register a Participant for a Wholesaler and and mounts it to the participant path.
+     * @param {Participant} participant 
+     * @param {function(err)} callback 
+     */
+    registerWholesaler(participant, callback) {
+        let self = this;
+        // The Wholesaler has a receivedOrders and receivedShipments inbox
+        let inbox = {};
+        inbox[INBOX_RECEIVED_SHIPMENTS_PROP] = [];
+        inbox[INBOX_RECEIVED_ORDERS_PROP] = [];
         self.create(participant, inbox, (err, keySSI, mountPath) => {
             if (err)
                 return callback(err);

@@ -36,11 +36,17 @@ assert.callback('Launch API Hub', (cb) => {
                 participantService.create(participant1a, inbox1a, (err, participant1aKeySSI) => {
                     assert.notNull(participant1aKeySSI);
                     console.log("participant key=",participant1aKeySSI.getIdentifier());
-                    // creating a dup participant must fail
-                    participantService.create(participant1a, undefined, (err, participant1bKeySSI) => {
-                        //console.log("ERROR ",err);
-                        assert.notNull(err);
-                        cb();
+                    participantService.locateConstDsu(participant1a.id, (err, p1aDsu) => {
+                        if (err)
+                            throw err;
+                        assert.notNull(p1aDsu);
+                        //console.log(p1aDsu);
+                        // creating a dup participant must fail
+                        participantService.create(participant1a, undefined, (err, participant1bKeySSI) => {
+                            //console.log("ERROR ",err);
+                            assert.notNull(err);
+                            cb();
+                        });
                     });
                 });
             });
