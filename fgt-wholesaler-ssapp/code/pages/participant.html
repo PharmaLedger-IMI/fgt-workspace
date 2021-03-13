@@ -1,17 +1,12 @@
 <webc-container controller="ParticipantController" enable-translations="true">
     <ion-app>
         <ion-menu side="start" content-id="main-content">
-            <ion-header>
-                <ion-toolbar translucent>
-                    <div data-if="@identified">
-                        <ion-buttons slot="start">
-                            <ion-back-button></ion-back-button>
-                        </ion-buttons>
-                    </div>
-                    <ion-label color="primary">Pharmaledger</ion-label>
+            <ion-header class="ion-justify-content-evenly ion-align-items-center">
+                <ion-toolbar class="ion-justify-content-evenly ion-align-items-center" translucent>
+                    <ion-img class="ion-align-self-center menu-logo" src="../resources/images/pharmaledger-logo.svg"></ion-img>
                 </ion-toolbar>
             </ion-header>
-<!--            <div data-if="@identified">-->
+            <div data-if="@identified">
                 <ion-content>
                     <ion-list>
                         <ion-item>
@@ -40,7 +35,7 @@
                         </ion-item>
                     </ion-list>
                 </ion-content>
-<!--            </div>-->
+            </div>
         </ion-menu>
 <!--        <ion-content>-->
 <!--            <div data-if="@identified">-->

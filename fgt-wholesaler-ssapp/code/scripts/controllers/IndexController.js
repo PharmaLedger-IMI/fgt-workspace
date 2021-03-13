@@ -9,6 +9,6 @@ export default class IndexController extends LocalizedController {
         super.bindLocale(this, "index");
         this.setModel(this.getModel());
         console.log("Index controller initialized. redirecting now");
-        this.navigateToPageTag('participant');
+        this.navigateToPageTag('home');
     }
 }

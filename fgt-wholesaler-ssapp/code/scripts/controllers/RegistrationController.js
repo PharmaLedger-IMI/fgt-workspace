@@ -7,9 +7,10 @@ export default class RegistrationController extends LocalizedController {
 
     constructor(element) {
         super(element);
-        super.bindLocale(this, "participant.registration");
+        super.bindLocale(this, "home.registration");
         this.setModel(this.getModel());
         this.onTagClick('registration', this._submitRegistration.bind(this));
+        console.log("RegistrationController initialized");
     }
 
     _submitRegistration = function () {

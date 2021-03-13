@@ -30,6 +30,36 @@ export default class LocalizedController extends WebcController {
     }
 
     /**
+     * Shows an Ionic model
+     * @param {string} modalName the modal's name registered via:
+     * <pre>
+     *     customElements.define('registration-modal', class extends HTMLElement{
+     *          connectedCallback(){
+     *              this.innerHTML = `
+     *                  <ion-header class="ion-padding">
+     *                      <ion-title>Title</ion-title>
+     *                      <ion-content>
+     *                          Content
+     *                      </ion-content>
+     *                  </ion-header>`
+     *              }
+     *          });
+     * </pre>
+     * @param {boolean} [swipeToClose]: enables slideToClose when available. defaults to false
+     */
+    showIonicModal(modalName, swipeToClose){
+        swipeToClose = !!swipeToClose;
+        const modal = this.createElement('ion-modal',{
+            component: modalName,
+            controller: "RegistrationController",
+            backdropDismiss: false,
+            swipeToClose: swipeToClose
+        });
+        WebCardinal.root.querySelector('webc-container[controller="HomeController"]').append(modal)
+        return modal.present();
+    }
+
+    /**
      * Adds the locale info to the model.
      * @param {LocalizedController} controller
      * @param {string} pageName

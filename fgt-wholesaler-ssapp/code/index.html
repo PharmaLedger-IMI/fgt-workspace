@@ -40,9 +40,12 @@
 <style>
 
     :root{
-        --ion-text-color: whitesmoke;
+        --ion-text-color: white;
         --ion-background-color: #083140;
         --ion-color: whitesmoke;
+
+        --webc-modal-content-color: var(--ion-color);
+        --webc-modal-content-background: var(--ion-background-color);
 
         --ion-color-primary: #428cff;
         --ion-color-primary-rgb: 66,140,255;
@@ -108,39 +111,47 @@
         --ion-color-light-tint: #383a3e;
     }
 
+    ion-item.modal{
+         color: var(--ion-color);
+         background: var(--ion-background-color);
+     }
+
     ion-item{
-        --background: rgba(111, 110, 110, 0.5);
+        --background: transparent;
     }
 
-    /*ion-content{*/
-    /*    --background: rgba(8, 49, 64, 0.75);*/
-    /*}*/
+    ion-modal{
+        --ion-background-color: #ffffff;
+        --backdrop-opacity: 0.5;
+    }
+
+    ion-toolbar.menu{
+        align-content: center;
+    }
 
     ion-content.main-content{
         --background:  url("resources/images/bg4.png") 0 0/100% 100%;
     }
 
+    /*ion-content.modal{*/
+    /*    --ion-background-color: whitesmoke;*/
+    /*}*/
+
     ion-icon{
         color: whitesmoke;
     }
 
-    /*ion-content.main-content{*/
-    /*    background: url("resources/images/bg4.png") 0 0/100% 100%;*/
-    /*    --ion-background-color: #2e8fb3;*!*/
-    /*}*/
-
-    /*ion-menu{*/
-    /*    background: #898989;*/
-    /*}*/
-
-    /*ion-tab-bar{*/
-    /*    background: #898989;*/
-    /*}*/
-
     ion-img.main-logo{
         height: 5%;
         width: 5%;
-        margin: 15px 15px;
+        margin: 5px 15px 5px 15px;
+    }
+
+    ion-img.menu-logo{
+        align-content: center;
+        max-height:50%;
+        max-width: 50%;
+        margin: 5px 15px 5px 15px;
     }
 
     div.with-gradient{

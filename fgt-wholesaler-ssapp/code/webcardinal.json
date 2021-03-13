@@ -7,15 +7,16 @@
   "theme": "pdm-theme",
   "pagesFallback": {
     "name": "index",
-    "path": "./"
+    "path": "./",
+    "src": "index.html"
   },
   "pages": [
     {
       "name": "Home",
-      "path": "/participant",
-      "src": "participant.html",
+      "path": "/home",
+      "src": "home.html",
       "indexed": false,
-      "tag": "participant"
+      "tag": "home"
     }
   ]
 }
