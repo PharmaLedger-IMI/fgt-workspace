@@ -34,12 +34,6 @@
       "required": true,
       "value": "This in an Address"
     },
-    "registration": "Registration",
-    "register":{
-      "label": "Register",
-      "expand": "block",
-      "color": "success",
-      "tag": "register-button"
-    }
+    "registration": "Registration"
   }
 }
