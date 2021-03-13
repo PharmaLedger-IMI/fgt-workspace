@@ -24,6 +24,7 @@
     "test": "npm run build && node ./privatesky/bin/scripts/testrunner.js --directory=./tests",
     "clean": "node ./bin/clean.js ./",
     "clean-build": "npm run clean && npm run build privatesky && npm run build-all",
+    "build-web-ion": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run pre-build-web-cardinal-ion\"",
     "freeze": "node ./node_modules/octopus/scripts/freeze dependencies install-mobile",
     "docs": "jsdoc -c jsdocs.json"
   },

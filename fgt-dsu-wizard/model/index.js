@@ -13,5 +13,6 @@ module.exports = {
     Batch: require('./Batch'),
     MAH: require('./MAH'),
     Pharmacy: require('./Pharmacy'),
-    Wholesaler: require('./Wholesaler')
+    Wholesaler: require('./Wholesaler'),
+    Validations: require('./Validations')
 }

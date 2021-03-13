@@ -10,19 +10,23 @@ export default class RegistrationController extends LocalizedController {
         super.bindLocale(this, "home.registration");
         this.setModel(this.getModel());
         this.onTagClick('registration', this._submitRegistration.bind(this));
+
         console.log("RegistrationController initialized");
     }
 
-    _submitRegistration = function () {
-        this.send('perform-registration', this._modelToParticipant());
-        //this.closeModal();
+    _submitRegistration = function (evt) {
+        this.updateModelFromIonicForms();
+        let participant = this._modelToParticipant();
+        let errors = participant.validate()
+        this.send('perform-registration', this._modelToParticipant(this.model.toObject()));
     }
 
-    _modelToParticipant = function () {
+    _modelToParticipant = function (model) {
         let info = {};
-        Object.keys(this.model)
-            .filter(k => !!this.model[k].value)
-            .map(k => info[k] = this.model[k].value);
+        model = model || this.model
+        Object.keys(model)
+            .filter(k => !!model[k].value)
+            .map(k => info[k] = model[k].value);
         return new MAH(info);
     }
 }

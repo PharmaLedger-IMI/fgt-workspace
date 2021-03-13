@@ -1,7 +1,9 @@
 /**
  * @module fgt-dsu-wizard.model
  */
-class Participant{
+const { Validatable } = require('./Validations');
+
+class Participant extends Validatable{
     id = "";
     name = "";
     email = "";
@@ -9,6 +11,7 @@ class Participant{
     address = "";
 
     constructor(participant){
+        super();
         console.log("participant:" + participant);
         this._copyProps(participant);
     }

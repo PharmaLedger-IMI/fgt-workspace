@@ -11,7 +11,8 @@ apihub-root/external-volume/domains
 apihub-root/fgt-mah-wallet/apps-patch
 apihub-root/fgt-pharmacy-wallet/apps-patch
 apihub-root/fgt-wholesaler-wallet/apps-patch
-apihub-root/dossier-explorer
+apihub-root/web-ion-wallet/**
+apihub-root/dossier-explorer/**
 apihub-root/seedsBackup
 cardinal
 env.json.devel
@@ -26,7 +27,9 @@ webcardinal/*
 !webcardinal/octopus.json
 !webcardinal/package.json
 !webcardinal/bin
-!.gitignore
+!webcardinal/.gitignore
+
+web-cardinal-ion
 
 fgt-dsu-wizard/build/bundles
 

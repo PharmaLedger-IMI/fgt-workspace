@@ -7,24 +7,27 @@
     <ion-item>
         <ion-label position="stacked"> {{ @name.label }}</ion-label>
         <ion-input name="input-name" data-model="@name" type="text" inputmode="text" required="true" clear-input="true" clear-on-edit="true"></ion-input>
+        <div data-if="@name.error">
+            <ion-label class="error"> {{ @name.error }}</ion-label>
+        </div>
     </ion-item>
     <ion-item>
         <ion-label position="stacked"> {{ @id.label }}</ion-label>
-        <ion-input name="input-id" data-model="@id" type="text" inputmode="text" required="true" clear-input="true" clear-on-edit="true"></ion-input>
+        <ion-input name="input-id" data-model="@id" type="text" inputmode="text" required="true" clear-input="true"></ion-input>
     </ion-item>
     <ion-item>
         <ion-label position="stacked"> {{ @email.label }}</ion-label>
-        <ion-input name="input-email" data-model="@email" type="email" inputmode="email" required="true" clear-input="true" clear-on-edit="true"></ion-input>
+        <ion-input name="input-email" data-model="@email" type="email" inputmode="email" required="true" clear-input="true"></ion-input>
     </ion-item>
     <ion-item>
         <ion-label position="stacked"> {{ @tin.label }}</ion-label>
-        <ion-input name="input-tin" data-model="@tin" type="number" inputmode="numeric" min="0" required="true" maxlength="9" clear-input="true" clear-on-editt="true"></ion-input>
+        <ion-input name="input-tin" data-model="@tin" type="number" inputmode="numeric" min="0" required="true" max="999999999" clear-input="true"></ion-input>
     </ion-item>
     <ion-item>
         <ion-label position="stacked"> {{ @address.label }}</ion-label>
-        <ion-input name="input-address" data-model="@address" type="text" inputmode="text" required="true" clear-input="true" clear-on-edit="true"></ion-input>
+        <ion-input name="input-address" data-model="@address" type="text" inputmode="text" required="true" clear-input="true"></ion-input>
     </ion-item>
     <ion-footer>
-        <ion-button name="input-register" color="primary" data-tag="registration" expand="block">{{ @registration }}</ion-button>
+        <ion-button name="input-register" type="submit" color="primary" data-tag="registration" expand="block">{{ @registration }}</ion-button>
     </ion-footer>
 </webc-container>
