@@ -57,9 +57,14 @@ split DSU Wizard into:
 [MAH Enterprise Wallet](fgt-mah-ssapp/index.html)
 
 [MAH Pharmacy Wallet](fgt-mah-ssapp/index.html)
-### Pharmacy Enterprise wallet
 
-TODO
+### Architecture
+
+### DSU Types
+
+[Current](resources/finishedGoodsTraceabilityDSUTypes.png)
+
+[Proposal](resources/finishedGoodsTraceabilityDSUTypes.png)
 
 ### Installation
 

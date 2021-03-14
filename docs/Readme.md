@@ -36,9 +36,8 @@ split DSU Wizard into:
 [MAH Enterprise Wallet](fgt-mah-ssapp/index.html)
 
 [MAH Pharmacy Wallet](fgt-mah-ssapp/index.html)
-### Pharmacy Enterprise wallet
 
-TODO
+#include "docs/architecture.md"
 
 #include "docs/Installation.md"
 

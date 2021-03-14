@@ -775,6 +775,19 @@
             "actions": [
                 {
                     "type": "execute",
+                    "cmd": "./docs/bin/drawio_convert.sh"
+                },
+                {
+
+                    "type": "copy",
+                    "src": "docs/resources",
+                    "target": "docs/output/resources",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "execute",
                     "cmd": "node ./node_modules/markdown-include/bin/cli.js ./mdCompile.json"
                 }
             ]
