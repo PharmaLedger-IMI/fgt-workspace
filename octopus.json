@@ -736,7 +736,7 @@
                 {
                     "type": "copy",
                     "src": "fgt-dsu-wizard/docs/output",
-                    "target": "docs/output/fgt-dsu-wizard",
+                    "target": "pages/fgt-dsu-wizard",
                     "options": {
                         "overwrite": true
                     }
@@ -753,7 +753,7 @@
 
                     "type": "copy",
                     "src": "fgt-pharmacy-ssapp/docs/output",
-                    "target": "docs/output/fgt-pharmacy-ssapp",
+                    "target": "pages/fgt-pharmacy-ssapp",
                     "options": {
                         "overwrite": true
                     }
@@ -762,7 +762,7 @@
 
                     "type": "copy",
                     "src": "fgt-wholesaler-ssapp/docs/output",
-                    "target": "docs/output/fgt-wholesaler-ssapp",
+                    "target": "pages/fgt-wholesaler-ssapp",
                     "options": {
                         "overwrite": true
                     }
@@ -781,7 +781,7 @@
 
                     "type": "copy",
                     "src": "docs/resources",
-                    "target": "docs/output/resources",
+                    "target": "pages/resources",
                     "options": {
                         "overwrite": true
                     }

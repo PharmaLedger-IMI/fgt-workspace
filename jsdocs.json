@@ -39,7 +39,7 @@
     },
     "opts": {
         "template": "node_modules/docdash",
-        "destination": "./docs/output/",
+        "destination": "./pages",
         "readme": "./README.md",
         "recurse": true,
         "verbose": true,

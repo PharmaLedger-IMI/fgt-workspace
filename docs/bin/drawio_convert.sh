@@ -47,17 +47,20 @@ function exportToPng(){
   # Count pages
 
   local count=$(grep -o "<diagram" "$base_file_name.xml" | wc -l)
+
+  local names=$(grep -o "name=\"(.*)\"" "$base_file_name.xml")
+  echo "names: $names"
   echo "Found $count pages"
   if [[ $count -eq 1 ]]; then
     # if there's only one page
     echo "output file ${png_output_path}/${file_name}.png"
     echo "source file $file"
-    drawio --export --page-index 0 --output "${png_output_path}/${file_name}.png" "$file"
+    drawio --export --quality 300 --trasnparent --page-index 0 --output "${png_output_path}/${file_name}.png" "$file"
   else
     # Export each page as an PNG
     # Page index is zero based
     for ((i = 0 ; i <= $count-1; i++)); do
-      drawio --export --page-index $i --output "${png_output_path}/${file_name}-$i.png" "$file"
+      drawio --export --quality 300  --transparent --page-index $i --output "${png_output_path}/${file_name}-$i.png" "$file"
     done
   fi
 }
