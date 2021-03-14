@@ -1,0 +1,79 @@
+{
+    "plugins": [
+        "plugins/markdown",
+        "plugins/summarize"
+    ],
+    "package": "package.json",
+    "recurseDepth": 10,
+    "source": {
+        "include": [
+            "."
+        ],
+        "exclude": [
+            "apihub-root",
+            "bin",
+            "cardinal",
+            "docs",
+            "dossier-explorer-ssapp",
+            "dossier-explorer-wallet-prototype",
+            "gtin-dsu-wizard",
+            "gtin-resolver",
+            "pharmaledger-wallet",
+            "privatesky",
+            "themes/blue-fluorite-theme",
+            "themes/clear-sky-theme",
+            "web-cardina-ion",
+            "webcardinal",
+            "node_modules"
+        ],
+        "includePattern": ".+\\.js(doc|x)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc","closure"]
+    },
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false
+    },
+    "opts": {
+        "template": "node_modules/docdash",
+        "destination": "./docs/output/",
+        "readme": "./README.md",
+        "recurse": true,
+        "verbose": true,
+        "docdash": {
+            "static": true,
+            "sort": true,
+            "sectionOrder": [
+                "Classes",
+                "Modules",
+                "Externals",
+                "Events",
+                "Namespaces",
+                "Mixins",
+                "Tutorials",
+                "Interfaces"
+            ],
+            "search": true,
+            "collapse": true,
+            "wrap": false,
+            "typedefs": true,
+            "navLevel": -1,
+            "private": true,
+            "removeQuotes": "none",
+            "scripts": [],
+            "menu": {
+                "Project Website": {
+                    "href":"https://fgt.pharmaledget.pdmfc.com",
+                    "target":"_blank",
+                    "class":"menu-item",
+                    "id":"website_link"
+                }
+            },
+            "nameInOutputPath": true,
+            "versionInOutputPath": true
+        }
+    }
+}

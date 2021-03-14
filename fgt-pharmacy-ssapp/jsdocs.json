@@ -1,0 +1,68 @@
+{
+    "plugins": [
+        "plugins/markdown",
+        "plugins/summarize"
+    ],
+    "package": "package.json",
+    "recurseDepth": 10,
+    "source": {
+        "include": [
+            "code/pages",
+            "code/resources",
+            "code/scripts"
+        ],
+        "exclude": [
+            "code/constitution",
+            "code/scripts/bundles"
+        ],
+        "includePattern": ".+\\.js(doc|x)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc","closure"]
+    },
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false
+    },
+    "opts": {
+        "template": "node_modules/docdash",
+        "destination": "./docs/output/",
+        "readme": "./README.md",
+        "recurse": true,
+        "verbose": true,
+        "docdash": {
+            "static": true,
+            "sort": true,
+            "sectionOrder": [
+                "Classes",
+                "Modules",
+                "Externals",
+                "Events",
+                "Namespaces",
+                "Mixins",
+                "Tutorials",
+                "Interfaces"
+            ],
+            "search": true,
+            "collapse": true,
+            "wrap": false,
+            "typedefs": true,
+            "navLevel": -1,
+            "private": true,
+            "removeQuotes": "none",
+            "scripts": [],
+            "menu": {
+                "Project Website": {
+                    "href":"https://fgt.pharmaledget.pdmfc.com",
+                    "target":"_blank",
+                    "class":"menu-item",
+                    "id":"website_link"
+                }
+            },
+            "nameInOutputPath": true,
+            "versionInOutputPath": true
+        }
+    }
+}

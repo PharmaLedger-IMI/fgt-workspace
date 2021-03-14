@@ -23,19 +23,11 @@
       "actions": [
         {
           "type": "execute",
-          "cmd": "mkdir ./tmp_doc"
-        },
-        {
-          "type": "execute",
           "cmd": "node ./node_modules/markdown-include/bin/cli.js ./mdCompile.json"
         },
         {
           "type": "execute",
           "cmd": "jsdoc -c jsdocs.json"
-        },
-        {
-          "type": "remove",
-          "target": "./tmp_doc"
         }
       ]
     }

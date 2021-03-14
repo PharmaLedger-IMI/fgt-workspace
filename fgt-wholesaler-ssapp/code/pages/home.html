@@ -3,10 +3,10 @@
         <div data-if="@identified">
             <div slot="true">
                 <ion-menu side="start" content-id="main-content">
-                    <ion-header class="ion-justify-content-evenly ion-align-items-center">
-                        <ion-toolbar class="ion-justify-content-evenly ion-align-items-center" translucent>
+                    <ion-header>
+                        <ion-toolbar translucent>
                             <ion-img class="ion-align-self-center menu-logo" src="../resources/images/pharmaledger-logo.svg"></ion-img>
-                            <ion-title>{{ @title }}</ion-title>
+                            <ion-title align="center">{{ @title }}</ion-title>
                         </ion-toolbar>
                     </ion-header>
                     <ion-content>
@@ -37,24 +37,21 @@
                             </ion-item>
                         </ion-list>
                     </ion-content>
+
                 </ion-menu>
             </div>
             <div slot="false">
             </div>
         </div>
 
-
-
         <ion-tabs id="main-content">
-
             <ion-header>
                 <ion-toolbar>
                     <ion-buttons slot="start">
-                        <ion-menu-button auto-hide="false"></ion-menu-button>
+                        <ion-menu-button auto-hide="true"></ion-menu-button>
                     </ion-buttons>
                     <ion-img class="main-logo" slot="start" src="../resources/images/pharmaledger-logo.svg"></ion-img>
-                    <!--                    <ion-img slot="start" [scr]="../resources/images/pharmaledger-logo.svg"></ion-img>-->
-                    <ion-title class="title">{{ @title }}</ion-title>
+                    <ion-title>{{ @title }}</ion-title>
                 </ion-toolbar>
             </ion-header>
 
@@ -75,9 +72,9 @@
                 <!--                    <webc-template template-name="tab-map"></webc-template>-->
                 <!--                </ion-tab>-->
 
-                <!--                <ion-tab tab="tab-about" component="page-about">-->
-                <!--                    <webc-template template-name="tab-about"></webc-template>-->
-                <!--                </ion-tab>-->
+                                <ion-tab tab="tab-about" component="page-about">
+                                    <webc-template template-name="tab-about"></webc-template>
+                                </ion-tab>
             </ion-content>
 
             <ion-tab-bar slot="bottom">

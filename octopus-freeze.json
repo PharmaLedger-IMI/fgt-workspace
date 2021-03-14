@@ -2,14 +2,30 @@
     "workDir": ".",
     "dependencies": [
         {
-            "name": "cardinal",
-            "src": "http://github.com/privatesky/cardinal.git",
+            "name": "web-cardinal-ion",
+            "src": "https://github.com/webcardinal/webcardinal-app-examples.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "789d47f654f35af129302e1f921a6a93b991f25f"
+                    "commit": "5b97dd939c8b6c6489cd5d3faa1a28311cc1d04a"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd web-cardinal-ion/examples/ionic && npm install"
+                }
+            ]
+        },
+        {
+            "name": "cardinal",
+            "src": "https://github.com/PrivateSky/cardinal.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "65ccf80870592f1d9e6e2e3b84299abfdcfdfffa"
                 },
                 {
                     "type": "execute",
@@ -18,6 +34,15 @@
                 {
                     "type": "execute",
                     "cmd": "cd cardinal && npm run build"
+                }
+            ]
+        },
+        {
+            "name": "webcardinal",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd webcardinal && npm install"
                 }
             ]
         },
@@ -123,6 +148,26 @@
             ]
         },
         {
+            "name": "apihub-root/web-ion-wallet/loader",
+            "src": "https://github.com/PrivateSky/trust-loader.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "06cdf72a7e2537aafc9731604a1ec9acf291e8c4"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/web-ion-wallet/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/web-ion-wallet/loader && npm run build"
+                }
+            ]
+        },
+        {
             "name": "gtin-resolver",
             "src": "https://github.com/PharmaLedger-IMI/gtin-resolver.git",
             "actions": [
@@ -180,6 +225,78 @@
             ]
         },
         {
+            "name": "themes/blue-fluorite-theme",
+            "src": "https://github.com/PrivateSky/blue-fluorite-theme.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "347d1aceaf1f06b09d0307f9b78049f313b783aa"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/blue-fluorite-theme && npm install"
+                }
+            ]
+        },
+        {
+            "name": "dossier-explorer-wallet-prototype",
+            "src": "https://github.com/PrivateSky/dossier-explorer-wallet-prototype.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "7dbe932b62c438ab73f80531787ffcf70a6525c5"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd dossier-explorer-wallet-prototype && npm install"
+                }
+            ]
+        },
+        {
+            "name": "apihub-root/dsu-explorer/loader",
+            "src": "https://github.com/PrivateSky/web-dossier-loader.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "06cdf72a7e2537aafc9731604a1ec9acf291e8c4"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
+                },
+                {
+                    "type": "copy",
+                    "src": "apihub-root/dsu-explorer/loader/loader-config.local.json-template",
+                    "target": "apihub-root/dsu-explorer/loader/loader-config.local.json",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "dossier-explorer-ssapp",
+            "src": "https://github.com/PrivateSky/dossier-explorer-ssapp.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "03168225247ad03f8e24f040c7fd6a002e5e1abb"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd dossier-explorer-ssapp && npm install"
+                }
+            ]
+        },
+        {
             "name": "fgt-mah-ssapp",
             "actions": [
                 {
@@ -207,6 +324,102 @@
             ]
         }
     ],
+    "pre-build-web-cardinal-ion": [
+        {
+            "name": "pre-build-web-cardinal",
+            "src": "",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "privatesky/psknode/bundles/pskruntime.js",
+                    "target": "web-cardinal-ion/examples/ionic/code/constitution/pskruntime.js",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "privatesky/psknode/bundles/webshims.js",
+                    "target": "web-cardinal-ion/examples/ionic/code/constitution/webshims.js",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "privatesky/psknode/bundles/pskruntime.js",
+                    "target": "web-cardinal-ion/examples/ionic/code/scripts/bundles/pskruntime.js",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "privatesky/psknode/bundles/webshims.js",
+                    "target": "web-cardinal-ion/examples/ionic/code/scripts/bundles/webshims.js",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "privatesky/psknode/bundles/iframeBoot.js",
+                    "target": "web-cardinal-ion/examples/ionic/code/scripts/bundles/iframeBoot.js",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "web-cardinal-ion/examples/ionic/assets",
+                    "target": "web-cardinal-ion/examples/ionic/code/assets",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "web-cardinal-ion/examples/ionic/pages",
+                    "target": "web-cardinal-ion/examples/ionic/code/pages",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "web-cardinal-ion/examples/ionic/templates",
+                    "target": "web-cardinal-ion/examples/ionic/code/templates",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "web-cardinal-ion/examples/ionic/scripts",
+                    "target": "web-cardinal-ion/examples/ionic/code/scripts",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "web-cardinal-ion/examples/ionic/index.html",
+                    "target": "web-cardinal-ion/examples/ionic/code/index.html",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "web-cardinal-ion/examples/ionic/webcardinal.json",
+                    "target": "web-cardinal-ion/examples/ionic/code/webcardinal.json",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        }
+    ],
     "build": [
         {
             "name": "cardinal-wallet-build",
@@ -219,12 +432,72 @@
             ]
         },
         {
+            "name": "webcardinal-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd webcardinal && npm run build"
+                }
+            ]
+        },
+        {
             "name": "pdm-theme-wallet-build",
             "src": "",
             "actions": [
                 {
                     "type": "execute",
                     "cmd": "cd themes/pdm-theme && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "blue-fluorite-theme-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "dossier-explorer-wallet-prototype-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd dossier-explorer-wallet-prototype && npm run build"
+                },
+                {
+                    "type": "copy",
+                    "src": "./dossier-explorer-wallet-prototype/seed",
+                    "target": "./apihub-root/dsu-explorer/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "dsu-explorer_bind_to_dossier-explorer-ssapp",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd dossier-explorer-ssapp && npm run build"
+                },
+                {
+                    "type": "copy",
+                    "src": "./dossier-explorer-ssapp/seed",
+                    "target": "./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "execute",
+                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/readme"
                 }
             ]
         },
@@ -255,14 +528,6 @@
                 {
                     "type": "execute",
                     "cmd": "cd pharmaledger-wallet && npm run build"
-                },
-                {
-                    "type": "copy",
-                    "src": "./pharmaledger-wallet/seed",
-                    "target": "./apihub-root/fgt-pharmacy-wallet/wallet-patch/seed",
-                    "options": {
-                        "overwrite": true
-                    }
                 },
                 {
                     "type": "copy",
@@ -315,6 +580,14 @@
                 {
                     "type": "copy",
                     "src": "./fgt-pharmacy-ssapp/seed",
+                    "target": "./apihub-root/fgt-pharmacy-wallet/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "./fgt-pharmacy-ssapp/seed",
                     "target": "./apihub-root/fgt-pharmacy-wallet/apps-patch/fgt-pharmacy-ssapp/seed",
                     "options": {
                         "overwrite": true
@@ -337,7 +610,57 @@
                 {
                     "type": "copy",
                     "src": "./fgt-wholesaler-ssapp/seed",
+                    "target": "./apihub-root/fgt-wholesaler-wallet/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "./fgt-wholesaler-ssapp/seed",
                     "target": "./apihub-root/fgt-wholesaler-wallet/apps-patch/fgt-wholesaler-ssapp/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "execute",
+                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/fgt-wholesaler-wallet/apps-patch/fgt-wholesaler-ssapp/readme"
+                }
+            ]
+        },
+        {
+            "name": "bind_web-cardinal-ion_to_wallet",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "mkdir web-cardinal-ion/examples/ionic/bin"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "echo 'delete /\naddfolder ./web-cardinal-ion/examples/ionic/code\nmount webcardinal/seed /webcardinal' > web-cardinal-ion/examples/ionic/bin/build.file"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "npm run build-web-ion"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "node ./node_modules/octopus/scripts/buildDossier.js --seed=./web-cardinal-ion/examples/ionic/seed  --bundles=./privatesky/psknode/bundles web-cardinal-ion/examples/ionic/bin/build.file"
+                },
+                {
+                    "type": "copy",
+                    "src": "./web-cardinal-ion/examples/ionic/seed",
+                    "target": "./apihub-root/web-ion-wallet/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "./web-cardinal-ion/examples/ionic/seed",
+                    "target": "./apihub-root/web-ion-wallet/apps-patch/web-cardinal-ion/seed",
                     "options": {
                         "overwrite": true
                     }
@@ -375,6 +698,10 @@
                 {
                     "type": "execute",
                     "cmd": "cd apihub-root/fgt-pharmacy-wallet/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
                 }
             ]
         }

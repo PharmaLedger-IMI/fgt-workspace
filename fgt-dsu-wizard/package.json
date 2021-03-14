@@ -1,7 +1,7 @@
 {
   "name": "fgt-dsu-wizard",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Provides underlying API to handle DSUs in an enterprise environment",
   "main": "index.js",
   "scripts": {
     "prebuild": "node ./node_modules/octopus/scripts/run prebuild devmode",

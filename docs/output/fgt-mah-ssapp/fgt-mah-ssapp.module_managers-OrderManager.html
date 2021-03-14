@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>OrderManager - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="$$.html">$$</a><ul class='methods'><li data-type='method'><a href="$$.html#assert">assert</a></li><li data-type='method'><a href="$$.html#autoThrow">autoThrow</a></li><li data-type='method'><a href="$$.html#err">err</a></li><li data-type='method'><a href="$$.html#err">err</a></li><li data-type='method'><a href="$$.html#event">event</a></li><li data-type='method'><a href="$$.html#exception">exception</a></li><li data-type='method'><a href="$$.html#fixMe">fixMe</a></li><li data-type='method'><a href="$$.html#flags">flags</a></li><li data-type='method'><a href="$$.html#incomplete">incomplete</a></li><li data-type='method'><a href="$$.html#info">info</a></li><li data-type='method'><a href="$$.html#invalidMemberName">invalidMemberName</a></li><li data-type='method'><a href="$$.html#invalidSwarmName">invalidSwarmName</a></li><li data-type='method'><a href="$$.html#log">log</a></li><li data-type='method'><a href="$$.html#logError">logError</a></li><li data-type='method'><a href="$$.html#notImplemented">notImplemented</a></li><li data-type='method'><a href="$$.html#obsolete">obsolete</a></li><li data-type='method'><a href="$$.html#propagateError">propagateError</a></li><li data-type='method'><a href="$$.html#redirectLog">redirectLog</a></li><li data-type='method'><a href="$$.html#syntexError">syntexError</a></li><li data-type='method'><a href="$$.html#throttlingEvent">throttlingEvent</a></li><li data-type='method'><a href="$$.html#throw">throw</a></li><li data-type='method'><a href="$$.html#unknownException">unknownException</a></li><li data-type='method'><a href="$$.html#warn">warn</a></li></ul></li><li><a href="fgt-dsu-wizard.module_commands-BatchManager.html">BatchManager</a><ul class='methods'><li data-type='method'><a href="fgt-dsu-wizard.module_commands-BatchManager.html#create">create</a></li><li data-type='method'><a href="fgt-dsu-wizard.module_commands-BatchManager.html#edit">edit</a></li><li data-type='method'><a href="fgt-dsu-wizard.module_commands-BatchManager.html#fromModel">fromModel</a></li><li data-type='method'><a href="fgt-dsu-wizard.module_commands-BatchManager.html#getOne">getOne</a></li><li data-type='method'><a href="fgt-dsu-wizard.module_commands-BatchManager.html#remove">remove</a></li></ul></li><li><a href="fgt-dsu-wizard.module_model-Batch.html">Batch</a></li><li><a href="fgt-dsu-wizard.module_model-Validatable.html">Validatable</a><ul class='methods'><li data-type='method'><a href="fgt-dsu-wizard.module_model-Validatable.html#hasErrors">hasErrors</a></li></ul></li><li><a href="fgt-mah-ssapp.module_managers-Manager.html">Manager</a><ul class='methods'><li data-type='method'><a href="fgt-mah-ssapp.module_managers-Manager.html#fromModel">fromModel</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-Manager.html#getParticipant">getParticipant</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-Manager.html#listMounts">listMounts</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-Manager.html#loadDSU">loadDSU</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-Manager.html#toModel">toModel</a></li></ul></li><li><a href="fgt-mah-ssapp.module_managers-OrderManager.html">OrderManager</a><ul class='methods'><li data-type='method'><a href="fgt-mah-ssapp.module_managers-OrderManager.html#create">create</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-OrderManager.html#edit">edit</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-OrderManager.html#fromModel">fromModel</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-OrderManager.html#getOne">getOne</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-OrderManager.html#list">list</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-OrderManager.html#newBlankOrderSync">newBlankOrderSync</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-OrderManager.html#remove">remove</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-OrderManager.html#toModel">toModel</a></li></ul></li><li><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html">ParticipantManager</a><ul class='methods'><li data-type='method'><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html#create">create</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html#createIssuedOrder">createIssuedOrder</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html#edit">edit</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html#getParticipant">getParticipant</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html#locateInboxAndAppend">locateInboxAndAppend</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html#newBlankOrder">newBlankOrder</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html#registerPharmacy">registerPharmacy</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html#registerWholesaler">registerWholesaler</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html#remove">remove</a></li></ul></li><li><a href="fgt-mah-ssapp.module_managers-ProductManager.html">ProductManager</a><ul class='methods'><li data-type='method'><a href="fgt-mah-ssapp.module_managers-ProductManager.html#create">create</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-ProductManager.html#edit">edit</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-ProductManager.html#fromModel">fromModel</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-ProductManager.html#getAll">getAll</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-ProductManager.html#getOne">getOne</a></li><li data-type='method'><a href="fgt-mah-ssapp.module_managers-ProductManager.html#remove">remove</a></li></ul></li><li><a href="fgt-mah-ssapp.module_managers-StockManager.html">StockManager</a><ul class='methods'><li data-type='method'><a href="fgt-mah-ssapp.module_managers-StockManager.html#getByStatus">getByStatus</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="fgt-dsu-wizard.module_commands.html">commands</a></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li><a href="fgt-dsu-wizard.html#.module:managers">managers</a></li><li><a href="fgt-dsu-wizard.module_model.html">model</a></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li><a href="fgt-dsu-wizard.module_services.html">services</a><ul class='methods'><li data-type='method'><a href="fgt-dsu-wizard.module_services.html#.bindToLocale">bindToLocale</a></li><li data-type='method'><a href="fgt-dsu-wizard.module_services.html#.bindToLocale">bindToLocale</a></li><li data-type='method'><a href="fgt-dsu-wizard.module_services.html#addFileDataToDossier">addFileDataToDossier</a></li><li data-type='method'><a href="fgt-dsu-wizard.module_services.html#mount">mount</a></li></ul></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li><a href="fgt-mah-ssapp.module_LOCALE.html">LOCALE</a></li><li><a href="fgt-mah-ssapp.module_managers.html">managers</a></li><li></li><li><a href="module-commands.html">commands</a></li><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getBatchesAsync">getBatchesAsync</a></li><li><a href="global.html#getProductsAsync">getProductsAsync</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#updateBatches">updateBatches</a></li><li><a href="global.html#updateProducts">updateProducts</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">OrderManager</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+            <span class="ancestors"><a href="fgt-mah-ssapp.module_managers.html">.managers</a>~</span>
+        
+        OrderManager
+        </h2>
+        
+            <div class="class-description usertext"><p>Order Manager Class</p>
+<p>Manager Classes in this context should do the bridge between the controllers
+and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.</p>
+<p>All Manager Classes should be singletons.</p>
+<p>This complete separation of concerts is very beneficial for 2 reasons:</p>
+<ul>
+    <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
+    <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
+</ul></div>
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="OrderManager"><span class="type-signature"></span>new OrderManager<span class="signature">(storageDSU)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="scripts_bundles_wizard.js.html">scripts/bundles/wizard.js</a>, <a href="scripts_bundles_wizard.js.html#line1085">line 1085</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>storageDSU</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Archive</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>the DSU where the storage (mounting) should happen</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="create"><span class="type-signature"></span>create<span class="signature">(order, callback)</span><span class="type-signature"></span></h4>
+
+    
+    <p class="summary usertext"><p>Creates a Order dsu</p>.</p>
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="scripts_bundles_wizard.js.html">scripts/bundles/wizard.js</a>, <a href="scripts_bundles_wizard.js.html#line1105">line 1105</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Creates a Order dsu</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>order</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Order</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>where the string is the mount path relative to the main DSU</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="edit"><span class="type-signature"></span>edit<span class="signature">(order, callback)</span><span class="type-signature"></span></h4>
+
+    
+    <p class="summary usertext"><p>Edits/Overwrites the product details</p>.</p>
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="scripts_bundles_wizard.js.html">scripts/bundles/wizard.js</a>, <a href="scripts_bundles_wizard.js.html#line1132">line 1132</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Edits/Overwrites the product details</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>order</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="fromModel"><span class="type-signature"></span>fromModel<span class="signature">(model)</span><span class="type-signature"> &rarr; {Order}</span></h4>
+
+    
+    <p class="summary usertext">Convert the OrderController view model into an Order.</p>
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="scripts_bundles_wizard.js.html">scripts/bundles/wizard.js</a>, <a href="scripts_bundles_wizard.js.html#line1148">line 1148</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Convert the OrderController view model into an Order.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>model</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Order</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getOne"><span class="type-signature"></span>getOne<span class="signature">(orderId, callback)</span><span class="type-signature"></span></h4>
+
+    
+    <p class="summary usertext"><p>reads the product information (the /info path) from a given gtin (if exists and is registered to the mah)</p>.</p>
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="scripts_bundles_wizard.js.html">scripts/bundles/wizard.js</a>, <a href="scripts_bundles_wizard.js.html#line1173">line 1173</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>reads the product information (the /info path) from a given gtin (if exists and is registered to the mah)</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>orderId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="list"><span class="type-signature"></span>list<span class="signature">(callback)</span><span class="type-signature"></span></h4>
+
+    
+    <p class="summary usertext"><p>Lists all registered orders</p>.</p>
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="scripts_bundles_wizard.js.html">scripts/bundles/wizard.js</a>, <a href="scripts_bundles_wizard.js.html#line1185">line 1185</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Lists all registered orders</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="newBlankOrderSync"><span class="type-signature"></span>newBlankOrderSync<span class="signature">(orderId, orderingTradingPartnerId, shippingAddress)</span><span class="type-signature"> &rarr; {Order}</span></h4>
+
+    
+    <p class="summary usertext">Creates a blacnk Order with some specific initializations.</p>
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="scripts_bundles_wizard.js.html">scripts/bundles/wizard.js</a>, <a href="scripts_bundles_wizard.js.html#line1206">line 1206</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Creates a blacnk Order with some specific initializations.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>orderId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>orderingTradingPartnerId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>shippingAddress</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Order</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="remove"><span class="type-signature"></span>remove<span class="signature">(orderId, callback)</span><span class="type-signature"></span></h4>
+
+    
+    <p class="summary usertext"><p>Removes a order from the list (does not delete/invalidate DSU, simply 'forgets' the reference)</p>.</p>
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="scripts_bundles_wizard.js.html">scripts/bundles/wizard.js</a>, <a href="scripts_bundles_wizard.js.html#line1218">line 1218</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Removes a order from the list (does not delete/invalidate DSU, simply 'forgets' the reference)</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>orderId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="toModel"><span class="type-signature"></span>toModel<span class="signature">(object, model)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+    <p class="summary usertext">Convert an Order into a OrderControler view model.</p>
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="scripts_bundles_wizard.js.html">scripts/bundles/wizard.js</a>, <a href="scripts_bundles_wizard.js.html#line1236">line 1236</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Convert an Order into a OrderControler view model.
+The order.orderLines are converted to a special format. See locale.js</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>object</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Order</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>the business model object</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>model</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>the Controller's model object</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Mar 14 2021 19:30:50 GMT+0000 (GMT) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

@@ -406,104 +406,14 @@
             ]
         }
     ],
-    "build": [
-        {
-            "name": "cardinal-wallet-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd cardinal && npm run build-dossier"
-                }
-            ]
-        },
-        {
-            "name": "webcardinal-wallet-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd webcardinal && npm run build"
-                }
-            ]
-        },
-        {
-            "name": "pdm-theme-wallet-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd themes/pdm-theme && npm run build-dossier"
-                }
-            ]
-        },
-        {
-            "name": "blue-fluorite-theme-wallet-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
-                }
-            ]
-        },
-        {
-            "name": "dossier-explorer-wallet-prototype-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd dossier-explorer-wallet-prototype && npm run build"
-                },
-                {
-                    "type": "copy",
-                    "src": "./dossier-explorer-wallet-prototype/seed",
-                    "target": "./apihub-root/dsu-explorer/wallet-patch/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                }
-            ]
-        },
-        {
-            "name": "dsu-explorer_bind_to_dossier-explorer-ssapp",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd dossier-explorer-ssapp && npm run build"
-                },
-                {
-                    "type": "copy",
-                    "src": "./dossier-explorer-ssapp/seed",
-                    "target": "./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/readme"
-                }
-            ]
-        },
+    "build-use-case": [
         {
             "name": "Bundle_dsu_wizard",
-            "src": "",
+            "src": ".",
             "actions": [
                 {
                     "type": "execute",
                     "cmd": "cd fgt-dsu-wizard && npm run prebuild"
-                }
-            ]
-        },
-        {
-            "name": "gtin-resolver-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd gtin-resolver && npm run build"
                 }
             ]
         },
@@ -692,6 +602,182 @@
             ]
         }
     ],
+    "build": [
+        {
+            "name": "cardinal-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd cardinal && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "webcardinal-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd webcardinal && npm run build"
+                }
+            ]
+        },
+        {
+            "name": "pdm-theme-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/pdm-theme && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "blue-fluorite-theme-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "dossier-explorer-wallet-prototype-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd dossier-explorer-wallet-prototype && npm run build"
+                },
+                {
+                    "type": "copy",
+                    "src": "./dossier-explorer-wallet-prototype/seed",
+                    "target": "./apihub-root/dsu-explorer/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "dsu-explorer_bind_to_dossier-explorer-ssapp",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd dossier-explorer-ssapp && npm run build"
+                },
+                {
+                    "type": "copy",
+                    "src": "./dossier-explorer-ssapp/seed",
+                    "target": "./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "execute",
+                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/readme"
+                }
+            ]
+        },
+        {
+            "name": "build Use Case",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "npm run build-use-case"
+                }
+            ]
+        },
+        {
+            "name": "gtin-resolver-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd gtin-resolver && npm run build"
+                }
+            ]
+        }
+    ],
     "install-mobile": [],
-    "build-mobile": []
+    "build-mobile": [],
+    "docs": [
+        {
+            "name": "Generate Modules Documentation",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-dsu-wizard && npm run docs"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-mah-ssapp && npm run docs"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-pharmacy-ssapp && npm run docs"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-wholesaler-ssapp && npm run docs"
+                }
+            ]
+        },
+        {
+            "name": "Move module Documentation to workspace Folder",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "fgt-dsu-wizard/docs/output",
+                    "target": "docs/output/fgt-dsu-wizard",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "fgt-mah-ssapp/docs/output",
+                    "target": "docs/output/fgt-mah-ssapp",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+
+                    "type": "copy",
+                    "src": "fgt-pharmacy-ssapp/docs/output",
+                    "target": "docs/output/fgt-pharmacy-ssapp",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+
+                    "type": "copy",
+                    "src": "fgt-wholesaler-ssapp/docs/output",
+                    "target": "docs/output/fgt-wholesaler-ssapp",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Compile Documentation",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "node ./node_modules/markdown-include/bin/cli.js ./mdCompile.json"
+                }
+            ]
+        }
+    ]
 }

@@ -14,7 +14,6 @@
     <script src="scripts/bundles/webshims.js"></script>
     <script src="scripts/bundles/pskruntime.js"></script>
     <script src="scripts/bundles/wizard.js"></script>
-    <!--        <script type="module" src="cardinal/cardinal.esm.js"></script>-->
     <link href="webcardinal/webcardinal.css" rel="stylesheet" type="text/css">
     <script type="module" src="webcardinal/webcardinal.js"></script>
     <script type='text/javascript' src="resources/ionic-core/dist/ionic/ionic.js"></script>
@@ -44,8 +43,14 @@
         --ion-background-color: #083140;
         --ion-color: whitesmoke;
 
-        --webc-modal-content-color: var(--ion-color);
+        /*this is quite the hack while they dont let us get rid of */
+        /*--webc-modal-color: transparent;*/
         --webc-modal-content-background: var(--ion-background-color);
+        --webc-modal-content-color: var(--ion-color);
+        --webc-modal-header-padding: 0px;
+        --webc-modal-header-border-widt: 0px;
+        --webc-modal-content-border-color: var(--ion-color-medium-contrast);
+        --webc-modal-inner-padding: 0px 10px;
 
         --ion-color-primary: #428cff;
         --ion-color-primary-rgb: 66,140,255;
@@ -111,10 +116,13 @@
         --ion-color-light-tint: #383a3e;
     }
 
-    ion-item.modal{
-         color: var(--ion-color);
-         background: var(--ion-background-color);
-     }
+    /*ion-footer.modal-class {*/
+    /*    --margin-top: 10px;*/
+    /*}*/
+
+    ion-title.modal-class {
+
+    }
 
     ion-item{
         --background: transparent;
@@ -126,19 +134,15 @@
     }
 
     ion-toolbar.menu{
-        align-content: center;
+        --align-content: center;
     }
 
     ion-content.main-content{
         --background:  url("resources/images/bg4.png") 0 0/100% 100%;
     }
 
-    /*ion-content.modal{*/
-    /*    --ion-background-color: whitesmoke;*/
-    /*}*/
-
     ion-icon{
-        color: whitesmoke;
+        --color: whitesmoke;
     }
 
     ion-img.main-logo{
@@ -154,6 +158,11 @@
         margin: 5px 15px 5px 15px;
     }
 
+    ion-img.modal-class{
+        max-width: 100%;
+        padding: 15px 30% 0px 30%;
+    }
+
     div.with-gradient{
         opacity: 0.7;
         background: linear-gradient(180deg, #00345b 0%, #008798 100%);
@@ -166,27 +175,9 @@
     }
 </style>
 <webc-app-root loader="ion-loader">
-<!--    <webc-app-menu>-->
-<!--        <ion-button slot="before" expand="full" color="light" onclick="handleGoBack()">-->
-<!--            <ion-icon name="arrow-back"></ion-icon>-->
-<!--        </ion-button>-->
-<!--        <ion-button slot="after" expand="full" onclick="handleLiveMode()">Live mode</ion-button>-->
-<!--    </webc-app-menu>-->
     <webc-app-container>
         <webc-app-router></webc-app-router>
     </webc-app-container>
 </webc-app-root>
-<!--<webc-app-root>-->
-<!--    <webc-app-container>-->
-<!--        <custom-header slot="before"></custom-header>-->
-<!--        <custom-main>-->
-<!--            <webc-app-menu disable-identity="true" mode="horizontal"></webc-app-menu>-->
-<!--            <webc-app-router fallback-page="/"></webc-app-router>-->
-<!--        </custom-main>-->
-<!--        <custom-footer slot="after"></custom-footer>-->
-<!--    </webc-app-container>-->
-<!--</webc-app-root>-->
-
-
 </body>
 </html>

@@ -26,8 +26,8 @@
     },
     "opts": {
         "template": "node_modules/docdash",
-        "destination": "./docs/",
-        "readme": "./tmp_doc/README.md",
+        "destination": "./docs/output/",
+        "readme": "./README.md",
         "recurse": true,
         "verbose": true,
         "docdash": {

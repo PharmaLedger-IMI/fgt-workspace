@@ -60,36 +60,6 @@ export default class LocalizedController extends WebcController {
     }
 
     /**
-     * Until I get 2way data binding to work on ionic components, this solves it
-     * @param {string} [prefix] prefix to the name of the input elements. defaults to 'input-'
-     */
-    updateModelFromIonicForms(prefix){
-        prefix = prefix || "input-";
-        let inputs = this.element.querySelectorAll(`ion-input[name^="${prefix}"]`);
-        inputs.forEach(el => {
-            let name = el.name.substring(prefix.length);
-            if (typeof this.model[name] === 'object' && el.value)
-                this.model[name].value = el.value;
-        });
-    }
-
-    bindIonicInputsToValidation(prefix){
-        let self = this;
-        prefix = prefix || "input-";
-        const getDataForElement = function(elemName){
-            if (elemName.includes(prefix))
-                elemName = elemName.substring(prefix.length);
-            self.model[elemName]
-        }
-
-        this.on('ionChange', (evt) => {
-            evt.preventDefault()
-            if (evt)
-                console.log(evt);
-        });
-    }
-
-    /**
      * Adds the locale info to the model.
      * @param {LocalizedController} controller
      * @param {string} pageName
@@ -100,6 +70,6 @@ export default class LocalizedController extends WebcController {
 
     constructor(element, history) {
         super(element, history);
-        this.bindIonicInputsToValidation();
+        require('wizard').Model.Validations.bindIonicValidation(this);
     }
 }

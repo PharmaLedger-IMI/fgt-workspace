@@ -1,6 +1,10 @@
 {
   "title": "Finished Goods Traceability - Wholesalers",
   "welcome": "Welcome back",
+  "errors": {
+    "register": "Unable to register",
+    "try-again": "Try Again?"
+  },
   "none": "You are not identified as a Marketing Authorization holder. Please register",
   "registration": {
     "title": "Please register as a Wholesaler",
@@ -34,6 +38,6 @@
       "required": true,
       "value": "This in an Address"
     },
-    "registration": "Registration"
+    "registration": "Register"
   }
 }

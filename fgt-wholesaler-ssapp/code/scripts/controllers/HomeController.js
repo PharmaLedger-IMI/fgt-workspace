@@ -30,7 +30,6 @@ customElements.define(REGISTRATION_MODAL, class extends HTMLElement{
 });
 
 export default class ParticipantController extends LocalizedController {
-
     getModel = () => ({
         participant: undefined
     });
@@ -43,12 +42,15 @@ export default class ParticipantController extends LocalizedController {
             return this.model.participant !== undefined;
         }, "participant");
 
+        let self = this;
         this.on('perform-registration', (event) => {
             event.preventDefault();
-            this.register(event.detail, (err) => {
+            event.stopImmediatePropagation();
+            self.register(event.detail, (err) => {
                 if (err)
-                    return this.showError(err);
-                this._testParticipant();
+                    self.showErrorModal();
+                self.hideModal();
+                self._testParticipant();
             });
         }, true)
 
@@ -73,21 +75,12 @@ export default class ParticipantController extends LocalizedController {
 
     _showRegistrationModal() {
         //this.showIonicModal(REGISTRATION_MODAL);
-        const onConfirm = (event) => {
-            event.preventDefault();
-            this.register(event.detail, (err) => {
-                if (err)
-                    console.log("ERROR - Could not register - Should not be possible!");
-                this._testParticipant();
-            });
-        };
         this.createWebcModal({
             modelTitle: "",
             modalName: 'registrationModal',
             showFooter: false,
             canClose: false,
-            showCancelButton: false,
-            onConfirm: onConfirm
+            showCancelButton: false
         });
     }
 
@@ -95,9 +88,10 @@ export default class ParticipantController extends LocalizedController {
         let self = this;
         this.participantManager.getParticipant((err, participant) => {
             if (err || !participant) {
-                self._showRegistrationModal();
+                self._showRegistrationModal.call(this);
             } else {
                 self.model.participant = participant;
+                console.log(`Welcome ${self.model.participant.name}`);
             }
         });
     }

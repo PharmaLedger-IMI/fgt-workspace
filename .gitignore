@@ -16,10 +16,11 @@ apihub-root/dossier-explorer/**
 apihub-root/seedsBackup
 cardinal
 env.json.devel
+
 fgt-mah-ssapp/code/constitution
 fgt-mah-ssapp/code/scripts/bundles
 fgt-mah-ssapp/seed
-docs
+fgt-mah-ssapp/docs/output
 
 dossier-explorer-ssapp
 
@@ -32,13 +33,16 @@ webcardinal/*
 web-cardinal-ion
 
 fgt-dsu-wizard/build/bundles
+fgt-dsu-wizard/docs/output/*
 
 fgt-pharmacy-ssapp/code/constitution
 fgt-pharmacy-ssapp/code/scripts/bundles
 fgt-pharmacy-ssapp/seed
+fgt-pharmacy-ssapp/docs/output
 fgt-wholesaler-ssapp/code/constitution
 fgt-wholesaler-ssapp/code/scripts/bundles
 fgt-wholesaler-ssapp/seed
+fgt-wholesaler-ssapp/docs/output
 gtin-resolver
 gtin-dsu-wizard
 node_modules

@@ -15,10 +15,11 @@ export default class RegistrationController extends LocalizedController {
     }
 
     _submitRegistration = function (evt) {
-        this.updateModelFromIonicForms();
+        //this.updateModelFromIonicForms();
         let participant = this._modelToParticipant();
-        let errors = participant.validate()
-        this.send('perform-registration', this._modelToParticipant(this.model.toObject()));
+        let errors = participant.hasErrors();
+        if (!errors)
+            this.send('perform-registration', participant);
     }
 
     _modelToParticipant = function (model) {
