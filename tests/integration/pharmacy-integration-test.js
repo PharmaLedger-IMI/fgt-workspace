@@ -1,5 +1,5 @@
 // Ignore the test as it is failing!
-process.exit();
+//process.exit();
 
 /**
  * Options:
@@ -65,9 +65,10 @@ const launchTestServer = function (timeout, testFunction) {     // the test serv
                         throw err;
                     console.log('Updated bdns', bdns);
                     testFunction((err)=>{
-                        if (err)
-                            console.log("FAIL", err);
-                        else
+                        if (err) {
+                            console.log("TEST HAS FAILED", err);
+                            assert.false(err);
+                        } else
                             testFinished();
                     });
                 });

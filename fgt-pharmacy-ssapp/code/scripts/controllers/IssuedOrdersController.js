@@ -54,7 +54,9 @@ export default class IssuedOrdersController extends ContainerController {
      */
     _addOrderAsync(order, callback) {
         let self = this;
-        self.orderManager.create(order, (err, keySSI, path) => {
+        // toggle lines to allow creation of Orders without a partner.
+        //self.orderManager.create(order,  order, (err, keySSI, path) => {
+        self.participantManager.createIssuedOrder(self.orderManager, order, (err, keySSI, path) => {
             if (err)
                 return callback(err);
             callback();

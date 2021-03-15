@@ -90,7 +90,7 @@ class ParticipantManager{
                     return callback(err);
                 const sReadSSI = keySSI.derive();
                 // order.requesterId is me. order.senderId is the supplier.
-                self.inboxAppend(senderParticipantConstDSU, INBOX_RECEIVED_ORDERS_PROP, sReadSSI, (err) => {
+                self.inboxAppend(senderParticipantConstDSU, INBOX_RECEIVED_ORDERS_PROP, sReadSSI.getIdentifier(true), (err) => {
                     if (err)
                         callback(err); // TODO rollback order creation ??
                     callback(undefined, keySSI, mountPath);
@@ -168,19 +168,19 @@ class ParticipantManager{
         if (!inboxPropPathName) 
             return callback("There is no property Inbox."+inboxPropName);
         let otherInboxPropPath = INBOX_MOUNT_PATH.substring(1)+inboxPropPathName;
-        otherParticipantConstDSU.listFiles("/",  {recursive: true}, (err, files) => {
-            console.log("inboxAppend.FILES", files);
+        //otherParticipantConstDSU.listFiles("/",  {recursive: true}, (err, files) => {
+        //    console.log("inboxAppend.FILES", files);
             otherParticipantConstDSU.readFile(otherInboxPropPath, (err, buffer) => {
                 if (err)
                     return callback(createOpenDSUErrorWrapper("Cannot read file " + otherInboxPropPath, err));
                 let inboxPropArray = JSON.parse(buffer);
                 inboxPropArray.push(message);
                 let inboxPropData = JSON.stringify(inboxPropArray);
-                otherParticipantConstDSU.writeFile(inboxPropPathName, inboxPropData, (err) => {
+                otherParticipantConstDSU.writeFile(otherInboxPropPath, inboxPropData, (err) => {
                     callback(err);
                 });
             });
-        });
+        //});
     };
 
     /**
