@@ -7,21 +7,21 @@ const INBOX_RECEIVED_ORDERS_PROP = 'receivedOrders';
 const INBOX_RECEIVED_SHIPMENTS_PROP = 'receivedShipments';
 const INFO_PATH = '/info';
 const ISSUED_ORDERS_MOUNT_PATH = "/issuedOrders";
-const ORDER_LINES_PATH = '/orderLines';
+const INBOX_ORDER_LINES_PATH = '/orderLines';
 const PARTICIPANT_MOUNT_PATH = "/participant";
 const PRODUCT_MOUNT_PATH = "/products";
 const PUBLIC_ID_MOUNT_PATH = "/publicId";
-const RECEIVED_ORDERS_PATH = '/receivedOrders';
-const RECEIVED_SHIPMENTS_PATH = '/receivedShipments';
-const SHIPMENT_LINES_PATH = '/shipmentLines';
+const INBOX_RECEIVED_ORDERS_PATH = '/receivedOrders';
+const INBOX_RECEIVED_SHIPMENTS_PATH = '/receivedShipments';
+const INBOX_SHIPMENT_LINES_PATH = '/shipmentLines';
 const STOCK_PATH = '/stock';
 
 // these constants depend on the previous constants
 const INBOX_PATHS_AND_PROPS = [
-    {path: ORDER_LINES_PATH, prop: INBOX_ORDER_LINES_PROP},
-    {path: SHIPMENT_LINES_PATH, prop: INBOX_SHIPMENT_LINES_PROP},
-    {path: RECEIVED_ORDERS_PATH, prop: INBOX_RECEIVED_ORDERS_PROP},
-    {path: RECEIVED_SHIPMENTS_PATH, prop: INBOX_RECEIVED_SHIPMENTS_PROP},
+    {path: INBOX_ORDER_LINES_PATH, prop: INBOX_ORDER_LINES_PROP},
+    {path: INBOX_SHIPMENT_LINES_PATH, prop: INBOX_SHIPMENT_LINES_PROP},
+    {path: INBOX_RECEIVED_ORDERS_PATH, prop: INBOX_RECEIVED_ORDERS_PROP},
+    {path: INBOX_RECEIVED_SHIPMENTS_PATH, prop: INBOX_RECEIVED_SHIPMENTS_PROP},
 ];
 
 module.exports = {
@@ -35,12 +35,12 @@ module.exports = {
     INBOX_SHIPMENT_LINES_PROP,
     INFO_PATH,
     ISSUED_ORDERS_MOUNT_PATH,
-    ORDER_LINES_PATH,
+    INBOX_ORDER_LINES_PATH,
     PARTICIPANT_MOUNT_PATH,
     PRODUCT_MOUNT_PATH,
     PUBLIC_ID_MOUNT_PATH,
-    RECEIVED_ORDERS_PATH,
-    RECEIVED_SHIPMENTS_PATH,
-    SHIPMENT_LINES_PATH,
+    INBOX_RECEIVED_ORDERS_PATH,
+    INBOX_RECEIVED_SHIPMENTS_PATH,
+    INBOX_SHIPMENT_LINES_PATH,
     STOCK_PATH
 }

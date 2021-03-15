@@ -26,7 +26,7 @@ const Participant = wizard.Model.Participant;
 const Order = wizard.Model.Order;
 const OrderLine = wizard.Model.OrderLine;
 const OrderStatus = wizard.Model.OrderStatus;
-const {INBOX_RECEIVED_ORDERS_PROP, INBOX_RECEIVED_SHIPMENTS_PROP} = wizard.Constants;
+const {INBOX_MOUNT_PATH, INBOX_RECEIVED_ORDERS_PROP, INBOX_RECEIVED_ORDERS_PATH, INBOX_RECEIVED_SHIPMENTS_PROP} = wizard.Constants;
 
 let domains = ['traceability'];
 let testName = 'Pharmacy integration Test';
@@ -133,7 +133,7 @@ function createParticipant2(callback) {
     inbox[INBOX_RECEIVED_SHIPMENTS_PROP] = [];
     inbox[INBOX_RECEIVED_ORDERS_PROP] = [];
     wholesalerParticipant = new Participant({ id: "WHS321", name: "Wholesaler321Name", email: "whs321@dom", tin: "123456", address: "Wholesaler321 address etc..." });
-    participantService.create(wholesalerParticipant, (err, keySSI) => {
+    participantService.create(wholesalerParticipant, inbox, (err, keySSI) => {
         if (err)
             return callback(err);
         console.log("Wholesaler registered keySSI="+keySSI.getIdentifier());
@@ -152,6 +152,20 @@ function createParticipant1Order(callback) {
     });
 };
 
+function checkParticipant2ReceivedOrder(callback) {
+    participantManager.locateConstWithInbox(wholesalerParticipant.id, INBOX_RECEIVED_ORDERS_PROP, (err, wholesalerDSU) => {
+        if (err)
+            return callback(err);
+        let wholesalerReceivedOrdersPath = INBOX_MOUNT_PATH.substring(1) + INBOX_RECEIVED_ORDERS_PATH;
+        wholesalerDSU.readFile(wholesalerReceivedOrdersPath, (err, buffer) => {
+            if (err)
+                return callback(createOpenDSUErrorWrapper("Cannot read file " + otherInboxPropPath, err));
+            console.log("Wholesaler inbox.receivedOrders ", JSON.parse(buffer));
+            callback();
+        });
+    });
+};
+
 const runTest = function (testFinished) {
     createMainDSU(function (err) {
         if (err)
@@ -165,7 +179,11 @@ const runTest = function (testFinished) {
                 createParticipant1Order(function (err) {
                     if (err)
                         return testFinished(err);
-                    testFinished();
+                    checkParticipant2ReceivedOrder(function (err) {
+                        if (err)
+                            return testFinished(err);
+                        testFinished();
+                    });
                 })
             })
         })

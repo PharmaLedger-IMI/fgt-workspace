@@ -31,13 +31,13 @@ class ParticipantManager{
         this.participantService = new (require('../services').ParticipantService)(domain);
         this.resolver = undefined;
         this.participantDSU = undefined;
-    }
+    };
 
     getParticipantDSU(){
         if (!this.participantDSU)
             throw new Error("ParticipantDSU not cached");
         return this.participantDSU;
-    }
+    };
 
     /**
      * Creates a {@link Participant} dsu
@@ -72,7 +72,7 @@ class ParticipantManager{
                 });
             });
         });
-    }
+    };
 
     /**
      * Creates a {@link IssuedOrder} dsu
@@ -82,18 +82,22 @@ class ParticipantManager{
      */
     createIssuedOrder(orderManager, order, callback) {
         let self = this;
-        orderManager.create(order, (err, keySSI, mountPath) => {
+        self.locateConstWithInbox(order.senderId, INBOX_RECEIVED_ORDERS_PROP, (err, senderParticipantConstDSU) => {
             if (err)
-                return callback(err);
-            const readSSI = keySSI.derive();
-            // order.requesterId is me. order.senderId is the supplier.
-            self.locateInboxAndAppend(order.senderId, INBOX_RECEIVED_ORDERS_PROP, readSSI, (err) => {
+                callback(err); 
+            orderManager.create(order, (err, keySSI, mountPath) => {
                 if (err)
-                    callback(err); // TODO rollback order creation ??
-                callback(undefined, keySSI, mountPath);
+                    return callback(err);
+                const sReadSSI = keySSI.derive();
+                // order.requesterId is me. order.senderId is the supplier.
+                self.inboxAppend(senderParticipantConstDSU, INBOX_RECEIVED_ORDERS_PROP, sReadSSI, (err) => {
+                    if (err)
+                        callback(err); // TODO rollback order creation ??
+                    callback(undefined, keySSI, mountPath);
+                });
             });
         });
-    }
+    };
 
     _cacheParticipantDSU(callback){
         if (this.participantDSU)
@@ -113,7 +117,7 @@ class ParticipantManager{
                 });
             });
         });
-    }
+    };
 
     _matchParticipantDSU(mounts, callback){
         // m.path has "participant". PARTICIPANT_MOUNT_PATH has "/participant".
@@ -126,13 +130,13 @@ class ParticipantManager{
             console.log(`Participant DSU Successfully cached: ${mount[0].identifier}`);
             callback(undefined, dsu);
         });
-    }
+    };
 
     _loadDSU(keySSI, callback){
         if (!this.resolver)
             this.resolver = require('opendsu').loadApi('resolver');
         this.resolver.loadDSU(keySSI, callback);
-    }
+    };
 
     /**
      * reads the participant information (if exists)
@@ -149,7 +153,35 @@ class ParticipantManager{
                 callback(undefined, participant);
             });
         });
-    }
+    };
+
+    /**
+     * Append a message to the otherParticipantConstDSU.inbox.inboxPropName.
+     * @param {DSU} otherParticipantConstDSU 
+     * @param {string} inboxPropName 
+     * @param {object} message 
+     * @param {function(err)} callback
+     */
+    inboxAppend(otherParticipantConstDSU, inboxPropName, message, callback) {
+        let self = this;
+        let inboxPropPathName = self.inboxService.getPathFromProp(inboxPropName);
+        if (!inboxPropPathName) 
+            return callback("There is no property Inbox."+inboxPropName);
+        let otherInboxPropPath = INBOX_MOUNT_PATH.substring(1)+inboxPropPathName;
+        otherParticipantConstDSU.listFiles("/",  {recursive: true}, (err, files) => {
+            console.log("inboxAppend.FILES", files);
+            otherParticipantConstDSU.readFile(otherInboxPropPath, (err, buffer) => {
+                if (err)
+                    return callback(createOpenDSUErrorWrapper("Cannot read file " + otherInboxPropPath, err));
+                let inboxPropArray = JSON.parse(buffer);
+                inboxPropArray.push(message);
+                let inboxPropData = JSON.stringify(inboxPropArray);
+                otherParticipantConstDSU.writeFile(inboxPropPathName, inboxPropData, (err) => {
+                    callback(err);
+                });
+            });
+        });
+    };
 
     /**
      * Locate an Inbox from another participant.
@@ -158,26 +190,30 @@ class ParticipantManager{
      * If not, and error is signaled.
      * @param {string} participantId 
      * @param {string} inboxPropName 
-     * @param {function(err, participantConstDsu)} callback
+     * @param {function(err, participantConstDSU)} callback
      */
-    locateInboxAndAppend(participantId, inboxPropName, message, callback) {
+     locateConstWithInbox(participantId, inboxPropName, callback) {
         let self = this;
-        self.participantService.locateConstDsu(participantId, (err, participantConstDsu) => {
+        self.participantService.locateConstDSU(participantId, (err, participantConstDSU) => {
             if (err)
-                return callback(err); // TODO extend error ?
-            participantConstDsu.readFile(`${INBOX_MOUNT_PATH}/${inboxPropName}`, (err, buffer) => {
+                return callback(createOpenDSUErrorWrapper("Could not locate participant.id="+participantId,err));
+            participantConstDSU.listFiles("/", {recursive: true}, (err, files) => {
                 if (err)
                     return callback(err);
-                let inboxPropNameContents = JSON.parse(buffer);
-                inboxPropNameContents.push(message);
-                participantConstDsu.writeFile(`${INBOX_MOUNT_PATH}/${inboxPropName}`, inboxPropNameContents, (err) => {
-                    if (err)
-                        return callback(err);
-                    callback(undefined, participantConstDsu);
-                });
+                console.log("locateConstWithInbox.FILES ", files);
+                let inboxPropPathName = self.inboxService.getPathFromProp(inboxPropName);
+                if (!inboxPropPathName) 
+                    return callback("There is no property Inbox."+inboxPropName);
+                // files returns a list of files without leading "/".
+                // Remove leading "/" from paths.
+                const filePath = INBOX_MOUNT_PATH.substring(1)+inboxPropPathName;
+                if (!files.includes(filePath)) {
+                    return callback("Participant.id="+participantId+" does not have "+filePath);
+                };
+                return callback(undefined, participantConstDSU);
             });
         });
-    }
+    };
     
     /**
      * Creates a blank Order filled up with the details of this participant.
@@ -195,7 +231,7 @@ class ParticipantManager{
             let order = orderManager.newBlankOrderSync(orderId, requestorId, shippingAddress);
             callback(undefined, order);
         });
-    }
+    };
 
     /**
      * Register a Participant for a Pharmacy and and mounts it to the participant path.
@@ -212,7 +248,7 @@ class ParticipantManager{
                 return callback(err);
             callback();
         });
-    }
+    };
 
     /**
      * Register a Participant for a Wholesaler and and mounts it to the participant path.
@@ -230,7 +266,7 @@ class ParticipantManager{
                 return callback(err);
             callback();
         });
-    }
+    };
 
     /**
      * Removes the PARTICIPANT_MOUNT_PATH DSU (does not delete/invalidate DSU, simply 'forgets' the reference)
@@ -245,7 +281,7 @@ class ParticipantManager{
                 callback();
             });
         });
-    }
+    };
 
     /**
      * Edits/Overwrites the Participant details
@@ -261,8 +297,8 @@ class ParticipantManager{
                 callback();
             });
         });
-    }
-}
+    };
+};
 
 let participantManager;
 

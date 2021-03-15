@@ -61,6 +61,23 @@ function InboxService(domain, strategy){
             });
         });
     };
+
+    /**
+     * Given an Inbox propName, locate the mounth path.
+     * @param {string} propName 
+     * @returns string. Undefined if propName not found.
+     */
+    this.getPathFromProp = function (propName) {
+        let locatedPath;
+        INBOX_PATHS_AND_PROPS.forEach((inboxPathAndProp) => {
+            //console.log(inboxPathAndProp);
+            if (inboxPathAndProp.prop == propName) {
+                locatedPath = inboxPathAndProp.path;
+            }
+        });
+        console.log("getPathFromProp ",propName,locatedPath);
+        return locatedPath;
+    };
 }
 
 module.exports = InboxService;
