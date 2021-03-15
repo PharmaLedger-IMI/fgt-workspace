@@ -34,9 +34,10 @@ assert.callback('Launch API Hub', (cb) => {
                 let participant1a = new Participant({id: "MAH332", name: "PName", email: "usr@dom", tin: "123456", address: "address etc..."});
                 let inbox1a = { orderLines: [ "sRead1", "sRead2" ], shipmentLines: [], receivedOrders: [], receivedShipments: []};
                 participantService.create(participant1a, inbox1a, (err, participant1aKeySSI) => {
+                    assert.false(err);
                     assert.notNull(participant1aKeySSI);
                     console.log("participant key=",participant1aKeySSI.getIdentifier());
-                    participantService.locateConstDsu(participant1a.id, (err, p1aDsu) => {
+                    participantService.locateConstDSU(participant1a.id, (err, p1aDsu) => {
                         if (err)
                             throw err;
                         assert.notNull(p1aDsu);
