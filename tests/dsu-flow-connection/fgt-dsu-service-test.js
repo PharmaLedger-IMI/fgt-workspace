@@ -30,7 +30,8 @@ for (let i = 0; i< 3; i++){
 
 function getOrder(){
     let order = new Order(1, 1, 100, "address", "created", orderLines);
-    return JSON.parse(JSON.stringify(order));
+    return order;
+    //return JSON.parse(JSON.stringify(order));
 }
 
 function createOrderDSU(strategy, order, callback){
