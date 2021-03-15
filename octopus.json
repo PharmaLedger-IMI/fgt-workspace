@@ -744,7 +744,7 @@
                 {
                     "type": "copy",
                     "src": "fgt-mah-ssapp/docs/output",
-                    "target": "docs/output/fgt-mah-ssapp",
+                    "target": "pages/fgt-mah-ssapp",
                     "options": {
                         "overwrite": true
                     }
@@ -789,6 +789,10 @@
                 {
                     "type": "execute",
                     "cmd": "node ./node_modules/markdown-include/bin/cli.js ./mdCompile.json"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "jsdoc -c jsdocs.json"
                 }
             ]
         }
