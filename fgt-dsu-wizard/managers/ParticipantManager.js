@@ -75,7 +75,7 @@ class ParticipantManager{
     };
 
     /**
-     * Creates a {@link IssuedOrder} dsu
+     * Creates an Order DSU and mounts it under issuedOrders/order.id
      * @param {OrderManager} orderManager 
      * @param {Order} order
      * @param {function(err, keySSI, mountPath)} callback
@@ -157,7 +157,7 @@ class ParticipantManager{
 
     /**
      * Append a message to the otherParticipantConstDSU.inbox.inboxPropName.
-     * @param {DSU} otherParticipantConstDSU 
+     * @param {Archive} otherParticipantConstDSU 
      * @param {string} inboxPropName 
      * @param {object} message 
      * @param {function(err)} callback
