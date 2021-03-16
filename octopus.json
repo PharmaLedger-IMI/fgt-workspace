@@ -2,21 +2,6 @@
     "workDir": ".",
     "dependencies": [
         {
-            "name": "web-cardinal-ion",
-            "src": "https://github.com/webcardinal/webcardinal-app-examples.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd web-cardinal-ion/examples/ionic && npm install"
-                }
-            ]
-        },
-        {
             "name": "cardinal",
             "src": "https://github.com/PrivateSky/cardinal.git",
             "actions": [
@@ -137,25 +122,6 @@
                 {
                     "type": "execute",
                     "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && npm run build"
-                }
-            ]
-        },
-        {
-            "name": "apihub-root/web-ion-wallet/loader",
-            "src": "https://github.com/PrivateSky/trust-loader.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/web-ion-wallet/loader && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/web-ion-wallet/loader && npm run build"
                 }
             ]
         },
@@ -309,103 +275,6 @@
             ]
         }
     ],
-    "pre-build-web-cardinal-ion": [
-        {
-            "name": "pre-build-web-cardinal",
-            "src": "",
-            "actions": [
-                {
-                    "type": "copy",
-                    "src": "privatesky/psknode/bundles/pskruntime.js",
-                    "target": "web-cardinal-ion/examples/ionic/code/constitution/pskruntime.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "privatesky/psknode/bundles/webshims.js",
-                    "target": "web-cardinal-ion/examples/ionic/code/constitution/webshims.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "privatesky/psknode/bundles/pskruntime.js",
-                    "target": "web-cardinal-ion/examples/ionic/code/scripts/bundles/pskruntime.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "privatesky/psknode/bundles/webshims.js",
-                    "target": "web-cardinal-ion/examples/ionic/code/scripts/bundles/webshims.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "privatesky/psknode/bundles/iframeBoot.js",
-                    "target": "web-cardinal-ion/examples/ionic/code/scripts/bundles/iframeBoot.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "web-cardinal-ion/examples/ionic/assets",
-                    "target": "web-cardinal-ion/examples/ionic/code/assets",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "web-cardinal-ion/examples/ionic/pages",
-                    "target": "web-cardinal-ion/examples/ionic/code/pages",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "web-cardinal-ion/examples/ionic/templates",
-                    "target": "web-cardinal-ion/examples/ionic/code/templates",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "web-cardinal-ion/examples/ionic/scripts",
-                    "target": "web-cardinal-ion/examples/ionic/code/scripts",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "web-cardinal-ion/examples/ionic/index.html",
-                    "target": "web-cardinal-ion/examples/ionic/code/index.html",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "web-cardinal-ion/examples/ionic/webcardinal.json",
-                    "target": "web-cardinal-ion/examples/ionic/code/webcardinal.json",
-                    "options": {
-                        "overwrite": true
-                    }
-                }
-
-            ]
-        }
-    ],
     "build-use-case": [
         {
             "name": "Bundle_dsu_wizard",
@@ -515,48 +384,6 @@
                     "type": "copy",
                     "src": "./fgt-wholesaler-ssapp/seed",
                     "target": "./apihub-root/fgt-wholesaler-wallet/apps-patch/fgt-wholesaler-ssapp/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/fgt-wholesaler-wallet/apps-patch/fgt-wholesaler-ssapp/readme"
-                }
-            ]
-        },
-        {
-            "name": "bind_web-cardinal-ion_to_wallet",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "mkdir web-cardinal-ion/examples/ionic/bin"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo 'delete /\naddfolder ./web-cardinal-ion/examples/ionic/code\nmount webcardinal/seed /webcardinal' > web-cardinal-ion/examples/ionic/bin/build.file"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "npm run build-web-ion"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "node ./node_modules/octopus/scripts/buildDossier.js --seed=./web-cardinal-ion/examples/ionic/seed  --bundles=./privatesky/psknode/bundles web-cardinal-ion/examples/ionic/bin/build.file"
-                },
-                {
-                    "type": "copy",
-                    "src": "./web-cardinal-ion/examples/ionic/seed",
-                    "target": "./apihub-root/web-ion-wallet/wallet-patch/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "./web-cardinal-ion/examples/ionic/seed",
-                    "target": "./apihub-root/web-ion-wallet/apps-patch/web-cardinal-ion/seed",
                     "options": {
                         "overwrite": true
                     }
@@ -706,7 +533,7 @@
     ],
     "install-mobile": [],
     "build-mobile": [],
-    "docs": [
+    "docs":  [
         {
             "name": "Generate Modules Documentation",
             "src": ".",

@@ -1,5 +1,7 @@
 process.env.NO_LOGS = true;
 process.env.PSK_CONFIG_LOCATION = process.cwd();
+console.log("This test is deprecated. Skipping");
+process.exit(1)
 
 const path = require('path');
 
