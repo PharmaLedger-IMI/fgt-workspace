@@ -10,26 +10,46 @@ SCRIPTPATH=$(dirname "$SCRIPT")
 include "${SCRIPTPATH}/detect_os.sh"
 
 function test_arguments(){
-  if [[ $# -gt 2 ]]; then
+if [[ $# -gt 3 ]]; then
   echo "invalid arguments"
   exit 1;
 fi
 }
 
+windows_draw_io_path=""
+
 function test_os(){
-  local os=$(detect_os)
-  if [[ "$os" == "notset" ]]
-  then
-    echo "Unsupported os"
-    exit 1
-  elif [ "$os" == "windows" ]; then
-    echo "Currently Unsupported os"
-    exit 1
+  windows_draw_io_path=$(cat draw.io.path)
+  if [[ -z "$windows_draw_io_path" ]]; then
+    echo "windows"
+  else
+    echo "linux"
+  fi
+}
+
+function run_draw_io(){
+  test_arguments $#
+  local output="$1"
+  local input="$2"
+  local os="$3"
+  if [[ "$os" == "linux" ]]; then
+    drawio --export --quality 300 --trasnparent --page-index 0 --output "$output" "$input"
+  else
+    if [[ -z "$windows_draw_io_path" ]]; then
+      input=$( "$input")
+      output=$( "$output")
+      drawio --export --quality 300 --trasnparent --page-index 0 --output "$output" "$input"
+    else
+        echo "windows draw-io path not defined"
+        exit 1;
+    fi
   fi
 }
 
 function exportToPng(){
   test_arguments $#
+  local os="$3"
+
   local file="$1"
   local file_name=$(basename "$file")
 
@@ -68,10 +88,11 @@ function exportToPng(){
 find_drawings_and_export_to_resources(){
   local path="${PWD}/docs/drawings"
   local output_path="${PWD}/docs/resources"
+  local os=$(detect_os)
 
   find "$path" -type f -iname "*.drawio" -print0 |
     while IFS= read -r -d '' drawing; do
-        exportToPng "$drawing" "$output_path"
+        exportToPng "$drawing" "$output_path" "$os"
     done
 }
 
