@@ -1,0 +1,21 @@
+{
+  "identity": {
+    "avatar": "/resources/images/mah.jpeg",
+    "name": " ",
+    "email": " "
+  },
+  "theme": "pdm-theme",
+  "pagesFallback": {
+    "name": "404",
+    "path": "./404"
+  },
+  "pages": [
+    {
+      "name": "Home",
+      "path": "/",
+      "src": "home.html",
+      "indexed": false,
+      "tag": "home"
+    }
+  ]
+}

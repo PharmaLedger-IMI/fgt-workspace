@@ -1,0 +1,7 @@
+{
+    "MODE": "autologin",
+    "LOGIN_EMAIL": "auto@autologin.autologin",
+    "LOGIN_USERNAME": "autologin.username",
+    "LOGIN_PASSWORD": "randomGeneratedAtRuntime",
+    "BLOCKCHAIN_DOMAIN": "vault"
+}

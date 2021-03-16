@@ -1,0 +1,55 @@
+{
+  "workDir": ".",
+  "dependencies": [
+    {
+      "name": "PSK bundles",
+      "src": "",
+      "actions": [
+        {
+          "type": "copy",
+          "src": "../../../privatesky/psknode/bundles/swBoot.js",
+          "target": "./swBoot.js",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copy",
+          "src": "../../../privatesky/psknode/bundles/webshims.js",
+          "target": "./bundles/webshims.js",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copy",
+          "src": "../../../privatesky/psknode/bundles/loaderBoot.js",
+          "target": "./bundles/loaderBoot.js",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copy",
+          "src": "assets/defaults/images-pwa",
+          "target": "assets/images-pwa",
+          "options": {
+            "overwrite": true
+          }
+        }
+      ]
+    }
+  ],
+  "build": [
+    {
+      "name": "generate-service-worker",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "workbox generateSW"
+        }
+      ]
+    }
+  ]
+}

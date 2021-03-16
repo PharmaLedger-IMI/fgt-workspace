@@ -3,6 +3,89 @@ process.env.PSK_CONFIG_LOCATION = process.cwd();
 
 const path = require('path');
 
+// link ref wizrad.bunlles
+//
+// db.bundle
+//
+// import db from ......
+//
+// Manager(db)
+//
+// class Database{
+//
+//     get(key);
+//
+//     list(key);
+//
+//     set(key, value);
+//
+// }
+//
+// /**
+//  * tradingPartrtnerId => DID => ConstSSI
+//  * mount constSSI => /receiver
+//  * import from /receiver/toInbox
+//  *
+//  * toInbox.send(api, keyssi)
+//  */
+// class toInbox{
+//     send(api, keyssi){
+//         /**
+//          *
+//          *   load inboxDSU (the secretSSI has to be here)
+//          *   call the set method on the inbox dsu
+//          *   <pre>
+//          *   set('hardcoded_key', value){
+//          *      copy of set method
+//          *   }
+//          *   </pre>>
+//          *
+//          *   in an Authorized version this inbox can have a public key, that the api-hub can verify.
+//          *   right now security is just for show
+//          */
+//     }
+// }
+
+// /**
+//  * @param {Archive} dsu
+//  */
+// class JsonDatabase{
+//     constructor(dsu){
+//
+//     }
+//     get(key){
+//         console.log("read mount");
+//     }
+//
+//     list(path){
+//         let args = path.split("/");
+//         return db[arg1][arg2]
+//     }
+//
+//     set(key, value);
+// }
+//
+// class MountDatabase{
+//
+//     get(key){
+//         console.log("read mount return info");
+//     }
+//
+//     // list(/order/received)
+//     list(path){
+//         listMounts(path)
+//     }
+//
+//     // set ('/order/receved/keyssi', keyssi)
+//     set(key, value){
+//         console.log("mount keysii to key");
+//     }
+// }
+//
+//
+//
+// const db= require('../../fgr-dsu-db');
+
 // update the require path!!!
 
 require(path.join('../../privatesky/psknode/bundles', 'testsRuntime.js'));     // test runtime
