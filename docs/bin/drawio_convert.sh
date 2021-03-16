@@ -36,12 +36,12 @@ function run_draw_io(){
   local os="$3"
   local page="$4"
   if [[ "$os" == "linux" ]]; then
-    drawio --export --quality 300 --trasnparent --page-index "$page" --output "$output" "$input"
+    drawio --export --quality 300 --transparent --page-index "$page" --output "$output" "$input"
   else
     if [[ "$windows_draw_io_path" != "" ]]; then
       input=$(wslpath "$input")
       output=$(wspath "$output")
-      drawio --export --quality 300 --trasnparent --page-index "$page" --output "$output" "$input"
+      drawio --export --quality 300 --transparent --page-index "$page" --output "$output" "$input"
     else
         echo "windows draw-io path not defined"
         exit 1;
