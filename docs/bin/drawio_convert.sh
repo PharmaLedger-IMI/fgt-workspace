@@ -20,7 +20,7 @@ fi
 
 function test_os(){
   if [[ -f "$SCRIPTPATH/draw.io.path" ]]; then
-    local windows_path=$(wslpath -w "$SCRIPTPATH/draw.io.path")
+    local windows_path="$SCRIPTPATH/draw.io.path"
     local windows_draw_io_path="$(cat "$windows_path")"
     echo "$windows_draw_io_path"
   else
