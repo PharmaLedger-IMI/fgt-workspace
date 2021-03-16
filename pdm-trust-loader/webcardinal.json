@@ -1,9 +1,4 @@
 {
-  "identity": {
-    "avatar": "/resources/images/mah.jpeg",
-    "name": " ",
-    "email": " "
-  },
   "theme": "pdm-theme",
   "pagesFallback": {
     "name": "404",
