@@ -48,6 +48,23 @@ function run_draw_io(){
   fi
 }
 
+function run_draw_io_extract(){
+  local input="$1"
+  local os="$2"
+  local windows_path="$3"
+  if [[ "$os" == "linux" ]]; then
+    drawio --export --format xml --uncompressed "$input"
+  else
+    if [[ "$windows_path" != "" ]]; then
+      input=$(wslpath -w "$input")
+      "$windows_path" --export --format xml --uncompressed "$input"
+    else
+        echo "windows draw-io path not defined"
+        exit 1;
+    fi
+  fi
+}
+
 function exportToPng(){
   local os="$3"
   local windows_path="$4"
@@ -65,6 +82,7 @@ function exportToPng(){
   echo "png: $png_output_path"
 
   echo "Exporting $file_name to xml for page parsing"
+  run_draw_io_extract "$file" "$os" "$windows_path"
   drawio --export --format xml --uncompressed "$file"
 
   local names=$(grep -oP "name=\"\K(.*?)(?=\")" "$base_file_name.xml")
