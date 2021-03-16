@@ -92,7 +92,7 @@ function exportToPng(){
 
 find_drawings_and_export_to_resources(){
   local path="${PWD}/docs/drawings"
-  local output_path="${PWD}/docs/resources"
+  local output_path="${PWD}/docs/resources/drawings"
   local os=$(test_os)
 
   echo "working in os $os"

@@ -37,6 +37,8 @@ fgt-dsu-wizard/build/bundles
 fgt-dsu-wizard/docs/output/*
 
 docs/bin/draw.io.path
+!docs/bin/resources/drawings/*.md
+docs/drawings/*.xml
 
 fgt-pharmacy-ssapp/code/constitution
 fgt-pharmacy-ssapp/code/scripts/bundles
