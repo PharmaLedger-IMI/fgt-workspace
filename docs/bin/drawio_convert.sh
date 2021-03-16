@@ -37,7 +37,8 @@ function run_draw_io(){
   if [[ "$os" == "linux" ]]; then
     drawio --export --quality 300 --transparent --page-index "$page" --output "$output" "$input"
   else
-    if [[ "$windows_path" != "" ]]; then
+    if [[ "$windows_path" != "" ]]; then 
+	  touch "$output"
       input=$(wslpath -w "$input")
       output=$(wslpath -w "$output")
       "$windows_path" --export --quality 300 --transparent --page-index "$page" --output "$output" "$input"
