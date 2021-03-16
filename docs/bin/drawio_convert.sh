@@ -41,7 +41,7 @@ function run_draw_io(){
     if [[ "$windows_draw_io_path" != "" ]]; then
       input=$(wslpath "$input")
       output=$(wspath "$output")
-      drawio --export --quality 300 --transparent --page-index "$page" --output "$output" "$input"
+      "$windows_draw_io_path" --export --quality 300 --transparent --page-index "$page" --output "$output" "$input"
     else
         echo "windows draw-io path not defined"
         exit 1;
