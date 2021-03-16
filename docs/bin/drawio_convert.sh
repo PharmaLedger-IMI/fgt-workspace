@@ -1,5 +1,8 @@
 #!/bin/bash
 
+
+# for windows needs a file called 'draw.io.path' containing a single line with the full path for the windows dra.io executable
+
 include(){
   local func_name=${1##*/}
   . ${1} 2>/dev/null || { printf "could not import $func_name...\nQuitting\n"; exit 1; }
