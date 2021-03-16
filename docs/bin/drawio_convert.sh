@@ -18,13 +18,11 @@ if [[ $# -gt 3 ]]; then
 fi
 }
 
-windows_draw_io_path=""
-
 function test_os(){
   if [[ -f "$SCRIPTPATH/draw.io.path" ]]; then
     local windows_path=$(wslpath -w "$SCRIPTPATH/draw.io.path")
-    windows_draw_io_path="$(cat "$windows_path")"
-    echo "windows"
+    local windows_draw_io_path="$(cat "$windows_path")"
+    echo "$windows_draw_io_path"
   else
     echo "linux"
   fi
@@ -35,13 +33,14 @@ function run_draw_io(){
   local input="$2"
   local os="$3"
   local page="$4"
+  local windows_path="$5"
   if [[ "$os" == "linux" ]]; then
     drawio --export --quality 300 --transparent --page-index "$page" --output "$output" "$input"
   else
-    if [[ "$windows_draw_io_path" != "" ]]; then
+    if [[ "$windows_path" != "" ]]; then
       input=$(wslpath -w "$input")
       output=$(wslpath -w "$output")
-      "$windows_draw_io_path" --export --quality 300 --transparent --page-index "$page" --output "$output" "$input"
+      "$windows_path" --export --quality 300 --transparent --page-index "$page" --output "$output" "$input"
     else
         echo "windows draw-io path not defined"
         exit 1;
@@ -51,6 +50,7 @@ function run_draw_io(){
 
 function exportToPng(){
   local os="$3"
+  local windows_path="$4"
 
   local file="$1"
   local file_name=$(basename "$file")
@@ -78,14 +78,14 @@ function exportToPng(){
     # if there's only one page
     echo "output file ${png_output_path}/${file_name}.png"
     echo "source file $file"
-    run_draw_io "${png_output_path}/${file_name}.png" "$file" "$os" 0
+    run_draw_io "${png_output_path}/${file_name}.png" "$file" "$os" 0 "$windows_path"
   else
     # Export each page as an PNG
     # Page index is zero based
     local i=0;
     while read -r name; do
       echo "Processing page $i named $name"
-      run_draw_io "${png_output_path}/${file_name}-$name.png" "$file" "$os" $i
+      run_draw_io "${png_output_path}/${file_name}-$name.png" "$file" "$os" $i "$windows_path"
       i=$((i+1))
     done < <(echo "$names")
   fi
@@ -95,6 +95,12 @@ find_drawings_and_export_to_resources(){
   local path="${PWD}/docs/drawings"
   local output_path="${PWD}/docs/resources/drawings"
   local os=$(test_os)
+  local window_path=""
+
+  if [[ "$os" != "linux" ]]; then
+    windows_path="$os"
+    os="windows"
+  fi
 
   echo "working in os $os"
 
@@ -103,7 +109,7 @@ find_drawings_and_export_to_resources(){
   echo "$files"
   find "$path" -type f -iname "*.drawio" -print0 |
     while IFS= read -r -d '' drawing; do
-        exportToPng "$drawing" "$output_path" "$os"
+        exportToPng "$drawing" "$output_path" "$os" "$windows_path"
     done
 }
 
