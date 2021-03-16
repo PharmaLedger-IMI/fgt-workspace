@@ -22,7 +22,7 @@ windows_draw_io_path=""
 
 function test_os(){
   if [[ -f "$SCRIPTPATH/draw.io.path" ]]; then
-    local windows_path=$(wslpath "$SCRIPTPATH/draw.io.path")
+    local windows_path=$(wslpath -w "$SCRIPTPATH/draw.io.path")
     windows_draw_io_path="$(cat "$windows_path")"
     echo "windows"
   else
@@ -39,8 +39,8 @@ function run_draw_io(){
     drawio --export --quality 300 --transparent --page-index "$page" --output "$output" "$input"
   else
     if [[ "$windows_draw_io_path" != "" ]]; then
-      input=$(wslpath "$input")
-      output=$(wslpath "$output")
+      input=$(wslpath -w "$input")
+      output=$(wslpath -w "$output")
       "$windows_draw_io_path" --export --quality 300 --transparent --page-index "$page" --output "$output" "$input"
     else
         echo "windows draw-io path not defined"
