@@ -21,7 +21,7 @@ fi
 windows_draw_io_path=""
 
 function test_os(){
-  if [[ -f "$SCRIPTPATH/draw.io.path}" ]]; then
+  if [[ -f "$SCRIPTPATH/draw.io.path" ]]; then
     windows_draw_io_path="$(cat wslpath "$SCRIPTPATH/draw.io.path}")"
     echo "windows"
   else
