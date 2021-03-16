@@ -7,7 +7,7 @@
       "actions": [
         {
           "type": "copy",
-          "src": "../../../privatesky/psknode/bundles/swBoot.js",
+          "src": "../privatesky/psknode/bundles/swBoot.js",
           "target": "./swBoot.js",
           "options": {
             "overwrite": true
@@ -15,7 +15,7 @@
         },
         {
           "type": "copy",
-          "src": "../../../privatesky/psknode/bundles/webshims.js",
+          "src": "../privatesky/psknode/bundles/webshims.js",
           "target": "./bundles/webshims.js",
           "options": {
             "overwrite": true
@@ -23,7 +23,7 @@
         },
         {
           "type": "copy",
-          "src": "../../../privatesky/psknode/bundles/loaderBoot.js",
+          "src": "../privatesky/psknode/bundles/loaderBoot.js",
           "target": "./bundles/loaderBoot.js",
           "options": {
             "overwrite": true
@@ -41,6 +41,20 @@
     }
   ],
   "build": [
+    {
+      "name": "Copy pdm-toolkit-bundle",
+      "src": "",
+      "actions": [
+        {
+          "type": "copy",
+          "src": "../pdm-dsu-toolkit/build/bundles/toolkit.js",
+          "target": "bundles/toolkit.js",
+          "options": {
+            "overwrite": true
+          }
+        }
+      ]
+    },
     {
       "name": "generate-service-worker",
       "src": "",

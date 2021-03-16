@@ -1,0 +1,6 @@
+{
+  "toolkit": {
+    "deps": "../../../pdm-dsu-toolkit:toolkit",
+    "autoLoad":  true
+  }
+}

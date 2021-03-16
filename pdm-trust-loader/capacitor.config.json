@@ -1,0 +1,13 @@
+{
+  "appId": "pharmaledger.pdmfc.trustloader",
+  "appName": "pdm-trust-loader",
+  "bundledWebRuntime": true,
+  "npmClient": "npm",
+  "webDir": ".",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}

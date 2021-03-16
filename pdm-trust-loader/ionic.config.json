@@ -1,0 +1,7 @@
+{
+  "name": "pdm-trust-loader",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}

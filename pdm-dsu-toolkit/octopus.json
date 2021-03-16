@@ -1,0 +1,35 @@
+{
+  "workDir": ".",
+  "dependencies": [],
+  "prebuild": [
+    {
+      "name": "Bundles",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "node ../privatesky/psknode/bin/scripts/pskbuild.js --projectMap=./build/build.json  --prod=true --output=./build/bundles"
+        },
+        {
+          "type": "remove",
+          "target": "./builds"
+        }]
+    }
+  ],
+  "docs": [
+    {
+      "name": "Documentation",
+      "src": ".",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "node ./node_modules/markdown-include/bin/cli.js ./mdCompile.json"
+        },
+        {
+          "type": "execute",
+          "cmd": "jsdoc -c jsdocs.json"
+        }
+      ]
+    }
+  ]
+}

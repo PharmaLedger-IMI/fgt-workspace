@@ -1,0 +1,30 @@
+{
+  "name": "pdm-dsu-toolkit",
+  "version": "0.0.1",
+  "description": "Provides underlying API to handle DSUs in an enterprise environment",
+  "main": "index.js",
+  "scripts": {
+    "prebuild": "node ./node_modules/octopus/scripts/run prebuild devmode",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "node ./node_modules/octopus/scripts/run docs devmode"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.pdmfc.com/pharmaledger/traceability/fgt-dsu-toolkit.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.pdmfc.com/pharmaledger/traceability/fgt-dsu-wizard/issues"
+  },
+  "homepage": "https://gitlab.pdmfc.com/pharmaledger/traceability/fgt-dsu-wizard#readme",
+  "dependencies": {
+    "octopus": "git+https://github.com/PrivateSky/octopus.git"
+  },
+  "devDependencies": {
+    "docdash": "^1.2.0",
+    "form-data": "v3.0.0",
+    "jsdoc": "^3.6.6",
+    "markdown-include": "^0.4.3"
+  }
+}

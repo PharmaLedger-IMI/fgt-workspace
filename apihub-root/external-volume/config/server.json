@@ -25,6 +25,10 @@
     "gtin-dsu-wizard": {
       "module": "./../../gtin-dsu-wizard"
     },
+    "pdm-dsu-toolkit": {
+      "module": "./../../pdm-dsu-toolkit",
+      "function": "Init"
+    },
     "fgt-dsu-wizard": {
       "module": "./../../fgt-dsu-wizard",
       "function": "Init"

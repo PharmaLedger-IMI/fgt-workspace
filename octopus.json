@@ -156,6 +156,15 @@
             ]
         },
         {
+            "name": "pdm-dsu-toolkit",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-dsu-toolkit && npm install"
+                }
+            ]
+        },
+        {
             "name": "fgt-dsu-wizard",
             "actions": [
                 {
@@ -273,9 +282,53 @@
                     "cmd": "cd fgt-wholesaler-ssapp && npm install"
                 }
             ]
+        },
+        {
+            "name": "pdm-trust-loader",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-trust-loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-trust-loader && npm run postinstall"
+                }
+            ]
         }
+
     ],
     "build-use-case": [
+        {
+            "name": "webcardinal-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd webcardinal && npm run build"
+                }
+            ]
+        },
+        {
+            "name": "pdm-theme-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/pdm-theme && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "Bundle_dsu-toolkit",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-dsu-toolkit && npm run prebuild"
+                }
+            ]
+        },
         {
             "name": "Bundle_dsu_wizard",
             "src": ".",
@@ -283,6 +336,36 @@
                 {
                     "type": "execute",
                     "cmd": "cd fgt-dsu-wizard && npm run prebuild"
+                }
+            ]
+        },
+        {
+            "name": "Build and deploy PDM Trust Loader",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-trust-loader && npm run build"
+                },
+                {
+                    "type": "copy",
+                    "src": "./webcardinal/webcardinal",
+                    "target": "./pdm-trust-loader/webcardinal",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "remove",
+                    "target": "./apihub-root/pdm-trust-loader/loader"
+                },
+                {
+                    "type": "copy",
+                    "src": "./pdm-trust-loader",
+                    "target": "./apihub-root/pdm-trust-loader/loader",
+                    "options": {
+                        "overwrite": true
+                    }
                 }
             ]
         },
@@ -441,32 +524,22 @@
             ]
         },
         {
-            "name": "webcardinal-wallet-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd webcardinal && npm run build"
-                }
-            ]
-        },
-        {
-            "name": "pdm-theme-wallet-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd themes/pdm-theme && npm run build-dossier"
-                }
-            ]
-        },
-        {
             "name": "blue-fluorite-theme-wallet-build",
             "src": "",
             "actions": [
                 {
                     "type": "execute",
                     "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "build Use Case",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "npm run build-use-case"
                 }
             ]
         },
@@ -511,16 +584,6 @@
             ]
         },
         {
-            "name": "build Use Case",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "npm run build-use-case"
-                }
-            ]
-        },
-        {
             "name": "gtin-resolver-build",
             "src": "",
             "actions": [
@@ -553,6 +616,14 @@
                 {
                     "type": "execute",
                     "cmd": "cd fgt-wholesaler-ssapp && npm run docs"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-dsu-toolkit && npm run docs"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-trust-loader && npm run docs"
                 }
             ]
         },

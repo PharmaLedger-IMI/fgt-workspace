@@ -3,36 +3,20 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>PSK App Core</title>
-    PLACEHOLDER_THAT_WILL_BE_REPLACED_BY_SW_OR_SERVER_WITH_BASE_TAG
-    <link href="resources/css/main.css" rel="stylesheet" type="text/css">
+    <title>Pharmaledger's DSU Trust Loader</title>
     <!--    <link rel="stylesheet" href="resources/css/fonts/fontawesome/font-awesome.min.css">-->
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <script src="scripts/bundles/iframeBoot.js"></script>
-    <script src="scripts/bundles/webshims.js"></script>
-    <script src="scripts/bundles/pskruntime.js"></script>
-    <script src="scripts/bundles/wizard.js"></script>
+    <script src="bundles/webshims.js"></script>
+    <script src="bundles/loaderBoot.js"></script>
+    <script src="bundles/loaderBoot.js"></script>
+
     <script src="capacitor.js"></script>
     <link href="webcardinal/webcardinal.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="resources/ionic-core/css/ionic.bundle.css">
     <script type="module" src="webcardinal/webcardinal.js"></script>
     <script type='text/javascript' src="resources/ionic-core/dist/ionic/ionic.js"></script>
-    <link rel="stylesheet" href="resources/ionic-core/css/ionic.bundle.css">
-    <script>
-        if (window.frameElement) {
-            const iframeIdentity = window.frameElement.getAttribute('identity');
-
-            if (iframeIdentity) {
-                window.parent.document.dispatchEvent(new CustomEvent(iframeIdentity, {
-                    detail: {
-                        status: 'completed'
-                    }
-                }));
-                console.log("Index page Event Dispatched...")
-            }
-        }
-    </script>
 </head>
 
 <body>
@@ -139,7 +123,7 @@
     }
 
     ion-content.main-content{
-        --background:  url("resources/images/bg4.png") 0 0/100% 100%;
+        --background:  url("resources/images/bg1.png") 0 0/100% 100%;
     }
 
     ion-icon{

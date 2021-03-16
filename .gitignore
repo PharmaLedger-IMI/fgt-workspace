@@ -13,12 +13,18 @@ apihub-root/fgt-mah-wallet/apps-patch
 apihub-root/fgt-pharmacy-wallet/apps-patch
 apihub-root/fgt-wholesaler-wallet/apps-patch
 apihub-root/web-ion-wallet/**
+apihub-root/pdm-trust-loader/**
 apihub-root/dossier-explorer/**
 apihub-root/seedsBackup
 cardinal
 dossier-explorer-ssapp
 dossier-explorer-wallet-prototype
 env.json.devel
+
+pdm-trust-loader/webcardinal
+pdm-trust-loader/swPwa*
+pdm-trust-loader/workbox*
+!pdm-trust-loader/workbox-config.js
 
 fgt-mah-ssapp/code/constitution
 fgt-mah-ssapp/code/scripts/bundles
