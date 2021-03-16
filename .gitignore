@@ -1,5 +1,6 @@
 apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed
 apihub-root/dsu-explorer/wallet-patch/seed
+apihub-root/dsu-explorer/loader
 apihub-root/fgt-mah-wallet/wallet-patch/seed
 apihub-root/fgt-mah-wallet/loader
 apihub-root/fgt-pharmacy-wallet/wallet-patch/seed
@@ -15,14 +16,14 @@ apihub-root/web-ion-wallet/**
 apihub-root/dossier-explorer/**
 apihub-root/seedsBackup
 cardinal
+dossier-explorer-ssapp
+dossier-explorer-wallet-prototype
 env.json.devel
 
 fgt-mah-ssapp/code/constitution
 fgt-mah-ssapp/code/scripts/bundles
 fgt-mah-ssapp/seed
 fgt-mah-ssapp/docs/output
-
-dossier-explorer-ssapp
 
 webcardinal/*
 !webcardinal/octopus.json

@@ -59,7 +59,7 @@ function validateOrder(keySSI, callback){
         if (err)
             return callback(err);
         assert.notNull(dsu, "DSU cannot be null");
-        dsu.readFile("/data", (err, data) => {
+        dsu.readFile("/info", (err, data) => {
             if (err)
                 return callback(err);
             if (!data)
@@ -108,7 +108,7 @@ function validateOrderLines(orderLines, keySSIs, callback){
         if (err)
             return callback(err);
         console.log(`OK - orderline ${keySSI} loaded`);
-        dsu.readFile("/data", (err, data) => {
+        dsu.readFile("/info", (err, data) => {
             if (err)
                 return callback(err);
             try {
