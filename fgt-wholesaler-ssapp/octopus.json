@@ -1,6 +1,17 @@
 {
   "workDir": ".",
-  "dependencies": [],
+  "dependencies": [
+	  {
+		  "name": "Ionic Capacitor Sync",
+		  "src": ".",
+		  "actions": [
+			  {
+				  "type": "execute",
+				  "cmd": "npx cap sync"
+			  }
+		  ]
+	  }
+  ],
   "prebuild": [
 	{
 	  "name": "PSK bundles",

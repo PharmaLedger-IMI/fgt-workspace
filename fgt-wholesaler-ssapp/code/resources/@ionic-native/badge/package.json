@@ -1,0 +1,53 @@
+{
+  "_from": "@ionic-native/badge",
+  "_id": "@ionic-native/badge@5.31.1",
+  "_inBundle": false,
+  "_integrity": "sha512-sykCl+BhSsegCrJ/RPW7Ye7wX4xmyrLL7PXJwhxja7Y22CFb4LDW6XPU1ZSKdrheZ/PGNoOyJRfHdnPb+3tmIA==",
+  "_location": "/@ionic-native/badge",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "@ionic-native/badge",
+    "name": "@ionic-native/badge",
+    "escapedName": "@ionic-native%2fbadge",
+    "scope": "@ionic-native",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#DEV:/",
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/@ionic-native/badge/-/badge-5.31.1.tgz",
+  "_shasum": "c75d3d6c56aef8d15a929de50a5a65e3ba583a60",
+  "_spec": "@ionic-native/badge",
+  "_where": "/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/fgt-wholesaler-ssapp",
+  "author": {
+    "name": "ionic"
+  },
+  "bugs": {
+    "url": "https://github.com/ionic-team/ionic-native/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "@types/cordova": "latest"
+  },
+  "deprecated": false,
+  "description": "Ionic Native - Native plugins for ionic apps",
+  "homepage": "https://github.com/ionic-team/ionic-native#readme",
+  "license": "MIT",
+  "module": "index.js",
+  "name": "@ionic-native/badge",
+  "peerDependencies": {
+    "rxjs": "^5.5.0 || ^6.5.0",
+    "@ionic-native/core": "^5.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ionic-team/ionic-native.git"
+  },
+  "typings": "index.d.ts",
+  "version": "5.31.1"
+}

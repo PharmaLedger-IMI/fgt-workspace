@@ -1,0 +1,13 @@
+{
+  "appId": "pharmaledger.pdmfc.fgt",
+  "appName": "fgt-wholesaler-ssapp",
+  "bundledWebRuntime": true,
+  "npmClient": "npm",
+  "webDir": "code",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}

@@ -50,16 +50,25 @@
                     <ion-buttons slot="start">
                         <ion-menu-button auto-hide="true"></ion-menu-button>
                     </ion-buttons>
-                    <ion-img class="main-logo" slot="start" src="../resources/images/pharmaledger-logo.svg"></ion-img>
-                    <ion-title>{{ @title }}</ion-title>
+                    <ion-img align="center" class="main-logo" slot="start" src="../resources/images/pharmaledger-logo.svg"></ion-img>
                 </ion-toolbar>
             </ion-header>
 
             <ion-content class="main-content">
                 <div class="with-gradient"></div>
-                <ion-item>
-                    <ion-label>{{ @none }}</ion-label>
-                </ion-item>
+                <div data-if="@identified">
+                    <div slot="true">
+                        <ion-item>
+                            <ion-label>{{ @none }}</ion-label>
+                        </ion-item>
+                    </div>
+                    <div slot="false">
+                        <ion-item>
+                            <ion-label>{{ @none }}</ion-label>
+                        </ion-item>
+                    </div>
+                </div>
+
                 <!--                <ion-tab tab="tab-home">-->
                 <!--                    <webc-template template-name="tab-home"></webc-template>-->
                 <!--                </ion-tab>-->
