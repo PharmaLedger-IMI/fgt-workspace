@@ -21,11 +21,11 @@ fi
 windows_draw_io_path=""
 
 function test_os(){
-  windows_draw_io_path="$(cat "$SCRIPTPATH/draw.io.path}")"
-  if [[ "$windows_draw_io_path" == "" ]]; then
-    echo "linux"
-  else
+  if [[ -f "$SCRIPTPATH/draw.io.path}" ]]; then
+    windows_draw_io_path="$(cat wslpath "$SCRIPTPATH/draw.io.path}")"
     echo "windows"
+  else
+    echo "linux"
   fi
 }
 
