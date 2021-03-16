@@ -1,0 +1,82 @@
+{
+  "anchoring": "traceability",
+  "login": {
+    "title": "Please enter your credentials",
+    "can-exit": false,
+    "name": {
+      "label": "Name:",
+      "type": "text",
+      "placeholder": "Please enter your name here...",
+      "value": "PDM the Wholesaler",
+      "required": true
+    },
+    "id": {
+      "label": "Registered Id:",
+      "type": "text",
+      "placeholder": "Please enter your id here...",
+      "value": "#ThIsIsAwHoLeSaLeRiD=",
+      "required": true
+    },
+    "email": {
+      "label": "Registered Email:",
+      "type": "text",
+      "placeholder": "Please enter your email here...",
+      "value": "wholesaler@pdmfc.com",
+      "required": true
+    },
+    "tin": {
+      "label": "Registered TIN (Tax Identification Number):",
+      "type": "number",
+      "placeholder": "Enter your TIN (Tax Identification Number)...",
+      "value": 500000000,
+      "required": true
+    },
+    "address": {
+      "label": "Registered Address:",
+      "type": "text",
+      "placeholder": "Enter your address...",
+      "required": true,
+      "value": "This in an Address"
+    },
+    "buttons": {
+      "registration": "Register",
+      "login": "Login"
+    }
+  },
+  "registration": {
+    "title": "Please register as a Wholesaler",
+    "can-exit": true,
+    "name": {
+      "label": "Registered Wholesaler's name:",
+      "placeholder": "Please enter your name here...",
+      "required": true
+    },
+    "id": {
+      "label": "Registered Id:",
+      "placeholder": "Please enter your id here...",
+      "required": true
+    },
+    "email": {
+      "label": "Registered Email:",
+      "placeholder": "Please enter your email here...",
+      "required": true
+    },
+    "tin": {
+      "label": "Registered TIN (Tax Identification Number):",
+      "placeholder": "Enter your TIN (Tax Identification Number)...",
+      "value": 500000000,
+      "required": true
+    },
+    "address": {
+      "label": "Registered Address:",
+      "placeholder": "Enter your address...",
+      "required": true
+    },
+    "registration": "Create an Account",
+    "login": "Login"
+  },
+  "errors": {
+    "register": "Unable to register",
+    "try-again": "Try Again?"
+  }
+}

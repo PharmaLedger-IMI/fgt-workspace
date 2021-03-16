@@ -1,0 +1,28 @@
+{
+  "short_name": "Dossiers UI",
+  "name": "Dossiers UI",
+  "description": "Dossiers' User Interface",
+  "icons": [
+    {
+      "src": "assets/images-pwa/icons-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "assets/images-pwa/icons-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "assets/images-pwa/maskable_icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#16767c",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#16767c"
+}
