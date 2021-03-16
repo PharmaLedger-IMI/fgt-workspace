@@ -32,13 +32,14 @@ function run_draw_io(){
   local output="$1"
   local input="$2"
   local os="$3"
+  local page="$4"
   if [[ "$os" == "linux" ]]; then
-    drawio --export --quality 300 --trasnparent --page-index 0 --output "$output" "$input"
+    drawio --export --quality 300 --trasnparent --page-index "$page" --output "$output" "$input"
   else
     if [[ -z "$windows_draw_io_path" ]]; then
-      input=$( "$input")
-      output=$( "$output")
-      drawio --export --quality 300 --trasnparent --page-index 0 --output "$output" "$input"
+      input=$(wslpath "$input")
+      output=$(wspath "$output")
+      drawio --export --quality 300 --trasnparent --page-index "$page" --output "$output" "$input"
     else
         echo "windows draw-io path not defined"
         exit 1;
@@ -47,7 +48,6 @@ function run_draw_io(){
 }
 
 function exportToPng(){
-  test_arguments $#
   local os="$3"
 
   local file="$1"
@@ -75,12 +75,12 @@ function exportToPng(){
     # if there's only one page
     echo "output file ${png_output_path}/${file_name}.png"
     echo "source file $file"
-    drawio --export --quality 300 --trasnparent --page-index 0 --output "${png_output_path}/${file_name}.png" "$file"
+    run_draw_io "${png_output_path}/${file_name}.png" "$file" "$os" 0
   else
     # Export each page as an PNG
     # Page index is zero based
     for ((i = 0 ; i <= $count-1; i++)); do
-      drawio --export --quality 300  --transparent --page-index $i --output "${png_output_path}/${file_name}-$i.png" "$file"
+      run_draw_io "${png_output_path}/${file_name}-$i.png" "$file" "$os" $i
     done
   fi
 }
