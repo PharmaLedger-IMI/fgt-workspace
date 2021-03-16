@@ -65,12 +65,13 @@ function exportToPng(){
 
   echo "Exporting $file_name to xml for page parsing"
   drawio --export --format xml --uncompressed "$file"
+
+  local names=$(grep -oP "name=\"\K(.*?)(?=\")" "$base_file_name.xml")
+  echo "Page Names: $names"
+
   # Count pages
+  local count=$(echo "$names" | wc -l)
 
-  local count=$(grep -o "<diagram" "$base_file_name.xml" | wc -l)
-
-  local names=$(grep -o "name=\"(.*)\"" "$base_file_name.xml")
-  echo "names: $names"
   echo "Found $count pages"
   if [[ $count -eq 1 ]]; then
     # if there's only one page
@@ -80,9 +81,12 @@ function exportToPng(){
   else
     # Export each page as an PNG
     # Page index is zero based
-    for ((i = 0 ; i <= $count-1; i++)); do
-      run_draw_io "${png_output_path}/${file_name}-$i.png" "$file" "$os" $i
-    done
+    local i=0;
+    while read -r name; do
+      echo "Processing page $i named $name"
+      run_draw_io "${png_output_path}/${file_name}-$name.png" "$file" "$os" $i
+      i=$((i+1))
+    done < <(echo "$names")
   fi
 }
 
@@ -93,6 +97,9 @@ find_drawings_and_export_to_resources(){
 
   echo "working in os $os"
 
+  local files=$(find "$path" -type f -iname "*.drawio")
+  echo "Found the following files:"
+  echo "$files"
   find "$path" -type f -iname "*.drawio" -print0 |
     while IFS= read -r -d '' drawing; do
         exportToPng "$drawing" "$output_path" "$os"
