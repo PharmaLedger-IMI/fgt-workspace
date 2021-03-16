@@ -30,7 +30,6 @@ function test_os(){
 }
 
 function run_draw_io(){
-  test_arguments $#
   local output="$1"
   local input="$2"
   local os="$3"
