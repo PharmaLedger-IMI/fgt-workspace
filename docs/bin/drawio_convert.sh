@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # for windows needs a file called 'draw.io.path' containing a single line with the full path for the windows dra.io executable
 
 include(){
@@ -22,11 +21,11 @@ fi
 windows_draw_io_path=""
 
 function test_os(){
-  windows_draw_io_path=$(cat draw.io.path)
-  if [[ -z "$windows_draw_io_path" ]]; then
-    echo "windows"
-  else
+  windows_draw_io_path="$(cat "$SCRIPTPATH/draw.io.path}")"
+  if [[ "$windows_draw_io_path" == "" ]]; then
     echo "linux"
+  else
+    echo "windows"
   fi
 }
 
@@ -39,7 +38,7 @@ function run_draw_io(){
   if [[ "$os" == "linux" ]]; then
     drawio --export --quality 300 --trasnparent --page-index "$page" --output "$output" "$input"
   else
-    if [[ -z "$windows_draw_io_path" ]]; then
+    if [[ "$windows_draw_io_path" != "" ]]; then
       input=$(wslpath "$input")
       output=$(wspath "$output")
       drawio --export --quality 300 --trasnparent --page-index "$page" --output "$output" "$input"
@@ -91,7 +90,9 @@ function exportToPng(){
 find_drawings_and_export_to_resources(){
   local path="${PWD}/docs/drawings"
   local output_path="${PWD}/docs/resources"
-  local os=$(detect_os)
+  local os=$(test_os)
+
+  echo "working in os $os"
 
   find "$path" -type f -iname "*.drawio" -print0 |
     while IFS= read -r -d '' drawing; do
