@@ -25,7 +25,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd webcardinal && npm install"
+                    "cmd": "cd webcardinal && npm dev"
                 }
             ]
         },
@@ -200,6 +200,21 @@
                 {
                     "type": "execute",
                     "cmd": "cd themes/blue-fluorite-theme && npm install"
+                }
+            ]
+        },
+        {
+            "name": "themes/clear-sky-theme",
+            "src": "https://github.com/PrivateSky/clear-sky-theme.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/clear-sky-theme && npm install"
                 }
             ]
         },
@@ -530,6 +545,16 @@
                 {
                     "type": "execute",
                     "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "clear-sky-theme-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/clear-sky-theme && npm run build-dossier"
                 }
             ]
         },
