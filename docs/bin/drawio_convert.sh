@@ -83,7 +83,6 @@ function exportToPng(){
 
   echo "Exporting $file_name to xml for page parsing"
   run_draw_io_extract "$file" "$os" "$windows_path"
-  drawio --export --format xml --uncompressed "$file"
 
   local names=$(grep -oP "name=\"\K(.*?)(?=\")" "$base_file_name.xml")
   echo "Page Names: $names"
