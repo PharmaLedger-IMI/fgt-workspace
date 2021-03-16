@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # for windows needs a file called 'draw.io.path' containing a single line with the full path for the windows dra.io executable
 
