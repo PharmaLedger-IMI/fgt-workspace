@@ -20,8 +20,14 @@ function Init(server){
 	});
 }
 
+function StartSSAppStore(server){
+	const store = require('./services/StoreService');
+	store(server)
+}
+
 module.exports = {
 	Init,
+	StartSSAppStore,
 	/**
 	 * exposes the Commands module
 	 */
@@ -42,7 +48,7 @@ module.exports = {
 
 }).call(this)}).call(this,"/")
 
-},{"./commands":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/commands/index.js","./managers":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/managers/index.js","./services":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/index.js","fs":false,"path":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/builds/tmp/toolkit_intermediar.js":[function(require,module,exports){
+},{"./commands":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/commands/index.js","./managers":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/managers/index.js","./services":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/index.js","./services/StoreService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/StoreService.js","fs":false,"path":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/builds/tmp/toolkit_intermediar.js":[function(require,module,exports){
 (function (global){(function (){
 global.toolkitLoadModules = function(){ 
 
@@ -774,12 +780,14 @@ module.exports = DSUService;
 
 },{"./utils.js":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/utils.js","form-data":false,"opendsu":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/FileService.js":[function(require,module,exports){
 /**
- * @module fgt-dsu-wizard.services
+ * @module pdm-dsu-toolkit.services
  */
 function FileService() {
 
     function constructUrlBase(appName, prefix){
 
+        const env = process.environmentType;
+        console.log("ENV: --------" + env);
         let url, protocol, host;
         prefix = prefix || "";
         try {
@@ -1027,9 +1035,30 @@ function ParticipantService(domain, strategy){
 }
 
 module.exports = ParticipantService;
-},{"../commands/setParticipantConstSSI":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/commands/setParticipantConstSSI.js","../constants":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/constants.js","./strategy":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/strategy.js","./utils":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/utils.js","opendsu":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/WalletService.js":[function(require,module,exports){
+},{"../commands/setParticipantConstSSI":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/commands/setParticipantConstSSI.js","../constants":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/constants.js","./strategy":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/strategy.js","./utils":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/utils.js","opendsu":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/StoreService.js":[function(require,module,exports){
+const path_to_workspace = "."
+
+function startStoreService(server){
+    const fs = require('fs');
+    const path = require('path');
+    server.get(`/:domain/dsustore/get-ssi/:name`, (req, res, next) => {
+        const {domain, name} = req.params;
+        fs.readFile(path.join(path_to_workspace, name, "seed"), (err, data) => {
+            if (err)
+                return res.send(404, "Could not find App");
+            let keySSI = require('keyssi').parse(data.toString());
+            if (keySSI.getDLDomain() !== domain)
+                return res.send(503, `Invalid domain ${domain}`);
+            return res.send(200, data.toString());
+        });
+    });
+}
+
+module.exports = startStoreService;
+
+},{"fs":false,"keyssi":false,"path":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/WalletService.js":[function(require,module,exports){
 /**
- * @module fgt-dsu-wizard.services
+ * @module pdm-dsu-toolkit.services
  */
 'use strict';
 

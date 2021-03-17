@@ -1,10 +1,12 @@
 /**
- * @module fgt-dsu-wizard.services
+ * @module pdm-dsu-toolkit.services
  */
 function FileService() {
 
     function constructUrlBase(appName, prefix){
 
+        const env = process.environmentType;
+        console.log("ENV: --------" + env);
         let url, protocol, host;
         prefix = prefix || "";
         try {

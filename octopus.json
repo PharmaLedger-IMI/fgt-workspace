@@ -49,7 +49,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd privatesky && npm run build"
+                    "cmd": "cd privatesky && npm run build && npm run prepare-release"
                 }
             ]
         },
@@ -211,10 +211,6 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd themes/clear-sky-theme && npm install"
                 }
             ]
         },

@@ -150,10 +150,6 @@
           "options": {
             "overwrite": true
           }
-        },
-        {
-          "type": "execute",
-          "cmd": "cd ../themes/clear-sky-theme && npm install"
         }
       ]
     }

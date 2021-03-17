@@ -17,6 +17,8 @@
     "bricking",
     "anchoring",
     "dsu-wizard",
+    "pdm-dsu-toolkit-app-store",
+    "pdm-dsu-toolkit-app-commands",
     "fgt-dsu-wizard",
     "gtin-dsu-wizard",
     "staticServer"
@@ -25,7 +27,11 @@
     "gtin-dsu-wizard": {
       "module": "./../../gtin-dsu-wizard"
     },
-    "pdm-dsu-toolkit": {
+    "pdm-dsu-toolkit-app-store": {
+      "module": "./../../pdm-dsu-toolkit",
+      "function": "StartSSAppStore"
+    },
+    "pdm-dsu-toolkit-app-commands": {
       "module": "./../../pdm-dsu-toolkit",
       "function": "Init"
     },

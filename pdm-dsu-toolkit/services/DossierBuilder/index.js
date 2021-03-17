@@ -3,8 +3,8 @@ html API space
 */
 
 /**
- *
- * @param {boolean} fromDisk
+ * Returns a DossierBuilder Instance
+ * @param {boolean} [fromDisk] defaults to true
  * @return {DossierBuilder}
  */
 const getDossierBuilder = (fromDisk) => {

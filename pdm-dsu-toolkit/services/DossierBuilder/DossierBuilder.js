@@ -84,6 +84,13 @@ const DossierBuilder = function(fromDisk){
         };
     };
 
+    /**
+     * Adds a file from disk to a dsu
+     * @param {Archive} bar
+     * @param {object} arg
+     * @param {object} options
+     * @param {function(err, Archive)} callback
+     */
     let addFile = function (bar, arg, options, callback) {
         if (typeof options === 'function'){
             callback = options;
@@ -164,7 +171,7 @@ const DossierBuilder = function(fromDisk){
             keySSI = undefined;
         }
         console.log("creating a new dossier...")
-        resolver.createDSU(keySSI ? keySSI : keyssi.buildTemplateSeedSSI(conf.domain), (err, bar) => {
+        resolver.createDSU(keySSI ? keySSI : keyssi.createTemplateSeedSSI(conf.domain), (err, bar) => {
             if (err)
                 return callback(err);
             updateDossier(bar, conf, commands, callback);
@@ -176,7 +183,7 @@ const DossierBuilder = function(fromDisk){
      * @param {boolean} [forConstSSI]: defaults to false
      * @return {createDossier|createDossierForExistingSSI}
      */
-    let getFactory = function(forConstSSI){
+    let getDSUFactory = function(forConstSSI){
         if (forConstSSI)
             return createDossierForExistingSSI;
         return createDossier;
@@ -237,7 +244,11 @@ const DossierBuilder = function(fromDisk){
             writeFunc = dsu.writeFile;
         }
 
-        writeFunc(filePath, data, callback)
+        writeFunc(filePath, data, (err) => {
+            if (err)
+                return callback(`Could not write to ${filePath}: ${err}`);
+            callback(undefined, data);
+        });
     };
 
     /**
