@@ -17,53 +17,78 @@ export default class FormController extends LocalizedController {
     }
 
     _createModalForm(){
-        let content_div = this.root.querySelector("div.modal-content");
         // create inputs from model objects
-        Object.entries(this.model.toObject())
-            .filter((k,v) => typeof v === 'object')
-            .forEach((name, input) => {
+        const fields = Object.entries(this.model.toObject())
+            .map(e => ({name: e[0], attributes: e[1]}))
+            .filter(e => typeof e.attributes === 'object');
+        const buttons = fields.filter(f => f.name === 'buttons');
+        const inputs = fields.filter(f => f.name !== 'buttons');
+        this._defineElements(inputs, buttons);
+    }
 
+    _defineElements(inputs, buttons){
+        let el, elName;
+        const content_div = this.root.querySelector("div.modal-content");
+        inputs.forEach(input => {
+            elName = this._defineIonInput(input.name, input.attributes);
+            el = content_div.createElement(elName);
+            content_div.appendChild(el);
         });
+        const footer_el = this.root.querySelector("div.modal-content");
     }
 
     /**
      *
-     * @param {object} field read from model containing the fields attributes
+     * @param {string} name read from model containing the fields attributes
+     * @param {object} attributes
      * @private
      */
-    _getIonInput(name){
-        customElements.define("loader-input", class extends HTMLElement{
+    _defineIonInput(name, attributes){
+        const el_name = `loader-input-${name}`;
+        customElements.define(el_name, class extends HTMLElement{
             connectedCallback(){
                 this.innerHTML = `
     <ion-item>
-        <ion-label position="stacked"> {{ @name.label }}</ion-label>
-        <ion-input name="input-${name}" data-model="@${name}.name" type="${field.type}" inputmode="text" required="true" clear-on-edit="true" value="value"></ion-input>
-    </ion-item>
-    <ion-button name="register" color="primary" data-tag="registration" expand="full">{{ @register }}</ion-button>`
+        <ion-label position="stacked"> {{ @${name}.label }}</ion-label>
+        <ion-input name="input-${name}" data-model="@${name}" inputmode="text" required="true" clear-on-edit="true"></ion-input>
+    </ion-item>`
             }
         });
+        return el_name;
     }
 
     _getIonButtons(buttons){
-        const getButton = function(name){
-            customElements.define("loader-input", class extends HTMLElement{
+        const getColor = function(index){
+            switch (index) {
+                case 1: return "primary"
+                case 2: return "secondary"
+                default: return "tertiary"
+            }
+        }
+        const getButton = function(name, index){
+            customElements.define(`loader-button-${name}`, class extends HTMLElement{
                 connectedCallback(){
                     this.innerHTML = `
-    <ion-button name="register" color="primary" data-tag="" expand="full">{{ @register }}</ion-button>`
+    <ion-button name="${name}" slot="footer" color="${getColor(index)}" data-tag="${name}">{{ @${name} }}</ion-button>`
                 }
             });
         }
+
+        let resulting_el = []
+        buttons.forEach((b, i) => {
+            resulting_el.push(getButton(b, i));
+        });
+        return resulting_el;
     }
 
     _submitRegistration = function (evt) {
-
-        let participant = this._modelToParticipant();
+        let participant = this._modelToDSU();
         let errors = participant.hasErrors();
         if (!errors)
             this.send('perform-registration', participant);
     }
 
-    _modelToParticipant = function (model) {
+    _modelToDSU = function (model) {
         let info = {};
         model = model || this.model
         Object.keys(model)

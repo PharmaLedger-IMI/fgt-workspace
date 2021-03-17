@@ -6,16 +6,14 @@
   },
   "theme": "pdm-theme",
   "pagesFallback": {
-    "name": "index",
-    "path": "./",
-    "src": "index.html"
+    "name": "404",
+    "path": "404.html"
   },
   "pages": [
     {
-      "name": "Home",
-      "path": "/home",
+      "name": "home",
+      "path": "/",
       "src": "home.html",
-      "indexed": false,
       "tag": "home"
     }
   ]
