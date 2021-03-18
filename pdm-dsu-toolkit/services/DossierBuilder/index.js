@@ -4,11 +4,11 @@ html API space
 
 /**
  * Returns a DossierBuilder Instance
- * @param {boolean} [fromDisk] defaults to true
+ * @param {Archive} [sourceDSU]
  * @return {DossierBuilder}
  */
-const getDossierBuilder = (fromDisk) => {
-    return new (require("./DossierBuilder").DossierBuilder)(fromDisk)
+const getDossierBuilder = (sourceDSU) => {
+    return new (require("./DossierBuilder2").DossierBuilder)(sourceDSU)
 }
 
 module.exports = {

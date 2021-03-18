@@ -1054,7 +1054,8 @@ const OPTIONS = {
     codeFolderName: "code",
     buildFolderName: "bin",
     slots:{
-        primary: "wa"
+        primary: "wallet-patch",
+        secondary: "apps-patch"
     }
 }
 
@@ -1073,23 +1074,7 @@ const OPTIONS = {
  * @param {string} options.appsFolderName
  */
 function AppBuilderService(options) {
-    options = options || {};
-    if (!options.codeFolderName)
-        throw new Error('Code folder name is required');
-    if (!options.walletTemplateFolderName)
-        throw new Error('The wallet template folder name is required');
-    if (!options.appFolderName)
-        throw new Error('The app folder name is required');
-    if (!options.vault)
-        throw new Error('The vault name is required');
-    const CODE_FOLDER = options.codeFolderName;
-    const WALLET_TEMPLATE_FOLDER = options.walletTemplateFolderName;
-    const APP_FOLDER = options.appFolderName;
-    const APPS_FOLDER = options.appsFolderName;
-    const SSI_FILE_NAME = options.ssiFileName;
-    const VAULT_DOMAIN = options.environmentDomain;
-
-    this.walletTypeSeed = null;
+    options = Object.assign({}, OPTIONS, options);
     this.fileService = new FileService();
     let keyssi = require('opendsu').loadApi('keyssi')
 
@@ -1199,7 +1184,7 @@ function AppBuilderService(options) {
         });
     }
 
-    const cloneToConst = function (secretsArray, keyForDSUToClone, callback) {
+    this.cloneToConst = function (secretsArray, keyForDSUToClone, callback) {
         let self = this;
         _keySSIToContent(keyForDSUToClone, (err, content, dsu, commands) => {
             if (err)

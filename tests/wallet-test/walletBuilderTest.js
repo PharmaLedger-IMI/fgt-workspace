@@ -4,7 +4,7 @@ const path = require('path');
 
 require(path.join('../../privatesky/psknode/bundles', 'testsRuntime.js'));     // test runtime
 require(path.join('../../privatesky/psknode/bundles', 'pskruntime.js'));       // the whole 9 yards, can be replaced if only
-require(path.join('../../pdm-dsu-toolkit/build/bundles', 'toolkit.js'));
+const toolkit = require('./../../pdm-dsu-toolkit/index');
 
 const dc = require("double-check");
 const assert = dc.assert;
@@ -13,7 +13,7 @@ let domains = ['traceability'];
 let testName = 'Wallet Builder Test';
 
 const defaultOps = {
-    timeout: 3000,
+    timeout: 30000000,
     fakeServer: true
 }
 
@@ -53,11 +53,12 @@ const launchTestServer = function(timeout, testFunction){     // the test server
 }
 
 const runTest = function(testFinished){
-    const secretsArr = ["usename", "password"];
+    assert.begin();
+    const secretsArr = ["usename", Math.random() * 100000000000];
 
-    const appService = new (require('toolkit').Services.AppBuilderService({vault: "server"}));
+    const appService = new (toolkit.Services.AppBuilderService)({vault: "server"});
     const SEED = '65FmT6jYpmQXh9ETs68RdMxy7LL7pkEeJ6AEfkxKEcCrv9w7xhSuwAUmsx7ykau84ypsmceJtawfh9V8Hp1VRNqRjRaFS9H9';
-    appService.cloneToConst(["secres", "arrar"], SEED, (err, dsu) => {
+    appService.cloneToConst(secretsArr, SEED, (err, dsu) => {
         if (err)
             throw err;
         testFinished()
