@@ -1,6 +1,4 @@
-
-
-const operations = {
+const OPERATIONS = {
     DELETE: "delete",
     ADD_FOLDER: "addfolder",
     ADD_FILE: "addfile",
@@ -27,7 +25,7 @@ const operations = {
  *     mount ../cardinal/seed /cardinal
  *     mount ../themes/'*'/seed /themes/'*'
  * </pre>
- * @param {Archive} [sourceDSU] if provided will perform all operations from the sourceDSU as source and not the fs
+ * @param {Archive} [sourceDSU] if provided will perform all OPERATIONS from the sourceDSU as source and not the fs
  */
 const DossierBuilder = function(sourceDSU){
     const fs = require("fs");
@@ -93,21 +91,23 @@ const DossierBuilder = function(sourceDSU){
         }
         options = options || {encrypt: true, ignoreMounts: false}
         console.log("Copying file " + arg.from + (sourceDSU ? " from sourceDSU" : "") + " to " + arg.to);
-        if (sourceDSU)
-            return sourceDSU.readFile(arg.from, (err, data) => {
-                if (err)
+
+        if (!sourceDSU)
+            return bar.addFile(arg.from, arg.to, options, err => callback(err, bar));
+
+        sourceDSU.readFile(arg.from, (err, data) => {
+            if (err)
+                return callback(err);
+            console.log(`Read file from sourceDSU's ${arg.from}`);
+            bar.writeFile(arg.to, data.toString(), err =>{
+                if (err){
+                    console.log(`File could not be written to ${arg.to}`);
                     return callback(err);
-                console.log(`Read file from sourceDSU's ${arg.from}`);
-                bar.writeFile(arg.to, data.toString(), err =>{
-                    if (err){
-                        console.log(`File could not be written to ${arg.to}`);
-                        return callback(err);
-                    }
-                    console.log(`File written to new DSU at ${arg.to}`);
-                    callback(undefined, bar);
-                });
+                }
+                console.log(`File written to new DSU at ${arg.to}`);
+                callback(undefined, bar);
             });
-        bar.addFile(arg.from, arg.to, options, err => callback(err, bar));
+        });
     };
 
     let mount = function (bar, arg, options, callback) {
@@ -116,15 +116,31 @@ const DossierBuilder = function(sourceDSU){
             options = undefined
         }
 
+        const doMount = function(seed, callback){
+            console.log("Mounting " + arg.seed_path + " with seed " + seed + " to " + arg.mount_point);
+            bar.mount(arg.mount_point, seed, err => {
+                callback(err, bar)
+            });
+        }
+
+        if (sourceDSU)
+            return doMount(arg.seed_path, callback);
+
         readFile(arg.seed_path, (err, data) => {
             if (err)
                 return callback(err);
             let seed = data.toString();
-            console.log("Mounting " + arg.seed_path + " with seed " + seed + " to " + arg.mount_point);
-            bar.mount(arg.mount_point, seed, err => callback(err, bar));
+            doMount(seed, callback);
         });
     };
 
+    /**
+     * handles the difference between the mount arguments in the 2 cases (with/without sourceDSU)
+     * @param arg
+     * @param arguments
+     * @return {*}
+     * @private
+     */
     let _transform_mount_arguments = function(arg, arguments){
         return sourceDSU
             ? arguments.map(m => {
@@ -141,6 +157,12 @@ const DossierBuilder = function(sourceDSU){
             });
     }
 
+    /**
+     * Calls mount recursively
+     * @param bar
+     * @param arg
+     * @param callback
+     */
     let mount_folders = function (bar, arg, callback) {
         let base_path = arg.seed_path.split("*");
         const listFunc = sourceDSU ? sourceDSU.listMountedDSUs : fs.readdir;
@@ -152,6 +174,12 @@ const DossierBuilder = function(sourceDSU){
         });
     };
 
+    /**
+     * Looks for the '*' pattern
+     * @param bar
+     * @param cmd
+     * @param callback
+     */
     let evaluate_mount = function(bar, cmd, callback){
         let arguments = {
             "seed_path": cmd[0],
@@ -187,6 +215,12 @@ const DossierBuilder = function(sourceDSU){
         });
     };
 
+    /**
+     * Writes to a file on the filesystem
+     * @param filePath
+     * @param data
+     * @param callback
+     */
     let writeFile = function (filePath, data, callback) {
         if (sourceDSU)
             throw new Error("This method is not meant to be used here");
@@ -198,27 +232,39 @@ const DossierBuilder = function(sourceDSU){
         });
     };
 
+    /**
+     * Stores the keySSI to the SEED file when no sourceDSU is provided
+     * @param {string} seed_path the path to store in
+     * @param {string} keySSI
+     * @param {function(err, KeySSI)} callback
+     */
     let storeKeySSI = function (seed_path, keySSI, callback) {
         writeFile(seed_path, keySSI, callback);
     };
 
+    /**
+     * Runs an operation
+     * @param {Archive} bar
+     * @param {string} command
+     * @param {function(err, keySSI)} callback
+     */
     let runCommand = function(bar, command, callback){
         let cmd = command.split(/\s+/);
         switch (cmd.shift().toLowerCase()){
-            case operations.DELETE:
+            case OPERATIONS.DELETE:
                 execute(bar, del, cmd, callback);
                 break;
-            case operations.ADD_FOLDER:
+            case OPERATIONS.ADD_FOLDER:
                 execute(bar, addFolder(), cmd, callback);
                 break;
-            case operations.ADD_FILE:
+            case OPERATIONS.ADD_FILE:
                 let arg = {
                     "from": cmd[0],
                     "to": cmd[1]
                 }
                 addFile(bar, arg, callback);
                 break;
-            case operations.MOUNT:
+            case OPERATIONS.MOUNT:
                 evaluate_mount(bar, cmd, callback)
                 break;
             default:
@@ -226,14 +272,29 @@ const DossierBuilder = function(sourceDSU){
         }
     };
 
+    /**
+     * Retrieves the KeysSSi after save (when applicable)
+     * @param {Archive} bar
+     * @param {object} cfg is no sourceDSU is provided must contain a seed field
+     * @param {function(err, KeySSI)} callback
+     */
     let saveDSU = function(bar, cfg, callback){
         bar.getKeySSIAsString((err, barKeySSI) => {
             if (err)
                 return callback(err);
+            if(sourceDSU)
+                return callback(undefined, barKeySSI);
             storeKeySSI(cfg.seed, barKeySSI, callback);
         });
     };
 
+    /**
+     * Run a sequence of {@link OPERATIONS} on the DSU
+     * @param {Archive} bar
+     * @param {object} cfg
+     * @param {string[]} commands
+     * @param {function(err, KeySSI)} callback
+     */
     let updateDossier = function(bar, cfg, commands, callback) {
         if (commands.length === 0)
             return saveDSU(bar, cfg, callback);
@@ -248,6 +309,8 @@ const DossierBuilder = function(sourceDSU){
     /**
      * Builds s DSU according to it's building instructions
      * @param {object|Archive} configOrDSU: can be a config file form octopus or the destination DSU when cloning.
+     * **Can oly be used if a sourceDSU is provided in the 'constructor'**
+     *
      * Example of config file:
      * <pre>
      *     {
@@ -301,4 +364,7 @@ const DossierBuilder = function(sourceDSU){
     };
 };
 
-module.exports = DossierBuilder;
+module.exports = {
+    DossierBuilder,
+    OPERATIONS
+};
