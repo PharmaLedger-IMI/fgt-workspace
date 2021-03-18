@@ -1,5 +1,5 @@
 import LocalizedController from "./LocalizedController.js";
-import WalletService from "./services/WalletService.js";
+//import WalletService from "../services/WalletService.js";
 
 export default class ParticipantController extends LocalizedController {
     getModel = () => ({

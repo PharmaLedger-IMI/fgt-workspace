@@ -18,14 +18,8 @@ function Init(server){
 	});
 }
 
-function StartSSAppStore(server){
-	const store = require('./services/StoreService');
-	store(server)
-}
-
 module.exports = {
 	Init,
-	StartSSAppStore,
 	/**
 	 * exposes the Commands module
 	 */
@@ -41,5 +35,5 @@ module.exports = {
 	/**
 	 * exposes the Model module
 	 */
-	Model: require("./commands")
+	Model: require("./model")
 };

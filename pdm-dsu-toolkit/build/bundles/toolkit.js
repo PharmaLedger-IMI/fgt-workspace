@@ -20,14 +20,8 @@ function Init(server){
 	});
 }
 
-function StartSSAppStore(server){
-	const store = require('./services/StoreService');
-	store(server)
-}
-
 module.exports = {
 	Init,
-	StartSSAppStore,
 	/**
 	 * exposes the Commands module
 	 */
@@ -43,12 +37,12 @@ module.exports = {
 	/**
 	 * exposes the Model module
 	 */
-	Model: require("./commands")
+	Model: require("./model")
 };
 
 }).call(this)}).call(this,"/")
 
-},{"./commands":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/commands/index.js","./managers":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/managers/index.js","./services":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/index.js","./services/StoreService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/StoreService.js","fs":false,"path":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/builds/tmp/toolkit_intermediar.js":[function(require,module,exports){
+},{"./commands":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/commands/index.js","./managers":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/managers/index.js","./model":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/model/index.js","./services":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/index.js","fs":false,"path":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/builds/tmp/toolkit_intermediar.js":[function(require,module,exports){
 (function (global){(function (){
 global.toolkitLoadModules = function(){ 
 
@@ -541,7 +535,500 @@ module.exports = {
     Manager: require('./Manager'),
     getParticipantManager: require('./ParticipantManager').getParticipantManager
 }
-},{"./Manager":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/managers/Manager.js","./ParticipantManager":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/managers/ParticipantManager.js"}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/DSUService.js":[function(require,module,exports){
+},{"./Manager":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/managers/Manager.js","./ParticipantManager":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/managers/ParticipantManager.js"}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/model/Utils.js":[function(require,module,exports){
+/**
+ * @module fgt-dsu-wizard.model
+ */
+function generate(charactersSet, length){
+    let result = '';
+    const charactersLength = charactersSet.length;
+    for (let i = 0; i < length; i++) {
+        result += charactersSet.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
+module.exports = {
+    generateID(length) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        return generate(characters, length);
+    },
+
+    generateNumericID(length) {
+        const characters = '0123456789';
+        return generate(characters, length);
+    },
+
+    generateSerialNumber(length){
+        let char = generate("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 2);
+        let number = this.generateNumericID(length-char.length);
+        return char+number;
+    }
+}
+},{}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/model/Validations.js":[function(require,module,exports){
+/**
+ * @module fgt-dsu-wizard.model
+ */
+
+/**
+ * Supported ion-input element types
+ */
+const ION_TYPES = {
+    EMAIL: "email",
+    NUMBER: "number",
+    TEXT: "text",
+    DATE: "date"
+}
+
+/**
+ * Supported ion-input element sub-types (under the {@link ION_CONST#name_key})
+ */
+const SUB_TYPES = {
+    TIN: "tin"
+}
+
+const QUERY_ROOTS = {
+    controller: "controller",
+    parent: "parent",
+    self: "self"
+}
+/**
+ * Html attribute name constants
+ *
+ * mostly straightforward with the notable exceptions:
+ *  - {@link ION_CONST#error#append} variable append strategy - que root of the css query
+ *  - {@link ION_CONST#error#queries}:
+ *    - {@link ION_CONST#error#queries#query} the media query that while be made via {@link HTMLElement#querySelectorAll}
+ *    - {@link ION_CONST#error#queries#variables} variables that will be set/unset:
+ *       the keys will be concatenated with '--' eg: key => element.style.setProperty('--' + key, variables[key].set)
+ *
+ *       The placeholder ${name} can be used to mark the field's name
+ */
+const ION_CONST = {
+    name_key: "name",
+    type_key: "type",
+    required_key: "required",
+    max_length: "maxlength",
+    min_length: "minlength",
+    max_value: "max",
+    min_value: "min",
+    input_tag: "ion-input",
+    error: {
+        queries: [
+            {
+                query: "ion-input",
+                root: "parent",
+                variables: [
+                    {
+                        variable: "--color",
+                        set: "var(--ion-color-danger)",
+                        unset: "var(--ion-color)"
+                    }
+                ]
+            },
+            {
+                query: "",
+                root: "parent",
+                variables: [
+                    {
+                        variable: "--border-color",
+                        set: "var(--ion-color-danger)",
+                        unset: "var(--ion-color)"
+                    }
+                ]
+            }
+        ]
+    }
+}
+
+/**
+ * Maps prop names to their custom validation
+ * @param {string} prop
+ * @param {*} value
+ * @returns {string|undefined} undefined if ok, the error otherwise
+ */
+const propToError = function(prop, value){
+    switch (prop){
+        case SUB_TYPES.TIN:
+            return tinHasErrors(value);
+        default:
+            break;
+    }
+}
+
+/**
+ * Validates a pattern
+ * @param {string} text
+ * @param {pattern} pattern in the '//' notation
+ * @returns {string|undefined} undefined if ok, the error otherwise
+ */
+const patternHasErrors = function(text, pattern){
+    if (!text) return;
+    if (!pattern.test(text))
+        return "Field does not match pattern";
+}
+
+/**
+ * @param {string} email
+ * @returns {string|undefined} undefined if ok, the error otherwise
+ */
+const emailHasErrors = function(email){
+    if (patternHasErrors(email, /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/))
+        return "Invalid email";
+}
+
+/**
+ * Validates a tin number
+ * @param {string|number} tin
+ * @returns {string|undefined} undefined if ok, the error otherwise
+ */
+const tinHasErrors = function(tin){
+    if (!tin) return;
+    tin = tin + '';
+    if (patternHasErrors(tin,/^\d{9}$/))
+        return "Not a valid Tin";
+}
+
+/**
+ * Validates a number Field (only integers supported)
+ * @param {number} value
+ * @param props
+ */
+const numberHasErrors = function(value, props){
+    if (props[ION_CONST.name_key] === SUB_TYPES.TIN)
+        return tinHasErrors(value);
+    let {max, min} = props;
+    if (value > max)
+        return `The maximum is ${max}`;
+    if (value < min)
+        return `The minimum is ${min}`;
+}
+
+/**
+ * Validates a date value
+ * @param {Date} date
+ * @param props
+ */
+const dateHasErrors = function(date, props){
+    throw new Error("Not implemented date validation");
+}
+
+/**
+ * Validates a text value
+ * @param {string} text
+ * @param props
+ */
+const textHasErrors = function(text, props){
+    if (props[ION_CONST.name_key] === SUB_TYPES.TIN)
+        return tinHasErrors(text);
+}
+
+/**
+ * parses the numeric values
+ * @param props
+ */
+const parseNumeric = function(props){
+    let prop;
+    try{
+        for (prop in props)
+            if (props.hasOwnProperty(prop) && props[prop])
+                if ([ION_CONST.max_length, ION_CONST.max_value, ION_CONST.min_length, ION_CONST.min_value].indexOf(prop) !== -1)
+                    props[prop] = parseInt(props[prop]);
+    } catch (e){
+        throw new Error(`Could not parse numeric validations attributes for field ${props.name} prop: ${prop}`);
+    }
+    return props;
+}
+
+/**
+ * Parses the supported attributes in the element
+ * @param {HTMLElement} element
+ * @return the object of existing supported attributes
+ */
+const getValidationAttributes = function(element){
+    return {
+        type: element[ION_CONST.type_key],
+        name: element[ION_CONST.name_key],
+        required: element[ION_CONST.required_key],
+        max: element[ION_CONST.max_value],
+        maxlength: element[ION_CONST.max_length],
+        min: element[ION_CONST.min_value],
+        minlength: element[ION_CONST.max_length]
+    };
+}
+
+/**
+ * Validates a ion-input element for required & max/min length.
+ * @param {HTMLElement} element
+ * @param {object} props
+ * @returns {string|undefined} undefined if ok, the error otherwise
+ */
+const hasRequiredAndLengthErrors = function(element, props){
+    let {required, maxLength, minLength} = props;
+    let value = element.value;
+    value = value ? value.trim() : value;
+    if (required && !value)
+        return "Field is required";
+    if (!value) return;
+    if (minLength && value.length < minLength)
+        return `The minimum length is ${minLength}`;
+    if (maxLength && value.length > maxLength)
+        return `The maximum length is ${minLength}`;
+}
+
+const testInputEligibility = function(props, prefix){
+    return !(!props[ION_CONST.name_key] || !props[ION_CONST.type_key] || props[ION_CONST.name_key].indexOf(prefix) === -1);
+}
+
+/**
+ * Test a specific type of Ionic input field for errors
+ *
+ * should (+/-) match the ion-input type property
+ *
+ * supported types:
+ *  - email;
+ *  - tin
+ *  - text
+ *  - number
+ *
+ * @param {HTMLElement} element the ion-input field
+ * @param {string} prefix the prefix for the ion-input to be validated
+ */
+const hasIonErrors = function(element, prefix){
+    let props = getValidationAttributes(element);
+    if (!testInputEligibility(props, prefix))
+        throw new Error(`input field ${element} with props ${props} does not meet criteria for validation`);
+    props[ION_CONST.name_key] = props[ION_CONST.name_key].substring(prefix.length);
+    let errors = hasRequiredAndLengthErrors(element, props);
+    if (errors)
+        return errors;
+
+    let value = element.value;
+    switch (props[ION_CONST.type_key]){
+        case ION_TYPES.EMAIL:
+            errors = emailHasErrors(value);
+            break;
+        case ION_TYPES.DATE:
+            errors = dateHasErrors(value, props);
+            break;
+        case ION_TYPES.NUMBER:
+            props = parseNumeric(props);
+            errors = numberHasErrors(value, props);
+            break;
+        case ION_TYPES.TEXT:
+            errors = textHasErrors(value, props);
+            break;
+        default:
+            errors = undefined;
+    }
+
+    return errors;
+}
+
+/**
+ * Until I get 2way data binding to work on ionic components, this solves it.
+ *
+ * It validates the fields via their ion-input supported properties for easy integration if they ever work natively
+ *
+ * @param {WebcController} controller
+ * @param {HTMLElement} element the ion-input element
+ * @param {string} prefix prefix to the name of the input elements
+ * @returns {string|undefined} undefined if ok, the error otherwise
+ */
+const updateModelAndGetErrors = function(controller, element, prefix){
+    if (!controller.model)
+        return;
+    let name = element.name.substring(prefix.length);
+    if (typeof controller.model[name] === 'object') {
+        let valueChanged = controller.model[name].value !== element.value;
+        controller.model[name].value = element.value;
+        if (valueChanged){
+            const hasErrors = hasIonErrors(element, prefix);
+            controller.model[name].error = hasErrors;
+            updateStyleVariables(controller, element, hasErrors);
+            return hasErrors;
+        }
+        return controller.model[name].error;
+    }
+}
+
+/**
+ * Manages the inclusion/exclusion of the error variables according to {@link ION_CONST#error#variables} in the element according to the selected {@link ION_CONST#error#append}
+ * @param {WebcController} controller
+ * @param {HTMLElement} element
+ * @param {string} hasErrors
+ */
+const updateStyleVariables = function(controller, element, hasErrors){
+    let el, selected, q;
+    const getRoot = function(root) {
+        let elem;
+        switch (root) {
+            case QUERY_ROOTS.parent:
+                elem = element.parentElement;
+                break;
+            case QUERY_ROOTS.self:
+                elem = element;
+                break;
+            case QUERY_ROOTS.controller:
+                elem = controller.element;
+                break;
+            default:
+                throw new Error("Unsupported Error style strategy");
+        }
+        return elem;
+    }
+    const queries = ION_CONST.error.queries;
+
+    queries.forEach(query => {
+        q = query.query.replace('${name}', element.name);
+        el = getRoot(query.root);
+        selected = q ? el.querySelectorAll(q) : [el];
+        selected.forEach(s => {
+            query.variables.forEach(v => {
+                s.style.setProperty(v.variable, hasErrors ? v.set : v.unset)
+            });
+        });
+    });
+}
+
+/**
+ * iterates through all supported inputs and calls {@link updateModelAndGetErrors} on each.
+ *
+ * sends controller validation event
+ * @param {WebcController} controller
+ * @param {string} prefix
+ * @return {boolean} if there are any errors in the model
+ */
+const controllerHasErrors = function(controller, prefix){
+    let inputs = controller.element.querySelectorAll(`${ION_CONST.input_tag}[name^="${prefix}"]`);
+    let errors = [];
+    let error;
+    inputs.forEach(el => {
+        error = updateModelAndGetErrors(controller, el, prefix);
+        if (error)
+            errors.push(error);
+    });
+    let hasErrors = errors.length > 0;
+    controller.send(hasErrors ? 'ion-model-is-invalid' : 'ion-model-is-valid');
+    return hasErrors;
+}
+
+/**
+ * When using ionic input components, this binds the controller for validation purposes.
+ *
+ * Inputs to be eligible for validation need to be named '${prefix}${propName}' where the propName must
+ * match the type param in {@link hasErrors} via {@link updateModelAndGetErrors}
+ *
+ * Gives access to the validateIonic method on the controller via:
+ * <pre>
+ *     controller.hasErrors();
+ * </pre>
+ * (returns true or false)
+ *
+ * where all the inputs are validated
+ *
+ * call this only after the setModel call for safety
+ * @param {WebcController} controller
+ * @param {function()} [onValidModel] the function to be called when the whole Controller model is valid
+ * @param {function()} [onInvalidModel] the function to be called when any part of the model is invalid
+ * @param {string} [prefix] the prefix for the ion-input to be validated. defaults to 'input-'
+ */
+const bindIonicValidation = function(controller, onValidModel, onInvalidModel, prefix){
+    if (typeof onInvalidModel === 'string' || !onInvalidModel){
+        prefix = onInvalidModel
+        onInvalidModel = () => {
+            const submitButton = controller.element.querySelector('ion-button[type="submit"]');
+            if (submitButton)
+                submitButton.disabled = true;
+        }
+    }
+    if (typeof onValidModel === 'string' || !onValidModel){
+        prefix = onValidModel
+        onValidModel = () => {
+            const submitButton = controller.element.querySelector('ion-button[type="submit"]');
+            if (submitButton)
+                submitButton.disabled = false;
+        }
+    }
+
+    prefix = prefix || 'input-';
+    controller.on('ionChange', (evt) => {
+        evt.preventDefault();
+        evt.stopImmediatePropagation();
+        let element = evt.srcElement;
+        if (!element.name) return;
+        let errors = updateModelAndGetErrors(controller, element, prefix);
+        if (errors)     // one fails, all fail
+            controller.send('ion-model-is-invalid');
+        else            // Now we have to check all of them
+            controllerHasErrors(controller, prefix);
+    });
+
+    controller.hasErrors = () => controllerHasErrors(controller, prefix);
+
+    controller.on('ion-model-is-valid', (evt) => {
+        evt.preventDefault();
+        evt.stopImmediatePropagation();
+        if (onValidModel)
+            onValidModel.apply(controller);
+    });
+
+    controller.on('ion-model-is-invalid', (evt) => {
+        evt.preventDefault();
+        evt.stopImmediatePropagation();
+        if (onInvalidModel)
+            onInvalidModel.apply(controller);
+    });
+}
+
+/**
+ * Validates a Model element according to prop names
+ * *Does not validate 'required' or more complex attributes yet*
+ * TODO use annotations to accomplish that
+ * @returns {string|undefined} undefined if ok, the error otherwise
+ */
+const modelHasErrors = function(model){
+    let error;
+    for (let prop in model)
+        if (model.hasOwnProperty(prop)){
+            if (prop in Object.values(ION_TYPES) || prop in Object.values(SUB_TYPES))
+                error = propToError(prop, model[prop]);
+            if (error)
+                return error;
+        }
+}
+
+/**
+ * Provides the implementation for the Model to be validatable alongside Ionic components
+ * via the {@link hasErrors} method
+ */
+class Validatable{
+    /**
+     * @see {modelHasErrors}
+     */
+    hasErrors(){
+        return modelHasErrors(this);
+    }
+}
+
+module.exports = {
+    Validatable,
+    bindIonicValidation,
+    emailHasErrors,
+    tinHasErrors,
+    textHasErrors,
+    numberHasErrors
+};
+},{}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/model/index.js":[function(require,module,exports){
+/**
+ * @module pdm-dsu-toolkit.model
+ */
+module.exports = {
+    Validations: require('./Validations'),
+    Utils: require('./Utils')
+}
+
+},{"./Utils":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/model/Utils.js","./Validations":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/model/Validations.js"}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/DSUService.js":[function(require,module,exports){
 /**
  * @module fgt-dsu-wizard.services
  */
@@ -1035,28 +1522,7 @@ function ParticipantService(domain, strategy){
 }
 
 module.exports = ParticipantService;
-},{"../commands/setParticipantConstSSI":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/commands/setParticipantConstSSI.js","../constants":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/constants.js","./strategy":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/strategy.js","./utils":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/utils.js","opendsu":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/StoreService.js":[function(require,module,exports){
-const path_to_workspace = "."
-
-function startStoreService(server){
-    const fs = require('fs');
-    const path = require('path');
-    server.get(`/:domain/dsustore/get-ssi/:name`, (req, res, next) => {
-        const {domain, name} = req.params;
-        fs.readFile(path.join(path_to_workspace, name, "seed"), (err, data) => {
-            if (err)
-                return res.send(404, "Could not find App");
-            let keySSI = require('keyssi').parse(data.toString());
-            if (keySSI.getDLDomain() !== domain)
-                return res.send(503, `Invalid domain ${domain}`);
-            return res.send(200, data.toString());
-        });
-    });
-}
-
-module.exports = startStoreService;
-
-},{"fs":false,"keyssi":false,"path":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/WalletService.js":[function(require,module,exports){
+},{"../commands/setParticipantConstSSI":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/commands/setParticipantConstSSI.js","../constants":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/constants.js","./strategy":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/strategy.js","./utils":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/utils.js","opendsu":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/WalletService.js":[function(require,module,exports){
 /**
  * @module pdm-dsu-toolkit.services
  */
@@ -1587,7 +2053,108 @@ function WalletBuilderService(options) {
 
 module.exports = WalletBuilderService;
 
-},{"./FileService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/FileService.js","buffer":false,"opendsu":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/index.js":[function(require,module,exports){
+},{"./FileService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/FileService.js","buffer":false,"opendsu":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/WebcLocaleService.js":[function(require,module,exports){
+/**
+ * @module fgt-dsu-wizard.services
+ */
+
+/**
+ * Integrates with {@link WebCardinal}'s translation model, and natively integrates into controllers
+ */
+function LocaleService(){
+    if (!WebCardinal)
+        throw new Error("Could not find WebCardinal");
+
+    const supported = [];
+
+    const getLocale = () => WebCardinal.language;
+
+    const setLocale = (locale) => {
+        if (!(locale in supported))
+            throw new Error("Provided locale not supported");
+        WebCardinal.language = locale;
+        this.loadLocale();
+    }
+
+    const _genSupported = () => {
+        Object.keys(WebCardinal.translations).forEach(a => {
+            supported.push(a);
+        })
+    };
+
+    _genSupported();
+
+    /**
+     * Loads the current locale
+     */
+    this._loadLocale = function(){
+        return WebCardinal.translations[getLocale()];
+    }
+
+    /**
+     * Retrieves the translation information from WebCardinal
+     * @param {string} pageName if contains '.' it will be translated into hierarchy in json object (just one level currently supported)
+     * @returns {object} the translation object for the provided page in the current language
+     */
+    this.getByPage = function(pageName){
+        let locale = this._loadLocale();
+        if (!locale){
+            console.log("no locale set");
+            return {};
+        }
+
+        if (pageName[0] !== "/")
+            pageName = "/" + pageName;
+        if (pageName.includes(".")){
+            let temp = pageName.split(".");
+            return locale[temp[0]][temp[1]];
+        }
+        return locale[pageName];
+    }
+}
+
+const merge = function(target, source){
+    for (const key of Object.keys(source))
+        if (source[key] instanceof Object)
+            Object.assign(source[key], merge(target[key] ? target[key] : {}, source[key]))
+    Object.assign(target || {}, source)
+    return target;
+}
+
+const bindToController = function(controller, page){
+    if (!controller.localized) {
+        let getter = controller.getModel;
+        controller.getModel = () => {
+            let locale = localeService.getByPage(page);
+            if (!locale){
+                console.log(`No translations found for page ${page}`);
+                return getter();
+            }
+            locale = JSON.parse(JSON.stringify(locale));
+            let model = getter();
+            return merge(locale, model);
+        };
+        controller.localized = true;
+    }
+}
+
+let localeService;
+
+module.exports = {
+    /**
+     * Returns the instance of the LocaleService and binds the locale info to the controller via {@link bindToController}
+     * @param {WebcController} controller: the current controller
+     * @param {string} page: the name of the view. Must match an existing key in {@link WebCardinal#translations}
+     * @returns {LocaleService}
+     */
+    bindToLocale: function (controller, page){
+        if (!localeService)
+            localeService = new LocaleService();
+        bindToController(controller, page);
+        return localeService;
+    }
+}
+},{}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/index.js":[function(require,module,exports){
 /**
  * @module fgt-dsu-wizard.services
  */
@@ -1596,10 +2163,11 @@ module.exports = {
     WalletService: require('./WalletService'),
     FileService: require("./FileService"),
     LocaleService: require("./LocaleService"),
+    WebcLocaleService: require('./WebcLocaleService'),
     ParticipantService: require('./ParticipantService'),
     Strategy: require('./strategy')
 }
-},{"./DSUService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/DSUService.js","./FileService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/FileService.js","./LocaleService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/LocaleService.js","./ParticipantService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/ParticipantService.js","./WalletService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/WalletService.js","./strategy":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/strategy.js"}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/strategy.js":[function(require,module,exports){
+},{"./DSUService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/DSUService.js","./FileService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/FileService.js","./LocaleService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/LocaleService.js","./ParticipantService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/ParticipantService.js","./WalletService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/WalletService.js","./WebcLocaleService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/WebcLocaleService.js","./strategy":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/strategy.js"}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/strategy.js":[function(require,module,exports){
 /**
  * @module fgt-dsu-wizard.services
  */

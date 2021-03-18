@@ -1,5 +1,4 @@
 import LocalizedController from "./LocalizedController.js";
-const MAH = require('wizard').Model.MAH;
 
 export default class RegistrationController extends LocalizedController {
 

@@ -6,6 +6,7 @@ module.exports = {
     WalletService: require('./WalletService'),
     FileService: require("./FileService"),
     LocaleService: require("./LocaleService"),
+    WebcLocaleService: require('./WebcLocaleService'),
     ParticipantService: require('./ParticipantService'),
     Strategy: require('./strategy')
 }

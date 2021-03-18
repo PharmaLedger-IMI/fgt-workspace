@@ -1,5 +1,4 @@
 import LocalizedController from "./LocalizedController.js";
-const MAH = require('wizard').Model.MAH;
 
 export default class RegistrationController extends LocalizedController {
 
@@ -28,6 +27,6 @@ export default class RegistrationController extends LocalizedController {
         Object.keys(model)
             .filter(k => !!model[k].value)
             .map(k => info[k] = model[k].value);
-        return new MAH(info);
+        return info;
     }
 }

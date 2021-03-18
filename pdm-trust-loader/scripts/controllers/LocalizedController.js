@@ -30,7 +30,7 @@ export default class LocalizedController extends WebcController {
     }
 
     /**
-     * Shows an Ionic model
+      * Shows an Ionic model
      * @param {string} modalName the modal's name registered via:
      * <pre>
      *     customElements.define('registration-modal', class extends HTMLElement{
@@ -65,11 +65,11 @@ export default class LocalizedController extends WebcController {
      * @param {string} pageName
      */
     bindLocale(controller, pageName){
-        require('wizard').Services.WebcLocaleService.bindToLocale(controller, pageName);
+        require('toolkit').Services.WebcLocaleService.bindToLocale(controller, pageName);
     }
 
     constructor(element, history) {
         super(element, history);
-        require('wizard').Model.Validations.bindIonicValidation(this);
+        require('toolkit').Model.Validations.bindIonicValidation(this);
     }
 }
