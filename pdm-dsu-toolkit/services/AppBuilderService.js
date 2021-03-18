@@ -18,11 +18,22 @@ const SLOTS = {
     }
 }
 
+const OPTIONS = {
+    vault: "vault",
+    codeFolderName: "code",
+    buildFolderName: "bin",
+    slots:{
+        primary: "wa"
+    }
+}
+
 /**
  * @param {object} options:
  * <pre>
  *     {
  *         vault: "${vaultDomain}"
+ *         codeFolder: "codeFolderName"
+ *         buildFolder: "buildFolder"
  *     }
  * </pre>
  * @param {string} options.codeFolderName
@@ -135,11 +146,17 @@ function AppBuilderService(options) {
 
     }
 
+    const instantiateWallet = function(keySSI, callback){
+
+    }
+
+
+
     const deployToDSU = function () {
 
     }
 
-    const clone = function (keySSI, callback) {
+    const getTemplateContent = function(keySSI, callback){
         let self = this;
         resolver.loadDSU(keySSI, (err, dsu) => {
             if (err)
@@ -151,5 +168,18 @@ function AppBuilderService(options) {
         });
     }
 
+    const cloneToConst = function (secretsArray, keyForDSUToClone, callback) {
+        let self = this;
+        _keySSIToContent(keyForDSUToClone, (err, content, dsu, commands) => {
+            if (err)
+                return callback(err);
+            console.log(content);
+            callback();
+        });
+    }
+
+
 
 }
+
+module.exports = AppBuilderService;

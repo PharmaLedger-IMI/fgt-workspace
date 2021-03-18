@@ -55,6 +55,6 @@
 	  "purpose": "maskable any"
     }
   ],
-  "start_url": "/fgt-wholesaler-wallet/loader/",
-  "scope": "/fgt-wholesaler-wallet/loader/"
+  "start_url": "fgt-wholesaler-wallet/loader",
+  "scope": "fgt-wholesaler-wallet/loader"
 }
