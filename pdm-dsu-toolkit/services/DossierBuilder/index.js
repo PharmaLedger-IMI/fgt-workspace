@@ -8,10 +8,10 @@ html API space
  * @return {DossierBuilder}
  */
 const getDossierBuilder = (sourceDSU) => {
-    return new (require("./DossierBuilder2").DossierBuilder)(sourceDSU)
+    return new (require("./DossierBuilder").DossierBuilder)(sourceDSU)
 }
 
 module.exports = {
     getDossierBuilder,
-    Operations: require("./DossierBuilder").operations
+    Operations: require("./DossierBuilder").OPERATIONS
 }
