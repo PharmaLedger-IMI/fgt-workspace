@@ -6,9 +6,8 @@
   },
   "theme": "pdm-theme",
   "pagesFallback": {
-    "name": "index",
-    "path": "./",
-    "src": "index.html"
+    "name": "indexOld",
+    "path": "./indexold.html"
   },
   "pages": [
     {

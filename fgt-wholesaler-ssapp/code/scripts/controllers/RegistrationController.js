@@ -7,7 +7,8 @@ export default class RegistrationController extends LocalizedController {
 
     constructor(element) {
         super(element);
-        super.bindLocale(this, ".registration");
+        console.log(`The translation model in the registration controller is: ${WebCardinal.translations}`);
+        super.bindLocale(this, "home.registration");
         this.setModel(this.getModel());
         this.onTagClick('registration', this._submitRegistration.bind(this));
 

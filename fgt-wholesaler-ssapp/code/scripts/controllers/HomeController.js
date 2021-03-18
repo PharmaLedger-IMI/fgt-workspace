@@ -36,7 +36,8 @@ export default class ParticipantController extends LocalizedController {
 
     constructor(element, history) {
         super(element, history);
-        super.bindLocale(this, "");
+        console.log(`The translation model in the Home controller is: ${WebCardinal.translations}`);
+        super.bindLocale(this, "home");
         this.setModel(this.getModel());
         this.model.addExpression('identified', () => {
             return this.model.participant !== undefined;
