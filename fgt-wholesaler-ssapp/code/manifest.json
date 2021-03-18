@@ -1,7 +1,7 @@
 {
   "name": "Pharmaledger Finished Good Traceability for Wholesalers",
   "short_name": "FGT for Wholesalers",
-  "start_url": "/",
+  "start_url": "/fgt-wholesaler-wallet/loader/",
   "display": "standalone",
   "icons": [
     {
