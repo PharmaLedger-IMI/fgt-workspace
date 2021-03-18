@@ -62,6 +62,8 @@ pharmaledger-wallet**
 privatesky
 themes
 
+!ionic-core/dist
+
 tests/*/testWorkspace
 
 testReport.html
@@ -321,7 +323,7 @@ modules.xml
 **/nbproject/Makefile-*.mk
 **/nbproject/Package-*.bash
 nbbuild/
-dist/
+
 nbdist/
 .nb-gradle/
 
@@ -412,7 +414,7 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+
 
 # Gatsby files
 .cache/
@@ -510,3 +512,5 @@ iOSInjectionProject/
 
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains+all,vscode,netbeans,eclipse,node,objective-c,android
 
+
+!ionic-core/dist
