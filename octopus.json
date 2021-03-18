@@ -25,7 +25,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd webcardinal && npm run bundle-webcardinal && npm dev"
+                    "cmd": "cd webcardinal && npm install && npm run bundle-webcardinal && npm dev"
                 }
             ]
         },

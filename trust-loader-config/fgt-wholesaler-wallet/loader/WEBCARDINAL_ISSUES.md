@@ -109,7 +109,7 @@ with the same environment and manifest files, i use the following webcardinal.js
 }
 ```
 
-No Controller Output is returned... I'm sent to the 4040 page
+No Controller Output is returned... I'm sent to the 404 page
 
 
 

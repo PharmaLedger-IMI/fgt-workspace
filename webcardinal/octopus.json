@@ -76,6 +76,10 @@
           "src": "https://github.com/PrivateSky/clear-sky-theme.git",
           "target": "./.webcardinal/themes",
           "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd ../themes/clear-sky-theme && npm install"
         }
       ]
     },
@@ -150,6 +154,10 @@
           "options": {
             "overwrite": true
           }
+        },
+        {
+          "type": "execute",
+          "cmd": "cd ../themes/clear-sky-theme && npm install"
         }
       ]
     }
