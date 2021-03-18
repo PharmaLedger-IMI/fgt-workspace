@@ -37,7 +37,7 @@ function AppBuilderService(options) {
     options = Object.assign({}, OPTIONS, options);
     let keyssi = require('opendsu').loadApi('keyssi')
 
-    const DossierBuilder = require("./DossierBuilder/DossierBuilder2").DossierBuilder;
+    const DossierBuilder = require("./DossierBuilder/DossierBuilder").DossierBuilder;
     const resolver = require('opendsu').loadApi('resolver');
 
     const contentToCommands = function(files, mounts){
