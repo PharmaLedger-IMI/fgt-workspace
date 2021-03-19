@@ -2,12 +2,9 @@ process.env.NO_LOGS = true;
 
 const path = require('path');
 
-require(path.join('../../privatesky/psknode/bundles', 'testsRuntime.js'));     // test runtime
-require(path.join('../../privatesky/psknode/bundles', 'pskruntime.js'));       // the whole 9 yards, can be replaced if only
-const toolkit = require('./../../pdm-dsu-toolkit/index');
-
-const dc = require("double-check");
-const assert = dc.assert;
+//require(path.join('../../privatesky/psknode/bundles', 'testsRuntime.js'));     // test runtime
+require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
+const toolkit = require('./../../pdm-dsu-toolkit');
 
 let domains = ['traceability'];
 let testName = 'Wallet Builder Test';
@@ -35,6 +32,8 @@ const argParser = function(args){
 }
 
 const launchTestServer = function(timeout, testFunction){     // the test server framework
+    const dc = require("double-check");
+    const assert = dc.assert;
     const tir = require("../../privatesky/psknode/tests/util/tir");
     assert.callback('Launch API Hub', (testFinished) => {
         dc.createTestFolder(testName, (err, folder) => {
@@ -53,12 +52,19 @@ const launchTestServer = function(timeout, testFunction){     // the test server
 }
 
 const runTest = function(testFinished){
-    assert.begin();
-    const secretsArr = ["usename", Math.random() * 100000000000];
+    const secretsObj = {
+        name: {
+            secret: "Company Name",
+            public: true
+        },
+        password: {
+            secret: Math.random() * 100000000000
+        }
+    };
 
     const appService = new (toolkit.Services.AppBuilderService)({vault: "server"});
-    const SEED = '65FmT6jYpmQXh9ETs68RdMxy7LL7pkEeJ6AEfkxKEcCrv9w7xhSuwAUmsx7ykau84ypsmceJtawfh9V8Hp1VRNqRjRaFS9H9';
-    appService.cloneToConst(secretsArr, SEED, (err, dsu) => {
+    const SEED = '65FmT6jYpmQXh9ETs68RdMxy7LL7pkEiVzw1VCm4EXwZj9TKN6fJmreZ7Pzk42WRUDaUZKjUeHmUdBB4M6zpv3id7JRLCb6X';
+    appService.cloneToConst(secretsObj, SEED, (err, dsu) => {
         if (err)
             throw err;
         testFinished()

@@ -46,17 +46,27 @@ export default class LocalizedController extends WebcController {
      *          });
      * </pre>
      * @param {boolean} [swipeToClose]: enables slideToClose when available. defaults to false
+     * @param {object} [params]: passes param to modal (ionic functionality)
      */
-    showIonicModal(modalName, swipeToClose){
+    showIonicModal(modalName, swipeToClose, params){
+        if (typeof swipeToClose === 'object'){
+            params = swipeToClose;
+            swipeToClose = false;
+        }
         swipeToClose = !!swipeToClose;
-        const modal = this.createElement('ion-modal',{
+        this.modal = this.createAndAddElement('ion-modal',{
+            id: `Id${modalName}`,
             component: modalName,
-            controller: "RegistrationController",
             backdropDismiss: false,
-            swipeToClose: swipeToClose
+            swipeToClose: swipeToClose,
+            componentProps: params
         });
-        WebCardinal.root.querySelector('webc-container[controller="HomeController"]').append(modal)
-        return modal.present();
+        this.modal.present();
+    }
+
+    closeIonicModal(){
+        if (this.modal)
+            this.modal.dismiss();
     }
 
     /**

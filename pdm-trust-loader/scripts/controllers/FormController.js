@@ -6,14 +6,16 @@ export default class FormController extends LocalizedController {
 
     constructor(element) {
         super(element);
-        let locale_key = this.model.page;
-        if (!locale_key)
-            throw new Error("Missing fields info");
-        super.bindLocale(this, `.${locale_key}`);
+        // let locale_key = this.model.page;
+        // if (!locale_key)
+        //     throw new Error("Missing fields info");
+        super.bindLocale(this, `.login`);
         this.setModel(this.getModel());
-        this.onTagClick('registration', this._submitRegistration.bind(this));
-
+        Object.entries(this.getModel().buttons).forEach(b => {
+            this.onTagClick(`try-${b[0]}`, this._submitRegistration.bind(this));
+        });
         console.log("FormController initialized");
+        this._createModalForm();
     }
 
     _createModalForm(){
@@ -22,19 +24,23 @@ export default class FormController extends LocalizedController {
             .map(e => ({name: e[0], attributes: e[1]}))
             .filter(e => typeof e.attributes === 'object');
         const buttons = fields.filter(f => f.name === 'buttons');
-        const inputs = fields.filter(f => f.name !== 'buttons');
+        const inputs = fields.filter(f => f.name !== 'buttons').map(b => b.attributes );
         this._defineElements(inputs, buttons);
     }
 
     _defineElements(inputs, buttons){
         let el, elName;
-        const content_div = this.root.querySelector("div.modal-content");
+        const content_div = this.element.querySelector("div.modal-content");
         inputs.forEach(input => {
             elName = this._defineIonInput(input.name, input.attributes);
-            el = content_div.createElement(elName);
-            content_div.appendChild(el);
+            el = document.createElement(elName);
+            content_div.append(el);
         });
-        const footer_el = this.root.querySelector("div.modal-content");
+        const footer_el = this.element.querySelector("ion-footer");
+        this._getIonButtons(buttons).forEach(b => {
+            el = document.createElement(b);
+            footer_el.append(el);
+        });
     }
 
     /**
@@ -50,7 +56,7 @@ export default class FormController extends LocalizedController {
                 this.innerHTML = `
     <ion-item>
         <ion-label position="stacked"> {{ @${name}.label }}</ion-label>
-        <ion-input name="input-${name}" data-model="@${name}" inputmode="text" required="true" clear-on-edit="true"></ion-input>
+        <ion-input name="input-${name}" data-model="@${name}" inputmode="text" type="@type" required="@required" clear-on-edit="true"></ion-input>
     </ion-item>`
             }
         });
@@ -69,14 +75,14 @@ export default class FormController extends LocalizedController {
             customElements.define(`loader-button-${name}`, class extends HTMLElement{
                 connectedCallback(){
                     this.innerHTML = `
-    <ion-button name="${name}" slot="footer" color="${getColor(index)}" data-tag="${name}">{{ @${name} }}</ion-button>`
+    <ion-button name="button-${name}" slot="footer" color="${getColor(index)}" data-tag="try-${name}">{{ @{label} }}</ion-button>`
                 }
             });
         }
 
         let resulting_el = []
-        buttons.forEach((b, i) => {
-            resulting_el.push(getButton(b, i));
+        Object.entries(buttons).forEach((b, i) => {
+            resulting_el.push(getButton(b[0], i));
         });
         return resulting_el;
     }

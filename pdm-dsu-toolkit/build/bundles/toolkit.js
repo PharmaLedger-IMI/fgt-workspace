@@ -1036,20 +1036,9 @@ module.exports = {
 
 const FileService = require("./FileService");
 
-const SLOTS = {
-    PRIMARY: {
-        getPath: function (appName) {
-            return "wallet-patch";
-        }
-    },
-    SECONDARY: {
-        getPath: function (appName) {
-            return `apps-patch/${appName}`
-        }
-    }
-}
-
 const OPTIONS = {
+    anchoring: "default",
+    hint: undefined,
     vault: "vault",
     codeFolderName: "code",
     buildFolderName: "bin",
@@ -1063,6 +1052,8 @@ const OPTIONS = {
  * @param {object} options:
  * <pre>
  *     {
+ *         anchoring: "${anchoringDomain}
+ *         hint: the hint portion og the key
  *         vault: "${vaultDomain}"
  *         codeFolder: "codeFolderName"
  *         buildFolder: "buildFolder"
@@ -1075,131 +1066,119 @@ const OPTIONS = {
  */
 function AppBuilderService(options) {
     options = Object.assign({}, OPTIONS, options);
-    this.fileService = new FileService();
     let keyssi = require('opendsu').loadApi('keyssi')
 
-    const dossierBuilder = require('opendsu').loadApi('dt').getDossierBuilder();
+    const DossierBuilder = require("./DossierBuilder/DossierBuilder").DossierBuilder;
     const resolver = require('opendsu').loadApi('resolver');
+
+    const createConstDSU = function(domain, secretsArray, callback){
+
+    }
+
+    const contentToCommands = function(files, mounts){
+        let commands = [];
+        files.forEach(f => {
+            commands.push(`addfile ${f} ${f}`);
+        });
+        mounts.forEach(m => {
+            commands.push(`mount ${m.identifier} ${m.path}`);
+        });
+        return commands;
+    }
 
     /**
      * Lists a DSUs content
      * @param {Archive} dsu
-     * @param {function(err, content)}callback
+     * @param {function(err, files, mounts)}callback
      * @private
      */
-    const _getDSUContent = function (dsu, callback) {
-        dsu.listFiles("/", {recursive: true, ignoreMounts: false}, (err, content) => {
-            if (err)
-                return callback(`Could not retrieve DSU content: ${err}`);
-            callback(undefined, content);
-        })
-    }
-
-    /**
-     * Loads a DSU and list its content
-     * @param {KeySSI} keySSI
-     * @param {function(err, content, Archive, commands)} callback
-     * @private
-     */
-    const _keySSIToContent = function(keySSI, callback){
-        resolver.loadDSU(keySSI, (err, template) => {
-            if (err)
-                return callback(err);
-            console.log(`Loaded template DSU`);
-            _getDSUContent(template, (err, templateContent) => {
+    const getDSUContent = function (keySSI, callback) {
+        resolver.loadDSU(keySSI, (err, dsu) => {
+            dsu.listFiles("/", {ignoreMounts: true}, (err, files) => {
                 if (err)
-                    return callback(err);
-                console.log(`Template DSU content: ${templateContent}`);
-                callback(undefined, templateContent, template);
+                    return callback(`Could not retrieve DSU content: ${err}`);
+                dsu.listMountedDSUs("/", (err, mounts) => {
+                    if (err)
+                        return callback(`Could not retrieve DSU mounts: ${err}`);
+                    callback(undefined, files, mounts, dsu);
+                });
             });
         });
     }
 
+    const createArraySSI = function(secrets, callback){
+        const key = keyssi.createArraySSI(options.anchoring, secrets, 'v0', options.hint ? JSON.stringify(options.hint) : undefined);
+        callback(undefined, key);
+    }
 
-    /**
-     * Reads the keySSI from the seed file the the app folder while in the workspace
-     * @param {string} name the application name (the folder name under the workspace)
-     * @param {string} domain the anchoring domain
-     * @param {function(err, KeySSI)} callback
-     */
-    const getSSIFromAppName = function (name, domain, callback) {
-        const seed = this.fileService.getFile(name, "seed", (err, file) => {
-            if (err)
-                return callback(err);
-            let keySSI = keyssi.parse(file.toString());
-            if (keySSI.getDLDomain() !== domain)
-                return callback("Invalid Domain");
-            callback(undefined, keySSI);
-        });
+    const doClone = function(dsuToClone, destinationDSU, files, mounts, callback){
+        const commands = contentToCommands(files, mounts);
+        const dossierBuilder = new DossierBuilder(dsuToClone);
+        dossierBuilder.buildDossier(destinationDSU, commands, callback);
     }
 
     /**
-     * Clones contents of the DSU of the given keySSI to a new WalletDSU (const) generated with the
-     * provided keyGenArray
      *
-     * cfg:
+     * @param {object} secretsObject:
      * <pre>
      *     {
-     *        "seed": "./seed",
-     *        "domain": "default",
-     *        "bundles": "./../../privatesky/psknode/bundles",
-     *        "config": "./bin/build.file"
+     *         secretName: {
+     *             secret: "...",
+     *             public: (defaults to false. If true will be made available to the created DSU for use of initialization Scripts)
+     *         }
      *     }
      * </pre>
-     * @param {string[]} keyGenArray
-     * @param {KeySSI} keySSI
-     * @param {string} domain anchoring domain;
-     * @param {function(err, KeySSI)}callback
+     * @param keyForDSUToClone
+     * @param callback
      */
-    const installAsWallet = function (keyGenArray, keySSI, domain, callback) {
-        _keySSIToContent(keySSI, (err, content, templateDSU, commands) => {
+    this.cloneToConst = function (secretsObject, keyForDSUToClone, callback) {
+        getDSUContent(keyForDSUToClone, (err, files, mounts, dsuToClone) => {
             if (err)
                 return callback(err);
-            const walletsSSI = keyssi.createArraySSI(domain, keyGenArray, 'v0', undefined);
-            const walletBuilder = dossierBuilder.getDSUFactory(true);
-            walletBuilder({domain: domain}, );
-        });
+            console.log(`Loaded Template DSU with key ${keyForDSUToClone}:\nmounts: ${mounts}`);
+            const secretsArray = Object.entries(secretsObject).map(e => e[1].secret);
+            const publicSecrets = Object.entries(secretsObject).filter(e => e[1].public)
+                .map(e => ({name: e[1], secret: e[1].secret}));
 
-    }
-
-    const instantiateWallet = function(keySSI, callback){
-
-    }
-
-
-
-    const deployToDSU = function () {
-
-    }
-
-    const getTemplateContent = function(keySSI, callback){
-        let self = this;
-        resolver.loadDSU(keySSI, (err, dsu) => {
-            if (err)
-                return callback(`Could not load DSU: ${err}`);
-            _getDSUContent(dsu, (err, content) => {
-                if (err)
-                    return callback(err);
+            createArraySSI(secretsArray, (err, keySSI) => {
+                resolver.createDSUForExistingSSI(keySSI, (err, destinationDSU) => {
+                    if (err)
+                        return callback(err);
+                    doClone(dsuToClone, destinationDSU, files, mounts,  (err, keySSI) => {
+                        if (err)
+                            return callback(err);
+                        console.log(`DSU ${keySSI} as a clone of ${keyForDSUToClone} was created`);
+                    });
+                });
             });
         });
     }
 
-    this.cloneToConst = function (secretsArray, keyForDSUToClone, callback) {
-        let self = this;
-        _keySSIToContent(keyForDSUToClone, (err, content, dsu, commands) => {
+    this.clone = function (secretsObject, keyForDSUToClone, callback) {
+        getDSUContent(keyForDSUToClone, (err, files, mounts, dsuToClone) => {
             if (err)
                 return callback(err);
-            console.log(content);
-            callback();
+            console.log(`Loaded Template DSU with key ${keyForDSUToClone}:\nmounts: ${mounts}`);
+            const secretsArray = Object.entries(secretsObject).map(e => e[1].secret);
+            const publicSecrets = Object.entries(secretsObject).filter(e => e[1].public)
+                .map(e => ({name: e[1], secret: e[1].secret}));
+
+            createArraySSI(secretsArray, (err, keySSI) => {
+                resolver.createDSUForExistingSSI(keySSI, (err, destinationDSU) => {
+                    if (err)
+                        return callback(err);
+                    doClone(dsuToClone, destinationDSU, files, mounts,  (err, keySSI) => {
+                        if (err)
+                            return callback(err);
+                        console.log(`DSU ${keySSI} as a clone of ${keyForDSUToClone} was created`);
+                    });
+                });
+            });
         });
     }
-
-
-
 }
-
 module.exports = AppBuilderService;
-},{"./FileService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/FileService.js","opendsu":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/DSUService.js":[function(require,module,exports){
+},{"./DossierBuilder/DossierBuilder":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/DossierBuilder/DossierBuilder.js","./FileService":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/FileService.js","opendsu":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/DSUService.js":[function(require,module,exports){
 /**
  * @module fgt-dsu-wizard.services
  */
@@ -1436,7 +1415,379 @@ class DSUService {
 
 module.exports = DSUService;
 
-},{"./utils.js":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/utils.js","form-data":false,"opendsu":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/FileService.js":[function(require,module,exports){
+},{"./utils.js":"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/utils.js","form-data":false,"opendsu":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/DossierBuilder/DossierBuilder.js":[function(require,module,exports){
+const OPERATIONS = {
+    DELETE: "delete",
+    ADD_FOLDER: "addfolder",
+    ADD_FILE: "addfile",
+    MOUNT: "mount"
+}
+
+/**
+ * Automates the Dossier Building process
+ * Call via
+ * <pre>
+ *     builder.buildDossier(config, commands, callback)
+ * </pre>
+ * where the config is as follows (this config is generated by the buildDossier script in octopus given the proper commands):
+ * <pre>
+ *     {
+ *          "seed": "./seed",
+ *          "domain": "default",
+ *     }
+ * </pre>
+ * For a Simple SSApp (with only mounting of cardinal/themes and creation of code folder) the commands would be like:
+ * <pre>
+ *     delete /
+ *     addfolder code
+ *     mount ../cardinal/seed /cardinal
+ *     mount ../themes/'*'/seed /themes/'*'
+ * </pre>
+ * @param {Archive} [sourceDSU] if provided will perform all OPERATIONS from the sourceDSU as source and not the fs
+ */
+const DossierBuilder = function(sourceDSU){
+    const fs = require("fs");
+    const openDSU = require("opendsu");
+    const keyssi = openDSU.loadApi("keyssi");
+    const resolver = openDSU.loadApi("resolver");
+
+    /**
+     * recursively executes the provided func with the dossier and each of the provided arguments
+     * @param {DSU Archive} dossier: The DSU instance
+     * @param {function} func: function that accepts the dossier and one param as arguments
+     * @param {any} arguments: a list of arguments to be consumed by the func param
+     * @param {function} callback: callback function. The first argument must be err
+     */
+    let execute = function (dossier, func, arguments, callback) {
+        let arg = arguments.pop();
+        if (! arg)
+            return callback();
+        let options = typeof arg === 'object' && arg.options ? arg.options : undefined;
+        func(dossier, arg, options, (err, result) => {
+            if (err)
+                return callback(err);
+
+            if (arguments.length !== 0) {
+                execute(dossier, func, arguments, callback);
+            } else {
+                callback(undefined, result);
+            }
+        });
+    };
+
+    let del = function (bar, path, options, callback) {
+        if (typeof options === 'function'){
+            callback = options;
+            options = {}
+        }
+        options = options || {ignoreMounts: false};
+        console.log("Deleting " + path);
+        bar.delete(path, options, err => callback(err, bar));
+    };
+
+    let addFolder = function (folder_root = "/") {
+        return function (bar, arg, options, callback){
+            if (sourceDSU){
+                console.log("The addFolder Method is not supported when cloning from a DSU");
+                callback();
+            }
+
+            if (typeof options === 'function'){
+                callback = options;
+                options = {}
+            }
+            options = options || {batch: false, encrypt: false};
+            console.log("Adding Folder " + folder_root + arg)
+            bar.addFolder(arg, folder_root, options, err => callback(err, bar));
+        };
+    };
+
+    let addFile = function (bar, arg, options, callback) {
+        if (typeof options === 'function'){
+            callback = options;
+            options = {}
+        }
+        options = options || {encrypt: true, ignoreMounts: false}
+        console.log("Copying file " + arg.from + (sourceDSU ? " from sourceDSU" : "") + " to " + arg.to);
+
+        if (!sourceDSU)
+            return bar.addFile(arg.from, arg.to, options, err => callback(err, bar));
+
+        sourceDSU.readFile(arg.from, (err, data) => {
+            if (err)
+                return callback(err);
+            console.log(`Read file from sourceDSU's ${arg.from}`);
+            bar.writeFile(arg.to, data, err =>{
+                if (err){
+                    console.log(`File could not be written to ${arg.to}`);
+                    return callback(err);
+                }
+                console.log(`File written to new DSU at ${arg.to}`);
+                callback(undefined, bar);
+            });
+        });
+    };
+
+    let mount = function (bar, arg, options, callback) {
+        if (typeof options === 'function'){
+            callback = options;
+            options = undefined
+        }
+
+        const doMount = function(seed, callback){
+            console.log("Mounting " + arg.seed_path + " with seed " + seed + " to " + arg.mount_point);
+            bar.mount(arg.mount_point, seed, err => {
+                callback(err, bar)
+            });
+        }
+
+        if (sourceDSU)
+            return doMount(arg.seed_path, callback);
+
+        readFile(arg.seed_path, (err, data) => {
+            if (err)
+                return callback(err);
+            let seed = data.toString();
+            doMount(seed, callback);
+        });
+    };
+
+    /**
+     * handles the difference between the mount arguments in the 2 cases (with/without sourceDSU)
+     * @param arg
+     * @param arguments
+     * @return {*}
+     * @private
+     */
+    let _transform_mount_arguments = function(arg, arguments){
+        return sourceDSU
+            ? arguments.map(m => {
+                return {
+                    "seed_path": m.identifier,
+                    "mount_point": m.path
+                }
+            })
+            : arguments.map(n => {
+                return {
+                    "seed_path": arg.seed_path.replace("*", n),
+                    "mount_point": arg.mount_point.replace("*", n)
+                };
+            });
+    }
+
+    /**
+     * Calls mount recursively
+     * @param bar
+     * @param arg
+     * @param callback
+     */
+    let mount_folders = function (bar, arg, callback) {
+        let base_path = arg.seed_path.split("*");
+        const listFunc = sourceDSU ? sourceDSU.listMountedDSUs : fs.readdir;
+        listFunc(base_path[0], (err, arguments) => {
+            if (err)
+                return callback(err);
+            arguments = _transform_mount_arguments(arg, arguments);
+            execute(bar, mount, arguments, callback);
+        });
+    };
+
+    /**
+     * Looks for the '*' pattern
+     * @param bar
+     * @param cmd
+     * @param callback
+     */
+    let evaluate_mount = function(bar, cmd, callback){
+        let arguments = {
+            "seed_path": cmd[0],
+            "mount_point": cmd[1]
+        };
+
+        if (!arguments.seed_path.match(/[\\/]\*[\\/]/))
+            mount(bar, arguments, callback);             // single mount
+        else
+            mount_folders(bar, arguments, callback);     // folder mount
+    };
+
+    let createDossier = function (conf, commands, callback) {
+        console.log("creating a new dossier...")
+        resolver.createDSU(keyssi.createTemplateSeedSSI(conf.domain), (err, bar) => {
+            if (err)
+                return callback(err);
+            updateDossier(bar, conf, commands, callback);
+        });
+    };
+
+    /**
+     * Reads from fs or dsu depending on the existence of a sourceDSU
+     * @param {string} filePath
+     * @param callback
+     */
+    let readFile = function (filePath, callback) {
+        const readMethod = sourceDSU ? sourceDSU.readFile : fs.readFile;
+        readMethod(filePath, (err, data) => {
+            if (err)
+                return callback(err);
+            return callback(undefined, sourceDSU ? data : data.toString());
+        });
+    };
+
+    /**
+     * Writes to a file on the filesystem
+     * @param filePath
+     * @param data
+     * @param callback
+     */
+    let writeFile = function (filePath, data, callback) {
+        if (sourceDSU)
+            throw new Error("This method is not meant to be used here");
+
+        fs.writeFile(filePath, data, (err) => {
+            if (err)
+                return callback(err);
+            callback(undefined, data.toString());
+        });
+    };
+
+    /**
+     * Stores the keySSI to the SEED file when no sourceDSU is provided
+     * @param {string} seed_path the path to store in
+     * @param {string} keySSI
+     * @param {function(err, KeySSI)} callback
+     */
+    let storeKeySSI = function (seed_path, keySSI, callback) {
+        writeFile(seed_path, keySSI, callback);
+    };
+
+    /**
+     * Runs an operation
+     * @param {Archive} bar
+     * @param {string} command
+     * @param {function(err, keySSI)} callback
+     */
+    let runCommand = function(bar, command, callback){
+        let cmd = command.split(/\s+/);
+        switch (cmd.shift().toLowerCase()){
+            case OPERATIONS.DELETE:
+                execute(bar, del, cmd, callback);
+                break;
+            case OPERATIONS.ADD_FOLDER:
+                execute(bar, addFolder(), cmd, callback);
+                break;
+            case OPERATIONS.ADD_FILE:
+                let arg = {
+                    "from": cmd[0],
+                    "to": cmd[1]
+                }
+                addFile(bar, arg, callback);
+                break;
+            case OPERATIONS.MOUNT:
+                evaluate_mount(bar, cmd, callback)
+                break;
+            default:
+                return callback(new Error("Invalid operation requested: " + command));
+        }
+    };
+
+    /**
+     * Retrieves the KeysSSi after save (when applicable)
+     * @param {Archive} bar
+     * @param {object} cfg is no sourceDSU is provided must contain a seed field
+     * @param {function(err, KeySSI)} callback
+     */
+    let saveDSU = function(bar, cfg, callback){
+        bar.getKeySSIAsString((err, barKeySSI) => {
+            if (err)
+                return callback(err);
+            if(sourceDSU)
+                return callback(undefined, barKeySSI);
+            storeKeySSI(cfg.seed, barKeySSI, callback);
+        });
+    };
+
+    /**
+     * Run a sequence of {@link OPERATIONS} on the DSU
+     * @param {Archive} bar
+     * @param {object} cfg
+     * @param {string[]} commands
+     * @param {function(err, KeySSI)} callback
+     */
+    let updateDossier = function(bar, cfg, commands, callback) {
+        if (commands.length === 0)
+            return saveDSU(bar, cfg, callback);
+        let cmd = commands.shift();
+        runCommand(bar, cmd, (err, updated_bar) => {
+            if (err)
+                return callback(err);
+            updateDossier(updated_bar, cfg, commands, callback);
+        });
+    };
+
+    /**
+     * Builds s DSU according to it's building instructions
+     * @param {object|Archive} configOrDSU: can be a config file form octopus or the destination DSU when cloning.
+     * **Can oly be used if a sourceDSU is provided in the 'constructor'**
+     *
+     * Example of config file:
+     * <pre>
+     *     {
+     *         seed: path to SEED file in fs
+     *     }
+     * </pre>
+     * @param {string[]|object[]} [commands]
+     * @param {function(err, KeySSI)} callback
+     */
+    this.buildDossier = function(configOrDSU, commands, callback){
+        if (typeof commands === 'function'){
+            callback = commands;
+            commands = [];
+        }
+
+        let builder = function(keySSI){
+            try {
+                keySSI = keyssi.parse(keySSI);
+            } catch (err) {
+                console.log("Invalid keySSI");
+                return createDossier(configOrDSU, commands, callback);
+            }
+
+            if (keySSI.getDLDomain() !== configOrDSU.domain) {
+                console.log("Domain change detected.");
+                return createDossier(configOrDSU, commands, callback);
+            }
+
+            resolver.loadDSU(keySSI, (err, bar) => {
+                if (err){
+                    console.log("DSU not available. Creating a new DSU for", keySSI);
+                    return resolver.createDSU(keySII, {useSSIAsIdentifier: true}, (err, bar)=>{
+                        if(err)
+                            return callback(err);
+                        updateDossier(bar, configOrDSU, commands, callback);
+                    });
+                }
+                console.log("Dossier updating...");
+                updateDossier(bar, configOrDSU, commands, callback);
+            });
+        }
+
+        if (sourceDSU)
+            return updateDossier(configOrDSU, {}, commands, callback);
+
+        readFile(configOrDSU.seed, (err, content) => {
+            if (err || content.length === 0)
+                return createDossier(configOrDSU, commands, callback);
+            builder(content.toString());
+        });
+    };
+};
+
+module.exports = {
+    DossierBuilder,
+    OPERATIONS
+};
+
+},{"fs":false,"opendsu":false}],"/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-dsu-toolkit/services/FileService.js":[function(require,module,exports){
 /**
  * @module pdm-dsu-toolkit.services
  */

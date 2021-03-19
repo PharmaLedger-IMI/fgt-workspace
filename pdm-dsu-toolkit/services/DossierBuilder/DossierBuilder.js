@@ -99,7 +99,7 @@ const DossierBuilder = function(sourceDSU){
             if (err)
                 return callback(err);
             console.log(`Read file from sourceDSU's ${arg.from}`);
-            bar.writeFile(arg.to, data.toString(), err =>{
+            bar.writeFile(arg.to, data, err =>{
                 if (err){
                     console.log(`File could not be written to ${arg.to}`);
                     return callback(err);

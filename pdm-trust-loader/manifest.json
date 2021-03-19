@@ -1,7 +1,7 @@
 {
   "name": "DSU Trust Loader",
   "short_name": "Trust Loader",
-  "start_url": "/pdm-trust-loader/loader",
+  "start_url": "/pdm-trust-loader/loader/",
   "display": "standalone",
   "icons": [
     {

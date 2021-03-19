@@ -82,11 +82,52 @@ function AppBuilderService(options) {
         dossierBuilder.buildDossier(destinationDSU, commands, callback);
     }
 
-    this.cloneToConst = function (secretsArray, keyForDSUToClone, callback) {
+    /**
+     *
+     * @param {object} secretsObject:
+     * <pre>
+     *     {
+     *         secretName: {
+     *             secret: "...",
+     *             public: (defaults to false. If true will be made available to the created DSU for use of initialization Scripts)
+     *         }
+     *     }
+     * </pre>
+     * @param keyForDSUToClone
+     * @param callback
+     */
+    this.cloneToConst = function (secretsObject, keyForDSUToClone, callback) {
         getDSUContent(keyForDSUToClone, (err, files, mounts, dsuToClone) => {
             if (err)
                 return callback(err);
             console.log(`Loaded Template DSU with key ${keyForDSUToClone}:\nmounts: ${mounts}`);
+            const secretsArray = Object.entries(secretsObject).map(e => e[1].secret);
+            const publicSecrets = Object.entries(secretsObject).filter(e => e[1].public)
+                .map(e => ({name: e[1], secret: e[1].secret}));
+
+            createArraySSI(secretsArray, (err, keySSI) => {
+                resolver.createDSUForExistingSSI(keySSI, (err, destinationDSU) => {
+                    if (err)
+                        return callback(err);
+                    doClone(dsuToClone, destinationDSU, files, mounts,  (err, keySSI) => {
+                        if (err)
+                            return callback(err);
+                        console.log(`DSU ${keySSI} as a clone of ${keyForDSUToClone} was created`);
+                    });
+                });
+            });
+        });
+    }
+
+    this.clone = function (secretsObject, keyForDSUToClone, callback) {
+        getDSUContent(keyForDSUToClone, (err, files, mounts, dsuToClone) => {
+            if (err)
+                return callback(err);
+            console.log(`Loaded Template DSU with key ${keyForDSUToClone}:\nmounts: ${mounts}`);
+            const secretsArray = Object.entries(secretsObject).map(e => e[1].secret);
+            const publicSecrets = Object.entries(secretsObject).filter(e => e[1].public)
+                .map(e => ({name: e[1], secret: e[1].secret}));
+
             createArraySSI(secretsArray, (err, keySSI) => {
                 resolver.createDSUForExistingSSI(keySSI, (err, destinationDSU) => {
                     if (err)
