@@ -1,5 +1,6 @@
 #!/bin/bash -xe
-# deploy docker image to DEV environment
+# Deploy docker image to DEV environment.
+# (Docker image must be first build using the ../build.sh script).
 
 PRG_NAME=`basename $0`
 PRG_DIR=`dirname $0`
