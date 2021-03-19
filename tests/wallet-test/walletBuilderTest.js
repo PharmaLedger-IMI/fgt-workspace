@@ -2,7 +2,6 @@ process.env.NO_LOGS = true;
 
 const path = require('path');
 
-//require(path.join('../../privatesky/psknode/bundles', 'testsRuntime.js'));     // test runtime
 require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
 const toolkit = require('./../../pdm-dsu-toolkit');
 
@@ -32,6 +31,9 @@ const argParser = function(args){
 }
 
 const launchTestServer = function(timeout, testFunction){     // the test server framework
+    require(path.join('../../privatesky/psknode/bundles', 'testsRuntime.js'));     // test runtime
+    require(path.join('../../privatesky/psknode/bundles', 'pskruntime.js'));       // the whole 9 yards, can be replaced if only
+
     const dc = require("double-check");
     const assert = dc.assert;
     const tir = require("../../privatesky/psknode/tests/util/tir");
@@ -57,6 +59,18 @@ const runTest = function(testFinished){
             secret: "Company Name",
             public: true
         },
+        address: {
+            secret: "Address",
+            public: true
+        },
+        tin: {
+            secret: "Tin Number",
+            public: true
+        },
+        email: {
+            secret: "email",
+            public: true
+        },
         password: {
             secret: Math.random() * 100000000000
         }
@@ -64,7 +78,7 @@ const runTest = function(testFinished){
 
     const appService = new (toolkit.Services.AppBuilderService)({vault: "server"});
     const SEED = '65FmT6jYpmQXh9ETs68RdMxy7LL7pkEiVzw1VCm4EXwZj9TKN6fJmreZ7Pzk42WRUDaUZKjUeHmUdBB4M6zpv3id7JRLCb6X';
-    appService.cloneToConst(secretsObj, SEED, (err, dsu) => {
+    appService.clone(secretsObj, SEED, true, (err, dsu) => {
         if (err)
             throw err;
         testFinished()

@@ -2,6 +2,7 @@ const OPERATIONS = {
     DELETE: "delete",
     ADD_FOLDER: "addfolder",
     ADD_FILE: "addfile",
+    CREATE_FILE: "createfile",
     MOUNT: "mount"
 }
 
@@ -28,7 +29,10 @@ const OPERATIONS = {
  * @param {Archive} [sourceDSU] if provided will perform all OPERATIONS from the sourceDSU as source and not the fs
  */
 const DossierBuilder = function(sourceDSU){
-    const fs = require("fs");
+    let fs;
+    if (!sourceDSU)
+        fs = require("fs");
+
     const openDSU = require("opendsu");
     const keyssi = openDSU.loadApi("keyssi");
     const resolver = openDSU.loadApi("resolver");
@@ -84,6 +88,40 @@ const DossierBuilder = function(sourceDSU){
         };
     };
 
+    /**
+     * Creates a file with
+     * @param bar
+     * @param {object} arg:
+     * <pre>
+     *     {
+     *         path: (...),
+     *         content: (..)
+     *     }
+     * </pre>
+     * @param options
+     * @param callback
+     */
+    let createFile = function(bar, arg, options, callback){
+        if (typeof options === 'function'){
+            callback = options;
+            options = {}
+        }
+        options = options || {encrypt: true, ignoreMounts: false};
+        bar.writeFile(arg.path, arg.content, options, (err) => {
+            if (err)
+                return callback(`Could not create file at ${arg.path}: ${err}`);
+            callback(undefined, bar);
+        })
+    }
+
+    /**
+     * Copies a file, from disk or another DSU
+     * @param bar
+     * @param arg
+     * @param options
+     * @param callback
+     * @return {*}
+     */
     let addFile = function (bar, arg, options, callback) {
         if (typeof options === 'function'){
             callback = options;
@@ -98,13 +136,9 @@ const DossierBuilder = function(sourceDSU){
         sourceDSU.readFile(arg.from, (err, data) => {
             if (err)
                 return callback(err);
-            console.log(`Read file from sourceDSU's ${arg.from}`);
             bar.writeFile(arg.to, data, err =>{
-                if (err){
-                    console.log(`File could not be written to ${arg.to}`);
-                    return callback(err);
-                }
-                console.log(`File written to new DSU at ${arg.to}`);
+                if (err)
+                    return callback(`Could not write to ${arg.to}: ${err}`);
                 callback(undefined, bar);
             });
         });
@@ -119,9 +153,11 @@ const DossierBuilder = function(sourceDSU){
         const doMount = function(seed, callback){
             console.log("Mounting " + arg.seed_path + " with seed " + seed + " to " + arg.mount_point);
             bar.mount(arg.mount_point, seed, err => {
-                callback(err, bar)
+                if (err)
+                    return callback(`Could not perform mount of ${seed} at ${arg.seed_path}: ${err}`);
+                callback(undefined, bar)
             });
-        }
+        };
 
         if (sourceDSU)
             return doMount(arg.seed_path, callback);
@@ -168,7 +204,7 @@ const DossierBuilder = function(sourceDSU){
         const listFunc = sourceDSU ? sourceDSU.listMountedDSUs : fs.readdir;
         listFunc(base_path[0], (err, arguments) => {
             if (err)
-                return callback(err);
+                return callback(`Could not list mounts: ${err}`);
             arguments = _transform_mount_arguments(arg, arguments);
             execute(bar, mount, arguments, callback);
         });
@@ -210,7 +246,7 @@ const DossierBuilder = function(sourceDSU){
         const readMethod = sourceDSU ? sourceDSU.readFile : fs.readFile;
         readMethod(filePath, (err, data) => {
             if (err)
-                return callback(err);
+                return callback(`Could not read file at ${filePath}: ${err}`);
             return callback(undefined, sourceDSU ? data : data.toString());
         });
     };
@@ -252,21 +288,23 @@ const DossierBuilder = function(sourceDSU){
         let cmd = command.split(/\s+/);
         switch (cmd.shift().toLowerCase()){
             case OPERATIONS.DELETE:
-                execute(bar, del, cmd, callback);
-                break;
+                return execute(bar, del, cmd, callback);
             case OPERATIONS.ADD_FOLDER:
-                execute(bar, addFolder(), cmd, callback);
-                break;
+                return execute(bar, addFolder(), cmd, callback);
             case OPERATIONS.ADD_FILE:
                 let arg = {
                     "from": cmd[0],
                     "to": cmd[1]
                 }
-                addFile(bar, arg, callback);
-                break;
+                return addFile(bar, arg, callback);
             case OPERATIONS.MOUNT:
-                evaluate_mount(bar, cmd, callback)
-                break;
+                return evaluate_mount(bar, cmd, callback);
+            case OPERATIONS.CREATE_FILE:
+                let cArg = {
+                    path: cmd.shift(),
+                    content: cmd.join(' ')
+                }
+                return createFile(bar, cArg, callback);
             default:
                 return callback(new Error("Invalid operation requested: " + command));
         }
