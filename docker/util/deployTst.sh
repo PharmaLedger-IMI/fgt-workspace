@@ -6,8 +6,8 @@ PRG_NAME=`basename $0`
 PRG_DIR=`dirname $0`
 PRG_DIR=`cd "$PRG_DIR" >/dev/null ; pwd`
 
-# pharmaledger at fgt-dev-pl
-USERATHOST="pharmaledger@192.168.13.102"
+# pharmaledger at fgt-tst-pl
+USERATHOST="pharmaledger@192.168.13.103"
 
 cd $PRG_DIR/..
 
