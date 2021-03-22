@@ -6,12 +6,12 @@ PRG_NAME=`basename $0`
 PRG_DIR=`dirname $0`
 PRG_DIR=`cd "$PRG_DIR" >/dev/null ; pwd`
 
+UCNAME="fgt"
 # pharmaledger at fgt-dev-pl
 USERATHOST="pharmaledger@192.168.13.102"
 
 cd $PRG_DIR/..
 
-UCNAME="$(./util/name.sh -1)"
 
 if test -z `which docker`
 then
@@ -52,7 +52,7 @@ docker stop \$(docker ps -aq)
 docker rm \$(docker ps -aq)
 docker rmi \$(docker images -q)
 ( xz -d < images/$IMG_NAME | docker load )
-docker run --detach --hostname fgt --publish 8080:8080 --name $UCNAME --restart always pharmaledger/fgt
+docker run --detach --hostname fgt --publish 8080:8080 --name $UCNAME --restart always pharmaledger/$UCNAME
 docker logs -f $UCNAME
 EOF
 

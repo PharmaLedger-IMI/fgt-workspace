@@ -1,9 +1,9 @@
 #!/bin/bash
-name="$(./util/name.sh -1)"
+UCNAME="fgt"
 
 docker run --detach \
-    --hostname fgt \
+    --hostname $UCNAME \
     --publish 8080:8080 \
-    --name $name \
+    --name $UCNAME \
     --restart always \
-    pharmaledger/fgt
+    pharmaledger/$UCNAME
