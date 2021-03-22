@@ -27,7 +27,7 @@
         },
         {
           "type": "execute",
-          "cmd": "jsdoc -c jsdocs.json && rm docs/output/fgt-dsu-wizard.html#.module:managers"
+          "cmd": "jsdoc -c jsdocs.json && rimraf docs/output/fgt-dsu-wizard.html#.module:managers"
         }
       ]
     }
