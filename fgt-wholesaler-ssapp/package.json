@@ -4,8 +4,7 @@
   "description": "The Pharmaledger Traceability Application for Marketing Authorization Holders",
   "main": "index.js",
   "scripts": {
-    "postinstall": "node ./node_modules/octopus/scripts/run",
-    "prebuild": "node ./node_modules/octopus/scripts/run prebuild",
+    "prebuild": "node ./node_modules/octopus/scripts/run prebuild devmode",
     "build": "node ./node_modules/octopus/scripts/buildDossier ./bin/build.file --domain=traceability",
     "update": "npm install",
     "test": "echo \"Error: no test specified\" && exit 1",
