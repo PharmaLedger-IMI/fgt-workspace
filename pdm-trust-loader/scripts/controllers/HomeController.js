@@ -1,13 +1,13 @@
 import LocalizedController from "./LocalizedController.js";
-
-customElements.define("a-generic-configurable-modal", class extends HTMLElement {
-    connectedCallback() {
-        this.innerHTML = `
-<webc-container controller="FormController" disable-container>
-    <webc-template template="genericModal" data-model="@" disable-container></webc-template>
-</webc-container>`;
-    }
-});
+//
+// customElements.define("a-generic-configurable-modal", class extends HTMLElement {
+//     connectedCallback() {
+//         this.innerHTML = `
+// <webc-container controller="FormController" disable-container>
+//     <webc-template template="genericModal" data-model="@" disable-container></webc-template>
+// </webc-container>`;
+//     }
+// });
 
 
 const generateTranslation = function (){
@@ -171,7 +171,7 @@ export default class HomeController extends LocalizedController {
         // this.showIonicModal("a-generic-configurable-modal", false, {page: "registration"});
         this.createWebcModal({
             modelTitle: "",
-            modalName: 'loginModal',
+            modalName: 'genericModal',
             showFooter: false,
             canClose: false,
             showCancelButton: false

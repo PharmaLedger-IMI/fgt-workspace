@@ -278,6 +278,7 @@ const updateModelAndGetErrors = function(controller, element, prefix){
             const hasErrors = hasIonErrors(element, prefix);
             controller.model[name].error = hasErrors;
             updateStyleVariables(controller, element, hasErrors);
+            controller.send('input-has-changed', name);
             return hasErrors;
         }
         return controller.model[name].error;

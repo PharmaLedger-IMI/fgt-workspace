@@ -846,6 +846,7 @@ const updateModelAndGetErrors = function(controller, element, prefix){
             const hasErrors = hasIonErrors(element, prefix);
             controller.model[name].error = hasErrors;
             updateStyleVariables(controller, element, hasErrors);
+            controller.send('input-has-changed', name);
             return hasErrors;
         }
         return controller.model[name].error;
@@ -1081,6 +1082,16 @@ function AppBuilderService(options) {
         mounts.forEach(m => {
             commands.push(`mount ${m.identifier} ${m.path}`);
         });
+        let args = {
+            forKey: ["arg2", "arg3", Math.random() * 1000000000],
+            commands: [
+                "createfile identity " + JSON.stringify({
+                    id: 1,
+                    name: "tiago"
+                })
+            ]
+        }
+        commands.push("createandmount const traceability testpath " + JSON.stringify(args))
         return commands;
     }
 
@@ -1484,7 +1495,13 @@ const OPERATIONS = {
     ADD_FOLDER: "addfolder",
     ADD_FILE: "addfile",
     CREATE_FILE: "createfile",
-    MOUNT: "mount"
+    MOUNT: "mount",
+    CREATE_AND_MOUNT: "createandmount"
+}
+
+const KEY_TYPE = {
+    CONST: "const",
+    SEED: "seed"
 }
 
 /**
@@ -1593,6 +1610,69 @@ const DossierBuilder = function(sourceDSU){
                 return callback(`Could not create file at ${arg.path}: ${err}`);
             callback(undefined, bar);
         })
+    }
+
+    /**
+     * Creates a dsu (const or not) and mounts it to the specified path
+     * @param bar
+     * @param {KEY_TYPE} type
+     * @param {string} domain
+     * @param {string} path
+     * @param {object} args:
+     * <pre>
+     *     {
+     *         forKey: (key gen args)
+     *         commands: [
+     *             (commands to run on created dsu)
+     *         ]
+     *     }
+     * </pre>
+     * @param {function(err, keySSI)} callback
+     */
+    let createAndMount = function(bar, type, domain, path, args, callback){
+        let keyGenFunc, dsuFactory;
+        switch(type){
+            case KEY_TYPE.CONST:
+                keyGenFunc = keyssi.createArraySSI;
+                dsuFactory = resolver.createDSUForExistingSSI;
+                break;
+            case KEY_TYPE.SEED:
+                keyGenFunc = keyssi.buildTemplateSeedSSI;
+                dsuFactory = resolver.createDSU;
+                break;
+            default:
+                throw new Error("Invalid type");
+        }
+
+        let keySSI = keyGenFunc(domain, args.forKey);
+        dsuFactory(keySSI, (err, dsu) => {
+           if (err)
+               return callback(`Could not create dsu with keyssi ${keySSI}: ${err}`);
+
+           const mountFunc = function(bar, key, callback){
+               console.log(`DSU created with key ${key}`);
+               bar.mount(path, key, (err) => {
+                   if (err)
+                       return callback(`Could not mount DSU: ${err}`);
+                   callback(undefined, bar);
+               });
+           }
+
+           if (args.commands && args.commands.length > 0){
+               const dossierBuilder = new DossierBuilder();
+               dossierBuilder.buildDossier(dsu, args.commands, (err, key) => {
+                   if (err)
+                       return callback(`Could not build Dossier: ${err}`)
+                   mountFunc(bar, key, callback);
+               })
+           } else {
+               dsu.getKeySSIAsString((err, key) => {
+                   if (err)
+                       return callback(err);
+                   mountFunc(bar, key, callback);
+               });
+           }
+        });
     }
 
     /**
@@ -1786,6 +1866,12 @@ const DossierBuilder = function(sourceDSU){
                     content: cmd.join(' ')
                 }
                 return createFile(bar, cArg, callback);
+            case OPERATIONS.CREATE_AND_MOUNT:
+                let type = cmd.shift();
+                let domain = cmd.shift();
+                let path = cmd.shift();
+                let args = JSON.parse(cmd.join(' '));
+                return createAndMount(bar, type, domain, path, args, callback);
             default:
                 return callback(new Error("Invalid operation requested: " + command));
         }
@@ -1801,7 +1887,7 @@ const DossierBuilder = function(sourceDSU){
         bar.getKeySSIAsString((err, barKeySSI) => {
             if (err)
                 return callback(err);
-            if(sourceDSU)
+            if(sourceDSU || cfg.skipFsWrite)
                 return callback(undefined, barKeySSI);
             storeKeySSI(cfg.seed, barKeySSI, callback);
         });
@@ -1828,7 +1914,7 @@ const DossierBuilder = function(sourceDSU){
     /**
      * Builds s DSU according to it's building instructions
      * @param {object|Archive} configOrDSU: can be a config file form octopus or the destination DSU when cloning.
-     * **Can oly be used if a sourceDSU is provided in the 'constructor'**
+     *
      *
      * Example of config file:
      * <pre>
@@ -1872,8 +1958,8 @@ const DossierBuilder = function(sourceDSU){
             });
         }
 
-        if (sourceDSU)
-            return updateDossier(configOrDSU, {}, commands, callback);
+        if (configOrDSU.constructor && configOrDSU.constructor.name === 'Archive')
+            return updateDossier(configOrDSU, {skipFsWrite: true}, commands, callback);
 
         readFile(configOrDSU.seed, (err, content) => {
             if (err || content.length === 0)
