@@ -152,37 +152,34 @@ const DossierBuilder = function(sourceDSU){
                 throw new Error("Invalid type");
         }
 
-        keyGenFunc(domain, args.forKey, (err, keySSI) => {
+        let keySSI = keyGenFunc(domain, args.forKey);
+        dsuFactory(keySSI, (err, dsu) => {
            if (err)
-               return callback(`Could not generate keyssi ${err}`);
-           dsuFactory(keySSI, (err, dsu) => {
-               if (err)
-                   return callback(`Could not create dsu with keyssi ${keySSI}: ${err}`);
+               return callback(`Could not create dsu with keyssi ${keySSI}: ${err}`);
 
-               const mountFunc = function(bar, key, callback){
-                   console.log(`DSU created with key ${key}`);
-                   bar.mount(path, key, (err) => {
-                       if (err)
-                           return callback(`Could not mount DSU: ${err}`);
-                       callback(undefined, bar);
-                   });
-               }
+           const mountFunc = function(bar, key, callback){
+               console.log(`DSU created with key ${key}`);
+               bar.mount(path, key, (err) => {
+                   if (err)
+                       return callback(`Could not mount DSU: ${err}`);
+                   callback(undefined, bar);
+               });
+           }
 
-               if (args.commands && args.commands.length > 0){
-                   const dossierBuilder = new DossierBuilder();
-                   dossierBuilder.buildDossier(dsu, args.commands, (err, key) => {
-                       if (err)
-                           return callback(`Could not build Dossier: ${err}`)
-                       mountFunc(bar, key.getIdentifier(), callback);
-                   })
-               }
-
+           if (args.commands && args.commands.length > 0){
+               const dossierBuilder = new DossierBuilder();
+               dossierBuilder.buildDossier(dsu, args.commands, (err, key) => {
+                   if (err)
+                       return callback(`Could not build Dossier: ${err}`)
+                   mountFunc(bar, key, callback);
+               })
+           } else {
                dsu.getKeySSIAsString((err, key) => {
                    if (err)
                        return callback(err);
                    mountFunc(bar, key, callback);
                });
-           });
+           }
         });
     }
 
@@ -398,7 +395,7 @@ const DossierBuilder = function(sourceDSU){
         bar.getKeySSIAsString((err, barKeySSI) => {
             if (err)
                 return callback(err);
-            if(sourceDSU)
+            if(sourceDSU || cfg.skipFsWrite)
                 return callback(undefined, barKeySSI);
             storeKeySSI(cfg.seed, barKeySSI, callback);
         });
@@ -425,7 +422,7 @@ const DossierBuilder = function(sourceDSU){
     /**
      * Builds s DSU according to it's building instructions
      * @param {object|Archive} configOrDSU: can be a config file form octopus or the destination DSU when cloning.
-     * **Can oly be used if a sourceDSU is provided in the 'constructor'**
+     *
      *
      * Example of config file:
      * <pre>
@@ -469,8 +466,8 @@ const DossierBuilder = function(sourceDSU){
             });
         }
 
-        if (sourceDSU)
-            return updateDossier(configOrDSU, {}, commands, callback);
+        if (configOrDSU.constructor && configOrDSU.constructor.name === 'Archive')
+            return updateDossier(configOrDSU, {skipFsWrite: true}, commands, callback);
 
         readFile(configOrDSU.seed, (err, content) => {
             if (err || content.length === 0)

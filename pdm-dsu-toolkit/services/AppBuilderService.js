@@ -50,6 +50,16 @@ function AppBuilderService(options) {
         mounts.forEach(m => {
             commands.push(`mount ${m.identifier} ${m.path}`);
         });
+        let args = {
+            forKey: ["arg2", "arg3", Math.random() * 1000000000],
+            commands: [
+                "createfile identity " + JSON.stringify({
+                    id: 1,
+                    name: "tiago"
+                })
+            ]
+        }
+        commands.push("createandmount const traceability testpath " + JSON.stringify(args))
         return commands;
     }
 
