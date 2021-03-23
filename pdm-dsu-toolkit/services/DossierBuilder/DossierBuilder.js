@@ -3,7 +3,13 @@ const OPERATIONS = {
     ADD_FOLDER: "addfolder",
     ADD_FILE: "addfile",
     CREATE_FILE: "createfile",
-    MOUNT: "mount"
+    MOUNT: "mount",
+    CREATE_AND_MOUNT: "createandmount"
+}
+
+const KEY_TYPE = {
+    CONST: "const",
+    SEED: "seed"
 }
 
 /**
@@ -112,6 +118,72 @@ const DossierBuilder = function(sourceDSU){
                 return callback(`Could not create file at ${arg.path}: ${err}`);
             callback(undefined, bar);
         })
+    }
+
+    /**
+     * Creates a dsu (const or not) and mounts it to the specified path
+     * @param bar
+     * @param {KEY_TYPE} type
+     * @param {string} domain
+     * @param {string} path
+     * @param {object} args:
+     * <pre>
+     *     {
+     *         forKey: (key gen args)
+     *         commands: [
+     *             (commands to run on created dsu)
+     *         ]
+     *     }
+     * </pre>
+     * @param {function(err, keySSI)} callback
+     */
+    let createAndMount = function(bar, type, domain, path, args, callback){
+        let keyGenFunc, dsuFactory;
+        switch(type){
+            case KEY_TYPE.CONST:
+                keyGenFunc = keyssi.createArraySSI;
+                dsuFactory = resolver.createDSUForExistingSSI;
+                break;
+            case KEY_TYPE.SEED:
+                keyGenFunc = keyssi.buildTemplateSeedSSI;
+                dsuFactory = resolver.createDSU;
+                break;
+            default:
+                throw new Error("Invalid type");
+        }
+
+        keyGenFunc(domain, args.forKey, (err, keySSI) => {
+           if (err)
+               return callback(`Could not generate keyssi ${err}`);
+           dsuFactory(keySSI, (err, dsu) => {
+               if (err)
+                   return callback(`Could not create dsu with keyssi ${keySSI}: ${err}`);
+
+               const mountFunc = function(bar, key, callback){
+                   console.log(`DSU created with key ${key}`);
+                   bar.mount(path, key, (err) => {
+                       if (err)
+                           return callback(`Could not mount DSU: ${err}`);
+                       callback(undefined, bar);
+                   });
+               }
+
+               if (args.commands && args.commands.length > 0){
+                   const dossierBuilder = new DossierBuilder();
+                   dossierBuilder.buildDossier(dsu, args.commands, (err, key) => {
+                       if (err)
+                           return callback(`Could not build Dossier: ${err}`)
+                       mountFunc(bar, key.getIdentifier(), callback);
+                   })
+               }
+
+               dsu.getKeySSIAsString((err, key) => {
+                   if (err)
+                       return callback(err);
+                   mountFunc(bar, key, callback);
+               });
+           });
+        });
     }
 
     /**
@@ -305,6 +377,12 @@ const DossierBuilder = function(sourceDSU){
                     content: cmd.join(' ')
                 }
                 return createFile(bar, cArg, callback);
+            case OPERATIONS.CREATE_AND_MOUNT:
+                let type = cmd.shift();
+                let domain = cmd.shift();
+                let path = cmd.shift();
+                let args = JSON.parse(cmd.join(' '));
+                return createAndMount(bar, type, domain, path, args, callback);
             default:
                 return callback(new Error("Invalid operation requested: " + command));
         }

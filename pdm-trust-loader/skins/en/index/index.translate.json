@@ -19,7 +19,7 @@
     },
     "email": {
       "label": "Registered Email:",
-      "type": "text",
+      "type": "email",
       "placeholder": "Please enter your email here...",
       "value": "wholesaler@pdmfc.com",
       "required": true

@@ -2,4 +2,3 @@ delete /
 addfolder code
 mount ../webcardinal/seed /webcardinal
 mount ../themes/*/seed /themes/*
-mount fgt-mah-ssap /mah

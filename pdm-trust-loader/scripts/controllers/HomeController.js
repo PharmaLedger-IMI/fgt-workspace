@@ -22,67 +22,79 @@ const generateTranslation = function (){
                 },
                 "none": "You are not identified as a Marketing Authorization holder. Please register",
                 "registration": {
-                    "title": "Please register as a Wholesaler",
+                    "title": "Please enter your credentials",
                     "name": {
                         "label": "Registered Wholesaler's name:",
+                        "type": "text",
                         "placeholder": "Please enter your name here...",
                         "value": "PDM the Wholesaler",
                         "required": true
                     },
                     "id": {
                         "label": "Registered Id:",
+                        "type": "text",
                         "placeholder": "Please enter your id here...",
                         "value": "#ThIsIsAwHoLeSaLeRiD=",
                         "required": true
                     },
                     "email": {
                         "label": "Registered Email:",
+                        "type": "email",
                         "placeholder": "Please enter your email here...",
                         "value": "wholesaler@pdmfc.com",
                         "required": true
                     },
                     "tin": {
                         "label": "Registered TIN (Tax Identification Number):",
+                        "type": "number",
                         "placeholder": "Enter your TIN (Tax Identification Number)...",
                         "value": 500000000,
                         "required": true
                     },
                     "address": {
                         "label": "Registered Address:",
+                        "type": "text",
                         "placeholder": "Enter your address...",
                         "required": true,
                         "value": "This in an Address"
                     },
-                    "buttons": ["Register"]
+                    "buttons": {
+                        "register": "Register"
+                    }
                 },
                 "login": {
                     "title": "Please enter your credentials",
                     "name": {
                         "label": "Registered Wholesaler's name:",
+                        "type": "text",
                         "placeholder": "Please enter your name here...",
                         "value": "PDM the Wholesaler",
                         "required": true
                     },
                     "id": {
                         "label": "Registered Id:",
+                        "type": "text",
                         "placeholder": "Please enter your id here...",
                         "value": "#ThIsIsAwHoLeSaLeRiD=",
                         "required": true
                     },
                     "email": {
                         "label": "Registered Email:",
+                        "type": "email",
                         "placeholder": "Please enter your email here...",
                         "value": "wholesaler@pdmfc.com",
                         "required": true
                     },
                     "tin": {
                         "label": "Registered TIN (Tax Identification Number):",
+                        "type": "number",
                         "placeholder": "Enter your TIN (Tax Identification Number)...",
                         "value": 500000000,
                         "required": true
                     },
                     "address": {
                         "label": "Registered Address:",
+                        "type": "text",
                         "placeholder": "Enter your address...",
                         "required": true,
                         "value": "This in an Address"
@@ -159,7 +171,7 @@ export default class HomeController extends LocalizedController {
         // this.showIonicModal("a-generic-configurable-modal", false, {page: "registration"});
         this.createWebcModal({
             modelTitle: "",
-            modalName: 'genericModal',
+            modalName: 'loginModal',
             showFooter: false,
             canClose: false,
             showCancelButton: false

@@ -73,13 +73,15 @@ export default class LocalizedController extends WebcController {
      * Adds the locale info to the model.
      * @param {LocalizedController} controller
      * @param {string} pageName
+     * @param {boolean} [enableValidations]
      */
-    bindLocale(controller, pageName){
+    bindLocale(controller, pageName, enableValidations){
         require('toolkit').Services.WebcLocaleService.bindToLocale(controller, pageName);
+        if (enableValidations)
+            require('toolkit').Model.Validations.bindIonicValidation(controller);
     }
 
     constructor(element, history) {
         super(element, history);
-        require('toolkit').Model.Validations.bindIonicValidation(this);
     }
 }
