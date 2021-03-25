@@ -1,13 +1,13 @@
 {
   "theme": "pdm-theme",
   "pagesFallback": {
-    "name": "404",
-    "path": "./404"
+    "name": "Home",
+    "path": "./home"
   },
   "pages": [
     {
       "name": "Home",
-      "path": "/",
+      "path": "/home",
       "src": "home.html",
       "indexed": false,
       "tag": "home"

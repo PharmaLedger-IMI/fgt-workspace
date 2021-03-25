@@ -1,0 +1,58 @@
+{
+  "anchoring": "traceability",
+  "form": {
+    "title": "Please enter your credentials as a Wholesaler",
+    "can-exit": false,
+    "name": {
+      "label": "Name:",
+      "type": "text",
+      "placeholder": "Please enter your name here...",
+      "value": "PDM the Wholesaler",
+      "public": true,
+      "required": true
+    },
+    "id": {
+      "label": "Registered Id:",
+      "type": "text",
+      "placeholder": "Please enter your id here...",
+      "value": "#ThIsIsAwHoLeSaLeRiD=",
+      "public": true,
+      "required": true
+    },
+    "email": {
+      "label": "Registered Email:",
+      "type": "email",
+      "placeholder": "Please enter your email here...",
+      "value": "wholesaler@pdmfc.com",
+      "public": true,
+      "required": true
+    },
+    "tin": {
+      "label": "Registered TIN (Tax Identification Number):",
+      "type": "number",
+      "placeholder": "Enter your TIN (Tax Identification Number)...",
+      "value": 500000000,
+      "public": true,
+      "required": true
+    },
+    "address": {
+      "label": "Registered Address:",
+      "type": "text",
+      "placeholder": "Enter your address...",
+      "required": true,
+      "value": "This in an Address"
+    },
+    "buttons": {
+      "registration": "Register",
+      "login": "Login"
+    }
+  },
+  "errors": {
+    "register": "Unable to register. Are you sure this account doesn't exist?",
+    "login": "Could not Login. May try registering?"
+  },
+  "successes": {
+    "register": "Registration Successful",
+    "login": "Login Successful"
+  }
+}

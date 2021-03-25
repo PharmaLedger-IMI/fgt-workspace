@@ -1,9 +1,11 @@
-import NavigatorUtils from "../../scripts/controllers/services/NavigatorUtils.js";
-
+import getNavigatorUtils from "../../scripts/controllers/services/NavigatorUtils.js";
+import env from "../../environment.js"
 const paths = window.location.pathname.split("/iframe/");
 const myIdentity = paths[1];
 const swName = "swBoot.js";
 let loadingInterval;
+
+const NavigatorUtils = getNavigatorUtils(env);
 
 function startLoadingProgressInterval(initialLoadingProgress) {
     sendLoadingProgress(initialLoadingProgress, `Loading ${initialLoadingProgress}%`);
@@ -71,9 +73,8 @@ function sendMessage(message) {
 }
 
 function sendLoadingProgress(progress, status) {
-    if (LOADER_GLOBALS.environment.showLoadingProgress === false) {
+    if (env.showLoadingProgress === false)
         return;
-    }
 
     let currentWindow = window;
     let parentWindow = currentWindow.parent;
