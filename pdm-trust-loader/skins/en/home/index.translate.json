@@ -1,13 +1,14 @@
 {
   "anchoring": "traceability",
-  "login": {
-    "title": "Please enter your credentials",
+  "form": {
+    "title": "Please enter your credentials as a Wholesaler",
     "can-exit": false,
     "name": {
       "label": "Name:",
       "type": "text",
       "placeholder": "Please enter your name here...",
       "value": "PDM the Wholesaler",
+      "public": true,
       "required": true
     },
     "id": {
@@ -15,6 +16,7 @@
       "type": "text",
       "placeholder": "Please enter your id here...",
       "value": "#ThIsIsAwHoLeSaLeRiD=",
+      "public": true,
       "required": true
     },
     "email": {
@@ -22,6 +24,7 @@
       "type": "email",
       "placeholder": "Please enter your email here...",
       "value": "wholesaler@pdmfc.com",
+      "public": true,
       "required": true
     },
     "tin": {
@@ -29,6 +32,7 @@
       "type": "number",
       "placeholder": "Enter your TIN (Tax Identification Number)...",
       "value": 500000000,
+      "public": true,
       "required": true
     },
     "address": {
@@ -43,40 +47,8 @@
       "login": "Login"
     }
   },
-  "registration": {
-    "title": "Please register as a Wholesaler",
-    "can-exit": true,
-    "name": {
-      "label": "Registered Wholesaler's name:",
-      "placeholder": "Please enter your name here...",
-      "required": true
-    },
-    "id": {
-      "label": "Registered Id:",
-      "placeholder": "Please enter your id here...",
-      "required": true
-    },
-    "email": {
-      "label": "Registered Email:",
-      "placeholder": "Please enter your email here...",
-      "required": true
-    },
-    "tin": {
-      "label": "Registered TIN (Tax Identification Number):",
-      "placeholder": "Enter your TIN (Tax Identification Number)...",
-      "value": 500000000,
-      "required": true
-    },
-    "address": {
-      "label": "Registered Address:",
-      "placeholder": "Enter your address...",
-      "required": true
-    },
-    "registration": "Create an Account",
-    "login": "Login"
-  },
   "errors": {
-    "register": "Unable to register",
-    "try-again": "Try Again?"
+    "register": "Unable to register. Are you sure this account doesn't exist?",
+    "login": "Could not Login. May try registering?"
   }
 }

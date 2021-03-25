@@ -5,7 +5,7 @@ export default {
   "system":   "any",
   "browser":  "any",
   "mode":  "dev-secure",
-  "domain":  "vault",
+  "domain":  "traceability",
   "sw": true,
   "pwa": true,
   "basePath": "/pdm-trust-loader/loader/",

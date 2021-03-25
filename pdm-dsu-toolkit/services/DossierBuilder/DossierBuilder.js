@@ -36,8 +36,12 @@ const KEY_TYPE = {
  */
 const DossierBuilder = function(sourceDSU){
     let fs;
-    if (!sourceDSU)
-        fs = require("fs");
+
+    const getFS = function(){
+        if (!fs)
+            fs = require('fs');
+        return fs;
+    }
 
     const openDSU = require("opendsu");
     const keyssi = openDSU.loadApi("keyssi");
@@ -45,7 +49,7 @@ const DossierBuilder = function(sourceDSU){
 
     /**
      * recursively executes the provided func with the dossier and each of the provided arguments
-     * @param {DSU Archive} dossier: The DSU instance
+     * @param {Archive} dossier: The DSU instance
      * @param {function} func: function that accepts the dossier and one param as arguments
      * @param {any} arguments: a list of arguments to be consumed by the func param
      * @param {function} callback: callback function. The first argument must be err
@@ -270,7 +274,7 @@ const DossierBuilder = function(sourceDSU){
      */
     let mount_folders = function (bar, arg, callback) {
         let base_path = arg.seed_path.split("*");
-        const listFunc = sourceDSU ? sourceDSU.listMountedDSUs : fs.readdir;
+        const listFunc = sourceDSU ? sourceDSU.listMountedDSUs : getFS().readdir;
         listFunc(base_path[0], (err, arguments) => {
             if (err)
                 return callback(`Could not list mounts: ${err}`);
@@ -312,7 +316,7 @@ const DossierBuilder = function(sourceDSU){
      * @param callback
      */
     let readFile = function (filePath, callback) {
-        const readMethod = sourceDSU ? sourceDSU.readFile : fs.readFile;
+        const readMethod = sourceDSU ? sourceDSU.readFile : getFS().readFile;
         readMethod(filePath, (err, data) => {
             if (err)
                 return callback(`Could not read file at ${filePath}: ${err}`);
@@ -330,7 +334,7 @@ const DossierBuilder = function(sourceDSU){
         if (sourceDSU)
             throw new Error("This method is not meant to be used here");
 
-        fs.writeFile(filePath, data, (err) => {
+        getFS().writeFile(filePath, data, (err) => {
             if (err)
                 return callback(err);
             callback(undefined, data.toString());

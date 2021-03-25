@@ -1,15 +1,19 @@
 /**
  * @module pdm-dsu-toolkit.services
  */
-function FileService() {
+function FileService(options) {
+    let isBrowser;
+    try{
+        isBrowser = !!window;
+    } catch (e){
+        isBrowser = false;
+    }
 
-    function constructUrlBase(appName, prefix){
-
-        const env = process.environmentType;
-        console.log("ENV: --------" + env);
+    function constructUrlBase(prefix){
         let url, protocol, host;
         prefix = prefix || "";
-        try {
+        let appName = '';
+        if (isBrowser){
             let location = window.location;
             const paths = location.pathname.split("/");
             while (paths.length > 0) {
@@ -19,53 +23,96 @@ function FileService() {
                     break;
                 }
             }
-            appName = appName || paths[0];
+            appName = paths[0];
             protocol = location.protocol;
             host = location.host;
-        } catch (e)
-        {
-            // Only used in tests
-            if (process.env.BDNS_ROOT_HOSTS)
-                return `${process.env.BDNS_ROOT_HOSTS}/${prefix}${appName}`;
-            protocol = "http:";
-            host = "localhost:8080";
+            url = `${protocol}//${host}/${prefix}${appName}`;
+            return url;
+        } else {
+            return `${options.BDNS_ROOT_HOSTS}/${prefix}${appName}`;
         }
-        url = `${protocol}//${host}/${prefix}${appName}`;
-        return url;
+    }
+
+    this.getWalletSeed = function(callback){
+        this.getAppSeed(options.slots.primary, callback);
+    }
+
+    this.getAppSeed = function(appName, callback){
+        this.getFile(appName, options.seedFileName, (err, data) => {
+            if (err)
+                return callback(err);
+           Utf8ArrayToStr(data, callback);
+        });
     }
 
     function doGet(url, options, callback){
-        const http = require("opendsu").loadApi("http");
         if (typeof options === "function") {
             callback = options;
             options = {};
         }
 
-        http.fetch(url, {
-            method: 'GET'
-        }).then((response) => {
-            return response.arrayBuffer().then((data) => {
-                if (!response.ok){
-                    console.log("array buffer not ok");
-                    return callback("array data failed")
-                }
-                callback(undefined, data);
-            }).catch(e => {
-               return callback(e);
+        if (isBrowser){
+            const http = require("opendsu").loadApi("http");
+            http.fetch(url, {
+                method: 'GET'
+            }).then((response) => {
+                return response.arrayBuffer().then((data) => {
+                    if (!response.ok){
+                        console.log("array buffer not ok");
+                        return callback("array data failed")
+                    }
+                    callback(undefined, data);
+                }).catch(e => {
+                    return callback(e);
+                });
+            }).catch(err => {
+                return callback(err);
             });
-        }).catch(err => {
-            return callback(err);
-        });
+        } else {
+            require('fs').readFile(url, (err, data) => {
+                if (err)
+                    return callback(err);
+                callback(undefined, data);
+            });
+        }
     }
 
-    this.getFile = function(appName, url, callback){
-        url = constructUrlBase(appName)+"/"+url;
+    /**
+     * Returns the content of a file as a uintArray
+     * @param {string} appName
+     * @param {string} fileName
+     * @param {function(err, UintArray)} callback
+     */
+    this.getFile = function(appName, fileName, callback){
+        let url = constructUrlBase() + `/${appName}/${fileName}`;
         doGet(url, callback);
     };
 
-    this.getFolderContentAsJSON = function(appName, url, callback){
-        url = constructUrlBase(appName,"directory-summary/")+"/"+url;
-        doGet(url, callback);
+
+    this.getFolderContentAsJSON = function(innerFolder, callback){
+        if (typeof innerFolder === 'function'){
+            callback = innerFolder;
+            innerFolder = undefined;
+        }
+        let url = constructUrlBase("directory-summary/") + (innerFolder ? `/${innerFolder}` : '') ;
+        doGet(url, (err, data) => {
+            if (err)
+                return callback(err);
+            Utf8ArrayToStr(data, callback);
+        });
+    }
+
+    /**
+     * @param array
+     * @param {function(err, string)} callback
+     */
+    function Utf8ArrayToStr(array, callback) {
+        var bb = new Blob([array]);
+        var f = new FileReader();
+        f.onload = function(e) {
+            callback(undefined, e.target.result);
+        };
+        f.readAsText(bb);
     }
 }
 

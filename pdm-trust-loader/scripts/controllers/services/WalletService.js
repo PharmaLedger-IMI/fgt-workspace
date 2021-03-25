@@ -33,13 +33,13 @@ function WalletService(options) {
      * @param {string} secret
      * @param {Function} callback
      */
-    this.load = function (domain, secret, callback) {
+    this.load = function (domain, secret, vault, callback) {
         console.log("Loading the wallet");
         NavigatorUtils.unregisterAllServiceWorkers(() => {
             let resolver = require("opendsu").loadApi("resolver");
             let keyssi = require("opendsu").loadApi("keyssi");
 
-            let walletSSI =  keyssi.createTemplateWalletSSI(domain, secret, LOADER_GLOBALS.environment.vault);
+            let walletSSI =  keyssi.createTemplateWalletSSI(domain, secret, vault);
 
             resolver.loadDSU(walletSSI, (err, constDSU) =>{
                 if(err){

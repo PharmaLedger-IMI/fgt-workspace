@@ -1,6 +1,9 @@
 {
   "toolkit": {
     "deps": "../../../pdm-dsu-toolkit:toolkit",
-    "autoLoad":  true
+    "autoLoad":  true,
+    "bundleExternal": true,
+    "exclude": "fs",
+    "ignore": "WebCardinal, WebcController"
   }
 }

@@ -262,6 +262,8 @@ const hasIonErrors = function(element, prefix){
  *
  * It validates the fields via their ion-input supported properties for easy integration if they ever work natively
  *
+ * If the input's value has changed, an event called 'input-has-changed' with the input name as data
+ *
  * @param {WebcController} controller
  * @param {HTMLElement} element the ion-input element
  * @param {string} prefix prefix to the name of the input elements

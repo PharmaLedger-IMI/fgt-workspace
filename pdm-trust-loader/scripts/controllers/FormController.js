@@ -1,4 +1,4 @@
-import LocalizedController from "./LocalizedController.js";
+const LocalizedController = require('toolkit').Controllers.LocalizedController;
 
 export default class FormController extends LocalizedController {
 
@@ -10,41 +10,29 @@ export default class FormController extends LocalizedController {
         // if (!locale_key)
         //     throw new Error("Missing fields info");
         let self = this;
-        super.bindLocale(self, `.login`, true);
-        self._createModalForm(WebCardinal.translations.en['/'].login);
+        super.bindLocale(self, `.form`, true);
+        self._createModalForm(WebCardinal.translations.en['/'].form);
         self.setModel(self.getModel());
         console.log("FormController initialized");
         //require('toolkit').Model.Validations.bindIonicValidation(self);
         Object.entries(self.getModel().buttons).forEach(b => {
-            self.onTagClick(`try${b[0]}`, self._handleTry.bind(self));
+            self.onTagClick(`try${b[0]}`, self._handleTry(`${b[0]}`).bind(self));
         });
 
         self.on('input-has-changed', self._handleErrorElement.bind(self));
     }
 
-    async presentLoading(message, duration) {
-        duration = duration || 5000;
-        const loading = document.createElement('ion-loading');
-
-        loading.cssClass = 'ion-loading';
-        loading.message = message;
-        loading.translucent = true;
-        loading.duration = duration;
-
-        document.body.appendChild(loading);
-        await loading.present();
-
-        const { role, data } = await loading.onDidDismiss();
-        console.log('Loading dismissed!');
-    }
-
-    _handleTry(evt){
-        evt.preventDefault();
-        evt.stopImmediatePropagation();
-        if (this.hasErrors())
-            return console.log("There are errors in the form");
-
-
+    _handleTry(name){
+        return function() {
+            if (this.hasErrors())
+                return this.showErrorToast('There are errors in the form');
+            switch (name){
+                case 'register':
+                    return this._submitRegistration();
+                case 'login':
+                    return this._submitLogin();
+            }
+        }
     }
 
     _createModalForm(model){
@@ -122,19 +110,26 @@ export default class FormController extends LocalizedController {
         }
     }
 
-    _submitRegistration = function (evt) {
-        let participant = this._modelToDSU();
-        let errors = participant.hasErrors();
-        if (!errors)
-            this.send('perform-registration', participant);
+    _submitRegistration = function () {
+        let participant = this._toSecrets();
+        this.send('perform-registration', participant);
     }
 
-    _modelToDSU = function (model) {
-        let info = {};
+    _submitLogin = function () {
+        let secrets = this._toSecrets();
+        this.send('perform-login', secrets);
+    }
+
+    _toSecrets = function (model) {
         model = model || this.model
-        Object.keys(model)
-            .filter(k => !!model[k].value)
-            .map(k => info[k] = model[k].value);
-        return info;
+        let result = {};
+        Object.entries(model.toObject())
+            .filter(k => !!k[1].value).forEach(e => {
+                result[e[0]] = {
+                    secret: e[1].value,
+                    "public": !!e[1].public
+                };
+            })
+        return result;
     }
 }

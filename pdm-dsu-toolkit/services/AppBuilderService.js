@@ -9,38 +9,42 @@ const DSU_SPECIFIC_FILES = ["dsu-metadata.log", "manifest"]
 
 const OPTIONS = {
     anchoring: "default",
+    publicSecretsKey: '$Identity',
+    basePath: "",
+    hostsKey: require('opendsu').constants.BDNS_ROOT_HOSTS,
     hint: undefined,
     vault: "vault",
+    seedFileName: "seed",
+    appsFolderName: "apps",
     codeFolderName: "code",
-    buildFolderName: "bin",
+    initFile: "init.file",
+    environment: {},
     slots:{
         primary: "wallet-patch",
         secondary: "apps-patch"
     }
 }
 
+const envToOptions = function(env){
+    let options = Object.assign({}, OPTIONS);
+    options.environemnt = env;
+    options.vault = env.vault;
+    options.anchoring = env.domain;
+    options.basePath = env.basePath;
+    return options;
+}
+
 /**
- * @param {object} options:
- * <pre>
- *     {
- *         anchoring: "${anchoringDomain}
- *         hint: the hint portion og the key
- *         vault: "${vaultDomain}"
- *         codeFolder: "codeFolderName"
- *         buildFolder: "buildFolder"
- *     }
- * </pre>
- * @param {string} options.codeFolderName
- * @param {string} options.walletTemplateFolderName
- * @param {string} options.appFolderName
- * @param {string} options.appsFolderName
+ * @param {object} environment defaults to {@link OPTIONS}. is Overridden by provided values
  */
-function AppBuilderService(options) {
-    options = Object.assign({}, OPTIONS, options);
+function AppBuilderService(environment) {
+    const options = envToOptions(environment);
     let keyssi = require('opendsu').loadApi('keyssi')
 
-    const DossierBuilder = require("./DossierBuilder/DossierBuilder").DossierBuilder;
+    const dossierBuilder = new (require("./DossierBuilder/DossierBuilder").DossierBuilder);
     const resolver = require('opendsu').loadApi('resolver');
+
+    const fileService = new FileService(options);
 
     const contentToCommands = function(files, mounts){
         let commands = [];
@@ -50,16 +54,6 @@ function AppBuilderService(options) {
         mounts.forEach(m => {
             commands.push(`mount ${m.identifier} ${m.path}`);
         });
-        let args = {
-            forKey: ["arg2", "arg3", Math.random() * 1000000000],
-            commands: [
-                "createfile identity " + JSON.stringify({
-                    id: 1,
-                    name: "tiago"
-                })
-            ]
-        }
-        commands.push("createandmount const traceability testpath " + JSON.stringify(args))
         return commands;
     }
 
@@ -94,6 +88,18 @@ function AppBuilderService(options) {
      */
     const createArraySSI = function(secrets, callback){
         const key = keyssi.createArraySSI(options.anchoring, secrets, 'v0', options.hint ? JSON.stringify(options.hint) : undefined);
+        callback(undefined, key);
+    }
+
+    /**
+     * Creates a Wallet SSI off a secret list
+     *
+     * Adds options.hint to hit if available
+     * @param {string[]} secrets
+     * @param {function(err, ArraySSI)} callback
+     */
+    const createWalletSSI = function(secrets, callback){
+        const key = keyssi.createTemplateWalletSSI(options.anchoring, secrets, 'v0', options.hint ? JSON.stringify(options.hint) : undefined);
         callback(undefined, key);
     }
 
@@ -136,8 +142,8 @@ function AppBuilderService(options) {
      * @param {string[]} secrets
      * @param {function(err, Archive)} callback
      */
-    const createConstDSU = function(secrets, callback){
-        createArraySSI(secrets, (err, keySSI) => {
+    const createWalletDSU = function(secrets, callback){
+        createWalletSSI(secrets, (err, keySSI) => {
             resolver.createDSUForExistingSSI(keySSI, (err, dsu) => {
                 if (err)
                     return callback(`Could not create const DSU ${err}`);
@@ -161,8 +167,24 @@ function AppBuilderService(options) {
         });
     }
 
-    const getDSUFactory = function(isConst){
-        return isConst ? createConstDSU : createDSU;
+    /**
+     * Creates a DSU of an ArraySSI
+     * @param {string[]} secrets
+     * @param {function(err, Archive)} callback
+     */
+    const createConstDSU = function(secrets, callback){
+        createArraySSI(secrets, (err, keySSI) => {
+            resolver.createDSUForExistingSSI(keySSI, (err, dsu) => {
+                if (err)
+                    return callback(`Could not create const DSU ${err}`);
+                callback(undefined, dsu);
+            });
+        });
+    }
+
+
+    const getDSUFactory = function(isConst, isWallet){
+        return isConst ? (isWallet ? createWalletDSU : createConstDSU) : createDSU;
     }
 
     /**
@@ -215,6 +237,264 @@ function AppBuilderService(options) {
                     //     return writeToCfg(destinationDSU, publicSecrets, err => callback(err, keySSI));
                     callback(undefined, keySSI);
                 });
+            });
+        });
+    }
+
+    const _getPatchContent = function(appName, callback){
+        fileService.getFolderContentAsJSON(appName, (err, content) => {
+           if (err)
+               return callback(err);
+           try {
+               content = JSON.parse(content);
+           } catch (e) {
+               return callback(`Could not parse content`);
+           }
+            content['/'][options.seedFileName] = undefined;
+            delete content['/'][options.seedFileName];
+
+           callback(undefined, content);
+        });
+    }
+
+    const filesToCommands = (content) => {
+        let commands = [];
+        for (let directory in content){
+            let directoryFiles = content[directory];
+            for (let fileName in directoryFiles)
+                commands.push(`createfile ${directory}/${fileName} ${directoryFiles[fileName]}`);
+
+        }
+        return commands;
+    }
+
+    /**
+     * Copies the patch files from the path folder onto the DSU
+     * @param {Archive} dsu
+     * @param {string} slotPath should be '{@link OPTIONS.slots}[/appName]' when appName is required
+     * @param {function(err, Archive, KeySSI)} callback
+     */
+    const patch = function(dsu, slotPath, callback) {
+        // Copy any files found in the RESPECTIVE PATCH FOLDER on the local file system
+        // into the app's folder
+        _getPatchContent(slotPath, (err, files) => {
+            if (err)
+                return callback(err);
+            let commands = filesToCommands(files);
+            if (!commands || commands.length === 0){
+                console.log(`Application ${slotPath} does not require patching`);
+                return callback(undefined, dsu);
+            }
+
+            dossierBuilder.buildDossier(dsu, commands, (err, keySSI) => {
+                if (err)
+                    return callback(err);
+                console.log(`Application ${slotPath} successfully patched`);
+                callback(undefined, dsu, keySSI);
+            });
+        });
+    }
+
+    /**
+     * Reads from {@link OPTIONS.initFile} and executes the commands founds there via {@link DossierBuilder#buildDossier}
+     * @param {Archive} instance
+     * @param {object} publicSecrets what elements of the registration elements should be passed onto the SSApp
+     * @param {function(err, Archive)} callback
+     */
+    const initializeInstance = function(instance, publicSecrets, callback){
+        instance.readFile(`${options.codeFolderName}/${options.initFile}`, (err, data) => {
+            if (err) {
+                console.log(`No init file found. Initialization complete`);
+                return callback(undefined, instance);
+            }
+            let commands = (publicSecrets
+                    ? data.toString().replace(options.publicSecretsKey, JSON.stringify(publicSecrets))
+                    : data.toString())
+                .split('\\n\\r?');
+            dossierBuilder.buildDossier(instance, commands, (err, keySSI) => {
+                if (err)
+                   return callback(`Could not initialize SSApp instance: ${err}`);
+                console.log(`Instance successfully initialized: ${keySSI}`);
+                callback(undefined, instance);
+            });
+        });
+    }
+
+    /**
+     * Parser the secrets object according to if its a wallet or not
+     * @param {boolean} isWallet
+     * @param {object|string} secrets can be a secrets object or a string depending on if it's a wallet or not. A secrets object is like:
+     * <pre>
+     *     {
+     *         secretName: {
+     *             secret: "...",
+     *             public: (defaults to false. If true will be made available to the created DSU for use of initialization Scripts)
+     *         },
+     *         (...)
+     *     }
+     * </pre>
+     * @param {function(err, keyGenArgs, publicSecrets)} callback
+     */
+    const parseSecrets = function(isWallet, secrets, callback){
+        let specificArg = secrets;
+        let publicSecrets = undefined;
+        if (isWallet && typeof secrets === 'object'){
+            specificArg = [];
+            publicSecrets = {};
+            Object.entries(secrets).forEach(e => {
+                if (e[1].public)
+                    publicSecrets[e[0]] = e[1].secret;
+                specificArg.push(e[1].secret);
+            });
+        }
+        callback(undefined, specificArg, publicSecrets);
+    }
+
+    /**
+     * Builds an SSApp
+     * @param {boolean} isWallet
+     * @param {object|string} secrets according to {@link parseSecrets}
+     * @param {string} seed
+     * @param {string} [name]
+     * @param {function(err, KeySSI, Archive)} callback
+     */
+    const buildApp = function(isWallet, secrets, seed, name, callback){
+        if (typeof name === 'function'){
+            if (!isWallet)
+                return callback(`No SSApp name provided`);
+            callback = name;
+            name = undefined;
+        }
+
+        parseSecrets(isWallet, secrets, (err, keyArgs, publicSecrets) => {
+            if (err)
+                return callback(err);
+            getDSUFactory(isWallet, isWallet)(keyArgs, (err, instance) => {
+                if (err)
+                    return callback(`Could not create instance`);
+                instance.mount(`/${options.codeFolderName}`, seed, (err) => {
+                    if (err)
+                        return callback(`Could not mount Application code in instance: ${err}`);
+
+                    const patchPath = isWallet ? `${options.slots.primary}` : `${options.slots.secondary}/${name}`;
+
+                    patch(instance, patchPath, (err) => {
+                        if (err)
+                            return callback(`Error patching SSApp ${name}: ${err}`);
+                        initializeInstance(instance, publicSecrets, (err) => {
+                            if (err)
+                                return callback(err);
+                            instance.getKeySSIAsString((err, keySSI) => {
+                                if (err)
+                                    return callback(err);
+                                callback(undefined, keySSI, instance);
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    }
+
+    /**
+     * Retrieves the list of Applications to be installed
+     * @param {function(err, object)} callback
+     */
+    const getListOfAppsForInstallation = (callback) => {
+        fileService.getFolderContentAsJSON(options.slots.secondary, function (err, data) {
+            if (err)
+                return callback(err);
+
+            let apps;
+
+            try {
+                apps = JSON.parse(data);
+            } catch (e) {
+                return callback(`Could not parse App list`);
+            }
+
+            callback(undefined, apps);
+        });
+    };
+
+    /**
+     * Installs all aps in the apps folder in the wallet
+     * @param {Archive} wallet
+     * @param {function(err, object)} callback returns the apps details
+     */
+    const installApps = function(wallet, callback){
+        const performInstallation = function(wallet, apps, appList, callback){
+            if (!appList.length)
+                return callback(undefined, apps);
+            let appName = appList.pop();
+            const appInfo = apps[appName];
+
+            if (appName[0] === '/')
+                appName = appName.replace('/', '');
+
+            const mountApp = (newAppSeed) => {
+                wallet.mount(`/${options.appFolderName}/${appName}`, newAppSeed, (err) => {
+                    if (err)
+                        return callback("Failed to mount in folder" + `/apps/${appName}: ${err}`);
+
+                    performInstallation(wallet, apps, appList, callback);
+                });
+            };
+
+            // If new instance is not demanded just mount (leftover code from privatesky.. when is it not a new instance?)
+            if (!appInfo.newInstance !== false)
+                return mountApp(appInfo.seed);
+
+            buildApp(false, appInfo.seed, appName, (err, keySSI) => {
+                if (err)
+                    return callback(`Failed to build app ${appName}: ${err}`);
+                mountApp(keySSI);
+            });
+        }
+
+        getListOfAppsForInstallation((err, apps) => {
+            if (err)
+                return callback(err);
+            apps = apps || {};
+            let appList = Object.keys(apps);
+            performInstallation(wallet, apps, appList, (err) => {
+                if (err)
+                    return callback(`Could not complete installations: ${err}`);
+                callback(undefined, wallet);
+            });
+        });
+    }
+
+    /**
+     * Builds a new SSApp from the provided secrets
+     * @param {KeySSI} seed the SSApp's keySSI
+     * @param {string} name the SSApp's name
+     * @param {function(err, KeySSI, Archive)} callback
+     */
+    this.buildSSApp = function(seed, name, callback){
+        return buildApp(false, seed, name, callback);
+    }
+
+    /**
+     * Builds a new Wallet from the provided secrets
+     * @param {object|string} secrets according to {@link parseSecrets}
+     * @param {function(err, KeySSI, Archive)} callback
+     */
+    this.buildWallet = function(secrets, callback){
+        fileService.getWalletSeed((err, seed) => {
+            if (err)
+                return callback(`Could not retrieve template wallet SSI: ${err}`);
+            buildApp(true, secrets, seed, (err, keySSI, wallet) => {
+                if (err)
+                    return callback(`Could not build wallet: ${err}`);
+                console.log(`Wallet built with SSI ${keySSI}`);
+                installApps(wallet, (err, apps) => {
+                    if (err)
+                        return callback(err);
+                    if (Object.keys(apps).length)
+                        console.log(`Applications installed successfully`);
+                    callback(undefined, keySSI, wallet);
+                })
             });
         });
     }

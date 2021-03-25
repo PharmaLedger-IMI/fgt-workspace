@@ -52,11 +52,11 @@ function WalletRunner(options) {
             return { seed: this.seed };
         });
 
-        eventMiddleware.onStatus("completed", () => {
+        eventMiddleware.onStatus("completed", async () => {
             if (iframe.hasAttribute("app-placeholder")) {
                 iframe.removeAttribute("app-placeholder");
                 document.body.innerHTML = iframe.outerHTML;
-                this.spinner.removeFromView();
+                await this.spinner.dismiss();
                 document.dispatchEvent(new CustomEvent('ssapp:loading:progress', {
                     detail: {
                         progress: 100,
@@ -70,7 +70,7 @@ function WalletRunner(options) {
                 try {
                     document.querySelectorAll("body > *:not(iframe):not(.loader-parent-container)").forEach((node) => node.remove());
                 } catch (e) {
-                    this.spinner.removeFromView();
+                    await this.spinner.dismiss();
                 }
             }
         });
@@ -115,18 +115,18 @@ function WalletRunner(options) {
      * progress of ssapps
      */
     const setupLoadingProgressEventListener = () => {
-        document.addEventListener('ssapp:loading:progress', (e) => {
+        document.addEventListener('ssapp:loading:progress', async (e) => {
             const data = e.detail;
             const progress = data.progress;
             const statusText = data.status;
 
             if (progress < 100) {
-                this.spinner.attachToView();
+                await this.spinner.present();
             }
-            this.spinner.setStatusText(statusText);
+            //this.spinner.setStatusText(statusText);
 
             if (progress === 100) {
-                this.spinner.removeFromView();
+               await this.spinner.dismiss();
             }
         });
     }
@@ -144,7 +144,6 @@ function WalletRunner(options) {
             let loadingInterval;
 
             let loadingProgress = 10;
-            this.spinner.setStatusText(`Loading ${loadingProgress}%`);
             loadingInterval = setInterval(() => {
                 loadingProgress += loadingProgress >= 90 ? 1 : 10;
 
@@ -152,7 +151,6 @@ function WalletRunner(options) {
                     clearInterval(loadingInterval);
                     return;
                 }
-                this.spinner.setStatusText(`Loading ${loadingProgress}%`);
             }, 1000);
 
 
