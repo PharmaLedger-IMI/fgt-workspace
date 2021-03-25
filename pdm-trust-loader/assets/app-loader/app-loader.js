@@ -6,6 +6,7 @@ const swName = "swBoot.js";
 let loadingInterval;
 
 const NavigatorUtils = getNavigatorUtils(env);
+console.log(`NavigatorUtils: ${NavigatorUtils}`);
 
 function startLoadingProgressInterval(initialLoadingProgress) {
     sendLoadingProgress(initialLoadingProgress, `Loading ${initialLoadingProgress}%`);

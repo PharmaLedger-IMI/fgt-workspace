@@ -29,7 +29,7 @@ function FileService(options) {
             url = `${protocol}//${host}/${prefix}${appName}`;
             return url;
         } else {
-            return `${options.BDNS_ROOT_HOSTS}/${prefix}${appName}`;
+            return `${options.hosts}/${prefix}${appName}`;
         }
     }
 

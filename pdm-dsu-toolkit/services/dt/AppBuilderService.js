@@ -12,7 +12,7 @@ const OPTIONS = {
     publicSecretsKey: '-$Identity-',
     environmentKey: "-$Environment-",
     basePath: "",
-    hostsKey: require('opendsu').constants.BDNS_ROOT_HOSTS,
+    hosts: "",
     hint: undefined,
     vault: "vault",
     seedFileName: "seed",
@@ -27,20 +27,23 @@ const OPTIONS = {
     }
 }
 
-const envToOptions = function(env){
-    let options = Object.assign({}, OPTIONS);
-    options.environemnt = env;
+const envToOptions = function(env, opts){
+    let options = Object.assign({}, OPTIONS, opts);
+    options.environment = env;
     options.vault = env.vault;
     options.anchoring = env.domain;
     options.basePath = env.basePath;
+    const opendsu = require('opendsu');
+    options.hosts = opendsu.loadApi('system').getEnvironmentVariable(opendsu.constants.BDNS_ROOT_HOSTS);
     return options;
 }
 
 /**
- * @param {object} environment defaults to {@link OPTIONS}. is Overridden by provided values
+ * @param {object} environment typically comes from an environment.js file is the ssapps. Overrides some options
+ * @param {object} [opts] options object mimicking {@link OPTIONS}
  */
-function AppBuilderService(environment) {
-    const options = envToOptions(environment);
+function AppBuilderService(environment, opts) {
+    const options = envToOptions(environment, opts);
     let keyssi = require('opendsu').loadApi('keyssi')
 
     const dossierBuilder = new (require("./DossierBuilder").DossierBuilder);
@@ -306,15 +309,17 @@ function AppBuilderService(environment) {
      * @param {function(err, Archive)} callback
      */
     const initializeInstance = function(instance, publicSecrets, callback){
-        instance.readFile(options.initFile, (err, data) => {
+        instance.readFile(`${options.codeFolderName}/${options.initFile}`, (err, data) => {
             if (err) {
                 console.log(`No init file found. Initialization complete`);
                 return callback(undefined, instance);
             }
-            let commands = (publicSecrets
-                    ? data.toString().replace(options.publicSecretsKey, JSON.stringify(publicSecrets))
-                    : data.toString())
-                .split('\\n\\r?');
+
+            let commands = data.toString().replace(options.environmentKey, JSON.stringify(options.environment));
+            commands = (publicSecrets
+                    ? commands.replace(options.publicSecretsKey, JSON.stringify(publicSecrets))
+                    : commands)
+                .split(/\r?\n/);
             dossierBuilder.buildDossier(instance, commands, (err, keySSI) => {
                 if (err)
                    return callback(`Could not initialize SSApp instance: ${err}`);
