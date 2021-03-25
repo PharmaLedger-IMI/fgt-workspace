@@ -13,5 +13,6 @@ const getDossierBuilder = (sourceDSU) => {
 
 module.exports = {
     getDossierBuilder,
-    Operations: require("./DossierBuilder").OPERATIONS
+    Operations: require("./DossierBuilder").OPERATIONS,
+    AppBuilderService: require('./AppBuilderService')
 }

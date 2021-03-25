@@ -1,4 +1,4 @@
-const LocalizedController = require('toolkit').Controllers.LocalizedController;
+import LocalizedController from './LocalizedController.js'
 
 export default class FormController extends LocalizedController {
 
@@ -14,7 +14,6 @@ export default class FormController extends LocalizedController {
         self._createModalForm(WebCardinal.translations.en['/'].form);
         self.setModel(self.getModel());
         console.log("FormController initialized");
-        //require('toolkit').Model.Validations.bindIonicValidation(self);
         Object.entries(self.getModel().buttons).forEach(b => {
             self.onTagClick(`try${b[0]}`, self._handleTry(`${b[0]}`).bind(self));
         });

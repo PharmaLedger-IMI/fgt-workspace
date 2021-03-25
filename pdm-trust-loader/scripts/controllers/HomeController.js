@@ -1,8 +1,6 @@
-import WalletRunner from "./services/WalletRunner.js";
 import env from "../../environment.js"
-
-const AppBuilderService = require('toolkit').Services.AppBuilderService;
-const LocalizedController = require('toolkit').Controllers.LocalizedController;
+import LocalizedController from './LocalizedController.js'
+import LoaderService from "./services/LoaderService.js";
 
 const generateTranslation = function (){
     return {
@@ -93,20 +91,18 @@ export default class HomeController extends LocalizedController {
             event.stopImmediatePropagation();
             await self.register(event.detail, (err) => {
                 if (err)
-                    self.showErrorModal();
-                self.hideModal();
-                self._testParticipant();
+                    self.showErrorToast(err);
             });
         }, true)
 
-        //this.walletService = new WalletService();
-        this.appService = new AppBuilderService(env);
+        this.loaderService = new LoaderService(env);
         this.on('perform-login', (event) => {
             event.preventDefault();
             event.stopImmediatePropagation();
             self.login(event.detail, (err) => {
                 if (err)
-                    self.model.form.formError = err;
+                    self.showErrorToast(err);
+                self.hideModal();
             });
         }, true)
 
@@ -115,6 +111,13 @@ export default class HomeController extends LocalizedController {
         this._showLoginModal();
     }
 
+    /**
+     * Instantiates a new Spinner
+     * @param {string} message
+     * @param {number} duration
+     * @return {ion-loading} a spinner
+     * @private
+     */
     _getLoader(message, duration){
         duration = duration || 0;
         const loading = document.createElement('ion-loading');
@@ -136,12 +139,13 @@ export default class HomeController extends LocalizedController {
         let loader = self._getLoader("Registering...");
         await loader.present();
 
-        self.appService.buildWallet(credentials, async (err, keySSI) => {
+        self.loaderService.create(credentials, async (err, keySSI) => {
             if (err)
                 self.showErrorToast(err);
             else
-                self.showToast(self.translate('success.register'));
+                self.showToast(self.translate('home.success.register'));
             await loader.dismiss();
+            callback(undefined, keySSI);
         })
     }
 
@@ -153,26 +157,13 @@ export default class HomeController extends LocalizedController {
     async login(credentials, callback){
         let self = this;
         let loader = this._getLoader("Logging in...");
-        await loader.present();
-        this.walletService.load('traceability', credentials, env.vault, async (err, wallet) => {
+        this.loaderService.load(credentials, loader, async (err, wallet) => {
            if (err){
                self.showErrorToast(err);
                return callback(err);
            }
-           self.showToast(self.translate('success.login'));
-
-           wallet.getKeySSIAsString(async (err, keySSI) => {
-               if (err)
-                   return callback(err);
-
-               console.log(`Loading wallet ${keySSI}`);
-
-               await loader.dismiss();
-               new WalletRunner({
-                   seed: keySSI,
-                   spinner: loader
-               }).run();
-           })
+           self.showToast(self.translate('home.success.login'));
+           callback(undefined, wallet);
         });
     }
 

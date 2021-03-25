@@ -1,4 +1,4 @@
-mport LocalizedController from "../../../pdm-dsu-toolkit/controllers/LocalizedController.js";
+import LocalizedController from "../../../pdm-dsu-toolkit/controllers/LocalizedController.js";
 
 export default class RegistrationController extends LocalizedController {
 

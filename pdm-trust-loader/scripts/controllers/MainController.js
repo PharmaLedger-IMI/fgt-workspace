@@ -1,6 +1,6 @@
 import "../../loader-config.js";
 import {Spinner, prepareView} from "./services/UIService.js";
-import WalletService from "./services/WalletService.js";
+import LoaderService from "./services/WalletService.js";
 import FileService from "./services/FileService.js";
 import WalletRunner from "./services/WalletRunner.js";
 
@@ -10,7 +10,7 @@ function MainController() {
     const DEVELOPMENT_EMAIL = "dev@autologin.dev";
     const DEVELOPMENT_USERNAME = "autologin";
 
-    const walletService = new WalletService();
+    const walletService = new LoaderService();
     const fileService = new FileService();
     let spinner;
 

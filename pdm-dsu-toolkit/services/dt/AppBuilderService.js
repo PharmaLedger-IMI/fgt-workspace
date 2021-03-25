@@ -41,7 +41,7 @@ function AppBuilderService(environment) {
     const options = envToOptions(environment);
     let keyssi = require('opendsu').loadApi('keyssi')
 
-    const dossierBuilder = new (require("./DossierBuilder/DossierBuilder").DossierBuilder);
+    const dossierBuilder = new (require("./DossierBuilder").DossierBuilder);
     const resolver = require('opendsu').loadApi('resolver');
 
     const fileService = new FileService(options);
@@ -111,7 +111,7 @@ function AppBuilderService(environment) {
      * @param {function(err, TemplateSeedSSI)} callback
      */
     const createSSI = function(specificString, callback){
-        const key = keyssi.buildTemplateSeedSSI(options.anchoring, specificString, undefined, 'v0', options.hint ? JSON.stringify(options.hint) : undefined);
+        const key = keyssi.createTemplateSeedSSI(options.anchoring, specificString, undefined, 'v0', options.hint ? JSON.stringify(options.hint) : undefined);
         callback(undefined, key);
     }
 
@@ -159,7 +159,7 @@ function AppBuilderService(environment) {
      */
     const createDSU = function(specific, callback){
         createSSI(specific, (err, keySSI) => {
-            resolver.createDSUForExistingSSI(keySSI, (err, dsu) => {
+            resolver.createDSU(keySSI, (err, dsu) => {
                 if (err)
                     return callback(`Could not create const DSU ${err}`);
                 callback(undefined, dsu);
@@ -181,7 +181,6 @@ function AppBuilderService(environment) {
             });
         });
     }
-
 
     const getDSUFactory = function(isConst, isWallet){
         return isConst ? (isWallet ? createWalletDSU : createConstDSU) : createDSU;
@@ -402,8 +401,10 @@ function AppBuilderService(environment) {
      */
     const getListOfAppsForInstallation = (callback) => {
         fileService.getFolderContentAsJSON(options.slots.secondary, function (err, data) {
-            if (err)
-                return callback(err);
+            if (err){
+                console.log(`No Apps found`)
+                return callback(undefined, {});
+            }
 
             let apps;
 
@@ -442,10 +443,10 @@ function AppBuilderService(environment) {
             };
 
             // If new instance is not demanded just mount (leftover code from privatesky.. when is it not a new instance?)
-            if (!appInfo.newInstance !== false)
+            if (appInfo.newInstance === false)
                 return mountApp(appInfo.seed);
 
-            buildApp(false, appInfo.seed, appName, (err, keySSI) => {
+            buildApp(false, undefined, appInfo.seed, appName, (err, keySSI) => {
                 if (err)
                     return callback(`Failed to build app ${appName}: ${err}`);
                 mountApp(keySSI);
@@ -456,7 +457,7 @@ function AppBuilderService(environment) {
             if (err)
                 return callback(err);
             apps = apps || {};
-            let appList = Object.keys(apps);
+            let appList = Object.keys(apps).filter(n => n !== '/');
             performInstallation(wallet, apps, appList, (err) => {
                 if (err)
                     return callback(`Could not complete installations: ${err}`);

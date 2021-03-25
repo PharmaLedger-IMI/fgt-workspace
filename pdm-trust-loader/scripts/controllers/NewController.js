@@ -1,6 +1,6 @@
 import "../../loader-config.js";
 import {Spinner, prepareView} from "./services/UIService.js";
-import WalletService from "./services/WalletService.js";
+import LoaderService from "./services/WalletService.js";
 import NavigatorUtils from "./services/NavigatorUtils.js";
 
 
@@ -10,7 +10,7 @@ function NewController() {
 
     let wizard;
     let spinner;
-    const walletService = new WalletService();
+    const walletService = new LoaderService();
 
     if(LOADER_GLOBALS.environment.mode === "dev-secure"){
         if(!LOADER_GLOBALS.credentials.isValid){

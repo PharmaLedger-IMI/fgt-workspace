@@ -1,6 +1,6 @@
 import "../../loader-config.js";
 import { Spinner, prepareView } from "./services/UIService.js";
-import WalletService from "./services/WalletService.js";
+import LoaderService from "./services/WalletService.js";
 import NavigatorUtils from "./services/NavigatorUtils.js";
 
 function RestoreController() {
@@ -8,7 +8,7 @@ function RestoreController() {
   let pin;
   let wizard;
   let spinner;
-  const walletService = new WalletService();
+  const walletService = new LoaderService();
 
   function displayContainer(containerId) {
     document.getElementById(containerId).style.display = "block";

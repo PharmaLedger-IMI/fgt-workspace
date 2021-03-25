@@ -1,6 +1,6 @@
 "use strict";
 
-import NavigatorUtils from "./NavigatorUtils.js";
+import getNavigatorUtils from "./NavigatorUtils.js";
 import EventMiddleware from "./EventMiddleware.js";
 const crypto = require("opendsu").loadApi("crypto");
 
@@ -13,9 +13,13 @@ function getIFrameBase() {
 function WalletRunner(options) {
     options = options || {};
 
-    if (!options.seed) {
+    if (!options.seed)
         throw new Error("Missing seed");
-    }
+    if (!options.env)
+        throw new Error("Missing env");
+
+    this.navigatorUtils = getNavigatorUtils(options.env)
+    let self = this;
     this.seed = options.seed;
     this.hash = crypto.sha256(this.seed);
     this.spinner = options.spinner;
@@ -56,7 +60,8 @@ function WalletRunner(options) {
             if (iframe.hasAttribute("app-placeholder")) {
                 iframe.removeAttribute("app-placeholder");
                 document.body.innerHTML = iframe.outerHTML;
-                await this.spinner.dismiss();
+                if (this.spinner)
+                    await this.spinner.dismiss();
                 document.dispatchEvent(new CustomEvent('ssapp:loading:progress', {
                     detail: {
                         progress: 100,
@@ -70,13 +75,14 @@ function WalletRunner(options) {
                 try {
                     document.querySelectorAll("body > *:not(iframe):not(.loader-parent-container)").forEach((node) => node.remove());
                 } catch (e) {
-                    await this.spinner.dismiss();
+                    if (this.spinner)
+                        await this.spinner.dismiss();
                 }
             }
         });
 
         eventMiddleware.onStatus("sign-out", (data) => {
-            NavigatorUtils.unregisterAllServiceWorkers(() => {
+            self.navigatorUtils.unregisterAllServiceWorkers(() => {
                 // TODO: clear vault instead of seedCage
                 if (data.deleteSeed === true) {
                     localStorage.removeItem("seedCage");
@@ -95,7 +101,7 @@ function WalletRunner(options) {
      * requests it
      */
     const setupSeedRequestListener = () => {
-        NavigatorUtils.addServiceWorkerEventListener("message", (e) => {
+        self.navigatorUtils.addServiceWorkerEventListener("message", (e) => {
             if (!e.data || e.data.query !== "seed") {
                 return;
             }
@@ -118,24 +124,19 @@ function WalletRunner(options) {
         document.addEventListener('ssapp:loading:progress', async (e) => {
             const data = e.detail;
             const progress = data.progress;
-            const statusText = data.status;
-
-            if (progress < 100) {
-                await this.spinner.present();
-            }
-            //this.spinner.setStatusText(statusText);
-
-            if (progress === 100) {
-               await this.spinner.dismiss();
+            if (this.spinner){
+                if (progress < 100)
+                    await this.spinner.present();
+                if (progress === 100)
+                    await this.spinner.dismiss();
             }
         });
     }
 
     this.run = function () {
-        const areServiceWorkersEnabled = typeof LOADER_GLOBALS === "undefined" || !!LOADER_GLOBALS.environment.sw;
-        if (areServiceWorkersEnabled && !NavigatorUtils.areServiceWorkersSupported) {
+        const areServiceWorkersEnabled =  !!options.env.sw;
+        if (areServiceWorkersEnabled && !self.navigatorUtils.areServiceWorkersSupported)
             return alert("You current browser doesn't support running this application");
-        }
 
         const iframe = buildContainerIframe(!areServiceWorkersEnabled);
         setupLoadEventsListener(iframe);
@@ -160,15 +161,15 @@ function WalletRunner(options) {
             };
             document.body.appendChild(iframe);
             
-            NavigatorUtils.registerPwaServiceWorker();
+            self.navigatorUtils.registerPwaServiceWorker();
             return;
         }
 
         setupSeedRequestListener();
         setupLoadingProgressEventListener();
 
-        NavigatorUtils.unregisterAllServiceWorkers(() => {
-            NavigatorUtils.registerSW(
+        self.navigatorUtils.unregisterAllServiceWorkers(() => {
+            self.navigatorUtils.registerSW(
                 {
                     name: "swLoader.js",
                     path: "swLoader.js",
@@ -179,7 +180,7 @@ function WalletRunner(options) {
                         throw err;
                     }
                     iframe.onload = () => {
-                        NavigatorUtils.registerPwaServiceWorker();
+                        self.navigatorUtils.registerPwaServiceWorker();
                     };
                     document.body.appendChild(iframe);
                 }
