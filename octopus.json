@@ -22,10 +22,16 @@
         },
         {
             "name": "webcardinal",
+            "src": "https://github.com/webcardinal/webcardinal-bundler",
             "actions": [
                 {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
                     "type": "execute",
-                    "cmd": "cd webcardinal && npm install && npm run bundle-webcardinal && npm dev"
+                    "cmd": "cd webcardinal && npm install && npm run bundle-all && npm run build"
                 }
             ]
         },
@@ -69,6 +75,45 @@
             ]
         },
         {
+            "name": "pdm-dsu-toolkit",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-dsu-toolkit && npm install"
+                }
+            ]
+        },
+        {
+            "name": "fgt-dsu-wizard",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-dsu-wizard && npm install"
+                }
+            ]
+        },
+        {
+            "name": "pdm-trust-loader",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-trust-loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-trust-loader && npm run postinstall"
+                },
+                {
+                    "type": "copy",
+                    "src": "./webcardinal/webcardinal",
+                    "target": "./pdm-trust-loader/webcardinal",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
             "name": "apihub-root/fgt-mah-wallet/loader",
             "src": "https://github.com/PrivateSky/trust-loader.git",
             "actions": [
@@ -107,21 +152,24 @@
             ]
         },
         {
-            "name": "apihub-root/fgt-wholesaler-wallet/loader",
-            "src": "https://github.com/PrivateSky/trust-loader.git",
+            "name": "Build and deploy PDM Trust Loader to WHolesaler",
+            "src": ".",
             "actions": [
                 {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
+                    "type": "execute",
+                    "cmd": "cd pdm-trust-loader && npm run build"
                 },
                 {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && npm install"
+                    "type": "remove",
+                    "target": "./apihub-root/fgt-wholesaler-wallet/loader"
                 },
                 {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && npm run build"
+                    "type": "copy",
+                    "src": "./pdm-trust-loader",
+                    "target": "./apihub-root/fgt-wholesaler-wallet/loader",
+                    "options": {
+                        "overwrite": true
+                    }
                 }
             ]
         },
@@ -152,24 +200,6 @@
                 {
                     "type": "execute",
                     "cmd": "cd gtin-dsu-wizard && npm install"
-                }
-            ]
-        },
-        {
-            "name": "pdm-dsu-toolkit",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-dsu-toolkit && npm install"
-                }
-            ]
-        },
-        {
-            "name": "fgt-dsu-wizard",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd fgt-dsu-wizard && npm install"
                 }
             ]
         },
@@ -293,33 +323,9 @@
                     "cmd": "cd fgt-wholesaler-ssapp && npm install"
                 }
             ]
-        },
-        {
-            "name": "pdm-trust-loader",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-trust-loader && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-trust-loader && npm run postinstall"
-                }
-            ]
         }
-
     ],
     "build-use-case": [
-        {
-            "name": "webcardinal-wallet-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd webcardinal && npm run build"
-                }
-            ]
-        },
         {
             "name": "pdm-theme-wallet-build",
             "src": "",
@@ -351,7 +357,7 @@
             ]
         },
         {
-            "name": "Build and deploy PDM Trust Loader",
+            "name": "Build and deploy PDM Trust Loader to WHolesaler",
             "src": ".",
             "actions": [
                 {
@@ -359,21 +365,13 @@
                     "cmd": "cd pdm-trust-loader && npm run build"
                 },
                 {
-                    "type": "copy",
-                    "src": "./webcardinal/webcardinal",
-                    "target": "./pdm-trust-loader/webcardinal",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
                     "type": "remove",
-                    "target": "./apihub-root/pdm-trust-loader/loader"
+                    "target": "./apihub-root/fgt-wholesaler-wallet/loader"
                 },
                 {
                     "type": "copy",
                     "src": "./pdm-trust-loader",
-                    "target": "./apihub-root/pdm-trust-loader/loader",
+                    "target": "./apihub-root/fgt-wholesaler-wallet/loader",
                     "options": {
                         "overwrite": true
                     }
@@ -470,14 +468,6 @@
                     "type": "copy",
                     "src": "./fgt-wholesaler-ssapp/seed",
                     "target": "./apihub-root/fgt-wholesaler-wallet/wallet-patch/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "./fgt-wholesaler-ssapp/seed",
-                    "target": "./apihub-root/fgt-wholesaler-wallet/apps-patch/fgt-wholesaler-ssapp/seed",
                     "options": {
                         "overwrite": true
                     }

@@ -1,6 +1,6 @@
 {
-  "short_name": "FGT for Wholesalers",
-  "name": "Pharmaledger's Finished Goods Traceability App for Wholesalers",
+  "short_name": "Trust Loader",
+  "name": "Pharmaledger's Trust Loader",
   "description": "Dossiers' User Interface",
   "theme_color": "rgb(0,52,91)",
   "background_color": "rgb(0,52,91)",
@@ -55,6 +55,6 @@
 	  "purpose": "maskable any"
     }
   ],
-  "start_url": "fgt-wholesaler-wallet/loader",
-  "scope": "fgt-wholesaler-wallet/loader"
+  "start_url": "/pdm-trust-loader/loader/",
+  "scope": "/pdm-trust-loader/loader/"
 }
