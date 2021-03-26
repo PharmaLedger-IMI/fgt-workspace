@@ -20,7 +20,7 @@ function NewController() {
             LOADER_GLOBALS.credentials.company = "Marketing Authorization Holder Company Inc";
             LOADER_GLOBALS.credentials.password = "MAHUserSecurePassword1!";
             LOADER_GLOBALS.saveCredentials();
-            console.log("Initialising credentials for develoment mode");
+            console.log("Initializing credentials for development mode");
         }
     }
 

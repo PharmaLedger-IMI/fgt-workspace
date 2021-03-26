@@ -90,7 +90,7 @@ function MainController() {
             if (err) {
                 throw createOpenDSUErrorWrapper(`Failed to create wallet in domain ${LOADER_GLOBALS.environment.domain}`, err);
             }
-            console.log("A new wallet got initialised...", wallet.getCreationSSI(true));
+            console.log("A new wallet got initialized...", wallet.getCreationSSI(true));
             return self.openWallet();
         });
     }
@@ -138,7 +138,7 @@ function MainController() {
             if (err) {
                 throw createOpenDSUErrorWrapper(`Failed to create wallet in domain ${LOADER_GLOBALS.environment.domain}`, err);
             }
-            console.log("A new wallet got initialised...", wallet.getCreationSSI(true));
+            console.log("A new wallet got initialized...", wallet.getCreationSSI(true));
             return self.openWallet();
         });
     }
