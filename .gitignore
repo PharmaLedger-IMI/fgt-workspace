@@ -31,11 +31,7 @@ fgt-mah-ssapp/code/scripts/bundles
 fgt-mah-ssapp/seed
 fgt-mah-ssapp/docs/output
 
-webcardinal/*
-!webcardinal/octopus.json
-!webcardinal/package.json
-!webcardinal/bin
-!webcardinal/.gitignore
+webcardinal
 
 web-cardinal-ion
 

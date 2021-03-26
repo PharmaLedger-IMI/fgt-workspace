@@ -79,7 +79,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd pdm-dsu-toolkit && npm install"
+                    "cmd": "cd pdm-dsu-toolkit && npm install && npm run prebuild"
                 }
             ]
         },
@@ -88,7 +88,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd fgt-dsu-wizard && npm install"
+                    "cmd": "cd fgt-dsu-wizard && npm install && npm run prebuild"
                 }
             ]
         },
@@ -241,6 +241,10 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/clear-sky-theme && npm install"
                 }
             ]
         },
@@ -500,10 +504,6 @@
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && npm install"
-                },
-                {
-                    "type": "execute",
                     "cmd": "cd apihub-root/fgt-pharmacy-wallet/loader && npm install"
                 },
                 {
@@ -521,6 +521,16 @@
                 {
                     "type": "execute",
                     "cmd": "cd cardinal && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "web-cardinal-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd webcardinal && npm run build-dossier"
                 }
             ]
         },
