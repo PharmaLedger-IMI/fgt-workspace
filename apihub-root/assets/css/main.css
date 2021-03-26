@@ -1,33 +1,26 @@
 html {
     background-color: #ffcecc;
-    background-image: linear-gradient(232deg, #ffcecc 0%, #DDD6F3 54%);
+    background-image: linear-gradient(232deg, #ffcecc 0%, #FFFFFF 54%);
+    font-family: "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 .center-aligned-controls {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-evenly;
-    position: absolute;
-    width: 100%;
 }
 
 .vertical-align {
-    top: 50%;
-    left: 50%;
-    -ms-transform: translateX(-50%) translateY(-50%);
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
 }
 
 .center-aligned-controls a {
-    padding: 50px 70px;
-    width: 15%;
-    height: 10%;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 12px -2px rgba(0, 0, 0, 0.75);
+    margin: 10px;
+    padding: 20px 70px;
+    width: 150px;
+    height: 200px;
     border-radius: 10px;
     text-decoration: none;
-    display: flex;
-    justify-content: space-evenly;
+    display: block;
 }
 
 .center-aligned-controls a img {
@@ -45,10 +38,10 @@ html {
 }
 
 .right-side {
-    margin-left: 10%;
-    width: 70%;
-    display: flex;
-    justify-content: center;
+    margin-left: 20px;
+    width: 120px;
+    display: block;
+    text-align: center;
 }
 
 .center-aligned-controls p {
@@ -88,47 +81,4 @@ html {
 
 .web-wallet_button:hover {
     background-image: linear-gradient(150deg, #ACB6E5, #74ebd5);
-}
-
-@media (min-width: 768px) and (max-width: 991.98px) {
-
-
-    .center-aligned-controls {
-        display: block;
-    }
-
-    .center-aligned-controls a {
-        margin: 4% 5%;
-        width: auto;
-    }
-
-    .center-aligned-controls p {
-        font-size: 55px;
-    }
-
-    .right-side {
-        margin-left: 0;
-    }
-
-    .scale-up:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 24px -2px rgba(0, 0, 0, 0.75);
-    }
-
-    .center-aligned-controls a img {
-        width: 120px;
-        height: 120px;
-    }
-}
-
-@media (min-width: 992px) and (max-width: 1522px) {
-    .right-side {
-        margin-left: 10%;
-    }
-}
-
-@media (min-width: 1323px) and (max-width: 1699.98px) {
-    .center-aligned-controls a {
-        width: 10%;
-    }
 }
