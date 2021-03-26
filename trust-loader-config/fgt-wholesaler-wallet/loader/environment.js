@@ -1,5 +1,6 @@
 export default {
   "appName": "Wholesaler Traceability App",
+  "appVersion": "0.1.1",
   "vault": "server",
   "agent": "browser",
   "system":   "any",
