@@ -662,6 +662,14 @@
                 },
                 {
                     "type": "copy",
+                    "src": "pdm-dsu-toolkit/docs/output",
+                    "target": "pages/pdm-dsu-toolkit",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
                     "src": "fgt-mah-ssapp/docs/output",
                     "target": "pages/fgt-mah-ssapp",
                     "options": {

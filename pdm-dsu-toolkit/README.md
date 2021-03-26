@@ -1,5 +1,5 @@
 # PDM's DSU Toolkit
-Building services
+Proposes a Standardized Architecture and provides a standardized API for that architecture 
 
 ### Bundling
 THis Module was developed with ease of test in mind, using node syntax, incompatible with the browsers.
@@ -10,8 +10,8 @@ a configuration placed at `build/build.json` eg:
 
 <pre>
 {
-  "wizard": {
-    "deps": "../../../fgt-dsu-wizard:wizard",
+  "toolkit": {
+    "deps": "../../../pdm-dsu-toolkit:toolkit",
     "autoLoad":  true
   }
 }

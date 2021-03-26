@@ -47,7 +47,7 @@ You will be present with a menu from where you can choose the SSApp you with to 
 
 [MAH Enterprise Wallet](fgt-mah-ssapp/index.html)
 
-[Wholesaler Wallet](fgt-Wholesaler-ssapp/index.html)
+[Wholesaler Wallet](fgt-wholesaler-ssapp/index.html)
 
 [Pharmacy Wallet](fgt-mah-ssapp/index.html)
 
@@ -57,7 +57,7 @@ You will be present with a menu from where you can choose the SSApp you with to 
 
 [DSU Constitution](resources/drawings/finishedGoodsTraceabilityDSUTypes-Current.png)
 
-[Current SSApp Architecture](resources/drawings/finishedGoodsTraceabilityDSUTypes-Current.png)
+[Current SSApp Architecture](resources/drawings/finishedGoodsTraceabilityDSUTypes-BaseSSAppArchitecture.png)
 
 [Proposal for SSApp Architecture - Ex: Pharmacy SSApp](resources/drawings/finishedGoodsTraceabilityDSUTypes-PharmacySSAppArchitecture.png)
 

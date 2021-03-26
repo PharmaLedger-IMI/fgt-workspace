@@ -26,7 +26,7 @@ You will be present with a menu from where you can choose the SSApp you with to 
 
 [MAH Enterprise Wallet](fgt-mah-ssapp/index.html)
 
-[Wholesaler Wallet](fgt-Wholesaler-ssapp/index.html)
+[Wholesaler Wallet](fgt-wholesaler-ssapp/index.html)
 
 [Pharmacy Wallet](fgt-mah-ssapp/index.html)
 
