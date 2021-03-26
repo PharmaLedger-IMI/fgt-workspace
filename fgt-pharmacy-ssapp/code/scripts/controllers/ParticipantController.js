@@ -5,9 +5,11 @@ export default class ParticipantController extends ContainerController {
         super(element);
         const LocaleService = require('wizard').Services.LocaleService;
         LocaleService.bindToLocale(this, LocaleService.supported.en_US);
+        const Version = require('wizard').Version;
         this.model = this.setModel({
             identified: false,
-            participant: undefined
+            participant: undefined,
+            version: Version.version+"-"+Version.hash
         });
         this.participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, "traceability");
         console.log("Participant controller initialized");

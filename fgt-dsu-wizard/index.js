@@ -24,7 +24,7 @@ module.exports = {
 	 * Exposes constants.
 	 */
 	Constants: require("./constants"),
-	/**
+	 /**
 	 * Exposes the Model module
 	 */
 	Model: require("./model"),
@@ -43,5 +43,9 @@ module.exports = {
 	/**
 	 * Exposes the Managers module
 	 */
-	Managers: require("./managers")
+	Managers: require("./managers"),
+    /**
+	 * Exposes Version.
+	 */
+	Version: require("./version"),
 };
