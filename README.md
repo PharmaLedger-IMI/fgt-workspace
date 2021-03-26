@@ -203,7 +203,7 @@ Currently not supported
 * apihub-root: Folder containing the root of what is served by the server
     * external-volume: configs directory;
     * internal-volume: volume folder (brick storage). contains the several configured domains
-    * wallet patch folders: the folders contain, in the wallet-patch folder and for each case, the custom 'behaviour' that is added to the template folder:
+    * wallet patch folders: the folders contain, in the wallet-patch folder and for each case, the custom 'behavior' that is added to the template folder:
         * fgt-mah-wallet/wallet-patch;
         * fgt-pharmacy-wallet/wallet-patch;
         * fgt-wholesaler-wallet/wallet-patch;
@@ -229,7 +229,7 @@ Currently not supported
     * themes: the folder with all the installed themes:
         * pharmaledger-theme: custom theme for the pharmaledger implementation comes from https://github.com/PrivateSky/blue-fluorite-theme;
 * Use case related:
-    * Apihub-root: Folder changes:
+    * apihub-root: Folder changes:
         * wallet loaders: clones the loader into each of the wallets:
             * fgt-mah-wallet/loader;
             * fgt-pharmacy-wallet/loader;
@@ -238,7 +238,7 @@ Currently not supported
     * fgt-pharmacy-ssapp: The application for the pharmacy;
     * fgt-wholesaler-ssapp: The application for the wholesaler;
     * gtin-dsu-wizard: the ssapp the creates GTIN based DSUs. *Cloned from epi*;
-    * gtin-resolver: the 'library' to resolve gtin+batchs to dsus. *Cloned from epi*;
+    * gtin-resolver: the 'library' to resolve gtin+batches to dsus. *Cloned from epi*;
 
 
 
