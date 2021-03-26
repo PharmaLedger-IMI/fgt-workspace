@@ -27,7 +27,11 @@
         },
         {
           "type": "execute",
-          "cmd": "jsdoc -c jsdocs.json && rimraf docs/output/pdm-trust-loader.html#.module:managers docs/output/pdm-trust-loader.html#.module"
+          "cmd": "jsdoc -c jsdocs.json"
+        },
+        {
+          "type": "execute",
+          "cmd": "rimraf docs/output/pdm-trust-loader.html#.module:managers docs/output/pdm-trust-loader.html#.module"
         }
       ]
     }

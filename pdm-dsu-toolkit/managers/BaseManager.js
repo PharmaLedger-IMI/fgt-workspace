@@ -16,7 +16,7 @@ const {INFO_PATH, PARTICIPANT_MOUNT_PATH} = require('../constants');
  *     <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
- *
+ *$
  * This Base Manager Class is designed to integrate with the pdm-trust-loader and a init.file configuration of
  * <pre>
  *
