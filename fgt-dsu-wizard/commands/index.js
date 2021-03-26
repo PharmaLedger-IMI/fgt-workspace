@@ -1,7 +1,8 @@
 /**
- * @module commands
+ * @module fgt-dsu-wizard.commands
  */
 module.exports = {
+    setSSI: require('../../pdm-dsu-toolkit/commands/setSSI'),
     createParticipantSSI: require("./setParticipantSSI").createParticipantSSI,
     createParticipantConstSSI: require("./setParticipantConstSSI").createParticipantConstSSI,
     createInboxSSI: require("./setInboxSSI").createInboxSSI,

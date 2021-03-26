@@ -28,7 +28,7 @@ function createStatusSSI(status, domain) {
  * @param {HttpServer} server
  */
 function command(server){
-    const setSSI = require('./setSSI');
+    const setSSI = require('../../pdm-dsu-toolkit/commands/setSSI');
     setSSI(server, "status", createStatusSSI, "setStatusSSI", "traceability");
 }
 

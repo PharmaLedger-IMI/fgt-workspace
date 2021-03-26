@@ -1,5 +1,5 @@
 /**
- * @module fgt-dsu-toolkit.commands
+ * @module pdm-dsu-loader.commands
  */
 
 /**

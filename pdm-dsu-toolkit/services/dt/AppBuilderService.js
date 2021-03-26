@@ -1,5 +1,5 @@
 /**
- * @module pdm-dsu-toolkit.services
+ * @module opendsu.dt
  */
 'use strict';
 

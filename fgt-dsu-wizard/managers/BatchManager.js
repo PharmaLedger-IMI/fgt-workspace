@@ -1,5 +1,5 @@
 const {INFO_PATH, PRODUCT_MOUNT_PATH, BATCH_MOUNT_PATH, ANCHORING_DOMAIN} = require('../constants');
-const Manager = require('./Manager');
+const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Batch = require('../model').Batch;
 
 /**

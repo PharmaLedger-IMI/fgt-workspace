@@ -31,7 +31,7 @@ function createSendingPartnerSSI(data, domain) {
  * @param {HttpServer} server
  */
 function command(server){
-    const setSSI = require('./setSSI');
+    const setSSI = require('../../pdm-dsu-toolkit/commands/setSSI');
     setSSI(server, "sendingpartner", createSendingPartnerSSI, "setSendingPartnerSSI", "traceability");
 }
 

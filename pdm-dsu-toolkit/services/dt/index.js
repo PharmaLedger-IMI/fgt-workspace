@@ -1,6 +1,6 @@
-/*
-html API space
-*/
+/**
+ * @module opendsu.dt
+ */
 
 /**
  * Returns a DossierBuilder Instance

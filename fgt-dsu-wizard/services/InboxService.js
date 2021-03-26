@@ -1,7 +1,7 @@
 /**
  * @module fgt-dsu-wizard.services
  */
-const utils = require('./utils');
+const utils = require('../../pdm-dsu-toolkit/services/utils');
 const {INBOX_PATHS_AND_PROPS} = require('../constants');
 
 /**
@@ -9,7 +9,7 @@ const {INBOX_PATHS_AND_PROPS} = require('../constants');
  * @param {strategy} strategy
  */
 function InboxService(domain, strategy){
-    const strategies = require('./strategy');
+    const strategies = require("../../pdm-dsu-toolkit/services/strategy");
 
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);

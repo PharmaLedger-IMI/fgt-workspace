@@ -2,14 +2,14 @@
  * @module fgt-dsu-wizard.services
  */
  const {INBOX_MOUNT_PATH, INFO_PATH, PUBLIC_ID_MOUNT_PATH} = require('../constants');
- const utils = require('./utils');
+const utils = require('../../pdm-dsu-toolkit/services/utils');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
  */
 function ParticipantService(domain, strategy){
-    const strategies = require('./strategy');
+    const strategies = require("../../pdm-dsu-toolkit/services/strategy");
     const inboxService = new (require('./InboxService'))(domain, strategy);
 
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);

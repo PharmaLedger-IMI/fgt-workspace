@@ -35,7 +35,7 @@ module.exports = {
 	/**
 	 * instantiates a new DSUService
 	 */
-	DSUService: new (require('./services/DSUService')),
+	DSUService: new (require('./services').DSUService),
 	/**
 	 * Exposes the Services Module
 	 */

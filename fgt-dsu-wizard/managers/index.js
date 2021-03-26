@@ -15,10 +15,11 @@
  * </ul>
  */
 module.exports = {
-    Manager: require('./Manager'),
+    Manager: require('../../pdm-dsu-toolkit/managers/Manager'),
     getOrderManager: require('./OrderManager'),
     getParticipantManager: require('./ParticipantManager'),
     getProductManager: require('./ProductManager'),
     getBatchManager: require('./BatchManager'),
-    getStockManager: require('./StockManager')
+    getStockManager: require('./StockManager'),
+    getBaseManager: require('../../pdm-dsu-toolkit/managers/BaseManager')
 }

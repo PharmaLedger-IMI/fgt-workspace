@@ -1,7 +1,7 @@
 /**
- * @module fgt-dsu-wizard.services
+ * @module pdm-dsu-loader.services
  */
- const {INBOX_MOUNT_PATH, INFO_PATH, PUBLIC_ID_MOUNT_PATH} = require('../constants');
+
  const utils = require('./utils');
 
 /**

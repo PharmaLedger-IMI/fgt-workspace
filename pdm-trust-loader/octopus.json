@@ -56,6 +56,20 @@
       ]
     },
     {
+      "name": "Copy opendsuDT-bundle",
+      "src": "",
+      "actions": [
+        {
+          "type": "copy",
+          "src": "../pdm-dsu-toolkit/build/bundles/opendsuDT.js",
+          "target": "bundles/opendsuDT.js",
+          "options": {
+            "overwrite": true
+          }
+        }
+      ]
+    },
+    {
       "name": "generate-service-worker",
       "src": "",
       "actions": [

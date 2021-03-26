@@ -1,3 +1,7 @@
+/**
+ * @module pdm-dsu-loader.services
+ */
+
 const path_to_workspace = "."
 
 function startStoreService(server){

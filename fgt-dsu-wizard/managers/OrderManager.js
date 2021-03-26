@@ -1,5 +1,5 @@
 const { INFO_PATH, ISSUED_ORDERS_MOUNT_PATH: ISSUED_ORDERS_MOUNT_PATH, ANCHORING_DOMAIN } = require('../constants');
-const Manager = require('./Manager')
+const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Order = require('../model').Order;
 const OrderLine = require('../model').OrderLine;
 const OrderStatus = require('../model').OrderStatus;

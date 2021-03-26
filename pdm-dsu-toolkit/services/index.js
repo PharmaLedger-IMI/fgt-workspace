@@ -1,10 +1,9 @@
 /**
- * @module fgt-dsu-wizard.services
+ * @module pdm-dsu-loader.services
  */
 module.exports = {
     DSUService: require('./DSUService'),
     WebcLocaleService: require('./WebcLocaleService'),
     ParticipantService: require('./ParticipantService'),
-    Strategy: require('./strategy'),
-    dt: require('./dt')
+    Strategy: require('./strategy')
 }

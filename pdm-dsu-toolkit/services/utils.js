@@ -1,5 +1,5 @@
 /**
- * @module fgt-dsu-wizard.services
+ * @module pdm-dsu-loader.services
  */
 let resolver, DSUService;
 

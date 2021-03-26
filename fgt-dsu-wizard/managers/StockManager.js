@@ -1,4 +1,4 @@
-const Manager = require('./Manager')
+const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Product = require('../model').Product;
 const Batch = require('../model').Batch;
 const STOCK_PATH = require('../constants').STOCK_PATH;
@@ -9,7 +9,7 @@ const STATUS = {
     IN_TRANSIT: "intransit"
 }
 /**
- * Product Manager Class
+ * Stock Manager Class
  *
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.

@@ -1,7 +1,7 @@
 /**
  * @module fgt-dsu-wizard.model
  */
-const { Validatable } = require('./Validations');
+const { Validatable } = require('../../pdm-dsu-toolkit/model/Validations');
 
 class Participant extends Validatable{
     id = "";

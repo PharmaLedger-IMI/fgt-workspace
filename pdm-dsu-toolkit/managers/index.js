@@ -1,5 +1,5 @@
 /**
- * @module fgt-dsu-wizard.managers
+ * @module pdm-dsu-toolkit.managers
  */
 
 /**
@@ -16,5 +16,5 @@
  */
 module.exports = {
     Manager: require('./Manager'),
-    getParticipantManager: require('./ParticipantManager').getParticipantManager
+    getBaseManager: require('./BaseManager')
 }

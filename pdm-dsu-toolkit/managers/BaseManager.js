@@ -3,9 +3,8 @@
  */
 
 const {INFO_PATH, PARTICIPANT_MOUNT_PATH} = require('../constants');
-
 /**
- * Participant Manager Class
+ * Base Manager Class
  *
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
@@ -18,23 +17,30 @@ const {INFO_PATH, PARTICIPANT_MOUNT_PATH} = require('../constants');
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
  *
- * Should eventually integrate with the WP3 decisions
+ * This Base Manager Class is designed to integrate with the pdm-trust-loader and a init.file configuration of
+ * <pre>
+ *
+ * </pre>
+ *
+ * it also integrates with the {@link DSUStorage} to provide direct access to the Base DSU by default.
+ *
+ * All other Managers in this architecture can inherit from this to get access to the getIdentity && getEnvironment API from the credentials set in the pdm-loader
  *
  * @param {DSUStorage} dsuStorage the controllers dsu storage
  * @param {string} domain the anchoring domain
  */
-class ParticipantManager{
+class BaseManager{
     constructor(dsuStorage, domain) {
         this.DSUStorage = dsuStorage;
         this.participantService = new (require('../services').ParticipantService)(domain);
         this.resolver = undefined;
-        this.participantDSU = undefined;
+        this.rootDSU = undefined;
     };
 
-    getParticipantDSU(){
-        if (!this.participantDSU)
+    getRootDSU(){
+        if (!this.rootDSU)
             throw new Error("ParticipantDSU not cached");
-        return this.participantDSU;
+        return this.rootDSU;
     };
 
     /**
@@ -66,7 +72,7 @@ class ParticipantManager{
     };
 
     _cacheParticipantDSU(callback){
-        if (this.participantDSU)
+        if (this.rootDSU)
             return callback();
         let self = this;
         self.DSUStorage.enableDirectAccess(() => {
@@ -78,7 +84,7 @@ class ParticipantManager{
                 self._matchParticipantDSU(mounts, (err, dsu) => {
                     if (err)
                         return callback(err);
-                    self.participantDSU = dsu;
+                    self.rootDSU = dsu;
                     callback();
                 });
             });
@@ -153,22 +159,22 @@ class ParticipantManager{
     };
 }
 
-let participantManager;
+let baseManager;
 
 /**
  * @param {DSUStorage} [dsuStorage]
  * @param {string} [domain]
  * @returns {ParticipantManager}
  */
-const getParticipantManager = function (dsuStorage, domain) {
-    if (!participantManager) {
+const getBaseManager = function (dsuStorage, domain) {
+    if (!baseManager) {
         if (!dsuStorage)
             throw new Error("No DSUStorage provided");
         if (!domain)
             throw new Error("No domain provided");
-        participantManager = new ParticipantManager(dsuStorage, domain);
+        baseManager = new BaseManager(dsuStorage, domain);
     }
-    return participantManager;
+    return baseManager;
 }
 
-module.exports = getParticipantManager;
+module.exports = getBaseManager;

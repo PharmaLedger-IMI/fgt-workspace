@@ -1,5 +1,5 @@
 /**
- * @module pdm-dsu-toolkit.services
+ * @module pdm-dsu-loader.services
  */
 let SUPPORTED = {
     en_US: "en_US"

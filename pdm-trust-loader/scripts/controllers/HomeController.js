@@ -6,22 +6,11 @@ const generateTranslation = function (){
     return {
         en:{
             "/": {
-                "title": "Finished Goods Traceability - Wholesalers",
-                "welcome": "Welcome back",
-                "errors": {
-                    "register": "Unable to register",
-                    "login": "Try Again?"
-                },
-                "success": {
-                    "registration": "Registration successful. Please Login",
-                    "login": "Login successful. Loading..."
-                },
-                "none": "You are not identified as a Marketing Authorization holder. Please register",
+                "anchoring": "traceability",
                 "form": {
-                    "title": "Please enter your credentials",
-                    "formError": "",
+                    "title": "Please enter your credentials as a Wholesaler",
                     "name": {
-                        "label": "Registered Wholesaler's name:",
+                        "label": "Name:",
                         "type": "text",
                         "placeholder": "Please enter your name here...",
                         "value": "PDM the Wholesaler",
@@ -59,10 +48,33 @@ const generateTranslation = function (){
                         "required": true,
                         "value": "This in an Address"
                     },
+                    "pass": {
+                        "label": "Password:",
+                        "type": "password",
+                        "placeholder": "Enter your password...",
+                        "required": true,
+                        "value": "This1sSuchAS3curePassw0rd"
+                    },
+                    "passrepeat": {
+                        "label": "Password:",
+                        "type": "password",
+                        "placeholder": "Repeat your password...",
+                        "required": true,
+                        "value": "This1sSuchAS3curePassw0rd"
+                    },
                     "buttons": {
                         "login": "Login",
                         "register": "Register"
                     }
+                },
+                "errors": {
+                    "title": "Error",
+                    "register": "Unable to register. Are you sure this account doesn't exist?",
+                    "login": "Could not Login. Maybe try registering?"
+                },
+                "success": {
+                    "register": "Registration Successful. Please Login",
+                    "login": "Login Successful. Please wait"
                 }
             }
         }

@@ -4,7 +4,7 @@ import getNavigatorUtils from "./NavigatorUtils.js";
 import WalletRunner from "./WalletRunner.js";
 
 function LoaderService(env) {
-    const AppBuilderService = require('toolkit').Services.dt.AppBuilderService
+    const AppBuilderService = require('opendsuDT').AppBuilderService
     const navigatorUtils = getNavigatorUtils(env);
     const appBuilder = new AppBuilderService(env);
 

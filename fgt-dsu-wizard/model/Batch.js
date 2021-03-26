@@ -2,7 +2,7 @@
  * @module fgt-dsu-wizard.model
  */
 
-const Utils = require("./Utils.js");
+const Utils = require("../../pdm-dsu-toolkit/model/Utils");
 
 /**
  * @prop {string} batchNumber

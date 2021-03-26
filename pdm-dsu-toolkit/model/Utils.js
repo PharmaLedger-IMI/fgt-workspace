@@ -1,5 +1,5 @@
 /**
- * @module fgt-dsu-wizard.model
+ * @module pdm-dsu-toolkit.model
  */
 function generate(charactersSet, length){
     let result = '';

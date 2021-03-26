@@ -1,5 +1,5 @@
 /**
- * @module fgt-dsu-wizard.commands
+ * @module pdm-dsu-loader.commands
  */
 
 /**
@@ -21,7 +21,7 @@ function createParticipantSSI(participant, domain) {
  * @param {HttpServer} server
  */
 function command(server){
-    const setSSI = require('./setSSI');
+    const setSSI = require('../commands').setSSI;
     setSSI(server, "participant", createParticipantSSI, "setParticipantSSI", "traceability");
 }
 

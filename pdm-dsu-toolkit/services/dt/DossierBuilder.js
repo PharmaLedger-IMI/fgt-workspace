@@ -1,3 +1,7 @@
+/**
+ * @module opendsu.dt
+ */
+
 const OPERATIONS = {
     DELETE: "delete",
     ADD_FOLDER: "addfolder",

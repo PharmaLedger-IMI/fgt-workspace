@@ -1,14 +1,14 @@
 /**
  * @module fgt-dsu-wizard.services
  */
-const utils = require('./utils');
+const utils = require('../../pdm-dsu-toolkit/services/utils');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
  */
 function StatusService(domain, strategy){
-    const strategies = require('./strategy');
+    const strategies = require("../../pdm-dsu-toolkit/services/strategy");
     const OrderStatus = require('../model').OrderStatus;
     const endpoint = 'status';
 

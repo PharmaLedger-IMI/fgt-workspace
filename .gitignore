@@ -42,6 +42,9 @@ web-cardinal-ion
 fgt-dsu-wizard/build/bundles
 fgt-dsu-wizard/docs/output/*
 
+pdm-dsu-toolkit/build/bundles
+pdm-dsu-toolkit/docs/output/*
+
 docs/bin/draw.io.path
 !docs/bin/resources/drawings/*.md
 docs/drawings/*.xml
