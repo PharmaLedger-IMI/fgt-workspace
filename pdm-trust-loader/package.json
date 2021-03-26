@@ -5,7 +5,8 @@
   "scripts": {
     "postinstall": "node ./node_modules/octopus/scripts/run",
     "update": "npm run postinstall",
-    "build": "node ./node_modules/octopus/scripts/run build"
+    "build": "node ./node_modules/octopus/scripts/run build",
+    "docs": "node ./node_modules/octopus/scripts/run docs devmode"
   },
   "dependencies": {
     "octopus": "git+https://github.com/PrivateSky/octopus.git#1.0"

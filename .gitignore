@@ -44,6 +44,7 @@ pdm-dsu-toolkit/docs/output/*
 docs/bin/draw.io.path
 !docs/bin/resources/drawings/*.md
 docs/drawings/*.xml
+docs/resources/drawings/
 
 fgt-pharmacy-ssapp/code/constitution
 fgt-pharmacy-ssapp/code/scripts/bundles

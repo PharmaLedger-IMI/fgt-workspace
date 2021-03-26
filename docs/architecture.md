@@ -2,6 +2,8 @@
 
 ### DSU Types
 
-[Current](resources/finishedGoodsTraceabilityDSUTypes.png)
+[DSU Constitution](resources/drawings/finishedGoodsTraceabilityDSUTypes-Current.png)
 
-[Proposal](resources/finishedGoodsTraceabilityDSUTypes.png)
+[Current SSApp Architecture](resources/drawings/finishedGoodsTraceabilityDSUTypes-Current.png)
+
+[Proposal for SSApp Architecture - Ex: Pharmacy SSApp](resources/drawings/finishedGoodsTraceabilityDSUTypes-PharmacySSAppArchitecture.png)

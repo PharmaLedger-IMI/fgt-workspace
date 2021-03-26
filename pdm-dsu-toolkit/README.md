@@ -1,5 +1,5 @@
 # PDM's DSU Toolkit
-Handles all DSU global logic
+Building services
 
 ### Bundling
 THis Module was developed with ease of test in mind, using node syntax, incompatible with the browsers.

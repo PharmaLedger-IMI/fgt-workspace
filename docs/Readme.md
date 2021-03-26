@@ -20,22 +20,15 @@ You will be present with a menu from where you can choose the SSApp you with to 
 
 # Modules (Should Be Repos!)
 
-**TODO:**
-```
-split DSU Wizard into:
-- PDM-DSU-Toolkit: (logic usable to any OepnDSU project, not just PDM's use cases or even Pharmaledger)
-- FGT-DSU-Wizard: Inherits the toolkit and 
-```
-        
+[PDM-DSU-Toolkit](pdm-dsu-toolkit/index.html)
+
 [FGT DSU Wizard](fgt-dsu-wizard/index.html)
 
 [MAH Enterprise Wallet](fgt-mah-ssapp/index.html)
 
-[Wholesaler Enterprise Wllet](fgt-Wholesaler-ssapp/index.html)
+[Wholesaler Wallet](fgt-Wholesaler-ssapp/index.html)
 
-[MAH Enterprise Wallet](fgt-mah-ssapp/index.html)
-
-[MAH Pharmacy Wallet](fgt-mah-ssapp/index.html)
+[Pharmacy Wallet](fgt-mah-ssapp/index.html)
 
 #include "docs/architecture.md"
 

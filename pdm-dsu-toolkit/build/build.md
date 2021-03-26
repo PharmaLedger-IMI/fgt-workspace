@@ -7,8 +7,8 @@ a configuration placed at `build/build.json` eg:
 
 <pre>
 {
-  "wizard": {
-    "deps": "../../../fgt-dsu-wizard:wizard",
+  "toolkit": {
+    "deps": "../../../pdm-dsu-toolkit:toolkit",
     "autoLoad":  true
   }
 }
