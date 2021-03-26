@@ -3,7 +3,7 @@ process.env.NO_LOGS = true;
 const path = require('path');
 
 require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
-const toolkit = require('./../../pdm-dsu-toolkit');
+const dt = require('./../../pdm-dsu-toolkit/services/dt');
 
 let domains = ['traceability'];
 let testName = 'Wallet Builder Test';
@@ -76,8 +76,8 @@ const runTest = function(testFinished){
         }
     };
 
-    const appService = new (toolkit.Services.AppBuilderService)({vault: "server"});
-    const SEED = '65FmT6jYpmQXh9ETs68RdMxy7LL7pkEiVzw1VCm4EXwZj9TKN6fJmreZ7Pzk42WRUDaUZKjUeHmUdBB4M6zpv3id7JRLCb6X';
+    const appService = new (dt.AppBuilderService)({vault: "server"});
+    const SEED = '65FmT6jYpmQXh9ETs68RdMxy7LL7pkECirykrCHiqbSMeuETvLRVfxQCyrUQkxSXrGCeDDwiyvQjQURnKRzy6iMr3bQRCasZ';
     appService.clone(secretsObj, SEED, true, (err, dsu) => {
         if (err)
             throw err;

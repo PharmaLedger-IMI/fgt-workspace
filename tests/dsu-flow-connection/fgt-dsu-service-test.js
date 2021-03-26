@@ -15,7 +15,7 @@ let domain = 'traceability';
 let testName = 'DSUService test';
 
 const model = require('../../fgt-dsu-wizard/model');
-const strategies = require('../../fgt-dsu-wizard/services/strategy');
+const strategies = require('../../pdm-dsu-toolkit/services/strategy');
 const OrderLine = model.OrderLine;
 const Order =  model.Order;
 const OrderStatus = model.OrderStatus;
