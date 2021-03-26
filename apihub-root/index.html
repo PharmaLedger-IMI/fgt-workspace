@@ -60,17 +60,38 @@
             order/shipment management ERP operations on to blockchain read/write operations (so that each company operates as
             usual as they already do today).</p>
 
-        <h2>Release notes 2021-04-xx</h2>
+        <h2>Release notes 2021-03-26</h2>
 
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla id imperdiet nisl. Donec eleifend mattis orci et auctor. Nullam quis ipsum sit amet metus viverra imperdiet. Quisque vel nisi non elit venenatis pretium rutrum ut augue. Morbi gravida, odio non faucibus posuere, tellus ex porta augue, id sagittis quam massa finibus nulla. Nullam luctus enim odio, id volutpat dui pellentesque vel. Etiam a interdum est. Maecenas a pharetra enim, sit amet euismod mauris. Nullam tincidunt tellus purus, eget pulvinar elit feugiat nec. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
+        <p><span style="font-weight: bold;">WARNING:</span> Unstable software and environments. Use at your own risk! Data persistence at risk of un-expected reset!</p>
+
+        <p>Application description / testing instructions</p>
         <ul>
-            <li>Item 1 - etc ...</li>
-            <li>Item 2 - Etiam tristique, metus sed accumsan mattis, turpis felis vestibulum justo, eget ultricies orci lectus ornare sapien.</li>
-            <li>Item 3 - Etiam tristique, metus sed accumsan mattis, turpis felis vestibulum justo, eget ultricies orci lectus ornare sapien.</li>
+            <li><img src="assets/images/factory.png" style="height: 1em;"> MAH (Marketing Authorization Holder) App:
+                <ol>
+                    <li>On the first usage, you need to register a username password to open the wallet. (Re-used from ePi)</li>
+                    <li>On the first opening of the wallet, you need to register details of a MAH company. <b>Only a single user is supported for that company at this version.</b></li>
+                    <li>After these 2 initial register steps (which will be merged into one), you may create Products (new GTINs) and create Batches (commission new product batchs).</li>
+                </ol>
+            </li>
+            <li><img src="assets/images/wholesaler.png" style="height: 1em;"> Wholesaler Wallet - experimenting new graphical layout and registration process.</li>
+            <li><img src="assets/images/pharmacy.png" style="height: 1em;"> Pharmacy Wallet:
+                <ol>
+                    <li>Same initial 2 registration steps as in the MAH app.</li>
+                    <li>After these 2 initial register steps (which will be merged into one), you may create orders for Products.</li>
+                </ol>
+            </li>
+            <li><img src="assets/images/cube.png" style="height: 1em;"> DSU Explorer - debug tool to explore DSUs anchored on the blockchain (Re-used from ePi).</li>
+        </ul>
+        Wallets do not communicate yet, so nothing done on one wallet is visible on other wallets.
+
+        <p>Milestones achived on this release, compared to the plan 2021-01-20_ImplementationPlanMVPFinishedGoodsTraceability.docx:</p>
+        <ul>
+            <li>M1 OpenDSU Solution Concept Complete - partial 50% - work in progress in DSU constitution and attributes.</li>
+            <li>M2 Development Environment Setup Complete - complete 80% - development environment available at <a href="https://fgt-dev.pharmaledger.pdmfc.com/">https://fgt-dev.pharmaledger.pdmfc.com/</a>. (Data persistence and other configuration tasks still in progress).</li>
+            <li>M3 Business Test Environment Setup Complete - complete 80% - environment available at <a href="https://fgt.pharmaledger.pdmfc.com/">https://fgt.pharmaledger.pdmfc.com/</a>. (Data persistence and other configuration tasks still in progress).</li>
         </ul>
 
-        <p>Duis odio eros, congue vitae venenatis et, tempus consectetur nulla. Aenean nec auctor dui. Praesent facilisis sem at nisi lobortis volutpat. Duis aliquet ante nec cursus commodo. Integer tristique tortor eu erat tempor consectetur. Sed sollicitudin dignissim eros, sit amet cursus erat. Proin porta tortor et elit ullamcorper fringilla. Nullam fringilla enim eget mi tincidunt maximus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum placerat nulla eu magna lacinia, gravida varius nisi volutpat. Quisque id laoreet quam. Pellentesque id enim sed leo vulputate tempus. Integer nec tellus vel urna consectetur ornare at ac augue. Fusce eu risus egestas, dictum diam eu, cursus quam. Aenean feugiat nunc vel est congue, id suscipit odio semper. Donec eleifend risus ac tristique vulputate. </p>
-
+        <p>PDM welcomes technical contributions at <a href="https://github.com/PharmaLedger-IMI/fgt-workspace">https://github.com/PharmaLedger-IMI/fgt-workspace</a></p>
     </div>
 </body>
 

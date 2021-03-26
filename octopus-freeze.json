@@ -9,7 +9,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "65ccf80870592f1d9e6e2e3b84299abfdcfdfffa"
+                    "commit": "3ac61b6f75bd376a8778cbc25907d9bfc7bccb79"
                 },
                 {
                     "type": "execute",
@@ -23,10 +23,17 @@
         },
         {
             "name": "webcardinal",
+            "src": "https://github.com/webcardinal/webcardinal-bundler",
             "actions": [
                 {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "21243c530664355a5ed8537d0ae7d3e1c5ab0525"
+                },
+                {
                     "type": "execute",
-                    "cmd": "cd webcardinal && npm install"
+                    "cmd": "cd webcardinal && npm install && npm run bundle-all && npm run build"
                 }
             ]
         },
@@ -38,7 +45,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "10e4c3113e9ea96e197fafec591ff593ba627e67"
+                    "commit": "54fb372e1457f62089f20e384f0a82053cc43459"
                 },
                 {
                     "type": "execute",
@@ -51,7 +58,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd privatesky && npm run build"
+                    "cmd": "cd privatesky && npm run build && npm run prepare-release"
                 }
             ]
         },
@@ -72,6 +79,45 @@
             ]
         },
         {
+            "name": "pdm-dsu-toolkit",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-dsu-toolkit && npm install && npm run prebuild"
+                }
+            ]
+        },
+        {
+            "name": "fgt-dsu-wizard",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-dsu-wizard && npm install && npm run prebuild"
+                }
+            ]
+        },
+        {
+            "name": "pdm-trust-loader",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-trust-loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-trust-loader && npm run postinstall"
+                },
+                {
+                    "type": "copy",
+                    "src": "./webcardinal/webcardinal",
+                    "target": "./pdm-trust-loader/webcardinal",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
             "name": "apihub-root/fgt-mah-wallet/loader",
             "src": "https://github.com/PrivateSky/trust-loader.git",
             "actions": [
@@ -79,7 +125,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "06cdf72a7e2537aafc9731604a1ec9acf291e8c4"
+                    "commit": "7fb45ead4022ed835c01e0071a914c0673c46ee0"
                 },
                 {
                     "type": "execute",
@@ -99,7 +145,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "06cdf72a7e2537aafc9731604a1ec9acf291e8c4"
+                    "commit": "7fb45ead4022ed835c01e0071a914c0673c46ee0"
                 },
                 {
                     "type": "execute",
@@ -112,22 +158,24 @@
             ]
         },
         {
-            "name": "apihub-root/fgt-wholesaler-wallet/loader",
-            "src": "https://github.com/PrivateSky/trust-loader.git",
+            "name": "Build and deploy PDM Trust Loader to WHolesaler",
+            "src": ".",
             "actions": [
                 {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "06cdf72a7e2537aafc9731604a1ec9acf291e8c4"
+                    "type": "execute",
+                    "cmd": "cd pdm-trust-loader && npm run build"
                 },
                 {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && npm install"
+                    "type": "remove",
+                    "target": "./apihub-root/fgt-wholesaler-wallet/loader"
                 },
                 {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && npm run build"
+                    "type": "copy",
+                    "src": "./pdm-trust-loader",
+                    "target": "./apihub-root/fgt-wholesaler-wallet/loader",
+                    "options": {
+                        "overwrite": true
+                    }
                 }
             ]
         },
@@ -155,20 +203,11 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "8179863227011ff92dec5e813ee555269dc37358"
+                    "commit": "357b163b46d94c8ed06af83a61f8d2cf7da2368b"
                 },
                 {
                     "type": "execute",
                     "cmd": "cd gtin-dsu-wizard && npm install"
-                }
-            ]
-        },
-        {
-            "name": "fgt-dsu-wizard",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd fgt-dsu-wizard && npm install"
                 }
             ]
         },
@@ -205,6 +244,22 @@
             ]
         },
         {
+            "name": "themes/clear-sky-theme",
+            "src": "https://github.com/PrivateSky/clear-sky-theme.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "82ea912284cbd8b19a8a2a8ab40d03103b983c7a"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/clear-sky-theme && npm install"
+                }
+            ]
+        },
+        {
             "name": "dossier-explorer-wallet-prototype",
             "src": "https://github.com/PrivateSky/dossier-explorer-wallet-prototype.git",
             "actions": [
@@ -212,7 +267,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "d292ddc4cc6b4b15fd7170c7850d24f9a7620e94"
+                    "commit": "edb4445fd135d7fee03d6cc2c4fb72ee526727b2"
                 },
                 {
                     "type": "execute",
@@ -228,7 +283,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "06cdf72a7e2537aafc9731604a1ec9acf291e8c4"
+                    "commit": "7fb45ead4022ed835c01e0071a914c0673c46ee0"
                 },
                 {
                     "type": "execute",
@@ -252,7 +307,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "0f07b3d624e752d7dca3fe999b75dc0ea0428ab0"
+                    "commit": "0c49347113f41f86937379c8b68e274eca811858"
                 },
                 {
                     "type": "execute",
@@ -290,12 +345,54 @@
     ],
     "build-use-case": [
         {
+            "name": "pdm-theme-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/pdm-theme && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "Bundle_dsu-toolkit",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-dsu-toolkit && npm run prebuild"
+                }
+            ]
+        },
+        {
             "name": "Bundle_dsu_wizard",
             "src": ".",
             "actions": [
                 {
                     "type": "execute",
                     "cmd": "cd fgt-dsu-wizard && npm run prebuild"
+                }
+            ]
+        },
+        {
+            "name": "Build and deploy PDM Trust Loader to WHolesaler",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-trust-loader && npm run build"
+                },
+                {
+                    "type": "remove",
+                    "target": "./apihub-root/fgt-wholesaler-wallet/loader"
+                },
+                {
+                    "type": "copy",
+                    "src": "./pdm-trust-loader",
+                    "target": "./apihub-root/fgt-wholesaler-wallet/loader",
+                    "options": {
+                        "overwrite": true
+                    }
                 }
             ]
         },
@@ -394,14 +491,6 @@
                     }
                 },
                 {
-                    "type": "copy",
-                    "src": "./fgt-wholesaler-ssapp/seed",
-                    "target": "./apihub-root/fgt-wholesaler-wallet/apps-patch/fgt-wholesaler-ssapp/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
                     "type": "execute",
                     "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/fgt-wholesaler-wallet/apps-patch/fgt-wholesaler-ssapp/readme"
                 }
@@ -429,10 +518,6 @@
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && npm install"
-                },
-                {
-                    "type": "execute",
                     "cmd": "cd apihub-root/fgt-pharmacy-wallet/loader && npm install"
                 },
                 {
@@ -454,22 +539,12 @@
             ]
         },
         {
-            "name": "webcardinal-wallet-build",
+            "name": "web-cardinal-wallet-build",
             "src": "",
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd webcardinal && npm run build"
-                }
-            ]
-        },
-        {
-            "name": "pdm-theme-wallet-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd themes/pdm-theme && npm run build-dossier"
+                    "cmd": "cd webcardinal && npm run build-dossier"
                 }
             ]
         },
@@ -480,6 +555,26 @@
                 {
                     "type": "execute",
                     "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "clear-sky-theme-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/clear-sky-theme && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "build Use Case",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "npm run build-use-case"
                 }
             ]
         },
@@ -524,16 +619,6 @@
             ]
         },
         {
-            "name": "build Use Case",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "npm run build-use-case"
-                }
-            ]
-        },
-        {
             "name": "gtin-resolver-build",
             "src": "",
             "actions": [
@@ -566,6 +651,14 @@
                 {
                     "type": "execute",
                     "cmd": "cd fgt-wholesaler-ssapp && npm run docs"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-dsu-toolkit && npm run docs"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-trust-loader && npm run docs"
                 }
             ]
         },
@@ -577,6 +670,14 @@
                     "type": "copy",
                     "src": "fgt-dsu-wizard/docs/output",
                     "target": "pages/fgt-dsu-wizard",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "pdm-dsu-toolkit/docs/output",
+                    "target": "pages/pdm-dsu-toolkit",
                     "options": {
                         "overwrite": true
                     }
