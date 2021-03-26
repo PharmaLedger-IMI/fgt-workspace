@@ -28,10 +28,6 @@
         {
           "type": "execute",
           "cmd": "jsdoc -c jsdocs.json"
-        },
-        {
-          "type": "execute",
-          "cmd": "rimraf docs/output/pdm-dsu-toolkit.html#.module:managers docs/output/pdm-dsu-toolkit.html#.module"
         }
       ]
     }
