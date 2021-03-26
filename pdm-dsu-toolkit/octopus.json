@@ -31,7 +31,7 @@
         },
         {
           "type": "execute",
-          "cmd": "rimraf docs/output/pdm-trust-loader.html#.module:managers docs/output/pdm-trust-loader.html#.module"
+          "cmd": "rimraf docs/output/pdm-dsu-toolkit.html#.module:managers docs/output/pdm-dsu-toolkit.html#.module"
         }
       ]
     }
