@@ -1,5 +1,6 @@
 /**
  * @module validations
+ * @memberOf toolkit.model.validations
  */
 
 /**

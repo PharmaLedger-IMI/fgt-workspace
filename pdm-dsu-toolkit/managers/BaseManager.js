@@ -1,4 +1,12 @@
+/**
+ * @module managers
+ */
+
+/**
+ *
+ */
 const {INFO_PATH, PARTICIPANT_MOUNT_PATH} = require('../constants');
+
 /**
  * Base Manager Class
  *

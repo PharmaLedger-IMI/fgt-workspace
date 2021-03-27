@@ -1,7 +1,10 @@
 /**
+ * @module utils
+ */
+
+/**
  * Generates a string of the provided length filled with random characters from the provided characterSet
  * Clone of PrivateSky Code
- * @module utils
  */
 function generate(charactersSet, length){
     let result = '';
@@ -16,7 +19,6 @@ module.exports = {
     /**
      * Generates a string of the provided length filled with random characters from 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
      * Clone of PrivateSky Code
-     * @module utils
      */
     generateID(length) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -26,7 +28,6 @@ module.exports = {
     /**
      * Generates a string of the provided length filled with random numeric characters
      * Clone of PrivateSky Code
-     * @module utils
      */
     generateNumericID(length) {
         const characters = '0123456789';
@@ -35,7 +36,6 @@ module.exports = {
 
     /**
      * Clone of PrivateSky Code
-     * @module utils
      */
     generateSerialNumber(length){
         let char = generate("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 2);
