@@ -8,7 +8,7 @@
 const LOCALE = {
     en_US: {
         home: {
-            title: "Pharmaledger's Finished Good Traceability Application for Pharmacies"
+            title: "PharmaLedger's Finished Good Traceability Application for Pharmacies"
         },
         registration: {
             title: "Please register as a Pharmacy",
@@ -32,7 +32,7 @@ const LOCALE = {
             },
             tin: {
                 label: 'Registered TIN (Tax Identification Number):',
-                placeholder: "Enter your TIN (Tax Idendifier Number)...",
+                placeholder: "Enter your TIN (Tax Identifier Number)...",
                 value: 500000000,
                 required: true
             },

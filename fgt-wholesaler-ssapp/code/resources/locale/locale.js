@@ -8,7 +8,7 @@
 const LOCALE = {
     en_US: {
         home: {
-            title: "Pharmaledger's Finished Good Traceability Application for Wholesalers"
+            title: "PharmaLedger's Finished Good Traceability Application for Wholesalers"
         },
         registration: {
             title: "Please register as a Wholesaler",
