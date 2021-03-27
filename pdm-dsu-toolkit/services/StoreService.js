@@ -4,12 +4,15 @@
  * @deprecated
  */
 
+/**
+ *
+ * @type {string}
+ */
 const path_to_workspace = "."
 
 /**
  * To work, this function needs to be configured in APIHub's server.json file
  * @param {HttpServer} server
- * @module services
  * @deprecated
  */
 function startStoreService(server){

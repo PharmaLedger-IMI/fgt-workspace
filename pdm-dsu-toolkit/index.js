@@ -1,4 +1,9 @@
 /**
+ * This Toolkit proposes a Standard Enterprise DSU SSApp Architecture && Provides the underlying API to handle DSUs in that environment
+ * @namespace pdm-dsu-toolkit
+ */
+
+/**
  * iterates through all the commands in the command folder and registers them
  * Is called by the apihub via the server.json
  * @module server

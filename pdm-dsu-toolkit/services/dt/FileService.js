@@ -1,6 +1,9 @@
 /**
- * Provides an environment independent file service to the {@link AppBuilderService}
  * @module dt
+ */
+
+/**
+ * Provides an environment independent file service to the {@link AppBuilderService}
  */
 function FileService(options) {
     let isBrowser;

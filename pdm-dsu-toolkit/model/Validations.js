@@ -4,7 +4,6 @@
 
 /**
  * Supported ion-input element types
- * @module validations
  */
 const ION_TYPES = {
     EMAIL: "email",
@@ -14,8 +13,7 @@ const ION_TYPES = {
 }
 
 /**
- * Supported ion-input element sub-types (under the {@link ION_CONST#name_key})
- * @module validations
+ * Supported ion-input element sub-types (under the {@link ION_CONST.name_key})
  */
 const SUB_TYPES = {
     TIN: "tin"
@@ -23,7 +21,6 @@ const SUB_TYPES = {
 
 /**
  *
- * @module validations
  */
 const QUERY_ROOTS = {
     controller: "controller",
@@ -34,14 +31,13 @@ const QUERY_ROOTS = {
  * Html attribute name constants
  *
  * mostly straightforward with the notable exceptions:
- *  - {@link ION_CONST#error#append} variable append strategy - que root of the css query
- *  - {@link ION_CONST#error#queries}:
- *    - {@link ION_CONST#error#queries#query} the media query that while be made via {@link HTMLElement#querySelectorAll}
- *    - {@link ION_CONST#error#queries#variables} variables that will be set/unset:
+ *  - {@link ION_CONST.error.append} variable append strategy - que root of the css query
+ *  - {@link ION_CONST.error.queries}:
+ *    - {@link ION_CONST.error.queries.query} the media query that while be made via {@link HTMLElement#querySelectorAll}
+ *    - {@link ION_CONST.error.queries.variables} variables that will be set/unset:
  *       the keys will be concatenated with '--' eg: key => element.style.setProperty('--' + key, variables[key].set)
  *
  *       The placeholder ${name} can be used to mark the field's name
- * @module validations
  */
 const ION_CONST = {
     name_key: "name",
@@ -85,7 +81,6 @@ const ION_CONST = {
  * @param {string} prop
  * @param {*} value
  * @returns {string|undefined} undefined if ok, the error otherwise
- * @module validations
  */
 const propToError = function(prop, value){
     switch (prop){
@@ -101,7 +96,6 @@ const propToError = function(prop, value){
  * @param {string} text
  * @param {pattern} pattern in the '//' notation
  * @returns {string|undefined} undefined if ok, the error otherwise
- * @module validations
  */
 const patternHasErrors = function(text, pattern){
     if (!text) return;
@@ -112,7 +106,6 @@ const patternHasErrors = function(text, pattern){
 /**
  * @param {string} email
  * @returns {string|undefined} undefined if ok, the error otherwise
- * @module validations
  */
 const emailHasErrors = function(email){
     if (patternHasErrors(email, /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/))
@@ -123,7 +116,6 @@ const emailHasErrors = function(email){
  * Validates a tin number
  * @param {string|number} tin
  * @returns {string|undefined} undefined if ok, the error otherwise
- * @module validations
  */
 const tinHasErrors = function(tin){
     if (!tin) return;
@@ -136,7 +128,6 @@ const tinHasErrors = function(tin){
  * Validates a number Field (only integers supported)
  * @param {number} value
  * @param props
- * @module validations
  */
 const numberHasErrors = function(value, props){
     if (props[ION_CONST.name_key] === SUB_TYPES.TIN)
@@ -152,7 +143,6 @@ const numberHasErrors = function(value, props){
  * Validates a date value
  * @param {Date} date
  * @param props
- * @module validations
  */
 const dateHasErrors = function(date, props){
     throw new Error("Not implemented date validation");
@@ -162,7 +152,6 @@ const dateHasErrors = function(date, props){
  * Validates a text value
  * @param {string} text
  * @param props
- * @module validations
  */
 const textHasErrors = function(text, props){
     if (props[ION_CONST.name_key] === SUB_TYPES.TIN)
@@ -172,7 +161,6 @@ const textHasErrors = function(text, props){
 /**
  * parses the numeric values
  * @param props
- * @module validations
  */
 const parseNumeric = function(props){
     let prop;
@@ -191,7 +179,6 @@ const parseNumeric = function(props){
  * Parses the supported attributes in the element
  * @param {HTMLElement} element
  * @return the object of existing supported attributes
- * @module validations
  */
 const getValidationAttributes = function(element){
     return {
@@ -210,7 +197,6 @@ const getValidationAttributes = function(element){
  * @param {HTMLElement} element
  * @param {object} props
  * @returns {string|undefined} undefined if ok, the error otherwise
- * @module validations
  */
 const hasRequiredAndLengthErrors = function(element, props){
     let {required, maxLength, minLength} = props;
@@ -230,7 +216,6 @@ const hasRequiredAndLengthErrors = function(element, props){
  * @param props
  * @param prefix
  * @return {boolean}
- * @module validations
  */
 const testInputEligibility = function(props, prefix){
     return !(!props[ION_CONST.name_key] || !props[ION_CONST.type_key] || props[ION_CONST.name_key].indexOf(prefix) === -1);
@@ -249,7 +234,6 @@ const testInputEligibility = function(props, prefix){
  *
  * @param {HTMLElement} element the ion-input field
  * @param {string} prefix the prefix for the ion-input to be validated
- * @module validations
  */
 const hasIonErrors = function(element, prefix){
     let props = getValidationAttributes(element);
@@ -293,7 +277,6 @@ const hasIonErrors = function(element, prefix){
  * @param {HTMLElement} element the ion-input element
  * @param {string} prefix prefix to the name of the input elements
  * @returns {string|undefined} undefined if ok, the error otherwise
- * @module validations
  */
 const updateModelAndGetErrors = function(controller, element, prefix){
     if (!controller.model)
@@ -318,7 +301,6 @@ const updateModelAndGetErrors = function(controller, element, prefix){
  * @param {WebcController} controller
  * @param {HTMLElement} element
  * @param {string} hasErrors
- * @module validations
  */
 const updateStyleVariables = function(controller, element, hasErrors){
     let el, selected, q;
@@ -360,7 +342,6 @@ const updateStyleVariables = function(controller, element, hasErrors){
  * @param {WebcController} controller
  * @param {string} prefix
  * @return {boolean} if there are any errors in the model
- * @module validations
  */
 const controllerHasErrors = function(controller, prefix){
     let inputs = controller.element.querySelectorAll(`${ION_CONST.input_tag}[name^="${prefix}"]`);
@@ -395,7 +376,6 @@ const controllerHasErrors = function(controller, prefix){
  * @param {function()} [onValidModel] the function to be called when the whole Controller model is valid
  * @param {function()} [onInvalidModel] the function to be called when any part of the model is invalid
  * @param {string} [prefix] the prefix for the ion-input to be validated. defaults to 'input-'
- * @module validations
  */
 const bindIonicValidation = function(controller, onValidModel, onInvalidModel, prefix){
     if (typeof onInvalidModel === 'string' || !onInvalidModel){
@@ -450,7 +430,6 @@ const bindIonicValidation = function(controller, onValidModel, onInvalidModel, p
  * *Does not validate 'required' or more complex attributes yet*
  * TODO use annotations to accomplish that
  * @returns {string|undefined} undefined if ok, the error otherwise
- * @module validations
  */
 const modelHasErrors = function(model){
     let error;
@@ -466,12 +445,11 @@ const modelHasErrors = function(model){
 /**
  * Provides the implementation for the Model to be validatable alongside Ionic components
  * via the {@link hasErrors} method
- * @module validations
+ * @interface
  */
 class Validatable{
     /**
      * @see {modelHasErrors}
-     * @module validations
      */
     hasErrors(){
         return modelHasErrors(this);

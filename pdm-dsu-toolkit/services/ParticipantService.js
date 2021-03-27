@@ -1,9 +1,14 @@
- const utils = require('./utils');
+/**
+ * @module services
+ */
+
+/**
+ **/
+const utils = require('./utils');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {STRATEGY} strategy
- * @module services
  */
 function ParticipantService(domain, strategy){
     const strategies = require('./strategy');

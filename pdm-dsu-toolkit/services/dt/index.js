@@ -1,13 +1,17 @@
 /**
- * Provides a Environment Independent and Versatile Dossier Building API
  * @module dt
+ */
+
+/**
+ * Provides a Environment Independent and Versatile Dossier Building API.
+ *
+ * Meant to be integrated into OpenDSU
  */
 
 /**
  * Returns a DossierBuilder Instance
  * @param {Archive} [sourceDSU]
  * @return {DossierBuilder}
- * @module dt
  */
 const getDossierBuilder = (sourceDSU) => {
     return new (require("./DossierBuilder").DossierBuilder)(sourceDSU)
