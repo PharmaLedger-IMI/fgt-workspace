@@ -21,11 +21,24 @@
         "dictionaries": ["jsdoc","closure"]
     },
     "templates": {
-        "cleverLinks": false,
-        "monospaceLinks": false
+        "systemName"            : "Pharmaledger's Finished Goods Traceability",
+        "footer"                : "PDM&FC",
+        "copyright"             :  "MIT Licence",
+        "includeDate"           : "true",
+        "navType"               : "inline",
+        "theme"                 : "yeti",
+        "linenums"              : "true",
+        "collapseSymbols"       : "false",
+        "inverseNav"            : "true",
+        "outputSourceFiles"     : "true" ,
+        "outputSourcePath"      : "false",
+        "dateFormat"            : "dddd, MMMM Do YYYY, h:mm:ss a",
+        "syntaxTheme"           : "default",
+        "sort"                  : "true",
+        "search"                : "true"
     },
     "opts": {
-        "template": "node_modules/docdash",
+        "template": "node_modules/ink-docstrap/template",
         "destination": "./docs/output/",
         "readme": "./README.md",
         "recurse": true,
