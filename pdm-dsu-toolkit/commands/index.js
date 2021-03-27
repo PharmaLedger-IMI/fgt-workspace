@@ -1,5 +1,9 @@
 /**
- * @module pdm-dsu-toolkit.commands
+ * @typedef {function} KeySSI
+ */
+
+/**
+ * @module keyssi
  */
 module.exports = {
     setSSI: require("./setSSI"),

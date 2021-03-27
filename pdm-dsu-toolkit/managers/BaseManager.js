@@ -24,7 +24,8 @@ const {INFO_PATH, PARTICIPANT_MOUNT_PATH} = require('../constants');
  *
  * @param {DSUStorage} dsuStorage the controllers dsu storage
  * @param {string} domain the anchoring domain
- * @module pdm-dsu-toolkit.managers
+ * @module managers
+ * @class BaseManager
  */
 class BaseManager{
     constructor(dsuStorage, domain) {
@@ -162,6 +163,7 @@ let baseManager;
  * @param {DSUStorage} [dsuStorage]
  * @param {string} [domain]
  * @returns {ParticipantManager}
+ * @module managers
  */
 const getBaseManager = function (dsuStorage, domain) {
     if (!baseManager) {

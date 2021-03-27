@@ -34,11 +34,11 @@
             "static": true,
             "sort": true,
             "sectionOrder": [
+                "Namespaces",
                 "Classes",
                 "Modules",
                 "Externals",
                 "Events",
-                "Namespaces",
                 "Mixins",
                 "Tutorials",
                 "Interfaces"

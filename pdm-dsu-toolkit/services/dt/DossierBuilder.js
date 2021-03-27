@@ -1,6 +1,6 @@
 /**
  * Enum of Accepted Operations
- * @module opendsu.dt
+ * @module dt
  */
 const OPERATIONS = {
     DELETE: "delete",
@@ -13,7 +13,7 @@ const OPERATIONS = {
 
 /**
  * Enum of Accepted Key Types
- * @module opendsu.dt
+ * @module dt
  */
 const KEY_TYPE = {
     CONST: "const",
@@ -42,7 +42,7 @@ const KEY_TYPE = {
  *     mount ../themes/'*'/seed /themes/'*'
  * </pre>
  * @param {Archive} [sourceDSU] if provided will perform all OPERATIONS from the sourceDSU as source and not the fs
- * @module opendsu.dt
+ * @module dt
  */
 const DossierBuilder = function(sourceDSU){
     let fs;

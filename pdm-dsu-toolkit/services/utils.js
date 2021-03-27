@@ -1,6 +1,6 @@
 /**
  * Provides Util functions and Methods as well as caching for the open DSU resolver and {@Link DSUBuilder}
- * @module pdm-dsu-toolkit.services.utils
+ * @module utils
  */
 
 let resolver, DSUService;
@@ -9,7 +9,7 @@ let resolver, DSUService;
  * util function to get the env type.
  * Needs openDSU to be loaded to have access to $$ regardless of environment
  * @return {string} the environment type - nodejs or
- * @module pdm-dsu-toolkit.services.utils
+ * @module utils
  */
 function getEnv(){
 	return $$.environmentType;
@@ -18,7 +18,7 @@ function getEnv(){
 /**
  * for singleton use
  * @returns {function} resolver
- * @module pdm-dsu-toolkit.services.utils
+ * @module utils
  */
 function getResolver(){
 	if (!resolver)
@@ -29,7 +29,7 @@ function getResolver(){
 /**
  * for singleton use
  * @returns {DSUService}
- * @module pdm-dsu-toolkit.services.utils
+ * @module utils
  */
 function getDSUService(){
 	if (!DSUService)
@@ -41,7 +41,7 @@ function getDSUService(){
  * Convenience method to select the appropriate resolver method to use depending on the key
  * @param keySSI
  * @returns {function} the appropriate resolver method for creating dsus {@link resolver#createDSU}/{@link resolver#createDSUForExistingSSI}
- * @module pdm-dsu-toolkit.services.utils
+ * @module utils
  */
 function selectMethod(keySSI){
 	if (['array', 'const'].indexOf(keySSI.getTypeName()) > -1)
@@ -55,7 +55,7 @@ function selectMethod(keySSI){
  * @param {Archive} dsu
  * @param {string[]} folders
  * @param {function(err, string[])} callback the folders there where actually created (didn't already exist)
- * @module pdm-dsu-toolkit.services.utils
+ * @module utils
  */
 function createDSUFolders(dsu, folders, callback){
 	let created = [];
@@ -85,7 +85,7 @@ function createDSUFolders(dsu, folders, callback){
  * - refactored for server side use compatibility
  * @param {string} apiname
  * @returns {doPost} postHandler
- * @module pdm-dsu-toolkit.services.utils
+ * @module utils
  */
 function getPostHandlerFor(apiname){
 

@@ -3,7 +3,7 @@
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {STRATEGY} strategy
- * @module pdm-dsu-toolkit.services
+ * @module services
  */
 function ParticipantService(domain, strategy){
     const strategies = require('./strategy');

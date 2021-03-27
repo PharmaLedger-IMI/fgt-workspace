@@ -1,6 +1,6 @@
 /**
  * Provides an environment independent file service to the {@link AppBuilderService}
- * @module opendsu.dt
+ * @module dt
  */
 function FileService(options) {
     let isBrowser;

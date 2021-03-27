@@ -7,7 +7,8 @@ if (utils.getEnv() === 'nodejs')
 
 /**
  * Class responsible for Authenticated DSU transactions between the client and the API Hub
- * @module pdm-dsu-loader.services
+ * @module services
+ * @class DSUService
  */
 class DSUService {
     constructor() {
@@ -157,13 +158,15 @@ class DSUService {
          */
         return new class DSUBuilder {
             /**
-             * @see {@link DSUService.addFileDataToDossier} with already filled transactionId and domain
+             * @see {@link DSUService#addFileDataToDossier} with already filled transactionId and domain
+             * @module services
              */
             addFileDataToDossier(fileName, fileData, callback){
                 self.addFileDataToDossier(transactionId, domain, fileName, fileData, callback);
             };
             /**
-             * @see {@link DSUService.mount} with already filled transactionId and domain
+             * @see {@link DSUService#mount} with already filled transactionId and domain
+             * @module services
              */
             mount(path, seed, callback){
                 self.mount(transactionId, domain, path, seed, callback);

@@ -1,5 +1,7 @@
 # PDM's DSU Toolkit
-Proposes a Standard Enterprise DSU SSApp Architecture && Provides the underlying API to handle DSUs in that environment
+Proposes a Standardized Architecture for SSApps and provides the base implementation for that architecture.
+
+[SSApp Architecture](resources/drawings/finishedGoodsTraceabilityDSUTypes-BaseSSAppArchitecture.png)
 
 ### Bundling
 THis Module was developed with ease of test in mind, using node syntax, incompatible with the browsers.

@@ -1,6 +1,6 @@
 /**
  * Base Util Functionality for Model
- * @module pdm-dsu-toolkit.model
+ * @module model
  */
 module.exports = {
     Validations: require('./Validations'),

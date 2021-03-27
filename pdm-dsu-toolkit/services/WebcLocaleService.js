@@ -2,7 +2,7 @@
  * This service depends on WebCardinal's translation API
  *
  * Integrates with {@link WebCardinal}'s translation model, and natively integrates into controllers and their model
- * @module pdm-dsu-toolkit.services.locale
+ * @module locale
  */
 function LocaleService(){
     if (!WebCardinal)
@@ -59,7 +59,7 @@ function LocaleService(){
 /**
  * Util function to merge JSON objects according to a specified priority
  *
- * @module pdm-dsu-toolkit.services.locale
+ * @module locale
  */
 const merge = function(target, source){
     for (const key of Object.keys(source))
@@ -72,7 +72,7 @@ const merge = function(target, source){
 /**
  * Binds the translation model to the controller and its setModel method
  *
- * @module pdm-dsu-toolkit.services.locale
+ * @module locale
  */
 const bindToController = function(controller, page){
     if (!controller.localized) {
@@ -99,7 +99,7 @@ module.exports = {
      * @param {WebcController} controller: the current controller
      * @param {string} page: the name of the view. Must match an existing key in {@link WebCardinal#translations}
      * @returns {LocaleService}
-     * @module pdm-dsu-toolkit.services.locale
+     * @module locale
      */
     bindToLocale: function (controller, page){
         if (!localeService)

@@ -4,7 +4,7 @@
  * @param {Participant} participant
  * @param {string} domain: anchoring domain
  * @returns {SeedSSI} (template)
- * @module pdm-dsu-toolkit.commands
+ * @module keyssi
  */
 function createParticipantSSI(participant, domain) {
     console.log("New Participant_SSI in domain", domain);
@@ -16,7 +16,7 @@ function createParticipantSSI(participant, domain) {
 /**
  * Registers the endpoint on the api-hub's dsu-wizard.
  * @param {HttpServer} server
- * @module pdm-dsu-toolkit.commands
+ * @module server
  */
 function command(server){
     const setSSI = require('../commands').setSSI;

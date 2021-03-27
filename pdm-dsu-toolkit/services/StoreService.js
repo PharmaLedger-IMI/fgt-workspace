@@ -1,6 +1,6 @@
 /**
  * Meant to be used as a service, to get an App's seed via it's name
- * @module pdm-dsu-toolkit.services
+ * @module services
  * @deprecated
  */
 
@@ -8,9 +8,8 @@ const path_to_workspace = "."
 
 /**
  * To work, this function needs to be configured in APIHub's server.json file
- * @module pdm-dsu-toolkit.services
  * @param {HttpServer} server
- * @module pdm-dsu-toolkit.services
+ * @module services
  * @deprecated
  */
 function startStoreService(server){

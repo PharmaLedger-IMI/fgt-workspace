@@ -11,7 +11,8 @@
  * </ul>
  *
  * @param {Archive|Database} storageDSU the DSU where the storage should happen or more commonly the Database Object
- * @module pdm-dsu-toolkit.managers
+ * @module managers
+ * @class Manager
  */
 class Manager{
     constructor(storageDSU){
