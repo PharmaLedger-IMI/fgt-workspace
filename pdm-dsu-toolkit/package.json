@@ -22,6 +22,7 @@
     "octopus": "git+https://github.com/PrivateSky/octopus.git"
   },
   "devDependencies": {
+    "better-docs": "^2.3.2",
     "docdash": "^1.2.0",
     "form-data": "v3.0.0",
     "ink-docstrap": "^1.3.2",

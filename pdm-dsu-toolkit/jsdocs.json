@@ -11,7 +11,8 @@
         ],
         "exclude": [
             "node_modules",
-            "build/bundles"
+            "build/bundles",
+            "docs"
         ],
         "includePattern": ".+\\.js(doc|x)?$",
         "excludePattern": "(^|\\/|\\\\)_"
@@ -21,37 +22,32 @@
         "dictionaries": ["jsdoc","closure"]
     },
     "templates": {
-        "systemName"            : "Pharmaledger's Finished Goods Traceability",
-        "footer"                : "PDM&FC",
-        "copyright"             :  "MIT Licence",
-        "includeDate"           : "true",
-        "navType"               : "inline",
-        "theme"                 : "yeti",
-        "linenums"              : "true",
-        "collapseSymbols"       : "false",
-        "inverseNav"            : "true",
-        "outputSourceFiles"     : "true" ,
-        "outputSourcePath"      : "false",
-        "dateFormat"            : "dddd, MMMM Do YYYY, h:mm:ss a",
-        "syntaxTheme"           : "default",
-        "sort"                  : "true",
-        "search"                : "true"
-    },
-    "opts": {
-        "template": "node_modules/ink-docstrap/template",
-        "destination": "./docs/output/",
-        "readme": "./README.md",
-        "recurse": true,
-        "verbose": true,
+        "ink-docstrap": {
+            "systemName"            : "Pharmaledger's Finished Goods Traceability",
+            "footer"                : "PDM&FC",
+            "copyright"             :  "MIT Licence",
+            "includeDate"           : "true",
+            "navType"               : "inline",
+            "theme"                 : "yeti",
+            "linenums"              : "true",
+            "collapseSymbols"       : "false",
+            "inverseNav"            : "true",
+            "outputSourceFiles"     : "true" ,
+            "outputSourcePath"      : "false",
+            "dateFormat"            : "dddd, MMMM Do YYYY, h:mm:ss a",
+            "syntaxTheme"           : "default",
+            "sort"                  : "true",
+            "search"                : "true"
+        },
         "docdash": {
             "static": true,
             "sort": true,
             "sectionOrder": [
+                "Namespaces",
                 "Classes",
                 "Modules",
                 "Externals",
                 "Events",
-                "Namespaces",
                 "Mixins",
                 "Tutorials",
                 "Interfaces"
@@ -74,6 +70,33 @@
             },
             "nameInOutputPath": true,
             "versionInOutputPath": true
-        }
+        },
+        "better-docs": {
+            "name": "PDM&FC's OpenDSu Toolkit Documentation",
+            "title": "PDM&FC's OpenDSu Toolkit Documentation",
+            "trackingCode": "tracking-code-which-will-go-to-the-HEAD",
+            "hideGenerator": false,
+            "navLinks": [
+                {
+                    "label": "Github",
+                    "href": "https://github.com/PharmaLedger-IMI/epi-workspace/pdm-dsu-toolkit.git"
+                },
+                {
+                    "label": "Example Application - Finished Goods Traceability",
+                    "href": "https://fgt.pharmaledger.pdmfc.com"
+                }
+            ]
+        },
+        "cleverLinks": false,
+        "monospaceLinks": false,
+        "search": true
+    },
+    "opts": {
+        "encoding": "utf-8",
+        "template": "node_modules/better-docs",
+        "destination": "./docs/output/",
+        "readme": "./README.md",
+        "recurse": true,
+        "verbose": true
     }
 }
