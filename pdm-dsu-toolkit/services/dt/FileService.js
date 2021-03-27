@@ -1,4 +1,5 @@
 /**
+ * Provides an environment independent file service to the {@link AppBuilderService}
  * @module opendsu.dt
  */
 function FileService(options) {

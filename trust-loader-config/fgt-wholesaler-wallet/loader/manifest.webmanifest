@@ -1,7 +1,7 @@
 {
-  "short_name": "Trust Loader",
-  "name": "Pharmaledger's Trust Loader",
-  "description": "Dossiers' User Interface",
+  "short_name": "FGT Wholesaler App",
+  "name": "Pharmaledger's Finished Goods Traceability Wholesaler SSApp",
+  "description": "Provides the interface with Pharmaledger's Finished Goods Traceability Ecosystem, as a Wholesaler",
   "theme_color": "rgb(0,52,91)",
   "background_color": "rgb(0,52,91)",
   "display": "standalone",

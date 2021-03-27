@@ -1,8 +1,4 @@
 /**
- * @module fgt-dsu-toolkit.managers
- */
-
-/**
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
  *
@@ -14,7 +10,8 @@
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
  *
- * @param {Archive} storageDSU the DSU where the storage should happen
+ * @param {Archive|Database} storageDSU the DSU where the storage should happen or more commonly the Database Object
+ * @module pdm-dsu-toolkit.managers
  */
 class Manager{
     constructor(storageDSU){

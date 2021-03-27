@@ -1,5 +1,5 @@
 export default {
-  "appName": "Wholesaler Traceability App",
+  "appName": "fgt-wholesaler-ssapp",
   "appVersion": "0.1.1",
   "vault": "server",
   "agent": "browser",

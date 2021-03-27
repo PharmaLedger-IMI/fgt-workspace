@@ -1,14 +1,11 @@
 /**
- * @module pdm-dsu-loader.commands
- */
-
-/**
  * Registers with the DSU Wizard the provided endpoints for the various DSU types
- * @param server: the server object
- * @param endpoint: the endpoint to be registered
- * @param factoryMethod: the method that receives a data object with the parameters required to generate the keyssi, and is responsible for the creation of the DSU
- * @param methodName: the name of the method to be registered in the DSU Wizard? - Should match the method name that is calling it?
- * @param domain: (optional) domain where to anchor the DSU - defaults to 'default'
+ * @param {HttpServer} server  the server object
+ * @param {string} endpoint  the endpoint to be registered
+ * @param {function} factoryMethod  the method that receives a data object with the parameters required to generate the keyssi, and is responsible for the creation of the DSU
+ * @param {string} methodName   the name of the method to be registered in the DSU Wizard? - Should match the method name that is calling it?
+ * @param {string} [domain] domain where to anchor the DSU - defaults to 'default'
+ * @module pdm-dsu-toolkit.commands
  */
 function setSSI(server, endpoint, factoryMethod, methodName, domain){
     domain = domain || "default";

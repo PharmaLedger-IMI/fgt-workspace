@@ -1,7 +1,7 @@
 {
-  "name": "trust-loader",
+  "name": "pdm-trust-loader",
   "version": "0.2.0",
-  "description": "Web Loader for the Wallet User Interface",
+  "description": "Web Loader for SSApps",
   "scripts": {
     "postinstall": "node ./node_modules/octopus/scripts/run",
     "update": "npm run postinstall",

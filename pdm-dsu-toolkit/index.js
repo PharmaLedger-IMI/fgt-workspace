@@ -1,5 +1,6 @@
 /**
- * @module fgt-dsu-toolkit
+ * This Toolkit proposes a Standard Enterprise DSU SSApp Architecture && Provides the underlying API to handle DSUs in that environment
+ * @module pdm-dsu-toolkit
  */
 
 /**

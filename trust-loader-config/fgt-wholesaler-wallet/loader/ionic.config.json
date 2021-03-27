@@ -1,0 +1,7 @@
+{
+  "name": "fgt-wholesaler-ssapp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}

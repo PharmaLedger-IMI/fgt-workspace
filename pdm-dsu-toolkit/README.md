@@ -1,5 +1,5 @@
 # PDM's DSU Toolkit
-Proposes a Standardized Architecture and provides a standardized API for that architecture 
+Proposes a Standard Enterprise DSU SSApp Architecture && Provides the underlying API to handle DSUs in that environment
 
 ### Bundling
 THis Module was developed with ease of test in mind, using node syntax, incompatible with the browsers.

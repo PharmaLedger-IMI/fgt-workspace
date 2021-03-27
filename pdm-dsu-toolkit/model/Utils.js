@@ -1,4 +1,6 @@
 /**
+ * Generates a string of the provided length filled with random characters from the provided characterSet
+ * Clone of PrivateSky Code
  * @module pdm-dsu-toolkit.model
  */
 function generate(charactersSet, length){
@@ -11,16 +13,30 @@ function generate(charactersSet, length){
 }
 
 module.exports = {
+    /**
+     * Generates a string of the provided length filled with random characters from 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+     * Clone of PrivateSky Code
+     * @module pdm-dsu-toolkit.model
+     */
     generateID(length) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         return generate(characters, length);
     },
 
+    /**
+     * Generates a string of the provided length filled with random numeric characters
+     * Clone of PrivateSky Code
+     * @module pdm-dsu-toolkit.model
+     */
     generateNumericID(length) {
         const characters = '0123456789';
         return generate(characters, length);
     },
 
+    /**
+     * Clone of PrivateSky Code
+     * @module pdm-dsu-toolkit.model
+     */
     generateSerialNumber(length){
         let char = generate("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 2);
         let number = this.generateNumericID(length-char.length);

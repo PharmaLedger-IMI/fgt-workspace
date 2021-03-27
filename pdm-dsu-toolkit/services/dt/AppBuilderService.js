@@ -7,6 +7,10 @@ const FileService = require("./FileService");
 
 const DSU_SPECIFIC_FILES = ["dsu-metadata.log", "manifest"]
 
+/**
+ * Default Options set for the {@link AppBuilderService}
+ * @module opendsu.dt
+ */
 const OPTIONS = {
     anchoring: "default",
     publicSecretsKey: '-$Identity-',
@@ -27,6 +31,10 @@ const OPTIONS = {
     }
 }
 
+/**
+ * Convert the Environment object into the Options object
+ * @module opendsu.dt
+ */
 const envToOptions = function(env, opts){
     let options = Object.assign({}, OPTIONS, opts);
     options.environment = env;
@@ -39,8 +47,10 @@ const envToOptions = function(env, opts){
 }
 
 /**
+ *
  * @param {object} environment typically comes from an environment.js file is the ssapps. Overrides some options
  * @param {object} [opts] options object mimicking {@link OPTIONS}
+ * @module opendsu.dt
  */
 function AppBuilderService(environment, opts) {
     const options = envToOptions(environment, opts);
@@ -51,6 +61,13 @@ function AppBuilderService(environment, opts) {
 
     const fileService = new FileService(options);
 
+    /**
+     * Converts the list of files and mounts in a DSU to createFile and Mount commands for DSU Cloning purposes
+     * @param {object} files
+     * @param {object} mounts
+     * @return {string[]}
+     * @private
+     */
     const contentToCommands = function(files, mounts){
         let commands = [];
         files.forEach(f => {
@@ -90,6 +107,7 @@ function AppBuilderService(environment, opts) {
      * Adds options.hint to hit if available
      * @param {string[]} secrets
      * @param {function(err, ArraySSI)} callback
+     * @private
      */
     const createArraySSI = function(secrets, callback){
         const key = keyssi.createArraySSI(options.anchoring, secrets, 'v0', options.hint ? JSON.stringify(options.hint) : undefined);

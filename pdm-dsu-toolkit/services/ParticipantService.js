@@ -1,12 +1,9 @@
-/**
- * @module pdm-dsu-loader.services
- */
-
  const utils = require('./utils');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
- * @param {strategy} strategy
+ * @param {STRATEGY} strategy
+ * @module pdm-dsu-toolkit.services
  */
 function ParticipantService(domain, strategy){
     const strategies = require('./strategy');

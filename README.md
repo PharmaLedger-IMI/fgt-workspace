@@ -59,7 +59,7 @@ You will be present with a menu from where you can choose the SSApp you with to 
 
 [Current SSApp Architecture](resources/drawings/finishedGoodsTraceabilityDSUTypes-BaseSSAppArchitecture.png)
 
-[Proposal for SSApp Architecture - Ex: Pharmacy SSApp](resources/drawings/finishedGoodsTraceabilityDSUTypes-PharmacySSAppArchitecture.png)
+[Proposal for SSApp Architecture - Ex: Wholesaler SSApp](resources/drawings/finishedGoodsTraceabilityDSUTypes-WholesalerSSAppArchitecture.png)
 
 ### Installation
 

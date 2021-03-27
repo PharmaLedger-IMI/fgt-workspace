@@ -1,3 +1,8 @@
+/**
+ * Constants
+ * @module pdm-dsu-toolkit
+ */
+
 const INFO_PATH = '/info';
 const PARTICIPANT_MOUNT_PATH = "/participant";
 

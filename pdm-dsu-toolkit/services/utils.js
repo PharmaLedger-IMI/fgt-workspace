@@ -1,11 +1,24 @@
 /**
- * @module pdm-dsu-loader.services
+ * Provides Util functions and Methods as well as caching for the open DSU resolver and {@Link DSUBuilder}
+ * @module pdm-dsu-toolkit.services.utils
  */
+
 let resolver, DSUService;
 
 /**
+ * util function to get the env type.
+ * Needs openDSU to be loaded to have access to $$ regardless of environment
+ * @return {string} the environment type - nodejs or
+ * @module pdm-dsu-toolkit.services.utils
+ */
+function getEnv(){
+	return $$.environmentType;
+}
+
+/**
  * for singleton use
- * @returns {*}
+ * @returns {function} resolver
+ * @module pdm-dsu-toolkit.services.utils
  */
 function getResolver(){
 	if (!resolver)
@@ -16,6 +29,7 @@ function getResolver(){
 /**
  * for singleton use
  * @returns {DSUService}
+ * @module pdm-dsu-toolkit.services.utils
  */
 function getDSUService(){
 	if (!DSUService)
@@ -27,6 +41,7 @@ function getDSUService(){
  * Convenience method to select the appropriate resolver method to use depending on the key
  * @param keySSI
  * @returns {function} the appropriate resolver method for creating dsus {@link resolver#createDSU}/{@link resolver#createDSUForExistingSSI}
+ * @module pdm-dsu-toolkit.services.utils
  */
 function selectMethod(keySSI){
 	if (['array', 'const'].indexOf(keySSI.getTypeName()) > -1)
@@ -40,6 +55,7 @@ function selectMethod(keySSI){
  * @param {Archive} dsu
  * @param {string[]} folders
  * @param {function(err, string[])} callback the folders there where actually created (didn't already exist)
+ * @module pdm-dsu-toolkit.services.utils
  */
 function createDSUFolders(dsu, folders, callback){
 	let created = [];
@@ -65,14 +81,17 @@ function createDSUFolders(dsu, folders, callback){
 
 /**
  * Util Method to select POST strategy per DSU api.
- * - Copied from PrivateSky
- * - refactored for server side use compatibility in <strong>tests</strong>
+ * - Forked from PrivateSky
+ * - refactored for server side use compatibility
  * @param {string} apiname
  * @returns {doPost} postHandler
+ * @module pdm-dsu-toolkit.services.utils
  */
 function getPostHandlerFor(apiname){
 
 	function getBaseURL() {
+		//opendsu.loadApi('system').getEnvironmentVariable(opendsu.constants.BDNS_ROOT_HOSTS);
+
 		let protocol, host, port;
 		try {
 			protocol = window.location.protocol;
@@ -120,5 +139,6 @@ module.exports = {
 	getDSUService,
 	getPostHandlerFor,
 	selectMethod,
-	createDSUFolders
+	createDSUFolders,
+	getEnv
 }

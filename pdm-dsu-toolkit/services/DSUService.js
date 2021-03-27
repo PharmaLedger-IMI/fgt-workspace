@@ -1,17 +1,14 @@
-/**
- * @module pdm-dsu-loader.services
- */
 const utils = require("./utils.js");
 
 const doPost = utils.getPostHandlerFor("dsu-wizard");
 
-function getEnv(){
-    return $$.environmentType;
-}
+if (utils.getEnv() === 'nodejs')
+    FormData = require('form-data');    // needed because nodejs does not have FormData. his makes sure we can use it in tests
 
-if (getEnv() === 'nodejs')
-    FormData = require('form-data');    // needed because nodejs does not have FormData. we can remove it after testing
-
+/**
+ * Class responsible for Authenticated DSU transactions between the client and the API Hub
+ * @module pdm-dsu-loader.services
+ */
 class DSUService {
     constructor() {
         let openDSU = require('opendsu');

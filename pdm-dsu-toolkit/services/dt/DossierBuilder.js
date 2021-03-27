@@ -1,7 +1,7 @@
 /**
+ * Enum of Accepted Operations
  * @module opendsu.dt
  */
-
 const OPERATIONS = {
     DELETE: "delete",
     ADD_FOLDER: "addfolder",
@@ -11,6 +11,10 @@ const OPERATIONS = {
     CREATE_AND_MOUNT: "createandmount"
 }
 
+/**
+ * Enum of Accepted Key Types
+ * @module opendsu.dt
+ */
 const KEY_TYPE = {
     CONST: "const",
     SEED: "seed"
@@ -29,6 +33,7 @@ const KEY_TYPE = {
  *          "domain": "default",
  *     }
  * </pre>
+ *
  * For a Simple SSApp (with only mounting of cardinal/themes and creation of code folder) the commands would be like:
  * <pre>
  *     delete /
@@ -37,6 +42,7 @@ const KEY_TYPE = {
  *     mount ../themes/'*'/seed /themes/'*'
  * </pre>
  * @param {Archive} [sourceDSU] if provided will perform all OPERATIONS from the sourceDSU as source and not the fs
+ * @module opendsu.dt
  */
 const DossierBuilder = function(sourceDSU){
     let fs;
