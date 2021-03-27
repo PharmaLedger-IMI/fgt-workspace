@@ -74,8 +74,7 @@
         "better-docs": {
             "name": "PDM&FC's OpenDSu Toolkit Documentation",
             "title": "PDM&FC's OpenDSu Toolkit Documentation",
-            "trackingCode": "tracking-code-which-will-go-to-the-HEAD",
-            "hideGenerator": false,
+            "hideGenerator": true,
             "navLinks": [
                 {
                     "label": "Github",
@@ -93,7 +92,7 @@
     },
     "opts": {
         "encoding": "utf-8",
-        "template": "node_modules/better-docs",
+        "template": "./node_modules/better-docs",
         "destination": "./docs/output/",
         "readme": "./README.md",
         "recurse": true,

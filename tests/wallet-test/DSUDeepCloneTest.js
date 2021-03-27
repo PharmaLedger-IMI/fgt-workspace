@@ -77,7 +77,7 @@ const runTest = function(testFinished){
     };
 
     const appService = new (dt.AppBuilderService)({vault: "server"});
-    const SEED = '65FmT6jYpmQXh9ETs68RdMxy7LL7pkECirykrCHiqbSMeuETvLRVfxQCyrUQkxSXrGCeDDwiyvQjQURnKRzy6iMr3bQRCasZ';
+    const SEED = '65FmT6jYpmQXh9ETs68RdMxy7LL7pkEEZprSXZmXGtpfbbPwBSNC5GzcKTFBVSLSouTKh7nkUVXejAUSh6NDWEjDFF82RJco';
     appService.clone(secretsObj, SEED, true, (err, dsu) => {
         if (err)
             throw err;

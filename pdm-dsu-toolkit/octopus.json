@@ -1,6 +1,17 @@
 {
   "workDir": ".",
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "Documentation Theme Install (globally)",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "[[ -z $(npm ls -g better-docs) ]] && echo \"theme already installed\" || npm install -g better-docs taffydb"
+        }
+      ]
+    }
+  ],
   "prebuild": [
     {
       "name": "Bundles",
@@ -27,7 +38,7 @@
         },
         {
           "type": "execute",
-          "cmd": "jsdoc -c jsdocs.json"
+          "cmd": "jsdoc -c jsdocs.json -t \"$(npm root -g)/better-docs\""
         }
       ]
     }

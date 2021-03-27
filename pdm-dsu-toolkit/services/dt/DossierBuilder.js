@@ -130,7 +130,7 @@ const DossierBuilder = function(sourceDSU){
         options = options || {encrypt: true, ignoreMounts: false};
         bar.writeFile(arg.path, arg.content, options, (err) => {
             if (err)
-                return callback(`Could not create file at ${arg.path}: ${err}`);
+                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Could not create file at ${arg.path}`, err));
             callback(undefined, bar);
         })
     }
@@ -170,13 +170,13 @@ const DossierBuilder = function(sourceDSU){
         let keySSI = keyGenFunc(domain, args.forKey);
         dsuFactory(keySSI, (err, dsu) => {
            if (err)
-               return callback(`Could not create dsu with keyssi ${keySSI}: ${err}`);
+               return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Could not create dsu with keyssi ${keySSI}`, err));
 
            const mountFunc = function(bar, key, callback){
                console.log(`DSU created with key ${key}`);
                bar.mount(path, key, (err) => {
                    if (err)
-                       return callback(`Could not mount DSU: ${err}`);
+                       return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Could not mount DSU`, err));
                    callback(undefined, bar);
                });
            }
@@ -185,7 +185,7 @@ const DossierBuilder = function(sourceDSU){
                const dossierBuilder = new DossierBuilder();
                dossierBuilder.buildDossier(dsu, args.commands, (err, key) => {
                    if (err)
-                       return callback(`Could not build Dossier: ${err}`)
+                       return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Could not build Dossier`, err));
                    mountFunc(bar, key, callback);
                })
            } else {
@@ -222,7 +222,7 @@ const DossierBuilder = function(sourceDSU){
                 return callback(err);
             bar.writeFile(arg.to, data, err =>{
                 if (err)
-                    return callback(`Could not write to ${arg.to}: ${err}`);
+                    return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Could not write to ${arg.to}`, err));
                 callback(undefined, bar);
             });
         });
@@ -238,7 +238,7 @@ const DossierBuilder = function(sourceDSU){
             console.log("Mounting " + arg.seed_path + " with seed " + seed + " to " + arg.mount_point);
             bar.mount(arg.mount_point, seed, err => {
                 if (err)
-                    return callback(`Could not perform mount of ${seed} at ${arg.seed_path}: ${err}`);
+                    return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Could not perform mount of ${seed} at ${arg.seed_path}`, err));
                 callback(undefined, bar)
             });
         };
@@ -288,7 +288,7 @@ const DossierBuilder = function(sourceDSU){
         const listFunc = sourceDSU ? sourceDSU.listMountedDSUs : getFS().readdir;
         listFunc(base_path[0], (err, arguments) => {
             if (err)
-                return callback(`Could not list mounts: ${err}`);
+                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Could not list mounts`, err));
             arguments = _transform_mount_arguments(arg, arguments);
             execute(bar, mount, arguments, callback);
         });
@@ -330,7 +330,7 @@ const DossierBuilder = function(sourceDSU){
         const readMethod = sourceDSU ? sourceDSU.readFile : getFS().readFile;
         readMethod(filePath, (err, data) => {
             if (err)
-                return callback(`Could not read file at ${filePath}: ${err}`);
+                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Could not read file at ${filePath}`, err));
             return callback(undefined, sourceDSU ? data : data.toString());
         });
     };

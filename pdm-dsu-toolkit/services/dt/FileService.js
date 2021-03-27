@@ -6,12 +6,7 @@
  * Provides an environment independent file service to the {@link AppBuilderService}
  */
 function FileService(options) {
-    let isBrowser;
-    try{
-        isBrowser = !!window;
-    } catch (e){
-        isBrowser = false;
-    }
+    const isBrowser = $$.environmentType === 'browser';
 
     function constructUrlBase(prefix){
         let url, protocol, host;
@@ -33,7 +28,7 @@ function FileService(options) {
             url = `${protocol}//${host}/${prefix}${appName}`;
             return url;
         } else {
-            return `${options.hosts}/${prefix}${appName}`;
+            return `http://${options.hosts}/${prefix ? prefix : ''}${options.walletPath}${prefix ? '' : '/'}`;
         }
     }
 
@@ -44,7 +39,7 @@ function FileService(options) {
     this.getAppSeed = function(appName, callback){
         this.getFile(appName, options.seedFileName, (err, data) => {
             if (err)
-                return callback(err);
+                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(err));
            Utf8ArrayToStr(data, callback);
         });
     }
@@ -55,30 +50,22 @@ function FileService(options) {
             options = {};
         }
 
-        if (isBrowser){
-            const http = require("opendsu").loadApi("http");
-            http.fetch(url, {
-                method: 'GET'
-            }).then((response) => {
-                return response.arrayBuffer().then((data) => {
-                    if (!response.ok){
-                        console.log("array buffer not ok");
-                        return callback("array data failed")
-                    }
-                    callback(undefined, data);
-                }).catch(e => {
-                    return callback(e);
-                });
-            }).catch(err => {
-                return callback(err);
-            });
-        } else {
-            require('fs').readFile(url, (err, data) => {
-                if (err)
-                    return callback(err);
+        const http = require("opendsu").loadApi("http");
+        http.fetch(url, {
+            method: 'GET'
+        }).then((response) => {
+            return response.arrayBuffer().then((data) => {
+                if (!response.ok){
+                    console.log("array buffer not ok");
+                    return callback("array data failed")
+                }
                 callback(undefined, data);
+            }).catch(e => {
+                return callback(e);
             });
-        }
+        }).catch(err => {
+            return callback(err);
+        });
     }
 
     /**
@@ -88,7 +75,7 @@ function FileService(options) {
      * @param {function(err, UintArray)} callback
      */
     this.getFile = function(appName, fileName, callback){
-        let url = constructUrlBase() + `/${appName}/${fileName}`;
+        let url = constructUrlBase() + `${appName}/${fileName}`;
         doGet(url, callback);
     };
 
@@ -101,7 +88,7 @@ function FileService(options) {
         let url = constructUrlBase("directory-summary/") + (innerFolder ? `/${innerFolder}` : '') ;
         doGet(url, (err, data) => {
             if (err)
-                return callback(err);
+                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(err));
             Utf8ArrayToStr(data, callback);
         });
     }
@@ -111,6 +98,8 @@ function FileService(options) {
      * @param {function(err, string)} callback
      */
     function Utf8ArrayToStr(array, callback) {
+        if (!isBrowser)
+            return callback(undefined, array.toString());
         var bb = new Blob([array]);
         var f = new FileReader();
         f.onload = function(e) {
