@@ -3,12 +3,12 @@
   "enableTranslations": true,
   "pagesFallback": {
     "name": "Home",
-    "path": "./home"
+    "path": "./"
   },
   "pages": [
     {
       "name": "Home",
-      "path": "/home",
+      "path": "./",
       "src": "home.html",
       "indexed": false,
       "tag": "home"
