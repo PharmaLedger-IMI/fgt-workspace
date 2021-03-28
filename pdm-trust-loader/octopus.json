@@ -12,6 +12,16 @@
       ]
     },
     {
+      "name": "Workbox Install (globally)",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "sh -c \"app=`npm ls -g workbox | grep workbox-cli` && [ -z \\\"$app\\\" ] && npm install -g workbox || echo \\\"WorkBox already installed\\\"\""
+        }
+      ]
+    },
+    {
       "name": "PSK bundles",
       "src": "",
       "actions": [
@@ -98,16 +108,6 @@
           "options": {
             "overwrite": true
           }
-        }
-      ]
-    },
-    {
-      "name": "generate-service-worker",
-      "src": "",
-      "actions": [
-        {
-          "type": "execute",
-          "cmd": "workbox generateSW"
         }
       ]
     }

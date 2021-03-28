@@ -28,7 +28,7 @@ function FileService(options) {
             url = `${protocol}//${host}/${prefix}${appName}`;
             return url;
         } else {
-            return `http://${options.hosts}/${prefix ? prefix : ''}${options.walletPath}${prefix ? '' : '/'}`;
+            return `http://${options.hosts}/${prefix ? prefix : ''}${options.walletPath}`;
         }
     }
 
@@ -75,7 +75,13 @@ function FileService(options) {
      * @param {function(err, UintArray)} callback
      */
     this.getFile = function(appName, fileName, callback){
-        let url = constructUrlBase() + `${appName}/${fileName}`;
+        const suffix = `${appName}/${fileName}`;
+        const base = constructUrlBase();
+        const joiner = suffix && base[base.length - 1] !== '/' && suffix[0] !== '/'
+            ? '/'
+            : '';
+
+        let url = base + joiner + suffix;
         doGet(url, callback);
     };
 

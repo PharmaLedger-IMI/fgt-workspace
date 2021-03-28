@@ -2,86 +2,6 @@ import env from "../../environment.js"
 import LocalizedController from './LocalizedController.js'
 import LoaderService from "./services/LoaderService.js";
 
-const generateTranslation = function (){
-    return {
-        en:{
-            "/": {
-                "anchoring": "traceability",
-                "form": {
-                    "title": "Please enter your credentials as a Wholesaler",
-                    "name": {
-                        "label": "Name:",
-                        "type": "text",
-                        "placeholder": "Please enter your name here...",
-                        "value": "PDM the Wholesaler",
-                        "public": true,
-                        "required": true
-                    },
-                    "id": {
-                        "label": "Registered Id:",
-                        "type": "text",
-                        "placeholder": "Please enter your id here...",
-                        "value": "#ThIsIsAwHoLeSaLeRiD=",
-                        "public": true,
-                        "required": true
-                    },
-                    "email": {
-                        "label": "Registered Email:",
-                        "type": "email",
-                        "placeholder": "Please enter your email here...",
-                        "value": "wholesaler@pdmfc.com",
-                        "public": true,
-                        "required": true
-                    },
-                    "tin": {
-                        "label": "Registered TIN (Tax Identification Number):",
-                        "type": "number",
-                        "placeholder": "Enter your TIN (Tax Identification Number)...",
-                        "value": 500000000,
-                        "public": true,
-                        "required": true
-                    },
-                    "address": {
-                        "label": "Registered Address:",
-                        "type": "text",
-                        "placeholder": "Enter your address...",
-                        "required": true,
-                        "value": "This in an Address"
-                    },
-                    "pass": {
-                        "label": "Password:",
-                        "type": "password",
-                        "placeholder": "Enter your password...",
-                        "required": true,
-                        "value": "This1sSuchAS3curePassw0rd"
-                    },
-                    "passrepeat": {
-                        "label": "Password:",
-                        "type": "password",
-                        "placeholder": "Repeat your password...",
-                        "required": true,
-                        "value": "This1sSuchAS3curePassw0rd"
-                    },
-                    "buttons": {
-                        "login": "Login",
-                        "register": "Register"
-                    }
-                },
-                "errors": {
-                    "title": "Error",
-                    "register": "Unable to register. Are you sure this account doesn't exist?",
-                    "login": "Could not Login. Maybe try registering?"
-                },
-                "success": {
-                    "register": "Registration Successful. Please Login",
-                    "login": "Login Successful. Please wait"
-                }
-            }
-        }
-    }
-}
-
-
 export default class HomeController extends LocalizedController {
     getModel = () => ({
         participant: undefined
@@ -89,11 +9,6 @@ export default class HomeController extends LocalizedController {
 
     constructor(element, history) {
         super(element, history);
-        console.log(`The translation model in the Home controller is: ${WebCardinal.translations.en}`);
-        if (!WebCardinal.translations.en){
-            console.log("THE TRANSLATION MODEL IS NOT SET! - Hardcoding...");
-            WebCardinal.translations = generateTranslation();
-        }
         super.bindLocale(this, "");
         this.setModel(this.getModel());
 
@@ -155,7 +70,7 @@ export default class HomeController extends LocalizedController {
             if (err)
                 self.showErrorToast(err);
             else
-                self.showToast(self.translate('home.success.register'));
+                self.showToast(self.translate('success.register'));
             await loader.dismiss();
             callback(undefined, keySSI);
         })
@@ -174,7 +89,7 @@ export default class HomeController extends LocalizedController {
                self.showErrorToast(err);
                return callback(err);
            }
-           self.showToast(self.translate('home.success.login'));
+           self.showToast(self.translate('success.login'));
            callback(undefined, wallet);
         });
     }
@@ -182,11 +97,16 @@ export default class HomeController extends LocalizedController {
     _showLoginModal() {
         // this.showIonicModal("a-generic-configurable-modal", false, {page: "registration"});
         this.createWebcModal({
-            modelTitle: "",
-            modalName: 'genericModal',
-            showFooter: false,
-            canClose: false,
-            showCancelButton: false
+            template: "genericModal",
+            // autoShow: true,
+            disableBackdropClosing: true,
+            disableFooter: true,
+            disableHeader: true,
+            disableExpanding: true,
+            disableClosing: true,
+            disableCancelButton: true,
+            expanded: false,
+            centered: true
         });
     }
 }

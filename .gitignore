@@ -29,6 +29,7 @@ pdm-trust-loader/swPwa*
 pdm-trust-loader/swBoot.js
 pdm-trust-loader/workbox*
 pdm-trust-loader/docs
+
 !pdm-trust-loader/workbox-config.js
 
 fgt-mah-ssapp/code/constitution
@@ -36,7 +37,8 @@ fgt-mah-ssapp/docs
 fgt-mah-ssapp/code/scripts/bundles
 fgt-mah-ssapp/seed
 
-webcardinal
+/webcardinal
+
 
 web-cardinal-ion
 

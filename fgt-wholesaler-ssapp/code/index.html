@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>PSK App Core</title>
     PLACEHOLDER_THAT_WILL_BE_REPLACED_BY_SW_OR_SERVER_WITH_BASE_TAG
-    <link href="resources/css/main.css" rel="stylesheet" type="text/css">
     <!--    <link rel="stylesheet" href="resources/css/fonts/fontawesome/font-awesome.min.css">-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -48,7 +47,7 @@
         --webc-modal-content-background: var(--ion-background-color);
         --webc-modal-content-color: var(--ion-color);
         --webc-modal-header-padding: 0px;
-        --webc-modal-header-border-widt: 0px;
+        --webc-modal-header-border-width: 0px;
         --webc-modal-content-border-color: var(--ion-color-medium-contrast);
         --webc-modal-inner-padding: 0px 10px;
 
@@ -116,6 +115,14 @@
         --ion-color-light-tint: #383a3e;
     }
 
+    /*WebCardinal CSS hacks*/
+    webc-modal{
+        --background: var(--ion-background-color);
+        --padding: 2px;
+        --header-border: 0px;
+    }
+
+
     /*ion-footer.modal-class {*/
     /*    --margin-top: 10px;*/
     /*}*/
@@ -138,7 +145,7 @@
     }
 
     ion-content.main-content{
-        --background:  url("resources/images/bg4.png") 0 0/100% 100%;
+        --background:  url("resources/images/bg1.png") 0 0/100% 100%;
     }
 
     ion-icon{

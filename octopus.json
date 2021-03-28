@@ -42,6 +42,36 @@
                 {
                     "type": "execute",
                     "cmd": "cd webcardinal && npm install && npm run bundle-minimal && npm run dev"
+                },
+                {
+                    "type": "copy",
+                    "src": "./webcardinal-patch/Controller-1d5e8bd0.js",
+                    "target": "./webcardinal/webcardinal/components/webcardinal-core/Controller-1d5e8bd0.js",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "PATCH webcardinal",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./webcardinal-patch/Controller-1d5e8bd0.js",
+                    "target": "./webcardinal/webcardinal/components/webcardinal-core/Controller-1d5e8bd0.js",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "./webcardinal-patch/index-3f5ce18f.js",
+                    "target": "./webcardinal/webcardinal/components/webcardinal-core/index-3f5ce18f.js",
+                    "options": {
+                        "overwrite": true
+                    }
                 }
             ]
         },
@@ -522,7 +552,7 @@
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && ./node_modules/workbox generateSW"
+                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && npx workbox generateSW"
                 }
             ]
         }
