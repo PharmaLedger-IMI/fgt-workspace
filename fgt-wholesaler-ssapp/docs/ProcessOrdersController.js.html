@@ -1,0 +1,180 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability Wholesaler SSApp ProcessOrdersController.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability Wholesaler SSApp</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/fgt-workspace/fgt-wholesaler-ssapp.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com/fgt-wholesaler-wallet/loader"
+                        >
+                            Application
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#bindLocale">bindLocale</a></li><li><a href="global.html#getPendingOrdersAsync">getPendingOrdersAsync</a></li><li><a href="global.html#getStockAsync">getStockAsync</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#showIonicModal">showIonicModal</a></li><li><a href="global.html#updatePendingOrders">updatePendingOrders</a></li><li><a href="global.html#updateStock">updateStock</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>ProcessOrdersController.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const {WebcController} = WebCardinal.controllers;
+const Order = require('wizard').Model.Order;
+const OrderLine = require('wizard').Model.OrderLine;
+const Shipment = require('wizard').Model.Shipment;
+
+export default class BatchesController extends WebcController {
+    constructor(element, history) {
+        super(element, history);
+        const wizard = require('wizard');
+        const LocaleService = wizard.Services.LocaleService;
+        LocaleService.bindToLocale(this, LocaleService.supported.en_US, "processorders");
+        const participantManager = wizard.Managers.getParticipantManager();
+        this.stockManager = wizard.Managers.getStockManager(participantManager.getParticipantDSU());
+
+        this.setModel({
+            pendingOrders: []
+        });
+
+        this.model.addExpression('hasPendingOrders', () => {
+            return typeof this.model.pendingOrders !== 'undefined' &amp;&amp; this.model.pendingOrders.length > 0;
+        }, 'pendingOrders');
+
+        this.getPendingOrdersAsync();
+    }
+
+    /**
+     * Updates the batches model
+     * @param {object[]} orders
+     */
+    updatePendingOrders(orders){
+        this.model['pendingOrders'] = orders;
+    }
+
+    /**
+     * Retrieves the batches from the product DSU and updates the model
+     */
+    getPendingOrdersAsync(){
+        let self = this;
+        let pending = [1, 2, 3].map(orderId => self._genOrder(orderId));
+        self.updatePendingOrders(pending);
+    }
+
+    _genOrder(index) {
+        let gtins = [1, 435, 1241, 435346]
+        return new Order(index, 1, 2, "address", undefined, gtins.map(gtin => {
+                return new OrderLine(gtin, 100, 1, 2);
+            }));
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

@@ -1,0 +1,718 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability Wholesaler SSApp resources/ionic-core/dist/collection/components/picker/picker.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability Wholesaler SSApp</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/fgt-workspace/fgt-wholesaler-ssapp.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com/fgt-wholesaler-wallet/loader"
+                        >
+                            Application
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="ActionSheet.html">ActionSheet</a></li><li><a href="Alert.html">Alert</a></li><li><a href="BackButton.html">BackButton</a></li><li><a href="Badge.html">Badge</a></li><li><a href="Button.html">Button</a></li><li><a href="Card.html">Card</a></li><li><a href="CardContent.html">CardContent</a></li><li><a href="CardHeader.html">CardHeader</a></li><li><a href="CardSubtitle.html">CardSubtitle</a></li><li><a href="CardTitle.html">CardTitle</a></li><li><a href="Checkbox.html">Checkbox</a></li><li><a href="Chip.html">Chip</a></li><li><a href="Content.html">Content</a></li><li><a href="Datetime.html">Datetime</a></li><li><a href="Dom7.html">Dom7</a></li><li><a href="FabButton.html">FabButton</a></li><li><a href="Footer.html">Footer</a></li><li><a href="Header.html">Header</a></li><li><a href="global.html#ImageCapture">ImageCapture</a></li><li><a href="Img.html">Img</a></li><li><a href="Input.html">Input</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemDivider.html">ItemDivider</a></li><li><a href="ItemOption.html">ItemOption</a></li><li><a href="Label.html">Label</a></li><li><a href="List.html">List</a></li><li><a href="ListHeader.html">ListHeader</a></li><li><a href="Loading.html">Loading</a></li><li><a href="Menu.html">Menu</a></li><li><a href="MenuButton.html">MenuButton</a></li><li><a href="Modal.html">Modal</a></li><li><a href="module.exports.html">exports</a></li><li><a href="Note.html">Note</a></li><li><a href="Picker.html">Picker</a></li><li><a href="PickerColumnCmp.html">PickerColumnCmp</a></li><li><a href="Popover.html">Popover</a></li><li><a href="ProgressBar.html">ProgressBar</a></li><li><a href="Radio.html">Radio</a></li><li><a href="Range.html">Range</a></li><li><a href="Reorder.html">Reorder</a></li><li><a href="Searchbar.html">Searchbar</a></li><li><a href="Segment.html">Segment</a></li><li><a href="SegmentButton.html">SegmentButton</a></li><li><a href="Select.html">Select</a></li><li><a href="SelectPopover.html">SelectPopover</a></li><li><a href="Slides.html">Slides</a></li><li><a href="TabBar.html">TabBar</a></li><li><a href="TabButton.html">TabButton</a></li><li><a href="Tabs.html">Tabs</a></li><li><a href="Text.html">Text</a></li><li><a href="Textarea.html">Textarea</a></li><li><a href="Toast.html">Toast</a></li><li><a href="Toggle.html">Toggle</a></li><li><a href="Toolbar.html">Toolbar</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_expandUnicodeEscapes">_expandUnicodeEscapes</a></li><li><a href="global.html#a">a</a></li><li><a href="global.html#baseAnimation">baseAnimation</a></li><li><a href="global.html#bindLocale">bindLocale</a></li><li><a href="global.html#blockHardwareBackButton">blockHardwareBackButton</a></li><li><a href="global.html#clean">clean</a></li><li><a href="global.html#componentOnReady">componentOnReady</a></li><li><a href="global.html#convertToArrayOfNumbers">convertToArrayOfNumbers</a></li><li><a href="global.html#convertToArrayOfStrings">convertToArrayOfStrings</a></li><li><a href="global.html#copyVisualViewport">copyVisualViewport</a></li><li><a href="global.html#createColorClasses">createColorClasses</a></li><li><a href="global.html#EMPTY_OBJ">EMPTY_OBJ</a></li><li><a href="global.html#fireKeyboardCloseEvent">fireKeyboardCloseEvent</a></li><li><a href="global.html#fireKeyboardOpenEvent">fireKeyboardOpenEvent</a></li><li><a href="global.html#focusPreviousElementOnDismiss">focusPreviousElementOnDismiss</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#getAriaLabel">getAriaLabel</a></li><li><a href="global.html#getDateTime">getDateTime</a></li><li><a href="global.html#getDateValue">getDateValue</a></li><li><a href="global.html#getElementChildren">getElementChildren</a></li><li><a href="global.html#getElementRoot">getElementRoot</a></li><li><a href="global.html#getPendingOrdersAsync">getPendingOrdersAsync</a></li><li><a href="global.html#getStockAsync">getStockAsync</a></li><li><a href="global.html#getTimeGivenProgression">getTimeGivenProgression</a></li><li><a href="global.html#h">h</a></li><li><a href="global.html#handleToolbarIntersection">handleToolbarIntersection</a></li><li><a href="global.html#hapticAvailable">hapticAvailable</a></li><li><a href="global.html#hapticImpact">hapticImpact</a></li><li><a href="global.html#hapticNotification">hapticNotification</a></li><li><a href="global.html#hapticSelection">hapticSelection</a></li><li><a href="global.html#hapticSelectionChanged">hapticSelectionChanged</a></li><li><a href="global.html#hapticSelectionEnd">hapticSelectionEnd</a></li><li><a href="global.html#hapticSelectionStart">hapticSelectionStart</a></li><li><a href="global.html#inheritAttributes">inheritAttributes</a></li><li><a href="global.html#initAngular1">initAngular1</a></li><li><a href="global.html#iosEnterAnimation">iosEnterAnimation</a></li><li><a href="global.html#iosLeaveAnimation">iosLeaveAnimation</a></li><li><a href="global.html#isEndSide">isEndSide</a></li><li><a href="global.html#keyboardDidClose">keyboardDidClose</a></li><li><a href="global.html#keyboardDidOpen">keyboardDidOpen</a></li><li><a href="global.html#keyboardDidResize">keyboardDidResize</a></li><li><a href="global.html#lex">lex</a></li><li><a href="global.html#mdEnterAnimation">mdEnterAnimation</a></li><li><a href="global.html#mdLeaveAnimation">mdLeaveAnimation</a></li><li><a href="global.html#menuOverlayAnimation">menuOverlayAnimation</a></li><li><a href="global.html#menuPushAnimation">menuPushAnimation</a></li><li><a href="global.html#menuRevealAnimation">menuRevealAnimation</a></li><li><a href="global.html#Methods">Methods</a></li><li><a href="global.html#parse">parse</a></li><li><a href="global.html#parseCss">parseCss</a></li><li><a href="global.html#processKeyframes">processKeyframes</a></li><li><a href="global.html#raf">raf</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#renderHiddenInput">renderHiddenInput</a></li><li><a href="global.html#resetKeyboardAssist">resetKeyboardAssist</a></li><li><a href="global.html#s">s</a></li><li><a href="global.html#safeSelector">safeSelector</a></li><li><a href="global.html#sanitizeDOMString">sanitizeDOMString</a></li><li><a href="global.html#sanitizeElement">sanitizeElement</a></li><li><a href="global.html#setAccessor">setAccessor</a></li><li><a href="global.html#showIonicModal">showIonicModal</a></li><li><a href="global.html#solveCubicBezier">solveCubicBezier</a></li><li><a href="global.html#solveCubicParametricEquation">solveCubicParametricEquation</a></li><li><a href="global.html#startNativeListeners">startNativeListeners</a></li><li><a href="global.html#StyleNode">StyleNode</a></li><li><a href="global.html#SVG_NS">SVG_NS</a></li><li><a href="global.html#trackViewportChanges">trackViewportChanges</a></li><li><a href="global.html#trapKeyboardFocus">trapKeyboardFocus</a></li><li><a href="global.html#types">types</a></li><li><a href="global.html#updatePendingOrders">updatePendingOrders</a></li><li><a href="global.html#updateStock">updateStock</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>resources/ionic-core/dist/collection/components/picker/picker.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Component, Element, Event, Host, Method, Prop, State, h } from '@stencil/core';
+import { getIonMode } from '../../global/ionic-global';
+import { BACKDROP, dismiss, eventMethod, isCancel, prepareOverlay, present, safeCall } from '../../utils/overlays';
+import { getClassMap } from '../../utils/theme';
+import { iosEnterAnimation } from './animations/ios.enter';
+import { iosLeaveAnimation } from './animations/ios.leave';
+/**
+ * @virtualProp {"ios" | "md"} mode - The mode determines which platform styles to use.
+ */
+export class Picker {
+  constructor() {
+    this.presented = false;
+    /**
+     * If `true`, the keyboard will be automatically dismissed when the overlay is presented.
+     */
+    this.keyboardClose = true;
+    /**
+     * Array of buttons to be displayed at the top of the picker.
+     */
+    this.buttons = [];
+    /**
+     * Array of columns to be displayed in the picker.
+     */
+    this.columns = [];
+    /**
+     * Number of milliseconds to wait before dismissing the picker.
+     */
+    this.duration = 0;
+    /**
+     * If `true`, a backdrop will be displayed behind the picker.
+     */
+    this.showBackdrop = true;
+    /**
+     * If `true`, the picker will be dismissed when the backdrop is clicked.
+     */
+    this.backdropDismiss = true;
+    /**
+     * If `true`, the picker will animate.
+     */
+    this.animated = true;
+    this.onBackdropTap = () => {
+      this.dismiss(undefined, BACKDROP);
+    };
+    this.dispatchCancelHandler = (ev) => {
+      const role = ev.detail.role;
+      if (isCancel(role)) {
+        const cancelButton = this.buttons.find(b => b.role === 'cancel');
+        this.callButtonHandler(cancelButton);
+      }
+    };
+  }
+  connectedCallback() {
+    prepareOverlay(this.el);
+  }
+  /**
+   * Present the picker overlay after it has been created.
+   */
+  async present() {
+    await present(this, 'pickerEnter', iosEnterAnimation, iosEnterAnimation, undefined);
+    if (this.duration > 0) {
+      this.durationTimeout = setTimeout(() => this.dismiss(), this.duration);
+    }
+  }
+  /**
+   * Dismiss the picker overlay after it has been presented.
+   *
+   * @param data Any data to emit in the dismiss events.
+   * @param role The role of the element that is dismissing the picker.
+   * This can be useful in a button handler for determining which button was
+   * clicked to dismiss the picker.
+   * Some examples include: ``"cancel"`, `"destructive"`, "selected"`, and `"backdrop"`.
+   */
+  dismiss(data, role) {
+    if (this.durationTimeout) {
+      clearTimeout(this.durationTimeout);
+    }
+    return dismiss(this, data, role, 'pickerLeave', iosLeaveAnimation, iosLeaveAnimation);
+  }
+  /**
+   * Returns a promise that resolves when the picker did dismiss.
+   */
+  onDidDismiss() {
+    return eventMethod(this.el, 'ionPickerDidDismiss');
+  }
+  /**
+   * Returns a promise that resolves when the picker will dismiss.
+   */
+  onWillDismiss() {
+    return eventMethod(this.el, 'ionPickerWillDismiss');
+  }
+  /**
+   * Get the column that matches the specified name.
+   *
+   * @param name The name of the column.
+   */
+  getColumn(name) {
+    return Promise.resolve(this.columns.find(column => column.name === name));
+  }
+  async buttonClick(button) {
+    const role = button.role;
+    if (isCancel(role)) {
+      return this.dismiss(undefined, role);
+    }
+    const shouldDismiss = await this.callButtonHandler(button);
+    if (shouldDismiss) {
+      return this.dismiss(this.getSelected(), button.role);
+    }
+    return Promise.resolve();
+  }
+  async callButtonHandler(button) {
+    if (button) {
+      // a handler has been provided, execute it
+      // pass the handler the values from the inputs
+      const rtn = await safeCall(button.handler, this.getSelected());
+      if (rtn === false) {
+        // if the return value of the handler is false then do not dismiss
+        return false;
+      }
+    }
+    return true;
+  }
+  getSelected() {
+    const selected = {};
+    this.columns.forEach((col, index) => {
+      const selectedColumn = col.selectedIndex !== undefined
+        ? col.options[col.selectedIndex]
+        : undefined;
+      selected[col.name] = {
+        text: selectedColumn ? selectedColumn.text : undefined,
+        value: selectedColumn ? selectedColumn.value : undefined,
+        columnIndex: index
+      };
+    });
+    return selected;
+  }
+  render() {
+    const mode = getIonMode(this);
+    return (h(Host, { "aria-modal": "true", tabindex: "-1", class: Object.assign({ [mode]: true, 
+        // Used internally for styling
+        [`picker-${mode}`]: true }, getClassMap(this.cssClass)), style: {
+        zIndex: `${20000 + this.overlayIndex}`
+      }, onIonBackdropTap: this.onBackdropTap, onIonPickerWillDismiss: this.dispatchCancelHandler },
+      h("ion-backdrop", { visible: this.showBackdrop, tappable: this.backdropDismiss }),
+      h("div", { tabindex: "0" }),
+      h("div", { class: "picker-wrapper ion-overlay-wrapper", role: "dialog" },
+        h("div", { class: "picker-toolbar" }, this.buttons.map(b => (h("div", { class: buttonWrapperClass(b) },
+          h("button", { type: "button", onClick: () => this.buttonClick(b), class: buttonClass(b) }, b.text))))),
+        h("div", { class: "picker-columns" },
+          h("div", { class: "picker-above-highlight" }),
+          this.presented &amp;&amp; this.columns.map(c => h("ion-picker-column", { col: c })),
+          h("div", { class: "picker-below-highlight" }))),
+      h("div", { tabindex: "0" })));
+  }
+  static get is() { return "ion-picker"; }
+  static get encapsulation() { return "scoped"; }
+  static get originalStyleUrls() { return {
+    "ios": ["picker.ios.scss"],
+    "md": ["picker.md.scss"]
+  }; }
+  static get styleUrls() { return {
+    "ios": ["picker.ios.css"],
+    "md": ["picker.md.css"]
+  }; }
+  static get properties() { return {
+    "overlayIndex": {
+      "type": "number",
+      "mutable": false,
+      "complexType": {
+        "original": "number",
+        "resolved": "number",
+        "references": {}
+      },
+      "required": true,
+      "optional": false,
+      "docs": {
+        "tags": [{
+            "text": undefined,
+            "name": "internal"
+          }],
+        "text": ""
+      },
+      "attribute": "overlay-index",
+      "reflect": false
+    },
+    "keyboardClose": {
+      "type": "boolean",
+      "mutable": false,
+      "complexType": {
+        "original": "boolean",
+        "resolved": "boolean",
+        "references": {}
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "If `true`, the keyboard will be automatically dismissed when the overlay is presented."
+      },
+      "attribute": "keyboard-close",
+      "reflect": false,
+      "defaultValue": "true"
+    },
+    "enterAnimation": {
+      "type": "unknown",
+      "mutable": false,
+      "complexType": {
+        "original": "AnimationBuilder",
+        "resolved": "((baseEl: any, opts?: any) => Animation) | undefined",
+        "references": {
+          "AnimationBuilder": {
+            "location": "import",
+            "path": "../../interface"
+          }
+        }
+      },
+      "required": false,
+      "optional": true,
+      "docs": {
+        "tags": [],
+        "text": "Animation to use when the picker is presented."
+      }
+    },
+    "leaveAnimation": {
+      "type": "unknown",
+      "mutable": false,
+      "complexType": {
+        "original": "AnimationBuilder",
+        "resolved": "((baseEl: any, opts?: any) => Animation) | undefined",
+        "references": {
+          "AnimationBuilder": {
+            "location": "import",
+            "path": "../../interface"
+          }
+        }
+      },
+      "required": false,
+      "optional": true,
+      "docs": {
+        "tags": [],
+        "text": "Animation to use when the picker is dismissed."
+      }
+    },
+    "buttons": {
+      "type": "unknown",
+      "mutable": false,
+      "complexType": {
+        "original": "PickerButton[]",
+        "resolved": "PickerButton[]",
+        "references": {
+          "PickerButton": {
+            "location": "import",
+            "path": "../../interface"
+          }
+        }
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "Array of buttons to be displayed at the top of the picker."
+      },
+      "defaultValue": "[]"
+    },
+    "columns": {
+      "type": "unknown",
+      "mutable": false,
+      "complexType": {
+        "original": "PickerColumn[]",
+        "resolved": "PickerColumn[]",
+        "references": {
+          "PickerColumn": {
+            "location": "import",
+            "path": "../../interface"
+          }
+        }
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "Array of columns to be displayed in the picker."
+      },
+      "defaultValue": "[]"
+    },
+    "cssClass": {
+      "type": "string",
+      "mutable": false,
+      "complexType": {
+        "original": "string | string[]",
+        "resolved": "string | string[] | undefined",
+        "references": {}
+      },
+      "required": false,
+      "optional": true,
+      "docs": {
+        "tags": [],
+        "text": "Additional classes to apply for custom CSS. If multiple classes are\nprovided they should be separated by spaces."
+      },
+      "attribute": "css-class",
+      "reflect": false
+    },
+    "duration": {
+      "type": "number",
+      "mutable": false,
+      "complexType": {
+        "original": "number",
+        "resolved": "number",
+        "references": {}
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "Number of milliseconds to wait before dismissing the picker."
+      },
+      "attribute": "duration",
+      "reflect": false,
+      "defaultValue": "0"
+    },
+    "showBackdrop": {
+      "type": "boolean",
+      "mutable": false,
+      "complexType": {
+        "original": "boolean",
+        "resolved": "boolean",
+        "references": {}
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "If `true`, a backdrop will be displayed behind the picker."
+      },
+      "attribute": "show-backdrop",
+      "reflect": false,
+      "defaultValue": "true"
+    },
+    "backdropDismiss": {
+      "type": "boolean",
+      "mutable": false,
+      "complexType": {
+        "original": "boolean",
+        "resolved": "boolean",
+        "references": {}
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "If `true`, the picker will be dismissed when the backdrop is clicked."
+      },
+      "attribute": "backdrop-dismiss",
+      "reflect": false,
+      "defaultValue": "true"
+    },
+    "animated": {
+      "type": "boolean",
+      "mutable": false,
+      "complexType": {
+        "original": "boolean",
+        "resolved": "boolean",
+        "references": {}
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "If `true`, the picker will animate."
+      },
+      "attribute": "animated",
+      "reflect": false,
+      "defaultValue": "true"
+    }
+  }; }
+  static get states() { return {
+    "presented": {}
+  }; }
+  static get events() { return [{
+      "method": "didPresent",
+      "name": "ionPickerDidPresent",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": {
+        "tags": [],
+        "text": "Emitted after the picker has presented."
+      },
+      "complexType": {
+        "original": "void",
+        "resolved": "void",
+        "references": {}
+      }
+    }, {
+      "method": "willPresent",
+      "name": "ionPickerWillPresent",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": {
+        "tags": [],
+        "text": "Emitted before the picker has presented."
+      },
+      "complexType": {
+        "original": "void",
+        "resolved": "void",
+        "references": {}
+      }
+    }, {
+      "method": "willDismiss",
+      "name": "ionPickerWillDismiss",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": {
+        "tags": [],
+        "text": "Emitted before the picker has dismissed."
+      },
+      "complexType": {
+        "original": "OverlayEventDetail",
+        "resolved": "OverlayEventDetail&lt;any>",
+        "references": {
+          "OverlayEventDetail": {
+            "location": "import",
+            "path": "../../interface"
+          }
+        }
+      }
+    }, {
+      "method": "didDismiss",
+      "name": "ionPickerDidDismiss",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": {
+        "tags": [],
+        "text": "Emitted after the picker has dismissed."
+      },
+      "complexType": {
+        "original": "OverlayEventDetail",
+        "resolved": "OverlayEventDetail&lt;any>",
+        "references": {
+          "OverlayEventDetail": {
+            "location": "import",
+            "path": "../../interface"
+          }
+        }
+      }
+    }]; }
+  static get methods() { return {
+    "present": {
+      "complexType": {
+        "signature": "() => Promise&lt;void>",
+        "parameters": [],
+        "references": {
+          "Promise": {
+            "location": "global"
+          }
+        },
+        "return": "Promise&lt;void>"
+      },
+      "docs": {
+        "text": "Present the picker overlay after it has been created.",
+        "tags": []
+      }
+    },
+    "dismiss": {
+      "complexType": {
+        "signature": "(data?: any, role?: string | undefined) => Promise&lt;boolean>",
+        "parameters": [{
+            "tags": [{
+                "text": "data Any data to emit in the dismiss events.",
+                "name": "param"
+              }],
+            "text": "Any data to emit in the dismiss events."
+          }, {
+            "tags": [{
+                "text": "role The role of the element that is dismissing the picker.\nThis can be useful in a button handler for determining which button was\nclicked to dismiss the picker.\nSome examples include: ``\"cancel\"`, `\"destructive\"`, \"selected\"`, and `\"backdrop\"`.",
+                "name": "param"
+              }],
+            "text": "The role of the element that is dismissing the picker.\nThis can be useful in a button handler for determining which button was\nclicked to dismiss the picker.\nSome examples include: ``\"cancel\"`, `\"destructive\"`, \"selected\"`, and `\"backdrop\"`."
+          }],
+        "references": {
+          "Promise": {
+            "location": "global"
+          }
+        },
+        "return": "Promise&lt;boolean>"
+      },
+      "docs": {
+        "text": "Dismiss the picker overlay after it has been presented.",
+        "tags": [{
+            "name": "param",
+            "text": "data Any data to emit in the dismiss events."
+          }, {
+            "name": "param",
+            "text": "role The role of the element that is dismissing the picker.\nThis can be useful in a button handler for determining which button was\nclicked to dismiss the picker.\nSome examples include: ``\"cancel\"`, `\"destructive\"`, \"selected\"`, and `\"backdrop\"`."
+          }]
+      }
+    },
+    "onDidDismiss": {
+      "complexType": {
+        "signature": "&lt;T = any>() => Promise&lt;OverlayEventDetail&lt;T>>",
+        "parameters": [],
+        "references": {
+          "Promise": {
+            "location": "global"
+          },
+          "OverlayEventDetail": {
+            "location": "import",
+            "path": "../../interface"
+          },
+          "T": {
+            "location": "global"
+          }
+        },
+        "return": "Promise&lt;OverlayEventDetail&lt;T>>"
+      },
+      "docs": {
+        "text": "Returns a promise that resolves when the picker did dismiss.",
+        "tags": []
+      }
+    },
+    "onWillDismiss": {
+      "complexType": {
+        "signature": "&lt;T = any>() => Promise&lt;OverlayEventDetail&lt;T>>",
+        "parameters": [],
+        "references": {
+          "Promise": {
+            "location": "global"
+          },
+          "OverlayEventDetail": {
+            "location": "import",
+            "path": "../../interface"
+          },
+          "T": {
+            "location": "global"
+          }
+        },
+        "return": "Promise&lt;OverlayEventDetail&lt;T>>"
+      },
+      "docs": {
+        "text": "Returns a promise that resolves when the picker will dismiss.",
+        "tags": []
+      }
+    },
+    "getColumn": {
+      "complexType": {
+        "signature": "(name: string) => Promise&lt;PickerColumn | undefined>",
+        "parameters": [{
+            "tags": [{
+                "text": "name The name of the column.",
+                "name": "param"
+              }],
+            "text": "The name of the column."
+          }],
+        "references": {
+          "Promise": {
+            "location": "global"
+          },
+          "PickerColumn": {
+            "location": "import",
+            "path": "../../interface"
+          }
+        },
+        "return": "Promise&lt;PickerColumn | undefined>"
+      },
+      "docs": {
+        "text": "Get the column that matches the specified name.",
+        "tags": [{
+            "name": "param",
+            "text": "name The name of the column."
+          }]
+      }
+    }
+  }; }
+  static get elementRef() { return "el"; }
+}
+const buttonWrapperClass = (button) => {
+  return {
+    [`picker-toolbar-${button.role}`]: button.role !== undefined,
+    'picker-toolbar-button': true
+  };
+};
+const buttonClass = (button) => {
+  return Object.assign({ 'picker-button': true, 'ion-activatable': true }, getClassMap(button.cssClass));
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

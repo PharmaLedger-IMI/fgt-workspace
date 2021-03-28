@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability Marketing Authorization Holder SSApp utils</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability Marketing Authorization Holder SSApp</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/fgt-workspace/fgt-mah-ssapp.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com/fgt-mah-wallet/loader"
+                        >
+                            Application
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-dsu-wizard.module_commands.html">commands</a></li><li><a href="fgt-dsu-wizard.html#.module:managers">managers</a></li><li><a href="fgt-dsu-wizard.module_model.html">model</a></li><li><a href="fgt-dsu-wizard.module_services.html">services</a></li><li><a href="fgt-mah-ssapp.module_LOCALE.html">LOCALE</a></li><li><a href="fgt-mah-ssapp.module_managers.html">managers</a></li><li><a href="module-constants.html">constants</a></li><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li><li><a href="module-keyssi.html">keyssi</a></li><li><a href="module-locale.html">locale</a></li><li><a href="module-managers.html">managers</a></li><li><a href="module-server.html">server</a></li><li><a href="module-services.html">services</a></li><li><a href="module-utils.html">utils</a></li><li><a href="toolkit.model.validations.module_validations.html">validations</a></li></ul><h3>Classes</h3><ul><li><a href="$$.html">$$</a></li><li><a href="fgt-dsu-wizard.module_commands-BatchManager.html">BatchManager</a></li><li><a href="fgt-dsu-wizard.module_commands-OrderManager.html">OrderManager</a></li><li><a href="fgt-dsu-wizard.module_model-Batch.html">Batch</a></li><li><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html">ParticipantManager</a></li><li><a href="fgt-mah-ssapp.module_managers-ProductManager.html">ProductManager</a></li><li><a href="fgt-mah-ssapp.module_managers-StockManager.html">StockManager</a></li><li><a href="module-managers-BaseManager.html">BaseManager</a></li><li><a href="module-managers-Manager.html">Manager</a></li><li><a href="module-services-DSUService.html">DSUService</a></li></ul><h3>Interfaces</h3><ul><li><a href="toolkit.model.validations.module_validations-Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getBatchesAsync">getBatchesAsync</a></li><li><a href="global.html#getProductsAsync">getProductsAsync</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#updateBatches">updateBatches</a></li><li><a href="global.html#updateProducts">updateProducts</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Module</p>
+                    <h1>utils</h1>
+                </header>
+                
+
+
+
+
+<section>
+
+<header>
+    
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".generateID">
+        <a class="href-link" href="#.generateID">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                generateID<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Generates a string of the provided length filled with random characters from 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+Clone of PrivateSky Code</p>.</p>
+    
+    
+    <div class="description">
+        <p>Generates a string of the provided length filled with random characters from 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+Clone of PrivateSky Code</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="scripts_bundles_wizard.js.html" class="button">View Source</a>
+            <span>
+                <a href="scripts_bundles_wizard.js.html">scripts/bundles/wizard.js</a>, <a href="scripts_bundles_wizard.js.html#line3380">line 3380</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".generateNumericID">
+        <a class="href-link" href="#.generateNumericID">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                generateNumericID<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Generates a string of the provided length filled with random numeric characters
+Clone of PrivateSky Code</p>.</p>
+    
+    
+    <div class="description">
+        <p>Generates a string of the provided length filled with random numeric characters
+Clone of PrivateSky Code</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="scripts_bundles_wizard.js.html" class="button">View Source</a>
+            <span>
+                <a href="scripts_bundles_wizard.js.html">scripts/bundles/wizard.js</a>, <a href="scripts_bundles_wizard.js.html#line3389">line 3389</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".generateSerialNumber">
+        <a class="href-link" href="#.generateSerialNumber">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                generateSerialNumber<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Clone of PrivateSky Code</p>.</p>
+    
+    
+    <div class="description">
+        <p>Clone of PrivateSky Code</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="scripts_bundles_wizard.js.html" class="button">View Source</a>
+            <span>
+                <a href="scripts_bundles_wizard.js.html">scripts/bundles/wizard.js</a>, <a href="scripts_bundles_wizard.js.html#line3397">line 3397</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".generateID">
+        <a class="href-link" href="#.generateID">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                generateID<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Generates a string of the provided length filled with random characters from 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+Clone of PrivateSky Code</p>.</p>
+    
+    
+    <div class="description">
+        <p>Generates a string of the provided length filled with random characters from 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+Clone of PrivateSky Code</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="scripts_bundles_wizard.js.html" class="button">View Source</a>
+            <span>
+                <a href="scripts_bundles_wizard.js.html">scripts/bundles/wizard.js</a>, <a href="scripts_bundles_wizard.js.html#line3380">line 3380</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".generateNumericID">
+        <a class="href-link" href="#.generateNumericID">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                generateNumericID<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Generates a string of the provided length filled with random numeric characters
+Clone of PrivateSky Code</p>.</p>
+    
+    
+    <div class="description">
+        <p>Generates a string of the provided length filled with random numeric characters
+Clone of PrivateSky Code</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="scripts_bundles_wizard.js.html" class="button">View Source</a>
+            <span>
+                <a href="scripts_bundles_wizard.js.html">scripts/bundles/wizard.js</a>, <a href="scripts_bundles_wizard.js.html#line3389">line 3389</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".generateSerialNumber">
+        <a class="href-link" href="#.generateSerialNumber">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                generateSerialNumber<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Clone of PrivateSky Code</p>.</p>
+    
+    
+    <div class="description">
+        <p>Clone of PrivateSky Code</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="scripts_bundles_wizard.js.html" class="button">View Source</a>
+            <span>
+                <a href="scripts_bundles_wizard.js.html">scripts/bundles/wizard.js</a>, <a href="scripts_bundles_wizard.js.html#line3397">line 3397</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

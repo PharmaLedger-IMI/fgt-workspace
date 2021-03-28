@@ -1,0 +1,1001 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability Wholesaler SSApp resources/ionic-core/dist/collection/components/searchbar/searchbar.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability Wholesaler SSApp</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/fgt-workspace/fgt-wholesaler-ssapp.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com/fgt-wholesaler-wallet/loader"
+                        >
+                            Application
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="ActionSheet.html">ActionSheet</a></li><li><a href="Alert.html">Alert</a></li><li><a href="BackButton.html">BackButton</a></li><li><a href="Badge.html">Badge</a></li><li><a href="Button.html">Button</a></li><li><a href="Card.html">Card</a></li><li><a href="CardContent.html">CardContent</a></li><li><a href="CardHeader.html">CardHeader</a></li><li><a href="CardSubtitle.html">CardSubtitle</a></li><li><a href="CardTitle.html">CardTitle</a></li><li><a href="Checkbox.html">Checkbox</a></li><li><a href="Chip.html">Chip</a></li><li><a href="Content.html">Content</a></li><li><a href="Datetime.html">Datetime</a></li><li><a href="Dom7.html">Dom7</a></li><li><a href="FabButton.html">FabButton</a></li><li><a href="Footer.html">Footer</a></li><li><a href="Header.html">Header</a></li><li><a href="global.html#ImageCapture">ImageCapture</a></li><li><a href="Img.html">Img</a></li><li><a href="Input.html">Input</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemDivider.html">ItemDivider</a></li><li><a href="ItemOption.html">ItemOption</a></li><li><a href="Label.html">Label</a></li><li><a href="List.html">List</a></li><li><a href="ListHeader.html">ListHeader</a></li><li><a href="Loading.html">Loading</a></li><li><a href="Menu.html">Menu</a></li><li><a href="MenuButton.html">MenuButton</a></li><li><a href="Modal.html">Modal</a></li><li><a href="module.exports.html">exports</a></li><li><a href="Note.html">Note</a></li><li><a href="Picker.html">Picker</a></li><li><a href="PickerColumnCmp.html">PickerColumnCmp</a></li><li><a href="Popover.html">Popover</a></li><li><a href="ProgressBar.html">ProgressBar</a></li><li><a href="Radio.html">Radio</a></li><li><a href="Range.html">Range</a></li><li><a href="Reorder.html">Reorder</a></li><li><a href="Searchbar.html">Searchbar</a></li><li><a href="Segment.html">Segment</a></li><li><a href="SegmentButton.html">SegmentButton</a></li><li><a href="Select.html">Select</a></li><li><a href="SelectPopover.html">SelectPopover</a></li><li><a href="Slides.html">Slides</a></li><li><a href="TabBar.html">TabBar</a></li><li><a href="TabButton.html">TabButton</a></li><li><a href="Tabs.html">Tabs</a></li><li><a href="Text.html">Text</a></li><li><a href="Textarea.html">Textarea</a></li><li><a href="Toast.html">Toast</a></li><li><a href="Toggle.html">Toggle</a></li><li><a href="Toolbar.html">Toolbar</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_expandUnicodeEscapes">_expandUnicodeEscapes</a></li><li><a href="global.html#a">a</a></li><li><a href="global.html#baseAnimation">baseAnimation</a></li><li><a href="global.html#bindLocale">bindLocale</a></li><li><a href="global.html#blockHardwareBackButton">blockHardwareBackButton</a></li><li><a href="global.html#clean">clean</a></li><li><a href="global.html#componentOnReady">componentOnReady</a></li><li><a href="global.html#convertToArrayOfNumbers">convertToArrayOfNumbers</a></li><li><a href="global.html#convertToArrayOfStrings">convertToArrayOfStrings</a></li><li><a href="global.html#copyVisualViewport">copyVisualViewport</a></li><li><a href="global.html#createColorClasses">createColorClasses</a></li><li><a href="global.html#EMPTY_OBJ">EMPTY_OBJ</a></li><li><a href="global.html#fireKeyboardCloseEvent">fireKeyboardCloseEvent</a></li><li><a href="global.html#fireKeyboardOpenEvent">fireKeyboardOpenEvent</a></li><li><a href="global.html#focusPreviousElementOnDismiss">focusPreviousElementOnDismiss</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#getAriaLabel">getAriaLabel</a></li><li><a href="global.html#getDateTime">getDateTime</a></li><li><a href="global.html#getDateValue">getDateValue</a></li><li><a href="global.html#getElementChildren">getElementChildren</a></li><li><a href="global.html#getElementRoot">getElementRoot</a></li><li><a href="global.html#getPendingOrdersAsync">getPendingOrdersAsync</a></li><li><a href="global.html#getStockAsync">getStockAsync</a></li><li><a href="global.html#getTimeGivenProgression">getTimeGivenProgression</a></li><li><a href="global.html#h">h</a></li><li><a href="global.html#handleToolbarIntersection">handleToolbarIntersection</a></li><li><a href="global.html#hapticAvailable">hapticAvailable</a></li><li><a href="global.html#hapticImpact">hapticImpact</a></li><li><a href="global.html#hapticNotification">hapticNotification</a></li><li><a href="global.html#hapticSelection">hapticSelection</a></li><li><a href="global.html#hapticSelectionChanged">hapticSelectionChanged</a></li><li><a href="global.html#hapticSelectionEnd">hapticSelectionEnd</a></li><li><a href="global.html#hapticSelectionStart">hapticSelectionStart</a></li><li><a href="global.html#inheritAttributes">inheritAttributes</a></li><li><a href="global.html#initAngular1">initAngular1</a></li><li><a href="global.html#iosEnterAnimation">iosEnterAnimation</a></li><li><a href="global.html#iosLeaveAnimation">iosLeaveAnimation</a></li><li><a href="global.html#isEndSide">isEndSide</a></li><li><a href="global.html#keyboardDidClose">keyboardDidClose</a></li><li><a href="global.html#keyboardDidOpen">keyboardDidOpen</a></li><li><a href="global.html#keyboardDidResize">keyboardDidResize</a></li><li><a href="global.html#lex">lex</a></li><li><a href="global.html#mdEnterAnimation">mdEnterAnimation</a></li><li><a href="global.html#mdLeaveAnimation">mdLeaveAnimation</a></li><li><a href="global.html#menuOverlayAnimation">menuOverlayAnimation</a></li><li><a href="global.html#menuPushAnimation">menuPushAnimation</a></li><li><a href="global.html#menuRevealAnimation">menuRevealAnimation</a></li><li><a href="global.html#Methods">Methods</a></li><li><a href="global.html#parse">parse</a></li><li><a href="global.html#parseCss">parseCss</a></li><li><a href="global.html#processKeyframes">processKeyframes</a></li><li><a href="global.html#raf">raf</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#renderHiddenInput">renderHiddenInput</a></li><li><a href="global.html#resetKeyboardAssist">resetKeyboardAssist</a></li><li><a href="global.html#s">s</a></li><li><a href="global.html#safeSelector">safeSelector</a></li><li><a href="global.html#sanitizeDOMString">sanitizeDOMString</a></li><li><a href="global.html#sanitizeElement">sanitizeElement</a></li><li><a href="global.html#setAccessor">setAccessor</a></li><li><a href="global.html#showIonicModal">showIonicModal</a></li><li><a href="global.html#solveCubicBezier">solveCubicBezier</a></li><li><a href="global.html#solveCubicParametricEquation">solveCubicParametricEquation</a></li><li><a href="global.html#startNativeListeners">startNativeListeners</a></li><li><a href="global.html#StyleNode">StyleNode</a></li><li><a href="global.html#SVG_NS">SVG_NS</a></li><li><a href="global.html#trackViewportChanges">trackViewportChanges</a></li><li><a href="global.html#trapKeyboardFocus">trapKeyboardFocus</a></li><li><a href="global.html#types">types</a></li><li><a href="global.html#updatePendingOrders">updatePendingOrders</a></li><li><a href="global.html#updateStock">updateStock</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>resources/ionic-core/dist/collection/components/searchbar/searchbar.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Component, Element, Event, Host, Method, Prop, State, Watch, forceUpdate, h } from '@stencil/core';
+import { config } from '../../global/config';
+import { getIonMode } from '../../global/ionic-global';
+import { debounceEvent, raf } from '../../utils/helpers';
+import { createColorClasses } from '../../utils/theme';
+/**
+ * @virtualProp {"ios" | "md"} mode - The mode determines which platform styles to use.
+ */
+export class Searchbar {
+  constructor() {
+    this.isCancelVisible = false;
+    this.shouldAlignLeft = true;
+    this.focused = false;
+    this.noAnimate = true;
+    /**
+     * If `true`, enable searchbar animation.
+     */
+    this.animated = false;
+    /**
+     * Set the input's autocomplete property.
+     */
+    this.autocomplete = 'off';
+    /**
+     * Set the input's autocorrect property.
+     */
+    this.autocorrect = 'off';
+    /**
+     * Set the cancel button icon. Only applies to `md` mode.
+     * Defaults to `"arrow-back-sharp"`.
+     */
+    this.cancelButtonIcon = config.get('backButtonIcon', 'arrow-back-sharp');
+    /**
+     * Set the the cancel button text. Only applies to `ios` mode.
+     */
+    this.cancelButtonText = 'Cancel';
+    /**
+     * Set the amount of time, in milliseconds, to wait to trigger the `ionChange` event after each keystroke. This also impacts form bindings such as `ngModel` or `v-model`.
+     */
+    this.debounce = 250;
+    /**
+     * If `true`, the user cannot interact with the input.
+     */
+    this.disabled = false;
+    /**
+     * Set the input's placeholder.
+     * `placeholder` can accept either plaintext or HTML as a string.
+     * To display characters normally reserved for HTML, they
+     * must be escaped. For example `&lt;Ionic>` would become
+     * `&amp;lt;Ionic&amp;gt;`
+     *
+     * For more information: [Security Documentation](https://ionicframework.com/docs/faq/security)
+     */
+    this.placeholder = 'Search';
+    /**
+     * Sets the behavior for the cancel button. Defaults to `"never"`.
+     * Setting to `"focus"` shows the cancel button on focus.
+     * Setting to `"never"` hides the cancel button.
+     * Setting to `"always"` shows the cancel button regardless
+     * of focus state.
+     */
+    this.showCancelButton = 'never';
+    /**
+     * Sets the behavior for the clear button. Defaults to `"focus"`.
+     * Setting to `"focus"` shows the clear button on focus if the
+     * input is not empty.
+     * Setting to `"never"` hides the clear button.
+     * Setting to `"always"` shows the clear button regardless
+     * of focus state, but only if the input is not empty.
+     */
+    this.showClearButton = 'focus';
+    /**
+     * If `true`, enable spellcheck on the input.
+     */
+    this.spellcheck = false;
+    /**
+     * Set the type of the input.
+     */
+    this.type = 'search';
+    /**
+     * the value of the searchbar.
+     */
+    this.value = '';
+    /**
+     * Clears the input field and triggers the control change.
+     */
+    this.onClearInput = (ev, shouldFocus) => {
+      this.ionClear.emit();
+      if (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+      // setTimeout() fixes https://github.com/ionic-team/ionic/issues/7527
+      // wait for 4 frames
+      setTimeout(() => {
+        const value = this.getValue();
+        if (value !== '') {
+          this.value = '';
+          this.ionInput.emit();
+          /**
+           * When tapping clear button
+           * ensure input is focused after
+           * clearing input so users
+           * can quickly start typing.
+           */
+          if (shouldFocus &amp;&amp; !this.focused) {
+            this.setFocus();
+          }
+        }
+      }, 16 * 4);
+    };
+    /**
+     * Clears the input field and tells the input to blur since
+     * the clearInput function doesn't want the input to blur
+     * then calls the custom cancel function if the user passed one in.
+     */
+    this.onCancelSearchbar = (ev) => {
+      if (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+      this.ionCancel.emit();
+      this.onClearInput();
+      if (this.nativeInput) {
+        this.nativeInput.blur();
+      }
+    };
+    /**
+     * Update the Searchbar input value when the input changes
+     */
+    this.onInput = (ev) => {
+      const input = ev.target;
+      if (input) {
+        this.value = input.value;
+      }
+      this.ionInput.emit(ev);
+    };
+    /**
+     * Sets the Searchbar to not focused and checks if it should align left
+     * based on whether there is a value in the searchbar or not.
+     */
+    this.onBlur = () => {
+      this.focused = false;
+      this.ionBlur.emit();
+      this.positionElements();
+    };
+    /**
+     * Sets the Searchbar to focused and active on input focus.
+     */
+    this.onFocus = () => {
+      this.focused = true;
+      this.ionFocus.emit();
+      this.positionElements();
+    };
+  }
+  debounceChanged() {
+    this.ionChange = debounceEvent(this.ionChange, this.debounce);
+  }
+  valueChanged() {
+    const inputEl = this.nativeInput;
+    const value = this.getValue();
+    if (inputEl &amp;&amp; inputEl.value !== value) {
+      inputEl.value = value;
+    }
+    this.ionChange.emit({ value });
+  }
+  showCancelButtonChanged() {
+    requestAnimationFrame(() => {
+      this.positionElements();
+      forceUpdate(this);
+    });
+  }
+  connectedCallback() {
+    this.emitStyle();
+  }
+  componentDidLoad() {
+    this.positionElements();
+    this.debounceChanged();
+    setTimeout(() => {
+      this.noAnimate = false;
+    }, 300);
+  }
+  emitStyle() {
+    this.ionStyle.emit({
+      'searchbar': true
+    });
+  }
+  /**
+   * Sets focus on the specified `ion-searchbar`. Use this method instead of the global
+   * `input.focus()`.
+   */
+  async setFocus() {
+    if (this.nativeInput) {
+      this.nativeInput.focus();
+    }
+  }
+  /**
+   * Returns the native `&lt;input>` element used under the hood.
+   */
+  getInputElement() {
+    return Promise.resolve(this.nativeInput);
+  }
+  /**
+   * Positions the input search icon, placeholder, and the cancel button
+   * based on the input value and if it is focused. (ios only)
+   */
+  positionElements() {
+    const value = this.getValue();
+    const prevAlignLeft = this.shouldAlignLeft;
+    const mode = getIonMode(this);
+    const shouldAlignLeft = (!this.animated || value.trim() !== '' || !!this.focused);
+    this.shouldAlignLeft = shouldAlignLeft;
+    if (mode !== 'ios') {
+      return;
+    }
+    if (prevAlignLeft !== shouldAlignLeft) {
+      this.positionPlaceholder();
+    }
+    if (this.animated) {
+      this.positionCancelButton();
+    }
+  }
+  /**
+   * Positions the input placeholder
+   */
+  positionPlaceholder() {
+    const inputEl = this.nativeInput;
+    if (!inputEl) {
+      return;
+    }
+    const isRTL = document.dir === 'rtl';
+    const iconEl = (this.el.shadowRoot || this.el).querySelector('.searchbar-search-icon');
+    if (this.shouldAlignLeft) {
+      inputEl.removeAttribute('style');
+      iconEl.removeAttribute('style');
+    }
+    else {
+      // Create a dummy span to get the placeholder width
+      const doc = document;
+      const tempSpan = doc.createElement('span');
+      tempSpan.innerText = this.placeholder || '';
+      doc.body.appendChild(tempSpan);
+      // Get the width of the span then remove it
+      raf(() => {
+        const textWidth = tempSpan.offsetWidth;
+        tempSpan.remove();
+        // Calculate the input padding
+        const inputLeft = 'calc(50% - ' + (textWidth / 2) + 'px)';
+        // Calculate the icon margin
+        const iconLeft = 'calc(50% - ' + ((textWidth / 2) + 30) + 'px)';
+        // Set the input padding start and icon margin start
+        if (isRTL) {
+          inputEl.style.paddingRight = inputLeft;
+          iconEl.style.marginRight = iconLeft;
+        }
+        else {
+          inputEl.style.paddingLeft = inputLeft;
+          iconEl.style.marginLeft = iconLeft;
+        }
+      });
+    }
+  }
+  /**
+   * Show the iOS Cancel button on focus, hide it offscreen otherwise
+   */
+  positionCancelButton() {
+    const isRTL = document.dir === 'rtl';
+    const cancelButton = (this.el.shadowRoot || this.el).querySelector('.searchbar-cancel-button');
+    const shouldShowCancel = this.shouldShowCancelButton();
+    if (cancelButton &amp;&amp; shouldShowCancel !== this.isCancelVisible) {
+      const cancelStyle = cancelButton.style;
+      this.isCancelVisible = shouldShowCancel;
+      if (shouldShowCancel) {
+        if (isRTL) {
+          cancelStyle.marginLeft = '0';
+        }
+        else {
+          cancelStyle.marginRight = '0';
+        }
+      }
+      else {
+        const offset = cancelButton.offsetWidth;
+        if (offset > 0) {
+          if (isRTL) {
+            cancelStyle.marginLeft = -offset + 'px';
+          }
+          else {
+            cancelStyle.marginRight = -offset + 'px';
+          }
+        }
+      }
+    }
+  }
+  getValue() {
+    return this.value || '';
+  }
+  hasValue() {
+    return this.getValue() !== '';
+  }
+  /**
+   * Determines whether or not the cancel button should be visible onscreen.
+   * Cancel button should be shown if one of two conditions applies:
+   * 1. `showCancelButton` is set to `always`.
+   * 2. `showCancelButton` is set to `focus`, and the searchbar has been focused.
+   */
+  shouldShowCancelButton() {
+    if ((this.showCancelButton === 'never') || (this.showCancelButton === 'focus' &amp;&amp; !this.focused)) {
+      return false;
+    }
+    return true;
+  }
+  /**
+   * Determines whether or not the clear button should be visible onscreen.
+   * Clear button should be shown if one of two conditions applies:
+   * 1. `showClearButton` is set to `always`.
+   * 2. `showClearButton` is set to `focus`, and the searchbar has been focused.
+   */
+  shouldShowClearButton() {
+    if ((this.showClearButton === 'never') || (this.showClearButton === 'focus' &amp;&amp; !this.focused)) {
+      return false;
+    }
+    return true;
+  }
+  render() {
+    const { cancelButtonText } = this;
+    const animated = this.animated &amp;&amp; config.getBoolean('animated', true);
+    const mode = getIonMode(this);
+    const clearIcon = this.clearIcon || (mode === 'ios' ? 'close-circle' : 'close-sharp');
+    const searchIcon = this.searchIcon || (mode === 'ios' ? 'search-outline' : 'search-sharp');
+    const shouldShowCancelButton = this.shouldShowCancelButton();
+    const cancelButton = (this.showCancelButton !== 'never') &amp;&amp; (h("button", { "aria-label": cancelButtonText, "aria-hidden": shouldShowCancelButton ? undefined : 'true', type: "button", tabIndex: mode === 'ios' &amp;&amp; !shouldShowCancelButton ? -1 : undefined, onMouseDown: this.onCancelSearchbar, onTouchStart: this.onCancelSearchbar, class: "searchbar-cancel-button" },
+      h("div", { "aria-hidden": "true" }, mode === 'md'
+        ? h("ion-icon", { "aria-hidden": "true", mode: mode, icon: this.cancelButtonIcon, lazy: false })
+        : cancelButtonText)));
+    return (h(Host, { role: "search", "aria-disabled": this.disabled ? 'true' : null, class: createColorClasses(this.color, {
+        [mode]: true,
+        'searchbar-animated': animated,
+        'searchbar-disabled': this.disabled,
+        'searchbar-no-animate': animated &amp;&amp; this.noAnimate,
+        'searchbar-has-value': this.hasValue(),
+        'searchbar-left-aligned': this.shouldAlignLeft,
+        'searchbar-has-focus': this.focused,
+        'searchbar-should-show-clear': this.shouldShowClearButton(),
+        'searchbar-should-show-cancel': this.shouldShowCancelButton()
+      }) },
+      h("div", { class: "searchbar-input-container" },
+        h("input", { "aria-label": "search text", disabled: this.disabled, ref: el => this.nativeInput = el, class: "searchbar-input", inputMode: this.inputmode, enterKeyHint: this.enterkeyhint, onInput: this.onInput, onBlur: this.onBlur, onFocus: this.onFocus, placeholder: this.placeholder, type: this.type, value: this.getValue(), autoComplete: this.autocomplete, autoCorrect: this.autocorrect, spellcheck: this.spellcheck }),
+        mode === 'md' &amp;&amp; cancelButton,
+        h("ion-icon", { "aria-hidden": "true", mode: mode, icon: searchIcon, lazy: false, class: "searchbar-search-icon" }),
+        h("button", { "aria-label": "reset", type: "button", "no-blur": true, class: "searchbar-clear-button", onMouseDown: ev => this.onClearInput(ev, true), onTouchStart: ev => this.onClearInput(ev, true) },
+          h("ion-icon", { "aria-hidden": "true", mode: mode, icon: clearIcon, lazy: false, class: "searchbar-clear-icon" }))),
+      mode === 'ios' &amp;&amp; cancelButton));
+  }
+  static get is() { return "ion-searchbar"; }
+  static get encapsulation() { return "scoped"; }
+  static get originalStyleUrls() { return {
+    "ios": ["searchbar.ios.scss"],
+    "md": ["searchbar.md.scss"]
+  }; }
+  static get styleUrls() { return {
+    "ios": ["searchbar.ios.css"],
+    "md": ["searchbar.md.css"]
+  }; }
+  static get properties() { return {
+    "color": {
+      "type": "string",
+      "mutable": false,
+      "complexType": {
+        "original": "Color",
+        "resolved": "string | undefined",
+        "references": {
+          "Color": {
+            "location": "import",
+            "path": "../../interface"
+          }
+        }
+      },
+      "required": false,
+      "optional": true,
+      "docs": {
+        "tags": [],
+        "text": "The color to use from your application's color palette.\nDefault options are: `\"primary\"`, `\"secondary\"`, `\"tertiary\"`, `\"success\"`, `\"warning\"`, `\"danger\"`, `\"light\"`, `\"medium\"`, and `\"dark\"`.\nFor more information on colors, see [theming](/docs/theming/basics)."
+      },
+      "attribute": "color",
+      "reflect": false
+    },
+    "animated": {
+      "type": "boolean",
+      "mutable": false,
+      "complexType": {
+        "original": "boolean",
+        "resolved": "boolean",
+        "references": {}
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "If `true`, enable searchbar animation."
+      },
+      "attribute": "animated",
+      "reflect": false,
+      "defaultValue": "false"
+    },
+    "autocomplete": {
+      "type": "string",
+      "mutable": false,
+      "complexType": {
+        "original": "AutocompleteTypes",
+        "resolved": "\"on\" | \"off\" | \"name\" | \"honorific-prefix\" | \"given-name\" | \"additional-name\" | \"family-name\" | \"honorific-suffix\" | \"nickname\" | \"email\" | \"username\" | \"new-password\" | \"current-password\" | \"one-time-code\" | \"organization-title\" | \"organization\" | \"street-address\" | \"address-line1\" | \"address-line2\" | \"address-line3\" | \"address-level4\" | \"address-level3\" | \"address-level2\" | \"address-level1\" | \"country\" | \"country-name\" | \"postal-code\" | \"cc-name\" | \"cc-given-name\" | \"cc-additional-name\" | \"cc-family-name\" | \"cc-number\" | \"cc-exp\" | \"cc-exp-month\" | \"cc-exp-year\" | \"cc-csc\" | \"cc-type\" | \"transaction-currency\" | \"transaction-amount\" | \"language\" | \"bday\" | \"bday-day\" | \"bday-month\" | \"bday-year\" | \"sex\" | \"tel\" | \"tel-country-code\" | \"tel-national\" | \"tel-area-code\" | \"tel-local\" | \"tel-extension\" | \"impp\" | \"url\" | \"photo\"",
+        "references": {
+          "AutocompleteTypes": {
+            "location": "import",
+            "path": "../../interface"
+          }
+        }
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "Set the input's autocomplete property."
+      },
+      "attribute": "autocomplete",
+      "reflect": false,
+      "defaultValue": "'off'"
+    },
+    "autocorrect": {
+      "type": "string",
+      "mutable": false,
+      "complexType": {
+        "original": "'on' | 'off'",
+        "resolved": "\"off\" | \"on\"",
+        "references": {}
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "Set the input's autocorrect property."
+      },
+      "attribute": "autocorrect",
+      "reflect": false,
+      "defaultValue": "'off'"
+    },
+    "cancelButtonIcon": {
+      "type": "string",
+      "mutable": false,
+      "complexType": {
+        "original": "string",
+        "resolved": "string",
+        "references": {}
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "Set the cancel button icon. Only applies to `md` mode.\nDefaults to `\"arrow-back-sharp\"`."
+      },
+      "attribute": "cancel-button-icon",
+      "reflect": false,
+      "defaultValue": "config.get('backButtonIcon', 'arrow-back-sharp') as string"
+    },
+    "cancelButtonText": {
+      "type": "string",
+      "mutable": false,
+      "complexType": {
+        "original": "string",
+        "resolved": "string",
+        "references": {}
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "Set the the cancel button text. Only applies to `ios` mode."
+      },
+      "attribute": "cancel-button-text",
+      "reflect": false,
+      "defaultValue": "'Cancel'"
+    },
+    "clearIcon": {
+      "type": "string",
+      "mutable": false,
+      "complexType": {
+        "original": "string",
+        "resolved": "string | undefined",
+        "references": {}
+      },
+      "required": false,
+      "optional": true,
+      "docs": {
+        "tags": [],
+        "text": "Set the clear icon. Defaults to `\"close-circle\"` for `ios` and `\"close-sharp\"` for `md`."
+      },
+      "attribute": "clear-icon",
+      "reflect": false
+    },
+    "debounce": {
+      "type": "number",
+      "mutable": false,
+      "complexType": {
+        "original": "number",
+        "resolved": "number",
+        "references": {}
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "Set the amount of time, in milliseconds, to wait to trigger the `ionChange` event after each keystroke. This also impacts form bindings such as `ngModel` or `v-model`."
+      },
+      "attribute": "debounce",
+      "reflect": false,
+      "defaultValue": "250"
+    },
+    "disabled": {
+      "type": "boolean",
+      "mutable": false,
+      "complexType": {
+        "original": "boolean",
+        "resolved": "boolean",
+        "references": {}
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "If `true`, the user cannot interact with the input."
+      },
+      "attribute": "disabled",
+      "reflect": false,
+      "defaultValue": "false"
+    },
+    "inputmode": {
+      "type": "string",
+      "mutable": false,
+      "complexType": {
+        "original": "'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search'",
+        "resolved": "\"decimal\" | \"email\" | \"none\" | \"numeric\" | \"search\" | \"tel\" | \"text\" | \"url\" | undefined",
+        "references": {}
+      },
+      "required": false,
+      "optional": true,
+      "docs": {
+        "tags": [],
+        "text": "A hint to the browser for which keyboard to display.\nPossible values: `\"none\"`, `\"text\"`, `\"tel\"`, `\"url\"`,\n`\"email\"`, `\"numeric\"`, `\"decimal\"`, and `\"search\"`."
+      },
+      "attribute": "inputmode",
+      "reflect": false
+    },
+    "enterkeyhint": {
+      "type": "string",
+      "mutable": false,
+      "complexType": {
+        "original": "'enter' | 'done' | 'go' | 'next' | 'previous' | 'search' | 'send'",
+        "resolved": "\"done\" | \"enter\" | \"go\" | \"next\" | \"previous\" | \"search\" | \"send\" | undefined",
+        "references": {}
+      },
+      "required": false,
+      "optional": true,
+      "docs": {
+        "tags": [],
+        "text": "A hint to the browser for which enter key to display.\nPossible values: `\"enter\"`, `\"done\"`, `\"go\"`, `\"next\"`,\n`\"previous\"`, `\"search\"`, and `\"send\"`."
+      },
+      "attribute": "enterkeyhint",
+      "reflect": false
+    },
+    "placeholder": {
+      "type": "string",
+      "mutable": false,
+      "complexType": {
+        "original": "string",
+        "resolved": "string",
+        "references": {}
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "Set the input's placeholder.\n`placeholder` can accept either plaintext or HTML as a string.\nTo display characters normally reserved for HTML, they\nmust be escaped. For example `&lt;Ionic>` would become\n`&amp;lt;Ionic&amp;gt;`\n\nFor more information: [Security Documentation](https://ionicframework.com/docs/faq/security)"
+      },
+      "attribute": "placeholder",
+      "reflect": false,
+      "defaultValue": "'Search'"
+    },
+    "searchIcon": {
+      "type": "string",
+      "mutable": false,
+      "complexType": {
+        "original": "string",
+        "resolved": "string | undefined",
+        "references": {}
+      },
+      "required": false,
+      "optional": true,
+      "docs": {
+        "tags": [],
+        "text": "The icon to use as the search icon. Defaults to `\"search-outline\"` in\n`ios` mode and `\"search-sharp\"` in `md` mode."
+      },
+      "attribute": "search-icon",
+      "reflect": false
+    },
+    "showCancelButton": {
+      "type": "string",
+      "mutable": false,
+      "complexType": {
+        "original": "'never' | 'focus' | 'always'",
+        "resolved": "\"always\" | \"focus\" | \"never\"",
+        "references": {}
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "Sets the behavior for the cancel button. Defaults to `\"never\"`.\nSetting to `\"focus\"` shows the cancel button on focus.\nSetting to `\"never\"` hides the cancel button.\nSetting to `\"always\"` shows the cancel button regardless\nof focus state."
+      },
+      "attribute": "show-cancel-button",
+      "reflect": false,
+      "defaultValue": "'never'"
+    },
+    "showClearButton": {
+      "type": "string",
+      "mutable": false,
+      "complexType": {
+        "original": "'never' | 'focus' | 'always'",
+        "resolved": "\"always\" | \"focus\" | \"never\"",
+        "references": {}
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "Sets the behavior for the clear button. Defaults to `\"focus\"`.\nSetting to `\"focus\"` shows the clear button on focus if the\ninput is not empty.\nSetting to `\"never\"` hides the clear button.\nSetting to `\"always\"` shows the clear button regardless\nof focus state, but only if the input is not empty."
+      },
+      "attribute": "show-clear-button",
+      "reflect": false,
+      "defaultValue": "'focus'"
+    },
+    "spellcheck": {
+      "type": "boolean",
+      "mutable": false,
+      "complexType": {
+        "original": "boolean",
+        "resolved": "boolean",
+        "references": {}
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "If `true`, enable spellcheck on the input."
+      },
+      "attribute": "spellcheck",
+      "reflect": false,
+      "defaultValue": "false"
+    },
+    "type": {
+      "type": "string",
+      "mutable": false,
+      "complexType": {
+        "original": "'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url'",
+        "resolved": "\"email\" | \"number\" | \"password\" | \"search\" | \"tel\" | \"text\" | \"url\"",
+        "references": {}
+      },
+      "required": false,
+      "optional": false,
+      "docs": {
+        "tags": [],
+        "text": "Set the type of the input."
+      },
+      "attribute": "type",
+      "reflect": false,
+      "defaultValue": "'search'"
+    },
+    "value": {
+      "type": "string",
+      "mutable": true,
+      "complexType": {
+        "original": "string | null",
+        "resolved": "null | string | undefined",
+        "references": {}
+      },
+      "required": false,
+      "optional": true,
+      "docs": {
+        "tags": [],
+        "text": "the value of the searchbar."
+      },
+      "attribute": "value",
+      "reflect": false,
+      "defaultValue": "''"
+    }
+  }; }
+  static get states() { return {
+    "focused": {},
+    "noAnimate": {}
+  }; }
+  static get events() { return [{
+      "method": "ionInput",
+      "name": "ionInput",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": {
+        "tags": [],
+        "text": "Emitted when a keyboard input occurred."
+      },
+      "complexType": {
+        "original": "KeyboardEvent",
+        "resolved": "KeyboardEvent",
+        "references": {
+          "KeyboardEvent": {
+            "location": "global"
+          }
+        }
+      }
+    }, {
+      "method": "ionChange",
+      "name": "ionChange",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": {
+        "tags": [],
+        "text": "Emitted when the value has changed."
+      },
+      "complexType": {
+        "original": "SearchbarChangeEventDetail",
+        "resolved": "SearchbarChangeEventDetail",
+        "references": {
+          "SearchbarChangeEventDetail": {
+            "location": "import",
+            "path": "../../interface"
+          }
+        }
+      }
+    }, {
+      "method": "ionCancel",
+      "name": "ionCancel",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": {
+        "tags": [],
+        "text": "Emitted when the cancel button is clicked."
+      },
+      "complexType": {
+        "original": "void",
+        "resolved": "void",
+        "references": {}
+      }
+    }, {
+      "method": "ionClear",
+      "name": "ionClear",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": {
+        "tags": [],
+        "text": "Emitted when the clear input button is clicked."
+      },
+      "complexType": {
+        "original": "void",
+        "resolved": "void",
+        "references": {}
+      }
+    }, {
+      "method": "ionBlur",
+      "name": "ionBlur",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": {
+        "tags": [],
+        "text": "Emitted when the input loses focus."
+      },
+      "complexType": {
+        "original": "void",
+        "resolved": "void",
+        "references": {}
+      }
+    }, {
+      "method": "ionFocus",
+      "name": "ionFocus",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": {
+        "tags": [],
+        "text": "Emitted when the input has focus."
+      },
+      "complexType": {
+        "original": "void",
+        "resolved": "void",
+        "references": {}
+      }
+    }, {
+      "method": "ionStyle",
+      "name": "ionStyle",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": {
+        "tags": [{
+            "text": undefined,
+            "name": "internal"
+          }],
+        "text": "Emitted when the styles change."
+      },
+      "complexType": {
+        "original": "StyleEventDetail",
+        "resolved": "StyleEventDetail",
+        "references": {
+          "StyleEventDetail": {
+            "location": "import",
+            "path": "../../interface"
+          }
+        }
+      }
+    }]; }
+  static get methods() { return {
+    "setFocus": {
+      "complexType": {
+        "signature": "() => Promise&lt;void>",
+        "parameters": [],
+        "references": {
+          "Promise": {
+            "location": "global"
+          }
+        },
+        "return": "Promise&lt;void>"
+      },
+      "docs": {
+        "text": "Sets focus on the specified `ion-searchbar`. Use this method instead of the global\n`input.focus()`.",
+        "tags": []
+      }
+    },
+    "getInputElement": {
+      "complexType": {
+        "signature": "() => Promise&lt;HTMLInputElement>",
+        "parameters": [],
+        "references": {
+          "Promise": {
+            "location": "global"
+          },
+          "HTMLInputElement": {
+            "location": "global"
+          }
+        },
+        "return": "Promise&lt;HTMLInputElement>"
+      },
+      "docs": {
+        "text": "Returns the native `&lt;input>` element used under the hood.",
+        "tags": []
+      }
+    }
+  }; }
+  static get elementRef() { return "el"; }
+  static get watchers() { return [{
+      "propName": "debounce",
+      "methodName": "debounceChanged"
+    }, {
+      "propName": "value",
+      "methodName": "valueChanged"
+    }, {
+      "propName": "showCancelButton",
+      "methodName": "showCancelButtonChanged"
+    }]; }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

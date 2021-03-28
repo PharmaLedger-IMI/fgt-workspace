@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability DSU Wizard Documentation fgt-dsu-wizard</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability DSU Wizard Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/epi-workspace/fgt-dsu-wizard.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com"
+                        >
+                            Example Application - Finished Goods Traceability
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-dsu-wizard.module_commands.html">commands</a></li><li><a href="fgt-dsu-wizard.html#.module:managers">managers</a></li><li><a href="fgt-dsu-wizard.module_model.html">model</a></li><li><a href="fgt-dsu-wizard.module_services.html">services</a></li><li><a href="fgt-mah-ssapp.module_managers.html">managers</a></li><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Classes</h3><ul><li><a href="BatchManager.html">BatchManager</a></li><li><a href="fgt-dsu-wizard.module_model-Batch.html">Batch</a></li><li><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html">ParticipantManager</a></li><li><a href="OrderManager.html">OrderManager</a></li><li><a href="ProductManager.html">ProductManager</a></li><li><a href="StockManager.html">StockManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getBatchManager">getBatchManager</a></li><li><a href="global.html#getOrderManager">getOrderManager</a></li><li><a href="global.html#getProductManager">getProductManager</a></li><li><a href="global.html#getStockManager">getStockManager</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Module</p>
+                    <h1>fgt-dsu-wizard</h1>
+                </header>
+                
+
+
+
+
+<section>
+
+<header>
+    
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Members</h1>
+            <div class="members">
+            
+                <div class="member">
+
+<h4 class="name" id=".Commands">
+    <a class="href-link" href="#.Commands">#</a>
+    
+        
+            <span class='tag'>static</span>
+        
+    
+    <span class="code-name">
+        Commands
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>exposes the Commands module</p>.</p>
+
+
+
+<div class="description">
+    <p>exposes the Commands module</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="index.js.html" class="button">View Source</a>
+            <span>
+                <a href="index.js.html">index.js</a>, <a href="index.js.html#line34">line 34</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id=".Constants">
+    <a class="href-link" href="#.Constants">#</a>
+    
+        
+            <span class='tag'>static</span>
+        
+    
+    <span class="code-name">
+        Constants
+    </span>
+    
+</h4>
+
+
+<p class="summary">Exposes constants.</p>
+
+
+
+<div class="description">
+    <p>Exposes constants.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="index.js.html" class="button">View Source</a>
+            <span>
+                <a href="index.js.html">index.js</a>, <a href="index.js.html#line26">line 26</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id=".DSUService">
+    <a class="href-link" href="#.DSUService">#</a>
+    
+        
+            <span class='tag'>static</span>
+        
+    
+    <span class="code-name">
+        DSUService
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>instantiates a new DSUService</p>.</p>
+
+
+
+<div class="description">
+    <p>instantiates a new DSUService</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="index.js.html" class="button">View Source</a>
+            <span>
+                <a href="index.js.html">index.js</a>, <a href="index.js.html#line38">line 38</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id=".Managers">
+    <a class="href-link" href="#.Managers">#</a>
+    
+        
+            <span class='tag'>static</span>
+        
+    
+    <span class="code-name">
+        Managers
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>Exposes the Managers module</p>.</p>
+
+
+
+<div class="description">
+    <p>Exposes the Managers module</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="index.js.html" class="button">View Source</a>
+            <span>
+                <a href="index.js.html">index.js</a>, <a href="index.js.html#line46">line 46</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id=".Model">
+    <a class="href-link" href="#.Model">#</a>
+    
+        
+            <span class='tag'>static</span>
+        
+    
+    <span class="code-name">
+        Model
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>Exposes the Model module</p>.</p>
+
+
+
+<div class="description">
+    <p>Exposes the Model module</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="index.js.html" class="button">View Source</a>
+            <span>
+                <a href="index.js.html">index.js</a>, <a href="index.js.html#line30">line 30</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id=".Services">
+    <a class="href-link" href="#.Services">#</a>
+    
+        
+            <span class='tag'>static</span>
+        
+    
+    <span class="code-name">
+        Services
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>Exposes the Services Module</p>.</p>
+
+
+
+<div class="description">
+    <p>Exposes the Services Module</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="index.js.html" class="button">View Source</a>
+            <span>
+                <a href="index.js.html">index.js</a>, <a href="index.js.html#line42">line 42</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id=".Version">
+    <a class="href-link" href="#.Version">#</a>
+    
+        
+            <span class='tag'>static</span>
+        
+    
+    <span class="code-name">
+        Version
+    </span>
+    
+</h4>
+
+
+<p class="summary">Exposes Version.</p>
+
+
+
+<div class="description">
+    <p>Exposes Version.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="index.js.html" class="button">View Source</a>
+            <span>
+                <a href="index.js.html">index.js</a>, <a href="index.js.html#line50">line 50</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="~Init">
+        <a class="href-link" href="#~Init">#</a>
+        
+            
+                <span class='tag'>inner</span>
+            
+        
+        <span class="code-name">
+            
+                Init<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>iterates through all the commands in the command folder and registers them
+Is called by the apihub via the server.json</p>.</p>
+    
+    
+    <div class="description">
+        <p>iterates through all the commands in the command folder and registers them
+Is called by the apihub via the server.json</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="index.js.html" class="button">View Source</a>
+            <span>
+                <a href="index.js.html">index.js</a>, <a href="index.js.html#line9">line 9</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>
