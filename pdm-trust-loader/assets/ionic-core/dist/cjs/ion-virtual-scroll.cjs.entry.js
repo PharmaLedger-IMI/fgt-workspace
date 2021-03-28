@@ -2,7 +2,7 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const index = require('./index-2a75be79.js');
+const index = require('./index-a0a08b2a.js');
 const helpers = require('./helpers-d381ec4d.js');
 
 const CELL_TYPE_ITEM = 'item';

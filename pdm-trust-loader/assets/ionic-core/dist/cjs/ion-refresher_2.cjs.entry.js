@@ -2,13 +2,13 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const index = require('./index-2a75be79.js');
-const ionicGlobal = require('./ionic-global-e00fdf4a.js');
-const helpers = require('./helpers-d381ec4d.js');
-const animation = require('./animation-13cbbb20.js');
+const index = require('./index-a0a08b2a.js');
+const ionicGlobal = require('./ionic-global-06f21c1a.js');
 const cubicBezier = require('./cubic-bezier-0b2ccc35.js');
-const index$1 = require('./index-e1bb33c3.js');
+const helpers = require('./helpers-d381ec4d.js');
 const haptic = require('./haptic-9f199ada.js');
+const animation = require('./animation-13cbbb20.js');
+const index$1 = require('./index-e1bb33c3.js');
 const spinnerConfigs = require('./spinner-configs-a5915c04.js');
 
 const getRefresherAnimationType = (contentEl) => {

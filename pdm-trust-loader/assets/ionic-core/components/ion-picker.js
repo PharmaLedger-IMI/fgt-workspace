@@ -1,8 +1,8 @@
 import { createEvent, h, Host, proxyCustomElement } from '@stencil/core/internal/client';
-import { c as createAnimation } from './animation.js';
 import { b as getIonMode } from './ionic-global.js';
 import { B as BACKDROP, i as isCancel, e as prepareOverlay, d as present, f as dismiss, g as eventMethod, s as safeCall } from './overlays.js';
 import { g as getClassMap } from './theme.js';
+import { c as createAnimation } from './animation.js';
 
 /**
  * iOS Picker Enter Animation

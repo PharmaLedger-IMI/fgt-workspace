@@ -1,13 +1,13 @@
 import { createEvent, writeTask, h, Host, proxyCustomElement } from '@stencil/core/internal/client';
-import { f as clamp } from './helpers.js';
-import { c as createAnimation } from './animation.js';
-import { e as deepReady } from './index4.js';
-import { g as getTimeGivenProgression } from './cubic-bezier.js';
-import { createGesture } from './index2.js';
 import { b as getIonMode, c as config } from './ionic-global.js';
+import { a as attachComponent, d as detachComponent } from './framework-delegate.js';
 import { B as BACKDROP, e as prepareOverlay, d as present, h as activeAnimations, f as dismiss, g as eventMethod } from './overlays.js';
 import { g as getClassMap } from './theme.js';
-import { a as attachComponent, d as detachComponent } from './framework-delegate.js';
+import { e as deepReady } from './index4.js';
+import { c as createAnimation } from './animation.js';
+import { g as getTimeGivenProgression } from './cubic-bezier.js';
+import { createGesture } from './index2.js';
+import { f as clamp } from './helpers.js';
 
 // Defaults for the card swipe animation
 const SwipeToCloseDefaults = {

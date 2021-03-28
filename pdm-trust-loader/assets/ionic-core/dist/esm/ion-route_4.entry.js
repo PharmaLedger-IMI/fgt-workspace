@@ -1,6 +1,6 @@
-import { r as registerInstance, e as createEvent, i as getElement, h, H as Host } from './index-3ccd7557.js';
-import { b as getIonMode } from './ionic-global-ddef3a45.js';
+import { r as registerInstance, e as createEvent, i as getElement, h, H as Host } from './index-7a8b7a1c.js';
 import { c as componentOnReady, n as debounce } from './helpers-dd7e4b7b.js';
+import { b as getIonMode } from './ionic-global-63a97a32.js';
 import { o as openURL, c as createColorClasses } from './theme-ff3fc52f.js';
 
 const Route = class {

@@ -22,14 +22,19 @@ dossier-explorer-wallet-prototype
 env.json.devel
 
 pdm-trust-loader/webcardinal
+pdm-trust-loader/bundles
+pdm-trust-loader/capacitor.js
+pdm-trust-loader/assets/ionic-core
 pdm-trust-loader/swPwa*
+pdm-trust-loader/swBoot.js
 pdm-trust-loader/workbox*
+pdm-trust-loader/docs
 !pdm-trust-loader/workbox-config.js
 
 fgt-mah-ssapp/code/constitution
+fgt-mah-ssapp/docs
 fgt-mah-ssapp/code/scripts/bundles
 fgt-mah-ssapp/seed
-fgt-mah-ssapp/docs/output
 
 webcardinal
 
@@ -37,29 +42,30 @@ web-cardinal-ion
 
 fgt-dsu-wizard/version.js
 fgt-dsu-wizard/build/bundles
-fgt-dsu-wizard/docs/output/*
+fgt-dsu-wizard/docs
 
 pdm-dsu-toolkit/build/bundles
-pdm-dsu-toolkit/docs/output/*
+pdm-dsu-toolkit/docs
 
-docs/bin/draw.io.path
-!docs/bin/resources/drawings/*.md
-docs/drawings/*.xml
-docs/resources/drawings/
+
+documentation/bin/draw.io.path
+!ddocumentation/bin/resources/drawings/*.md
+documentation/drawings/*.xml
+documentation/resources/drawings/
 
 fgt-pharmacy-ssapp/code/constitution
 fgt-pharmacy-ssapp/code/scripts/bundles
 fgt-pharmacy-ssapp/seed
-fgt-pharmacy-ssapp/docs/output
+fgt-pharmacy-ssapp/docs
 fgt-wholesaler-ssapp/code/constitution
 fgt-wholesaler-ssapp/code/scripts/bundles
+fgt-wholesaler-ssapp/docs
 fgt-wholesaler-ssapp/seed
-fgt-wholesaler-ssapp/docs/output
 gtin-resolver
 gtin-dsu-wizard
 node_modules
 package-lock.json
-pharmaledger-wallet**
+pharmaledger-wallet
 privatesky
 themes
 

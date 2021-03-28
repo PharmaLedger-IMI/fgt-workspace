@@ -7,13 +7,13 @@
     "recurseDepth": 10,
     "source": {
         "include": [
-            "code/pages",
-            "code/resources",
-            "code/scripts"
+            "./code"
         ],
         "exclude": [
-            "code/constitution",
-            "code/scripts/bundles"
+            "./code/scripts/bundles",
+            "./code/constitution",
+            "./code/resources",
+            "./code/scripts/capacitor.js"
         ],
         "includePattern": ".+\\.js(doc|x)?$",
         "excludePattern": "(^|\\/|\\\\)_"
@@ -23,24 +23,32 @@
         "dictionaries": ["jsdoc","closure"]
     },
     "templates": {
-        "cleverLinks": false,
-        "monospaceLinks": false
-    },
-    "opts": {
-        "template": "node_modules/docdash",
-        "destination": "./docs/output/",
-        "readme": "./README.md",
-        "recurse": true,
-        "verbose": true,
+        "ink-docstrap": {
+            "systemName"            : "Pharmaledger's Finished Goods Traceability",
+            "footer"                : "PDM&FC",
+            "copyright"             :  "MIT Licence",
+            "includeDate"           : "true",
+            "navType"               : "inline",
+            "theme"                 : "yeti",
+            "linenums"              : "true",
+            "collapseSymbols"       : "false",
+            "inverseNav"            : "true",
+            "outputSourceFiles"     : "true" ,
+            "outputSourcePath"      : "false",
+            "dateFormat"            : "dddd, MMMM Do YYYY, h:mm:ss a",
+            "syntaxTheme"           : "default",
+            "sort"                  : "true",
+            "search"                : "true"
+        },
         "docdash": {
             "static": true,
             "sort": true,
             "sectionOrder": [
+                "Namespaces",
                 "Classes",
                 "Modules",
                 "Externals",
                 "Events",
-                "Namespaces",
                 "Mixins",
                 "Tutorials",
                 "Interfaces"
@@ -55,7 +63,7 @@
             "scripts": [],
             "menu": {
                 "Project Website": {
-                    "href":"https://fgt.pharmaledget.pdmfc.com",
+                    "href":"https://fgt.pharmaledger.pdmfc.com",
                     "target":"_blank",
                     "class":"menu-item",
                     "id":"website_link"
@@ -63,6 +71,32 @@
             },
             "nameInOutputPath": true,
             "versionInOutputPath": true
-        }
+        },
+        "better-docs": {
+            "name": "Pharmaledger's Finished Goods Traceability Marketing Authorization Holder SSApp",
+            "title": "Pharmaledger's Finished Goods Traceability Marketing Authorization Holder SSApp",
+            "hideGenerator": true,
+            "navLinks": [
+                {
+                    "label": "Github",
+                    "href": "https://github.com/PharmaLedger-IMI/fgt-workspace/fgt-mah-ssapp.git"
+                },
+                {
+                    "label": "Application",
+                    "href": "https://fgt.pharmaledger.pdmfc.com/fgt-mah-wallet/loader"
+                }
+            ]
+        },
+        "cleverLinks": false,
+        "monospaceLinks": false,
+        "search": true
+    },
+    "opts": {
+        "encoding": "utf-8",
+        "template": "./node_modules/better-docs",
+        "destination": "./docs/",
+        "readme": "./README.md",
+        "recurse": true,
+        "verbose": true
     }
 }

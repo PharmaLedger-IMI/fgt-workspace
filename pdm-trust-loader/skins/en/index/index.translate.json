@@ -1,33 +1,33 @@
 {
-  "anchoring": "server",
+  "anchoring": "traceability",
   "form": {
-    "title": "Please enter your credentials",
+    "title": "Please enter your credentials as a Wholesaler",
     "name": {
       "label": "Name:",
       "type": "text",
       "placeholder": "Please enter your name here...",
-      "value": "a name",
+      "value": "PDM the Wholesaler",
       "public": true,
       "required": true
     },
     "id": {
-      "label": "Id:",
+      "label": "Registered Id:",
       "type": "text",
       "placeholder": "Please enter your id here...",
-      "value": "#ThIsIsAniD=",
+      "value": "#ThIsIsAwHoLeSaLeRiD=",
       "public": true,
       "required": true
     },
     "email": {
-      "label": "Email:",
+      "label": "Registered Email:",
       "type": "email",
       "placeholder": "Please enter your email here...",
-      "value": "email@email.com",
+      "value": "wholesaler@pdmfc.com",
       "public": true,
       "required": true
     },
     "tin": {
-      "label": "TIN (Tax Identification Number):",
+      "label": "Registered TIN (Tax Identification Number):",
       "type": "number",
       "placeholder": "Enter your TIN (Tax Identification Number)...",
       "value": 500000000,
@@ -35,7 +35,7 @@
       "required": true
     },
     "address": {
-      "label": "Address:",
+      "label": "Registered Address:",
       "type": "text",
       "placeholder": "Enter your address...",
       "required": true,
@@ -69,4 +69,5 @@
     "register": "Registration Successful. Please Login",
     "login": "Login Successful. Please wait"
   }
+}
 }

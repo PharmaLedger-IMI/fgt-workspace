@@ -1,16 +1,16 @@
-import { C as CSS, p as plt, w as win, a as promiseResolve, b as bootstrapLazy } from './index-3ccd7557.js';
-import './ionic-global-ddef3a45.js';
-import { g as globalScripts } from './app-globals-2c50a69f.js';
+import { C as CSS, p as plt, w as win, a as promiseResolve, b as bootstrapLazy } from './index-7a8b7a1c.js';
+import { g as globalScripts } from './app-globals-fd807b9a.js';
+import './ionic-global-63a97a32.js';
 
 /*
- Stencil Client Patch Esm v2.4.0 | MIT Licensed | https://stenciljs.com
+ Stencil Client Patch Esm v2.5.0 | MIT Licensed | https://stenciljs.com
  */
 const patchEsm = () => {
     // NOTE!! This fn cannot use async/await!
     // @ts-ignore
-    if ( !(CSS && CSS.supports && CSS.supports('color', 'var(--c)'))) {
+    if (!(CSS && CSS.supports && CSS.supports('color', 'var(--c)'))) {
         // @ts-ignore
-        return import(/* webpackChunkName: "polyfills-css-shim" */ './css-shim-934c915f.js').then(() => {
+        return import(/* webpackChunkName: "polyfills-css-shim" */ './css-shim-2ccf4dec.js').then(() => {
             if ((plt.$cssShim$ = win.__cssshim)) {
                 return plt.$cssShim$.i();
             }

@@ -1,9 +1,9 @@
 import { writeTask, createEvent, readTask, h, Host, proxyCustomElement } from '@stencil/core/internal/client';
-import { c as componentOnReady, f as clamp, g as getElementRoot, r as raf } from './helpers.js';
-import { c as createAnimation } from './animation.js';
-import { g as getTimeGivenProgression } from './cubic-bezier.js';
 import { a as isPlatform, b as getIonMode } from './ionic-global.js';
+import { g as getTimeGivenProgression } from './cubic-bezier.js';
+import { c as componentOnReady, f as clamp, g as getElementRoot, r as raf } from './helpers.js';
 import { c as hapticImpact } from './haptic.js';
+import { c as createAnimation } from './animation.js';
 
 const getRefresherAnimationType = (contentEl) => {
   const previousSibling = contentEl.previousElementSibling;
@@ -426,6 +426,7 @@ const Refresher = class extends HTMLElement {
       canStart: () => this.state !== 8 /* Refreshing */ && this.state !== 32 /* Completing */ && this.scrollEl.scrollTop === 0,
       onStart: (ev) => {
         ev.data = { animation: undefined, didStart: false, cancelled: false };
+        this.state = 2 /* Pulling */;
       },
       onMove: (ev) => {
         if ((ev.velocityY < 0 && this.progress === 0 && !ev.data.didStart) || ev.data.cancelled) {
@@ -434,16 +435,13 @@ const Refresher = class extends HTMLElement {
         }
         if (!ev.data.didStart) {
           ev.data.didStart = true;
-          this.state = 2 /* Pulling */;
-          writeTask(() => {
-            const animationType = getRefresherAnimationType(contentEl);
-            const animation = createPullingAnimation(animationType, pullingRefresherIcon);
-            ev.data.animation = animation;
-            this.scrollEl.style.setProperty('--overflow', 'hidden');
-            animation.progressStart(false, 0);
-            this.ionStart.emit();
-            this.animations.push(animation);
-          });
+          writeTask(() => this.scrollEl.style.setProperty('--overflow', 'hidden'));
+          const animationType = getRefresherAnimationType(contentEl);
+          const animation = createPullingAnimation(animationType, pullingRefresherIcon);
+          ev.data.animation = animation;
+          animation.progressStart(false, 0);
+          this.ionStart.emit();
+          this.animations.push(animation);
           return;
         }
         // Since we are using an easing curve, slow the gesture tracking down a bit

@@ -2,8 +2,8 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const index = require('./index-2a75be79.js');
-const ionicGlobal = require('./ionic-global-e00fdf4a.js');
+const index = require('./index-a0a08b2a.js');
+const ionicGlobal = require('./ionic-global-06f21c1a.js');
 const helpers = require('./helpers-d381ec4d.js');
 
 const slideCss = "ion-slide{display:block;width:100%;height:100%}.slide-zoom{display:block;width:100%;text-align:center}.swiper-slide{display:-ms-flexbox;display:flex;position:relative;-ms-flex-negative:0;flex-shrink:0;-ms-flex-align:center;align-items:center;-ms-flex-pack:center;justify-content:center;width:100%;height:100%;font-size:18px;text-align:center;-webkit-box-sizing:border-box;box-sizing:border-box}.swiper-slide img{width:auto;max-width:100%;height:auto;max-height:100%}";
@@ -257,7 +257,7 @@ const Slides = class {
     const finalOptions = this.normalizeOptions();
     // init swiper core
     // @ts-ignore
-    const { Swiper } = await Promise.resolve().then(function () { return require('./swiper.bundle-d62a052c.js'); });
+    const { Swiper } = await Promise.resolve().then(function () { return require('./swiper.bundle-a219fe44.js'); });
     await waitForSlides(this.el);
     const swiper = new Swiper(this.el, finalOptions);
     this.swiperReady = true;

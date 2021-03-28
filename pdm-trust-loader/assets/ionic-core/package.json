@@ -1,29 +1,28 @@
 {
-  "_from": "@ionic/core",
-  "_id": "@ionic/core@5.6.0",
+  "_from": "@ionic/core@^5.6.0",
+  "_id": "@ionic/core@5.6.3",
   "_inBundle": false,
-  "_integrity": "sha512-dRwNRjHBiE2nB0JKY7tNHbcYMGXmDp7QCCVmtQbU511rZkwDlPUtg5qMJFHuLQVVUE21bjmWIJliE0aB9kcwYQ==",
+  "_integrity": "sha512-RPugxDcCwB5rgEh6yR2QDTzblT8BRBktsW6y+VBt62yHRzgEAENEfVyvkADz+CkGAsmZuPmC8OQC2jJrx/fJFA==",
   "_location": "/@ionic/core",
   "_phantomChildren": {},
   "_requested": {
-    "type": "tag",
+    "type": "range",
     "registry": true,
-    "raw": "@ionic/core",
+    "raw": "@ionic/core@^5.6.0",
     "name": "@ionic/core",
     "escapedName": "@ionic%2fcore",
     "scope": "@ionic",
-    "rawSpec": "",
+    "rawSpec": "^5.6.0",
     "saveSpec": null,
-    "fetchSpec": "latest"
+    "fetchSpec": "^5.6.0"
   },
   "_requiredBy": [
-    "#USER",
-    "/"
+    "#DEV:/"
   ],
-  "_resolved": "https://registry.npmjs.org/@ionic/core/-/core-5.6.0.tgz",
-  "_shasum": "e7dd9a31402223e95255d2193df201286391a71c",
-  "_spec": "@ionic/core",
-  "_where": "/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace",
+  "_resolved": "https://registry.npmjs.org/@ionic/core/-/core-5.6.3.tgz",
+  "_shasum": "8317059880b96466ea5b441479ff39b1c747ecb7",
+  "_spec": "@ionic/core@^5.6.0",
+  "_where": "/home/tvenceslau/workspace/pharmaledger/traceability/fgt-workspace/pdm-trust-loader",
   "author": {
     "name": "Ionic Team"
   },
@@ -35,8 +34,8 @@
   "collection:main": "dist/collection/index.js",
   "dependencies": {
     "@stencil/core": "^2.4.0",
-    "ionicons": "^5.5.0",
-    "tslib": "^1.10.0"
+    "ionicons": "^5.5.1",
+    "tslib": "^2.1.0"
   },
   "deprecated": false,
   "description": "Base components for Ionic",
@@ -113,14 +112,14 @@
     "build.vendor": "rollup --config ./scripts/swiper.rollup.config.js",
     "cdnloader": "node scripts/copy-cdn-loader.js",
     "clean": "node scripts/clean.js",
-    "css.minify": "cleancss -O2 -o css/ionic.bundle.css ./css/ionic.bundle.css",
+    "css.minify": "cleancss -O2 -o ./css/ionic.bundle.css ./css/ionic.bundle.css",
     "css.sass": "sass src/css:./css",
     "lint": "npm run lint.ts && npm run lint.sass",
     "lint.fix": "npm run lint.ts.fix && npm run lint.sass.fix",
     "lint.sass": "stylelint \"src/**/*.scss\"",
     "lint.sass.fix": "npm run lint.sass -- --fix",
-    "lint.ts": "tslint --project ",
-    "lint.ts.fix": "tslint --project  --fix",
+    "lint.ts": "tslint --project .",
+    "lint.ts.fix": "tslint --project . --fix",
     "prerelease": "npm run validate && np prerelease --yolo --any-branch --tag next",
     "prerender.e2e": "node scripts/testing/prerender.js",
     "start": "npm run build.css && stencil build --dev --watch --serve",
@@ -135,5 +134,5 @@
     "validate": "npm run lint && npm run test && npm run build && npm run test.treeshake"
   },
   "types": "dist/types/interface.d.ts",
-  "version": "5.6.0"
+  "version": "5.6.3"
 }

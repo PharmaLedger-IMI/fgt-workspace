@@ -1,6 +1,6 @@
 import { writeTask } from '@stencil/core/internal/client';
-import { createGesture } from './index2.js';
 import { h as hapticSelectionEnd, a as hapticSelectionStart, b as hapticSelectionChanged } from './haptic.js';
+import { createGesture } from './index2.js';
 
 const createButtonActiveGesture = (el, isButton) => {
   let currentTouchedButton;

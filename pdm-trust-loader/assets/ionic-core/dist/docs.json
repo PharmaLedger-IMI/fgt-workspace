@@ -1,9 +1,9 @@
 {
-  "timestamp": "2021-03-17T16:52:30",
+  "timestamp": "2021-03-23T14:33:46",
   "compiler": {
     "name": "@stencil/core",
-    "version": "2.4.0",
-    "typescriptVersion": "4.1.3"
+    "version": "2.5.0",
+    "typescriptVersion": "4.2.3"
   },
   "components": [
     {
@@ -4330,7 +4330,7 @@
         },
         {
           "name": "pickerOptions",
-          "type": "undefined | { columns?: PickerColumn[] | undefined; buttons?: PickerButton[] | undefined; cssClass?: string | string[] | undefined; showBackdrop?: boolean | undefined; backdropDismiss?: boolean | undefined; animated?: boolean | undefined; mode?: \"ios\" | \"md\" | undefined; keyboardClose?: boolean | undefined; id?: string | undefined; enterAnimation?: AnimationBuilder | undefined; leaveAnimation?: AnimationBuilder | undefined; }",
+          "type": "undefined | { columns?: PickerColumn[] | undefined; buttons?: PickerButton[] | undefined; cssClass?: string | string[] | undefined; showBackdrop?: boolean | undefined; backdropDismiss?: boolean | undefined; animated?: boolean | undefined; mode?: Mode | undefined; keyboardClose?: boolean | undefined; id?: string | undefined; enterAnimation?: AnimationBuilder | undefined; leaveAnimation?: AnimationBuilder | undefined; }",
           "mutable": false,
           "reflectToAttr": false,
           "docs": "Any additional options that the picker interface can accept.\nSee the [Picker API docs](../picker) for the picker options.",
@@ -4361,11 +4361,7 @@
               "type": "undefined; animated?: boolean"
             },
             {
-              "type": "undefined; mode?: \"ios\""
-            },
-            {
-              "value": "md",
-              "type": "string"
+              "type": "undefined; mode?: Mode"
             },
             {
               "type": "undefined; keyboardClose?: boolean"
@@ -12724,17 +12720,14 @@
       "props": [
         {
           "name": "beforeEnter",
-          "type": "(() => boolean | NavigationHookOptions | Promise<NavigationHookResult>) | undefined",
+          "type": "(() => NavigationHookResult | Promise<NavigationHookResult>) | undefined",
           "mutable": false,
           "reflectToAttr": false,
           "docs": "A navigation hook that is fired when the route tries to enter.\nReturning `true` allows the navigation to proceed, while returning\n`false` causes it to be cancelled. Returning a `NavigationHookOptions`\nobject causes the router to redirect to the path specified.",
           "docsTags": [],
           "values": [
             {
-              "type": "(() => boolean"
-            },
-            {
-              "type": "NavigationHookOptions"
+              "type": "(() => NavigationHookResult"
             },
             {
               "type": "Promise<NavigationHookResult>)"
@@ -12748,17 +12741,14 @@
         },
         {
           "name": "beforeLeave",
-          "type": "(() => boolean | NavigationHookOptions | Promise<NavigationHookResult>) | undefined",
+          "type": "(() => NavigationHookResult | Promise<NavigationHookResult>) | undefined",
           "mutable": false,
           "reflectToAttr": false,
           "docs": "A navigation hook that is fired when the route tries to leave.\nReturning `true` allows the navigation to proceed, while returning\n`false` causes it to be cancelled. Returning a `NavigationHookOptions`\nobject causes the router to redirect to the path specified.",
           "docsTags": [],
           "values": [
             {
-              "type": "(() => boolean"
-            },
-            {
-              "type": "NavigationHookOptions"
+              "type": "(() => NavigationHookResult"
             },
             {
               "type": "Promise<NavigationHookResult>)"

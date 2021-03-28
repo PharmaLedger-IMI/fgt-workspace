@@ -7,7 +7,7 @@
       "actions": [
         {
           "type": "execute",
-          "cmd": "[[ -z $(npm ls -g better-docs) ]] && echo \"theme already installed\" || npm install -g better-docs taffydb"
+          "cmd": "sh -c \"theme=`npm ls -g better-docs | grep better-docs` && [ -z \\\"$theme\\\" ] && npm install -g better-docs taffydb || echo \\\"Documentation Theme already Installed\\\"\""
         }
       ]
     }

@@ -165,6 +165,7 @@ const Icon = class extends HTMLElement {
     super();
     this.__registerHost();
     attachShadow(this);
+    this.iconName = null;
     this.isVisible = false;
     /**
      * The mode determines which platform styles to use.
@@ -229,8 +230,8 @@ const Icon = class extends HTMLElement {
         }
       }
     }
+    const label = this.iconName = getName(this.name, this.icon, this.mode, this.ios, this.md);
     if (!this.ariaLabel && this.ariaHidden !== 'true') {
-      const label = getName(this.name, this.icon, this.mode, this.ios, this.md);
       // user did not provide a label
       // come up with the label based on the icon name
       if (label) {
@@ -239,10 +240,11 @@ const Icon = class extends HTMLElement {
     }
   }
   render() {
+    const { iconName } = this;
     const mode = this.mode || 'md';
     const flipRtl = this.flipRtl ||
-      (this.ariaLabel &&
-        (this.ariaLabel.indexOf('arrow') > -1 || this.ariaLabel.indexOf('chevron') > -1) &&
+      (iconName &&
+        (iconName.indexOf('arrow') > -1 || iconName.indexOf('chevron') > -1) &&
         this.flipRtl !== false);
     return (h(Host, { role: "img", class: Object.assign(Object.assign({ [mode]: true }, createColorClasses(this.color)), { [`icon-${this.size}`]: !!this.size, 'flip-rtl': !!flipRtl && this.el.ownerDocument.dir === 'rtl' }) }, Build.isBrowser && this.svgContent ? (h("div", { class: "icon-inner", innerHTML: this.svgContent })) : (h("div", { class: "icon-inner" }))));
   }

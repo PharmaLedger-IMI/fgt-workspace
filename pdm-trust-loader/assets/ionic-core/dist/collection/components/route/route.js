@@ -89,7 +89,7 @@ export class Route {
       "mutable": false,
       "complexType": {
         "original": "NavigationHookCallback",
-        "resolved": "(() => boolean | NavigationHookOptions | Promise<NavigationHookResult>) | undefined",
+        "resolved": "(() => NavigationHookResult | Promise<NavigationHookResult>) | undefined",
         "references": {
           "NavigationHookCallback": {
             "location": "import",
@@ -109,7 +109,7 @@ export class Route {
       "mutable": false,
       "complexType": {
         "original": "NavigationHookCallback",
-        "resolved": "(() => boolean | NavigationHookOptions | Promise<NavigationHookResult>) | undefined",
+        "resolved": "(() => NavigationHookResult | Promise<NavigationHookResult>) | undefined",
         "references": {
           "NavigationHookCallback": {
             "location": "import",

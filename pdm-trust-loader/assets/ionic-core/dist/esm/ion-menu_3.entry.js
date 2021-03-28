@@ -1,12 +1,12 @@
-import { r as registerInstance, e as createEvent, h, H as Host, i as getElement } from './index-3ccd7557.js';
-import { c as config, b as getIonMode } from './ionic-global-ddef3a45.js';
-import { m as isEndSide, l as assert, j as clamp } from './helpers-dd7e4b7b.js';
-import './animation-096c6391.js';
+import { r as registerInstance, e as createEvent, h, H as Host, i as getElement } from './index-7a8b7a1c.js';
+import { c as config, b as getIonMode } from './ionic-global-63a97a32.js';
 import { g as getTimeGivenProgression } from './cubic-bezier-eea9a7a9.js';
 import { G as GESTURE_CONTROLLER } from './gesture-controller-31cb6bb9.js';
-import './hardware-back-button-4a6b37fb.js';
-import { m as menuController } from './index-3432b520.js';
+import { m as isEndSide, l as assert, j as clamp } from './helpers-dd7e4b7b.js';
+import { m as menuController } from './index-0d58a5bf.js';
 import { c as createColorClasses, h as hostContext } from './theme-ff3fc52f.js';
+import './hardware-back-button-4a6b37fb.js';
+import './animation-096c6391.js';
 
 const menuIosCss = ":host{--width:304px;--min-width:auto;--max-width:auto;--height:100%;--min-height:auto;--max-height:auto;--background:var(--ion-background-color, #fff);left:0;right:0;top:0;bottom:0;display:none;position:absolute;contain:strict}:host(.show-menu){display:block}.menu-inner{left:0;right:auto;top:0;bottom:0;-webkit-transform:translate3d(-9999px,  0,  0);transform:translate3d(-9999px,  0,  0);display:-ms-flexbox;display:flex;position:absolute;-ms-flex-direction:column;flex-direction:column;-ms-flex-pack:justify;justify-content:space-between;width:var(--width);min-width:var(--min-width);max-width:var(--max-width);height:var(--height);min-height:var(--min-height);max-height:var(--max-height);background:var(--background);contain:strict}[dir=rtl] .menu-inner,:host-context([dir=rtl]) .menu-inner{left:unset;right:unset;left:auto;right:0}[dir=rtl] .menu-inner,:host-context([dir=rtl]) .menu-inner{-webkit-transform:translate3d(calc(-1 * -9999px),  0,  0);transform:translate3d(calc(-1 * -9999px),  0,  0)}:host(.menu-side-start) .menu-inner{--ion-safe-area-right:0px;right:auto;left:0}:host(.menu-side-end) .menu-inner{--ion-safe-area-left:0px;right:0;left:auto;}ion-backdrop{display:none;opacity:0.01;z-index:-1}@media (max-width: 340px){.menu-inner{--width:264px}}:host(.menu-type-reveal){z-index:0}:host(.menu-type-reveal.show-menu) .menu-inner{-webkit-transform:translate3d(0,  0,  0);transform:translate3d(0,  0,  0)}:host(.menu-type-overlay){z-index:1000}:host(.menu-type-overlay) .show-backdrop{display:block;cursor:pointer}:host(.menu-pane-visible){width:var(--width);min-width:var(--min-width);max-width:var(--max-width)}:host(.menu-pane-visible) .menu-inner{left:0;right:0;width:auto;-webkit-transform:none !important;transform:none !important;-webkit-box-shadow:none !important;box-shadow:none !important}:host(.menu-pane-visible) ion-backdrop{display:hidden !important;}:host(.menu-type-push){z-index:1000}:host(.menu-type-push) .show-backdrop{display:block}";
 

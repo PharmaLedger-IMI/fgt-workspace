@@ -1,8 +1,8 @@
 import { attachShadow, createEvent, h, proxyCustomElement } from '@stencil/core/internal/client';
-import { t as transition } from './index4.js';
-import { g as getTimeGivenProgression } from './cubic-bezier.js';
 import { b as getIonMode, c as config } from './ionic-global.js';
+import { g as getTimeGivenProgression } from './cubic-bezier.js';
 import { a as attachComponent, d as detachComponent } from './framework-delegate.js';
+import { t as transition } from './index4.js';
 
 const routeOutletCss = ":host{left:0;right:0;top:0;bottom:0;position:absolute;contain:layout size style;overflow:hidden;z-index:0}";
 

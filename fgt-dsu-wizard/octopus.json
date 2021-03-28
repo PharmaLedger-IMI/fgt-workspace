@@ -1,6 +1,17 @@
 {
   "workDir": ".",
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "Documentation Theme Install (globally)",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "sh -c \"theme=`npm ls -g better-docs | grep better-docs` && [ -z \\\"$theme\\\" ] && npm install -g better-docs taffydb || echo \\\"Documentation Theme already Installed\\\"\""
+        }
+      ]
+    }
+  ],
   "prebuild": [
     {
       "name": "Bundles",
@@ -27,7 +38,7 @@
         },
         {
           "type": "execute",
-          "cmd": "jsdoc -c jsdocs.json && rimraf docs/output/fgt-dsu-wizard.html#.module:managers docs/output/fgt-dsu-wizard.html#.module"
+          "cmd": "jsdoc -c jsdocs.json -t \"$(npm root -g)/better-docs\""
         }
       ]
     }

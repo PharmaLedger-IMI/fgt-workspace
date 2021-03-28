@@ -2,14 +2,14 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const index = require('./index-2a75be79.js');
-const ionicGlobal = require('./ionic-global-e00fdf4a.js');
+const index = require('./index-a0a08b2a.js');
+const ionicGlobal = require('./ionic-global-06f21c1a.js');
 const helpers = require('./helpers-d381ec4d.js');
-const animation = require('./animation-13cbbb20.js');
-require('./hardware-back-button-148ce546.js');
-const overlays = require('./overlays-b9bea3ba.js');
-const haptic = require('./haptic-9f199ada.js');
+const overlays = require('./overlays-c1cb2f85.js');
 const theme = require('./theme-30b7a575.js');
+const animation = require('./animation-13cbbb20.js');
+const haptic = require('./haptic-9f199ada.js');
+require('./hardware-back-button-148ce546.js');
 
 /**
  * Gets a date value given a format

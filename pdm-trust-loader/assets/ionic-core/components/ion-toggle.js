@@ -1,6 +1,6 @@
 import { attachShadow, createEvent, h, Host, proxyCustomElement } from '@stencil/core/internal/client';
-import { d as getAriaLabel, e as renderHiddenInput } from './helpers.js';
 import { b as getIonMode } from './ionic-global.js';
+import { d as getAriaLabel, e as renderHiddenInput } from './helpers.js';
 import { d as hapticSelection } from './haptic.js';
 import { c as createColorClasses, h as hostContext } from './theme.js';
 

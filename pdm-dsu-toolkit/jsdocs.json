@@ -72,8 +72,8 @@
             "versionInOutputPath": true
         },
         "better-docs": {
-            "name": "PDM&FC's OpenDSu Toolkit Documentation",
-            "title": "PDM&FC's OpenDSu Toolkit Documentation",
+            "name": "PDM&FC's OpenDSU Toolkit Documentation",
+            "title": "PDM&FC's OpenDSU Toolkit Documentation",
             "hideGenerator": true,
             "navLinks": [
                 {
@@ -93,7 +93,7 @@
     "opts": {
         "encoding": "utf-8",
         "template": "./node_modules/better-docs",
-        "destination": "./docs/output/",
+        "destination": "./docs/",
         "readme": "./README.md",
         "recurse": true,
         "verbose": true

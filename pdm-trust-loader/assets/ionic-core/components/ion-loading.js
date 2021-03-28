@@ -1,9 +1,9 @@
 import { createEvent, h, Host, proxyCustomElement } from '@stencil/core/internal/client';
-import { c as createAnimation } from './animation.js';
 import { b as getIonMode, c as config } from './ionic-global.js';
-import { s as sanitizeDOMString } from './index3.js';
 import { B as BACKDROP, e as prepareOverlay, d as present, f as dismiss, g as eventMethod } from './overlays.js';
+import { s as sanitizeDOMString } from './index3.js';
 import { g as getClassMap } from './theme.js';
+import { c as createAnimation } from './animation.js';
 
 /**
  * iOS Loading Enter Animation

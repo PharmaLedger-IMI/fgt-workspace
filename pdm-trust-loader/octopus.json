@@ -2,6 +2,16 @@
   "workDir": ".",
   "dependencies": [
     {
+      "name": "Documentation Theme Install (globally)",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "sh -c \"theme=`npm ls -g better-docs | grep better-docs` && [ -z \\\"$theme\\\" ] && npm install -g better-docs taffydb || echo \\\"Documentation Theme already Installed\\\"\""
+        }
+      ]
+    },
+    {
       "name": "PSK bundles",
       "src": "",
       "actions": [
@@ -28,11 +38,33 @@
           "options": {
             "overwrite": true
           }
+        }
+      ]
+    },
+    {
+      "name": "Copy Ionic Dependencies",
+      "src": "",
+      "actions": [
+        {
+          "type": "copy",
+          "src": "./node_modules/@ionic/core",
+          "target": "./assets/ionic-core",
+          "options": {
+            "overwrite": true
+          }
         },
         {
           "type": "copy",
-          "src": "assets/defaults/images-pwa",
-          "target": "assets/images-pwa",
+          "src": "./node_modules/@ionic/pwa-elements",
+          "target": "./assets/ionic-core/pwa-elements",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copy",
+          "src": "./node_modules/@ionic/pwa-elements",
+          "target": "./assets/ionic-core/pwa-elements",
           "options": {
             "overwrite": true
           }
@@ -48,7 +80,7 @@
         {
           "type": "copy",
           "src": "../pdm-dsu-toolkit/build/bundles/toolkit.js",
-          "target": "bundles/toolkit.js",
+          "target": "./bundles/toolkit.js",
           "options": {
             "overwrite": true
           }
@@ -62,7 +94,7 @@
         {
           "type": "copy",
           "src": "../pdm-dsu-toolkit/build/bundles/opendsuDT.js",
-          "target": "bundles/opendsuDT.js",
+          "target": "./bundles/opendsuDT.js",
           "options": {
             "overwrite": true
           }
@@ -76,6 +108,22 @@
         {
           "type": "execute",
           "cmd": "workbox generateSW"
+        }
+      ]
+    }
+  ],
+  "docs": [
+    {
+      "name": "Documentation",
+      "src": ".",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "node ./node_modules/markdown-include/bin/cli.js ./mdCompile.json"
+        },
+        {
+          "type": "execute",
+          "cmd": "jsdoc -c jsdocs.json -t \"$(npm root -g)/better-docs\""
         }
       ]
     }

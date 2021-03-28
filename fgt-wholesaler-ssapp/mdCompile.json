@@ -1,6 +1,6 @@
 {
   "build": "./README.md",
   "files": [
-    "./docs/Readme.md"
+    "./workdocs/Readme.md"
   ]
 }

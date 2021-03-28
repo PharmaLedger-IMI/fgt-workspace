@@ -2,8 +2,8 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const index = require('./index-2a75be79.js');
-const ionicGlobal = require('./ionic-global-e00fdf4a.js');
+const index = require('./index-a0a08b2a.js');
+const ionicGlobal = require('./ionic-global-06f21c1a.js');
 
 const imgCss = ":host{display:block;-o-object-fit:contain;object-fit:contain}img{display:block;width:100%;height:100%;-o-object-fit:inherit;object-fit:inherit;-o-object-position:inherit;object-position:inherit}";
 

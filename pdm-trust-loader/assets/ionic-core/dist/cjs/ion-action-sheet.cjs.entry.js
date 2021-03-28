@@ -2,17 +2,17 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const index = require('./index-2a75be79.js');
-const ionicGlobal = require('./ionic-global-e00fdf4a.js');
-require('./helpers-d381ec4d.js');
-const animation = require('./animation-13cbbb20.js');
-require('./gesture-controller-29adda71.js');
-require('./index-98d43f07.js');
-require('./hardware-back-button-148ce546.js');
-const overlays = require('./overlays-b9bea3ba.js');
-require('./haptic-9f199ada.js');
-const buttonActive = require('./button-active-cf949aec.js');
+const index = require('./index-a0a08b2a.js');
+const ionicGlobal = require('./ionic-global-06f21c1a.js');
+const buttonActive = require('./button-active-1053ea6d.js');
+const overlays = require('./overlays-c1cb2f85.js');
 const theme = require('./theme-30b7a575.js');
+const animation = require('./animation-13cbbb20.js');
+require('./haptic-9f199ada.js');
+require('./index-98d43f07.js');
+require('./gesture-controller-29adda71.js');
+require('./hardware-back-button-148ce546.js');
+require('./helpers-d381ec4d.js');
 
 /**
  * iOS Action Sheet Enter Animation

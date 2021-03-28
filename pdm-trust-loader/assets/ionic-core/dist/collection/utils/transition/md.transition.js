@@ -1,5 +1,5 @@
 import { createAnimation } from '../animation/animation';
-import { getIonPageElement } from './index';
+import { getIonPageElement } from '../transition';
 export const mdTransitionAnimation = (_, opts) => {
   const OFF_BOTTOM = '40px';
   const CENTER = '0px';

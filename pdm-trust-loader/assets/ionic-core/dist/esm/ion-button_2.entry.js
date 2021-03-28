@@ -1,5 +1,5 @@
-import { k as getAssetPath, r as registerInstance, e as createEvent, h, H as Host, i as getElement } from './index-3ccd7557.js';
-import { b as getIonMode$1 } from './ionic-global-ddef3a45.js';
+import { k as getAssetPath, r as registerInstance, e as createEvent, h, H as Host, i as getElement } from './index-7a8b7a1c.js';
+import { b as getIonMode$1 } from './ionic-global-63a97a32.js';
 import { k as hasShadowDom, i as inheritAttributes } from './helpers-dd7e4b7b.js';
 import { o as openURL, c as createColorClasses$1, h as hostContext } from './theme-ff3fc52f.js';
 
@@ -285,6 +285,7 @@ const iconCss = ":host{display:inline-block;width:1em;height:1em;contain:strict;
 const Icon = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
+    this.iconName = null;
     this.isVisible = false;
     /**
      * The mode determines which platform styles to use.
@@ -319,7 +320,7 @@ const Icon = class {
     }
   }
   waitUntilVisible(el, rootMargin, cb) {
-    if ( this.lazy && typeof window !== 'undefined' && window.IntersectionObserver) {
+    if (this.lazy && typeof window !== 'undefined' && window.IntersectionObserver) {
       const io = (this.io = new window.IntersectionObserver((data) => {
         if (data[0].isIntersecting) {
           io.disconnect();
@@ -336,7 +337,7 @@ const Icon = class {
     }
   }
   loadIcon() {
-    if ( this.isVisible) {
+    if (this.isVisible) {
       const url = getUrl(this);
       if (url) {
         if (ioniconContent.has(url)) {
@@ -349,8 +350,8 @@ const Icon = class {
         }
       }
     }
+    const label = this.iconName = getName(this.name, this.icon, this.mode, this.ios, this.md);
     if (!this.ariaLabel && this.ariaHidden !== 'true') {
-      const label = getName(this.name, this.icon, this.mode, this.ios, this.md);
       // user did not provide a label
       // come up with the label based on the icon name
       if (label) {
@@ -359,12 +360,13 @@ const Icon = class {
     }
   }
   render() {
+    const { iconName } = this;
     const mode = this.mode || 'md';
     const flipRtl = this.flipRtl ||
-      (this.ariaLabel &&
-        (this.ariaLabel.indexOf('arrow') > -1 || this.ariaLabel.indexOf('chevron') > -1) &&
+      (iconName &&
+        (iconName.indexOf('arrow') > -1 || iconName.indexOf('chevron') > -1) &&
         this.flipRtl !== false);
-    return (h(Host, { role: "img", class: Object.assign(Object.assign({ [mode]: true }, createColorClasses(this.color)), { [`icon-${this.size}`]: !!this.size, 'flip-rtl': !!flipRtl && this.el.ownerDocument.dir === 'rtl' }) },  this.svgContent ? (h("div", { class: "icon-inner", innerHTML: this.svgContent })) : (h("div", { class: "icon-inner" }))));
+    return (h(Host, { role: "img", class: Object.assign(Object.assign({ [mode]: true }, createColorClasses(this.color)), { [`icon-${this.size}`]: !!this.size, 'flip-rtl': !!flipRtl && this.el.ownerDocument.dir === 'rtl' }) }, this.svgContent ? (h("div", { class: "icon-inner", innerHTML: this.svgContent })) : (h("div", { class: "icon-inner" }))));
   }
   static get assetsDirs() { return ["svg"]; }
   get el() { return getElement(this); }
@@ -374,7 +376,7 @@ const Icon = class {
     "icon": ["loadIcon"]
   }; }
 };
-const getIonMode = () => ( typeof document !== 'undefined' && document.documentElement.getAttribute('mode')) || 'md';
+const getIonMode = () => (typeof document !== 'undefined' && document.documentElement.getAttribute('mode')) || 'md';
 const createColorClasses = (color) => {
   return color
     ? {

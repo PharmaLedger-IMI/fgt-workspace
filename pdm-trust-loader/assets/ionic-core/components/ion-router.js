@@ -264,17 +264,10 @@ const matchesPath = (inputPath, chain) => {
   }
   return chain;
 };
+// Merges the route parameter objects.
+// Returns undefined when both parameters are undefined.
 const mergeParams = (a, b) => {
-  if (!a && b) {
-    return b;
-  }
-  else if (a && !b) {
-    return a;
-  }
-  else if (a && b) {
-    return Object.assign(Object.assign({}, a), b);
-  }
-  return undefined;
+  return a || b ? Object.assign(Object.assign({}, a), b) : undefined;
 };
 const routerIDsToChain = (ids, chains) => {
   let match = null;

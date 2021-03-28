@@ -1,8 +1,8 @@
 import { attachShadow, createEvent, h, Build, proxyCustomElement } from '@stencil/core/internal/client';
+import { b as getIonMode, c as config } from './ionic-global.js';
+import { g as getTimeGivenProgression } from './cubic-bezier.js';
 import { m as assert } from './helpers.js';
 import { l as lifecycle, t as transition, s as setPageHidden, d as LIFECYCLE_WILL_UNLOAD, b as LIFECYCLE_WILL_LEAVE, c as LIFECYCLE_DID_LEAVE } from './index4.js';
-import { g as getTimeGivenProgression } from './cubic-bezier.js';
-import { b as getIonMode, c as config } from './ionic-global.js';
 import { a as attachComponent } from './framework-delegate.js';
 
 const VIEW_STATE_NEW = 1;

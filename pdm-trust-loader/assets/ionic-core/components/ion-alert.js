@@ -1,10 +1,10 @@
 import { createEvent, forceUpdate, h, Host, proxyCustomElement } from '@stencil/core/internal/client';
-import { c as createAnimation } from './animation.js';
 import { b as getIonMode } from './ionic-global.js';
-import { s as sanitizeDOMString } from './index3.js';
-import { B as BACKDROP, i as isCancel, e as prepareOverlay, d as present, f as dismiss, g as eventMethod, s as safeCall } from './overlays.js';
 import { c as createButtonActiveGesture } from './button-active.js';
+import { B as BACKDROP, i as isCancel, e as prepareOverlay, d as present, f as dismiss, g as eventMethod, s as safeCall } from './overlays.js';
+import { s as sanitizeDOMString } from './index3.js';
 import { g as getClassMap } from './theme.js';
+import { c as createAnimation } from './animation.js';
 
 /**
  * iOS Alert Enter Animation

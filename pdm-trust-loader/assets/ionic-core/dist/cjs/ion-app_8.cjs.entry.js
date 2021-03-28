@@ -2,13 +2,13 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const index = require('./index-2a75be79.js');
-const ionicGlobal = require('./ionic-global-e00fdf4a.js');
-const helpers = require('./helpers-d381ec4d.js');
-const index$1 = require('./index-c7f927fd.js');
-const cubicBezier = require('./cubic-bezier-0b2ccc35.js');
+const index = require('./index-a0a08b2a.js');
+const ionicGlobal = require('./ionic-global-06f21c1a.js');
 const theme = require('./theme-30b7a575.js');
+const helpers = require('./helpers-d381ec4d.js');
+const cubicBezier = require('./cubic-bezier-0b2ccc35.js');
 const frameworkDelegate = require('./framework-delegate-45524d8c.js');
+const index$1 = require('./index-920cc504.js');
 
 const appCss = "html.plt-mobile ion-app{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}html.plt-mobile ion-app [contenteditable]{-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;user-select:text}ion-app.force-statusbar-padding{--ion-safe-area-top:20px}";
 
@@ -24,10 +24,10 @@ const App = class {
           Promise.resolve().then(function () { return require('./tap-click-08c2217f.js'); }).then(module => module.startTapClick(ionicGlobal.config));
         }
         if (ionicGlobal.config.getBoolean('statusTap', isHybrid)) {
-          Promise.resolve().then(function () { return require('./status-tap-4da7589b.js'); }).then(module => module.startStatusTap());
+          Promise.resolve().then(function () { return require('./status-tap-480ef38b.js'); }).then(module => module.startStatusTap());
         }
         if (ionicGlobal.config.getBoolean('inputShims', needInputShims())) {
-          Promise.resolve().then(function () { return require('./input-shims-86cd1513.js'); }).then(module => module.startInputShims(ionicGlobal.config));
+          Promise.resolve().then(function () { return require('./input-shims-23e0b8a3.js'); }).then(module => module.startInputShims(ionicGlobal.config));
         }
         const hardwareBackButtonModule = await Promise.resolve().then(function () { return require('./hardware-back-button-148ce546.js'); });
         if (ionicGlobal.config.getBoolean('hardwareBackButton', isHybrid)) {
@@ -718,7 +718,7 @@ const RouterOutlet = class {
     }
   }
   async connectedCallback() {
-    this.gesture = (await Promise.resolve().then(function () { return require('./swipe-back-a5c1fee2.js'); })).createSwipeBackGesture(this.el, () => !!this.swipeHandler && this.swipeHandler.canStart() && this.animationEnabled, () => this.swipeHandler && this.swipeHandler.onStart(), step => this.ani && this.ani.progressStep(step), (shouldComplete, step, dur) => {
+    this.gesture = (await Promise.resolve().then(function () { return require('./swipe-back-8578d83a.js'); })).createSwipeBackGesture(this.el, () => !!this.swipeHandler && this.swipeHandler.canStart() && this.animationEnabled, () => this.swipeHandler && this.swipeHandler.onStart(), step => this.ani && this.ani.progressStep(step), (shouldComplete, step, dur) => {
       if (this.ani) {
         this.animationEnabled = false;
         this.ani.onFinish(() => {

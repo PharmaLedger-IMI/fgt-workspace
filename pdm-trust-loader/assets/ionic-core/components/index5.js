@@ -1,7 +1,7 @@
-import { c as componentOnReady } from './helpers.js';
-import { c as createAnimation } from './animation.js';
-import { b as getIonMode } from './ionic-global.js';
 import { MENU_BACK_BUTTON_PRIORITY } from './hardware-back-button.js';
+import { c as componentOnReady } from './helpers.js';
+import { b as getIonMode } from './ionic-global.js';
+import { c as createAnimation } from './animation.js';
 
 /**
  * baseAnimation

@@ -1,6 +1,6 @@
 import { readTask, writeTask, h, Host, proxyCustomElement } from '@stencil/core/internal/client';
-import { f as clamp } from './helpers.js';
 import { b as getIonMode } from './ionic-global.js';
+import { f as clamp } from './helpers.js';
 
 const TRANSITION = 'all 0.2s ease-in-out';
 const cloneElement = (tagName) => {

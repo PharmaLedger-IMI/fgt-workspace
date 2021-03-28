@@ -1,9 +1,21 @@
+/**
+ * Waits for a component to be ready for
+ * both custom element and non-custom element builds.
+ * If non-custom element build, el.componentOnReady
+ * will be used.
+ * For custom element builds, we wait a frame
+ * so that the inner contents of the component
+ * have a chance to render.
+ *
+ * Use this utility rather than calling
+ * el.componentOnReady yourself.
+ */
 const componentOnReady = (el, callback) => {
   if (el.componentOnReady) {
-    el.componentOnReady().then(callback);
+    el.componentOnReady().then((resolvedEl) => callback(resolvedEl));
   }
   else {
-    callback();
+    raf(() => callback(el));
   }
 };
 /**

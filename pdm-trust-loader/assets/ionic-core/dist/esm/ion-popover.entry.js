@@ -1,12 +1,12 @@
-import { r as registerInstance, e as createEvent, h, H as Host, i as getElement } from './index-3ccd7557.js';
-import { b as getIonMode } from './ionic-global-ddef3a45.js';
-import './helpers-dd7e4b7b.js';
-import { c as createAnimation } from './animation-096c6391.js';
-import { e as deepReady } from './index-899f6740.js';
-import './hardware-back-button-4a6b37fb.js';
-import { B as BACKDROP, e as prepareOverlay, d as present, f as dismiss, g as eventMethod } from './overlays-738d7bc9.js';
-import { g as getClassMap } from './theme-ff3fc52f.js';
+import { r as registerInstance, e as createEvent, h, H as Host, i as getElement } from './index-7a8b7a1c.js';
+import { b as getIonMode } from './ionic-global-63a97a32.js';
 import { a as attachComponent, d as detachComponent } from './framework-delegate-4392cd63.js';
+import { B as BACKDROP, e as prepareOverlay, d as present, f as dismiss, g as eventMethod } from './overlays-28c23c35.js';
+import { g as getClassMap } from './theme-ff3fc52f.js';
+import { e as deepReady } from './index-c3ff7f2e.js';
+import { c as createAnimation } from './animation-096c6391.js';
+import './helpers-dd7e4b7b.js';
+import './hardware-back-button-4a6b37fb.js';
 
 /**
  * iOS Popover Enter Animation

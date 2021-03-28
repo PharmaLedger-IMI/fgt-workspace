@@ -80,6 +80,11 @@ function FileService(options) {
     };
 
 
+    /**
+     *
+     * @param innerFolder
+     * @param callback
+     */
     this.getFolderContentAsJSON = function(innerFolder, callback){
         if (typeof innerFolder === 'function'){
             callback = innerFolder;
@@ -94,7 +99,9 @@ function FileService(options) {
     }
 
     /**
-     * @param array
+     * Util method to convert Utf8Arrays to Strings in the browser
+     * (simpler methods fail for big content jsons)
+     * @param {Utf8Array} array
      * @param {function(err, string)} callback
      */
     function Utf8ArrayToStr(array, callback) {

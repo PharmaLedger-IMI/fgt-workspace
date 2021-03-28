@@ -1,6 +1,6 @@
 import { attachShadow, createEvent, h, Host, proxyCustomElement } from '@stencil/core/internal/client';
-import { G as GESTURE_CONTROLLER } from './gesture-controller.js';
 import { b as getIonMode } from './ionic-global.js';
+import { G as GESTURE_CONTROLLER } from './gesture-controller.js';
 
 const backdropIosCss = ":host{left:0;right:0;top:0;bottom:0;display:block;position:absolute;-webkit-transform:translateZ(0);transform:translateZ(0);contain:strict;cursor:pointer;opacity:0.01;-ms-touch-action:none;touch-action:none;z-index:2}:host(.backdrop-hide){background:transparent}:host(.backdrop-no-tappable){cursor:auto}:host{background-color:var(--ion-backdrop-color, #000)}";
 

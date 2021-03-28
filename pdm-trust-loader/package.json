@@ -1,18 +1,30 @@
 {
   "name": "pdm-trust-loader",
-  "version": "0.2.0",
+  "version": "0.1.1",
   "description": "Web Loader for SSApps",
   "scripts": {
     "postinstall": "node ./node_modules/octopus/scripts/run",
     "update": "npm run postinstall",
     "build": "node ./node_modules/octopus/scripts/run build",
-    "docs": "node ./node_modules/octopus/scripts/run docs devmode"
+    "docs": "node ./node_modules/octopus/scripts/run docs"
   },
   "dependencies": {
     "octopus": "git+https://github.com/PrivateSky/octopus.git#1.0"
   },
   "devDependencies": {
-    "workbox-cli": "5.1.4"
+    "@capacitor/cli": "^3.0.0-rc.0",
+    "@capacitor/core": "^3.0.0-rc.0",
+    "@ionic-native/badge": "^5.31.1",
+    "@ionic-native/core": "^5.31.1",
+    "@ionic/cli": "^6.13.1",
+    "@ionic/core": "^5.6.0",
+    "@ionic/pwa-elements": "^3.0.2",
+    "cordova-plugin-badge": "^0.8.8",
+    "workbox-cli": "5.1.4",
+    "ink-docstrap": "^1.3.2",
+    "jsdoc": "^3.6.6",
+    "markdown-include": "^0.4.3",
+    "docdash": "^1.2.0"
   },
   "license": "MIT"
 }

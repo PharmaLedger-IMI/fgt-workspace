@@ -1,6 +1,6 @@
-import { c as componentOnReady, a as addEventListener, b as removeEventListener, g as getElementRoot } from './helpers.js';
 import { b as getIonMode, c as config } from './ionic-global.js';
 import { OVERLAY_BACK_BUTTON_PRIORITY } from './hardware-back-button.js';
+import { c as componentOnReady, a as addEventListener, b as removeEventListener, g as getElementRoot } from './helpers.js';
 
 let lastId = 0;
 const activeAnimations = new WeakMap();

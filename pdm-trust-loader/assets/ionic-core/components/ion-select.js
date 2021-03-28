@@ -1,6 +1,6 @@
 import { attachShadow, createEvent, h, Host, proxyCustomElement } from '@stencil/core/internal/client';
-import { j as findItemLabel, d as getAriaLabel, e as renderHiddenInput } from './helpers.js';
 import { b as getIonMode } from './ionic-global.js';
+import { j as findItemLabel, d as getAriaLabel, e as renderHiddenInput } from './helpers.js';
 import { c as popoverController, b as actionSheetController, a as alertController } from './overlays.js';
 import { h as hostContext } from './theme.js';
 

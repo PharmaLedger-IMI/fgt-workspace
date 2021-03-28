@@ -1,5 +1,5 @@
 import { createAnimation } from '../animation/animation';
-import { getIonPageElement } from './index';
+import { getIonPageElement } from '../transition';
 const DURATION = 540;
 const getClonedElement = (tagName) => {
   return document.querySelector(`${tagName}.ion-cloned-element`);

@@ -2,6 +2,16 @@
     "workDir": ".",
     "dependencies": [
         {
+            "name": "Documentation Theme Install (globally)",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "sh -c \"theme=`npm ls -g better-docs | grep better-docs` && [ -z \\\"$theme\\\" ] && npm install -g better-docs taffydb || echo \\\"Documentation Theme already Installed\\\"\""
+                }
+            ]
+        },
+        {
             "name": "cardinal",
             "src": "https://github.com/PrivateSky/cardinal.git",
             "actions": [
@@ -152,7 +162,7 @@
             ]
         },
         {
-            "name": "Build and deploy PDM Trust Loader to WHolesaler",
+            "name": "Build and deploy PDM Trust Loader to Wholesaler",
             "src": ".",
             "actions": [
                 {
@@ -509,6 +519,10 @@
                 {
                     "type": "execute",
                     "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && ./node_modules/workbox generateSW"
                 }
             ]
         }
@@ -654,33 +668,24 @@
             "actions": [
                 {
                     "type": "copy",
-                    "src": "fgt-dsu-wizard/docs/output",
-                    "target": "pages/fgt-dsu-wizard",
+                    "src": "fgt-dsu-wizard/docs",
+                    "target": "docs/fgt-dsu-wizard",
                     "options": {
                         "overwrite": true
                     }
                 },
                 {
                     "type": "copy",
-                    "src": "pdm-dsu-toolkit/docs/output",
-                    "target": "pages/pdm-dsu-toolkit",
+                    "src": "pdm-dsu-toolkit/docs",
+                    "target": "docs/pdm-dsu-toolkit",
                     "options": {
                         "overwrite": true
                     }
                 },
                 {
                     "type": "copy",
-                    "src": "fgt-mah-ssapp/docs/output",
-                    "target": "pages/fgt-mah-ssapp",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-
-                    "type": "copy",
-                    "src": "fgt-pharmacy-ssapp/docs/output",
-                    "target": "pages/fgt-pharmacy-ssapp",
+                    "src": "fgt-mah-ssapp/docs",
+                    "target": "docs/fgt-mah-ssapp",
                     "options": {
                         "overwrite": true
                     }
@@ -688,8 +693,35 @@
                 {
 
                     "type": "copy",
-                    "src": "fgt-wholesaler-ssapp/docs/output",
-                    "target": "pages/fgt-wholesaler-ssapp",
+                    "src": "fgt-pharmacy-ssapp/docs",
+                    "target": "docs/fgt-pharmacy-ssapp",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+
+                    "type": "copy",
+                    "src": "fgt-wholesaler-ssapp/docs/",
+                    "target": "docs/fgt-wholesaler-ssapp",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+
+                    "type": "copy",
+                    "src": "pdm-dsu-toolkit/docs/",
+                    "target": "docs/pdm-dsu-toolkit",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+
+                    "type": "copy",
+                    "src": "pdm-trust-loader/docs/",
+                    "target": "docs/pdm-trust-loader",
                     "options": {
                         "overwrite": true
                     }
@@ -707,8 +739,8 @@
                 {
 
                     "type": "copy",
-                    "src": "docs/resources",
-                    "target": "pages/resources",
+                    "src": "workdocs/resources",
+                    "target": "docs/resources",
                     "options": {
                         "overwrite": true
                     }
@@ -719,7 +751,7 @@
                 },
                 {
                     "type": "execute",
-                    "cmd": "jsdoc -c jsdocs.json"
+                    "cmd": "jsdoc -c jsdocs.json -t \"$(npm root -g)/better-docs\""
                 }
             ]
         }

@@ -1,18 +1,18 @@
 {
   "name": "fgt-wholesaler-ssapp",
-  "version": "0.0.1",
-  "description": "The Pharmaledger Traceability Application for Marketing Authorization Holders",
+  "version": "0.1.1",
+  "description": "The Pharmaledger Traceability Application for Wholesalers",
   "main": "index.js",
   "scripts": {
     "prebuild": "node ./node_modules/octopus/scripts/run prebuild devmode",
     "build": "node ./node_modules/octopus/scripts/buildDossier ./bin/build.file --domain=traceability",
     "update": "npm install",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docs": "node ./node_modules/octopus/scripts/run docs devmode"
+    "docs": "node ./node_modules/octopus/scripts/run docs"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PrivateSky/ssapp-template.git"
+    "url": "git+https://github.com/PharmaLedger-IMI/fgt-workspace/fgt-wholesaler-ssapp.git"
   },
   "engines": {
     "node": "~12",
@@ -36,6 +36,7 @@
     "docdash": "^1.2.0",
     "goodparts": "^1.3.0",
     "istanbul": "^0.4.5",
+    "ink-docstrap": "^1.3.2",
     "jsdoc": "^3.6.6",
     "markdown-include": "^0.4.3",
     "native-run": "^1.3.0"
@@ -46,7 +47,7 @@
   "author": "PDM&FC",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/PrivateSky/ssapp-template/issues"
+    "url": "https://github.com/PharmaLedger-IMI/fgt-workspace/fgt-wholesaler-ssapp/issues"
   },
-  "homepage": "https://github.com/PrivateSky/ssapp-template#readme"
+  "homepage": "https://github.com/PharmaLedger-IMI/fgt-workspace/fgt-wholesaler-ssapp#readme"
 }

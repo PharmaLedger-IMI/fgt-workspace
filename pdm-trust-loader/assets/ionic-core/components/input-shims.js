@@ -350,24 +350,24 @@ const startInputShims = (config) => {
     if (!inputEl) {
       return;
     }
-    if ( !!scrollEl && hideCaret && !hideCaretMap.has(componentEl)) {
+    if (!!scrollEl && hideCaret && !hideCaretMap.has(componentEl)) {
       const rmFn = enableHideCaretOnScroll(componentEl, inputEl, scrollEl);
       hideCaretMap.set(componentEl, rmFn);
     }
-    if ( (!!scrollEl || !!footerEl) && scrollAssist && !scrollAssistMap.has(componentEl)) {
+    if ((!!scrollEl || !!footerEl) && scrollAssist && !scrollAssistMap.has(componentEl)) {
       const rmFn = enableScrollAssist(componentEl, inputEl, scrollEl, footerEl, keyboardHeight);
       scrollAssistMap.set(componentEl, rmFn);
     }
   };
   const unregisterInput = (componentEl) => {
-    if ( hideCaret) {
+    if (hideCaret) {
       const fn = hideCaretMap.get(componentEl);
       if (fn) {
         fn();
       }
       hideCaretMap.delete(componentEl);
     }
-    if ( scrollAssist) {
+    if (scrollAssist) {
       const fn = scrollAssistMap.get(componentEl);
       if (fn) {
         fn();
