@@ -1,4 +1,12 @@
-import getNavigatorUtils from "../../scripts/controllers/services/NavigatorUtils.js";
+/**
+ * @module loader
+ */
+
+/**
+ *
+ */
+
+import getNavigatorUtils from "../../scripts/services/NavigatorUtils.js";
 import env from "../../environment.js"
 const paths = window.location.pathname.split("/iframe/");
 const myIdentity = paths[1];

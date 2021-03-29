@@ -1,3 +1,10 @@
+/**
+ * @module controllers
+ */
+
+/**
+ *
+ */
 const { WebcController } = WebCardinal.controllers;
 
 /**
@@ -13,6 +20,7 @@ const { WebcController } = WebCardinal.controllers;
  *          this.setModel(this.getModel());
  *      }
  * </pre>
+ * @class LocalizedController
  */
 export default class LocalizedController extends WebcController {
     getModel = () => {

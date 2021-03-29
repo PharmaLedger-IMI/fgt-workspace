@@ -1,7 +1,17 @@
+/**
+ * @module controllers
+ */
+
+/**
+ *
+ */
 import env from "../../environment.js"
 import LocalizedController from './LocalizedController.js'
-import LoaderService from "./services/LoaderService.js";
+import LoaderService from "../services/LoaderService.js";
 
+/**
+ * @class HomeController
+ */
 export default class HomeController extends LocalizedController {
     getModel = () => ({
         participant: undefined

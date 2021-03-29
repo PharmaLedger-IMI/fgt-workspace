@@ -1,3 +1,10 @@
+/**
+ * @module loader
+ */
+
+/**
+ *
+ */
 import env from "./environment.js";
 
 // Handle theme

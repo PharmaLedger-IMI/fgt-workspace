@@ -1,5 +1,15 @@
+/**
+ * @module controllers
+ */
+
+/**
+ *
+ */
 import LocalizedController from './LocalizedController.js'
 
+/**
+ * @class FormController
+ */
 export default class FormController extends LocalizedController {
 
     getModel = () => ({});

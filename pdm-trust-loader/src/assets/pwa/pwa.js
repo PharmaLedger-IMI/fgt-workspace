@@ -1,3 +1,11 @@
+/**
+ * Cloned from PrivateSky
+ * @module pwa
+ */
+
+/**
+ *
+ */
 (function setupInstallation() {
   let canProceedWithInstall = true;
   let deferredPrompt;

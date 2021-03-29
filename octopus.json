@@ -205,7 +205,7 @@
                 },
                 {
                     "type": "copy",
-                    "src": "./pdm-trust-loader",
+                    "src": "./pdm-trust-loader/src",
                     "target": "./apihub-root/fgt-wholesaler-wallet/loader",
                     "options": {
                         "overwrite": true

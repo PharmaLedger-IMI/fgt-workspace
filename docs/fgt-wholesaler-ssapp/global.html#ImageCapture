@@ -1,0 +1,6397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability Wholesaler SSApp ImageCapture</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability Wholesaler SSApp</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/fgt-workspace/fgt-wholesaler-ssapp.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com/fgt-wholesaler-wallet/loader"
+                        >
+                            Application
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="Dom7.html">Dom7</a></li><li><a href="global.html#ImageCapture">ImageCapture</a></li><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_expandUnicodeEscapes">_expandUnicodeEscapes</a></li><li><a href="global.html#a">a</a></li><li><a href="global.html#bindLocale">bindLocale</a></li><li><a href="global.html#clean">clean</a></li><li><a href="global.html#EMPTY_OBJ">EMPTY_OBJ</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#getPendingOrdersAsync">getPendingOrdersAsync</a></li><li><a href="global.html#getStockAsync">getStockAsync</a></li><li><a href="global.html#h">h</a></li><li><a href="global.html#lex">lex</a></li><li><a href="global.html#Methods">Methods</a></li><li><a href="global.html#parse">parse</a></li><li><a href="global.html#parseCss">parseCss</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#s">s</a></li><li><a href="global.html#safeSelector">safeSelector</a></li><li><a href="global.html#setAccessor">setAccessor</a></li><li><a href="global.html#showIonicModal">showIonicModal</a></li><li><a href="global.html#StyleNode">StyleNode</a></li><li><a href="global.html#SVG_NS">SVG_NS</a></li><li><a href="global.html#types">types</a></li><li><a href="global.html#updatePendingOrders">updatePendingOrders</a></li><li><a href="global.html#updateStock">updateStock</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Class</p>
+                    <h1>ImageCapture</h1>
+                </header>
+                
+
+
+
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>ImageCapture<span class="signature">(videoStreamTrack)</span><span class="type-signature"></span></h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class='vertical-section'>
+                <div class="members">
+                    <div class="member">
+                        <div class=name>
+                            <span class="tag">Constructor</span>
+                        </div>
+                        
+
+
+    
+    <h4 class="name" id="ImageCapture">
+        <a class="href-link" href="#ImageCapture">#</a>
+        
+        <span class="code-name">
+            
+                new ImageCapture<span class="signature">(videoStreamTrack)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>TODO https://www.w3.org/TR/image-capture/#constructors</p>.</p>
+    
+    
+    <div class="description">
+        <p>TODO https://www.w3.org/TR/image-capture/#constructors</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>videoStreamTrack</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">MediaStreamTrack</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>A MediaStreamTrack of the 'video' kind</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html">assets/pwa-elements/cjs/pwa-camera.cjs.entry.js</a>, <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html#line33">line 33</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Members</h1>
+            <div class="members">
+            
+                <div class="member">
+
+<h4 class="name" id="videoStreamTrack">
+    <a class="href-link" href="#videoStreamTrack">#</a>
+    
+    <span class="code-name">
+        videoStreamTrack
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>.</p>
+
+
+
+<div class="description">
+    <p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html">assets/pwa-elements/cjs/pwa-camera.cjs.entry.js</a>, <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html#line64">line 64</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id="videoStreamTrack">
+    <a class="href-link" href="#videoStreamTrack">#</a>
+    
+    <span class="code-name">
+        videoStreamTrack
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>.</p>
+
+
+
+<div class="description">
+    <p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html">assets/pwa-elements/collection/components/camera/imagecapture.js</a>, <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html#line58">line 58</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id="videoStreamTrack">
+    <a class="href-link" href="#videoStreamTrack">#</a>
+    
+    <span class="code-name">
+        videoStreamTrack
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>.</p>
+
+
+
+<div class="description">
+    <p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html">assets/pwa-elements/esm/pwa-camera.entry.js</a>, <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html#line60">line 60</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="getPhotoCapabilities">
+        <a class="href-link" href="#getPhotoCapabilities">#</a>
+        
+        <span class="code-name">
+            
+                getPhotoCapabilities<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;PhotoCapabilities>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html">assets/pwa-elements/cjs/pwa-camera.cjs.entry.js</a>, <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html#line73">line 73</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/image-capture/#idl-def-photocapabilities">PhotoCapabilities</a>
+object on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;PhotoCapabilities></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="getPhotoCapabilities">
+        <a class="href-link" href="#getPhotoCapabilities">#</a>
+        
+        <span class="code-name">
+            
+                getPhotoCapabilities<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;PhotoCapabilities>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html">assets/pwa-elements/collection/components/camera/imagecapture.js</a>, <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html#line67">line 67</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/image-capture/#idl-def-photocapabilities">PhotoCapabilities</a>
+object on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;PhotoCapabilities></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="getPhotoCapabilities">
+        <a class="href-link" href="#getPhotoCapabilities">#</a>
+        
+        <span class="code-name">
+            
+                getPhotoCapabilities<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;PhotoCapabilities>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html">assets/pwa-elements/esm/pwa-camera.entry.js</a>, <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html#line69">line 69</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/image-capture/#idl-def-photocapabilities">PhotoCapabilities</a>
+object on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;PhotoCapabilities></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="grabFrame">
+        <a class="href-link" href="#grabFrame">#</a>
+        
+        <span class="code-name">
+            
+                grabFrame<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;ImageBitmap>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html">assets/pwa-elements/cjs/pwa-camera.cjs.entry.js</a>, <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html#line137">line 137</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/html51/webappapis.html#webappapis-images">ImageBitmap</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;ImageBitmap></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="grabFrame">
+        <a class="href-link" href="#grabFrame">#</a>
+        
+        <span class="code-name">
+            
+                grabFrame<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;ImageBitmap>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html">assets/pwa-elements/collection/components/camera/imagecapture.js</a>, <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html#line131">line 131</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/html51/webappapis.html#webappapis-images">ImageBitmap</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;ImageBitmap></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="grabFrame">
+        <a class="href-link" href="#grabFrame">#</a>
+        
+        <span class="code-name">
+            
+                grabFrame<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;ImageBitmap>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html">assets/pwa-elements/esm/pwa-camera.entry.js</a>, <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html#line133">line 133</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/html51/webappapis.html#webappapis-images">ImageBitmap</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;ImageBitmap></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="setOptions">
+        <a class="href-link" href="#setOptions">#</a>
+        
+        <span class="code-name">
+            
+                setOptions<span class="signature">(photoSettings)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>photoSettings</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>Photo settings dictionary, https://www.w3.org/TR/image-capture/#idl-def-photosettings</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html">assets/pwa-elements/cjs/pwa-camera.cjs.entry.js</a>, <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html#line99">line 99</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;void></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="setOptions">
+        <a class="href-link" href="#setOptions">#</a>
+        
+        <span class="code-name">
+            
+                setOptions<span class="signature">(photoSettings)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>photoSettings</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>Photo settings dictionary, https://www.w3.org/TR/image-capture/#idl-def-photosettings</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html">assets/pwa-elements/collection/components/camera/imagecapture.js</a>, <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html#line93">line 93</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;void></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="setOptions">
+        <a class="href-link" href="#setOptions">#</a>
+        
+        <span class="code-name">
+            
+                setOptions<span class="signature">(photoSettings)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>photoSettings</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>Photo settings dictionary, https://www.w3.org/TR/image-capture/#idl-def-photosettings</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html">assets/pwa-elements/esm/pwa-camera.entry.js</a>, <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html#line95">line 95</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;void></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="takePhoto">
+        <a class="href-link" href="#takePhoto">#</a>
+        
+        <span class="code-name">
+            
+                takePhoto<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Blob>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>.</p>
+    
+    
+    <div class="description">
+        <p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html">assets/pwa-elements/cjs/pwa-camera.cjs.entry.js</a>, <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html#line110">line 110</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with <a href="https://www.w3.org/TR/FileAPI/#blob">Blob</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;Blob></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="takePhoto">
+        <a class="href-link" href="#takePhoto">#</a>
+        
+        <span class="code-name">
+            
+                takePhoto<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Blob>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>.</p>
+    
+    
+    <div class="description">
+        <p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html">assets/pwa-elements/collection/components/camera/imagecapture.js</a>, <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html#line104">line 104</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with <a href="https://www.w3.org/TR/FileAPI/#blob">Blob</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;Blob></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="takePhoto">
+        <a class="href-link" href="#takePhoto">#</a>
+        
+        <span class="code-name">
+            
+                takePhoto<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Blob>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>.</p>
+    
+    
+    <div class="description">
+        <p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html">assets/pwa-elements/esm/pwa-camera.entry.js</a>, <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html#line106">line 106</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with <a href="https://www.w3.org/TR/FileAPI/#blob">Blob</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;Blob></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>ImageCapture<span class="signature">(videoStreamTrack)</span><span class="type-signature"></span></h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class='vertical-section'>
+                <div class="members">
+                    <div class="member">
+                        <div class=name>
+                            <span class="tag">Constructor</span>
+                        </div>
+                        
+
+
+    
+    <h4 class="name" id="ImageCapture">
+        <a class="href-link" href="#ImageCapture">#</a>
+        
+        <span class="code-name">
+            
+                new ImageCapture<span class="signature">(videoStreamTrack)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>TODO https://www.w3.org/TR/image-capture/#constructors</p>.</p>
+    
+    
+    <div class="description">
+        <p>TODO https://www.w3.org/TR/image-capture/#constructors</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>videoStreamTrack</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">MediaStreamTrack</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>A MediaStreamTrack of the 'video' kind</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html">assets/pwa-elements/collection/components/camera/imagecapture.js</a>, <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html#line27">line 27</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Members</h1>
+            <div class="members">
+            
+                <div class="member">
+
+<h4 class="name" id="videoStreamTrack">
+    <a class="href-link" href="#videoStreamTrack">#</a>
+    
+    <span class="code-name">
+        videoStreamTrack
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>.</p>
+
+
+
+<div class="description">
+    <p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html">assets/pwa-elements/cjs/pwa-camera.cjs.entry.js</a>, <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html#line64">line 64</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id="videoStreamTrack">
+    <a class="href-link" href="#videoStreamTrack">#</a>
+    
+    <span class="code-name">
+        videoStreamTrack
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>.</p>
+
+
+
+<div class="description">
+    <p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html">assets/pwa-elements/collection/components/camera/imagecapture.js</a>, <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html#line58">line 58</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id="videoStreamTrack">
+    <a class="href-link" href="#videoStreamTrack">#</a>
+    
+    <span class="code-name">
+        videoStreamTrack
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>.</p>
+
+
+
+<div class="description">
+    <p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html">assets/pwa-elements/esm/pwa-camera.entry.js</a>, <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html#line60">line 60</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="getPhotoCapabilities">
+        <a class="href-link" href="#getPhotoCapabilities">#</a>
+        
+        <span class="code-name">
+            
+                getPhotoCapabilities<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;PhotoCapabilities>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html">assets/pwa-elements/cjs/pwa-camera.cjs.entry.js</a>, <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html#line73">line 73</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/image-capture/#idl-def-photocapabilities">PhotoCapabilities</a>
+object on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;PhotoCapabilities></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="getPhotoCapabilities">
+        <a class="href-link" href="#getPhotoCapabilities">#</a>
+        
+        <span class="code-name">
+            
+                getPhotoCapabilities<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;PhotoCapabilities>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html">assets/pwa-elements/collection/components/camera/imagecapture.js</a>, <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html#line67">line 67</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/image-capture/#idl-def-photocapabilities">PhotoCapabilities</a>
+object on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;PhotoCapabilities></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="getPhotoCapabilities">
+        <a class="href-link" href="#getPhotoCapabilities">#</a>
+        
+        <span class="code-name">
+            
+                getPhotoCapabilities<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;PhotoCapabilities>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html">assets/pwa-elements/esm/pwa-camera.entry.js</a>, <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html#line69">line 69</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/image-capture/#idl-def-photocapabilities">PhotoCapabilities</a>
+object on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;PhotoCapabilities></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="grabFrame">
+        <a class="href-link" href="#grabFrame">#</a>
+        
+        <span class="code-name">
+            
+                grabFrame<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;ImageBitmap>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html">assets/pwa-elements/cjs/pwa-camera.cjs.entry.js</a>, <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html#line137">line 137</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/html51/webappapis.html#webappapis-images">ImageBitmap</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;ImageBitmap></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="grabFrame">
+        <a class="href-link" href="#grabFrame">#</a>
+        
+        <span class="code-name">
+            
+                grabFrame<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;ImageBitmap>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html">assets/pwa-elements/collection/components/camera/imagecapture.js</a>, <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html#line131">line 131</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/html51/webappapis.html#webappapis-images">ImageBitmap</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;ImageBitmap></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="grabFrame">
+        <a class="href-link" href="#grabFrame">#</a>
+        
+        <span class="code-name">
+            
+                grabFrame<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;ImageBitmap>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html">assets/pwa-elements/esm/pwa-camera.entry.js</a>, <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html#line133">line 133</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/html51/webappapis.html#webappapis-images">ImageBitmap</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;ImageBitmap></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="setOptions">
+        <a class="href-link" href="#setOptions">#</a>
+        
+        <span class="code-name">
+            
+                setOptions<span class="signature">(photoSettings)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>photoSettings</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>Photo settings dictionary, https://www.w3.org/TR/image-capture/#idl-def-photosettings</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html">assets/pwa-elements/cjs/pwa-camera.cjs.entry.js</a>, <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html#line99">line 99</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;void></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="setOptions">
+        <a class="href-link" href="#setOptions">#</a>
+        
+        <span class="code-name">
+            
+                setOptions<span class="signature">(photoSettings)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>photoSettings</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>Photo settings dictionary, https://www.w3.org/TR/image-capture/#idl-def-photosettings</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html">assets/pwa-elements/collection/components/camera/imagecapture.js</a>, <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html#line93">line 93</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;void></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="setOptions">
+        <a class="href-link" href="#setOptions">#</a>
+        
+        <span class="code-name">
+            
+                setOptions<span class="signature">(photoSettings)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>photoSettings</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>Photo settings dictionary, https://www.w3.org/TR/image-capture/#idl-def-photosettings</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html">assets/pwa-elements/esm/pwa-camera.entry.js</a>, <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html#line95">line 95</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;void></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="takePhoto">
+        <a class="href-link" href="#takePhoto">#</a>
+        
+        <span class="code-name">
+            
+                takePhoto<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Blob>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>.</p>
+    
+    
+    <div class="description">
+        <p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html">assets/pwa-elements/cjs/pwa-camera.cjs.entry.js</a>, <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html#line110">line 110</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with <a href="https://www.w3.org/TR/FileAPI/#blob">Blob</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;Blob></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="takePhoto">
+        <a class="href-link" href="#takePhoto">#</a>
+        
+        <span class="code-name">
+            
+                takePhoto<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Blob>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>.</p>
+    
+    
+    <div class="description">
+        <p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html">assets/pwa-elements/collection/components/camera/imagecapture.js</a>, <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html#line104">line 104</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with <a href="https://www.w3.org/TR/FileAPI/#blob">Blob</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;Blob></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="takePhoto">
+        <a class="href-link" href="#takePhoto">#</a>
+        
+        <span class="code-name">
+            
+                takePhoto<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Blob>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>.</p>
+    
+    
+    <div class="description">
+        <p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html">assets/pwa-elements/esm/pwa-camera.entry.js</a>, <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html#line106">line 106</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with <a href="https://www.w3.org/TR/FileAPI/#blob">Blob</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;Blob></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>ImageCapture<span class="signature">(videoStreamTrack)</span><span class="type-signature"></span></h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class='vertical-section'>
+                <div class="members">
+                    <div class="member">
+                        <div class=name>
+                            <span class="tag">Constructor</span>
+                        </div>
+                        
+
+
+    
+    <h4 class="name" id="ImageCapture">
+        <a class="href-link" href="#ImageCapture">#</a>
+        
+        <span class="code-name">
+            
+                new ImageCapture<span class="signature">(videoStreamTrack)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>TODO https://www.w3.org/TR/image-capture/#constructors</p>.</p>
+    
+    
+    <div class="description">
+        <p>TODO https://www.w3.org/TR/image-capture/#constructors</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>videoStreamTrack</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">MediaStreamTrack</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>A MediaStreamTrack of the 'video' kind</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html">assets/pwa-elements/esm/pwa-camera.entry.js</a>, <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html#line29">line 29</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Members</h1>
+            <div class="members">
+            
+                <div class="member">
+
+<h4 class="name" id="videoStreamTrack">
+    <a class="href-link" href="#videoStreamTrack">#</a>
+    
+    <span class="code-name">
+        videoStreamTrack
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>.</p>
+
+
+
+<div class="description">
+    <p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html">assets/pwa-elements/cjs/pwa-camera.cjs.entry.js</a>, <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html#line64">line 64</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id="videoStreamTrack">
+    <a class="href-link" href="#videoStreamTrack">#</a>
+    
+    <span class="code-name">
+        videoStreamTrack
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>.</p>
+
+
+
+<div class="description">
+    <p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html">assets/pwa-elements/collection/components/camera/imagecapture.js</a>, <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html#line58">line 58</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id="videoStreamTrack">
+    <a class="href-link" href="#videoStreamTrack">#</a>
+    
+    <span class="code-name">
+        videoStreamTrack
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>.</p>
+
+
+
+<div class="description">
+    <p>https://w3c.github.io/mediacapture-image/index.html#dom-imagecapture-videostreamtrack</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html">assets/pwa-elements/esm/pwa-camera.entry.js</a>, <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html#line60">line 60</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="getPhotoCapabilities">
+        <a class="href-link" href="#getPhotoCapabilities">#</a>
+        
+        <span class="code-name">
+            
+                getPhotoCapabilities<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;PhotoCapabilities>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html">assets/pwa-elements/cjs/pwa-camera.cjs.entry.js</a>, <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html#line73">line 73</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/image-capture/#idl-def-photocapabilities">PhotoCapabilities</a>
+object on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;PhotoCapabilities></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="getPhotoCapabilities">
+        <a class="href-link" href="#getPhotoCapabilities">#</a>
+        
+        <span class="code-name">
+            
+                getPhotoCapabilities<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;PhotoCapabilities>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html">assets/pwa-elements/collection/components/camera/imagecapture.js</a>, <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html#line67">line 67</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/image-capture/#idl-def-photocapabilities">PhotoCapabilities</a>
+object on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;PhotoCapabilities></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="getPhotoCapabilities">
+        <a class="href-link" href="#getPhotoCapabilities">#</a>
+        
+        <span class="code-name">
+            
+                getPhotoCapabilities<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;PhotoCapabilities>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-getphotocapabilities</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html">assets/pwa-elements/esm/pwa-camera.entry.js</a>, <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html#line69">line 69</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/image-capture/#idl-def-photocapabilities">PhotoCapabilities</a>
+object on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;PhotoCapabilities></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="grabFrame">
+        <a class="href-link" href="#grabFrame">#</a>
+        
+        <span class="code-name">
+            
+                grabFrame<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;ImageBitmap>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html">assets/pwa-elements/cjs/pwa-camera.cjs.entry.js</a>, <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html#line137">line 137</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/html51/webappapis.html#webappapis-images">ImageBitmap</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;ImageBitmap></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="grabFrame">
+        <a class="href-link" href="#grabFrame">#</a>
+        
+        <span class="code-name">
+            
+                grabFrame<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;ImageBitmap>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html">assets/pwa-elements/collection/components/camera/imagecapture.js</a>, <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html#line131">line 131</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/html51/webappapis.html#webappapis-images">ImageBitmap</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;ImageBitmap></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="grabFrame">
+        <a class="href-link" href="#grabFrame">#</a>
+        
+        <span class="code-name">
+            
+                grabFrame<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;ImageBitmap>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html">assets/pwa-elements/esm/pwa-camera.entry.js</a>, <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html#line133">line 133</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with
+<a href="https://www.w3.org/TR/html51/webappapis.html#webappapis-images">ImageBitmap</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;ImageBitmap></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="setOptions">
+        <a class="href-link" href="#setOptions">#</a>
+        
+        <span class="code-name">
+            
+                setOptions<span class="signature">(photoSettings)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>photoSettings</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>Photo settings dictionary, https://www.w3.org/TR/image-capture/#idl-def-photosettings</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html">assets/pwa-elements/cjs/pwa-camera.cjs.entry.js</a>, <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html#line99">line 99</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;void></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="setOptions">
+        <a class="href-link" href="#setOptions">#</a>
+        
+        <span class="code-name">
+            
+                setOptions<span class="signature">(photoSettings)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>photoSettings</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>Photo settings dictionary, https://www.w3.org/TR/image-capture/#idl-def-photosettings</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html">assets/pwa-elements/collection/components/camera/imagecapture.js</a>, <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html#line93">line 93</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;void></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="setOptions">
+        <a class="href-link" href="#setOptions">#</a>
+        
+        <span class="code-name">
+            
+                setOptions<span class="signature">(photoSettings)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>.</p>
+    
+    
+    <div class="description">
+        <p>Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-setoptions</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>photoSettings</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>Photo settings dictionary, https://www.w3.org/TR/image-capture/#idl-def-photosettings</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html">assets/pwa-elements/esm/pwa-camera.entry.js</a>, <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html#line95">line 95</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise on success, rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;void></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="takePhoto">
+        <a class="href-link" href="#takePhoto">#</a>
+        
+        <span class="code-name">
+            
+                takePhoto<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Blob>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>.</p>
+    
+    
+    <div class="description">
+        <p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html">assets/pwa-elements/cjs/pwa-camera.cjs.entry.js</a>, <a href="assets_pwa-elements_cjs_pwa-camera.cjs.entry.js.html#line110">line 110</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with <a href="https://www.w3.org/TR/FileAPI/#blob">Blob</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;Blob></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="takePhoto">
+        <a class="href-link" href="#takePhoto">#</a>
+        
+        <span class="code-name">
+            
+                takePhoto<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Blob>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>.</p>
+    
+    
+    <div class="description">
+        <p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html">assets/pwa-elements/collection/components/camera/imagecapture.js</a>, <a href="assets_pwa-elements_collection_components_camera_imagecapture.js.html#line104">line 104</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with <a href="https://www.w3.org/TR/FileAPI/#blob">Blob</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;Blob></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="takePhoto">
+        <a class="href-link" href="#takePhoto">#</a>
+        
+        <span class="code-name">
+            
+                takePhoto<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Blob>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>.</p>
+    
+    
+    <div class="description">
+        <p>TODO
+Implements https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html" class="button">View Source</a>
+            <span>
+                <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html">assets/pwa-elements/esm/pwa-camera.entry.js</a>, <a href="assets_pwa-elements_esm_pwa-camera.entry.js.html#line106">line 106</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>Fulfilled promise with <a href="https://www.w3.org/TR/FileAPI/#blob">Blob</a>
+argument on success; rejected promise on failure</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;Blob></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

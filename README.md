@@ -9,6 +9,8 @@
 
 ( This workspace was originally forked from the https://github.com/PharmaLedger-IMI/epi-workspace )
 
+[Documentation Page](https://pharmaledger-imi.github.io/fgt-workspace/)
+
 ### Licence
 
 MIT License

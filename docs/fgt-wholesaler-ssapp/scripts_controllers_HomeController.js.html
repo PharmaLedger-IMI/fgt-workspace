@@ -1,0 +1,234 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability Wholesaler SSApp scripts/controllers/HomeController.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability Wholesaler SSApp</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/fgt-workspace/fgt-wholesaler-ssapp.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com/fgt-wholesaler-wallet/loader"
+                        >
+                            Application
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="Dom7.html">Dom7</a></li><li><a href="global.html#ImageCapture">ImageCapture</a></li><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_expandUnicodeEscapes">_expandUnicodeEscapes</a></li><li><a href="global.html#a">a</a></li><li><a href="global.html#bindLocale">bindLocale</a></li><li><a href="global.html#clean">clean</a></li><li><a href="global.html#EMPTY_OBJ">EMPTY_OBJ</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#getPendingOrdersAsync">getPendingOrdersAsync</a></li><li><a href="global.html#getStockAsync">getStockAsync</a></li><li><a href="global.html#h">h</a></li><li><a href="global.html#lex">lex</a></li><li><a href="global.html#Methods">Methods</a></li><li><a href="global.html#parse">parse</a></li><li><a href="global.html#parseCss">parseCss</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#s">s</a></li><li><a href="global.html#safeSelector">safeSelector</a></li><li><a href="global.html#setAccessor">setAccessor</a></li><li><a href="global.html#showIonicModal">showIonicModal</a></li><li><a href="global.html#StyleNode">StyleNode</a></li><li><a href="global.html#SVG_NS">SVG_NS</a></li><li><a href="global.html#types">types</a></li><li><a href="global.html#updatePendingOrders">updatePendingOrders</a></li><li><a href="global.html#updateStock">updateStock</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>scripts/controllers/HomeController.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import LocalizedController from "./LocalizedController.js";
+const REGISTRATION_MODAL = "registration-modal";
+
+customElements.define(REGISTRATION_MODAL, class extends HTMLElement{
+    connectedCallback(){
+        this.innerHTML = `
+    &lt;ion-title color="primary">{{ $registration.title }}&lt;/ion-title>
+    &lt;ion-item>
+        &lt;ion-label position="stacked"> {{ $registration.name.label }}&lt;/ion-label>
+        &lt;ion-input name="input-name" data-model="@registration.name" type="text" inputmode="text" required="true" clear-on-edit="true" value="value">&lt;/ion-input>
+    &lt;/ion-item>
+    &lt;ion-item>
+        &lt;ion-label position="stacked"> {{ $id.label }}&lt;/ion-label>
+        &lt;ion-input name="id" data-model="@id" type="text" inputmode="text" required="true" clear-on-edit="true" value="value">&lt;/ion-input>
+    &lt;/ion-item>
+    &lt;ion-item>
+        &lt;ion-label position="stacked"> {{ $email.label }}&lt;/ion-label>
+        &lt;ion-input name="email" data-model="@email" type="email" inputmode="email" required="true" clear-on-edit="true" value="value">&lt;/ion-input>
+    &lt;/ion-item>
+    &lt;ion-item>
+        &lt;ion-label position="stacked"> {{ $tin.label }}&lt;/ion-label>
+        &lt;ion-input name="tin" data-model="@tin" type="number" inputmode="numeric" min="0" required="true" maxLength="9" clear-on-edit="true" value="value">&lt;/ion-input>
+    &lt;/ion-item>
+    &lt;ion-item>
+        &lt;ion-label position="stacked"> {{ $address.label }}&lt;/ion-label>
+        &lt;ion-input name="address" data-model="@address" type="text" inputmode="text" required="true" clear-on-edit="true" value="value">&lt;/ion-input>
+    &lt;/ion-item>
+    &lt;ion-button name="register" color="primary" data-tag="registration" expand="full">{{ $register }}&lt;/ion-button>`
+    }
+});
+
+export default class ParticipantController extends LocalizedController {
+    getModel = () => ({
+        participant: undefined
+    });
+
+    constructor(element, history) {
+        super(element, history);
+        console.log(`The translation model in the Home controller is: ${WebCardinal.translations.en}`);
+        super.bindLocale(this, "");
+        this.setModel(this.getModel());
+        this.model.addExpression('identified', () => {
+            return this.model.participant !== undefined;
+        }, "participant");
+
+        let self = this;
+        this.on('perform-registration', (event) => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            self.register(event.detail, (err) => {
+                if (err)
+                    self.showErrorModal();
+                self.hideModal();
+                self._testParticipant();
+            });
+        }, true)
+
+        this.participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, "traceability");
+        console.log("Home controller initialized");
+        this._testParticipant();
+    }
+
+    /**
+     * Creates the ID DSU and mounts it to the id_path
+     * @param {Participant} participant
+     * @param {function} callback
+     */
+    register(participant, callback){
+        let self = this;
+        self.participantManager.create(participant, (err, keySSI) => {
+            if (err)
+                return callback(err);
+            callback();
+        });
+    }
+
+    _showRegistrationModal() {
+        //this.showIonicModal(REGISTRATION_MODAL);
+        this.createWebcModal({
+                template: "registrationModal",
+                disableBackdropClosing: true,
+                disableFooter: true,
+                disableHeader: true,
+                disableExpanding: true,
+                disableClosing: true,
+                disableCancelButton: true,
+                expanded: false,
+                centered: true
+        });
+    }
+
+    _testParticipant(){
+        let self = this;
+        this.participantManager.getParticipant((err, participant) => {
+            if (err || !participant) {
+                self._showRegistrationModal.call(this);
+            } else {
+                self.model.participant = participant;
+                console.log(`Welcome ${self.model.participant.name}`);
+            }
+        });
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>
