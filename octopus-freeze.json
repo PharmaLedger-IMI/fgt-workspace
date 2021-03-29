@@ -2,6 +2,42 @@
     "workDir": ".",
     "dependencies": [
         {
+            "name": "privatesky",
+            "src": "http://github.com/privatesky/privatesky.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "54fb372e1457f62089f20e384f0a82053cc43459"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd privatesky && npm install"
+                }
+            ]
+        },
+        {
+            "name": "build privatesky",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd privatesky && npm run build && npm run prepare-release"
+                }
+            ]
+        },
+        {
+            "name": "Documentation Theme Install (globally)",
+            "src": "",
+            "description": "This hack is only used because the better-docs theme has a security vulnerability that would be assumed as a security risk for the repo, when its only used to generate documentation",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "sh -c \"theme=`npm ls -g better-docs | grep better-docs` && [ -z \\\"$theme\\\" ] && npm install -g better-docs taffydb || echo \\\"Documentation Theme already Installed\\\"\""
+                }
+            ]
+        },
+        {
             "name": "cardinal",
             "src": "https://github.com/PrivateSky/cardinal.git",
             "actions": [
@@ -33,32 +69,37 @@
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd webcardinal && npm install && npm run bundle-all && npm run build"
-                }
-            ]
-        },
-        {
-            "name": "privatesky",
-            "src": "http://github.com/privatesky/privatesky.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "54fb372e1457f62089f20e384f0a82053cc43459"
+                    "cmd": "cd webcardinal && npm install && npm run bundle-minimal && npm run dev"
                 },
                 {
-                    "type": "execute",
-                    "cmd": "cd privatesky && npm install"
+                    "type": "copy",
+                    "src": "./webcardinal-patch/Controller-1d5e8bd0.js",
+                    "target": "./webcardinal/webcardinal/components/webcardinal-core/Controller-1d5e8bd0.js",
+                    "options": {
+                        "overwrite": true
+                    }
                 }
             ]
         },
         {
-            "name": "build privatesky",
+            "name": "PATCH webcardinal",
+            "src": ".",
             "actions": [
                 {
-                    "type": "execute",
-                    "cmd": "cd privatesky && npm run build && npm run prepare-release"
+                    "type": "copy",
+                    "src": "./webcardinal-patch/Controller-1d5e8bd0.js",
+                    "target": "./webcardinal/webcardinal/components/webcardinal-core/Controller-1d5e8bd0.js",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "./webcardinal-patch/index-3f5ce18f.js",
+                    "target": "./webcardinal/webcardinal/components/webcardinal-core/index-3f5ce18f.js",
+                    "options": {
+                        "overwrite": true
+                    }
                 }
             ]
         },
@@ -110,7 +151,7 @@
                 {
                     "type": "copy",
                     "src": "./webcardinal/webcardinal",
-                    "target": "./pdm-trust-loader/webcardinal",
+                    "target": "./pdm-trust-loader/src/webcardinal",
                     "options": {
                         "overwrite": true
                     }
@@ -158,7 +199,7 @@
             ]
         },
         {
-            "name": "Build and deploy PDM Trust Loader to WHolesaler",
+            "name": "Build and deploy PDM Trust Loader to Wholesaler",
             "src": ".",
             "actions": [
                 {
@@ -171,7 +212,7 @@
                 },
                 {
                     "type": "copy",
-                    "src": "./pdm-trust-loader",
+                    "src": "./pdm-trust-loader/src",
                     "target": "./apihub-root/fgt-wholesaler-wallet/loader",
                     "options": {
                         "overwrite": true
@@ -219,7 +260,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "f1ae758a43a2b8d2fd87909ead1dedc6cbd2a483"
+                    "commit": "793cde9bcf5568c16c3fe9d0160bb24c964c8ad8"
                 },
                 {
                     "type": "execute",
@@ -388,7 +429,7 @@
                 },
                 {
                     "type": "copy",
-                    "src": "./pdm-trust-loader",
+                    "src": "./pdm-trust-loader/src",
                     "target": "./apihub-root/fgt-wholesaler-wallet/loader",
                     "options": {
                         "overwrite": true
@@ -523,6 +564,10 @@
                 {
                     "type": "execute",
                     "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && npx workbox generateSW"
                 }
             ]
         }
@@ -668,40 +713,56 @@
             "actions": [
                 {
                     "type": "copy",
-                    "src": "fgt-dsu-wizard/docs/output",
-                    "target": "pages/fgt-dsu-wizard",
+                    "src": "fgt-dsu-wizard/docs",
+                    "target": "docs/fgt-dsu-wizard",
                     "options": {
                         "overwrite": true
                     }
                 },
                 {
                     "type": "copy",
-                    "src": "pdm-dsu-toolkit/docs/output",
-                    "target": "pages/pdm-dsu-toolkit",
+                    "src": "pdm-dsu-toolkit/docs",
+                    "target": "docs/pdm-dsu-toolkit",
                     "options": {
                         "overwrite": true
                     }
                 },
                 {
                     "type": "copy",
-                    "src": "fgt-mah-ssapp/docs/output",
-                    "target": "pages/fgt-mah-ssapp",
+                    "src": "fgt-mah-ssapp/docs",
+                    "target": "docs/fgt-mah-ssapp",
                     "options": {
                         "overwrite": true
                     }
                 },
                 {
                     "type": "copy",
-                    "src": "fgt-pharmacy-ssapp/docs/output",
-                    "target": "pages/fgt-pharmacy-ssapp",
+                    "src": "fgt-pharmacy-ssapp/docs",
+                    "target": "docs/fgt-pharmacy-ssapp",
                     "options": {
                         "overwrite": true
                     }
                 },
                 {
                     "type": "copy",
-                    "src": "fgt-wholesaler-ssapp/docs/output",
-                    "target": "pages/fgt-wholesaler-ssapp",
+                    "src": "fgt-wholesaler-ssapp/docs/",
+                    "target": "docs/fgt-wholesaler-ssapp",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "pdm-dsu-toolkit/docs/",
+                    "target": "docs/pdm-dsu-toolkit",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "pdm-trust-loader/docs/",
+                    "target": "docs/pdm-trust-loader",
                     "options": {
                         "overwrite": true
                     }
@@ -718,8 +779,8 @@
                 },
                 {
                     "type": "copy",
-                    "src": "docs/resources",
-                    "target": "pages/resources",
+                    "src": "workdocs/resources",
+                    "target": "docs/resources",
                     "options": {
                         "overwrite": true
                     }
@@ -730,7 +791,7 @@
                 },
                 {
                     "type": "execute",
-                    "cmd": "jsdoc -c jsdocs.json"
+                    "cmd": "jsdoc -c jsdocs.json -t \"$(npm root -g)/better-docs\""
                 }
             ]
         }
