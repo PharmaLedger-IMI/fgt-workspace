@@ -61,6 +61,7 @@ fgt-pharmacy-ssapp/seed
 fgt-pharmacy-ssapp/docs
 fgt-wholesaler-ssapp/code/constitution
 fgt-wholesaler-ssapp/code/scripts/bundles
+fgt-wholesaler-ssapp/code/assets/ionic-core
 fgt-wholesaler-ssapp/docs
 fgt-wholesaler-ssapp/seed
 gtin-resolver

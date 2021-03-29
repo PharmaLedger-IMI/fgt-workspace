@@ -10,16 +10,6 @@
 				  "cmd": "sh -c \"theme=`npm ls -g better-docs | grep better-docs` && [ -z \\\"$theme\\\" ] && npm install -g better-docs taffydb || echo \\\"Documentation Theme already Installed\\\"\""
 			  }
 		  ]
-	  },
-	  {
-		  "name": "Ionic Capacitor Sync",
-		  "src": ".",
-		  "actions": [
-			  {
-				  "type": "execute",
-				  "cmd": "npx cap sync"
-			  }
-		  ]
 	  }
   ],
   "prebuild": [
@@ -81,6 +71,44 @@
 				  "type": "copy",
 				  "src": "../fgt-dsu-wizard/build/bundles/wizard.js",
 				  "target": "code/scripts/bundles/wizard.js",
+				  "options": {
+					  "overwrite": true
+				  }
+			  }
+		  ]
+	  },
+	  {
+		  "name": "Copy Ionic Dependencies",
+		  "src": "",
+		  "actions": [
+			  {
+				  "type": "copy",
+				  "src": "./node_modules/@ionic/core/dist/ionic",
+				  "target": "./code/assets/ionic-core",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "./node_modules/@ionic/core/css",
+				  "target": "./code/assets/ionic-core/css",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "./node_modules/ionicons/dist/ionicons",
+				  "target": "./code/assets/ionic-core/ionicons",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "./node_modules/@ionic/pwa-elements/dist/ionicpwaelements",
+				  "target": "./code/assets/ionic-core/pwa-elements",
 				  "options": {
 					  "overwrite": true
 				  }
