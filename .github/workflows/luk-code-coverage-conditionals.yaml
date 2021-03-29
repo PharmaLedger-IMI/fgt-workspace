@@ -1,6 +1,0 @@
-name: Conditionals Badge Coverage
-uses: luk-schweizer/jest-code-coverage-badge-action@v1.0.1
-with:
-  coverage-type: conditionals
-  badge-label: conditionals
-  kvaas-key-url: 'https://api.keyvalue.xyz/9f895049/coverage'

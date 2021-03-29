@@ -4,6 +4,7 @@
     {
       "name": "Documentation Theme Install (globally)",
       "src": "",
+      "description": "This hack is only used because the better-docs theme has a security vulnerability that would be assumed as a security risk for the repo, when its only used to generate documentation",
       "actions": [
         {
           "type": "execute",
