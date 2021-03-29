@@ -21,13 +21,13 @@ dossier-explorer-ssapp
 dossier-explorer-wallet-prototype
 env.json.devel
 
-pdm-trust-loader/webcardinal
-pdm-trust-loader/bundles
-pdm-trust-loader/capacitor.js
-pdm-trust-loader/assets/ionic-core
-pdm-trust-loader/swPwa*
-pdm-trust-loader/swBoot.js
-pdm-trust-loader/workbox*
+pdm-trust-loader/src/webcardinal
+pdm-trust-loader/src/bundles
+pdm-trust-loader/src/capacitor.js
+pdm-trust-loader/src/assets/ionic-core
+pdm-trust-loader/src/swPwa*
+pdm-trust-loader/src/swBoot.js
+pdm-trust-loader/src/workbox*
 pdm-trust-loader/docs
 
 !pdm-trust-loader/workbox-config.js

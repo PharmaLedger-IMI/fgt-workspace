@@ -7,16 +7,15 @@
     "recurseDepth": 10,
     "source": {
         "include": [
-            "."
+            "./src"
         ],
         "exclude": [
-            "node_modules",
-            "bundles",
-            "webcardinal",
-            "assets/ionic-core",
-            "asset/pwa",
-            "swBoot.js",
-            "swPwa.js"
+            "./src/bundles",
+            "./src/webcardinal",
+            "./src/assets/ionic-core",
+            "/src/asset/pwa",
+            "./src/swBoot.js",
+            "./src/swPwa.js"
         ],
         "includePattern": ".+\\.js(doc|x)?$",
         "excludePattern": "(^|\\/|\\\\)_"

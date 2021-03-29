@@ -28,7 +28,7 @@ function FileService(options) {
             url = `${protocol}//${host}/${prefix}${appName}`;
             return url;
         } else {
-            return `http://${options.hosts}/${prefix ? prefix : ''}${options.walletPath}`;
+            return `http://${options.hosts}/${prefix}${options.walletPath}`;
         }
     }
 
@@ -55,24 +55,18 @@ function FileService(options) {
             method: 'GET'
         }).then((response) => {
             return response.arrayBuffer().then((data) => {
-                if (!response.ok){
-                    console.log("array buffer not ok");
+                if (!response.ok)
                     return callback("array data failed")
-                }
                 callback(undefined, data);
-            }).catch(e => {
-                return callback(e);
-            });
-        }).catch(err => {
-            return callback(err);
-        });
+            }).catch(e => callback(e));
+        }).catch(err => callback(err));
     }
 
     /**
      * Returns the content of a file as a uintArray
      * @param {string} appName
      * @param {string} fileName
-     * @param {function(err, UintArray)} callback
+     * @param {function(err, U8intArray)} callback
      */
     this.getFile = function(appName, fileName, callback){
         const suffix = `${appName}/${fileName}`;
@@ -107,7 +101,7 @@ function FileService(options) {
     /**
      * Util method to convert Utf8Arrays to Strings in the browser
      * (simpler methods fail for big content jsons)
-     * @param {Utf8Array} array
+     * @param {U8intArray} array
      * @param {function(err, string)} callback
      */
     function Utf8ArrayToStr(array, callback) {

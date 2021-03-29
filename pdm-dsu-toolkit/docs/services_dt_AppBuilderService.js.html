@@ -427,6 +427,15 @@ function AppBuilderService(environment, opts) {
     }
 
     /**
+     * When writing the env to an SSApp, because she'll run in an iFrame,
+     * its basePath will always be '/' unlike the loader
+     * @param {object} env
+     */
+    const resetBasePath = function(env){
+        return Object.assign({}, env, {basePath: '/'});
+    }
+
+    /**
      * Reads from {@link OPTIONS.initFile} and executes the commands founds there via {@link DossierBuilder#buildDossier}
      * @param {Archive} instance
      * @param {object} publicSecrets what elements of the registration elements should be passed onto the SSApp
@@ -439,7 +448,7 @@ function AppBuilderService(environment, opts) {
                 return callback(undefined, instance);
             }
 
-            let commands = data.toString().replace(options.environmentKey, JSON.stringify(options.environment));
+            let commands = data.toString().replace(options.environmentKey, JSON.stringify(resetBasePath(options.environment)));
             commands = (publicSecrets
                     ? commands.replace(options.publicSecretsKey, JSON.stringify(publicSecrets))
                     : commands)

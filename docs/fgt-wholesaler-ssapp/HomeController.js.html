@@ -147,7 +147,7 @@ export default class ParticipantController extends LocalizedController {
 
     constructor(element, history) {
         super(element, history);
-        console.log(`The translation model in the Home controller is: ${WebCardinal.translations}`);
+        console.log(`The translation model in the Home controller is: ${WebCardinal.translations.en}`);
         super.bindLocale(this, "");
         this.setModel(this.getModel());
         this.model.addExpression('identified', () => {
@@ -188,11 +188,15 @@ export default class ParticipantController extends LocalizedController {
     _showRegistrationModal() {
         //this.showIonicModal(REGISTRATION_MODAL);
         this.createWebcModal({
-            modelTitle: "",
-            modalName: 'registrationModal',
-            showFooter: false,
-            canClose: false,
-            showCancelButton: false
+                template: "registrationModal",
+                disableBackdropClosing: true,
+                disableFooter: true,
+                disableHeader: true,
+                disableExpanding: true,
+                disableClosing: true,
+                disableCancelButton: true,
+                expanded: false,
+                centered: true
         });
     }
 

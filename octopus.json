@@ -146,7 +146,7 @@
                 {
                     "type": "copy",
                     "src": "./webcardinal/webcardinal",
-                    "target": "./pdm-trust-loader/webcardinal",
+                    "target": "./pdm-trust-loader/src/webcardinal",
                     "options": {
                         "overwrite": true
                     }
@@ -414,7 +414,7 @@
                 },
                 {
                     "type": "copy",
-                    "src": "./pdm-trust-loader",
+                    "src": "./pdm-trust-loader/src",
                     "target": "./apihub-root/fgt-wholesaler-wallet/loader",
                     "options": {
                         "overwrite": true
