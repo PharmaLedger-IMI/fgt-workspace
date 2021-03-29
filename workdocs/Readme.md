@@ -1,9 +1,15 @@
 # UC3 Finished Goods Traceability fgt-workspace
 
+[![GitHub license](https://img.shields.io/github/license/PharmaLedger-IMI/fgt-workspace?style=plastic)](https://github.com/PharmaLedger-IMI/fgt-workspace/blob/master/LICENSE.md)
+[![GitHub issues](https://img.shields.io/github/issues/PharmaLedger-IMI/fgt-workspace?style=plastic)](https://github.com/PharmaLedger-IMI/fgt-workspace/issues)
+[![GitHub stars](https://img.shields.io/github/stars/PharmaLedger-IMI/fgt-workspace?style=plastic)](https://github.com/PharmaLedger-IMI/fgt-workspace/stargazers)
 [![Build Status](https://travis-ci.org/{ORG-or-USERNAME}/{REPO-NAME}.png?branch=master)](https://travis-ci.org/{ORG-or-USERNAME}/{REPO-NAME})
-[![JavaScript Style Guide: Good Parts](https://img.shields.io/badge/code%20style-goodparts-brightgreen.svg?style=flat)](https://github.com/dwyl/goodparts "JavaScript The Good Parts")
-[![Known Vulnerabilities](https://snyk.io/test/github/dwyl/hapi-auth-jwt2/badge.svg?targetFile=package.json)](https://snyk.io/test/github/dwyl/hapi-auth-jwt2?targetFile=package.json)
+[![JavaScript Style Guide: Good Parts](https://img.shields.io/badge/code%20style-goodparts-brightgreen.svg?style=flat)](https://github.com/PharmaLedger-IMI/fgt-workspace/goodparts "JavaScript The Good Parts")
+[![Known Vulnerabilities](https://snyk.io/test/github/dwyl/hapi-auth-jwt2/badge.svg?targetFile=package.json)](https://github.com/PharmaLedger-IMI/fgt-workspace/hapi-auth-jwt2?targetFile=package.json)
 
+![](https://img.shields.io/endpoint?url=https://api.keyvalue.xyz/9f895049/coverage&style=plastic)
+![](https://img.shields.io/endpoint?url=https://api.keyvalue.xyz/9f895049/coverage&style=plastic)
+![](https://img.shields.io/endpoint?url=https://api.keyvalue.xyz/9f895049/coverage&style=plastic)
 
 *fgt-workspace*  bundles all the necessary dependencies for building and running Finished Goods Traceability SSApps in a single package.
 

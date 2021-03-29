@@ -4,7 +4,6 @@
   "description": "The Pharmaledger Traceability Application for Wholesalers",
   "main": "index.js",
   "scripts": {
-    "postinstall": "node ./node_modules/octopus/scripts/setEnv --file=../../../../env.json \"node ./node_modules/octopus/scripts/run\"",
     "prebuild": "node ./node_modules/octopus/scripts/run prebuild devmode",
     "build": "node ./node_modules/octopus/scripts/buildDossier ./bin/build.file --domain=traceability",
     "update": "npm install",

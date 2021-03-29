@@ -13,56 +13,56 @@
 	  }
   ],
   "prebuild": [
-	{
-	  "name": "PSK bundles",
-	  "src": "",
-	  "actions": [
-		{
-		  "type": "copy",
-		  "src": "../privatesky/psknode/bundles/pskruntime.js",
-		  "target": "code/constitution/pskruntime.js",
-		  "options": {
-			"overwrite": true
-		  }
-		},
-		{
-		  "type": "copy",
-		  "src": "../privatesky/psknode/bundles/webshims.js",
-		  "target": "code/constitution/webshims.js",
-		  "options": {
-			"overwrite": true
-		  }
-		},
-		{
-		  "type": "copy",
-		  "src": "../privatesky/psknode/bundles/pskruntime.js",
-		  "target": "code/scripts/bundles/pskruntime.js",
-		  "options": {
-			"overwrite": true
-		  }
-		},
-		{
-		  "type": "copy",
-		  "src": "../privatesky/psknode/bundles/webshims.js",
-		  "target": "code/scripts/bundles/webshims.js",
-		  "options": {
-			"overwrite": true
-		  }
-		},
-		  {
-			  "type": "copy",
-			  "src": "../privatesky/psknode/bundles/iframeBoot.js",
-			  "target": "code/scripts/bundles/iframeBoot.js",
-			  "options": {
-				  "overwrite": true
+	  {
+		  "name": "PSK bundles",
+		  "src": "",
+		  "actions": [
+			  {
+				  "type": "copy",
+				  "src": "../privatesky/psknode/bundles/pskruntime.js",
+				  "target": "code/constitution/pskruntime.js",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "../privatesky/psknode/bundles/webshims.js",
+				  "target": "code/constitution/webshims.js",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "../privatesky/psknode/bundles/pskruntime.js",
+				  "target": "code/scripts/bundles/pskruntime.js",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "../privatesky/psknode/bundles/webshims.js",
+				  "target": "code/scripts/bundles/webshims.js",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "../privatesky/psknode/bundles/iframeBoot.js",
+				  "target": "code/scripts/bundles/iframeBoot.js",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "remove",
+				  "target": "./builds"
 			  }
-		  },
-		  {
-			  "type": "remove",
-			  "target": "./builds"
-		  }
-	  ]
-	},
+		  ]
+	  },
 	  {
 		  "name": "Copy fgt-dsu-wizard-bundle",
 		  "src": "",

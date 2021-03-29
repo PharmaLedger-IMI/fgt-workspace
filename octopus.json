@@ -2,6 +2,30 @@
     "workDir": ".",
     "dependencies": [
         {
+            "name": "privatesky",
+            "src": "http://github.com/privatesky/privatesky.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd privatesky && npm install"
+                }
+            ]
+        },
+        {
+            "name": "build privatesky",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd privatesky && npm run build && npm run prepare-release"
+                }
+            ]
+        },
+        {
             "name": "Documentation Theme Install (globally)",
             "src": "",
             "actions": [
@@ -72,30 +96,6 @@
                     "options": {
                         "overwrite": true
                     }
-                }
-            ]
-        },
-        {
-            "name": "privatesky",
-            "src": "http://github.com/privatesky/privatesky.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd privatesky && npm install"
-                }
-            ]
-        },
-        {
-            "name": "build privatesky",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd privatesky && npm run build && npm run prepare-release"
                 }
             ]
         },
