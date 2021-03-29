@@ -1,4 +1,5 @@
-- name: OWASP ZAP Baseline Scan
+name: OWASP ZAP Baseline Scan
+
 uses: zaproxy/action-baseline@v0.4.0
 with:
   target: 'https://fgt.pharmaledger.pdmfc.com'
