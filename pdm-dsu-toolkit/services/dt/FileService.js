@@ -3,6 +3,7 @@
  */
 
 /**
+ * Forked from PrivateSky
  * Provides an environment independent file service to the {@link AppBuilderService}
  */
 function FileService(options) {

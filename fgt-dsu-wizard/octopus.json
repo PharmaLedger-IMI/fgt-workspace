@@ -31,7 +31,7 @@
   "docs": [
     {
       "name": "Documentation",
-      "src": ".",
+      "src": "",
       "actions": [
         {
           "type": "execute",

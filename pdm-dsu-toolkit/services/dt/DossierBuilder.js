@@ -396,7 +396,7 @@ const DossierBuilder = function(sourceDSU){
                 let args = JSON.parse(cmd.join(' '));
                 return createAndMount(bar, type, domain, path, args, callback);
             default:
-                return callback(new Error("Invalid operation requested: " + command));
+                return callback("Invalid operation requested: " + command);
         }
     };
 

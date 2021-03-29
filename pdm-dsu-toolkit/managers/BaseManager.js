@@ -38,7 +38,6 @@ const {INFO_PATH, PARTICIPANT_MOUNT_PATH} = require('../constants');
 class BaseManager{
     constructor(dsuStorage, domain) {
         this.DSUStorage = dsuStorage;
-        this.participantService = new (require('../services').ParticipantService)(domain);
         this.resolver = undefined;
         this.rootDSU = undefined;
     };
@@ -94,19 +93,6 @@ class BaseManager{
                     callback();
                 });
             });
-        });
-    };
-
-    _matchParticipantDSU(mounts, callback){
-        // m.path has "participant". PARTICIPANT_MOUNT_PATH has "/participant".
-        let mount = mounts.filter(m => m.path === PARTICIPANT_MOUNT_PATH.substr(1));
-        if (!mount || mount.length !== 1)
-            return callback("No participant mount found");
-        this._loadDSU(mount[0].identifier, (err, dsu) => {
-            if (err)
-                return callback(err);
-            console.log(`Participant DSU Successfully cached: ${mount[0].identifier}`);
-            callback(undefined, dsu);
         });
     };
 

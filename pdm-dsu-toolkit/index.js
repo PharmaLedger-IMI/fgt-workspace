@@ -10,13 +10,13 @@
  */
 
 /**
- * Integration with Webcardinal and Ionic COmponents for 2 way binding and form validation
+ * Integration with Webcardinal and Ionic Components for 2 way binding and form validation
  * @namespace pdm-dsu-toolkit.model.validations
  * @property {module:validations} Validations
  */
 
 /**
- * Login layer in a DSU Enterprise SSApp Environment
+ * Logic layer in a DSU Enterprise SSApp Environment
  * @namespace pdm-dsu-toolkit.managers
  * @property {module:managers} Managers
  */

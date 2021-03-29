@@ -10,7 +10,7 @@
 
 /**
  * Returns a DossierBuilder Instance
- * @param {Archive} [sourceDSU]
+ * @param {Archive} [sourceDSU] should only be provided when cloning a DSU
  * @return {DossierBuilder}
  */
 const getDossierBuilder = (sourceDSU) => {
