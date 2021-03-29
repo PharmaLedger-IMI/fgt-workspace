@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDM&FC's OpenDSU Trust Loader Documentation scripts/controllers/FormController.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">PDM&FC's OpenDSU Trust Loader Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/epi-workspace/pdm-trust-loader.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com"
+                        >
+                            Example Application - Finished Goods Traceability
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li><li><a href="module-loader.html">loader</a></li><li><a href="module-pwa.html">pwa</a></li><li><a href="module-services.html">services</a></li></ul><h3>Namespaces</h3><ul><li><a href="pdm-trust-loader.html">pdm-trust-loader</a></li><li><a href="pdm-trust-loader.controllers.html">controllers</a></li><li><a href="pdm-trust-loader.loader.html">loader</a></li><li><a href="pdm-trust-loader.services.html">services</a></li></ul><h3>Classes</h3><ul><li><a href="module-controllers-FormController.html">FormController</a></li><li><a href="module-controllers-HomeController.html">HomeController</a></li><li><a href="module-controllers-LocalizedController.html">LocalizedController</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>scripts/controllers/FormController.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module controllers
+ */
+
+/**
+ *
+ */
+import LocalizedController from './LocalizedController.js'
+
+/**
+ * @class FormController
+ */
+export default class FormController extends LocalizedController {
+
+    getModel = () => ({});
+
+    constructor(element, history) {
+        super(element, history);
+        // let locale_key = this.model.page;
+        // if (!locale_key)
+        //     throw new Error("Missing fields info");
+        let self = this;
+        super.bindLocale(self, `.form`, true);
+        self._createModalForm(WebCardinal.translations.en['/'].form);
+        self.setModel(self.getModel());
+        console.log("FormController initialized");
+        Object.entries(self.getModel().buttons).forEach(b => {
+            self.onTagClick(`try${b[0]}`, self._handleTry(`${b[0]}`).bind(self));
+        });
+
+        self.on('input-has-changed', self._handleErrorElement.bind(self));
+    }
+
+    _handleTry(name){
+        return function() {
+            if (this.hasErrors())
+                return this.showErrorToast('There are errors in the form');
+            switch (name){
+                case 'register':
+                    return this._submitRegistration();
+                case 'login':
+                    return this._submitLogin();
+            }
+        }
+    }
+
+    _createModalForm(model){
+        // create inputs from model objects
+        const fields = Object.entries(model)
+            .map(e => ({name: e[0], attributes: e[1]}))
+            .filter(e => typeof e.attributes === 'object');
+        const inputs = fields.filter(f => f.name !== 'buttons');
+        this._defineElements(inputs);
+    }
+
+    _handleErrorElement(evt){
+        let name = evt.detail;
+        let attributes = this.model.toObject()[name];
+        let errorEl = this.element.querySelector(`ion-note[name="note-${name}"]`);
+        if (attributes.error){
+            if (errorEl){
+                errorEl.innerHTML = attributes.error;
+            } else {
+                errorEl = document.createElement('ion-note');
+                errorEl.setAttribute('position', 'stacked');
+                errorEl.setAttribute('slot', 'end');
+                errorEl.setAttribute('color', 'danger');
+                errorEl.setAttribute('name', `note-${name}`)
+                errorEl.innerHTML = attributes.error;
+                let htmlEl = this.element.querySelector(`ion-item ion-input[name="input-${name}"]`);
+                htmlEl.insertAdjacentElement('afterend', errorEl);
+            }
+        } else if (errorEl) {
+            errorEl.remove();
+        }
+    }
+
+    _defineElements(inputs){
+        let el, elName;
+        const content_div = this.element.querySelector("div.modal-content");
+        inputs.forEach(input => {
+            elName = this._defineIonInput(input.name, input.attributes);
+            el = document.createElement(elName);
+            content_div.append(el);
+        });
+    }
+
+    /**
+     *
+     * @param {string} name read from model containing the fields attributes
+     * @param {object} attributes
+     * @private
+     */
+    _defineIonInput(name, attributes){
+        const el_name = `loader-input-${name}`;
+        customElements.define(el_name, class extends HTMLElement{
+            connectedCallback(){
+                this.innerHTML = `
+    &lt;ion-item>
+        &lt;ion-label position="stacked">${attributes.label}&lt;/ion-label>
+        &lt;ion-input name="input-${name}" data-model="@${name}" 
+            ${['number', 'date'].indexOf(attributes.type) !== -1 ? `inputmode="${attributes.type}"` : `inputmode="text"`} 
+            ${attributes.max ? `max="${attributes.max}"` : ""} 
+            ${attributes.min ? `min="${attributes.min}"` : ""} 
+            ${attributes["max-length"] ? `max-length="${attributes['max-length']}"` : ""} 
+            ${attributes["min-length"] ? `min-length="${attributes['min-length']}"` : ""}  
+            type="${attributes.type}" required="${attributes.required}" clear-on-edit="true" value="${attributes.value}">&lt;/ion-input>
+    &lt;/ion-item>`
+            }
+        });
+        return el_name;
+    }
+
+    _getColor(index){
+        switch (index) {
+            case 1: return "primary"
+            case 2: return "secondary"
+            default: return "tertiary"
+        }
+    }
+
+    _submitRegistration = function () {
+        let participant = this._toSecrets();
+        this.send('perform-registration', participant);
+    }
+
+    _submitLogin = function () {
+        let secrets = this._toSecrets();
+        this.send('perform-login', secrets);
+    }
+
+    _toSecrets = function (model) {
+        model = model || this.model
+        let result = {};
+        Object.entries(model.toObject())
+            .filter(k => !!k[1].value).forEach(e => {
+                result[e[0]] = {
+                    secret: e[1].value,
+                    "public": !!e[1].public
+                };
+            })
+        return result;
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

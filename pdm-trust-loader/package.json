@@ -18,9 +18,7 @@
     "@ionic/pwa-elements": "^3.0.2",
     "workbox-cli": "5.1.4",
     "jsdoc": "^3.6.6",
-    "markdown-include": "^0.4.3",
-    "eslint": "^7.23.0",
-    "eslint-plugin-import": "^2.22.1"
+    "markdown-include": "^0.4.3"
   },
   "license": "MIT"
 }
