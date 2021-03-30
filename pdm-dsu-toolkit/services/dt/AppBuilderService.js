@@ -57,6 +57,7 @@ const envToOptions = function(env, opts){
  */
 function AppBuilderService(environment, opts) {
     const options = envToOptions(environment, opts);
+    //const dossierBuilder = new (require("./DossierBuilder2"))();
     let keyssi = require('opendsu').loadApi('keyssi')
 
     const dossierBuilder = new (require("./DossierBuilder").DossierBuilder);
