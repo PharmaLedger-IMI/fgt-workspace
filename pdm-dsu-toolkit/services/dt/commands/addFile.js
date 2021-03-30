@@ -6,6 +6,7 @@
 /**
  */
 const Command = require('./Command');
+const { _err } = require('./utils');
 
 /**
  * Copies a File from disk or from a source DSU when provided
@@ -70,23 +71,16 @@ class AddFileCommand extends Command{
 
         if (!this.source)
             return bar.addFile(arg.from, arg.to, options, err => err
-                ? this._err(`Could not read from ${arg.from}`, err, callback)
+                ? _err(`Could not read from ${arg.from}`, err, callback)
                 : callback(undefined, bar));
 
         this.source.readFile(arg.from, (err, data) => {
             if (err)
-                return this._err(`Could not read from ${arg.from}`, err, callback);
+                return _err(`Could not read from ${arg.from}`, err, callback);
             bar.writeFile(arg.to, data, err => err
-                ? this._err(`Could not write to ${arg.to}`, err, callback)
+                ? _err(`Could not write to ${arg.to}`, err, callback)
                 : callback(undefined, bar));
         });
-    }
-
-    /**
-     * @return the command name
-     */
-    getName(){
-        return "addfile";
     }
 }
 

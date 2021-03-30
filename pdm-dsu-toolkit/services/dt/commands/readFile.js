@@ -6,7 +6,7 @@
 /**
  */
 const Command = require('./Command');
-const _getFS = require('./utils');
+const { _getFS, _err } = require('./utils')
 
 /**
  * Reads The contents of a file from disk or from a sourceDSU
@@ -53,15 +53,8 @@ class ReadFileCommand extends Command{
         }
 
         this.source.readFile(arg, (err, data) => err
-            ? this._err(`Could not read file at ${arg}`, err, callback)
+            ? _err(`Could not read file at ${arg}`, err, callback)
             : callback(undefined, this.dataToString ? data : data.toString()));
-    }
-
-    /**
-     * @return the operation name
-     */
-    getName(){
-        return "readFile";
     }
 }
 

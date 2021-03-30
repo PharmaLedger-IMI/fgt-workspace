@@ -7,6 +7,7 @@
 /**
  */
 const Command = require('./Command');
+const { _err } = require('./utils');
 
 /**
  * Deletes everything in the specified path of the DSU
@@ -44,15 +45,8 @@ class DeleteCommand extends Command {
         options = options || {ignoreMounts: false};
         console.log("Deleting " + arg);
         bar.delete(arg, options, err => err
-            ? this._err(`Could not delete path '${arg}'`, err, callback)
+            ? _err(`Could not delete path '${arg}'`, err, callback)
             : callback(undefined, bar));
-    }
-
-    /**
-     * @return the command name
-     */
-    getName(){
-        return 'delete';
     }
 }
 

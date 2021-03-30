@@ -6,6 +6,7 @@
 /**
  */
 const Command = require('./Command');
+const { _err } = require('./utils');
 
 /**
  * This command copies an entire folder from the filesystem onto the destination DSU
@@ -57,15 +58,8 @@ class CopyFolderCommand extends Command {
         options = options || {batch: false, encrypt: false};
         console.log("Adding Folder " + '/' + arg)
         bar.addFolder(arg, '/', options, err => err
-            ? this._err(`Could not add folder at '${'/' + arg}'`, err, callback)
+            ? _err(`Could not add folder at '${'/' + arg}'`, err, callback)
             : callback(undefined, bar));
-    }
-
-    /**
-     * @return the command name
-     */
-    getName(){
-        return "addfolder";
     }
 }
 

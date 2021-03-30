@@ -1,3 +1,5 @@
+const {PARTICIPANT_MOUNT_PATH, INFO_PATH} = require('../constants');
+
 /**
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.

@@ -6,6 +6,7 @@
 /**
  */
 const Command = require('./Command');
+const {_getFS, _err} = require('./utils');
 
 /**
  * Creates a file with the provided content on the destination DSU
@@ -51,17 +52,12 @@ class CreateFileCommand extends Command{
             callback = options;
             options = undefined;
         }
+        if (!bar)
+            bar = _getFS();
         options = options || {encrypt: true, ignoreMounts: false};
         bar.writeFile(arg.path, arg.content, options, (err) => err
-            ? this._err(`Could not create file at ${arg.path}`, err, callback)
+            ? _err(`Could not create file at ${arg.path}`, err, callback)
             : callback(undefined, bar));
-    }
-
-    /**
-     * @return the command name
-     */
-    getName(){
-        return "createfile";
     }
 }
 

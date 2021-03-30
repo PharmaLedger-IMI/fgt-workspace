@@ -7,6 +7,7 @@
  */
 const Command = require('./Command');
 const ReadFileCommand = require('./readFile');
+const { _err } = require('./utils');
 
 /**
  * Creates a file with the provided content on the destination DSU
@@ -32,7 +33,7 @@ class MountCommand extends Command{
         let basePath = arg.split("*");
         const listMethod = this.source ? this.source.listMountedDSUs : this._getFS().readdir;
         listMethod(basePath, (err, args) => err
-            ? this._err(`Could not list mounts`, err, callback)
+            ? _err(`Could not list mounts`, err, callback)
             : callback(undefined, self._transform_mount_arguments(arg, args)));
     }
 
@@ -114,13 +115,6 @@ class MountCommand extends Command{
             seed = seed.toString();
             doMount(seed, callback);
         });
-    }
-
-    /**
-     * @return the operation name
-     */
-    getName(){
-        return "mount";
     }
 }
 

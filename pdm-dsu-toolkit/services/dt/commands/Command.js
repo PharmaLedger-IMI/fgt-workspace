@@ -46,26 +46,12 @@ class Command {
     }
 
     /**
-     * Wrapper around
-     * <pre>
-     *     OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(msg, err));
-     * </pre>
-     * @param msg
-     * @param err
-     * @param callback
-     * @protected
-     */
-    _err(msg, err, callback){
-        return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(msg, err));
-    }
-
-    /**
      * Parses the command text and executes the command onto the provided DSU
      * @param {string[]|string} args the arguments of the command split into words
-     * @param {Archive} [bar] the destinationDSU
+     * @param {Archive|KeySSI} [bar] the destinationDSU or the keySSI
      * @param {string[]} [next] the remaining commands
      * @param {object} [options]
-     * @param {function(err, Archive|KeySSI|string)} callback
+     * @param {function(err, Archive|KeySSI|string|boolean)} callback
      */
     execute(args,bar, next, options, callback){
         if (typeof options === 'function'){
@@ -90,13 +76,19 @@ class Command {
     }
 
     /**
-     * @param {string[]|string} command the command split into words
+     * Should be overridden by child classes if any argument parsing is required
+     *
+     * @param {string[]|string|boolean} command the command split into words
      * @param {string[]} next the following Commands
      * @param {function(err, string|string[]|object)} callback
      * @protected
      */
     _parseCommand(command, next, callback){
-        throw new Error("Child classes must implement this");
+        if (!callback){
+            callback = next;
+            next = undefined;
+        }
+        callback(undefined, command);
     }
 
     /**
@@ -108,13 +100,6 @@ class Command {
      */
     _runCommand(arg, bar, options, callback){
         throw new Error("Child classes must implement this");
-    }
-
-    /**
-     * @return the command name
-     */
-    getName(){
-        throw new Error('Child classes must implement this');
     }
 }
 

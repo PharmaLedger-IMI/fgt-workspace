@@ -6,6 +6,7 @@
 /**
  */
 const Command = require('./Command');
+const { _err, _getKeySSISpace, KEY_TYPE } = require('./utils');
 
 /**
  * Generates a KeySSI
@@ -25,15 +26,66 @@ class GenKeyCommand extends Command {
      * @protected
      */
     _parseCommand(command, next, callback){
+        if (!callback){
+            callback = next;
+            next = undefined;
+        }
         try {
+            let arg = {
+                type: command.shift(),
+                domain: command.shift(),
+                args: JSON.parse(command.join(' '))
+            }
+
+            if (typeof arg.args === 'object' && arg.args.args){
+                arg.hint = arg.args.hint;
+                arg.args = arg.args.args;
+            }
             callback(undefined, {
                 type: command.shift(),
                 domain: command.shift(),
                 args: JSON.parse(command.join(' '))
             });
         } catch (e){
-            this._err(`could not parse json ${command}`, e, callback);
+            _err(`could not parse json ${command}`, e, callback);
         }
+    }
+
+    /**
+     * Creates an Arrays SSI off a secret list
+     *
+     * Adds options.hint to hit if available
+     * @param {object} args
+     * @param {function(err, ArraySSI)} callback
+     * @private
+     */
+    _createArraySSI = function(args, callback){
+        const key = _getKeySSISpace().createArraySSI(args.domain, args.args, 'v0', args.hint ? JSON.stringify(args.hint) : undefined);
+        callback(undefined, key);
+    }
+
+    /**
+     * Creates a Wallet SSI off a secret list
+     *
+     * Adds options.hint to hit if available
+     * @param {object} args
+     * @param {function(err, ArraySSI)} callback
+     */
+    _createWalletSSI = function(args, callback){
+        const key = _getKeySSISpace().createTemplateWalletSSI(args.domain, args.args, 'v0', args.hint ? JSON.stringify(args.hint) : undefined);
+        callback(undefined, key);
+    }
+
+    /**
+     * Creates an Arrays SSI off a secret list
+     *
+     * Adds options.hint to hit if available
+     * @param {object} args
+     * @param {function(err, TemplateSeedSSI)} callback
+     */
+    _createSSI = function(args, callback){
+        const key = _getKeySSISpace().createTemplateSeedSSI(args.domain, args.args, undefined, 'v0', args.hint ? JSON.stringify(args.hint) : undefined);
+        callback(undefined, key);
     }
 
     /**
@@ -50,35 +102,32 @@ class GenKeyCommand extends Command {
      * @param {function(err, Archive)} callback
      * @protected
      */
-    _runCommand( arg, bar, options, callback) {
+    _runCommand(arg, bar, options, callback) {
+        if(!callback){
+            callback = options;
+            options = bar;
+            bar = undefined;
+        }
         if (typeof options === 'function'){
             callback = options;
-            options = {}
+            options = undefined;
         }
-        options = options || {encrypt: true, ignoreMounts: false}
-        console.log("Copying file " + arg.from + (this.sourceDSU ? " from sourceDSU" : "") + " to " + arg.to);
+        const cb = function(err, keySSI){
+            return err
+                ? _err(`Could not create keySSI with ${JSON.stringify(arg)}`, err, callback)
+                : callback(undefined, keySSI);
+        }
 
-        if (!this.source)
-            return bar.addFile(arg.from, arg.to, options, err => err
-                ? this._err(`Could not read from ${arg.from}`, err, callback)
-                : callback(undefined, bar));
-
-        this.source.readFile(arg.from, (err, data) => {
-            if (err)
-                return this._err(`Could not read from ${arg.from}`, err, callback);
-            bar.writeFile(arg.to, data, err =>{
-                if (err)
-                    return this._err(`Could not write to ${arg.to}`, err, callback);
-                callback(undefined, bar);
-            });
-        });
-    }
-
-    /**
-     * @return the command name
-     */
-    getName(){
-        return "genkey";
+        switch (arg.type){
+            case KEY_TYPE.SEED:
+                return this._createSSI(arg, cb)
+            case KEY_TYPE.ARRAY:
+                return this._createArraySSI(arg, cb);
+            case KEY_TYPE.WALLET:
+                return this._createWalletSSI(arg, cb);
+            default:
+                callback(`Unsupported key type`);
+        }
     }
 }
 

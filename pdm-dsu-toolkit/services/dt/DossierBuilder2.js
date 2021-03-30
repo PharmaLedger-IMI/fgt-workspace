@@ -10,8 +10,8 @@ const KEY_TYPE = {
     SEED: "seed"
 }
 
-const {Command, Execute, getByName} = require('./commands');
-const _getFS = require('./commands/utils');
+const {_getByName} = require('./commands');
+const {_getFS, _getResolver, _getKeySSISpace} = require('./commands/utils');
 
 /**
  * Automates the Dossier Building process
@@ -37,19 +37,6 @@ const _getFS = require('./commands/utils');
  * @param {Archive} [sourceDSU] if provided will perform all OPERATIONS from the sourceDSU as source and not the fs
  */
 const DossierBuilder = function(sourceDSU){
-    let fs;
-
-    const getFS = function(){
-        if (!fs)
-            fs = require('fs');
-        return fs;
-    }
-
-    const openDSU = require("opendsu");
-    const keyssi = openDSU.loadApi("keyssi");
-    const resolver = openDSU.loadApi("resolver");
-
-
     /**
      * Creates a dsu (const or not) and mounts it to the specified path
      * @param bar
@@ -115,7 +102,7 @@ const DossierBuilder = function(sourceDSU){
 
     let createDossier = function (conf, commands, callback) {
         console.log("creating a new dossier...")
-        resolver.createDSU(keyssi.createTemplateSeedSSI(conf.domain), (err, bar) => {
+        _getResolver().createDSU(_getKeySSISpace().createTemplateSeedSSI(conf.domain), (err, bar) => {
             if (err)
                 return callback(err);
             updateDossier(bar, conf, commands, callback);
@@ -128,16 +115,20 @@ const DossierBuilder = function(sourceDSU){
      * @param data
      * @param callback
      */
-    let writeFile = function (filePath, data, callback) {
-        if (sourceDSU)
-            throw new Error("This method is not meant to be used here");
+    const writeFile = function(filePath, data, callback){
+        new _getByName('createFile').execute(filePath, data, callback);
+    }
 
-        getFS().writeFile(filePath, data, (err) => {
-            if (err)
-                return callback(err);
-            callback(undefined, data.toString());
-        });
-    };
+    //     function (filePath, data, callback) {
+    //     if (sourceDSU)
+    //         throw new Error("This method is not meant to be used here");
+    //
+    //     getFS().writeFile(filePath, data, (err) => {
+    //         if (err)
+    //             return callback(err);
+    //         callback(undefined, data.toString());
+    //     });
+    // };
 
     /**
      * Stores the keySSI to the SEED file when no sourceDSU is provided
@@ -159,7 +150,7 @@ const DossierBuilder = function(sourceDSU){
     let runCommand = function(bar, command, next, callback){
         let args = command.split(/\s+/);
         const cmdName = args.shift();
-        const cmd = getByName(cmdName);
+        const cmd = _getByName(cmdName);
         return cmd
             ? new cmd(this.source).execute(args, bar, next, callback)
             : callback(`Command not recognized: ${cmdName}`);
@@ -232,7 +223,7 @@ const DossierBuilder = function(sourceDSU){
 
         let builder = function(keySSI){
             try {
-                keySSI = keyssi.parse(keySSI);
+                keySSI = _getKeySSISpace().parse(keySSI);
             } catch (err) {
                 console.log("Invalid keySSI");
                 return createDossier(configOrDSU, commands, callback);
@@ -246,7 +237,7 @@ const DossierBuilder = function(sourceDSU){
             resolver.loadDSU(keySSI, (err, bar) => {
                 if (err){
                     console.log("DSU not available. Creating a new DSU for", keySSI);
-                    return resolver.createDSU(keySII, {useSSIAsIdentifier: true}, (err, bar)=>{
+                    return _getResolver().createDSU(keySII, {useSSIAsIdentifier: true}, (err, bar)=>{
                         if(err)
                             return callback(err);
                         updateDossier(bar, configOrDSU, commands, callback);

@@ -4,27 +4,40 @@
  *
  * @type {string[]}
  */
-const registeredCommands = [
+const _registeredCommands = [
     'addFile',
     'addFolder',
+    'createDSU',
     'createFile',
+    'debug',
     'delete',
-    'readFile'
+    'derive',
+    'endWith',
+    'genKey',
+    'getIdentifier',
+    'mount',
+    'readFile',
+    'with'
 ]
 
 
 /**
  * List of all available commands to the Dossier Builder
  */
-const availableCommands = {};
-registeredCommands.forEach(cmdName => {
-    availableCommands[cmdName.toLowerCase()] = require(`./${cmdName}`);
+const _availableCommands = {};
+_registeredCommands.forEach(cmdName => {
+    _availableCommands[cmdName.toLowerCase()] = require(`./${cmdName}`);
 });
 
-const getByName = function(cmdName){
-    if (!cmdName in availableCommands)
+/**
+ * return the Command class by its name
+ * @param cmdName
+ * @return {Command} the command calls to be instanced
+ */
+const _getByName = function(cmdName){
+    if (!cmdName in _availableCommands)
         return undefined;
-    return availableCommands[cmdName];
+    return _availableCommands[cmdName];
 }
 
-module.exports = getByName;
+module.exports = _getByName;

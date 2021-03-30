@@ -20,4 +20,63 @@ const _getFS = function(){
     return _fileSystem;
 }
 
-module.exports = _getFS;
+/**
+ * Provides Util functions and Methods as well as caching for the open DSU resolver and {@Link DSUBuilder}
+ */
+
+let resolver, keyssi;
+
+/**
+ * Wrapper around
+ * <pre>
+ *     OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(msg, err));
+ * </pre>
+ * @param msg
+ * @param err
+ * @param callback
+ * @protected
+ */
+const _err = function(msg, err, callback){
+    return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(msg, err));
+}
+
+/**
+ * for singleton use
+ * @returns {function} resolver api
+ */
+const _getResolver = function(){
+    if (!resolver)
+        resolver = require('opendsu').loadApi('resolver');
+    return resolver;
+}
+
+/**
+ * for singleton use
+ * @returns {function} keyssi api
+ */
+const _getKeySSISpace = function(){
+    if (!keysii)
+        keyssi = require('opendsu').loadApi('keyssi');
+    return keyssi;
+}
+
+const KEY_TYPE = {
+    ARRAY: "array",
+    SEED: "seed",
+    WALLET: 'wallet'
+}
+
+const DSU_TYPE = {
+    CONST: "const",
+    WALLET: "wallet",
+    SEED: "seed"
+}
+
+module.exports = {
+    _getFS,
+    _getResolver,
+    _getKeySSISpace,
+    _err,
+    KEY_TYPE,
+    DSU_TYPE
+};
