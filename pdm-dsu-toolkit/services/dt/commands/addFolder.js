@@ -20,7 +20,7 @@ const { _err } = require('./utils');
  */
 class AddFolderCommand extends Command {
     constructor(source) {
-        super(source, true);
+        super(source, false);
     }
 
     /**

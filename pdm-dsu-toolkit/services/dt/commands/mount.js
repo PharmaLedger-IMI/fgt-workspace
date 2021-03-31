@@ -7,7 +7,7 @@
  */
 const Command = require('./Command');
 const ReadFileCommand = require('./readFile');
-const { _err } = require('./utils');
+const { _err, _getFS } = require('./utils');
 
 /**
  * Mounts a DSU onto the provided path
@@ -16,22 +16,22 @@ const { _err } = require('./utils');
  */
 class MountCommand extends Command{
     constructor(source) {
-        super(source);
+        super(source, true);
         if (!source)
             this._getFS = require('./utils');
     }
 
     /**
      * Lists all the mounts in the provided pattern, either via fs or source dsu
-     * @param {string} arg
+     * @param {object} arg
      * @param {function(err, string[])} callback
      * @private
      */
     _listMounts(arg, callback){
         let self = this;
-        let basePath = arg.split("*");
-        const listMethod = this.source ? this.source.listMountedDSUs : this._getFS().readdir;
-        listMethod(basePath, (err, args) => err
+        let basePath = arg.seed_path.split("*");
+        const listMethod = this.source ? this.source.listMountedDSUs : _getFS().readdir;
+        listMethod(basePath[0], (err, args) => err
             ? _err(`Could not list mounts`, err, callback)
             : callback(undefined, self._transform_mount_arguments(arg, args)));
     }
@@ -74,7 +74,7 @@ class MountCommand extends Command{
         if (!arg.seed_path.match(/[\\/]\*[\\/]/))
             return callback(undefined, arg);   // single mount
         // multiple mount
-        this._listMounts(arg.seed_path, callback);
+        this._listMounts(arg, callback);
     }
 
     /**
@@ -101,7 +101,7 @@ class MountCommand extends Command{
         const doMount = function(seed, callback){
             console.log("Mounting " + arg.seed_path + " with seed " + seed + " to " + arg.mount_point);
             bar.mount(arg.mount_point, seed, err => err
-                ? self._err(`Could not perform mount of ${seed} at ${arg.seed_path}`, err, callback)
+                ? _err(`Could not perform mount of ${seed} at ${arg.seed_path}`, err, callback)
                 : callback(undefined, bar));
         };
 
@@ -110,7 +110,7 @@ class MountCommand extends Command{
 
         new ReadFileCommand(this.source).execute(arg.seed_path, (err, seed) => {
             if (err)
-                return self._err(`Could not read seed from ${arg.seed_path}`, err, callback);
+                return _err(`Could not read seed from ${arg.seed_path}`, err, callback);
             seed = seed.toString();
             doMount(seed, callback);
         });

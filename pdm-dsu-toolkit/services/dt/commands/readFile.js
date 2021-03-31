@@ -32,7 +32,7 @@ class ReadFileCommand extends Command{
             callback = next;
             next = undefined;
         }
-        callback(undefined, command[0]);
+        callback(undefined, command);
     }
 
     /**

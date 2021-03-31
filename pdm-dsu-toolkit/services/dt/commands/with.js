@@ -18,8 +18,8 @@ const endCommand = 'endwith';
  * @class WithCommand
  */
 class WithCommand extends Command{
-    constructor(sourceDSU) {
-        super(sourceDSU);
+    constructor(source) {
+        super(source);
         this._availableCommands = undefined;
     }
 

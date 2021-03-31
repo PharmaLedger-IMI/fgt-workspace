@@ -116,7 +116,7 @@ const DossierBuilder = function(sourceDSU){
      * @param callback
      */
     const writeFile = function(filePath, data, callback){
-        new (_getByName('createfile'))().execute(filePath, data, callback);
+        new (_getByName('createfile'))().execute(`${filePath} ${data}`, callback);
     }
 
     /**
@@ -161,7 +161,7 @@ const DossierBuilder = function(sourceDSU){
         const cmdName = args.shift();
         const cmd = _getByName(cmdName);
         return cmd
-            ? new cmd(this.source).execute(args, bar, next, callback)
+            ? new (cmd)(this.source).execute(args, bar, next, callback)
             : callback(`Command not recognized: ${cmdName}`);
         //
         // switch (cmd.shift().toLowerCase()){

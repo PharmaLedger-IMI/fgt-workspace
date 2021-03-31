@@ -82,8 +82,8 @@ const envToOptions = function(env, opts){
  */
 function AppBuilderService(environment, opts) {
     const options = envToOptions(environment, opts);
-    //const dossierBuilder = new (require("./DossierBuilder2"))();
-    const dossierBuilder = new (require("./DossierBuilder").DossierBuilder);
+    const dossierBuilder = new (require("./DossierBuilder2"))();
+    //const dossierBuilder = new (require("./DossierBuilder").DossierBuilder);
 
     const fileService = new FileService(options);
 

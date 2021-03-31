@@ -14,7 +14,7 @@ const Command = require('./Command');
  */
 class DeriveCommand extends Command{
     constructor(source) {
-        super(source, true);
+        super(source, false);
     }
 
     /**

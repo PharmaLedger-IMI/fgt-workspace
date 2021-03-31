@@ -27,10 +27,11 @@ class CreateFileCommand extends Command{
      * @protected
      */
     _parseCommand(command, next, callback){
-         callback(undefined,  {
-             path: command.shift(),
-             content: command.join(' ')
-         });
+        command = command.split(/\s+/);
+        callback(undefined,  {
+            path: command.shift(),
+            content: command.join(' ')
+        });
     }
 
     /**
@@ -44,7 +45,7 @@ class CreateFileCommand extends Command{
      * </pre>
      * @param {Archive|fs} bar
      * @param {object} options
-     * @param {function(err, Archive)} callback
+     * @param {function(err, string)} callback
      * @protected
      */
     _runCommand(arg, bar, options, callback){
@@ -57,7 +58,7 @@ class CreateFileCommand extends Command{
         options = options || {encrypt: true, ignoreMounts: false};
         bar.writeFile(arg.path, arg.content, options, (err) => err
             ? _err(`Could not create file at ${arg.path}`, err, callback)
-            : callback(undefined, bar));
+            : callback(undefined, arg.content));
     }
 }
 
