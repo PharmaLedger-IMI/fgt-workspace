@@ -24,9 +24,9 @@ const _availableCommands = {
  * @return {Command} the command calls to be instanced
  */
 const _getByName = function(cmdName){
-    if (!cmdName in _availableCommands)
-        return undefined;
-    return _availableCommands[cmdName];
+    if (cmdName in _availableCommands)
+        return _availableCommands[cmdName];
+    return undefined;
 }
 
 module.exports = _getByName;

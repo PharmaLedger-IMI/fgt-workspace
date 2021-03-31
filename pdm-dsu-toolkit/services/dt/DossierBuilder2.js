@@ -116,7 +116,16 @@ const DossierBuilder = function(sourceDSU){
      * @param callback
      */
     const writeFile = function(filePath, data, callback){
-        new _getByName('createFile').execute(filePath, data, callback);
+        new (_getByName('createfile'))().execute(filePath, data, callback);
+    }
+
+    /**
+     * Reads a file from the filesystem
+     * @param filePath
+     * @param callback
+     */
+    const readFile = function(filePath, callback){
+        new (_getByName('readfile'))().execute(filePath, callback);
     }
 
     //     function (filePath, data, callback) {
@@ -234,7 +243,7 @@ const DossierBuilder = function(sourceDSU){
                 return createDossier(configOrDSU, commands, callback);
             }
 
-            resolver.loadDSU(keySSI, (err, bar) => {
+            _getResolver().loadDSU(keySSI, (err, bar) => {
                 if (err){
                     console.log("DSU not available. Creating a new DSU for", keySSI);
                     return _getResolver().createDSU(keySII, {useSSIAsIdentifier: true}, (err, bar)=>{
