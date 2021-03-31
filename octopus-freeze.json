@@ -9,7 +9,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "54fb372e1457f62089f20e384f0a82053cc43459"
+                    "commit": "f25d26736cbf478c0f66f810c871b1b0d63264ab"
                 },
                 {
                     "type": "execute",
@@ -75,28 +75,6 @@
                     "type": "copy",
                     "src": "./webcardinal-patch/Controller-1d5e8bd0.js",
                     "target": "./webcardinal/webcardinal/components/webcardinal-core/Controller-1d5e8bd0.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                }
-            ]
-        },
-        {
-            "name": "PATCH webcardinal",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "copy",
-                    "src": "./webcardinal-patch/Controller-1d5e8bd0.js",
-                    "target": "./webcardinal/webcardinal/components/webcardinal-core/Controller-1d5e8bd0.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "./webcardinal-patch/index-3f5ce18f.js",
-                    "target": "./webcardinal/webcardinal/components/webcardinal-core/index-3f5ce18f.js",
                     "options": {
                         "overwrite": true
                     }

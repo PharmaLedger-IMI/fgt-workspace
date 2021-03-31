@@ -6,7 +6,6 @@
 /**
  */
 const Command = require('./Command');
-const _getByName = require('./Registry');
 const { _err } = require('./utils');
 const endCommand = 'endwith';
 
@@ -67,6 +66,7 @@ class WithCommand extends Command{
             const command = arg.shift();
             const cmd = command.split(/`\s+/);
             const cmdName = cmd.shift();
+            const _getByName = require('./Registry');
             const actualCmd = _getByName(cmdName);
             if (!actualCmd)
                 return callback(`Could not find command`);
