@@ -13,8 +13,8 @@ module.exports = {
     EndWithCommand: require('./endWith'),
     GenKeyCommand: require('./genKey'),
     GetIdentifierCommand: require('./getIndentifier'),
-    Mount: require('./mount'),
-    ReadFile: require('./readFile'),
-    With: require('./with'),
+    MountCommand: require('./mount'),
+    ReadFileCommand: require('./readFile'),
+    WithCommand: require('./with'),
     _getByName: require('./Registry')
 }

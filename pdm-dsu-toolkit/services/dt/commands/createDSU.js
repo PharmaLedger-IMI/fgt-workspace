@@ -99,7 +99,7 @@ _getDSUFactory = function(isConst, isWallet){
 /**
  * creates a new DSU of the provided type and with the provided key gen arguments
  *
- * @class AddFileCommand
+ * @class CreateDSUCommand
  */
 class CreateDSUCommand extends Command{
     constructor(source) {

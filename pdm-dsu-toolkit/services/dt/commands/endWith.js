@@ -6,7 +6,6 @@
 /**
  */
 const Command = require('./Command');
-const { _err } = require('./utils');
 
 /**
  * Allows for more complex logic by allowing you to control the output/input for commands
@@ -14,41 +13,20 @@ const { _err } = require('./utils');
  *
  * basically sets whatever the result of the with operation into the source portion until it finds the endwith command
  *
- * @class WithCommand
+ * @class EndWithCommand
  */
 class EndWithCommand extends Command{
-    constructor(sourceDSU) {
-        super(sourceDSU);
+    constructor(source) {
+        super(source);
         this._availableCommands = undefined;
     }
 
     /**
-     * @param {string[]|string} command the command split into words
-     * @param {string[]} next the following Commands
-     * @param {function(err, string|object)} [callback] for async versatility
-     * @return {string|object} the command argument
-     * @protected
-     */
-    _parseCommand(command, next, callback){
-        if (!next)
-            throw new Error("No next defined");
-        const commandsToConsider = [command];
-        let cmd;
-        while(!this._isEndCommand(cmd = next.shift()))
-            commandsToConsider.push(cmd);
-        commandsToConsider.push(cmd);
-        callback(undefined, commandsToConsider);
-    }
-
-    _isEndCommand(cmd){
-        return cmd.indexOf(endCommand) === 0;
-    }
-
-    /**
-     * @param {string[]|object} arg the command argument
-     * @param {Archive} bar
-     * @param {object} options
-     * @param {function(err, Archive)} callback
+     * Returns the source object
+     * @param {string[]|object} arg unused
+     * @param {Archive} bar unused
+     * @param {object} options unused
+     * @param {function(err, Archive|KeySSI)} callback
      * @protected
      */
     _runCommand(arg, bar, options, callback){
@@ -61,9 +39,11 @@ class EndWithCommand extends Command{
             bar = undefined;
         }
 
-        //let toKeep =
-
+        // return whatever the source was
+        if (!this.source)
+            return callback(`No Source to return. should not be possible`);
+        callback(undefined, this.source);
     }
 }
 
-module.exports = WithCommand;
+module.exports = EndWithCommand;

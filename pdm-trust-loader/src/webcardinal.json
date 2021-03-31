@@ -2,8 +2,7 @@
   "theme": "pdm-theme",
   "enableTranslations": true,
   "pagesFallback": {
-    "name": "Home",
-    "path": "./"
+    "name": "Home"
   },
   "pages": [
     {

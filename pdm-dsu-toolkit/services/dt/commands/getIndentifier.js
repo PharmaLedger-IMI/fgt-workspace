@@ -9,9 +9,9 @@ const Command = require('./Command');
 const { _err } = require('./utils');
 
 /**
- * Derives the provided keySSI
+ * Returns the identifier for the current source object
  *
- * @class AddFileCommand
+ * @class GetIdentifierCommand
  */
 class GetIdentifierCommand extends Command{
     constructor(source) {

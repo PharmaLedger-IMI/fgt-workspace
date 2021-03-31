@@ -24,7 +24,7 @@ class ReadFileCommand extends Command{
     /**
      * @param {string[]|string} command the command split into words
      * @param {string[]} next the following Commands
-     * @param {function(err, string|object)} [callback] for async versatility
+     * @param {function(err, string)} callback
      * @protected
      */
     _parseCommand(command, next, callback){

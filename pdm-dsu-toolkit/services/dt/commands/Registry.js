@@ -1,33 +1,22 @@
 /**
- * List of existing commands by their name
- * Without being here, they can't be used
- *
- * @type {string[]}
- */
-const _registeredCommands = [
-    'addFile',
-    'addFolder',
-    'createDSU',
-    'createFile',
-    'debug',
-    'delete',
-    'derive',
-    'endWith',
-    'genKey',
-    'getIdentifier',
-    'mount',
-    'readFile',
-    'with'
-]
-
-
-/**
  * List of all available commands to the Dossier Builder
+ * Without being here, they can't be used
  */
-const _availableCommands = {};
-_registeredCommands.forEach(cmdName => {
-    _availableCommands[cmdName.toLowerCase()] = require(`./${cmdName}`);
-});
+const _availableCommands = {
+    addfile: require('./addFile'),
+    addfolder: require('./addFolder'),
+    createdsu: require('./createDSU'),
+    createfile: require('./createFile'),
+    debug: require('./debug'),
+    delete: require('./delete'),
+    derive: require('./derive'),
+    endwith: require('./endWith'),
+    genkey: require('./genKey'),
+    getidentifier: require('./getIndentifier'),
+    mount: require('./mount'),
+    readfile: require('./readFile'),
+    with: require('./with')
+};
 
 /**
  * return the Command class by its name

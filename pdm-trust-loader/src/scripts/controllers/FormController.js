@@ -20,8 +20,8 @@ export default class FormController extends LocalizedController {
         // if (!locale_key)
         //     throw new Error("Missing fields info");
         let self = this;
-        super.bindLocale(self, `.form`, true);
-        self._createModalForm(WebCardinal.translations.en['/'].form);
+        super.bindLocale(self, `form`, true);
+
         self.setModel(self.getModel());
         console.log("FormController initialized");
         Object.entries(self.getModel().buttons).forEach(b => {
@@ -29,6 +29,7 @@ export default class FormController extends LocalizedController {
         });
 
         self.on('input-has-changed', self._handleErrorElement.bind(self));
+        self._createModalForm(this.getModel());
     }
 
     _handleTry(name){

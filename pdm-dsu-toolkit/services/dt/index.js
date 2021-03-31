@@ -13,12 +13,13 @@
  * @param {Archive} [sourceDSU] should only be provided when cloning a DSU
  * @return {DossierBuilder}
  */
-const getDossierBuilder = (sourceDSU) => {
-    return new (require("./DossierBuilder").DossierBuilder)(sourceDSU)
+const getDossierBuilder = (sourceDSU, ) => {
+    return new (require("./DossierBuilder2"))(sourceDSU)
+    //return new (require("./DossierBuilder").DossierBuilder)(sourceDSU)
 }
 
 module.exports = {
     getDossierBuilder,
-    Operations: require("./DossierBuilder").OPERATIONS,
+    Commands: require('./commands'),
     AppBuilderService: require('./AppBuilderService')
 }

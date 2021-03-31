@@ -33,28 +33,43 @@ function LocaleService(){
     /**
      * Loads the current locale
      */
-    this._loadLocale = function(){
-        return WebCardinal.translations[getLocale()];
+    this._loadLocale = function(controller){
+        return controller.translationModel;
+    }
+
+    /**
+     *
+     * @param model
+     * @param translationKey
+     * @return {*}
+     */
+    const parseTranslationModel = function(model, translationKey){
+        const index = translationKey.indexOf('.');
+        if (index === -1)
+            return model[translationKey];
+
+        return this.parseTranslationModel(model[translationKey.substring(0, translationKey.indexOf('.'))],
+            translationKey.substring(index + 1));
     }
 
     /**
      * Retrieves the translation information from WebCardinal
      * @param {string} pageName if contains '.' it will be translated into hierarchy in json object (just one level currently supported)
+     * @param {WebcController} controller
      * @returns {object} the translation object for the provided page in the current language
      */
-    this.getByPage = function(pageName){
-        let locale = this._loadLocale();
+    this.getByPage = function(pageName, controller){
+        let locale = this._loadLocale(controller);
         if (!locale){
             console.log("no locale set");
             return {};
         }
 
-        if (pageName[0] !== "/")
-            pageName = "/" + pageName;
-        if (pageName.includes(".")){
-            let temp = pageName.split(".");
-            return locale[temp[0]][temp[1]];
-        }
+        locale = locale.toObject();
+        if (!pageName)
+            return locale;
+        if (pageName.includes("."))
+            return parseTranslationModel(locale, pageName);
         return locale[pageName];
     }
 }
@@ -77,7 +92,7 @@ const bindToController = function(controller, page){
     if (!controller.localized) {
         let getter = controller.getModel;
         controller.getModel = () => {
-            let locale = localeService.getByPage(page);
+            let locale = localeService.getByPage(page, controller);
             if (!locale){
                 console.log(`No translations found for page ${page}`);
                 return getter();

@@ -55,7 +55,7 @@ const _getResolver = function(){
  * @returns {function} keyssi api
  */
 const _getKeySSISpace = function(){
-    if (!keysii)
+    if (!keyssi)
         keyssi = require('opendsu').loadApi('keyssi');
     return keyssi;
 }

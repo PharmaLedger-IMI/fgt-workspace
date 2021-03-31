@@ -79,28 +79,6 @@
             ]
         },
         {
-            "name": "PATCH webcardinal",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "copy",
-                    "src": "./webcardinal-patch/Controller-1d5e8bd0.js",
-                    "target": "./webcardinal/webcardinal/components/webcardinal-core/Controller-1d5e8bd0.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "./webcardinal-patch/index-3f5ce18f.js",
-                    "target": "./webcardinal/webcardinal/components/webcardinal-core/index-3f5ce18f.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                }
-            ]
-        },
-        {
             "name": "pharmaledger-wallet",
             "src": "http://github.com/privatesky/menu-wallet-prototype.git",
             "actions": [

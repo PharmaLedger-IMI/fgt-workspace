@@ -11,7 +11,7 @@ const KEY_TYPE = {
 }
 
 const {_getByName} = require('./commands');
-const {_getFS, _getResolver, _getKeySSISpace} = require('./commands/utils');
+const {_getResolver, _getKeySSISpace} = require('./commands/utils');
 
 /**
  * Automates the Dossier Building process

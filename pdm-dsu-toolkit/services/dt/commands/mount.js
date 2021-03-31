@@ -10,8 +10,7 @@ const ReadFileCommand = require('./readFile');
 const { _err } = require('./utils');
 
 /**
- * Creates a file with the provided content on the destination DSU
- * (similar to a touch command with added content)
+ * Mounts a DSU onto the provided path
  *
  * @class MountCommand
  */
@@ -63,7 +62,7 @@ class MountCommand extends Command{
     /**
      * @param {string[]|string} command the command split into words
      * @param {string[]} next the following Commands
-     * @param {function(err, string|string[]|object)} [callback] for async versatility
+     * @param {function(err, string|string[]|object)} callback
      * @protected
      */
     _parseCommand(command, next, callback){
@@ -79,12 +78,12 @@ class MountCommand extends Command{
     }
 
     /**
-     * Copies a file, from disk or another DSU
+     * Mounts a DSu onto a path
      * @param {object} arg
      * <pre>
      *     {
-     *         from: (...),
-     *         to: (..)
+     *         seed_path: (...),
+     *         mount_point: (..)
      *     }
      * </pre>
      * @param {Archive} [bar]

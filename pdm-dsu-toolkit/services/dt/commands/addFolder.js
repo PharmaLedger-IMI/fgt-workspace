@@ -16,9 +16,9 @@ const { _err } = require('./utils');
  *
  * Can run iteratively
  *
- * @class CopyFolderCommand
+ * @class AddFolderCommand
  */
-class CopyFolderCommand extends Command {
+class AddFolderCommand extends Command {
     constructor(source) {
         super(source, true);
     }
@@ -63,4 +63,4 @@ class CopyFolderCommand extends Command {
     }
 }
 
-module.exports = CopyFolderCommand;
+module.exports = AddFolderCommand;

@@ -6,12 +6,11 @@
 /**
  */
 const Command = require('./Command');
-const { _getKeySSISpace } = require('./utils');
 
 /**
  * Derives the provided keySSI
  *
- * @class AddFileCommand
+ * @class DeriveCommand
  */
 class DeriveCommand extends Command{
     constructor(source) {
@@ -19,17 +18,11 @@ class DeriveCommand extends Command{
     }
 
     /**
-     * derives the provided keySSI
-     * @param {object} arg the keySSI
-     * <pre>
-     *     {
-     *         from: (...),
-     *         to: (..)
-     *     }
-     * </pre>
-     * @param {Archive} bar
-     * @param {object} options
-     * @param {function(err, Archive)} callback
+     * derives the provided keySSI (in the source object)
+     * @param {object} arg unused
+     * @param {Archive} bar unused
+     * @param {object} options unsused
+     * @param {function(err, KeySSI)} callback
      * @protected
      */
     _runCommand(arg, bar, options, callback) {
@@ -44,8 +37,12 @@ class DeriveCommand extends Command{
             callback = bar;
             bar = undefined;
         }
-        callback(undefined, this.source.derive());
+        try {
+            callback(undefined, this.source.derive());
+        } catch (e) {
+            _err(`Could not derive Key ${JSON.stringify(this.source)}`, e, callback)
+        }
     }
 }
 
-module.exports = AddFileCommand;
+module.exports = DeriveCommand;

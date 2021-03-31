@@ -19,7 +19,7 @@ export default class HomeController extends LocalizedController {
 
     constructor(element, history) {
         super(element, history);
-        super.bindLocale(this, "");
+        super.bindLocale(this);
         this.setModel(this.getModel());
 
         let self = this;
@@ -108,7 +108,7 @@ export default class HomeController extends LocalizedController {
         // this.showIonicModal("a-generic-configurable-modal", false, {page: "registration"});
         this.createWebcModal({
             template: "genericModal",
-            // autoShow: true,
+            controller: "FormController",
             disableBackdropClosing: true,
             disableFooter: true,
             disableHeader: true,

@@ -126,7 +126,7 @@ export default class LocalizedController extends WebcController {
     /**
      * Adds the locale info to the model.
      * @param {LocalizedController} controller
-     * @param {string} pageName
+     * @param {string} [pageName]
      * @param {boolean} [enableValidations] defaults to false. If provided enabled Ionic Inputs form validations
      */
     bindLocale(controller, pageName, enableValidations){

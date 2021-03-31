@@ -341,10 +341,12 @@ function AppBuilderService(environment, opts) {
 
     /**
      * When writing the env to an SSApp, because she'll run in an iFrame,
-     * its basePath will always be '/' unlike the loader
+     * its basePath will always be '/' unlike the loader, we have the option to strip the base path id that's desirable
      * @param {object} env
      */
     const resetBasePath = function(env){
+        if (!env.stripBasePathOnInstall)
+            return env;
         return Object.assign({}, env, {basePath: '/'});
     }
 
@@ -361,10 +363,8 @@ function AppBuilderService(environment, opts) {
                 return callback(undefined, instance);
             }
 
-            let commands = env.stripBasePathOnInstall
-                ? data.toString().replace(options.environmentKey, JSON.stringify(resetBasePath(options.environment)))
-                : data.toString();
-
+            // embed the environment and identity into in the initializations commands
+            let commands = data.toString().replace(options.environmentKey, JSON.stringify(resetBasePath(options.environment)));
             commands = (publicSecrets
                     ? commands.replace(options.publicSecretsKey, JSON.stringify(publicSecrets))
                     : commands)

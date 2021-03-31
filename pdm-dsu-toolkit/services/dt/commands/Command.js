@@ -33,7 +33,8 @@ const executeIteratively = function (dossier, command, args, next, source, callb
  * **Every Command must be registered under the index.js file in the commands folder**
  * @param {Archive|fs} [source]
  * @param {boolean} [canRunIteratively] defines if the command can expect multiple arguments and run multiple times. defaults to false
- * @interface Command
+ * @class Command
+ * @abstract
  */
 class Command {
     constructor(source, canRunIteratively) {
