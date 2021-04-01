@@ -149,27 +149,7 @@
             ]
         },
         {
-            "name": "apihub-root/fgt-pharmacy-wallet/loader",
-            "src": "https://github.com/PrivateSky/trust-loader.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "7fb45ead4022ed835c01e0071a914c0673c46ee0"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-pharmacy-wallet/loader && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-pharmacy-wallet/loader && npm run build"
-                }
-            ]
-        },
-        {
-            "name": "Build and deploy PDM Trust Loader to Wholesaler",
+            "name": "Build and deploy PDM Trust Loader to Wholesaler and Pharmacy",
             "src": ".",
             "actions": [
                 {
@@ -184,6 +164,18 @@
                     "type": "copy",
                     "src": "./pdm-trust-loader/src",
                     "target": "./apihub-root/fgt-wholesaler-wallet/loader",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "remove",
+                    "target": "./apihub-root/fgt-pharmacy-wallet/loader"
+                },
+                {
+                    "type": "copy",
+                    "src": "./pdm-trust-loader/src",
+                    "target": "./apihub-root/fgt-pharmacy-wallet/loader",
                     "options": {
                         "overwrite": true
                     }
@@ -386,7 +378,7 @@
             ]
         },
         {
-            "name": "Build and deploy PDM Trust Loader to WHolesaler",
+            "name": "Build and deploy PDM Trust Loader to WHolesaler & Pharmacy",
             "src": ".",
             "actions": [
                 {
@@ -401,6 +393,18 @@
                     "type": "copy",
                     "src": "./pdm-trust-loader/src",
                     "target": "./apihub-root/fgt-wholesaler-wallet/loader",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "remove",
+                    "target": "./apihub-root/fgt-pharmacy-wallet/loader"
+                },
+                {
+                    "type": "copy",
+                    "src": "./pdm-trust-loader/src",
+                    "target": "./apihub-root/fgt-pharmacy-wallet/loader",
                     "options": {
                         "overwrite": true
                     }
@@ -456,7 +460,7 @@
             ]
         },
         {
-            "name": "bind_ftg_pharmacy_ssapp_to_wallet",
+            "name": "bind_fgt_pharmacy_ssapp_to_wallet",
             "src": "",
             "actions": [
                 {
@@ -472,21 +476,13 @@
                     }
                 },
                 {
-                    "type": "copy",
-                    "src": "./fgt-pharmacy-ssapp/seed",
-                    "target": "./apihub-root/fgt-pharmacy-wallet/apps-patch/fgt-pharmacy-ssapp/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
                     "type": "execute",
                     "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/fgt-pharmacy-wallet/apps-patch/fgt-pharmacy-ssapp/readme"
                 }
             ]
         },
         {
-            "name": "bind_ftg_wholesaler_ssapp_to_wallet",
+            "name": "bind_fgt_wholesaler_ssapp_to_wallet",
             "src": "",
             "actions": [
                 {
@@ -529,7 +525,7 @@
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd apihub-root/fgt-pharmacy-wallet/loader && npm install"
+                    "cmd": "cd apihub-root/fgt-pharmacy-wallet/loader && npx workbox generateSW"
                 },
                 {
                     "type": "execute",
