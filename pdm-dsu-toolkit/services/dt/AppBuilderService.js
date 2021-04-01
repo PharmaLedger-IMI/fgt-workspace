@@ -328,7 +328,7 @@ function AppBuilderService(environment, opts) {
             commands = (publicSecrets
                     ? commands.replace(options.publicSecretsKey, JSON.stringify(publicSecrets))
                     : commands)
-                .split(/\r?\n/);
+                .split(/\r?\n/).map(cmd => cmd.trim()).filter(cmd => !!cmd);
 
             dossierBuilder.buildDossier(instance, commands, (err, keySSI) => {
                 if (err)
