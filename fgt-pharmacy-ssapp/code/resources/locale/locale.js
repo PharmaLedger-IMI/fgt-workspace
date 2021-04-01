@@ -21,7 +21,7 @@ const LOCALE = {
             id: {
                 label: 'Registered Id:',
                 placeholder: 'Please enter your id here...',
-                value: '#ThIsIsAPharmacyId=',
+                value: '#PharmacyID31',
                 required: true
             },
             email: {

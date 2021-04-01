@@ -15,7 +15,7 @@
       "label": "Registered Id:",
       "type": "text",
       "placeholder": "Please enter your id here...",
-      "value": "#ThIsIsAPharmacyiD=",
+      "value": "#WholesalerID11",
       "public": true,
       "required": true
     },
