@@ -5,9 +5,10 @@
 /**
  *
  */
-const {INFO_PATH, PARTICIPANT_MOUNT_PATH, IDENTITY_MOUNT_PATH, DATABASE_MOUNT_PATH, DID_METHOD} = require('../constants');
+const {INFO_PATH, PARTICIPANT_MOUNT_PATH, IDENTITY_MOUNT_PATH, DATABASE_MOUNT_PATH} = require('../constants');
 const { getResolver , _err} = require('../services/utils');
 const relevantMounts = [PARTICIPANT_MOUNT_PATH, DATABASE_MOUNT_PATH];
+const {MessageManager, Message} = require('./MessageManager');
 /**
  * Base Manager Class
  *
@@ -24,7 +25,34 @@ const relevantMounts = [PARTICIPANT_MOUNT_PATH, DATABASE_MOUNT_PATH];
  *
  * This Base Manager Class is designed to integrate with the pdm-trust-loader and a init.file configuration of
  * <pre>
+ *      define $ID$ fromvar -$Identity-
+ *      define $ENV$ fromvar -$Environment-
  *
+ *      with cmd createdsu seed traceability specificstring
+ *          define $SEED$ fromcmd getidentifier true
+ *          createfile info $ID$
+ *      endwith
+ *      createfile environment.json $ENV$
+ *      mount $SEED$ /id
+ *
+ *      with var $SEED$
+ *          define $READ$ fromcmd derive true
+ *      endwith
+ *
+ *      define $SECRETS$ fromcmd objtoarray $ID$
+ *
+ *      with cmd createdsu const traceability $SECRETS$
+ *          mount $READ$ /id
+ *          define $CONST$ fromcmd getidentifier true
+ *      endwith
+ *
+ *      mount $CONST$ /participant
+ *
+ *      with cmd createdsu seed traceability fordb
+ *          define $DB$ fromcmd getidentifier true
+ *      endwith
+ *
+ *      mount $DB$ /db
  * </pre>
  *
  * it also integrates with the {@link DSUStorage} to provide direct access to the Base DSU by default.
@@ -40,14 +68,26 @@ const relevantMounts = [PARTICIPANT_MOUNT_PATH, DATABASE_MOUNT_PATH];
 class BaseManager {
     constructor(dsuStorage) {
         this.DSUStorage = dsuStorage;
-        this.w3cDID = require('opendsu').loadApi('w3cdid');
         this.rootDSU = undefined;
         this.db = undefined;
         this.participantConstSSI = undefined;
         this.did = undefined;
+        this.messenger = undefined;
+        this._initialize((err) => {
+            console.log(err);
+        })
     };
 
-    getRootDSU(){
+    sendMessage(did, api, message, callback){
+        const msg = new Message(api, message)
+        this.messenger.sendMessage(did, msg, callback);
+    }
+
+    getMessages(callback){
+
+    }
+
+    _getRootDSU(){
         if (!this.rootDSU)
             throw new Error("ParticipantDSU not cached");
         return this.rootDSU;
@@ -59,7 +99,9 @@ class BaseManager {
         let self = this;
         self.DSUStorage.enableDirectAccess(() => {
             self.rootDSU = self.DSUStorage;
-            self._cacheRelevant(callback);
+            self.getIdentity((err, identity) => err
+                ? _err(`Could not get Identity`, err, callback)
+                : self._cacheRelevant(callback, identity));
         });
     };
 
@@ -71,7 +113,7 @@ class BaseManager {
         return DATABASE_MOUNT_PATH in mounts && PARTICIPANT_MOUNT_PATH in mounts;
     }
 
-    _cacheRelevant(callback){
+    _cacheRelevant(callback, identity){
         let self = this;
         this.rootDSU.listMountedDSUs('/', (err, mounts) => {
             if (err)
@@ -83,7 +125,9 @@ class BaseManager {
             });
             if (!self._verifyRelevantMounts(relevant))
                 return callback(`Loader Initialization failed`);
-            this.db = require('opendsu').loadApi('db').getWalletDB(relevant[DATABASE_MOUNT_PATH]);
+            self.db = require('opendsu').loadApi('db').getWalletDB(relevant[DATABASE_MOUNT_PATH]);
+            self.messenger = new MessageManager(self.db, self._getDIDString(identity));
+            self.participantConstSSI = relevant[PARTICIPANT_MOUNT_PATH];
             console.log(`Database Cached`);
             callback()
         });
@@ -95,72 +139,28 @@ class BaseManager {
 
     /**
      * reads the participant information (if exists)
-     * @param {function(err, PARTICIPANT_MOUNT_PATH)} callback
+     * @param {function(err, object)} callback
      */
     getIdentity(callback){
         let self = this;
-        self._initialize((err) => {
-            if (err)
-                return callback(err);
-            self.DSUStorage.getObject(`${PARTICIPANT_MOUNT_PATH}${IDENTITY_MOUNT_PATH}${INFO_PATH}`, (err, participant) => {
-                if (err)
-                    return callback(err);
-                callback(undefined, participant);
-            });
-        });
+        self.DSUStorage.getObject(`${PARTICIPANT_MOUNT_PATH}${IDENTITY_MOUNT_PATH}${INFO_PATH}`, (err, participant) => err
+            ? _err(`Could not get identity`, err, callback)
+            : callback(undefined, participant));
     };
-
-    getOwnDID(){
-        let self = this;
-        const didString = this.
-
-        this.w3cDID.createIdentity(DID_METHOD, self._get, (err, firstDIDDocument) => {
-            if (err) {
-                throw err;
-            }
-
-            firstDIDDocument.readMessage((err, msg) => {
-                if (err) {
-                    throw err;
-                }
-
-                console.log(`${recipientIdentity} received message: ${msg}`);
-                assert.equal(msg, message);
-                testFinished();
-            });
-
-            const recipientIdentity = firstDIDDocument.getIdentifier();
-            w3cDID.createIdentity("demo", "otherDemoIdentity", (err, secondDIDDocument) => {
-                if (err) {
-                    throw err;
-                }
-
-                const senderIdentity = firstDIDDocument.getIdentifier();
-                setTimeout(() => {
-                    secondDIDDocument.sendMessage(message, recipientIdentity, (err) => {
-                        if (err) {
-                            throw err;
-                        }
-                        console.log(`${senderIdentity} sent message to ${recipientIdentity}.`);
-                    });
-                }, 1000);
-
-            });
-        })
-    }
 
     /**
      * Must return the string to be used to generate the DID
      * @param {object} identity
      * @param {string} participantConstSSI
+     * @param {function(err, string)}callback
      * @private
      */
-    _getDIDString(identity, participantConstSSI){
+    _getDIDString(identity, participantConstSSI, callback){
         throw new Error(`Subclasses must implement this`);
     }
 
     /**
-     * Edits/Overwrites the Participant details
+     * Edits/Overwrites the Participant details. Should this be allowed??
      * @param {Participant} participant
      * @param {function(err)} callback
      */
@@ -172,26 +172,10 @@ class BaseManager {
                 if (err)
                     return callback(err);
                 console.log(`Participant updated`);
-                callback();
+                callback(undefined, participant);
             });
         });
     };
 }
 
-let baseManager;
-
-/**
- * @param {DSUStorage} dsuStorage
- * @returns {ParticipantManager}
- * @module managers
- */
-const getBaseManager = function (dsuStorage) {
-    if (!baseManager) {
-        if (!dsuStorage)
-            throw new Error("No DSUStorage provided");
-        baseManager = new BaseManager(dsuStorage);
-    }
-    return baseManager;
-}
-
-module.exports = getBaseManager;
+module.exports = BaseManager;

@@ -13,5 +13,6 @@
  */
 module.exports = {
     Manager: require('./Manager'),
-    getBaseManager: require('./BaseManager')
+    BaseManager: require('./BaseManager'),
+    MessageManager: require('./MessageManager')
 }
