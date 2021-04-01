@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <title>Finished Goods Traceability</title>
     <link rel="stylesheet" href="assets/css/main.css">
+    <script>var plEnvironment = (window.location.href && window.location.href.indexOf("localhost")>=0)
+        ? ' localhost'
+        : (window.location.href && window.location.href.indexOf("-dev.pharmaledger.")>=0)
+        ? ' DEV'
+        : '';
+        document.title = document.title + plEnvironment;
+    </script>
+
 </head>
 <body>
     <div class="center-aligned-controls vertical-align">
@@ -46,7 +54,8 @@
         </a>
     </div>
     <div>
-        <h1><img src="assets/images/pharmaledgerLogo.png" alt="Pharmaledger" style="height: 2em; vertical-align: middle; margin-right: 1em;">Finished Goods Traceability Demo</h1>
+        <h1><img src="assets/images/pharmaledgerLogo.png" alt="Pharmaledger" style="height: 2em; vertical-align: middle; margin-right: 1em;">Finished Goods Traceability
+            Demo<script>document.write(plEnvironment);</script></h1>
 
         <p>Demonstration of order and shipment management, mapping traceability of every lot (batch) using blockchain - through
             <a href="http://opendsu.com" target="_blank">OpenDSU</a> technology.</p>

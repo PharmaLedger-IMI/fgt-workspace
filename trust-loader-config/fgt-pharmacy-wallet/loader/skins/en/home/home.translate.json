@@ -15,7 +15,7 @@
       "label": "Registered Id:",
       "type": "text",
       "placeholder": "Please enter your id here...",
-      "value": "#ThIsIsAwHoLeSaLeRiD=",
+      "value": "#PharmacyID18",
       "public": true,
       "required": true
     },
