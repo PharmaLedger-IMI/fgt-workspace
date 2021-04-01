@@ -20,8 +20,12 @@ const IDENTITY_MOUNT_PATH = '/id'
 
 const DATABASE_MOUNT_PATH = '/db'
 
+const DID_METHOD = 'demo'
+
 module.exports = {
     INFO_PATH,
     PARTICIPANT_MOUNT_PATH,
-    IDENTITY_MOUNT_PATH
+    IDENTITY_MOUNT_PATH,
+    DATABASE_MOUNT_PATH,
+    DID_METHOD
 }

@@ -5,8 +5,9 @@
 /**
  *
  */
-const {INFO_PATH, PARTICIPANT_MOUNT_PATH, IDENTITY_MOUNT_PATH} = require('../constants');
-const { getResolver } = require('../services/utils');
+const {INFO_PATH, PARTICIPANT_MOUNT_PATH, IDENTITY_MOUNT_PATH, DATABASE_MOUNT_PATH, DID_METHOD} = require('../constants');
+const { getResolver , _err} = require('../services/utils');
+const relevantMounts = [PARTICIPANT_MOUNT_PATH, DATABASE_MOUNT_PATH];
 /**
  * Base Manager Class
  *
@@ -34,11 +35,16 @@ const { getResolver } = require('../services/utils');
  * @param {string} domain the anchoring domain
  * @module managers
  * @class BaseManager
+ * @abstract
  */
-class BaseManager{
+class BaseManager {
     constructor(dsuStorage) {
         this.DSUStorage = dsuStorage;
+        this.w3cDID = require('opendsu').loadApi('w3cdid');
         this.rootDSU = undefined;
+        this.db = undefined;
+        this.participantConstSSI = undefined;
+        this.did = undefined;
     };
 
     getRootDSU(){
@@ -47,15 +53,41 @@ class BaseManager{
         return this.rootDSU;
     };
 
-    _cacheDSUs(callback){
+    _initialize(callback){
         if (this.rootDSU)
             return callback();
         let self = this;
         self.DSUStorage.enableDirectAccess(() => {
             self.rootDSU = self.DSUStorage;
-            callback();
+            self._cacheRelevant(callback);
         });
     };
+
+    _cleanPath(path){
+        return path[0] === '/' ? path.substring(1) : path;
+    }
+
+    _verifyRelevantMounts(mounts){
+        return DATABASE_MOUNT_PATH in mounts && PARTICIPANT_MOUNT_PATH in mounts;
+    }
+
+    _cacheRelevant(callback){
+        let self = this;
+        this.rootDSU.listMountedDSUs('/', (err, mounts) => {
+            if (err)
+                return _err(`Could not list mounts in root DSU`, err, callback);
+            const relevant = {};
+            mounts.forEach(m => {
+                if (relevantMounts.indexOf(m.path) !== -1)
+                    relevant[m.path] = m.identifier;
+            });
+            if (!self._verifyRelevantMounts(relevant))
+                return callback(`Loader Initialization failed`);
+            this.db = require('opendsu').loadApi('db').getWalletDB(relevant[DATABASE_MOUNT_PATH]);
+            console.log(`Database Cached`);
+            callback()
+        });
+    }
 
     _loadDSU(keySSI, callback){
         getResolver().loadDSU(keySSI, callback);
@@ -65,9 +97,9 @@ class BaseManager{
      * reads the participant information (if exists)
      * @param {function(err, PARTICIPANT_MOUNT_PATH)} callback
      */
-    getParticipant(callback){
+    getIdentity(callback){
         let self = this;
-        self._cacheRootDSU((err) => {
+        self._initialize((err) => {
             if (err)
                 return callback(err);
             self.DSUStorage.getObject(`${PARTICIPANT_MOUNT_PATH}${IDENTITY_MOUNT_PATH}${INFO_PATH}`, (err, participant) => {
@@ -78,14 +110,65 @@ class BaseManager{
         });
     };
 
+    getOwnDID(){
+        let self = this;
+        const didString = this.
+
+        this.w3cDID.createIdentity(DID_METHOD, self._get, (err, firstDIDDocument) => {
+            if (err) {
+                throw err;
+            }
+
+            firstDIDDocument.readMessage((err, msg) => {
+                if (err) {
+                    throw err;
+                }
+
+                console.log(`${recipientIdentity} received message: ${msg}`);
+                assert.equal(msg, message);
+                testFinished();
+            });
+
+            const recipientIdentity = firstDIDDocument.getIdentifier();
+            w3cDID.createIdentity("demo", "otherDemoIdentity", (err, secondDIDDocument) => {
+                if (err) {
+                    throw err;
+                }
+
+                const senderIdentity = firstDIDDocument.getIdentifier();
+                setTimeout(() => {
+                    secondDIDDocument.sendMessage(message, recipientIdentity, (err) => {
+                        if (err) {
+                            throw err;
+                        }
+                        console.log(`${senderIdentity} sent message to ${recipientIdentity}.`);
+                    });
+                }, 1000);
+
+            });
+        })
+    }
+
+    /**
+     * Must return the string to be used to generate the DID
+     * @param {object} identity
+     * @param {string} participantConstSSI
+     * @private
+     */
+    _getDIDString(identity, participantConstSSI){
+        throw new Error(`Subclasses must implement this`);
+    }
+
     /**
      * Edits/Overwrites the Participant details
      * @param {Participant} participant
      * @param {function(err)} callback
      */
-    edit(participant, callback) {
-        this.DSUStorage.enableDirectAccess(() => {
-            this.DSUStorage.writeFile(`${PARTICIPANT_MOUNT_PATH}${INFO_PATH}`, JSON.stringify(participant), (err) => {
+    editIdentity(participant, callback) {
+        this._initialize(err => {
+            if (err)
+                return _err(`Could not initialize`, err, callback);
+            self.DSUStorage.setObject(`${PARTICIPANT_MOUNT_PATH}${INFO_PATH}`, JSON.stringify(participant), (err) => {
                 if (err)
                     return callback(err);
                 console.log(`Participant updated`);
