@@ -34,13 +34,14 @@ class Message{
  * </ul>
  *
  * @param {Database} storage the DSU where the storage should happen or more commonly the Database Object
+ * @param {BaseManager} baseManager the base manager to have access to the identity api
  * @param {string} didString
  * @param {function(Message)} [onNewMessage] defaults to a console log
  * @module managers
  * @class Manager
  */
 class MessageManager extends Manager{
-    constructor(db, didString){
+    constructor(db, baseManager, didString){
         super(db);
         this.w3cDID = require('opendsu').loadApi('w3cdid');
         this.didString = didString;
@@ -140,16 +141,17 @@ let messageManager;
 
 /**
  * @param {Database} storage the DSU where the storage should happen or more commonly the Database Object
+ * @param {BaseManager} baseManager the base manager to have access to the identity api
  * @param {string} didString
  * @param {function(Message)} onNewMessage
  * @returns {MessageManager}
  * @module managers
  */
-const getMessageManager = function (storage, didString, onNewMessage) {
+const getMessageManager = function (storage, baseManager, didString, onNewMessage) {
     if (!messageManager) {
         if (!storage)
             throw new Error("No storage provided");
-        messageManager = new MessageManager(storage, didString, onNewMessage);
+        messageManager = new MessageManager(storage, baseManager, didString, onNewMessage);
     }
     return messageManager;
 }

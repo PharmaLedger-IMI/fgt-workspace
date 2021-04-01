@@ -42,62 +42,19 @@ export default class ParticipantController extends LocalizedController {
         this.model.addExpression('identified', () => {
             return this.model.participant !== undefined;
         }, "participant");
-
-        let self = this;
-        this.on('perform-registration', (event) => {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            self.register(event.detail, (err) => {
-                if (err)
-                    self.showErrorModal();
-                self.hideModal();
-                self._testParticipant();
-            });
-        }, true)
-
-        this.participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, "traceability");
+        this.participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage);
         console.log("Home controller initialized");
         this._testParticipant();
     }
 
-    /**
-     * Creates the ID DSU and mounts it to the id_path
-     * @param {Participant} participant
-     * @param {function} callback
-     */
-    register(participant, callback){
-        let self = this;
-        self.participantManager.create(participant, (err, keySSI) => {
-            if (err)
-                return callback(err);
-            callback();
-        });
-    }
-
-    _showRegistrationModal() {
-        //this.showIonicModal(REGISTRATION_MODAL);
-        this.createWebcModal({
-                template: "registrationModal",
-                disableBackdropClosing: true,
-                disableFooter: true,
-                disableHeader: true,
-                disableExpanding: true,
-                disableClosing: true,
-                disableCancelButton: true,
-                expanded: false,
-                centered: true
-        });
-    }
-
     _testParticipant(){
         let self = this;
-        this.participantManager.getParticipant((err, participant) => {
-            if (err || !participant) {
-                self._showRegistrationModal.call(this);
-            } else {
-                self.model.participant = participant;
-                console.log(`Welcome ${self.model.participant.name}`);
+        this.participantManager.getIdentity((err, identity) => {
+            if (err){
+                self.showErrorToast(`Could not retrieve identity. Build process seems to not have worked properly`);
+                return console.log(createOpenDSUErrorWrapper(`Could not retrieve identity`, err));
             }
+            console.log9
         });
     }
 }

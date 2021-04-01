@@ -84,7 +84,7 @@ class BaseManager {
     }
 
     getMessages(callback){
-
+        this.messenger.getMessages(callback);
     }
 
     _getRootDSU(){
@@ -153,7 +153,7 @@ class BaseManager {
      * @param {object} identity
      * @param {string} participantConstSSI
      * @param {function(err, string)}callback
-     * @private
+     * @protected
      */
     _getDIDString(identity, participantConstSSI, callback){
         throw new Error(`Subclasses must implement this`);
@@ -165,6 +165,7 @@ class BaseManager {
      * @param {function(err)} callback
      */
     editIdentity(participant, callback) {
+        let self = this;
         this._initialize(err => {
             if (err)
                 return _err(`Could not initialize`, err, callback);

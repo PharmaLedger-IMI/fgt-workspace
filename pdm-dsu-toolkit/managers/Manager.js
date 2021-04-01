@@ -1,4 +1,3 @@
-const {PARTICIPANT_MOUNT_PATH, INFO_PATH} = require('../constants');
 
 /**
  * Manager Classes in this context should do the bridge between the controllers
@@ -13,12 +12,14 @@ const {PARTICIPANT_MOUNT_PATH, INFO_PATH} = require('../constants');
  * </ul>
  *
  * @param {Archive|Database} storage the DSU where the storage should happen or more commonly the Database Object
+ * @param {BaseManager} baseManager the base manager to have access to the identity api
  * @module managers
  * @class Manager
  */
 class Manager{
-    constructor(storage){
+    constructor(storage, baseManager){
         this.storage = storage;
+        this.getIdentity = baseManager.getIdentity;
     }
 
     /**
@@ -33,6 +34,10 @@ class Manager{
                 result[key] = model[key].value;
         });
         return result
+    }
+
+    getIdentity(callback){
+        // Method that will be binded as the one from participant manager on initialization
     }
 
     /**

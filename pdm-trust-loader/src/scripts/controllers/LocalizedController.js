@@ -28,16 +28,6 @@ export default class LocalizedController extends WebcController {
     }
 
     /**
-     * Sets the identity that is shown on the menu's identity component
-     * @param {Participant} identity
-     */
-    setIdentity = (identity) => {
-        const id = WebCardinal.root.querySelector('webc-app-identity');
-        id.name = identity.name;
-        id.email = identity.id;
-    }
-
-    /**
       * Shows an Ionic model
      * @param {string} modalName the modal's name registered via:
      * <pre>
@@ -90,6 +80,17 @@ export default class LocalizedController extends WebcController {
      */
     showErrorToast(message){
         return this.showToast(message, 'Error', 'danger', 'Close');
+    }
+
+    /**
+     *
+     * @param {string} msg
+     * @param {err} err
+     * @param {function(*)}callback
+     * @protected
+     */
+    _err(msg, err, callback){
+        OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(msg, err));
     }
 
     /**

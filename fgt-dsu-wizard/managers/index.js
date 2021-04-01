@@ -20,6 +20,6 @@ module.exports = {
     getParticipantManager: require('./ParticipantManager'),
     getProductManager: require('./ProductManager'),
     getBatchManager: require('./BatchManager'),
-    getStockManager: require('./StockManager'),
-    getBaseManager: require('../../pdm-dsu-toolkit/managers/BaseManager')
+    getStockManager: require('./StockManager')
+
 }
