@@ -14,8 +14,7 @@
  * @return {DossierBuilder}
  */
 const getDossierBuilder = (sourceDSU, ) => {
-    return new (require("./DossierBuilder2"))(sourceDSU)
-    //return new (require("./DossierBuilder").DossierBuilder)(sourceDSU)
+    return new (require("./DossierBuilder"))(sourceDSU)
 }
 
 module.exports = {

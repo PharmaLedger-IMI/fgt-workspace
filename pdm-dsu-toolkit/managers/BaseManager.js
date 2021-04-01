@@ -5,8 +5,8 @@
 /**
  *
  */
-const {INFO_PATH, PARTICIPANT_MOUNT_PATH} = require('../constants');
-
+const {INFO_PATH, PARTICIPANT_MOUNT_PATH, IDENTITY_MOUNT_PATH} = require('../constants');
+const { getResolver } = require('../services/utils');
 /**
  * Base Manager Class
  *
@@ -36,9 +36,8 @@ const {INFO_PATH, PARTICIPANT_MOUNT_PATH} = require('../constants');
  * @class BaseManager
  */
 class BaseManager{
-    constructor(dsuStorage, domain) {
+    constructor(dsuStorage) {
         this.DSUStorage = dsuStorage;
-        this.resolver = undefined;
         this.rootDSU = undefined;
     };
 
@@ -48,58 +47,18 @@ class BaseManager{
         return this.rootDSU;
     };
 
-    /**
-     * Creates a {@link Participant} dsu
-     * @param {Participant} participant
-     * @param {function(err, keySSI, string)} callback where the string is the mount path
-     */
-    create(participant, callback) {
-        let self = this;
-        if (typeof callback != "function")
-            throw new Error("callback must be a function!");
-        self.DSUStorage.enableDirectAccess(() => {
-            self.participantService.create(participant, inbox, (err, keySSI) => {
-                if (err)
-                    return callback(err);
-                console.log(`Participant DSU created with ssi: ${keySSI.getIdentifier(true)}`);
-                self.DSUStorage.mount(PARTICIPANT_MOUNT_PATH, keySSI.getIdentifier(), (err) => {
-                    if (err)
-                        return callback(err);
-                    console.log(`Participant ${participant.id} created and mounted at '${PARTICIPANT_MOUNT_PATH}'`);
-                    self._cacheParticipantDSU((err) => {
-                        if (err)
-                            return callback(err);
-                        callback(undefined, keySSI, PARTICIPANT_MOUNT_PATH);
-                    });
-                });
-            });
-        });
-    };
-
-    _cacheParticipantDSU(callback){
+    _cacheDSUs(callback){
         if (this.rootDSU)
             return callback();
         let self = this;
         self.DSUStorage.enableDirectAccess(() => {
-            self.DSUStorage.listMountedDSUs('/', (err, mounts) => {
-                if (err)
-                    return callback(err);
-                if (!mounts)
-                    return callback("no mounts found!");
-                self._matchParticipantDSU(mounts, (err, dsu) => {
-                    if (err)
-                        return callback(err);
-                    self.rootDSU = dsu;
-                    callback();
-                });
-            });
+            self.rootDSU = self.DSUStorage;
+            callback();
         });
     };
 
     _loadDSU(keySSI, callback){
-        if (!this.resolver)
-            this.resolver = require('opendsu').loadApi('resolver');
-        this.resolver.loadDSU(keySSI, callback);
+        getResolver().loadDSU(keySSI, callback);
     };
 
     /**
@@ -108,28 +67,13 @@ class BaseManager{
      */
     getParticipant(callback){
         let self = this;
-        self._cacheParticipantDSU((err) => {
+        self._cacheRootDSU((err) => {
             if (err)
                 return callback(err);
-            self.DSUStorage.getObject(`${PARTICIPANT_MOUNT_PATH}${INFO_PATH}`, (err, participant) => {
+            self.DSUStorage.getObject(`${PARTICIPANT_MOUNT_PATH}${IDENTITY_MOUNT_PATH}${INFO_PATH}`, (err, participant) => {
                 if (err)
                     return callback(err);
                 callback(undefined, participant);
-            });
-        });
-    };
-
-    /**
-     * Removes the PARTICIPANT_MOUNT_PATH DSU (does not delete/invalidate DSU, simply 'forgets' the reference)
-     * @param {function(err)} callback
-     */
-    remove(callback) {
-        this.DSUStorage.enableDirectAccess(() => {
-            this.DSUStorage.unmount(PARTICIPANT_MOUNT_PATH, (err) => {
-                if (err)
-                    return callback(err);
-                console.log(`Participant removed from mount point ${PARTICIPANT_MOUNT_PATH}`);
-                callback();
             });
         });
     };
@@ -154,18 +98,15 @@ class BaseManager{
 let baseManager;
 
 /**
- * @param {DSUStorage} [dsuStorage]
- * @param {string} [domain]
+ * @param {DSUStorage} dsuStorage
  * @returns {ParticipantManager}
  * @module managers
  */
-const getBaseManager = function (dsuStorage, domain) {
+const getBaseManager = function (dsuStorage) {
     if (!baseManager) {
         if (!dsuStorage)
             throw new Error("No DSUStorage provided");
-        if (!domain)
-            throw new Error("No domain provided");
-        baseManager = new BaseManager(dsuStorage, domain);
+        baseManager = new BaseManager(dsuStorage);
     }
     return baseManager;
 }

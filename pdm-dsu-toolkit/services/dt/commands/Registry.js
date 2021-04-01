@@ -7,7 +7,6 @@ const _availableCommands = {
     addfolder: require('./addFolder'),
     createdsu: require('./createDSU'),
     createfile: require('./createFile'),
-    debug: require('./debug'),
     define: require('./define'),
     delete: require('./delete'),
     derive: require('./derive'),
@@ -15,6 +14,7 @@ const _availableCommands = {
     genkey: require('./genKey'),
     getidentifier: require('./getIndentifier'),
     mount: require('./mount'),
+    objtoarray: require('./objToArray'),
     readfile: require('./readFile'),
     with: require('./with')
 };

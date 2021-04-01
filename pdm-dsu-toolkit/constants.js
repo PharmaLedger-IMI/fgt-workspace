@@ -13,7 +13,15 @@ const INFO_PATH = '/info';
  */
 const PARTICIPANT_MOUNT_PATH = "/participant";
 
+/**
+ * Default mount path for the Id DSU under the PDM SSApp Architecture
+ */
+const IDENTITY_MOUNT_PATH = '/id'
+
+const DATABASE_MOUNT_PATH = '/db'
+
 module.exports = {
     INFO_PATH,
-    PARTICIPANT_MOUNT_PATH
+    PARTICIPANT_MOUNT_PATH,
+    IDENTITY_MOUNT_PATH
 }

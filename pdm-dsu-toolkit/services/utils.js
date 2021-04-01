@@ -6,7 +6,7 @@
  * Provides Util functions and Methods as well as caching for the open DSU resolver and {@Link DSUBuilder}
  */
 
-let resolver, DSUService;
+let resolver, DSUService, keyssi;
 
 /**
  * util function to get the env type.
@@ -25,6 +25,16 @@ function getResolver(){
 	if (!resolver)
 		resolver = require('opendsu').loadApi('resolver');
 	return resolver;
+}
+
+/**
+ * for singleton use
+ * @returns {function} resolver
+ */
+function getKeySSISpace(){
+	if (!keyssi)
+		keyssi = require('opendsu').loadApi('keyssi');
+	return keyssi;
 }
 
 /**
@@ -133,6 +143,7 @@ function getPostHandlerFor(apiname){
 
 module.exports = {
 	getResolver,
+	getKeySSISpace,
 	getDSUService,
 	getPostHandlerFor,
 	selectMethod,

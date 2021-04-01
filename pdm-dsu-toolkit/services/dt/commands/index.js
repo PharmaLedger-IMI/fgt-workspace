@@ -15,6 +15,7 @@ module.exports = {
     GenKeyCommand: require('./genKey'),
     GetIdentifierCommand: require('./getIndentifier'),
     MountCommand: require('./mount'),
+    ObjToArrayCommand: require('./objToArray'),
     ReadFileCommand: require('./readFile'),
     WithCommand: require('./with'),
     _getByName: require('./Registry')
