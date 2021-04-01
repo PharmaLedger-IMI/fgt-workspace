@@ -19,8 +19,8 @@ const { _err } = require('./utils');
  * @class AddFolderCommand
  */
 class AddFolderCommand extends Command {
-    constructor(source) {
-        super(source, false);
+    constructor(varStore, source) {
+        super(varStore, source, false);
     }
 
     /**

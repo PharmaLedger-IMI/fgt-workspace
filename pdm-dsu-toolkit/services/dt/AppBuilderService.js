@@ -88,24 +88,6 @@ function AppBuilderService(environment, opts) {
     const fileService = new FileService(options);
 
     /**
-     * Converts the list of files and mounts in a DSU to createFile and Mount commands for DSU Cloning purposes
-     * @param {object} files
-     * @param {object} mounts
-     * @return {string[]}
-     * @private
-     */
-    const contentToCommands = function(files, mounts){
-        let commands = [];
-        files.forEach(f => {
-            commands.push(`addfile ${f} ${f}`);
-        });
-        mounts.forEach(m => {
-            commands.push(`mount ${m.identifier} ${m.path}`);
-        });
-        return commands;
-    }
-
-    /**
      * Lists a DSUs content
      * @param {KeySSI} keySSI
      * @param {function(err, files, mounts)} callback
@@ -164,28 +146,6 @@ function AppBuilderService(environment, opts) {
     const createSSI = function(specificString, callback){
         const key = _getKeySSISpace().createTemplateSeedSSI(options.anchoring, specificString, undefined, 'v0', options.hint ? JSON.stringify(options.hint) : undefined);
         callback(undefined, key);
-    }
-
-    /**
-     * Converts The contents of the dsuToClone to Commands, recognizable by OpenDSU's DossierBuilder,
-     * and using those commands copies all contents into the destinationDSU
-     * @param {Archive} dsuToClone
-     * @param {Archive} destinationDSU
-     * @param {string[]} files
-     * @param {object[]} mounts
-     * @param {object} [cfg] optional. if passed will be write to /cfg in DSU
-     * @param {function(err, KeySSI)} callback
-     */
-    const doClone = function(dsuToClone, destinationDSU, files, mounts, cfg, callback){
-        if (typeof cfg === 'function'){
-            callback = cfg;
-            cfg = undefined;
-        }
-        const commands = contentToCommands(files, mounts);
-        if (cfg)
-            commands.push("createfile cfg " + JSON.stringify(cfg));
-        const dossierBuilder = new DossierBuilder(dsuToClone);
-        dossierBuilder.buildDossier(destinationDSU, commands, callback);
     }
 
     /**

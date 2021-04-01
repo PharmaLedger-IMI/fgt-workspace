@@ -8,6 +8,7 @@ module.exports = {
     AddFolderCommand: require('./addFolder'),
     CreateDSUCommand: require('./createDSU'),
     CreateFileCommand: require('./createFile'),
+    DefineCommand: require('./define'),
     DeleteCommand: require('./delete'),
     DeriveCommand: require('./derive'),
     EndWithCommand: require('./endWith'),

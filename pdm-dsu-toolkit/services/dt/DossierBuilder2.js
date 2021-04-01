@@ -35,70 +35,11 @@ const {_getResolver, _getKeySSISpace} = require('./commands/utils');
  *     mount ../themes/'*'/seed /themes/'*'
  * </pre>
  * @param {Archive} [sourceDSU] if provided will perform all OPERATIONS from the sourceDSU as source and not the fs
+ * @param {VarStore} [varStore]
  */
-const DossierBuilder = function(sourceDSU){
-    /**
-     * Creates a dsu (const or not) and mounts it to the specified path
-     * @param bar
-     * @param {KEY_TYPE} type
-     * @param {string} domain
-     * @param {string} path
-     * @param {object} args:
-     * <pre>
-     *     {
-     *         forKey: (key gen args)
-     *         commands: [
-     *             (commands to run on created dsu)
-     *         ]
-     *     }
-     * </pre>
-     * @param {function(err, keySSI)} callback
-     */
-    let createAndMount = function(bar, type, domain, path, args, callback){
-        let keyGenFunc, dsuFactory;
-        switch(type){
-            case KEY_TYPE.CONST:
-                keyGenFunc = keyssi.createArraySSI;
-                dsuFactory = resolver.createDSUForExistingSSI;
-                break;
-            case KEY_TYPE.SEED:
-                keyGenFunc = keyssi.buildTemplateSeedSSI;
-                dsuFactory = resolver.createDSU;
-                break;
-            default:
-                throw new Error("Invalid type");
-        }
+const DossierBuilder = function(sourceDSU, varStore){
 
-        let keySSI = keyGenFunc(domain, args.forKey);
-        dsuFactory(keySSI, (err, dsu) => {
-           if (err)
-               return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Could not create dsu with keyssi ${keySSI}`, err));
-
-           const mountFunc = function(bar, key, callback){
-               console.log(`DSU created with key ${key}`);
-               bar.mount(path, key, (err) => {
-                   if (err)
-                       return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Could not mount DSU`, err));
-                   callback(undefined, bar);
-               });
-           }
-
-           if (args.commands && args.commands.length > 0){
-               const dossierBuilder = new DossierBuilder();
-               dossierBuilder.buildDossier(dsu, args.commands, (err, key) => {
-                   if (err)
-                       return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Could not build Dossier`, err));
-                   mountFunc(bar, key, callback);
-               })
-           } else {
-               dsu.getKeySSIAsString((err, key) => {
-                   if (err)
-                       return callback(err);
-                   mountFunc(bar, key, callback);
-               });
-           }
-        });
-    }
+    const _varStore = varStore || new (require('./commands/VarStore'))();
 
     let createDossier = function (conf, commands, callback) {
         console.log("creating a new dossier...")
@@ -125,19 +66,8 @@ const DossierBuilder = function(sourceDSU){
      * @param callback
      */
     const readFile = function(filePath, callback){
-        new (_getByName('readfile'))().execute(filePath, callback);
+        new (_getByName('readfile'))(_varStore).execute(filePath, callback);
     }
-
-    //     function (filePath, data, callback) {
-    //     if (sourceDSU)
-    //         throw new Error("This method is not meant to be used here");
-    //
-    //     getFS().writeFile(filePath, data, (err) => {
-    //         if (err)
-    //             return callback(err);
-    //         callback(undefined, data.toString());
-    //     });
-    // };
 
     /**
      * Stores the keySSI to the SEED file when no sourceDSU is provided
@@ -161,19 +91,8 @@ const DossierBuilder = function(sourceDSU){
         const cmdName = args.shift();
         const cmd = _getByName(cmdName);
         return cmd
-            ? new (cmd)(this.source).execute(args, bar, next, callback)
+            ? new (cmd)(_varStore, this.source).execute(args, bar, next, callback)
             : callback(`Command not recognized: ${cmdName}`);
-        //
-        // switch (cmd.shift().toLowerCase()){
-        //     case OPERATIONS.CREATE_AND_MOUNT:
-        //         let type = cmd.shift();
-        //         let domain = cmd.shift();
-        //         let path = cmd.shift();
-        //         let args = JSON.parse(cmd.join(' '));
-        //         return createAndMount(bar, type, domain, path, args, callback);
-        //     default:
-        //         return callback("Invalid operation requested: " + command);
-        // }
     };
 
     /**

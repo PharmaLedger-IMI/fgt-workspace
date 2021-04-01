@@ -18,8 +18,8 @@ const { _err } = require('./utils');
  * @class AddFileCommand
  */
 class AddFileCommand extends Command{
-    constructor(source) {
-        super(source, true);
+    constructor(varStore, source) {
+        super(varStore, source, true);
     }
 
     /**

@@ -6,6 +6,7 @@
 /**
  */
 const Command = require('./Command');
+const { _getKeySSISpace, _err } = require('./utils');
 
 /**
  * Derives the provided keySSI
@@ -13,34 +14,39 @@ const Command = require('./Command');
  * @class DeriveCommand
  */
 class DeriveCommand extends Command{
-    constructor(source) {
-        super(source, false);
+    constructor(varStore) {
+        super(varStore);
+    }
+
+    _parseCommand(command, next, callback) {
+        if (!callback){
+            callback = next;
+            next = undefined;
+        }
+        callback(undefined, command
+            ? (command === 'true' || command[0] === 'true')
+            : false);
     }
 
     /**
      * derives the provided keySSI (in the source object)
      * @param {object} arg unused
-     * @param {Archive} bar unused
+     * @param {KeySSI} bar
      * @param {object} options unsused
      * @param {function(err, KeySSI)} callback
      * @protected
      */
     _runCommand(arg, bar, options, callback) {
-        if (!this.source || !this.source.derive)
-            return callback(`No source or source object cannot be derived. It is a KeySSI?`);
-
         if (!callback) {
             callback = options;
             options = undefined;
         }
-        if (!callback) {
-            callback = bar;
-            bar = undefined;
-        }
-        try {
-            callback(undefined, this.source.derive());
+
+        try{
+            const keySSI = _getKeySSISpace().parse(bar).derive();
+            callback(undefined, arg ? keySSI.getIdentifier() : keySSI);
         } catch (e) {
-            _err(`Could not derive Key ${JSON.stringify(this.source)}`, e, callback)
+            _err(`Could not derive Key ${JSON.stringify(bar)}`, e, callback)
         }
     }
 }

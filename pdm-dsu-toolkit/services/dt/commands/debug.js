@@ -18,8 +18,8 @@ const Command = require('./Command');
  * @class DebugCommand
  */
 class DebugCommand extends Command{
-    constructor(source) {
-        super(source, false);
+    constructor(varStore, source) {
+        super(varStore, source, false);
     }
 
     /**
@@ -39,12 +39,17 @@ class DebugCommand extends Command{
             callback = bar;
             bar = undefined;
         }
+        if (!callback){
+            callback = arg;
+            arg = undefined;
+        }
         console.log(`DEBUG CMD:---------------------------\n${JSON.stringify({
-            source: this.source,
-            bar: bar,
-            arguments: arg,
-            options: options
+            source: JSON.stringify(this.source),
+            bar: JSON.stringify(bar),
+            arguments: JSON.stringify(arg),
+            options: JSON.stringify(options)
         })}\nEND DEBUG:---------------------------`);
+        callback(undefined, bar);
     }
 }
 

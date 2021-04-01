@@ -15,8 +15,8 @@ const { _err } = require('./utils');
  * @class DeleteCommand
  */
 class DeleteCommand extends Command {
-    constructor() {
-        super(undefined, false);
+    constructor(varStore) {
+        super(varStore,undefined, false);
     }
 
     /**

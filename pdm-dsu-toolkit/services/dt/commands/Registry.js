@@ -8,6 +8,7 @@ const _availableCommands = {
     createdsu: require('./createDSU'),
     createfile: require('./createFile'),
     debug: require('./debug'),
+    define: require('./define'),
     delete: require('./delete'),
     derive: require('./derive'),
     endwith: require('./endWith'),

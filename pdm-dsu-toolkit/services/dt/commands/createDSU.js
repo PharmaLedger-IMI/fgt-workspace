@@ -34,15 +34,16 @@ const _getKeyType = function(dsuType){
  * @param {string[]} arg
  * @param {function(err, KeySSI)} callback
  */
-_createSSI = function(arg, callback){
-    const argToString = (arg) => {
-        return `${arg.type} ${arg.domain} ${JSON.stringify(arg.hint ? {
+_createSSI = function(varStore, arg, callback){
+    const argToArray = (arg) => {
+        return `${arg.type} ${arg.domain} ${typeof arg.args === 'string' ? arg.args : JSON.stringify(arg.hint ? {
             hint: arg.hint,
             args: arg.args
-        } : arg.args)}`;
+        } : arg.args)}`.split(/\s+/);
     }
-    new genKey().execute(argToString(arg), callback);
+    new genKey(varStore).execute(argToArray(arg), callback);
 }
+
 
 /**
  * Creates a DSU of an ArraySSI
@@ -50,8 +51,8 @@ _createSSI = function(arg, callback){
  * @param {object} opts DSU Creation Options
  * @param {function(err, Archive)} callback
  */
-_createWalletDSU = function(arg, opts, callback){
-    _createSSI(arg, (err, keySSI) => {
+_createWalletDSU = function(varStore, arg, opts, callback){
+    _createSSI(varStore, arg, (err, keySSI) => {
         _getResolver().createDSUForExistingSSI(keySSI, opts, (err, dsu) => {
             if (err)
                 return _err(`Could not create wallet DSU`, err, callback);
@@ -66,8 +67,8 @@ _createWalletDSU = function(arg, opts, callback){
  * @param {object} opts DSU Creation Options
  * @param {function(err, Archive)} callback
  */
-_createDSU = function(arg, opts, callback){
-    _createSSI(arg, (err, keySSI) => {
+_createDSU = function(varStore, arg, opts, callback){
+    _createSSI(varStore, arg, (err, keySSI) => {
         _getResolver().createDSU(keySSI, opts, (err, dsu) => {
             if (err)
                 return _err(`Could not create DSU`, err, callback);
@@ -82,8 +83,8 @@ _createDSU = function(arg, opts, callback){
  * @param {object} opts DSU Creation Options
  * @param {function(err, Archive)} callback
  */
-_createConstDSU = function(arg,opts , callback){
-    _createSSI(arg, (err, keySSI) => {
+_createConstDSU = function(varStore, arg,opts , callback){
+    _createSSI(varStore, arg, (err, keySSI) => {
         _getResolver().createDSUForExistingSSI(keySSI, opts, (err, dsu) => {
             if (err)
                 return _err(`Could not create const DSU`, err, callback);
@@ -102,8 +103,8 @@ _getDSUFactory = function(isConst, isWallet){
  * @class CreateDSUCommand
  */
 class CreateDSUCommand extends Command{
-    constructor(source) {
-        super(source, false);
+    constructor(varStore, source) {
+        super(varStore, source, false);
     }
 
     /**
@@ -121,11 +122,15 @@ class CreateDSUCommand extends Command{
      * @protected
      */
     _parseCommand(command, next, callback){
+        if (!callback){
+            callback = next;
+            next = undefined;
+        }
         try {
             let arg = {
                 dsuType: command.shift(),
                 domain: command.shift(),
-                args: JSON.parse(command.join(' '))
+                args: command.length === 1 ? command[0] : JSON.parse(command.join(' '))
             }
             arg.type = _getKeyType(arg.dsuType);
             if (typeof arg.args === 'object' && arg.args.args){
@@ -163,18 +168,19 @@ class CreateDSUCommand extends Command{
             options = undefined;
         }
         const cb = function(err, dsu){
-            return err
-                ? _err(`Could not create DSU with ${JSON.stringify(arg)}`, err, callback)
-                : callback(undefined, dsu);
+            if (err)
+                return _err(`Could not create DSU with ${JSON.stringify(arg)}`, err, callback);
+            console.log(`${arg.dsuType} DSU created`);
+            callback(undefined, dsu);
         }
 
         switch (arg.dsuType){
-            case KEY_TYPE.SEED:
-                return _createDSU(arg, cb)
-            case KEY_TYPE.ARRAY:
-                return _createConstDSU(arg, cb);
-            case KEY_TYPE.WALLET:
-                return _createWalletDSU(arg, cb);
+            case DSU_TYPE.SEED:
+                return _createDSU(this.varStore, arg, cb)
+            case DSU_TYPE.CONST:
+                return _createConstDSU(this.varStore, arg, cb);
+            case DSU_TYPE.WALLET:
+                return _createWalletDSU(this.varStore, arg, cb);
             default:
                 callback(`Unsupported key type`);
         }

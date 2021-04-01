@@ -14,8 +14,8 @@ const { _err, _getKeySSISpace, KEY_TYPE } = require('./utils');
  * @class GenKeyCommand
  */
 class GenKeyCommand extends Command {
-    constructor() {
-        super(undefined, false);
+    constructor(varStore) {
+        super(varStore,undefined, false);
     }
 
     /**
@@ -30,22 +30,31 @@ class GenKeyCommand extends Command {
             callback = next;
             next = undefined;
         }
+
+        const tryParseJson = function(text){
+            try {
+                let parsedArgs = JSON.parse(text);
+                if (parsedArgs && typeof parsedArgs === 'object')
+                    return parsedArgs;
+                return text;
+            } catch (e) {
+                // The argument is just a string. leave it be
+                return text;
+            }
+        }
+
         try {
             let arg = {
                 type: command.shift(),
                 domain: command.shift(),
-                args: JSON.parse(command.join(' '))
+                args: tryParseJson(command.shift())
             }
 
             if (typeof arg.args === 'object' && arg.args.args){
                 arg.hint = arg.args.hint;
-                arg.args = arg.args.args;
+                arg.args = tryParseJson(arg.args.args);
             }
-            callback(undefined, {
-                type: command.shift(),
-                domain: command.shift(),
-                args: JSON.parse(command.join(' '))
-            });
+            callback(undefined, arg);
         } catch (e){
             _err(`could not parse json ${command}`, e, callback);
         }
@@ -93,13 +102,17 @@ class GenKeyCommand extends Command {
      * @param {object} arg
      * <pre>
      *     {
-     *         from: (...),
-     *         to: (..)
+     *         type: (...),
+     *         domain: (..),
+     *         args: []| {
+     *                  hint: (..)
+     *                  args: []
+     *         }
      *     }
      * </pre>
-     * @param {Archive} bar
-     * @param {object} options
-     * @param {function(err, Archive)} callback
+     * @param {Archive} bar unused
+     * @param {object} options unused
+     * @param {function(err, KeySSI)} callback
      * @protected
      */
     _runCommand(arg, bar, options, callback) {
@@ -113,9 +126,10 @@ class GenKeyCommand extends Command {
             options = undefined;
         }
         const cb = function(err, keySSI){
-            return err
-                ? _err(`Could not create keySSI with ${JSON.stringify(arg)}`, err, callback)
-                : callback(undefined, keySSI);
+            if (err)
+                return _err(`Could not create keySSI with ${JSON.stringify(arg)}`, err, callback);
+            console.log(`${arg.type} KeySSI created with SSI ${keySSI.getIdentifier()}`)
+            callback(undefined, keySSI);
         }
 
         switch (arg.type){

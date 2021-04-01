@@ -16,9 +16,17 @@ const { _getFS, _err } = require('./utils')
  * @class ReadFileCommand
  */
 class ReadFileCommand extends Command{
-    constructor(source) {
-        super(source ? source : _getFS());
+    constructor(varStore, source) {
+        super(varStore, source ? source : _getFS());
         this.dataToString = !source;
+    }
+
+    _parseCommand(command, next, callback){
+        if (!callback){
+            callback = next;
+            next = undefined;
+        }
+        callback(undefined, typeof command === 'string' ? command : command[0]);
     }
 
     /**

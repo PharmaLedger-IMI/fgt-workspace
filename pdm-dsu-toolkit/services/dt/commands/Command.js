@@ -2,22 +2,28 @@
  * @module Commands
  * @memberOf dt
  */
+const { _err } = require('./utils');
 
 /**
  * **Every Command must be registered under the index.js file in the commands folder**
+ * @param {VarStore} varStore
  * @param {Archive|fs} [source]
  * @param {boolean} [canRunIteratively] defines if the command can expect multiple arguments and run multiple times. defaults to false
  * @class Command
  * @abstract
  */
 class Command {
-    constructor(source, canRunIteratively) {
+    constructor(varStore, source, canRunIteratively) {
         if (typeof source === 'boolean'){
             canRunIteratively = source;
             source = undefined;
         }
-       this.source = source;
-       this.canRunIteratively = !!canRunIteratively;
+        if (!varStore.checkVariables)
+            throw new Error('Cant happen')
+
+        this.varStore = varStore;
+        this.source = source;
+        this.canRunIteratively = !!canRunIteratively;
     }
 
     /**
@@ -46,6 +52,11 @@ class Command {
         this._parseCommand(args, next, (err, parsedArgs) => {
             if (err)
                 return _err(`Could not parse command ${args}`, err, callback);
+
+            // Tests against variables
+            if (self.varStore)
+                parsedArgs = self.varStore.checkVariables(parsedArgs);
+
             if (!self.canRunIteratively || !(parsedArgs instanceof Array))
                 return self._runCommand(parsedArgs, bar, options, callback);
 

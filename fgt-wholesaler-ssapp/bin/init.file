@@ -1,2 +1,16 @@
-createfile identity.json -$Identity-
-createfile environment.json -$Environment-
+define $ID$ fromvar -$Identity-
+define $ENV$ fromvar -$Environment-
+with cmd createdsu seed traceability specificstring
+define $SEED$ fromcmd getidentifier true
+createfile identity.json $ID$
+endwith
+createfile environment.json $ENV$
+mount $SEED$ /id
+with var $SEED$
+define $READ$ fromcmd derive true
+endwith
+with cmd createdsu const traceability ["testawdsdfsdfsdfawdawdawde","gfhfghjawdawdfasdasdgjwdad","ytjyutkasdasdasdyuk"]
+mount $READ$ /id
+define $CONST$ fromcmd getidentifier true
+endwith
+mount $CONST$ /participant

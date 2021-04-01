@@ -16,9 +16,8 @@ const Command = require('./Command');
  * @class EndWithCommand
  */
 class EndWithCommand extends Command{
-    constructor(source) {
-        super(source);
-        this._availableCommands = undefined;
+    constructor(varStore) {
+        super(varStore);
     }
 
     /**
@@ -30,19 +29,22 @@ class EndWithCommand extends Command{
      * @protected
      */
     _runCommand(arg, bar, options, callback){
-        if (typeof options === 'function') {
+        if (!callback) {
             callback = options;
             options = undefined;
         }
         if (!callback){
             callback = bar;
-            bar = undefined;
+            bar = arg;
+            arg = undefined;
         }
 
-        // return whatever the source was
-        if (!this.source)
-            return callback(`No Source to return. should not be possible`);
-        callback(undefined, this.source);
+        // return whatever the object was
+        if (!bar)
+            return callback(`Nothing to return. should not be possible`);
+
+        console.log(`Ending With command. Returning to ${JSON.stringify(bar)}`);
+        callback(undefined, bar);
     }
 }
 

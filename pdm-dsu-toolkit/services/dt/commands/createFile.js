@@ -15,8 +15,8 @@ const {_getFS, _err} = require('./utils');
  * @class CreateFileCommand
  */
 class CreateFileCommand extends Command{
-    constructor() {
-        super();
+    constructor(varStore) {
+        super(varStore);
     }
 
     /**
@@ -27,7 +27,6 @@ class CreateFileCommand extends Command{
      * @protected
      */
     _parseCommand(command, next, callback){
-        command = command.split(/\s+/);
         callback(undefined,  {
             path: command.shift(),
             content: command.join(' ')
@@ -58,7 +57,7 @@ class CreateFileCommand extends Command{
         options = options || {encrypt: true, ignoreMounts: false};
         bar.writeFile(arg.path, arg.content, options, (err) => err
             ? _err(`Could not create file at ${arg.path}`, err, callback)
-            : callback(undefined, arg.content));
+            : callback(undefined, bar));
     }
 }
 

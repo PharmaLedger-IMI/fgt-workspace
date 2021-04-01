@@ -7,7 +7,7 @@
  */
 const Command = require('./Command');
 const ReadFileCommand = require('./readFile');
-const { _err, _getFS } = require('./utils');
+const { _err, _getFS, _getKeySSISpace } = require('./utils');
 
 /**
  * Mounts a DSU onto the provided path
@@ -15,8 +15,8 @@ const { _err, _getFS } = require('./utils');
  * @class MountCommand
  */
 class MountCommand extends Command{
-    constructor(source) {
-        super(source, true);
+    constructor(varStore, source) {
+        super(varStore, source, true);
         if (!source)
             this._getFS = require('./utils');
     }
@@ -99,21 +99,22 @@ class MountCommand extends Command{
         }
 
         const doMount = function(seed, callback){
-            console.log("Mounting " + arg.seed_path + " with seed " + seed + " to " + arg.mount_point);
+            console.log("Mounting seed " + seed + " to " + arg.mount_point);
             bar.mount(arg.mount_point, seed, err => err
                 ? _err(`Could not perform mount of ${seed} at ${arg.seed_path}`, err, callback)
                 : callback(undefined, bar));
         };
-
-        if (this.source)
-            return doMount(arg.seed_path, callback);
-
-        new ReadFileCommand(this.source).execute(arg.seed_path, (err, seed) => {
-            if (err)
-                return _err(`Could not read seed from ${arg.seed_path}`, err, callback);
-            seed = seed.toString();
-            doMount(seed, callback);
-        });
+        try {
+            if (_getKeySSISpace().parse(arg.seed_path))
+                return doMount(arg.seed_path, callback);
+        } catch (e){
+            new ReadFileCommand(this.varStore, this.source).execute(arg.seed_path, (err, seed) => {
+                if (err)
+                    return _err(`Could not read seed from ${arg.seed_path}`, err, callback);
+                seed = seed.toString();
+                doMount(seed, callback);
+            });
+        }
     }
 }
 
