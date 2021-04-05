@@ -1,0 +1,57 @@
+<webc-container controller="StockController" enable-translations="true">
+    <div data-if="@hasStock">
+        <div slot="true">
+            <ion-grid>
+                <ion-row>
+                    <ion-col size="4">
+                        <ion-item>
+                            <ion-label>{{ @gtinHeader }}</ion-label>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col size="2">
+                        <ion-item>
+                            <ion-label>{{ @nameHeader }}</ion-label>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col size="4">
+                        <ion-item>
+                            <ion-label>{{ @batchesHeader }}</ion-label>
+                        </ion-item>
+                        <ion-col size="4">
+                            <ion-item>
+                                <ion-label>{{ @quantityHeader }}</ion-label>
+                            </ion-item>
+                        </ion-col>
+                    </ion-col>
+                </ion-row>
+                <ion-row data-for="@stock">
+                    <ion-col size="4">
+                        <ion-item>
+                            <ion-label>{{ @gtin }}</ion-label>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col size="2">
+                        <ion-item>
+                            <ion-label>{{ @name }}</ion-label>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col size="4">
+                        <ion-item>
+                            <ion-label>{{ @batches }}</ion-label>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col size="2">
+                        <ion-item>
+                            <ion-label>{{ @quantity }}</ion-label>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </div>
+        <div slot="false">
+            <ion-item>
+                <ion-label>{{ @none }}</ion-label>
+            </ion-item>
+        </div>
+    </div>
+</webc-container>

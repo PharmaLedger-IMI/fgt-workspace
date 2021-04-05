@@ -48,7 +48,7 @@ function LocaleService(){
         if (index === -1)
             return model[translationKey];
 
-        return this.parseTranslationModel(model[translationKey.substring(0, translationKey.indexOf('.'))],
+        return parseTranslationModel(model[translationKey.substring(0, translationKey.indexOf('.'))],
             translationKey.substring(index + 1));
     }
 

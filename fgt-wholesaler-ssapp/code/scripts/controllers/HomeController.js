@@ -15,6 +15,9 @@ export default class ParticipantController extends LocalizedController {
         }, "participant");
         this.participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage);
         console.log("Home controller initialized");
+        this.on('ionTabsDidChange', (evt) => {
+            console.log(evt);
+        })
         this._testParticipant();
     }
 
@@ -23,7 +26,7 @@ export default class ParticipantController extends LocalizedController {
         this.participantManager.getIdentity((err, identity) => {
             if (err)
                 return self.showErrorToast(`Could not retrieve identity. Build process seems to not have worked properly`);
-            self.model.participant = identity;
+            self.model['participant'] = identity;
             self.showToast(`Welcome back to ${identity.name}'s Finished Goods Traceability App`);
         });
     }

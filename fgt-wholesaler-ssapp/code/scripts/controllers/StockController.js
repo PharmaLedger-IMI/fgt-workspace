@@ -1,22 +1,29 @@
-import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
+import LocalizedController from "./LocalizedController.js";
 const Product = require('wizard').Model.Product;
 
-export default class StockController extends ContainerController {
+export default class StockController extends LocalizedController{
+    getModel = () => ({
+        stock: []
+    });
+
     constructor(element, history) {
         super(element, history);
+        super.bindLocale(this, "stock");
         const wizard = require('wizard');
-        const LocaleService = wizard.Services.LocaleService;
-        LocaleService.bindToLocale(this, LocaleService.supported.en_US, "stock");
-        const participantManager = wizard.Managers.getParticipantManager();
-        this.stockManager = wizard.Managers.getStockManager(participantManager.getParticipantDSU());
 
-        this.setModel({
-            stock: []
-        });
+        const participantManager = wizard.Managers.getParticipantManager();
+        this.stockManager = wizard.Managers.getStockManager(participantManager);
+
+        this.setModel(this.getModel());
 
         this.model.addExpression('hasStock', () => {
             return typeof this.model.stock !== 'undefined' && this.model.stock.length > 0;
         }, 'stock');
+
+        this.on('ionTabsDidChange', (evt) => {
+            console.log(evt);
+            this.getStockAsync();
+        })
 
         this.getStockAsync();
     }

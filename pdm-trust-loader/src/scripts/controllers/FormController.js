@@ -99,7 +99,7 @@ export default class FormController extends LocalizedController {
                 this.innerHTML = `
     <ion-item>
         <ion-label position="stacked">${attributes.label}</ion-label>
-        <ion-input name="input-${name}" data-model="@${name}" 
+        <ion-input name="input-${name}" data-view-model="@${name}" 
             ${['number', 'date'].indexOf(attributes.type) !== -1 ? `inputmode="${attributes.type}"` : `inputmode="text"`} 
             ${attributes.max ? `max="${attributes.max}"` : ""} 
             ${attributes.min ? `min="${attributes.min}"` : ""} 

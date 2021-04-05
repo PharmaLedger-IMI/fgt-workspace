@@ -15,6 +15,7 @@ apihub-root/fgt-wholesaler-wallet/apps-patch
 apihub-root/web-ion-wallet/**
 apihub-root/pdm-trust-loader/**
 apihub-root/dossier-explorer/**
+apihub-root/messaging
 apihub-root/seedsBackup
 cardinal
 dossier-explorer-ssapp

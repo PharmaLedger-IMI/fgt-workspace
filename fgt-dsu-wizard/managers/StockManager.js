@@ -8,25 +8,27 @@ const STATUS = {
     RESERVED: "reserved",
     IN_TRANSIT: "intransit"
 }
+
 /**
- * Stock Manager Class
- *
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
  *
  * All Manager Classes should be singletons.
  *
- * This complete separation of concerts is very beneficial for 2 reasons:
+ * This complete separation of concerns is very beneficial for 2 reasons:
  * <ul>
  *     <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
  *
- * @param {Archive} storageDSU the DSU where the storage should happen
+ * @param {Database} storage the DSU where the storage should happen or more commonly the Database Object
+ * @param {BaseManager} baseManager the base manager to have access to the identity api
+ * @module managers
+ * @class Manager
  */
 class StockManager extends Manager{
-    constructor(storageDSU) {
-        super(storageDSU);
+    constructor(baseManager) {
+        super(baseManager);
         this.stock = this._genDummyStock();
     }
 
@@ -87,12 +89,13 @@ class StockManager extends Manager{
     }
 
     update(callback){
-        this.storage.writeFile(STOCK_PATH, JSON.stringify(this.stock), (err) => {
-            if (err)
-                return callback(err);
-            console.log("Updated stock!");
-            callback();
-        });
+        // this.storage.writeFile(STOCK_PATH, JSON.stringify(this.stock), (err) => {
+        //     if (err)
+        //         return callback(err);
+        //     console.log("Updated stock!");
+        //     callback();
+        // });
+        callback();
     }
 
     toModel(filteredStock, model){
@@ -109,12 +112,13 @@ class StockManager extends Manager{
 
 let stockManager;
 /**
- * @param {Archive} dsu
+ * @param {DB} database
+ * @param {BaseManager} baseManager
  * @returns {StockManager}
  */
-const getStockManager = function (dsu) {
+const getStockManager = function (database, baseManager) {
     if (!stockManager)
-        stockManager = new StockManager(dsu);
+        stockManager = new StockManager(database, baseManager);
     return stockManager;
 }
 

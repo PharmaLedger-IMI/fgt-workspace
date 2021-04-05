@@ -41,8 +41,8 @@ class Message{
  * @class Manager
  */
 class MessageManager extends Manager{
-    constructor(db, baseManager, didString){
-        super(db);
+    constructor(baseManager, didString){
+        super(baseManager);
         this.w3cDID = require('opendsu').loadApi('w3cdid');
         this.didString = didString;
         this.did = undefined;
@@ -115,11 +115,15 @@ class MessageManager extends Manager{
         let self = this;
         setTimeout(() => {
             did.readMessage((err, message) => {
-                if (err)
-                    return createOpenDSUErrorWrapper(`Could not read message`, err);
+                if (err){
+                    console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
+                    self._startMessageListener(did);
+                }
+
                 self._receiveMessage(message, (err, message) => err
                     ? createOpenDSUErrorWrapper(`Failed to receive message`, err)
                     : console.log(`Message received ${message}`));
+                self._startMessageListener(did);
             });
         }, MESSAGE_REFRESH_RATE);
     }
@@ -140,18 +144,17 @@ class MessageManager extends Manager{
 let messageManager;
 
 /**
- * @param {Database} storage the DSU where the storage should happen or more commonly the Database Object
  * @param {BaseManager} baseManager the base manager to have access to the identity api
  * @param {string} didString
- * @param {function(Message)} onNewMessage
+ * @param {function(Message)} [onNewMessage]
  * @returns {MessageManager}
  * @module managers
  */
-const getMessageManager = function (storage, baseManager, didString, onNewMessage) {
+const getMessageManager = function(baseManager, didString, onNewMessage) {
     if (!messageManager) {
-        if (!storage)
-            throw new Error("No storage provided");
-        messageManager = new MessageManager(storage, baseManager, didString, onNewMessage);
+        if (!baseManager || !didString)
+            throw new Error("Missing Objects for instantiation");
+        messageManager = new MessageManager(baseManager, didString, onNewMessage);
     }
     return messageManager;
 }

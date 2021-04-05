@@ -17,8 +17,8 @@
  * @class Manager
  */
 class Manager{
-    constructor(storage, baseManager){
-        this.storage = storage;
+    constructor(baseManager){
+        this.storage = baseManager.db;
         this.getIdentity = baseManager.getIdentity;
     }
 

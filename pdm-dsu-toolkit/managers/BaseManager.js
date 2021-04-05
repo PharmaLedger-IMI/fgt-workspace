@@ -6,9 +6,9 @@
  *
  */
 const {INFO_PATH, PARTICIPANT_MOUNT_PATH, IDENTITY_MOUNT_PATH, DATABASE_MOUNT_PATH} = require('../constants');
-const { getResolver , _err} = require('../services/utils');
+const { getResolver ,getKeySSISpace,  _err} = require('../services/utils');
 const relevantMounts = [PARTICIPANT_MOUNT_PATH, DATABASE_MOUNT_PATH];
-const {MessageManager, Message} = require('./MessageManager');
+const {getMessageManager, Message} = require('./MessageManager');
 /**
  * Base Manager Class
  *
@@ -73,14 +73,18 @@ class BaseManager {
         this.participantConstSSI = undefined;
         this.did = undefined;
         this.messenger = undefined;
-        this._initialize((err) => {
-            console.log(err);
-        })
+        this._initialize((err) => err
+            ? console.log(`Could not initialize base manager ${err}`)
+            : console.log(`base manager initialized`));
     };
 
     sendMessage(did, api, message, callback){
         const msg = new Message(api, message)
         this.messenger.sendMessage(did, msg, callback);
+    }
+
+    registerMessageListener(api, listener){
+        this.messenger.registerListeners(api, listener);
     }
 
     getMessages(callback){
@@ -110,7 +114,7 @@ class BaseManager {
     }
 
     _verifyRelevantMounts(mounts){
-        return DATABASE_MOUNT_PATH in mounts && PARTICIPANT_MOUNT_PATH in mounts;
+        return this._cleanPath(DATABASE_MOUNT_PATH) in mounts && this._cleanPath(PARTICIPANT_MOUNT_PATH) in mounts;
     }
 
     _cacheRelevant(callback, identity){
@@ -120,16 +124,24 @@ class BaseManager {
                 return _err(`Could not list mounts in root DSU`, err, callback);
             const relevant = {};
             mounts.forEach(m => {
-                if (relevantMounts.indexOf(m.path) !== -1)
+                if (relevantMounts.indexOf('/' + m.path) !== -1)
                     relevant[m.path] = m.identifier;
             });
             if (!self._verifyRelevantMounts(relevant))
                 return callback(`Loader Initialization failed`);
-            self.db = require('opendsu').loadApi('db').getWalletDB(relevant[DATABASE_MOUNT_PATH]);
-            self.messenger = new MessageManager(self.db, self._getDIDString(identity));
-            self.participantConstSSI = relevant[PARTICIPANT_MOUNT_PATH];
+            const dbSSI = getKeySSISpace().parse(relevant[self._cleanPath(DATABASE_MOUNT_PATH)]);
+            if (!dbSSI)
+                return callback(`Could not retrive db ssi`);
+            self.db = require('opendsu').loadApi('db').getWalletDB(dbSSI);
             console.log(`Database Cached`);
-            callback()
+            self.participantConstSSI = relevant[self._cleanPath(PARTICIPANT_MOUNT_PATH)];
+            self._getDIDString(identity, self.participantConstSSI, (err, didString) => {
+                if (err)
+                    throw err;
+                console.log(`DID String is ${didString}`);
+                self.messenger = getMessageManager(self, didString);
+                callback();
+            });
         });
     }
 
