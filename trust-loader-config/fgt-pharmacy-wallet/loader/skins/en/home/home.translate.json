@@ -1,13 +1,13 @@
 {
-  "title": "Pharmaledger's Finished Goods Traceability Wholesaler SSApp",
+  "title": "Pharmaledger's Finished Goods Traceability Pharmacy SSApp",
   "anchoring": "traceability",
   "form": {
-    "title": "Please enter your credentials as a Wholesaler",
+    "title": "Please enter your credentials as a Pharmacy",
     "name": {
       "label": "Name:",
       "type": "text",
       "placeholder": "Please enter your name here...",
-      "value": "PDM the Wholesaler",
+      "value": "PDM the Pharmacy",
       "public": true,
       "required": true
     },
@@ -23,7 +23,7 @@
       "label": "Registered Email:",
       "type": "email",
       "placeholder": "Please enter your email here...",
-      "value": "wholesaler@pdmfc.com",
+      "value": "pharmacy@pdmfc.com",
       "public": true,
       "required": true
     },
