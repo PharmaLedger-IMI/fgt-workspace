@@ -54,6 +54,7 @@
     "git-describe": "^4.0.4",
     "istanbul": "^0.4.5",
     "jsdoc": "^3.6.6",
-    "markdown-include": "^0.4.3"
+    "markdown-include": "^0.4.3",
+    "workbox-cli": "^6.1.2"
   }
 }

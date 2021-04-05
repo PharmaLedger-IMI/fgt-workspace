@@ -121,9 +121,9 @@ export default class LocalizedController extends WebcController {
      * @param {boolean} [enableValidations] defaults to false. If provided enabled Ionic Inputs form validations
      */
     bindLocale(controller, pageName, enableValidations){
-        require('toolkit').Services.WebcLocaleService.bindToLocale(controller, pageName);
+        require('wizard').Services.WebcLocaleService.bindToLocale(controller, pageName);
         if (enableValidations)
-            require('toolkit').Model.Validations.bindIonicValidation(controller);
+            require('wizard').Model.Validations.bindIonicValidation(controller);
     }
 
     constructor(element, history) {
