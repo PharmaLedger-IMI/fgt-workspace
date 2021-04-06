@@ -320,6 +320,15 @@
                     "cmd": "cd fgt-wholesaler-ssapp && npm install"
                 }
             ]
+        },
+        {
+            "name": "Install workbox cli globally",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "npm install -g workbox-cli@5.1.4"
+                }
+            ]
         }
     ],
     "build-use-case": [

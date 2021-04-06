@@ -111,7 +111,7 @@
 		  "actions": [
 			  {
 				  "type": "execute",
-				  "cmd": "sh -c \"theme=`npm ls -g workbox | grep workbox-cli` && [ -z \\\"$theme\\\" ] && npm install -g workbox-cli || echo \\\"Workbox cli already Installed\\\"\""
+				  "cmd": "npm install -g workbox-cli@5.1.4"
 			  }
 		  ]
 	  }
