@@ -1,6 +1,18 @@
 {
   "workDir": ".",
-  "dependencies": [],
+  "dependencies": [
+	  {
+		  "name": "Workbox-cli Install (globally)",
+		  "src": "",
+		  "description": "the dev dependencies break cardinal build",
+		  "actions": [
+			  {
+				  "type": "execute",
+				  "cmd": "npm install -g workbox-cli@5.1.4"
+			  }
+		  ]
+	  }
+  ],
   "prebuild": [
 	  {
 		  "name": "PSK bundles",
@@ -101,17 +113,6 @@
 				  "options": {
 					  "overwrite": true
 				  }
-			  }
-		  ]
-	  },
-	  {
-		  "name": "Workbox-cli Install (globally)",
-		  "src": "",
-		  "description": "the dev dependencies break cardinal build",
-		  "actions": [
-			  {
-				  "type": "execute",
-				  "cmd": "npm install -g workbox-cli@5.1.4"
 			  }
 		  ]
 	  }
