@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "dev-install": "node ./bin/mkDevEnv.js && npm install",
-    "postinstall": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run\"",
+    "postinstall": "node bin/version.js && node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run\"",
     "install-mobile": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run install-mobile\"",
     "add": "node ./node_modules/octopus/scripts/add",
     "remove": "node ./node_modules/octopus/scripts/remove",
@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "form-data": "v3.0.0",
+    "fs-extra": "^9.1.0",
     "git-describe": "^4.0.4",
     "jsdoc": "^3.6.6",
     "markdown-include": "^0.4.3"
