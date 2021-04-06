@@ -29,6 +29,7 @@ pdm-trust-loader/src/assets/ionic-core
 pdm-trust-loader/src/swPwa*
 pdm-trust-loader/src/swBoot.js
 pdm-trust-loader/src/workbox*
+pdm-trust-loader/docs
 
 !pdm-trust-loader/workbox-config.js
 
@@ -47,7 +48,7 @@ fgt-dsu-wizard/build/bundles
 fgt-dsu-wizard/docs
 
 pdm-dsu-toolkit/build/bundles
-pdm-dsu-toolkit/docs
+/pdm-dsu-toolkit/docs/
 
 
 documentation/bin/draw.io.path

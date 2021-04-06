@@ -92,7 +92,8 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="dt.module_Commands.html">Commands</a></li><li><a href="module-constants.html">constants</a></li><li><a href="module-dt.html">dt</a></li><li><a href="module-keyssi.html">keyssi</a></li><li><a href="module-locale.html">locale</a></li><li><a href="module-managers.html">managers</a></li><li><a href="module-server.html">server</a></li><li><a href="module-services.html">services</a></li><li><a href="module-utils.html">utils</a></li><li><a href="toolkit.model.module_model.html">model</a></li><li><a href="toolkit.model.validations.module_validations.html">validations</a></li></ul><h3>Namespaces</h3><ul><li><a href="pdm-dsu-toolkit.html">pdm-dsu-toolkit</a></li><li><a href="pdm-dsu-toolkit.dt.html">dt</a></li><li><a href="pdm-dsu-toolkit.locale.html">locale</a></li><li><a href="pdm-dsu-toolkit.managers.html">managers</a></li><li><a href="pdm-dsu-toolkit.model.html">model</a></li><li><a href="pdm-dsu-toolkit.model.validations.html">validations</a></li><li><a href="pdm-dsu-toolkit.server.html">server</a></li><li><a href="pdm-dsu-toolkit.services.html">services</a></li><li><a href="pdm-dsu-toolkit.utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="dt.module_Commands-DeleteCommand.html">DeleteCommand</a></li><li><a href="Manager.html">Manager</a></li><li><a href="module-managers-BaseManager.html">BaseManager</a></li><li><a href="module-services-DSUService.html">DSUService</a></li></ul><h3>Interfaces</h3><ul><li><a href="dt.module_Commands.html#~Command">Command</a></li><li><a href="toolkit.model.validations.module_validations-Validatable.html">Validatable</a></li></ul><h3><a href="global.html">Global</a></h3></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="commands%250AA%2520simple%2520variable%2520storemodule_.html">commands
+A simple variable store</a></li><li><a href="dt.module_Commands.html">Commands</a></li><li><a href="module-Commands.html">Commands</a></li><li><a href="module-constants.html">constants</a></li><li><a href="module-dt.html">dt</a></li><li><a href="module-keyssi.html">keyssi</a></li><li><a href="module-locale.html">locale</a></li><li><a href="module-managers.html">managers</a></li><li><a href="module-server.html">server</a></li><li><a href="module-services.html">services</a></li><li><a href="module-utils.html">utils</a></li><li><a href="toolkit.model.module_model.html">model</a></li><li><a href="toolkit.model.validations.module_validations.html">validations</a></li></ul><h3>Namespaces</h3><ul><li><a href="pdm-dsu-toolkit.html">pdm-dsu-toolkit</a></li><li><a href="pdm-dsu-toolkit.dt.html">dt</a></li><li><a href="pdm-dsu-toolkit.locale.html">locale</a></li><li><a href="pdm-dsu-toolkit.managers.html">managers</a></li><li><a href="pdm-dsu-toolkit.model.html">model</a></li><li><a href="pdm-dsu-toolkit.model.validations.html">validations</a></li><li><a href="pdm-dsu-toolkit.server.html">server</a></li><li><a href="pdm-dsu-toolkit.services.html">services</a></li><li><a href="pdm-dsu-toolkit.utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="dt.module_Commands-AddFileCommand.html">AddFileCommand</a></li><li><a href="dt.module_Commands-AddFolderCommand.html">AddFolderCommand</a></li><li><a href="dt.module_Commands.html#~Command">Command</a></li><li><a href="dt.module_Commands-CreateDSUCommand.html">CreateDSUCommand</a></li><li><a href="dt.module_Commands-CreateFileCommand.html">CreateFileCommand</a></li><li><a href="dt.module_Commands-DefineCommand.html">DefineCommand</a></li><li><a href="dt.module_Commands-DeleteCommand.html">DeleteCommand</a></li><li><a href="dt.module_Commands-DeriveCommand.html">DeriveCommand</a></li><li><a href="dt.module_Commands-EndWithCommand.html">EndWithCommand</a></li><li><a href="dt.module_Commands-GenKeyCommand.html">GenKeyCommand</a></li><li><a href="dt.module_Commands-GetIdentifierCommand.html">GetIdentifierCommand</a></li><li><a href="dt.module_Commands-MountCommand.html">MountCommand</a></li><li><a href="dt.module_Commands-ObjToArrayCommand.html">ObjToArrayCommand</a></li><li><a href="dt.module_Commands-ReadFileCommand.html">ReadFileCommand</a></li><li><a href="dt.module_Commands-WithCommand.html">WithCommand</a></li><li><a href="Manager.html">Manager</a></li><li><a href="Message.html">Message</a></li><li><a href="module-managers-BaseManager.html">BaseManager</a></li><li><a href="module-services-DSUService.html">DSUService</a></li></ul><h3>Interfaces</h3><ul><li><a href="toolkit.model.validations.module_validations-Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_availableCommands">_availableCommands</a></li><li><a href="global.html#_getByName">_getByName</a></li></ul></div>
                 
             </nav>
         </div>
@@ -119,15 +120,40 @@
 const FileService = require("./FileService");
 
 const DSU_SPECIFIC_FILES = ["dsu-metadata.log", "manifest"]
+const {_getResolver, _getKeySSISpace} = require('./commands/utils');
 
 /**
  * Default Options set for the {@link AppBuilderService}
+ * &lt;pre>
+ *     {
+            anchoring: "default",
+            publicSecretsKey: '-$Identity-',
+            environmentKey: "-$Environment-",
+            basePath: "",
+            stripBasePathOnInstall: false,
+            walletPath: "",
+            hosts: "",
+            hint: undefined,
+            vault: "vault",
+            seedFileName: "seed",
+            appsFolderName: "apps",
+            appFolderName: "app",
+            codeFolderName: "code",
+            initFile: "init.file",
+            environment: {},
+            slots:{
+                primary: "wallet-patch",
+                secondary: "apps-patch"
+            }
+        }
+ * &lt;/pre>
  */
 const OPTIONS = {
     anchoring: "default",
     publicSecretsKey: '-$Identity-',
     environmentKey: "-$Environment-",
     basePath: "",
+    stripBasePathOnInstall: false,
     walletPath: "",
     hosts: "",
     hint: undefined,
@@ -168,30 +194,9 @@ const envToOptions = function(env, opts){
  */
 function AppBuilderService(environment, opts) {
     const options = envToOptions(environment, opts);
-    let keyssi = require('opendsu').loadApi('keyssi')
-
-    const dossierBuilder = new (require("./DossierBuilder").DossierBuilder);
-    const resolver = require('opendsu').loadApi('resolver');
+    const dossierBuilder = new (require("./DossierBuilder"))();
 
     const fileService = new FileService(options);
-
-    /**
-     * Converts the list of files and mounts in a DSU to createFile and Mount commands for DSU Cloning purposes
-     * @param {object} files
-     * @param {object} mounts
-     * @return {string[]}
-     * @private
-     */
-    const contentToCommands = function(files, mounts){
-        let commands = [];
-        files.forEach(f => {
-            commands.push(`addfile ${f} ${f}`);
-        });
-        mounts.forEach(m => {
-            commands.push(`mount ${m.identifier} ${m.path}`);
-        });
-        return commands;
-    }
 
     /**
      * Lists a DSUs content
@@ -200,7 +205,7 @@ function AppBuilderService(environment, opts) {
      * @private
      */
     const getDSUContent = function (keySSI, callback) {
-        resolver.loadDSU(keySSI, (err, dsu) => {
+        _getResolver().loadDSU(keySSI, (err, dsu) => {
             if (err)
                 return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Could not load DSU with SSI ${keySSI}`, err));
             dsu.listFiles("/", {ignoreMounts: true}, (err, files) => {
@@ -226,7 +231,7 @@ function AppBuilderService(environment, opts) {
      * @private
      */
     const createArraySSI = function(secrets, callback){
-        const key = keyssi.createArraySSI(options.anchoring, secrets, 'v0', options.hint ? JSON.stringify(options.hint) : undefined);
+        const key = _getKeySSISpace().createArraySSI(options.anchoring, secrets, 'v0', options.hint ? JSON.stringify(options.hint) : undefined);
         callback(undefined, key);
     }
 
@@ -238,7 +243,7 @@ function AppBuilderService(environment, opts) {
      * @param {function(err, ArraySSI)} callback
      */
     const createWalletSSI = function(secrets, callback){
-        const key = keyssi.createTemplateWalletSSI(options.anchoring, secrets, 'v0', options.hint ? JSON.stringify(options.hint) : undefined);
+        const key = _getKeySSISpace().createTemplateWalletSSI(options.anchoring, secrets, 'v0', options.hint ? JSON.stringify(options.hint) : undefined);
         callback(undefined, key);
     }
 
@@ -250,30 +255,8 @@ function AppBuilderService(environment, opts) {
      * @param {function(err, TemplateSeedSSI)} callback
      */
     const createSSI = function(specificString, callback){
-        const key = keyssi.createTemplateSeedSSI(options.anchoring, specificString, undefined, 'v0', options.hint ? JSON.stringify(options.hint) : undefined);
+        const key = _getKeySSISpace().createTemplateSeedSSI(options.anchoring, specificString, undefined, 'v0', options.hint ? JSON.stringify(options.hint) : undefined);
         callback(undefined, key);
-    }
-
-    /**
-     * Converts The contents of the dsuToClone to Commands, recognizable by OpenDSU's DossierBuilder,
-     * and using those commands copies all contents into the destinationDSU
-     * @param {Archive} dsuToClone
-     * @param {Archive} destinationDSU
-     * @param {string[]} files
-     * @param {object[]} mounts
-     * @param {object} [cfg] optional. if passed will be write to /cfg in DSU
-     * @param {function(err, KeySSI)} callback
-     */
-    const doClone = function(dsuToClone, destinationDSU, files, mounts, cfg, callback){
-        if (typeof cfg === 'function'){
-            callback = cfg;
-            cfg = undefined;
-        }
-        const commands = contentToCommands(files, mounts);
-        if (cfg)
-            commands.push("createfile cfg " + JSON.stringify(cfg));
-        const dossierBuilder = new DossierBuilder(dsuToClone);
-        dossierBuilder.buildDossier(destinationDSU, commands, callback);
     }
 
     /**
@@ -284,7 +267,7 @@ function AppBuilderService(environment, opts) {
      */
     const createWalletDSU = function(secrets, opts, callback){
         createWalletSSI(secrets, (err, keySSI) => {
-            resolver.createDSUForExistingSSI(keySSI, opts, (err, dsu) => {
+            _getResolver().createDSUForExistingSSI(keySSI, opts, (err, dsu) => {
                 if (err)
                     return callback(`Could not create const DSU ${err}`);
                 callback(undefined, dsu);
@@ -300,7 +283,7 @@ function AppBuilderService(environment, opts) {
      */
     const createDSU = function(specific, opts, callback){
         createSSI(specific, (err, keySSI) => {
-            resolver.createDSU(keySSI, opts, (err, dsu) => {
+            _getResolver().createDSU(keySSI, opts, (err, dsu) => {
                 if (err)
                     return callback(`Could not create const DSU ${err}`);
                 callback(undefined, dsu);
@@ -316,7 +299,7 @@ function AppBuilderService(environment, opts) {
      */
     const createConstDSU = function(secrets,opts , callback){
         createArraySSI(secrets, (err, keySSI) => {
-            resolver.createDSUForExistingSSI(keySSI, opts, (err, dsu) => {
+            _getResolver().createDSUForExistingSSI(keySSI, opts, (err, dsu) => {
                 if (err)
                     return callback(`Could not create const DSU ${err}`);
                 callback(undefined, dsu);
@@ -390,12 +373,13 @@ function AppBuilderService(environment, opts) {
 
     const filesToCommands = (content) => {
         let commands = [];
-        for (let directory in content){
-            let directoryFiles = content[directory];
-            for (let fileName in directoryFiles)
-                commands.push(`createfile ${directory}/${fileName} ${directoryFiles[fileName]}`);
-
-        }
+        for (let directory in content)
+            if (content.hasOwnProperty(directory)){
+                let directoryFiles = content[directory];
+                for (let fileName in directoryFiles)
+                    if (directoryFiles.hasOwnProperty(fileName))
+                        commands.push(`createfile ${directory}/${fileName} ${directoryFiles[fileName]}`);
+            }
         return commands;
     }
 
@@ -428,10 +412,12 @@ function AppBuilderService(environment, opts) {
 
     /**
      * When writing the env to an SSApp, because she'll run in an iFrame,
-     * its basePath will always be '/' unlike the loader
+     * its basePath will always be '/' unlike the loader, we have the option to strip the base path id that's desirable
      * @param {object} env
      */
     const resetBasePath = function(env){
+        if (!env.stripBasePathOnInstall)
+            return env;
         return Object.assign({}, env, {basePath: '/'});
     }
 
@@ -448,11 +434,13 @@ function AppBuilderService(environment, opts) {
                 return callback(undefined, instance);
             }
 
+            // embed the environment and identity into in the initializations commands
             let commands = data.toString().replace(options.environmentKey, JSON.stringify(resetBasePath(options.environment)));
             commands = (publicSecrets
                     ? commands.replace(options.publicSecretsKey, JSON.stringify(publicSecrets))
                     : commands)
-                .split(/\r?\n/);
+                .split(/\r?\n/).map(cmd => cmd.trim()).filter(cmd => !!cmd);
+
             dossierBuilder.buildDossier(instance, commands, (err, keySSI) => {
                 if (err)
                    return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Could not initialize SSApp instance`, err));
@@ -664,7 +652,7 @@ function AppBuilderService(environment, opts) {
                 if (err)
                     return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Could not create wallet with ssi ${{keySSI}}`, err));
                 console.log(`Loading wallet with ssi ${keySSI.getIdentifier()}`);
-                resolver.loadDSU(keySSI, (err, wallet) => {
+                _getResolver().loadDSU(keySSI, (err, wallet) => {
                     if (err)
                         return callback(`Could not load wallet DSU ${err}`);
                     wallet = wallet.getWritableDSU();

@@ -27,17 +27,6 @@
             ]
         },
         {
-            "name": "Documentation Theme Install (globally)",
-            "src": "",
-            "description": "This hack is only used because the better-docs theme has a security vulnerability that would be assumed as a security risk for the repo, when its only used to generate documentation",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "sh -c \"theme=`npm ls -g better-docs | grep better-docs` && [ -z \\\"$theme\\\" ] && npm install -g better-docs taffydb || echo \\\"Documentation Theme already Installed\\\"\""
-                }
-            ]
-        },
-        {
             "name": "cardinal",
             "src": "https://github.com/PrivateSky/cardinal.git",
             "actions": [
@@ -64,8 +53,7 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false,
-                    "commit": "21243c530664355a5ed8537d0ae7d3e1c5ab0525"
+                    "collectLog": false
                 },
                 {
                     "type": "execute",
@@ -221,8 +209,7 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false,
-                    "commit": "793cde9bcf5568c16c3fe9d0160bb24c964c8ad8"
+                    "collectLog": false
                 },
                 {
                     "type": "execute",
@@ -237,8 +224,7 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false,
-                    "commit": "347d1aceaf1f06b09d0307f9b78049f313b783aa"
+                    "collectLog": false
                 },
                 {
                     "type": "execute",
@@ -253,8 +239,7 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false,
-                    "commit": "82ea912284cbd8b19a8a2a8ab40d03103b983c7a"
+                    "collectLog": false
                 },
                 {
                     "type": "execute",
@@ -310,7 +295,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "8c988fbc82413f3822f636825216d6140ab9b430"
+                    "commit": "8dca0843e30741e4137bebfcc73911e0e9ae6756"
                 },
                 {
                     "type": "execute",
@@ -643,6 +628,17 @@
     "install-mobile": [],
     "build-mobile": [],
     "docs": [
+        {
+            "name": "Documentation Theme Install (globally)",
+            "src": "",
+            "description": "This hack is only used because the better-docs theme has a security vulnerability that would be assumed as a security risk for the repo, when its only used to generate documentation",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "sh -c \"theme=`npm ls -g better-docs | grep better-docs` && [ -z \\\"$theme\\\" ] && npm install -g better-docs taffydb || echo \\\"Documentation Theme already Installed\\\"\""
+                }
+            ]
+        },
         {
             "name": "Generate Modules Documentation",
             "src": ".",
