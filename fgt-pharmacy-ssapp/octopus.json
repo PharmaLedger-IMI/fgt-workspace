@@ -1,6 +1,18 @@
 {
   "workDir": ".",
-  "dependencies": [],
+  "dependencies": [
+	  {
+		  "name": "Workbox-cli Install (globally)",
+		  "src": "",
+		  "description": "the dev dependencies break cardinal build",
+		  "actions": [
+			  {
+				  "type": "execute",
+				  "cmd": "sh -c \"theme=`npm ls -g workbox | grep workbox-cli` && [ -z \\\"$theme\\\" ] && npm install -g workbox-cli || echo \\\"Workbox cli already Installed\\\"\""
+			  }
+		  ]
+	  }
+  ],
   "prebuild": [
 	{
 	  "name": "PSK bundles",
