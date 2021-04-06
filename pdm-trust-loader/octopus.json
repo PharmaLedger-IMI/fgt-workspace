@@ -2,16 +2,6 @@
   "workDir": ".",
   "dependencies": [
     {
-      "name": "Workbox Install (globally)",
-      "src": "",
-      "actions": [
-        {
-          "type": "execute",
-          "cmd": "sh -c \"app=`npm ls -g workbox | grep workbox-cli` && [ -z \\\"$app\\\" ] && npm install -g workbox-cli || echo \\\"WorkBox already installed\\\"\""
-        }
-      ]
-    },
-    {
       "name": "PSK bundles",
       "src": "",
       "actions": [
@@ -130,6 +120,10 @@
         {
           "type": "execute",
           "cmd": "jsdoc -c jsdocs.json -t \"$(npm root -g)/better-docs\""
+        },
+        {
+          "type": "execute",
+          "cmd": "cd docs && ./../workdocs/bin/correct_windows_names.sh ."
         }
       ]
     }

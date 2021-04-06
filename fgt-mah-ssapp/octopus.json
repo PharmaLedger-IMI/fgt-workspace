@@ -94,6 +94,10 @@
 				{
 					"type": "execute",
 					"cmd": "jsdoc -c jsdocs.json -t \"$(npm root -g)/better-docs\""
+				},
+				{
+					"type": "execute",
+					"cmd": "cd docs && ./../workdocs/bin/correct_windows_names.sh ."
 				}
 			]
 		}

@@ -1,0 +1,374 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDM&FC's OpenDSU Toolkit Documentation services/DSUService.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">PDM&FC's OpenDSU Toolkit Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/epi-workspace/pdm-dsu-toolkit.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com"
+                        >
+                            Example Application - Finished Goods Traceability
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="commands%250AA%2520simple%2520variable%2520storemodule_.html">commands
+A simple variable store</a></li><li><a href="dt.module_Commands.html">Commands</a></li><li><a href="module-Commands.html">Commands</a></li><li><a href="module-constants.html">constants</a></li><li><a href="module-dt.html">dt</a></li><li><a href="module-keyssi.html">keyssi</a></li><li><a href="module-locale.html">locale</a></li><li><a href="module-managers.html">managers</a></li><li><a href="module-server.html">server</a></li><li><a href="module-services.html">services</a></li><li><a href="module-utils.html">utils</a></li><li><a href="toolkit.model.module_model.html">model</a></li><li><a href="toolkit.model.validations.module_validations.html">validations</a></li></ul><h3>Namespaces</h3><ul><li><a href="pdm-dsu-toolkit.html">pdm-dsu-toolkit</a></li><li><a href="pdm-dsu-toolkit.dt.html">dt</a></li><li><a href="pdm-dsu-toolkit.locale.html">locale</a></li><li><a href="pdm-dsu-toolkit.managers.html">managers</a></li><li><a href="pdm-dsu-toolkit.model.html">model</a></li><li><a href="pdm-dsu-toolkit.model.validations.html">validations</a></li><li><a href="pdm-dsu-toolkit.server.html">server</a></li><li><a href="pdm-dsu-toolkit.services.html">services</a></li><li><a href="pdm-dsu-toolkit.utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="dt.module_Commands-AddFileCommand.html">AddFileCommand</a></li><li><a href="dt.module_Commands-AddFolderCommand.html">AddFolderCommand</a></li><li><a href="dt.module_Commands.html#~Command">Command</a></li><li><a href="dt.module_Commands-CreateDSUCommand.html">CreateDSUCommand</a></li><li><a href="dt.module_Commands-CreateFileCommand.html">CreateFileCommand</a></li><li><a href="dt.module_Commands-DefineCommand.html">DefineCommand</a></li><li><a href="dt.module_Commands-DeleteCommand.html">DeleteCommand</a></li><li><a href="dt.module_Commands-DeriveCommand.html">DeriveCommand</a></li><li><a href="dt.module_Commands-EndWithCommand.html">EndWithCommand</a></li><li><a href="dt.module_Commands-GenKeyCommand.html">GenKeyCommand</a></li><li><a href="dt.module_Commands-GetIdentifierCommand.html">GetIdentifierCommand</a></li><li><a href="dt.module_Commands-MountCommand.html">MountCommand</a></li><li><a href="dt.module_Commands-ObjToArrayCommand.html">ObjToArrayCommand</a></li><li><a href="dt.module_Commands-ReadFileCommand.html">ReadFileCommand</a></li><li><a href="dt.module_Commands-WithCommand.html">WithCommand</a></li><li><a href="Manager.html">Manager</a></li><li><a href="Message.html">Message</a></li><li><a href="module-managers-BaseManager.html">BaseManager</a></li><li><a href="module-services-DSUService.html">DSUService</a></li></ul><h3>Interfaces</h3><ul><li><a href="toolkit.model.validations.module_validations-Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_availableCommands">_availableCommands</a></li><li><a href="global.html#_getByName">_getByName</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>services/DSUService.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module services
+ */
+
+/**
+ *
+ */
+const utils = require("./utils.js");
+
+const doPost = utils.getPostHandlerFor("dsu-wizard");
+
+if (utils.getEnv() === 'nodejs')
+    FormData = require('form-data');    // needed because nodejs does not have FormData. his makes sure we can use it in tests
+
+/**
+ * Class responsible for Authenticated DSU transactions between the client and the API Hub
+ * @class DSUService
+ */
+class DSUService {
+    constructor() {
+        let openDSU = require('opendsu');
+        let crypto = openDSU.loadApi("crypto");
+        let http = openDSU.loadApi("http");
+        this.keyssiSpace = openDSU.loadApi('keyssi');
+
+        // http.registerInterceptor((data, callback)=>{
+        //     let {url, headers} = data;
+        //     let scope = "";
+        //
+        //     if(typeof this.holderInfo != "undefined"){
+        //         crypto.createPresentationToken(this.holderInfo.ssi, scope, this.credential, (err, presentationToken)=>{
+        //             if(err){
+        //                 return callback(err);
+        //             }
+        //
+        //             headers["Authorization"] = presentationToken;
+        //             return callback(undefined, {url, headers});
+        //         });
+        //     }else {
+        //         console.log("Unexpected case");
+        //         return callback(undefined, {url, headers});
+        //     }
+        //
+        // });
+    }
+
+    // ensureHolderInfo(callback) {
+    //     function getJSON(pth, callback){
+    //         scriptUtils.fetch(pth).then((response) => {
+    //             return response.json();
+    //         }).then((json) => {
+    //             return callback(undefined, json)
+    //         }).catch(callback);
+    //     }
+    //
+    //     if (typeof this.holderInfo === "undefined" || typeof this.credential === "undefined") {
+    //         getJSON("/download/myKeys/holder.json", (err, holderInfo) => {
+    //             if (err) {
+    //                 return callback(Error("No holder info available!"));
+    //             }
+    //             this.holderInfo = holderInfo;
+    //
+    //             getJSON("/download/myKeys/credential.json", (err, result) => {
+    //                 if (err) {
+    //                     return callback(Error("No credentials available!"));
+    //                 }
+    //                 this.credential = result.credential;
+    //                 return callback(undefined, holderInfo);
+    //             });
+    //         });
+    //     } else {
+    //         callback(undefined, this.holderInfo);
+    //     }
+    // }
+
+    /**
+     * This callback is displayed as part of the DSUService class.
+     * @callback DSUService~callback
+     * @param {string|object|undefined} error
+     * @param {string|undefined} [keySSI]: not in human readable form
+     */
+
+    /**
+     * This function is called by DSUService class to initialize/update DSU Structure.
+     * @callback DSUService~modifier
+     * @param {DSUBuilder} dsuBuilder
+     * @param {DSUService~callback} callback
+     */
+
+    /**
+     * Creates a DSU and initializes it via the provided initializer
+     * @param {string} domain: the domain where the DSU is meant to be stored
+     * @param {string|object} keySSIOrEndpoint: the keySSI string or endpoint object {endpoint: 'gtin', data: 'data'}
+     * @param {DSUService~modifier} initializer: a method with arguments (dsuBuilder, callback)
+     * &lt;ul>&lt;li>the dsuBuilder provides the api to all operations on the DSU&lt;/li>&lt;/ul>
+     * @param {DSUService~callback} callback: the callback function
+     */
+    create(domain, keySSIOrEndpoint, initializer, callback){
+        let self = this;
+        let simpleKeySSI = typeof keySSIOrEndpoint === 'string';
+
+        self.getTransactionId(domain, (err, transactionId) => {
+            if (err)
+                return callback(err);
+
+            let afterKeyCb = function(err){
+                if (err)
+                    return callback(err);
+
+                initializer(self.bindToTransaction(domain, transactionId), err => {
+                    if (err)
+                        return callback(err);
+                    self.buildDossier(transactionId, domain, (err, keySSI) => {
+                        if (err)
+                            return callback(err);
+                        callback(undefined, self.keyssiSpace.parse(keySSI));
+                    });
+                });
+            };
+
+            if (simpleKeySSI){
+                self.setKeySSI(transactionId, domain, keySSIOrEndpoint, afterKeyCb);
+            } else {
+                self.setCustomSSI(transactionId, domain, keySSIOrEndpoint.endpoint, keySSIOrEndpoint.data, afterKeyCb);
+            }
+        });
+    }
+
+    /**
+     * Creates a DSU and initializes it via the provided initializer
+     * @param {string} domain: the domain where the DSU is meant to be stored
+     * @param {keySSI} keySSI:
+     * @param {DSUService~modifier} modifier: a method with arguments (dsuBuilder, callback)
+     * &lt;ul>&lt;li>the dsuBuilder provides the api to all operations on the DSU&lt;/li>&lt;/ul>
+     * @param {DSUService~callback} callback: the callback function
+     */
+    update(domain, keySSI, modifier, callback){
+        let self = this;
+        self.getTransactionId(domain, (err, transactionId) => {
+           if (err)
+               return callback(err);
+           self.setKeySSI(transactionId, domain, keySSI, err =>{
+               if (err)
+                   return callback(err);
+               modifier(self.bindToTransaction(domain, transactionId), (err, keySSI) => {
+                    if (err)
+                        return callback(err);
+                    callback(undefined, keySSI);
+               });
+           });
+        });
+    }
+
+    /**
+     * Binds the DSU&lt;service to the transaction and outputs a DSUBuilder
+     * @param {string} domain
+     * @param {string} transactionId
+     * @returns {DSUBuilder} the dsu builder
+     */
+    bindToTransaction(domain, transactionId){
+        let self = this;
+        /**
+         * Wrapper class around DSUService with binded transactionId and domain
+         */
+        return new class DSUBuilder {
+            /**
+             * @see {@link DSUService#addFileDataToDossier} with already filled transactionId and domain
+             * @module services
+             */
+            addFileDataToDossier(fileName, fileData, callback){
+                self.addFileDataToDossier(transactionId, domain, fileName, fileData, callback);
+            };
+            /**
+             * @see {@link DSUService#mount} with already filled transactionId and domain
+             * @module services
+             */
+            mount(path, seed, callback){
+                self.mount(transactionId, domain, path, seed, callback);
+            };
+        }
+    }
+
+    getTransactionId(domain, callback) {
+
+        let obtainTransaction = ()=>{
+            doPost(`/${domain}/begin`, '',(err, transactionId) => {
+                if (err)
+                    return callback(err);
+
+                return callback(undefined, transactionId);
+            });
+        }
+
+        // this.ensureHolderInfo( (err)=>{
+        //     if(err){
+        //         return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Holder missconfiguration in the wallet", err));
+        //     }
+            obtainTransaction();
+        // });
+    }
+
+    setKeySSI(transactionId, domain, keyssi, callback) {
+        const url = `/${domain}/setKeySSI/${transactionId}`;
+        doPost(url, keyssi, callback);
+    }
+
+    setCustomSSI(transactionId, domain, endpoint, data, callback){
+        const url = `/${domain}/${endpoint}/${transactionId}`;
+        doPost(url, JSON.stringify(data), callback);
+    }
+
+    addFileDataToDossier(transactionId, domain, fileName, fileData, callback) {
+        const url = `/${domain}/addFile/${transactionId}`;
+
+        if (fileData instanceof ArrayBuffer) {
+            fileData = new Blob([new Uint8Array(fileData)], {type: "application/octet-stream"});
+        }
+        let body = new FormData();
+        let inputType = "file";
+        body.append(inputType, fileData);
+
+        doPost(url, body, {headers: {"x-dossier-path": fileName}}, callback);
+    }
+
+    mount(transactionId, domain, path, seed, callback) {
+        const url = `/${domain}/mount/${transactionId}`;
+        doPost(url, "", {
+            headers: {
+                'x-mount-path': path,
+                'x-mounted-dossier-seed': seed
+            }
+        }, callback);
+    }
+
+    buildDossier(transactionId, domain, callback) {
+        const url = `/${domain}/build/${transactionId}`;
+        doPost(url, "", callback);
+    }
+}
+
+module.exports = DSUService;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

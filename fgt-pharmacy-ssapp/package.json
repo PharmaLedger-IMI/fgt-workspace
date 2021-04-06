@@ -8,7 +8,7 @@
     "build": "node ./node_modules/octopus/scripts/buildDossier ./bin/build.file --domain=traceability",
     "update": "npm install",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docs": "node ./node_modules/octopus/scripts/run docs"
+    "docs": "node ./node_modules/octopus/scripts/run docs devmode"
   },
   "repository": {
     "type": "git",

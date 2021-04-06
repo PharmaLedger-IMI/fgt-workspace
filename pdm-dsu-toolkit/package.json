@@ -6,7 +6,7 @@
   "scripts": {
     "prebuild": "node ./node_modules/octopus/scripts/run prebuild devmode",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docs": "node ./node_modules/octopus/scripts/run docs"
+    "docs": "node ./node_modules/octopus/scripts/run docs devmode"
   },
   "repository": {
     "type": "git",
