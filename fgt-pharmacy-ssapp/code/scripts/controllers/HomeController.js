@@ -15,9 +15,14 @@ export default class ParticipantController extends LocalizedController {
         }, "participant");
         this.participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage);
         console.log("Home controller initialized");
-        this.on('ionTabsDidChange', (evt) => {
-            console.log(evt);
-        })
+
+        // if a tab is selected, send a refresh event to the respective controller.
+        this.on('ionTabsWillChange', (evt) => {
+            const el = this.element.querySelector(`ion-tab[tab="${evt.detail.tab}"] webc-container`);
+            if (el)
+                el.dispatchEvent(new Event(`refresh`));
+        }, {capture: true});
+
         this._testParticipant();
     }
 
