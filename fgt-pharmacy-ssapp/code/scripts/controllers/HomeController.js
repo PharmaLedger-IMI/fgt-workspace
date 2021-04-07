@@ -15,6 +15,9 @@ export default class ParticipantController extends LocalizedController {
         }, "participant");
         this.participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage);
         console.log("Home controller initialized");
+        this.on('ionTabsDidChange', (evt) => {
+            console.log(evt);
+        })
         this._testParticipant();
     }
 

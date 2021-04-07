@@ -3,7 +3,7 @@ define $ENV$ fromvar -$Environment-
 
 with cmd createdsu seed traceability specificstring
     define $SEED$ fromcmd getidentifier true
-    createfile identity.json $ID$
+    createfile info $ID$
 endwith
 
 createfile environment.json $ENV$
