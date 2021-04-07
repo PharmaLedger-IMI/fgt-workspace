@@ -1,0 +1,29 @@
+define $ID$ fromvar -$Identity-
+define $ENV$ fromvar -$Environment-
+
+with cmd createdsu seed traceability specificstring
+    define $SEED$ fromcmd getidentifier true
+    createfile info $ID$
+endwith
+
+createfile environment.json $ENV$
+mount $SEED$ /id
+
+with var $SEED$
+    define $READ$ fromcmd derive true
+endwith
+
+define $SECRETS$ fromcmd objtoarray $ID$
+
+with cmd createdsu const traceability $SECRETS$
+    mount $READ$ /id
+    define $CONST$ fromcmd getidentifier true
+endwith
+
+mount $CONST$ /participant
+
+with cmd createdsu seed traceability fordb
+    define $DB$ fromcmd getidentifier true
+endwith
+
+mount $DB$ /db

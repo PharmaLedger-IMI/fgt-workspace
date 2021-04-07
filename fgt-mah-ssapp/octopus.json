@@ -1,15 +1,23 @@
 {
   "workDir": ".",
-  "dependencies": [],
+  "dependencies": [
+	  {
+		  "name": "Workbox-cli Install (globally)",
+		  "src": "",
+		  "description": "the dev dependencies break cardinal build",
+		  "actions": [
+			  {
+				  "type": "execute",
+				  "cmd": "npm install -g workbox-cli@5.1.4"
+			  }
+		  ]
+	  }
+  ],
   "prebuild": [
 	{
 	  "name": "PSK bundles",
 	  "src": "",
 	  "actions": [
-		{
-		  "type": "execute",
-		  "cmd": "node ../privatesky/psknode/bin/scripts/pskbuild.js --projectMap=./build/build.json  --prod=true --output=./code/constitution"
-		},
 		{
 		  "type": "copy",
 		  "src": "../privatesky/psknode/bundles/pskruntime.js",
@@ -64,6 +72,52 @@
 				  "type": "copy",
 				  "src": "../fgt-dsu-wizard/build/bundles/wizard.js",
 				  "target": "code/scripts/bundles/wizard.js",
+				  "options": {
+					  "overwrite": true
+				  }
+			  }
+		  ]
+	  },
+	  {
+		  "name": "Copy Ionic Dependencies",
+		  "src": "",
+		  "actions": [
+			  {
+				  "type": "copy",
+				  "src": "./node_modules/@ionic/core/dist/ionic",
+				  "target": "./code/assets/ionic-core",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "./node_modules/@ionic/core/css",
+				  "target": "./code/assets/ionic-core/css",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "./node_modules/ionicons/dist/ionicons",
+				  "target": "./code/assets/ionic-core/ionicons",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "./node_modules/@ionic/pwa-elements/dist/ionicpwaelements",
+				  "target": "./code/assets/ionic-core/pwa-elements",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "../pdm-web-components/dist/pdm-web-components",
+				  "target": "./code/assets/pdm-web-components",
 				  "options": {
 					  "overwrite": true
 				  }
