@@ -77,6 +77,52 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Copy Ionic Dependencies",
+			"src": "",
+			"actions": [
+				{
+					"type": "copy",
+					"src": "./node_modules/@ionic/core/dist/ionic",
+					"target": "./code/assets/ionic-core",
+					"options": {
+						"overwrite": true
+					}
+				},
+				{
+					"type": "copy",
+					"src": "./node_modules/@ionic/core/css",
+					"target": "./code/assets/ionic-core/css",
+					"options": {
+						"overwrite": true
+					}
+				},
+				{
+					"type": "copy",
+					"src": "./node_modules/ionicons/dist/ionicons",
+					"target": "./code/assets/ionic-core/ionicons",
+					"options": {
+						"overwrite": true
+					}
+				},
+				{
+					"type": "copy",
+					"src": "./node_modules/@ionic/pwa-elements/dist/ionicpwaelements",
+					"target": "./code/assets/ionic-core/pwa-elements",
+					"options": {
+						"overwrite": true
+					}
+				},
+				{
+					"type": "copy",
+					"src": "../pdm-web-components/dist/pdm-web-components",
+					"target": "./code/assets/pdm-web-components",
+					"options": {
+						"overwrite": true
+					}
+				}
+			]
 		}
 	],
 	"docs": [
