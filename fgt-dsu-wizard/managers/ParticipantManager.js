@@ -34,9 +34,10 @@ class ParticipantManager extends BaseManager{
      * @param {string} participantConstSSI
      * @param {function(err, string)}callback
      * @protected
+     * @override
      */
     _getDIDString(identity, participantConstSSI, callback){
-        callback(undefined, identity.tin + '');
+        callback(undefined, identity.id + '');
     }
 }
 

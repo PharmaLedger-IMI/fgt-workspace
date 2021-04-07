@@ -64,13 +64,13 @@ class StockManager extends Manager{
     get(callback){
         if (this.stock)
             return callback(undefined, this.stock);
-        this.storage.getObject(STOCK_PATH, (err, stock) => {
-           if (err)
-               return callback(err);
-           this.stock = stock;
-           console.log("Retrieved stock");
-           callback(undefined, this.toModel(stock));
-        });
+        // this.storage.getObject(STOCK_PATH, (err, stock) => {
+        //    if (err)
+        //        return callback(err);
+        //    this.stock = stock;
+        //    console.log("Retrieved stock");
+        //    callback(undefined, this.toModel(stock));
+        // });
     }
 
     /**
