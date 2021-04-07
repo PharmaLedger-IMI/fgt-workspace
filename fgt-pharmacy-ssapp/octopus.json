@@ -1,88 +1,84 @@
 {
-  "workDir": ".",
-  "dependencies": [
-	  {
-		  "name": "Workbox-cli Install (globally)",
-		  "src": "",
-		  "description": "the dev dependencies break cardinal build",
-		  "actions": [
-			  {
-				  "type": "execute",
-				  "cmd": "npm install -g workbox-cli@5.1.4"
-			  }
-		  ]
-	  }
-  ],
-  "prebuild": [
-	{
-	  "name": "PSK bundles",
-	  "src": "",
-	  "actions": [
+	"workDir": ".",
+	"dependencies": [
 		{
-		  "type": "execute",
-		  "cmd": "node ../privatesky/psknode/bin/scripts/pskbuild.js --projectMap=./build/build.json  --prod=true --output=./code/constitution"
+			"name": "Workbox-cli Install (globally)",
+			"src": "",
+			"description": "the dev dependencies break cardinal build",
+			"actions": [
+				{
+					"type": "execute",
+					"cmd": "npm install -g workbox-cli@5.1.4"
+				}
+			]
+		}
+	],
+	"prebuild": [
+		{
+			"name": "PSK bundles",
+			"src": "",
+			"actions": [
+				{
+					"type": "copy",
+					"src": "../privatesky/psknode/bundles/pskruntime.js",
+					"target": "code/constitution/pskruntime.js",
+					"options": {
+						"overwrite": true
+					}
+				},
+				{
+					"type": "copy",
+					"src": "../privatesky/psknode/bundles/webshims.js",
+					"target": "code/constitution/webshims.js",
+					"options": {
+						"overwrite": true
+					}
+				},
+				{
+					"type": "copy",
+					"src": "../privatesky/psknode/bundles/pskruntime.js",
+					"target": "code/scripts/bundles/pskruntime.js",
+					"options": {
+						"overwrite": true
+					}
+				},
+				{
+					"type": "copy",
+					"src": "../privatesky/psknode/bundles/webshims.js",
+					"target": "code/scripts/bundles/webshims.js",
+					"options": {
+						"overwrite": true
+					}
+				},
+				{
+					"type": "copy",
+					"src": "../privatesky/psknode/bundles/iframeBoot.js",
+					"target": "code/scripts/bundles/iframeBoot.js",
+					"options": {
+						"overwrite": true
+					}
+				},
+				{
+					"type": "remove",
+					"target": "./builds"
+				}
+			]
 		},
 		{
-		  "type": "copy",
-		  "src": "../privatesky/psknode/bundles/pskruntime.js",
-		  "target": "code/constitution/pskruntime.js",
-		  "options": {
-			"overwrite": true
-		  }
-		},
-		{
-		  "type": "copy",
-		  "src": "../privatesky/psknode/bundles/webshims.js",
-		  "target": "code/constitution/webshims.js",
-		  "options": {
-			"overwrite": true
-		  }
-		},
-		{
-		  "type": "copy",
-		  "src": "../privatesky/psknode/bundles/pskruntime.js",
-		  "target": "code/scripts/bundles/pskruntime.js",
-		  "options": {
-			"overwrite": true
-		  }
-		},
-		{
-		  "type": "copy",
-		  "src": "../privatesky/psknode/bundles/webshims.js",
-		  "target": "code/scripts/bundles/webshims.js",
-		  "options": {
-			"overwrite": true
-		  }
-		},
-		  {
-			  "type": "copy",
-			  "src": "../privatesky/psknode/bundles/iframeBoot.js",
-			  "target": "code/scripts/bundles/iframeBoot.js",
-			  "options": {
-				  "overwrite": true
-			  }
-		  },
-		  {
-			  "type": "remove",
-			  "target": "./builds"
-		  }
-	  ]
-	},
-	  {
-		  "name": "Copy fgt-dsu-wizard-bundle",
-		  "src": "",
-		  "actions": [
-			  {
-				  "type": "copy",
-				  "src": "../fgt-dsu-wizard/build/bundles/wizard.js",
-				  "target": "code/scripts/bundles/wizard.js",
-				  "options": {
-					  "overwrite": true
-				  }
-			  }
-		  ]
-	  }
-  ],
+			"name": "Copy fgt-dsu-wizard-bundle",
+			"src": "",
+			"actions": [
+				{
+					"type": "copy",
+					"src": "../fgt-dsu-wizard/build/bundles/wizard.js",
+					"target": "code/scripts/bundles/wizard.js",
+					"options": {
+						"overwrite": true
+					}
+				}
+			]
+		}
+	],
 	"docs": [
 		{
 			"name": "Documentation Theme Install (globally)",
