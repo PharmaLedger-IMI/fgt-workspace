@@ -1,0 +1,7 @@
+{
+  "name": "fgt-pharmacy-ssapp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}

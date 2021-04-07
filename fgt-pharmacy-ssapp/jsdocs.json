@@ -12,7 +12,7 @@
         "exclude": [
             "./code/scripts/bundles",
             "./code/constitution",
-            "./code/resources",
+            "./code/assets/ionic-core",
             "./code/scripts/capacitor.js"
         ],
         "includePattern": ".+\\.js(doc|x)?$",
@@ -20,9 +20,61 @@
     },
     "tags": {
         "allowUnknownTags": true,
-        "dictionaries": ["jsdoc","closure"]
+        "dictionaries": [
+            "jsdoc",
+            "closure"
+        ]
     },
     "templates": {
+        "ink-docstrap": {
+            "systemName": "Pharmaledger's Finished Goods Traceability",
+            "footer": "PDM&FC",
+            "copyright": "MIT Licence",
+            "includeDate": "true",
+            "navType": "inline",
+            "theme": "yeti",
+            "linenums": "true",
+            "collapseSymbols": "false",
+            "inverseNav": "true",
+            "outputSourceFiles": "true",
+            "outputSourcePath": "false",
+            "dateFormat": "dddd, MMMM Do YYYY, h:mm:ss a",
+            "syntaxTheme": "default",
+            "sort": "true",
+            "search": "true"
+        },
+        "docdash": {
+            "static": true,
+            "sort": true,
+            "sectionOrder": [
+                "Namespaces",
+                "Classes",
+                "Modules",
+                "Externals",
+                "Events",
+                "Mixins",
+                "Tutorials",
+                "Interfaces"
+            ],
+            "search": true,
+            "collapse": true,
+            "wrap": false,
+            "typedefs": true,
+            "navLevel": -1,
+            "private": true,
+            "removeQuotes": "none",
+            "scripts": [],
+            "menu": {
+                "Project Website": {
+                    "href": "https://fgt.pharmaledger.pdmfc.com",
+                    "target": "_blank",
+                    "class": "menu-item",
+                    "id": "website_link"
+                }
+            },
+            "nameInOutputPath": true,
+            "versionInOutputPath": true
+        },
         "better-docs": {
             "name": "Pharmaledger's Finished Goods Traceability Pharmacy SSApp",
             "title": "Pharmaledger's Finished Goods Traceability Pharmacy SSApp",
@@ -30,7 +82,7 @@
             "navLinks": [
                 {
                     "label": "Github",
-                    "href": "https://github.com/PharmaLedger-IMI/fgt-workspace/fgt-pharmacy-ssapp.git"
+                    "href": "https://github.com/PharmaLedger-IMI/fgt-workspace.git"
                 },
                 {
                     "label": "Application",
