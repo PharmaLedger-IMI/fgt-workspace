@@ -20,12 +20,12 @@ export default class StockController extends LocalizedController{
             return typeof this.model.stock !== 'undefined' && this.model.stock.length > 0;
         }, 'stock');
 
-        this.on('ionTabsDidChange', (evt) => {
-            console.log(evt);
+        this.on('refresh', (evt) => {
+            console.log();
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
             this.getStockAsync();
-        })
-
-        this.getStockAsync();
+        }, {capture: true});
     }
 
     /**
