@@ -113,6 +113,14 @@
 				  "options": {
 					  "overwrite": true
 				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "../pdm-web-components/dist/pdm-web-components",
+				  "target": "./code/assets/pdm-web-components",
+				  "options": {
+					  "overwrite": true
+				  }
 			  }
 		  ]
 	  }

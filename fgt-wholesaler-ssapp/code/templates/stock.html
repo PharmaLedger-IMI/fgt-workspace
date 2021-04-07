@@ -1,49 +1,36 @@
 <webc-container controller="StockController" enable-translations="true">
     <div data-if="@hasStock">
         <div slot="true">
-            <ion-grid>
-                <ion-row>
+            <ion-grid class="ion-padding">
+                <ion-row class="ion-align-self-center ion-text-uppercase">
                     <ion-col size="4">
-                        <ion-item>
-                            <ion-label>{{ @gtinHeader }}</ion-label>
-                        </ion-item>
+                        <ion-label>{{ @gtinHeader }}</ion-label>
                     </ion-col>
                     <ion-col size="2">
-                        <ion-item>
-                            <ion-label>{{ @nameHeader }}</ion-label>
-                        </ion-item>
+                        <ion-label>{{ @nameHeader }}</ion-label>
                     </ion-col>
                     <ion-col size="4">
-                        <ion-item>
-                            <ion-label>{{ @batchesHeader }}</ion-label>
-                        </ion-item>
-                        <ion-col size="4">
-                            <ion-item>
-                                <ion-label>{{ @quantityHeader }}</ion-label>
-                            </ion-item>
-                        </ion-col>
+                        <ion-label>{{ @batchesHeader }}</ion-label>
+                    </ion-col>
+                    <ion-col size="2">
+                        <ion-label>{{ @quantityHeader }}</ion-label>
                     </ion-col>
                 </ion-row>
-                <ion-row data-for="@stock">
+                <ion-row class="ion-align-self-center" data-for="@stock">
                     <ion-col size="4">
                         <ion-item>
+
                             <ion-label>{{ @gtin }}</ion-label>
                         </ion-item>
                     </ion-col>
                     <ion-col size="2">
-                        <ion-item>
-                            <ion-label>{{ @name }}</ion-label>
-                        </ion-item>
+                        <ion-label>{{ @name }}</ion-label>
                     </ion-col>
                     <ion-col size="4">
-                        <ion-item>
-                            <ion-label>{{ @batches }}</ion-label>
-                        </ion-item>
+                        <ion-label>{{ @batches }}</ion-label>
                     </ion-col>
                     <ion-col size="2">
-                        <ion-item>
-                            <ion-label>{{ @quantity }}</ion-label>
-                        </ion-item>
+                        <ion-label>{{ @quantity }}</ion-label>
                     </ion-col>
                 </ion-row>
             </ion-grid>

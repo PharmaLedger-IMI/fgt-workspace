@@ -60,6 +60,20 @@
             ]
         },
         {
+            "name": "pdm-web-components",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-web-components && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-web-components && npm run build"
+                }
+            ]
+        },
+        {
             "name": "pharmaledger-wallet",
             "src": "http://github.com/privatesky/menu-wallet-prototype.git",
             "actions": [
