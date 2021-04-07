@@ -47,33 +47,12 @@ To run the application launch your browser (preferably Chrome) in Incognito mode
 
 You will be present with a menu from where you can choose the SSApp you with to launch
 
-# Modules (Should Be Repos!)
-
-[PDM-DSU-Toolkit](pdm-dsu-toolkit/index.html)
-
-[FGT DSU Wizard](fgt-dsu-wizard/index.html)
-
-[MAH Enterprise Wallet](fgt-mah-ssapp/index.html)
-
-[Wholesaler Wallet](fgt-wholesaler-ssapp/index.html)
-
-[Pharmacy Wallet](fgt-mah-ssapp/index.html)
-
-### Architecture
-
-### DSU Types
-
-[DSU Constitution](resources/drawings/finishedGoodsTraceabilityDSUTypes-Current.png)
-
-[Current SSApp Architecture](resources/drawings/finishedGoodsTraceabilityDSUTypes-BaseSSAppArchitecture.png)
-
-[Proposal for SSApp Architecture - Ex: Wholesaler SSApp](resources/drawings/finishedGoodsTraceabilityDSUTypes-WholesalerSSAppArchitecture.png)
 
 ### Installation
 
 In order to use the workspace, we need to follow a list of steps presented below.
 
-[![Node version](https://img.shields.io/node/v/[fgt-workspace].svg?style=flat)](http://nodejs.org/download/)
+* Node v12.
 
 #### Step 1: Clone the workspace
 
