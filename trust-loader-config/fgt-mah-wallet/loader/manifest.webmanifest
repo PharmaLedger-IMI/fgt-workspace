@@ -1,7 +1,7 @@
 {
-  "short_name": "FGT for MAH",
-  "name": "Pharmaledger's Finished Goods Traceability App for Marketing Authorization Holders",
-  "description": "Dossiers' User Interface",
+  "short_name": "FGT MAH App",
+  "name": "Pharmaledger's Finished Goods Traceability MAH SSApp",
+  "description": "Provides the interface with Pharmaledger's Finished Goods Traceability Ecosystem, as a Marketing Authorization Holder",
   "theme_color": "rgb(0,52,91)",
   "background_color": "rgb(0,52,91)",
   "display": "standalone",

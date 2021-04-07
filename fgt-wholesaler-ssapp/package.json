@@ -10,10 +10,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "node ./node_modules/octopus/scripts/run docs devmode"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/PharmaLedger-IMI/fgt-workspace/fgt-wholesaler-ssapp.git"
-  },
   "engines": {
     "node": "~12",
     "npm": "~6"

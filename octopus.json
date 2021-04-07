@@ -128,26 +128,7 @@
             ]
         },
         {
-            "name": "apihub-root/fgt-mah-wallet/loader",
-            "src": "https://github.com/PrivateSky/trust-loader.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npm run build"
-                }
-            ]
-        },
-        {
-            "name": "Build and deploy PDM Trust Loader to Wholesaler and Pharmacy",
+            "name": "Build and deploy PDM Trust Loader to Wholesaler and Pharmacy & mah",
             "src": ".",
             "actions": [
                 {
@@ -174,6 +155,18 @@
                     "type": "copy",
                     "src": "./pdm-trust-loader/src",
                     "target": "./apihub-root/fgt-pharmacy-wallet/loader",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "remove",
+                    "target": "./apihub-root/fgt-mah-wallet/loader"
+                },
+                {
+                    "type": "copy",
+                    "src": "./pdm-trust-loader/src",
+                    "target": "./apihub-root/fgt-mah-wallet/loader",
                     "options": {
                         "overwrite": true
                     }
@@ -377,7 +370,7 @@
             ]
         },
         {
-            "name": "Build and deploy PDM Trust Loader to WHolesaler & Pharmacy",
+            "name": "Build and deploy PDM Trust Loader to WHolesaler & Pharmacy & mah",
             "src": ".",
             "actions": [
                 {
@@ -404,6 +397,18 @@
                     "type": "copy",
                     "src": "./pdm-trust-loader/src",
                     "target": "./apihub-root/fgt-pharmacy-wallet/loader",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "remove",
+                    "target": "./apihub-root/fgt-mah-wallet/loader"
+                },
+                {
+                    "type": "copy",
+                    "src": "./pdm-trust-loader/src",
+                    "target": "./apihub-root/fgt-mah-wallet/loader",
                     "options": {
                         "overwrite": true
                     }
@@ -440,14 +445,6 @@
                     "type": "copy",
                     "src": "./fgt-mah-ssapp/seed",
                     "target": "./apihub-root/fgt-mah-wallet/wallet-patch/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "./fgt-mah-ssapp/seed",
-                    "target": "./apihub-root/fgt-mah-wallet/apps-patch/fgt-mah-ssapp/seed",
                     "options": {
                         "overwrite": true
                     }
@@ -520,7 +517,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npm install"
+                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npx workbox generateSW"
                 },
                 {
                     "type": "execute",
