@@ -21,7 +21,6 @@ const BaseManager = require('../../pdm-dsu-toolkit/managers/BaseManager');
  * Should eventually integrate with the WP3 decisions
  *
  * @param {DSUStorage} dsuStorage the controllers dsu storage
- * @param {string} domain the anchoring domain
  */
 class ParticipantManager extends BaseManager{
     constructor(dsuStorage) {

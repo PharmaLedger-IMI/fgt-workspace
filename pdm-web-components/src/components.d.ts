@@ -12,6 +12,7 @@ export namespace Components {
           * description: `This option allows to print the input data below the generated barcode.`, isMandatory: false, propertyType: `boolean`
          */
         "includeText": boolean;
+        "scale"?: any;
         /**
           * description: `The size of the barcode in mm. Default is set to 32 mm.`, isMandatory: false, propertyType: `integer`
          */
@@ -55,6 +56,7 @@ declare namespace LocalJSX {
           * description: `This option allows to print the input data below the generated barcode.`, isMandatory: false, propertyType: `boolean`
          */
         "includeText"?: boolean;
+        "scale"?: any;
         /**
           * description: `The size of the barcode in mm. Default is set to 32 mm.`, isMandatory: false, propertyType: `integer`
          */

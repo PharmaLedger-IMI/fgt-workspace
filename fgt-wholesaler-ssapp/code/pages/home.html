@@ -1,39 +1,32 @@
 <webc-container controller="HomeController" enable-translations="true">
     <ion-app>
-        <div data-if="@identified">
-            <div slot="true">
-                <ion-menu side="start" content-id="main-content">
-                    <ion-header>
-                        <ion-toolbar translucent>
-                            <ion-img class="ion-align-self-center menu-logo" src="../assets/images/logo.svg"></ion-img>
-                        </ion-toolbar>
-                    </ion-header>
-                    <ion-content>
-                        <ion-list>
-                            <ion-item>
-                                <ion-icon name="analytics-outline" slot="start"></ion-icon>
-                                <ion-label>{{ @menu.dashboard }}</ion-label>
-                            </ion-item>
-                            <ion-item>
-                                <ion-icon name="reader-outline" slot="start"></ion-icon>
-                                <ion-label>{{ @menu.orders }}</ion-label>
-                            </ion-item>
-                            <ion-item>
-                                <ion-icon name="map-outline" slot="start"></ion-icon>
-                                <ion-label>{{ @menu.dashboard }}</ion-label>
-                            </ion-item>
-                            <ion-item>
-                                <ion-icon name="stats-chart-outline" slot="start"></ion-icon>
-                                <ion-label>{{ @menu.stock }}</ion-label>
-                            </ion-item>
-                        </ion-list>
-                    </ion-content>
-
-                </ion-menu>
-            </div>
-            <div slot="false">
-            </div>
-        </div>
+        <ion-menu side="start" data-if="@identified" content-id="main-content">
+            <ion-header>
+                <ion-toolbar translucent>
+                    <ion-img align="center" class="ion-align-self-center menu-logo" src="../assets/images/logo.svg"></ion-img>
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                <ion-list>
+                    <ion-item>
+                        <ion-icon name="analytics-outline" slot="start"></ion-icon>
+                        <ion-label>{{ @menu.dashboard }}</ion-label>
+                    </ion-item>
+                    <ion-item>
+                        <ion-icon name="reader-outline" slot="start"></ion-icon>
+                        <ion-label>{{ @menu.orders }}</ion-label>
+                    </ion-item>
+                    <ion-item>
+                        <ion-icon name="map-outline" slot="start"></ion-icon>
+                        <ion-label>{{ @menu.dashboard }}</ion-label>
+                    </ion-item>
+                    <ion-item>
+                        <ion-icon name="stats-chart-outline" slot="start"></ion-icon>
+                        <ion-label>{{ @menu.stock }}</ion-label>
+                    </ion-item>
+                </ion-list>
+            </ion-content>
+        </ion-menu>
 
         <ion-tabs id="main-content">
             <ion-header>
@@ -41,13 +34,13 @@
                     <ion-buttons slot="start">
                         <ion-menu-button auto-hide="true"></ion-menu-button>
                     </ion-buttons>
-                    <ion-img align="center" class="main-logo" slot="start" src="../assets/images/logo.svg"></ion-img>
+                    <ion-img class="main-logo" slot="start" src="../assets/images/logo.svg"></ion-img>
+                    <ion-label>{{ @title }}</ion-label>
                 </ion-toolbar>
             </ion-header>
 
-            <ion-content class="main-content">
+            <ion-content class="main-content" scroll-events="true" force-overscroll="true">
                 <div class="with-gradient"></div>
-
                 <ion-tab tab="tab-dashboard">
                     <webc-template template="dashboard" disable-container></webc-template>
                 </ion-tab>

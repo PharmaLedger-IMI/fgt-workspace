@@ -39,18 +39,21 @@ class StockManager extends Manager{
     }
 
     _genDummyStock(){
-        let gtins = [1, 435, 1241, 435346]
+        let gtins = [178567958612, 178567959872, 1785667958612, 178547698612]
         let batches = ["TS134", "FD214", "UY2345"];
 
         let stock = {};
         gtins.forEach((gtin, i) => {
-            let bat = {}
-            batches.forEach(batch => {
-                bat[batch] = {
-                    expiry: "cenas",
-                    quantity: 300
-                }
-            });
+            let bat = [];
+            batches.forEach(batch =>{
+                let b = new Batch({
+                    batchNumber: batch,
+                    expiry: 'cenas',
+                    serialNumbers: [123546789, 987654321, 987123564]
+                });
+                b.quantity = 300;
+                bat.push(b);
+            })
             stock[gtin] = {
                 name: "Product" + i,
                 stock: bat
@@ -103,8 +106,7 @@ class StockManager extends Manager{
             return {
                 gtin: key,
                 name: value.name,
-                batches: Object.keys(value.stock).join(', '),
-                quantity:Object.values(value.stock).reduce((total, val) => total + val.quantity, 0)
+                batches: value.stock
             }
         });
     }
