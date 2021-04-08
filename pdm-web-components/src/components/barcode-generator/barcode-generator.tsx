@@ -48,6 +48,8 @@ export class BarcodeGenerator {
   drawQRCodeCanvas(){
     if(this.isLoaded && this.data.length>0){
       let canvas = this.element.querySelector("canvas");
+      if (!canvas)
+        canvas = this.element.shadowRoot.querySelector('canvas');
       canvas.innerHTML="";
 
       let tryToGenerateBarcode = () => {
@@ -73,6 +75,7 @@ export class BarcodeGenerator {
             //@ts-ignore
             bwipjs.toCanvas(canvas,options, function (err) {
               if (err) {
+                // @ts-ignore
                 console.log(err);
               }
             });
@@ -81,6 +84,7 @@ export class BarcodeGenerator {
           }
 
         } else {
+          // @ts-ignore
           setTimeout(tryToGenerateBarcode, 100);
         }
       }

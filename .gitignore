@@ -36,6 +36,8 @@ pdm-trust-loader/docs
 fgt-mah-ssapp/code/constitution
 fgt-mah-ssapp/docs
 fgt-mah-ssapp/code/scripts/bundles
+fgt-mah-ssapp/code/assets/ionic-core
+fgt-mah-ssapp/code/assets/pdm-web-components
 fgt-mah-ssapp/seed
 
 /webcardinal
