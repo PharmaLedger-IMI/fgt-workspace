@@ -35,12 +35,28 @@ export default class IssuedOrdersController extends LocalizedController {
 
     _showOrderModal() {
         let self = this;
+        // this.showIonicModal("a-generic-configurable-modal", false, {page: "registration"});
+        self.createWebcModal({
+            template: "issuedOrderModal",
+            controller: "IssuedOrderController",
+            disableBackdropClosing: true,
+            disableFooter: true,
+            disableHeader: true,
+            disableExpanding: true,
+            disableClosing: true,
+            disableCancelButton: true,
+            expanded: false,
+            centered: true
+        });
+        /*
         self.participantManager.newBlankOrder(self.orderManager, (err, order) => {
             if (err)
                 return this.showError(err);
             self.showModal('issued-order-modal', self.orderManager.toModel(order), true);
         });
+        */
     }
+
 
     /**
      *

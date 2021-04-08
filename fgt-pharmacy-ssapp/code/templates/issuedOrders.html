@@ -1,4 +1,14 @@
 <webc-container controller="IssuedOrdersController" enable-translations="true">
+    <ion-header>
+        <ion-item>
+            <ion-label>{{ @title }}</ion-label>
+        </ion-item>
+        <ion-toolbar>
+            <ion-buttons slot="primary">
+                <ion-button name="button-new-issued-order" type="submit" color="primary" data-tag="new-issued-order">{{ @new }}</ion-button>
+            </ion-buttons>
+        </ion-toolbar>
+    </ion-header>
     <div data-if="@hasOrders">
         <div slot="true">
             <ion-grid class="ion-padding">

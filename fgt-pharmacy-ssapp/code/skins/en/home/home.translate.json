@@ -14,10 +14,14 @@
   "none": "You are not identified as a Pharmacy. Please register",
   "issuedOrders": {
     "title": "Issued Orders",
+    "new": "Criar",
     "numberHeader": "ID",
     "orderingPartnerHeader": "Issued By",
     "supplyingPartnerHeader": "Issued To",
     "none": "No orders issued..."
+  },
+  "issuedOrder": {
+    "title": "Issued Order"
   },
   "receivedShipments": {
     "title": "Received Shipments",
