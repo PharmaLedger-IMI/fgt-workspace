@@ -25,12 +25,16 @@ export default class IssuedOrdersController extends LocalizedController {
 
         let self = this;
         // the HomeController takes care of sending refresh events for each tab.
-        this.on('refresh', (evt) => {
+        self.on('refresh', (evt) => {
             console.log(evt);
             evt.preventDefault();
             evt.stopImmediatePropagation();
             self.getOrdersAsync();
         }, {capture: true});
+
+        self.onTagClick("new-issued-order", () => {
+            self._showOrderModal();
+        });
     }
 
     _showOrderModal() {

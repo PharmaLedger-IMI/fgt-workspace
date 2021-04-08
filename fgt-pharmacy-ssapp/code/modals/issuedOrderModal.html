@@ -1,19 +1,18 @@
-<ion-header class="modal-class">
-    <ion-toolbar class="modal-class">
-        <ion-img class="modal-class" align=center" src="assets/images/logo.svg"></ion-img>
-        <ion-title size="small" align="center" >{{ @title }}</ion-title>
+<ion-header>
+    <ion-toolbar>
+        <ion-title align="center" >{{ @title }}</ion-title>
     </ion-toolbar>
 </ion-header>
-<div class="modal-content">
+<div>
 Modal content comes in here...
 </div>
-<ion-footer class="modal-class">
+<ion-footer>
     <ion-toolbar>
         <ion-buttons slot="primary">
-            <ion-button name="button-ok" type="submit" color="primary" data-tag="tryok">{{ @issuedOrder.ok }}</ion-button>
+            <ion-button name="button-ok" type="submit" color="primary" data-tag="tryok">{{ @ok }}</ion-button>
         </ion-buttons>
         <ion-buttons slot="secondary">
-            <ion-button name="button-cancel" color="secondary" data-tag="trycancel">{{ @issuedOrder.cancel }}</ion-button>
+            <ion-button name="button-cancel" color="secondary" data-tag="trycancel">{{ @cancel }}</ion-button>
         </ion-buttons>
     </ion-toolbar>
 </ion-footer>
