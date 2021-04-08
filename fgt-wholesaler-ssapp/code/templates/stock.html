@@ -1,39 +1,80 @@
 <webc-container controller="StockController" enable-translations="true">
     <div data-if="@hasStock">
         <div slot="true">
-            <ion-grid class="ion-padding">
-                <ion-row class="ion-align-self-center ion-text-uppercase">
-                    <ion-col size="4">
-                        <ion-label>{{ @gtinHeader }}</ion-label>
-                    </ion-col>
-                    <ion-col size="2">
-                        <ion-label>{{ @nameHeader }}</ion-label>
-                    </ion-col>
-                    <ion-col size="4">
-                        <ion-label>{{ @batchesHeader }}</ion-label>
-                    </ion-col>
-                    <ion-col size="2">
-                        <ion-label>{{ @quantityHeader }}</ion-label>
-                    </ion-col>
-                </ion-row>
-                <ion-row class="ion-align-self-center" data-for="@stock">
-                    <ion-col size="4">
-                        <ion-item>
+            <ion-list class="ion-margin ion-no-padding">
+                <ion-list-header lines="inset">
+                    <ion-icon class="ion-padding" name="stats-chart-outline"></ion-icon>
+                    <ion-label>{{ @title }}</ion-label>
+                    <ion-button class="ion-padding-horizontal" fill="outline">Add Stuff</ion-button>
+                </ion-list-header>
+                <div class="list-content" data-for="@stock">
+                    <ion-item class="ion-align-self-center">
+                        <ion-thumbnail class="ion-align-self-center" slot="start">
+                            <barcode-generator class="ion-align-self-center" type="code128" size="32" scale="6" data="@gtin"></barcode-generator>
+                        </ion-thumbnail>
+                        <ion-label class="ion-padding-horizontal ion-align-self-center">
+                            <h3>{{ @gtin }}</h3>
+                            <h5>{{ @name }}</h5>
+                            <p>This is a description</p>
+                        </ion-label>
+                        <ion-grid class="ion-padding-horizontal">
+                            <ion-row>
+                                <ion-col size="12" data-for="@batches">
+                                    <ion-chip outline color="primary">
+                                        <ion-label class="ion-padding-start">{{ @batchNumber }}</ion-label>
+                                        <ion-badge class="ion-margin ion-padding-horizontal" color="success">{{ @quantity }}</ion-badge>
+                                    </ion-chip>
+                                </ion-col>
+                            </ion-row>
+                        </ion-grid>
+                        <ion-buttons class="ion-align-self-center ion-padding" slot="end">
+                            <ion-button slot="primary">
+                                <ion-icon name="file-tray-stacked-outline"></ion-icon>
+                            </ion-button>
+                        </ion-buttons>
+                    </ion-item>
+                </div>
+            </ion-list>
 
-                            <ion-label>{{ @gtin }}</ion-label>
-                        </ion-item>
-                    </ion-col>
-                    <ion-col size="2">
-                        <ion-label>{{ @name }}</ion-label>
-                    </ion-col>
-                    <ion-col size="4">
-                        <ion-label>{{ @batches }}</ion-label>
-                    </ion-col>
-                    <ion-col size="2">
-                        <ion-label>{{ @quantity }}</ion-label>
-                    </ion-col>
-                </ion-row>
-            </ion-grid>
+
+            <!--            -->
+            <!--            -->
+            <!--            <ion-grid class="ion-padding">-->
+            <!--                &lt;!&ndash;                <ion-row class="ion-align-self-center ion-text-uppercase">&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    <ion-col size="4">&ndash;&gt;-->
+            <!--                &lt;!&ndash;                        <ion-label>{{ @gtinHeader }}</ion-label>&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    </ion-col>&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    <ion-col size="2">&ndash;&gt;-->
+            <!--                &lt;!&ndash;                        <ion-label>{{ @nameHeader }}</ion-label>&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    </ion-col>&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    <ion-col size="4">&ndash;&gt;-->
+            <!--                &lt;!&ndash;                        <ion-label>{{ @batchesHeader }}</ion-label>&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    </ion-col>&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    <ion-col size="2">&ndash;&gt;-->
+            <!--                &lt;!&ndash;                        <ion-label>{{ @quantityHeader }}</ion-label>&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    </ion-col>&ndash;&gt;-->
+            <!--                &lt;!&ndash;                </ion-row>&ndash;&gt;-->
+            <!--                <ion-row class="ion-align-self-center ion-padding" data-for="@stock">-->
+            <!--                    <ion-col class="ion-align-self-center ion-padding" size="12">-->
+            <!--                        <ion-item class="ion-align-self-center ion-padding">-->
+            <!--                            <ion-avatar class="ion-align-self-center ion-padding" slot="start">-->
+            <!--                                <barcode-generator type="code128" size="16" data="@gtin"></barcode-generator>-->
+            <!--                            </ion-avatar>-->
+            <!--                            <ion-label class="ion-align-self-center ion-padding">-->
+            <!--                                <h3>{{ @gtin }}</h3>-->
+            <!--                                <h5>{{ @name }}</h5>-->
+            <!--                                <p>This is a description</p>-->
+            <!--                            </ion-label>-->
+            <!--                            <ion-buttons class="ion-align-self-center ion-padding" slot="end">-->
+            <!--                                <ion-button slot="primary">-->
+            <!--                                    <ion-icon name="file-tray-stacked-outline"></ion-icon>-->
+            <!--                                </ion-button>-->
+            <!--                            </ion-buttons>-->
+            <!--                        </ion-item>-->
+            <!--                    </ion-col>-->
+            <!--                </ion-row>-->
+            <!--            </ion-grid>-->
+
         </div>
         <div slot="false">
             <ion-item>

@@ -1,3 +1,9 @@
 :host {
   display: block;
+  --ion-background-color: whitesmoke;
 }
+
+canvas {
+  width: 100%;
+}
+

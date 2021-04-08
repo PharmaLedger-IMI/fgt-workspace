@@ -35,6 +35,7 @@ export class BarcodeGenerator {
    */
   @Prop() size?:any = 32;
 
+  @Prop() scale?:any = 3;
   /**
    * description: `This option allows to print the input data below the generated barcode.`,
    * isMandatory: false,
@@ -46,8 +47,11 @@ export class BarcodeGenerator {
 
   @Watch("data")
   drawQRCodeCanvas(){
-    if(this.isLoaded && this.data.length>0){
-      let canvas = this.element.querySelector("canvas");
+    if(this.data.length){
+      let canvas = this.element.querySelector("canvas") || this.element.shadowRoot.querySelector('canvas');
+      if (!canvas)
+          throw new Error('Could not find the canvas element');
+
       canvas.innerHTML="";
 
       let tryToGenerateBarcode = () => {
@@ -57,8 +61,9 @@ export class BarcodeGenerator {
             let options =  {
               bcid: this.type,       // Barcode type
               text: this.data,    // Text to encode
-              scale: 3,               // 3x scaling factor
+              scale: this.scale,               // 3x scaling factor
               height: this.size,              // Bar height, in millimeters
+              includetext: this.includeText,
               textxalign: 'center',        // Always good to set this
             }
 
@@ -66,15 +71,14 @@ export class BarcodeGenerator {
               options['alttext'] = this.data;
             }
 
-            if(TWO_D_BARCODES.indexOf(this.type)!==-1){
+            if(TWO_D_BARCODES.indexOf(this.type) !== -1){
               options['width'] = this.size;
             }
 
             //@ts-ignore
             bwipjs.toCanvas(canvas,options, function (err) {
-              if (err) {
+              if (err)
                 console.log(err);
-              }
             });
           }catch (e) {
             //most commonly errors come from wrong input data format
@@ -89,22 +93,12 @@ export class BarcodeGenerator {
   }
 
   componentDidLoad(){
-    this.isLoaded = true;
     this.drawQRCodeCanvas();
   }
 
   render() {
     return (
-      <ion-card>
-        <div class="code_container">
-          <div class="card-body text-center">
-            <canvas class="code_canvas"/>
-          </div>
-        </div>
-        <ion-card-header>
-          <ion-card-subtitle>{this.title}</ion-card-subtitle>
-        </ion-card-header>
-      </ion-card>
+      <canvas></canvas>
     );
   }
 }

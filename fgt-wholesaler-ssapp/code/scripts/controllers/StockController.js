@@ -21,7 +21,6 @@ export default class StockController extends LocalizedController{
         }, 'stock');
 
         this.on('refresh', (evt) => {
-            console.log();
             evt.preventDefault();
             evt.stopImmediatePropagation();
             this.getStockAsync();
