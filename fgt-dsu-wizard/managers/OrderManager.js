@@ -122,8 +122,8 @@ class OrderManager extends Manager {
      list(callback) {
         let orderLine1 = new OrderLine('123', 1, '', '');
         let orderLine2 = new OrderLine('321', 5, '', '');
-        let order1 = new Order("IOID1", "TPID1", '', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
-        let order2 = new Order("IOID2", "TPID2", '', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
+        let order1 = new Order("IOID1", "TPID1", 'WHSID555', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
+        let order2 = new Order("IOID2", "TPID2", 'WHSID432', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
         return callback(undefined, [order1,order2]);
 
         /*

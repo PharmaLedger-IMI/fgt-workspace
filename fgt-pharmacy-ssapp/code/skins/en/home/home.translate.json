@@ -14,10 +14,9 @@
   "none": "You are not identified as a Pharmacy. Please register",
   "issuedOrders": {
     "title": "Issued Orders",
-    "gtinHeader": "Gtin",
-    "nameHeader": "Name",
-    "batchesHeader": "Batches",
-    "quantityHeader": "Quantity",
+    "numberHeader": "ID",
+    "orderingPartnerHeader": "Issued By",
+    "supplyingPartnerHeader": "Issued To",
     "none": "No orders issued..."
   },
   "receivedShipments": {
