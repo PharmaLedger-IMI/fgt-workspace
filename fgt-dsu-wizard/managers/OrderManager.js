@@ -17,11 +17,11 @@ const OrderStatus = require('../model').OrderStatus;
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
  *
- * @param {Archive} storageDSU the DSU where the storage (mounting) should happen
+ * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
  */
 class OrderManager extends Manager {
-    constructor(storageDSU) {
-        super(storageDSU);
+    constructor(participantManager) {
+        super(participantManager);
         this.productService = new (require('../services').OrderService)(ANCHORING_DOMAIN);
     }
 
@@ -120,6 +120,13 @@ class OrderManager extends Manager {
      * @param {function(err, Order[])} callback
      */
      list(callback) {
+        let orderLine1 = new OrderLine('123', 1, '', '');
+        let orderLine2 = new OrderLine('321', 5, '', '');
+        let order1 = new Order("IOID1", "TPID1", '', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
+        let order2 = new Order("IOID2", "TPID2", '', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
+        return callback(undefined, [order1,order2]);
+
+        /*
         super.listMounts(ISSUED_ORDERS_MOUNT_PATH, (err, mounts) => {
             if (err)
                 return callback(err);
@@ -131,6 +138,7 @@ class OrderManager extends Manager {
             });
             super.readAll(mounts, callback);
         });
+        */
     }
 
     /**

@@ -1,36 +1,40 @@
-import LocalizedController from "./LocalizedController.js";
+import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
 
 /**
  * List all the orders, and allows the creation of new orders.
  */
-export default class IssuedOrdersController extends LocalizedController {
-    getModel = () => ({
-        pharmacy: undefined,
-        orders: []
-    }); // uninitialized blank model
-
+export default class IssuedOrdersController extends ContainerController {
     constructor(element, history) {
         super(element, history);
-        super.bindLocale(this, "issuedOrders");
         const wizard = require('wizard');
+        const LocaleService = wizard.Services.LocaleService;
+        LocaleService.bindToLocale(this, LocaleService.supported.en_US, "issuedOrders");
+        this.participantManager = wizard.Managers.getParticipantManager(this.DSUStorage, "traceability");
+        this.orderManager = wizard.Managers.getOrderManager(this.participantManager.getParticipantDSU());
 
-        this.participantManager = wizard.Managers.getParticipantManager();
-        this.orderManager = wizard.Managers.getOrderManager(this.participantManager);
-
-        this.setModel(this.getModel());
-
-        this.model.addExpression('hasOrders', () => {
-            return this.model.orders && this.model.orders.length > 0;
-        }, 'orders');
+        this.model = this.setModel({
+            pharmacy: undefined,
+            orders: [],
+            hasOrders: false
+        });
 
         let self = this;
-        // the HomeController takes care of sending refresh events for each tab.
-        this.on('refresh', (evt) => {
-            console.log(evt);
-            evt.preventDefault();
-            evt.stopImmediatePropagation();
-            self.getOrdersAsync();
-        }, {capture: true});
+        this.on('add-issued-order', (event) => {
+            event.stopImmediatePropagation();
+            self._showOrderModal();
+        });
+
+        this.on('perform-add-issued-order', (event) => {
+            event.stopImmediatePropagation();
+            self._addOrderAsync(event.detail, (err) => {
+                if (err)
+                    return this.showError(err);
+                self.closeModal('issued-order-modal');
+                self.getOrdersAsync();
+            });
+        });
+
+        this.getOrdersAsync();
     }
 
     _showOrderModal() {
@@ -65,6 +69,7 @@ export default class IssuedOrdersController extends LocalizedController {
      */
     updateOrders(orders) {
         this.model['orders'] = orders;
+        this.model['hasOrders'] = orders.length > 0;
     }
 
     /**
