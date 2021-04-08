@@ -7,6 +7,12 @@
     "shipments": "Shipments",
     "stock": "Stock"
   },
+  "products": {
+    "title": "Manage Products",
+    "buttons": {
+      "addProduct": "Add Product"
+    }
+  },
   "errors": {
     "register": "Unable to register",
     "try-again": "Try Again?"

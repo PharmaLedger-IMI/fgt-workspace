@@ -24,6 +24,7 @@
   "dependencies": {},
   "license": "MIT",
   "devDependencies": {
+    "@ionic/core": "^5.6.4",
     "@stencil/core": "^2.5.2"
   }
 }

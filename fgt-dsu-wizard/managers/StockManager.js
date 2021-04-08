@@ -1,7 +1,7 @@
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Product = require('../model').Product;
 const Batch = require('../model').Batch;
-const STOCK_PATH = require('../constants').STOCK_PATH;
+const STOCK_PATH = require('../constants').DB.stock;
 
 const STATUS = {
     IN_STOCK: "instock",
@@ -28,7 +28,7 @@ const STATUS = {
  */
 class StockManager extends Manager{
     constructor(baseManager) {
-        super(baseManager);
+        super(baseManager, STOCK_PATH);
         this.stock = this._genDummyStock();
     }
 

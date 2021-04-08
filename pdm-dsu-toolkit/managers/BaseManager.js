@@ -73,6 +73,8 @@ class BaseManager {
         this.participantConstSSI = undefined;
         this.did = undefined;
         this.messenger = undefined;
+        this._getResolver = getResolver;
+        this._getKeySSISpace = getKeySSISpace;
         this._initialize((err) => err
             ? console.log(`Could not initialize base manager ${err}`)
             : console.log(`base manager initialized`));
@@ -146,7 +148,7 @@ class BaseManager {
     }
 
     _loadDSU(keySSI, callback){
-        getResolver().loadDSU(keySSI, callback);
+        this._getResolver().loadDSU(keySSI, callback);
     };
 
     /**

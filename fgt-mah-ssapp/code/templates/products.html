@@ -1,10 +1,45 @@
 <webc-container controller="ProductsController" enable-translations="true">
     <div data-if="@hasProducts">
         <div slot="true">
-
+            <ion-list class="ion-margin ion-no-padding">
+                <ion-list-header lines="inset">
+                    <ion-icon class="ion-padding" name="stats-chart-outline"></ion-icon>
+                    <ion-label>{{ @title }}</ion-label>
+                    <ion-button class="ion-padding-horizontal" fill="outline">Add Stuff</ion-button>
+                </ion-list-header>
+                <div data-for="@products">
+                    <ion-item class="ion-align-self-center">
+                        <ion-thumbnail class="ion-align-self-center" slot="start">
+                            <barcode-generator class="ion-align-self-center" type="code128" size="32" scale="6" data="@gtin"></barcode-generator>
+                        </ion-thumbnail>
+                        <ion-label class="ion-padding-horizontal ion-align-self-center">
+                            <h3>{{ @gtin }}</h3>
+                            <h5>{{ @name }}</h5>
+                            <p>This is a description</p>
+                        </ion-label>
+                        <ion-grid class="ion-padding-horizontal">
+                            <ion-row>
+                                <ion-col size="12" data-for="@batches">
+                                    <ion-chip outline color="primary">
+                                        <ion-label class="ion-padding-start">{{ @batchNumber }}</ion-label>
+                                        <ion-badge class="ion-margin ion-padding-horizontal" color="success">{{ @quantity }}</ion-badge>
+                                    </ion-chip>
+                                </ion-col>
+                            </ion-row>
+                        </ion-grid>
+                        <ion-buttons class="ion-align-self-center ion-padding" slot="end">
+                            <ion-button slot="primary">
+                                <ion-icon name="file-tray-stacked-outline"></ion-icon>
+                            </ion-button>
+                        </ion-buttons>
+                    </ion-item>
+                </div>
+            </ion-list>
         </div>
         <div slot="false">
-
+            <ion-item>
+                <ion-label>{{ @none }}</ion-label>
+            </ion-item>
         </div>
     </div>
 </webc-container>

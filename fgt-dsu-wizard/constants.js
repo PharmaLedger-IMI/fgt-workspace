@@ -24,7 +24,14 @@ const INBOX_PATHS_AND_PROPS = [
     {path: INBOX_RECEIVED_SHIPMENTS_PATH, prop: INBOX_RECEIVED_SHIPMENTS_PROP},
 ];
 
+const DB = {
+    products: 'products',
+    batches: 'batches',
+    stock: 'stock'
+}
+
 module.exports = {
+    DB,
     ANCHORING_DOMAIN,
     BATCH_MOUNT_PATH,
     INBOX_ORDER_LINES_PROP,

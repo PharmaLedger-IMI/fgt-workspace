@@ -14,7 +14,6 @@ class Message{
      *
      * @param {string} api
      * @param {*} message anything as long as it is serializable i guess
-     * @param {W3cDID} senderDID
      */
     constructor(api, message){
         this.api = api;
@@ -42,7 +41,7 @@ class Message{
  */
 class MessageManager extends Manager{
     constructor(baseManager, didString){
-        super(baseManager);
+        super(baseManager, MESSAGE_TABLE);
         this.w3cDID = require('opendsu').loadApi('w3cdid');
         this.didString = didString;
         this.did = undefined;
@@ -70,7 +69,7 @@ class MessageManager extends Manager{
     }
 
     _saveToInbox(message, callback){
-        this.storage.insertRecord(MESSAGE_TABLE, Date.now().toISOString(), JSON.stringify(message), callback);
+        this.insertRecord(Date.now().toISOString(), JSON.stringify(message), callback);
     }
 
     /**
@@ -104,11 +103,11 @@ class MessageManager extends Manager{
     }
 
     getMessages(api, callback){
-        if (typeof api === 'function'){
+        if (!callback){
             callback = api;
             api = MESSAGE_TABLE;
         }
-        this.storage.filter(api, () => true, undefined, 10, callback);
+        this.query(api, () => true, undefined, 10, callback);
     }
 
     _startMessageListener(did){

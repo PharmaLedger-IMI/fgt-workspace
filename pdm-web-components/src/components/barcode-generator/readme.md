@@ -17,6 +17,19 @@
 | `type`        | `type`         | description: `The barcode type. Accepted values are 'gs1datamatrix','datamatrix','qrcode', 'code128','code11','isbn'.`, isMandatory: true, propertyType: `string` | `string`  | `"qrcode"`  |
 
 
+## Dependencies
+
+### Used by
+
+ - [product-list-item](../product-list-item)
+
+### Graph
+```mermaid
+graph TD;
+  product-list-item --> barcode-generator
+  style barcode-generator fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

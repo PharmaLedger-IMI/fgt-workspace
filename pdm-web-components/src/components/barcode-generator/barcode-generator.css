@@ -1,6 +1,6 @@
 :host {
   display: block;
-  --ion-background-color: whitesmoke;
+  --background: whitesmoke;
 }
 
 canvas {

@@ -1,6 +1,8 @@
-const {INFO_PATH, PRODUCT_MOUNT_PATH, ANCHORING_DOMAIN} = require('../constants');
+const {INFO_PATH, ANCHORING_DOMAIN, DB} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Product = require('../model').Product;
+
+
 /**
  * Product Manager Class
  *
@@ -18,18 +20,10 @@ const Product = require('../model').Product;
  * @param {Archive} storageDSU the DSU where the storage should happen
  */
 class ProductManager extends Manager{
-    constructor(storageDSU) {
-        super(storageDSU);
+    constructor(baseManager) {
+        super(baseManager, DB.products);
         this.productService = new (require('../services').ProductService)(ANCHORING_DOMAIN);
-        this.batchManager = require('./BatchManager')(storageDSU);
-    }
-
-    /**
-     * Returns the mount path for a given gtin
-     * @private
-     */
-    _getMountPath(gtin){
-        return `${PRODUCT_MOUNT_PATH}/${gtin}`;
+        this.batchManager = require('./BatchManager')(baseManager);
     }
 
     /**
@@ -42,26 +36,35 @@ class ProductManager extends Manager{
         self.productService.create(product, (err, keySSI) => {
             if (err)
                 return callback(err);
-            let mount_path = this._getMountPath(product.gtin);
-            self.storage.mount(mount_path, keySSI.getIdentifier(), (err) => {
+            const record = keySSI.getIdentifier();
+            self.storage.insertRecord(product.gtin, record, (err) => {
                 if (err)
                     return callback(err);
-                console.log(`Product ${product.gtin} created and mounted at '${mount_path}'`);
-                callback(undefined, keySSI, mount_path);
+                const path =`${this.tableName}/${record}`;
+                console.log(`Product ${product.gtin} created stored at '${path}'`);
+                callback(undefined, keySSI, path);
             });
         });
     }
 
     /**
-     * reads the product information (the /info path) from a given gtin (if exists and is registered to the mah)
+     * reads ssi for that gtin in the db. loads is and reads the info at '/info'
      * @param {string} gtin
      * @param {function(err, Product)} callback
      */
-    getOne(gtin, callback){
-        this.storage.getObject(`${this._getMountPath(gtin)}${INFO_PATH}`, (err, product) => {
+    getOne(gtin, callback) {
+        let self = this;
+        self.getRecord(gtin, (err, productSSI) => {
             if (err)
                 return callback(err);
-            callback(undefined, product);
+            const keySSI = self._getKeySSISpace().parse(productSSI);
+            self._loadDSU(keySSI, (err, dsu) => {
+                if (err)
+                    return callback(err);
+                dsu.readFile(INFO_PATH, (err, data) => err
+                    ? callback(err)
+                    : callback(undefined, new Product(JSON.parse(data))));
+            });
         });
     }
 
@@ -72,29 +75,7 @@ class ProductManager extends Manager{
      */
     remove(gtin, callback) {
         let self = this;
-        let mount_path = this._getMountPath(gtin);
-        self.storage.unmount(mount_path, (err) => {
-            if (err)
-                return callback(err);
-            console.log(`Product ${gtin} removed from mount point ${mount_path}`);
-            callback();
-        });
-    }
-
-    /**
-     * Edits/Overwrites the product details
-     * @param {string} gtin
-     * @param {function(err)} callback
-     */
-    edit(gtin, callback) {
-        let self = this;
-        let mount_path = this._getMountPath(gtin);
-        self.storage.writeFile(`${mount_path}${INFO_PATH}`, (err) => {
-            if (err)
-                return callback(err);
-            console.log(`Product ${gtin} updated`);
-            callback();
-        });
+        self.deleteRecord(gtin, callback);
     }
 
     /**
@@ -102,17 +83,8 @@ class ProductManager extends Manager{
      * @param {function(err, Product[])} callback
      */
     getAll(callback) {
-        super.listMounts(PRODUCT_MOUNT_PATH, (err, mounts) => {
-            if (err)
-                return callback(err);
-            console.log(`Found ${mounts.length} products at ${PRODUCT_MOUNT_PATH}`);
-            mounts = mounts.map(m => {
-                m.gtin = m.path;
-                m.path = `${PRODUCT_MOUNT_PATH}/${m.path}`;
-                return m;
-            });
-            super.readAll(mounts, callback);
-        });
+        let self = this;
+        self.query(() => true, undefined, 100, callback);
     }
 
     /**
