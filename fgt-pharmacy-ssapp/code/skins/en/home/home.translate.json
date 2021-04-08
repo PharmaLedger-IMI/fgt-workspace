@@ -3,15 +3,34 @@
   "welcome": "Welcome back",
   "menu": {
     "dashboard": "Dashboard",
-    "orders": "Orders",
-    "shipments": "Shipments",
+    "issuedOrders": "Issued Orders",
+    "receivedShipments": "Received Shipments",
     "stock": "Stock"
   },
   "errors": {
     "register": "Unable to register",
     "try-again": "Try Again?"
   },
-  "none": "You are not identified as a Marketing Authorization holder. Please register",
+  "none": "You are not identified as a Pharmacy. Please register",
+  "issuedOrders": {
+    "title": "Issued Orders",
+    "new": "Criar",
+    "numberHeader": "ID",
+    "orderingPartnerHeader": "Issued By",
+    "supplyingPartnerHeader": "Issued To",
+    "none": "No orders issued..."
+  },
+  "issuedOrder": {
+    "title": "Issued Order"
+  },
+  "receivedShipments": {
+    "title": "Received Shipments",
+    "gtinHeader": "Gtin",
+    "nameHeader": "Name",
+    "batchesHeader": "Batches",
+    "quantityHeader": "Quantity",
+    "none": "No shipments received..."
+  },
   "stock": {
     "title": "Stock Manager",
     "gtinHeader": "Gtin",
@@ -22,6 +41,6 @@
   },
   "dashboard": {
     "title": "This is a Dashboard",
-    "none": "There are no pending orders"
+    "none": "There are no pending issued orders"
   }
 }

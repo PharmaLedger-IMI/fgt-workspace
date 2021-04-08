@@ -1,18 +1,25 @@
-import ModalController from "../../cardinal/controllers/base-controllers/ModalController.js";
+import LocalizedController from "./LocalizedController.js";
+export default class IssuedOrderController extends LocalizedController {
 
-export default class IssuedOrderController extends ModalController {
+    getModel = () => ({}); // initial empty model
+
     constructor(element, history) {
         super(element, history);
-        const wizard = require('wizard');
-        const LocaleService = wizard.Services.LocaleService;
-        LocaleService.bindToLocale(this, LocaleService.supported.en_US, "issuedOrder");
-        const participantManager = wizard.Managers.getParticipantManager();
-        this.orderManager = wizard.Managers.getOrderManager(participantManager.getParticipantDSU());
-        this.on('submit-issued-order', this._handleSubmit.bind(this));
+        let self = this;
+        super.bindLocale(self, `issuedOrder`, true);
+
+        self.setModel(self.getModel());
+        console.log("IssuedOrderController initialized");
+        Object.entries(self.getModel().buttons).forEach(b => {
+            self.onTagClick(`try${b[0]}`, self._handleTry(`${b[0]}`).bind(self));
+        });
+
+        self.on('input-has-changed', self._handleErrorElement.bind(self));
+        self._createModalForm(this.getModel());
     }
 
-    _handleSubmit(event){
-        let order = this.orderManager.fromModel(this.model);
-        this.send('perform-add-issued-order', order);
+    _createModalForm(model){
     }
+
+
 }

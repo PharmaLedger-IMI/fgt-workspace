@@ -16,7 +16,7 @@
                             </ion-item>
                             <ion-item>
                                 <ion-icon name="reader-outline" slot="start"></ion-icon>
-                                <ion-label>{{ @menu.orders }}</ion-label>
+                                <ion-label>{{ @menu.issuedOrders }}</ion-label>
                             </ion-item>
                             <ion-item>
                                 <ion-icon name="map-outline" slot="start"></ion-icon>
@@ -52,12 +52,12 @@
                     <webc-template template="dashboard" disable-container></webc-template>
                 </ion-tab>
 
-                <ion-tab tab="tab-orders">
-                    <webc-template template="orders" disable-container></webc-template>
+                <ion-tab tab="tab-issuedOrders">
+                    <webc-template template="issuedOrders" disable-container></webc-template>
                 </ion-tab>
 
-                <ion-tab tab="tab-shipments">
-                    <webc-template template="shipments" disable-container></webc-template>
+                <ion-tab tab="tab-receivedShipments">
+                    <webc-template template="receivedShipments" disable-container></webc-template>
                 </ion-tab>
 
                 <ion-tab tab="tab-stock">
@@ -71,15 +71,14 @@
                     <ion-label>{{ @menu.dashboard }}</ion-label>
                 </ion-tab-button>
 
-                <ion-tab-button tab="tab-orders">
+                <ion-tab-button tab="tab-issuedOrders">
                     <ion-icon name="reader-outline"></ion-icon>
-                    <ion-label>{{ @menu.orders }}</ion-label>
-                    <ion-badge data-view-model="@scheduleCounter"></ion-badge>
+                    <ion-label>{{ @menu.issuedOrders }}</ion-label>
                 </ion-tab-button>
 
-                <ion-tab-button tab="tab-shipments">
+                <ion-tab-button tab="tab-receivedShipments">
                     <ion-icon name="map-outline"></ion-icon>
-                    <ion-label>{{ @menu.shipments }}</ion-label>
+                    <ion-label>{{ @menu.receivedShipments }}</ion-label>
                 </ion-tab-button>
 
                 <ion-tab-button tab="tab-stock">

@@ -1,50 +1,62 @@
-import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
+import LocalizedController from "./LocalizedController.js";
 
 /**
  * List all the orders, and allows the creation of new orders.
  */
-export default class IssuedOrdersController extends ContainerController {
+export default class IssuedOrdersController extends LocalizedController {
+    getModel = () => ({
+        pharmacy: undefined,
+        orders: []
+    }); // uninitialized blank model
+
     constructor(element, history) {
         super(element, history);
+        super.bindLocale(this, "issuedOrders");
         const wizard = require('wizard');
-        const LocaleService = wizard.Services.LocaleService;
-        LocaleService.bindToLocale(this, LocaleService.supported.en_US, "issuedOrders");
-        this.participantManager = wizard.Managers.getParticipantManager(this.DSUStorage, "traceability");
-        this.orderManager = wizard.Managers.getOrderManager(this.participantManager.getParticipantDSU());
 
-        this.model = this.setModel({
-            pharmacy: undefined,
-            orders: [],
-            hasOrders: false
-        });
+        this.participantManager = wizard.Managers.getParticipantManager();
+        this.orderManager = wizard.Managers.getOrderManager(this.participantManager);
+
+        this.setModel(this.getModel());
+
+        this.model.addExpression('hasOrders', () => {
+            return this.model.orders && this.model.orders.length > 0;
+        }, 'orders');
 
         let self = this;
-        this.on('add-issued-order', (event) => {
-            event.stopImmediatePropagation();
-            self._showOrderModal();
-        });
-
-        this.on('perform-add-issued-order', (event) => {
-            event.stopImmediatePropagation();
-            self._addOrderAsync(event.detail, (err) => {
-                if (err)
-                    return this.showError(err);
-                self.closeModal('issued-order-modal');
-                self.getOrdersAsync();
-            });
-        });
-
-        this.getOrdersAsync();
+        // the HomeController takes care of sending refresh events for each tab.
+        this.on('refresh', (evt) => {
+            console.log(evt);
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            self.getOrdersAsync();
+        }, {capture: true});
     }
 
     _showOrderModal() {
         let self = this;
+        // this.showIonicModal("a-generic-configurable-modal", false, {page: "registration"});
+        self.createWebcModal({
+            template: "issuedOrderModal",
+            controller: "IssuedOrderController",
+            disableBackdropClosing: true,
+            disableFooter: true,
+            disableHeader: true,
+            disableExpanding: true,
+            disableClosing: true,
+            disableCancelButton: true,
+            expanded: false,
+            centered: true
+        });
+        /*
         self.participantManager.newBlankOrder(self.orderManager, (err, order) => {
             if (err)
                 return this.showError(err);
             self.showModal('issued-order-modal', self.orderManager.toModel(order), true);
         });
+        */
     }
+
 
     /**
      *
@@ -69,7 +81,6 @@ export default class IssuedOrdersController extends ContainerController {
      */
     updateOrders(orders) {
         this.model['orders'] = orders;
-        this.model['hasOrders'] = orders.length > 0;
     }
 
     /**
@@ -78,7 +89,7 @@ export default class IssuedOrdersController extends ContainerController {
      */
     getOrdersAsync() {
         let self = this;
-        self.orderManager.list((err, orders) => {
+        self.orderManager.listIssued((err, orders) => {
             console.log("getOrdersAsync gotOrders ", orders);
             if (err)
                 return self.showError(err);

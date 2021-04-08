@@ -20,12 +20,15 @@ export default class StockController extends LocalizedController{
             return typeof this.model.stock !== 'undefined' && this.model.stock.length > 0;
         }, 'stock');
 
-        this.on('ionTabsDidChange', (evt) => {
-            console.log("ionTabsDidChange",evt);
+        // the HomeController takes care of sending refresh events for each tab.
+        this.on('refresh', (evt) => {
+            console.log(evt);
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
             this.getStockAsync();
-        });
+        }, {capture: true});
 
-        this.getStockAsync();
+        //this.getStockAsync();
     }
 
     /**
