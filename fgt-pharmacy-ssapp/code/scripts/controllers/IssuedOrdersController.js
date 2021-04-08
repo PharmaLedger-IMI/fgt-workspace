@@ -73,7 +73,7 @@ export default class IssuedOrdersController extends LocalizedController {
      */
     getOrdersAsync() {
         let self = this;
-        self.orderManager.list((err, orders) => {
+        self.orderManager.listIssued((err, orders) => {
             console.log("getOrdersAsync gotOrders ", orders);
             if (err)
                 return self.showError(err);

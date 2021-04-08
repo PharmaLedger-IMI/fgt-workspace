@@ -116,15 +116,24 @@ class OrderManager extends Manager {
     }
 
     /**
-     * Lists all registered orders
+     * Lists all issued orders
      * @param {function(err, Order[])} callback
      */
-     list(callback) {
+     listIssued(callback) {
         let orderLine1 = new OrderLine('123', 1, '', '');
         let orderLine2 = new OrderLine('321', 5, '', '');
         let order1 = new Order("IOID1", "TPID1", 'WHSID555', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
         let order2 = new Order("IOID2", "TPID2", 'WHSID432', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
-        return callback(undefined, [order1,order2]);
+        return callback(undefined, [
+            order1,order2,order1,order2,order1,order2,order1,order2,
+            order1,order2,order1,order2,order1,order2,order1,order2,
+            order1,order2,order1,order2,order1,order2,order1,order2,
+            order1,order2,order1,order2,order1,order2,order1,order2,
+            order1,order2,order1,order2,order1,order2,order1,order2,
+            order1,order2,order1,order2,order1,order2,order1,order2,
+            order1,order2,order1,order2,order1,order2,order1,order2,
+            order1,order2,order1,order2,order1,order2,order1,order2,
+        ]);
 
         /*
         super.listMounts(ISSUED_ORDERS_MOUNT_PATH, (err, mounts) => {
