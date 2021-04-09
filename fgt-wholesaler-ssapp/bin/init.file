@@ -27,3 +27,5 @@ with cmd createdsu seed traceability fordb
 endwith
 
 mount $DB$ /db
+
+## WHOLESALER INIT SCRIPT

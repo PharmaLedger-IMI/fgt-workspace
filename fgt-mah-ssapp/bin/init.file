@@ -22,8 +22,10 @@ endwith
 
 mount $CONST$ /participant
 
-with cmd genkey seed traceability fordb
+with cmd createdsu seed traceability fordb
     define $DB$ fromcmd getidentifier true
 endwith
 
 mount $DB$ /db
+
+## MAH INIT SCRIPT
