@@ -60,13 +60,13 @@ const {getMessageManager, Message} = require('./MessageManager');
  * All other Managers in this architecture can inherit from this to get access to the getIdentity && getEnvironment API from the credentials set in the pdm-loader
  *
  * @param {DSUStorage} dsuStorage the controllers dsu storage
- * @param {string} domain the anchoring domain
+ * @param {function(err, BaseManager)} [callback] optional callback. called after initialization. mostly for testing
  * @module managers
  * @class BaseManager
  * @abstract
  */
 class BaseManager {
-    constructor(dsuStorage) {
+    constructor(dsuStorage, callback) {
         this.DSUStorage = dsuStorage;
         this.rootDSU = undefined;
         this.db = undefined;
@@ -75,9 +75,16 @@ class BaseManager {
         this.messenger = undefined;
         this._getResolver = getResolver;
         this._getKeySSISpace = getKeySSISpace;
-        this._initialize((err) => err
-            ? console.log(`Could not initialize base manager ${err}`)
-            : console.log(`base manager initialized`));
+        this._initialize((err) => {
+            if (err){
+                console.log(`Could not initialize base manager ${err}`);
+                if(callback)
+                    return callback(err);
+            }
+            console.log(`base manager initialized`);
+            if (callback)
+                callback(undefined, this);
+        });
     };
 
     sendMessage(did, api, message, callback){
