@@ -22,7 +22,7 @@ endwith
 
 mount $CONST$ /participant
 
-with cmd createdsu seed traceability fordb
+with cmd genkey seed traceability fordb
     define $DB$ fromcmd getidentifier true
 endwith
 
