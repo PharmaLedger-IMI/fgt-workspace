@@ -1,11 +1,20 @@
 <ion-header>
     <ion-toolbar>
-        <ion-title align="center" >{{ @title }}</ion-title>
+        <ion-title align="center">{{ @title }}</ion-title>
     </ion-toolbar>
 </ion-header>
-<div>
-Modal content comes in here...
-</div>
+<ion-item>
+    <ion-label>
+        Order ID:
+    </ion-label>
+    <ion-input data-model="{@orderId}"></ion-input>
+</ion-item>
+<ion-item>
+    <ion-label>
+        Requester ID:
+    </ion-label>
+    <ion-input data-model="{@requesterId}"></ion-input>
+</ion-item>
 <ion-footer>
     <ion-toolbar>
         <ion-buttons slot="primary">

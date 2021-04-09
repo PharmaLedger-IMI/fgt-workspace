@@ -7,8 +7,12 @@ export default class IssuedOrderController extends LocalizedController {
         super(element, history);
         let self = this;
         super.bindLocale(self, `issuedOrder`, true);
+        const wizard = require('wizard');
+        self.participantManager = wizard.Managers.getParticipantManager();
+        self.orderManager = wizard.Managers.getOrderManager(this.participantManager);
 
         self.setModel(self.getModel());
+
         console.log("IssuedOrderController initialized");
         /*
         Object.entries(self.getModel().buttons).forEach(b => {
@@ -16,11 +20,19 @@ export default class IssuedOrderController extends LocalizedController {
         });
         */
         //self.on('input-has-changed', self._handleErrorElement.bind(self));
-        self._createModalForm(this.getModel());
+        self._setupBlankOrder();
     }
 
-    _createModalForm(model){
+    _setupBlankOrder() {
+        let self = this;
+        let orderModel = self.getModel();
+        self.participantManager.getIdentity( (err, participant) => {
+            if (err) {
+                return self.showErrorToast(err);
+            }
+            orderModel.orderId = Math.floor(Math.random() * Math.floor(99999999999)); // TODO sequential unique numbering ? It should comes from the ERP anyway.
+            orderModel.requestorId = participant.id;
+            orderModel.shippingAddress = participant.address;
+        });
     }
-
-
 }
