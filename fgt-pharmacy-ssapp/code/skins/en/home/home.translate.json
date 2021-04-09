@@ -27,6 +27,14 @@
       "value": "x",
       "required": true
     },
+    "requesterId": {
+      "label": "Requester ID",
+      "required": true
+    },
+    "shippingAddress": {
+      "label": "Shipping Address",
+      "required": true
+    },
     "ok": "OK",
     "cancel": "Cancel"
   },

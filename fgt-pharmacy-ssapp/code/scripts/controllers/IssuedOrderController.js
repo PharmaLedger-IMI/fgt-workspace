@@ -1,7 +1,7 @@
 import LocalizedController from "./LocalizedController.js";
 export default class IssuedOrderController extends LocalizedController {
 
-    getModel = () => ({ "orderId": "z" }); // initial empty model
+    getModel = () => ({}); // initial empty model
 
     constructor(element, history) {
         super(element, history);
@@ -29,9 +29,10 @@ export default class IssuedOrderController extends LocalizedController {
             if (err) {
                 return self.showErrorToast(err);
             }
-            self.model.orderId = Math.floor(Math.random() * Math.floor(99999999999)); // TODO sequential unique numbering ? It should comes from the ERP anyway.
-            self.model.requestorId = participant.id;
-            self.model.shippingAddress = participant.address;                    
+            self.model.orderId.value = Math.floor(Math.random() * Math.floor(99999999999)); // TODO sequential unique numbering ? It should comes from the ERP anyway.
+            self.model.requesterId.value = participant.id;
+            self.model.shippingAddress.value = participant.address;
+            console.log(self.model.toObject());
         });
         /*
         let order = self.orderManager.newBlankOrderSync(
