@@ -90,7 +90,7 @@ const getEnvJs = function(app, callback){
 }
 
 const getParticipantManager = function(dsu, callback){
-    const participantManager = getParticipantManager(dsu);
+    getParticipantManager(dsu);
     participantManager.
 }
 

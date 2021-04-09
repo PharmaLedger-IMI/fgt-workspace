@@ -21,10 +21,11 @@ const BaseManager = require('../../pdm-dsu-toolkit/managers/BaseManager');
  * Should eventually integrate with the WP3 decisions
  *
  * @param {DSUStorage} dsuStorage the controllers dsu storage
+ * @param {function(err, ParticipantManager)} [callback}
  */
 class ParticipantManager extends BaseManager{
-    constructor(dsuStorage) {
-        super(dsuStorage);
+    constructor(dsuStorage, callback) {
+        super(dsuStorage, callback);
     };
 
     /**
@@ -44,13 +45,14 @@ let participantManager;
 
 /**
  * @param {DSUStorage} [dsuStorage] only required the first time
+ * @param {function(err, ParticipantManager)} [callback}
  * @returns {ParticipantManager}
  */
-const getParticipantManager = function (dsuStorage) {
+const getParticipantManager = function (dsuStorage, callback) {
     if (!participantManager) {
         if (!dsuStorage)
             throw new Error("No DSUStorage provided");
-        participantManager = new ParticipantManager(dsuStorage);
+        participantManager = new ParticipantManager(dsuStorage, callback);
     }
     return participantManager;
 }
