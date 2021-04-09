@@ -44,7 +44,7 @@ class BatchManager extends Manager{
      * @see Manager#_getDSUInfo
      * @private
      */
-    _getBatch(keySSI, callback);
+    _getBatch(keySSI, callback){};
 
     /**
      * Creates a {@link Batch} dsu

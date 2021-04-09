@@ -50,7 +50,7 @@ class ProductManager extends Manager {
      * @see Manager#_getDSUInfo
      * @private
      */
-    _getProduct(keySSI, callback);
+    _getProduct(keySSI, callback){};
 
     /**
      * Creates a {@link Product} dsu
