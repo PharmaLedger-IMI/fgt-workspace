@@ -16,7 +16,7 @@ class Product {
 
     /**
      * Validate if everything seems ok with the properties of this object.
-     * @returns undefined if all ok. An arry of errors if not all ok.
+     * @returns undefined if all ok. An array of errors if not all ok.
      */
     validate() {
         const errors = [];
@@ -29,10 +29,6 @@ class Product {
         }
 
         return errors.length === 0 ? undefined : errors;
-    }
-
-    generateViewModel() {
-        return {label: this.name, value: this.gtin}
     }
 }
 

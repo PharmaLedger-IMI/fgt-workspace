@@ -20,7 +20,7 @@ class Manager{
     constructor(baseManager, tableName){
         this.storage = baseManager.db;
         this.tableName = tableName;
-        this.getIdentity = baseManager.getIdentity;
+        this.getIdentity = baseManager.getIdentity.bind(baseManager);
         this._getResolver = baseManager._getResolver;
         this._getKeySSISpace = baseManager._getKeySSISpace;
         this._loadDSU = baseManager._loadDSU;
@@ -154,7 +154,7 @@ class Manager{
      * Wrapper around the storage's insertRecord where the tableName defaults to the manager's
      * @param {string} [tableName] defaults to the manager's table name
      * @param {string} key
-     * @param {*|string} record
+     * @param {object} record
      * @param {function(err)} callback
      */
     insertRecord(tableName, key, record, callback){

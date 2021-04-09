@@ -25,25 +25,23 @@ function ProductService(domain, strategy){
 
     /**
      * Creates a {@link Product} DSU
-     * @param {Product} product
+     * @param {Product|string} product
      * @param {function(err, keySSI)} callback
      */
     this.create = function(product, callback){
 
-        let data = typeof product === 'object' ? JSON.stringify(product) : product;
+        product = typeof product === 'object' ? product : new Product(JSON.parse(product));
         // if product is invalid, abort immediatly.
-        if (typeof product === 'object') {
-            let err = product.validate();
-            if (err)
-                return callback(err);
-        }
+        let err = product.validate();
+        if (err)
+            return callback(err);
 
         if (isSimple){
             let keySSI = this.generateKey(product.gtin);
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);
-                dsu.writeFile('/info', data, (err) => {
+                dsu.writeFile('/info', JSON.stringify(product), (err) => {
                     if (err)
                         return callback(err);
                     dsu.getKeySSIAsObject((err, keySSI) => {
@@ -64,7 +62,7 @@ function ProductService(domain, strategy){
             }
 
             utils.getDSUService().create(domain, getEndpointData(product), (builder, cb) => {
-                builder.addFileDataToDossier("/info", data, cb);
+                builder.addFileDataToDossier("/info", JSON.stringify(product), cb);
             }, callback);
         }
     };

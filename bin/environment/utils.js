@@ -20,9 +20,9 @@ function generateProductName() {
     const suffixes = ['gix', 'don', 'gix', 'fen', 'ron', 'tix'];
     const name = [];
 
-    let syllableCount = Math.floor(Math.random() * 6) + 1;
+    let syllableCount = Math.floor(Math.random() * 4) + 2;
     while (syllableCount >= 0){
-        name.push(syllables[Math.floor(Math.random() * syllableCount.length)]);
+        name.push(syllables[Math.floor(Math.random() * syllables.length)]);
         syllableCount --;
     }
     name.push(suffixes[Math.floor(Math.random() * suffixes.length)]);
@@ -42,9 +42,41 @@ function generateBatchNumber(){
     return batchNumber.join('');
 }
 
+function impersonateDSUStorage(dsu){
+    dsu.directAccessEnabled = false;
+    dsu.enableDirectAccess = (callback) => callback();
+
+    const setObject = function(path, data, callback) {
+        try {
+            dsu.writeFile(path, JSON.stringify(data), callback);
+        } catch (e) {
+            callback(createOpenDSUErrorWrapper("setObject failed", e));
+        }
+    }
+
+    const getObject = function(path, callback) {
+        dsu.readFile(path, (err, data) => {
+           if (err)
+               return callback(createOpenDSUErrorWrapper("getObject failed" ,err));
+
+           try{
+               data = JSON.parse(data);
+           } catch (e){
+               return callback(createOpenDSUErrorWrapper(`Could not parse JSON ${data.toString()}`, e));
+           }
+           callback(undefined, data);
+        });
+    }
+
+    dsu.getObject = getObject;
+    dsu.setObject = setObject;
+    return dsu;
+ }
+
 module.exports = {
     generateProductName,
     generateGtin,
     generateBatchNumber,
-    genDate
+    genDate,
+    impersonateDSUStorage
 }

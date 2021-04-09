@@ -37,7 +37,7 @@ class Message{
  * @param {string} didString
  * @param {function(Message)} [onNewMessage] defaults to a console log
  * @module managers
- * @class Manager
+ * @class MessageManager
  */
 class MessageManager extends Manager{
     constructor(baseManager, didString){
@@ -69,7 +69,7 @@ class MessageManager extends Manager{
     }
 
     _saveToInbox(message, callback){
-        this.insertRecord(Date.now().toISOString(), JSON.stringify(message), callback);
+        this.insertRecord(Date.now().toISOString(), message, callback);
     }
 
     /**
@@ -116,13 +116,15 @@ class MessageManager extends Manager{
             did.readMessage((err, message) => {
                 if (err){
                     console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
-                    self._startMessageListener(did);
+                    return self._startMessageListener(did);
                 }
 
-                self._receiveMessage(message, (err, message) => err
-                    ? createOpenDSUErrorWrapper(`Failed to receive message`, err)
-                    : console.log(`Message received ${message}`));
-                self._startMessageListener(did);
+                self._receiveMessage(message, (err, message) => {
+                    if (err)
+                        console.log(createOpenDSUErrorWrapper(`Failed to receive message`, err));
+                    console.log(`Message received ${message}`);
+                    self._startMessageListener(did);
+                });
             });
         }, MESSAGE_REFRESH_RATE);
     }

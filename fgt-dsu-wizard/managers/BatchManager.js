@@ -21,8 +21,8 @@ const Batch = require('../model').Batch;
 class BatchManager extends Manager{
     constructor(participantManager) {
         super(participantManager, DB.batches);
-        this.productService = new (require('wizard').Services.ProductService)(ANCHORING_DOMAIN);
-        this.batchService = new (require('wizard').Services.BatchService)(ANCHORING_DOMAIN);
+        this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
+        this.batchService = new (require('../services/BatchService'))(ANCHORING_DOMAIN);
         this._getBatch = super._getDSUInfo;
     }
 

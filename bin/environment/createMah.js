@@ -4,7 +4,8 @@ const path = require('path');
 
 require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
 const dt = require('./../../pdm-dsu-toolkit/services/dt');
-const { getParticipantManager, getProductManager } = require('../../fgt-dsu-wizard/managers');
+const { getParticipantManager, getProductManager, getBatchManager } = require('../../fgt-dsu-wizard/managers');
+const { impersonateDSUStorage } = require('./utils');
 
 const defaultOps = {
     app: "fgt-mah-wallet",
@@ -90,13 +91,13 @@ const getEnvJs = function(app, callback){
 
 const setupProducts = function(participantManager, callback){
     const productManager = getProductManager(participantManager);
-    const getProducts = require('./products/products1');
+    const getProducts = require('./products/productsRandom');
     const products = getProducts();
     const iterator = function(productsCopy, callback){
         const product = productsCopy.shift();
         if (!product){
-            console.log(`${product.length} products created`);
-            callback(undefined, products);
+            console.log(`${products.length} products created`);
+            return callback(undefined, products);
         }
         productManager.create(product, (err, keySSI, path) => {
             if (err)
@@ -107,23 +108,50 @@ const setupProducts = function(participantManager, callback){
     iterator(products.slice(), callback);
 }
 
-const setupBatches = function(participantManager, callback){
-    const productManager = getProductManager(participantManager);
-    const getProducts = require('./products/products1');
-    const products = getProducts();
-    const iterator = function(productsCopy, callback){
+const setupBatches = function(participantManager, products, callback){
+    const batchManager = getBatchManager(participantManager);
+    const getBatches = require('./batches/batchesRandom');
+
+    const batchesObject = {};
+
+    const productIterator = function(productsCopy, callback){
         const product = productsCopy.shift();
-        if (!product){
-            console.log(`${product.length} products created`);
-            callback(undefined, products);
+        if (!product)
+            return callback(undefined, batchesObject);
+
+        const batches = getBatches();
+
+        const batchIterator = function(gtin, batchesCopy, callback){
+            const batch = batchesCopy.shift();
+            if (!batch){
+                console.log(`${batches.length} batches created for ${gtin}`);
+                return callback(undefined, batches);
+            }
+            batchManager.create(gtin, batch, (err, keySSI, path) => {
+                if (err)
+                    return callback(err);
+                batchIterator(gtin, batchesCopy, callback);
+            });
         }
-        productManager.create(product, (err, keySSI, path) => {
+
+        batchIterator(batches.slice(), (err, batches) => {
             if (err)
                 return callback(err);
-            iterator(productsCopy, callback);
+            batchesObject[product.gtin] = batches;
+            productIterator(productsCopy, callback);
         });
     }
-    iterator(products.slice(), callback);
+
+    productIterator(products.slice(), (err, batchesObj) => {
+        if (err)
+            return callback(err);
+        const output = [];
+        Object.keys(batchesObj).forEach(gtin =>{
+            output.push(`The following batches per gtin have been created:\nGtin: ${gtin}\nBatches: ${batchesObj[gtin].join(', ')}`);
+        });
+        console.log(output.join('\n'));
+        callback(undefined, batchesObj);
+    });
 }
 
 const instantiateSSApp = function(callback){
@@ -142,22 +170,28 @@ const instantiateSSApp = function(callback){
             if (err)
                 throw err;
             console.log(`App ${env.appName} created with credentials ${JSON.stringify(credentials, undefined, 2)}.\nSSI: ${{keySII}}`);
-            callback(undefined, keySII, dsu);
+            callback(undefined, keySII, dsu, credentials);
         });
     });
 }
 
-instantiateSSApp((err, walletSSI, walletDSU) => {
+instantiateSSApp((err, walletSSI, walletDSU, credentials) => {
     if (err)
         throw err;
-    const dsu = walletDSU.getWritableDSU();
-    getParticipantManager(dsu, (err, participantManager) => {
+    const dsuStorage = impersonateDSUStorage(walletDSU.getWritableDSU());
+    getParticipantManager(dsuStorage, (err, participantManager) => {
         if (err)
             throw err;
-        setupProducts(participantManager, (err, productSSIs) => {
+        setupProducts(participantManager, (err, products) => {
             if (err)
                 throw err;
-
+            setupBatches(participantManager, products, (err, batches) => {
+                if (err)
+                    throw err;
+                console.log(`${conf.app} instantiated\ncredentials:`);
+                console.log(credentials)
+                console.log(`ID: ${credentials.id.secret}`);
+            });
         });
     });
 });

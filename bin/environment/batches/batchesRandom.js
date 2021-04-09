@@ -9,7 +9,7 @@ const genBatch = function(){
     });
 }
 
-const getBatches = () => new Array(Math.floor(Math.random() * 11)).map(n => genBatch());
+const getBatches = () => Array.from(new Array(Math.floor(Math.random() * 11)).keys()).map(n => genBatch());
 
 
 module.exports = getBatches;
