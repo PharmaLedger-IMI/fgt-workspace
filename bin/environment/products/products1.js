@@ -1,13 +1,17 @@
 const Product = require('../../../fgt-dsu-wizard/model/Product');
-
-
+const { generateProductName, generateGtin } = require('./../utils');
 const products = [];
 
-const genProduct = function(index){
+const genProduct = function(){
+    const name = generateProductName();
     const product = new Product({
-        gtin: Math.floor(Math.random() * 999999999999),
-
-    })
+        gtin: generateGtin(),
+        name: name,
+        description: `This is the description for ${name}`
+    });
 }
+
+[10].forEach(n => products.push(genProduct()));
+
 
 module.exports = products;

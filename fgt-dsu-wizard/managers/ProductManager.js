@@ -27,6 +27,12 @@ class ProductManager extends Manager {
         this._getProduct = super._getDSUInfo;
     }
 
+    /**
+     * Binds the {@link Product#manufName} to the Product
+     * @param {Product} product
+     * @param {function(err, Product)} callback
+     * @private
+     */
     _bindMah(product, callback){
         let self = this;
         self.getIdentity((err, mah) => {
@@ -40,7 +46,7 @@ class ProductManager extends Manager {
     /**
      * Reads the Product (parsed from the json at the {@link INFO_PATH}) from DSU from the provided KeySSI
      * @param {string|KeySSI} keySSI
-     * @param {function(err, Product)} callback
+     * @param {function(err, Product, Archive)} callback
      * @see Manager#_getDSUInfo
      * @private
      */
@@ -75,7 +81,7 @@ class ProductManager extends Manager {
      * reads ssi for that gtin in the db. loads is and reads the info at '/info'
      * @param {string} gtin
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
-     * @param {function(err, Product|KeySSI)} callback returns the Product if readDSU, the keySSI otherwise
+     * @param {function(err, Product|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
      */
     getOne(gtin, readDSU,  callback) {
         if (!callback){
@@ -104,24 +110,24 @@ class ProductManager extends Manager {
 
     /**
      * updates a product from the list
-     * @param {Product} product
-     * @param {function(err)} callback
+     * @param {Product} newProduct
+     * @param {function(err, Product, Archive)} callback
      */
-    update(product, callback){
+    update(newProduct, callback){
         let self = this;
-        self.getRecord(product.gtin, (err, record) => {
+        self.getRecord(newProduct.gtin, (err, record) => {
             if (err)
-                return self._err(`Unable to retrieve record ${gtin} from table ${this.tableName}`);
-            self._getProduct(record, (err, product) => {
+                return self._err(`Unable to retrieve record ${gtin} from table ${this.tableName}`, err, callback);
+            self._getProduct(record, (err, product, dsu) => {
                 if (err)
-                    return self._err()
-            })
-        })
-        self.updateRecord(product.gtin, product, (err) => {
-            if (err)
-                return self._err(`Unable to update product with gtin ${product.gtin}`, err, callback);
-            console.log(`Product ${gtin} updated`);
-            callback();
+                    return self._err(`unable to get Product with ${gtin} from SSI ${record}`, err, callback);
+                dsu.writeFile(INFO_PATH, JSON.stringify(newProduct), (err) => {
+                    if (err)
+                        return self._err(`Could not update product ${newProduct.gtin} with ${JSON.stringify(newProduct)}`, err, callback);
+                    console.log(`Product ${gtin} updated`);
+                    callback(undefined, newProduct, dsu)
+                });
+            });
         });
     }
 

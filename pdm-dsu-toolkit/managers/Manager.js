@@ -61,23 +61,23 @@ class Manager{
      * will be binded as the one from participant manager on initialization
      * @param {function(err, identity)} callback
      */
-    getIdentity(callback);
+    getIdentity(callback){};
 
     /**
      * will be binded as the one from participant manager on initialization
      */
-    _getResolver();
+    _getResolver(){};
 
     /**
      * will be binded as the one from participant manager on initialization
      */
-    _getKeySSISpace();
+    _getKeySSISpace(){};
 
     /**
      * will be binded as the one from participant manager on initialization
      * @param {string|KeySSI} keySSI
      */
-    _loadDSU(keySSI);
+    _loadDSU(keySSI){};
     /**
      * Wrapper around OpenDSU's error wrapper
      * @param {string} message
@@ -86,7 +86,7 @@ class Manager{
      * @protected
      * @see _err
      */
-    _err(message, err, callback);
+    _err(message, err, callback){};
 
     /**
      * @return {string} the tableName passed in the constructor
@@ -102,7 +102,7 @@ class Manager{
     /**
      * Util function that loads a dsu and reads and JSON parses from the dsu's {@link INFO_PATH}
      * @param {string|KeySSI} keySSI
-     * @param {function(err, object)} callback
+     * @param {function(err, object, Archive)} callback
      * @protected
      */
     _getDSUInfo(keySSI, callback){
@@ -118,7 +118,7 @@ class Manager{
                 } catch (e) {
                     return self._err(`Could not parse dsu data ${data.toString()}`, err, callback);
                 }
-                callback(undefined, data);
+                callback(undefined, data, dsu);
             });
         });
     }

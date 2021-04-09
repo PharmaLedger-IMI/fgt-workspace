@@ -40,7 +40,7 @@ class BatchManager extends Manager{
     /**
      * Reads the Batch (parsed from the json at the {@link INFO_PATH}) from DSU from the provided KeySSI
      * @param {string|KeySSI} keySSI
-     * @param {function(err, Batch)} callback
+     * @param {function(err, Batch, Archive)} callback
      * @see Manager#_getDSUInfo
      * @private
      */
@@ -75,7 +75,7 @@ class BatchManager extends Manager{
      * @param {string|number} gtin
      * @param {string|number} batchNumber
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
-     * @param {function(err, Batch|KeySSI)} callback returns the batch if readDSU, the keySSI otherwise
+     * @param {function(err, Batch|KeySSI, Archive)} callback returns the batch if readDSU, the keySSI otherwise
      */
     getOne(gtin, batchNumber, readDSU, callback){
         if (!callback){
@@ -113,23 +113,36 @@ class BatchManager extends Manager{
     }
 
     /**
-     * Edits/Overwrites the product details
-     * @param {string} gtin
-     * @param {string} batchNumber
-     * @param {function(err)} callback
+     * updates a Batch from the list
+     * @param {string|number} gtin
+     * @param {Batch} newBatch
+     * @param {function(err, Batch, Archive)} callback
      */
-    edit(gtin, batchNumber,  callback) {
-        super.initialize(() => {
-            let mount_path = this._getMountPath(gtin, batchNumber);
-            this.storage.writeFile(`${mount_path}${INFO_PATH}`, (err) => {
+    update(gtin, newBatch, callback){
+        let self = this;
+        let dbKey = self._genCompostKey(gtin, newBatch.batchNumber);
+        self.getRecord(dbKey, (err, record) => {
+            if (err)
+                return self._err(`Unable to retrieve record ${gtin} from table ${this.tableName}`, err, callback);
+            self._getBatch(record, (err, batch, dsu) => {
                 if (err)
-                    return callback(err);
-                console.log(`Product ${gtin} updated`);
-                callback();
+                    return self._err(`unable to get Batch with ${dbKey} from SSI ${record}`, err, callback);
+                dsu.writeFile(INFO_PATH, JSON.stringify(newBatch), (err) => {
+                    if (err)
+                        return self._err(`Could not update Batch ${dbKey} with ${JSON.stringify(newBatch)}`, err, callback);
+                    console.log(`Batch ${newBatch.batchNumber} for Product ${gtin} updated`);
+                    callback(undefined, newBatch, dsu)
+                });
             });
         });
     }
 
+    /**
+     * Lists all registered batches for the given gtin
+     * @param {string|number} gtin
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
+     * @param {function(err, Batch[])} callback
+     */
     getAll(gtin, readDSU, callback){
         if (!callback){
             callback = readDSU;
