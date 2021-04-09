@@ -4,9 +4,6 @@
     </ion-toolbar>
 </ion-header>
 <ion-item>
-    <div slot="end" data-if="@id.error">
-        <ion-note position="stacked" slot="end" color="danger" name="note-id">{{ @id.error }}</ion-note>
-    </div>
     <ion-label>{{ @id.label }}</ion-label>
     <ion-input name="input-id" data-view-model="@id"></ion-input>
 </ion-item>

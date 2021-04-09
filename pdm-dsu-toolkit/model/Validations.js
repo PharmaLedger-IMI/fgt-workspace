@@ -424,6 +424,30 @@ const bindIonicValidation = function(controller, onValidModel, onInvalidModel, p
         if (onInvalidModel)
             onInvalidModel.apply(controller);
     });
+
+    controller.on('input-has-changed', _handleErrorElement.bind(controller));
+}
+
+const _handleErrorElement = function(evt){
+    let name = evt.detail;
+    let attributes = this.model.toObject()[name];
+    let errorEl = this.element.querySelector(`ion-note[name="note-${name}"]`);
+    if (attributes.error){
+        if (errorEl){
+            errorEl.innerHTML = attributes.error;
+        } else {
+            errorEl = document.createElement('ion-note');
+            errorEl.setAttribute('position', 'stacked');
+            errorEl.setAttribute('slot', 'end');
+            errorEl.setAttribute('color', 'danger');
+            errorEl.setAttribute('name', `note-${name}`)
+            errorEl.innerHTML = attributes.error;
+            let htmlEl = this.element.querySelector(`ion-item ion-input[name="input-${name}"]`);
+            htmlEl.insertAdjacentElement('afterend', errorEl);
+        }
+    } else if (errorEl) {
+        errorEl.remove();
+    }
 }
 
 /**

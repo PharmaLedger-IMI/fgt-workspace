@@ -25,7 +25,6 @@ export default class FormController extends LocalizedController {
             self.onTagClick(`try${b[0]}`, self._handleTry(`${b[0]}`).bind(self));
         });
 
-        self.on('input-has-changed', self._handleErrorElement.bind(self));
         self._createModalForm(this.getModel());
     }
 
@@ -49,28 +48,6 @@ export default class FormController extends LocalizedController {
             .filter(e => typeof e.attributes === 'object');
         const inputs = fields.filter(f => f.name !== 'buttons');
         this._defineElements(inputs);
-    }
-
-    _handleErrorElement(evt){
-        let name = evt.detail;
-        let attributes = this.model.toObject()[name];
-        let errorEl = this.element.querySelector(`ion-note[name="note-${name}"]`);
-        if (attributes.error){
-            if (errorEl){
-                errorEl.innerHTML = attributes.error;
-            } else {
-                errorEl = document.createElement('ion-note');
-                errorEl.setAttribute('position', 'stacked');
-                errorEl.setAttribute('slot', 'end');
-                errorEl.setAttribute('color', 'danger');
-                errorEl.setAttribute('name', `note-${name}`)
-                errorEl.innerHTML = attributes.error;
-                let htmlEl = this.element.querySelector(`ion-item ion-input[name="input-${name}"]`);
-                htmlEl.insertAdjacentElement('afterend', errorEl);
-            }
-        } else if (errorEl) {
-            errorEl.remove();
-        }
     }
 
     _defineElements(inputs){
