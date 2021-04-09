@@ -25,14 +25,13 @@ export default class IssuedOrderController extends LocalizedController {
 
     _setupBlankOrder() {
         let self = this;
-        let orderModel = self.getModel();
         self.participantManager.getIdentity( (err, participant) => {
             if (err) {
                 return self.showErrorToast(err);
             }
-            orderModel.orderId = Math.floor(Math.random() * Math.floor(99999999999)); // TODO sequential unique numbering ? It should comes from the ERP anyway.
-            orderModel.requestorId = participant.id;
-            orderModel.shippingAddress = participant.address;
+            self.model.orderId = Math.floor(Math.random() * Math.floor(99999999999)); // TODO sequential unique numbering ? It should comes from the ERP anyway.
+            self.model.requestorId = participant.id;
+            self.model.shippingAddress = participant.address;
         });
     }
 }
