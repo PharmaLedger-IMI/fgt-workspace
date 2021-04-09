@@ -33,7 +33,6 @@ class DefineCommand extends Command {
 
         callback(undefined, {
             varName: command.shift(),
-            from: command.shift().replace('from',''),
             command: command
         });
     }
@@ -51,34 +50,31 @@ class DefineCommand extends Command {
             options = undefined;
         }
         let self = this;
+        const _getByName = require('./Registry');
 
-        if (arg.from === VAR){
+        if (!_getByName(arg.command[0])){
             this.varStore.define(arg.varName, arg.command);
             console.log(`Define executed: ${arg.command}`);
             return callback(undefined, bar);
         }
 
-        if (arg.from === CMD) {
-            const parseCommand = function(command, callback){
-                const cmdName = command.shift();
-                const _getByName = require('./Registry');
-                const actualCmd = _getByName(cmdName);
-                if (!actualCmd)
-                    return callback(`Could not find command`);
-                callback(undefined, cmdName, actualCmd, command);
-            }
-
-            return parseCommand(arg.command, (err, cmdName, command, args) => err
-                ? _err(`Could not parse Command`, err, callback)
-                : new (command)(self.varStore, self.source).execute(args, bar, (err, result) => {
-                    if (err)
-                        return _err(`Could not obtain result`, err, callback);
-                    this.varStore.define(arg.varName, result);
-                    console.log(`Define executed: ${result}`);
-                    callback(undefined, bar);
-                }));
+        const parseCommand = function(command, callback){
+            const cmdName = command.shift();
+            const actualCmd = _getByName(cmdName);
+            if (!actualCmd)
+                return callback(`Could not find command`);
+            callback(undefined, cmdName, actualCmd, command);
         }
-        callback(`Could not recognize define statement`);
+
+        return parseCommand(arg.command, (err, cmdName, command, args) => err
+            ? _err(`Could not parse Command`, err, callback)
+            : new (command)(self.varStore, self.source).execute(args, bar, (err, result) => {
+                if (err)
+                    return _err(`Could not obtain result`, err, callback);
+                this.varStore.define(arg.varName, result);
+                console.log(`Define executed: ${result}`);
+                callback(undefined, bar);
+            }));
     }
 }
 

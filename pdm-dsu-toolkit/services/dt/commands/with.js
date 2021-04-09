@@ -35,7 +35,7 @@ class WithCommand extends Command {
     _parseCommand(command, next, callback) {
         if (!next)
             throw new Error("No next defined");
-        const commandsToConsider = [command.shift(), command];
+        const commandsToConsider = [command];
         let cmd;
         let count = 0;
         while (!this._isEndCommand((cmd = next.shift())) && count === 0){
@@ -76,10 +76,10 @@ class WithCommand extends Command {
             callback = bar;
             bar = undefined;
         }
+        const _getByName = require('./Registry');
 
         const parseCommand = function(command, callback){
             const cmdName = command.shift();
-            const _getByName = require('./Registry');
             const actualCmd = _getByName(cmdName);
             if (!actualCmd)
                 return callback(`Could not find command`);
@@ -104,24 +104,22 @@ class WithCommand extends Command {
             });
         }
 
-        const withType = arg.shift();
+        const cmdOrVar = arg[0][0];
+        const cmd = _getByName(cmdOrVar);
 
-        if (withType === VAR){
-            console.log(`With ${withType} executed: ${arg[0]}`);
+        if (!cmd){
+            console.log(`With VARIABLE executed: ${arg[0]}`);
             return performWith(arg.shift().shift(), arg, callback);
         }
 
-        if (withType === CMD)
-            return parseCommand(arg.shift(), (err, cmdName, command, args) => err
-                ? _err(`Could not parse Command`, err, callback)
-                : new (command)(self.varStore, self.source).execute(args, (err, result) => {
-                    if (err)
-                        return _err(`Could not obtain result`, err, callback);
-                    console.log(`With ${withType} executed: ${JSON.stringify(result)}`);
-                    performWith(result, arg, callback);
-                }));
-
-        return callback(`Invalid WITH type. Should be var or cmd`);
+        parseCommand(arg.shift(), (err, cmdName, command, args) => err
+            ? _err(`Could not parse Command`, err, callback)
+            : new (command)(self.varStore, self.source).execute(args, (err, result) => {
+                if (err)
+                    return _err(`Could not obtain result`, err, callback);
+                console.log(`With COMMAND executed: ${JSON.stringify(result)}`);
+                performWith(result, arg, callback);
+            }));
     }
 }
 

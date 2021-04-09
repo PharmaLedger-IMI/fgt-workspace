@@ -11,7 +11,7 @@ let testName = 'Application Builder test';
 const defaultOps = {
     timeout: 30000000,
     fakeServer: false,
-    app: "fgt-wholesaler-wallet",
+    app: "fgt-mah-wallet",
     pathToApps: "../../"
 }
 

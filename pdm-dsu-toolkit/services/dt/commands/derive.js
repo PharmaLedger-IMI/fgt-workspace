@@ -24,8 +24,8 @@ class DeriveCommand extends Command{
             next = undefined;
         }
         callback(undefined, command
-            ? (command === 'true' || command[0] === 'true')
-            : false);
+            ? !(command === 'false' || command[0] === 'false')
+            : true);
     }
 
     /**

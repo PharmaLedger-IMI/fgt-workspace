@@ -57,7 +57,9 @@ const DossierBuilder = function(sourceDSU, varStore){
      * @param callback
      */
     const writeFile = function(filePath, data, callback){
-        new (_getByName('createfile'))().execute(`${filePath} ${data}`, callback);
+        new (_getByName('createfile'))(_varStore).execute([filePath, data], (err) => err
+            ? callback(err)
+            : callback(undefined, data));
     }
 
     /**
@@ -112,7 +114,7 @@ const DossierBuilder = function(sourceDSU, varStore){
     };
 
     /**
-     * Run a sequence of {@link OPERATIONS} on the DSU
+     * Run a sequence of {@link Command}s on the DSU
      * @param {Archive} bar
      * @param {object} cfg
      * @param {string[]} commands

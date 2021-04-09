@@ -27,6 +27,7 @@ class CreateFileCommand extends Command{
      * @protected
      */
     _parseCommand(command, next, callback){
+        command = typeof command === 'string' ? command.split(' ') : command;
         callback(undefined,  {
             path: command.shift(),
             content: command.join(' ')
