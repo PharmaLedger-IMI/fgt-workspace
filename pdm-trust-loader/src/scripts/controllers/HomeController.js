@@ -113,8 +113,8 @@ export default class HomeController extends LocalizedController {
             disableFooter: true,
             disableHeader: true,
             disableExpanding: true,
-            disableClosing: false,
-            disableCancelButton: false,
+            disableClosing: true,
+            disableCancelButton: true,
             expanded: false,
             centered: true
         });

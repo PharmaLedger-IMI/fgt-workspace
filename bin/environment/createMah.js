@@ -88,14 +88,42 @@ const getEnvJs = function(app, callback){
     });
 }
 
-const setupProducts = function(participantManager){
+const setupProducts = function(participantManager, callback){
     const productManager = getProductManager(participantManager);
-    const products = require('./products/products1');
-    const iterator = function(products, callback){
-        const product = products.shift();
-
+    const getProducts = require('./products/products1');
+    const products = getProducts();
+    const iterator = function(productsCopy, callback){
+        const product = productsCopy.shift();
+        if (!product){
+            console.log(`${product.length} products created`);
+            callback(undefined, products);
+        }
+        productManager.create(product, (err, keySSI, path) => {
+            if (err)
+                return callback(err);
+            iterator(productsCopy, callback);
+        });
     }
-    productManager.create()
+    iterator(products.slice(), callback);
+}
+
+const setupBatches = function(participantManager, callback){
+    const productManager = getProductManager(participantManager);
+    const getProducts = require('./products/products1');
+    const products = getProducts();
+    const iterator = function(productsCopy, callback){
+        const product = productsCopy.shift();
+        if (!product){
+            console.log(`${product.length} products created`);
+            callback(undefined, products);
+        }
+        productManager.create(product, (err, keySSI, path) => {
+            if (err)
+                return callback(err);
+            iterator(productsCopy, callback);
+        });
+    }
+    iterator(products.slice(), callback);
 }
 
 const instantiateSSApp = function(callback){

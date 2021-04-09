@@ -1,4 +1,10 @@
 
+function genDate(offsetFromToday){
+    let date = new Date();
+    date.setDate(date.getDate() + offsetFromToday);
+    return date;
+}
+
 function generateGtin(){
     function pad(n, width, padding) {
         padding = padding || '0';
@@ -39,5 +45,6 @@ function generateBatchNumber(){
 module.exports = {
     generateProductName,
     generateGtin,
-    generateBatchNumber
+    generateBatchNumber,
+    genDate
 }
