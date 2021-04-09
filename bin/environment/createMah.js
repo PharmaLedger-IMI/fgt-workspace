@@ -4,7 +4,6 @@ const path = require('path');
 
 require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
 const dt = require('./../../pdm-dsu-toolkit/services/dt');
-const { getResolver, getKeySSISpace } = require('./../../fgt-dsu-wizard/services').utils;
 const { getParticipantManager, getProductManager } = require('../../fgt-dsu-wizard/managers');
 
 const defaultOps = {
@@ -89,13 +88,14 @@ const getEnvJs = function(app, callback){
     });
 }
 
-const getParticipantManager = function(dsu, callback){
-    getParticipantManager(dsu);
-    participantManager.
-}
-
 const setupProducts = function(participantManager){
+    const productManager = getProductManager(participantManager);
+    const products = require('./products/products1');
+    const iterator = function(products, callback){
+        const product = products.shift();
 
+    }
+    productManager.create()
 }
 
 const instantiateSSApp = function(callback){
@@ -123,11 +123,14 @@ instantiateSSApp((err, walletSSI, walletDSU) => {
     if (err)
         throw err;
     const dsu = walletDSU.getWritableDSU();
-    setupProducts(dsu, (err, productSSIs) => {
+    getParticipantManager(dsu, (err, participantManager) => {
         if (err)
             throw err;
+        setupProducts(participantManager, (err, productSSIs) => {
+            if (err)
+                throw err;
 
-
+        });
     });
 });
 

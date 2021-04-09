@@ -75,6 +75,7 @@ class BaseManager {
         this.messenger = undefined;
         this._getResolver = getResolver;
         this._getKeySSISpace = getKeySSISpace;
+        this._err = _err;
         this._initialize((err) => {
             if (err){
                 console.log(`Could not initialize base manager ${err}`);
@@ -113,7 +114,7 @@ class BaseManager {
         self.DSUStorage.enableDirectAccess(() => {
             self.rootDSU = self.DSUStorage;
             self.getIdentity((err, identity) => err
-                ? _err(`Could not get Identity`, err, callback)
+                ? self._err(`Could not get Identity`, err, callback)
                 : self._cacheRelevant(callback, identity));
         });
     };
@@ -130,7 +131,7 @@ class BaseManager {
         let self = this;
         this.rootDSU.listMountedDSUs('/', (err, mounts) => {
             if (err)
-                return _err(`Could not list mounts in root DSU`, err, callback);
+                return self._err(`Could not list mounts in root DSU`, err, callback);
             const relevant = {};
             mounts.forEach(m => {
                 if (relevantMounts.indexOf('/' + m.path) !== -1)
@@ -154,7 +155,21 @@ class BaseManager {
         });
     }
 
+    /**
+     * @param {string|KeySSI} keySSI
+     * @param {function(err, Archive)} callback
+     * @private
+     */
     _loadDSU(keySSI, callback){
+        let self = this;
+        if (typeof keySSI === 'string'){
+            try{
+                keySSI = self._getKeySSISpace(keySSI);
+            } catch (e) {
+                return self._err(`Could not parse SSI ${keySSI}`, err, callback);
+            }
+            return self._loadDSU(keySSI, callback);
+        }
         this._getResolver().loadDSU(keySSI, callback);
     };
 
@@ -165,7 +180,7 @@ class BaseManager {
     getIdentity(callback){
         let self = this;
         self.DSUStorage.getObject(`${PARTICIPANT_MOUNT_PATH}${IDENTITY_MOUNT_PATH}${INFO_PATH}`, (err, participant) => err
-            ? _err(`Could not get identity`, err, callback)
+            ? self._err(`Could not get identity`, err, callback)
             : callback(undefined, participant));
     };
 
@@ -189,7 +204,7 @@ class BaseManager {
         let self = this;
         this._initialize(err => {
             if (err)
-                return _err(`Could not initialize`, err, callback);
+                return self._err(`Could not initialize`, err, callback);
             self.DSUStorage.setObject(`${PARTICIPANT_MOUNT_PATH}${INFO_PATH}`, JSON.stringify(participant), (err) => {
                 if (err)
                     return callback(err);
