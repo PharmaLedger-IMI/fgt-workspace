@@ -1,9 +1,9 @@
 /**
  * @module fgt-dsu-wizard.model
  */
-const Actor = require('./Participant');
+const Participant = require('./Participant');
 
-class Pharmacy extends Actor{
+class Pharmacy extends Participant{
     deliveryAddress = "";
 
     constructor(pharmacy) {
