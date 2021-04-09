@@ -16,9 +16,6 @@ export default class FormController extends LocalizedController {
 
     constructor(element, history) {
         super(element, history);
-        // let locale_key = this.model.page;
-        // if (!locale_key)
-        //     throw new Error("Missing fields info");
         let self = this;
         super.bindLocale(self, `form`, true);
 

@@ -22,7 +22,11 @@
   },
   "issuedOrder": {
     "title": "New Issued Order",
-    "id": {"label": "OrderID", "value": "x"},
+    "id": {
+      "label": "OrderID",
+      "value": "x",
+      "required": true
+    },
     "ok": "OK",
     "cancel": "Cancel"
   },

@@ -4,16 +4,11 @@
     </ion-toolbar>
 </ion-header>
 <ion-item>
-    <ion-label>
-        Order ID:
-    </ion-label>
-    <ion-input name="input-id" data-view-model="@orderId"></ion-input>
-</ion-item>
-<ion-item>
-    <ion-label>
-        Requester ID:
-    </ion-label>
-    <ion-input data-model="@requesterId"></ion-input>
+    <div slot="end" data-if="@id.error">
+        <ion-note position="stacked" slot="end" color="danger" name="note-id">{{ @id.error }}</ion-note>
+    </div>
+    <ion-label>{{ @id.label }}</ion-label>
+    <ion-input name="input-id" data-view-model="@id"></ion-input>
 </ion-item>
 <ion-footer>
     <ion-toolbar>
