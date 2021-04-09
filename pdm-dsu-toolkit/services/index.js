@@ -10,6 +10,7 @@
 module.exports = {
     DSUService: require('./DSUService'),
     WebcLocaleService: require('./WebcLocaleService'),
+    WebComponentService: require('./WebComponentService'),
     ParticipantService: require('./ParticipantService'),
     Strategy: require('./strategy')
 }

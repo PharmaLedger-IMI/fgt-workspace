@@ -32,6 +32,10 @@ export namespace Components {
     }
     interface ProductListItem {
     }
+    interface ProductListItem2 {
+        "keySSI": string;
+        "refresh": () => Promise<void>;
+    }
 }
 declare global {
     interface HTMLBarcodeGeneratorElement extends Components.BarcodeGenerator, HTMLStencilElement {
@@ -52,10 +56,17 @@ declare global {
         prototype: HTMLProductListItemElement;
         new (): HTMLProductListItemElement;
     };
+    interface HTMLProductListItem2Element extends Components.ProductListItem2, HTMLStencilElement {
+    }
+    var HTMLProductListItem2Element: {
+        prototype: HTMLProductListItem2Element;
+        new (): HTMLProductListItem2Element;
+    };
     interface HTMLElementTagNameMap {
         "barcode-generator": HTMLBarcodeGeneratorElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "product-list-item": HTMLProductListItemElement;
+        "product-list-item2": HTMLProductListItem2Element;
     }
 }
 declare namespace LocalJSX {
@@ -88,10 +99,14 @@ declare namespace LocalJSX {
          */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
     }
+    interface ProductListItem2 {
+        "keySSI"?: string;
+    }
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;
         "pdm-ion-table": PdmIonTable;
         "product-list-item": ProductListItem;
+        "product-list-item2": ProductListItem2;
     }
 }
 export { LocalJSX as JSX };
@@ -101,6 +116,7 @@ declare module "@stencil/core" {
             "barcode-generator": LocalJSX.BarcodeGenerator & JSXBase.HTMLAttributes<HTMLBarcodeGeneratorElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "product-list-item": LocalJSX.ProductListItem & JSXBase.HTMLAttributes<HTMLProductListItemElement>;
+            "product-list-item2": LocalJSX.ProductListItem2 & JSXBase.HTMLAttributes<HTMLProductListItem2Element>;
         }
     }
 }
