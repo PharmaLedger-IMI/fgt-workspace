@@ -17,14 +17,34 @@ const Product = require('../model').Product;
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
  *
- * @param {Archive} storageDSU the DSU where the storage should happen
+ * @param {ParticipantManager} participantManager
  */
-class ProductManager extends Manager{
-    constructor(baseManager) {
-        super(baseManager, DB.products);
+class ProductManager extends Manager {
+    constructor(participantManager) {
+        super(participantManager, DB.products);
         this.productService = new (require('../services').ProductService)(ANCHORING_DOMAIN);
-        this.batchManager = require('./BatchManager')(baseManager);
+        this.batchManager = require('./BatchManager')(participantManager);
+        this._getProduct = super._getDSUInfo;
     }
+
+    _bindMah(product, callback){
+        let self = this;
+        self.getIdentity((err, mah) => {
+            if (err)
+                return self._err(`Could not retrieve identity`, err, callback);
+            product.manufName = mah.id;
+            callback(undefined, product);
+        });
+    }
+
+    /**
+     * Reads the Product (parsed from the json at the {@link INFO_PATH}) from DSU from the provided KeySSI
+     * @param {string|KeySSI} keySSI
+     * @param {function(err, Product)} callback
+     * @see Manager#_getDSUInfo
+     * @private
+     */
+    _getProduct(keySSI, callback);
 
     /**
      * Creates a {@link Product} dsu
@@ -33,16 +53,20 @@ class ProductManager extends Manager{
      */
     create(product, callback) {
         let self = this;
-        self.productService.create(product, (err, keySSI) => {
+        self._bindMah(product, (err, product) => {
             if (err)
-                return callback(err);
-            const record = keySSI.getIdentifier();
-            self.storage.insertRecord(product.gtin, record, (err) => {
+                return self._err(`Could not bind mah to product`, err, callback);
+            self.productService.create(product, (err, keySSI) => {
                 if (err)
-                    return callback(err);
-                const path =`${this.tableName}/${record}`;
-                console.log(`Product ${product.gtin} created stored at '${path}'`);
-                callback(undefined, keySSI, path);
+                    return self._err(`Could not create product DSU for ${product}`, err, callback);
+                const record = keySSI.getIdentifier();
+                self.insertRecord(product.gtin, record, (err) => {
+                    if (err)
+                        return self._err(`Could not inset record with gtin ${product.gtin} on table ${self.tableName}`, err, callback);
+                    const path =`${self.tableName}/${product.gtin}`;
+                    console.log(`Product ${product.gtin} created stored at '${path}'`);
+                    callback(undefined, keySSI, path);
+                });
             });
         });
     }
@@ -50,27 +74,27 @@ class ProductManager extends Manager{
     /**
      * reads ssi for that gtin in the db. loads is and reads the info at '/info'
      * @param {string} gtin
-     * @param {function(err, Product)} callback
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
+     * @param {function(err, Product|KeySSI)} callback returns the Product if readDSU, the keySSI otherwise
      */
-    getOne(gtin, callback) {
+    getOne(gtin, readDSU,  callback) {
+        if (!callback){
+            callback = readDSU;
+            readDSU = true;
+        }
         let self = this;
         self.getRecord(gtin, (err, productSSI) => {
             if (err)
-                return callback(err);
-            const keySSI = self._getKeySSISpace().parse(productSSI);
-            self._loadDSU(keySSI, (err, dsu) => {
-                if (err)
-                    return callback(err);
-                dsu.readFile(INFO_PATH, (err, data) => err
-                    ? callback(err)
-                    : callback(undefined, new Product(JSON.parse(data))));
-            });
+                return self._err(`Could not load record with gtin ${gtin} on table ${self.tableName}`, err, callback);
+            if (!readDSU)
+                return callback(undefined, productSSI);
+            self._getProduct(productSSI, callback);
         });
     }
 
     /**
      * Removes a product from the list (does not delete/invalidate DSU, simply 'forgets' the reference)
-     * @param {string} gtin
+     * @param {string|number} gtin
      * @param {function(err)} callback
      */
     remove(gtin, callback) {
@@ -79,18 +103,58 @@ class ProductManager extends Manager{
     }
 
     /**
+     * updates a product from the list
+     * @param {Product} product
+     * @param {function(err)} callback
+     */
+    update(product, callback){
+        let self = this;
+        self.getRecord(product.gtin, (err, record) => {
+            if (err)
+                return self._err(`Unable to retrieve record ${gtin} from table ${this.tableName}`);
+            self._getProduct(record, (err, product) => {
+                if (err)
+                    return self._err()
+            })
+        })
+        self.updateRecord(product.gtin, product, (err) => {
+            if (err)
+                return self._err(`Unable to update product with gtin ${product.gtin}`, err, callback);
+            console.log(`Product ${gtin} updated`);
+            callback();
+        });
+    }
+
+    /**
      * Lists all registered products
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
      * @param {function(err, Product[])} callback
      */
-    getAll(callback) {
+    getAll(readDSU, callback) {
+        if (!callback){
+            callback = readDSU;
+            readDSU = true;
+        }
         let self = this;
-        self.query(() => true, undefined, 100, callback);
+        self.query(() => true, undefined, 100, (err, records) => {
+            if (err)
+                return self._err(`Could not perform query`, err, callback);
+            if (!readDSU)
+                return callback(undefined, records);
+            super._iterator(records.slice(), self._getProduct, (err, result) => {
+                if (err)
+                    return self._err(`Could not parse products ${JSON.stringify(records)}`, err, callback);
+                console.log(`Parsed ${result.length} products`);
+                callback(undefined, result);
+            });
+        });
     }
 
     /**
      *
      * @param model
      * @returns {Product}
+     * @override
      */
     fromModel(model){
         return new Product(super.fromModel(model));
@@ -99,12 +163,12 @@ class ProductManager extends Manager{
 
 let productManager;
 /**
- * @param {Archive} dsu
+ * @param {ParticipantManager} participantManager
  * @returns {ProductManager}
  */
-const getProductManager = function (dsu) {
+const getProductManager = function (participantManager) {
     if (!productManager)
-        productManager = new ProductManager(dsu);
+        productManager = new ProductManager(participantManager);
     return productManager;
 }
 

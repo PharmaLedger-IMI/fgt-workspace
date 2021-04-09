@@ -1,4 +1,4 @@
-const {INFO_PATH, PRODUCT_MOUNT_PATH, BATCH_MOUNT_PATH, ANCHORING_DOMAIN} = require('../constants');
+const {INFO_PATH, ANCHORING_DOMAIN, DB} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Batch = require('../model').Batch;
 
@@ -16,59 +16,55 @@ const Batch = require('../model').Batch;
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
  *
- * @param {Archive} storageDSU the DSU where the storage should happen
+ * @param {ParticipantManager} participantManager
  */
 class BatchManager extends Manager{
-    constructor(storageDSU) {
-        super(storageDSU);
+    constructor(participantManager) {
+        super(participantManager, DB.batches);
         this.productService = new (require('wizard').Services.ProductService)(ANCHORING_DOMAIN);
         this.batchService = new (require('wizard').Services.BatchService)(ANCHORING_DOMAIN);
-        this.keyCache = {};
+        this._getBatch = super._getDSUInfo;
     }
 
     /**
-     * Returns the mount path for a given gtin & batch
+     * generates the db's key for the batch
+     * @param {string|number} gtin
+     * @param {string|number} batchNumber
+     * @return {string}
      * @private
      */
-    _getMountPath(gtin, batchNumber){
-        return `${PRODUCT_MOUNT_PATH}/${gtin}${BATCH_MOUNT_PATH}/${batchNumber}`;
+    _genCompostKey(gtin, batchNumber){
+        return `${gtin}-${batchNumber}`;
     }
 
-    _getProductKey(gtin){
-        if (!this.keyCache[gtin])
-            this.keyCache[gtin] = this.productService.generateKey(gtin);
-        return this.keyCache[gtin];
-    }
-
-    _getBatchKey(gtin, batch){
-        let key = gtin + '' + batch;
-        if (!this.keyCache[key])
-            this.keyCache[key] = this.batchService.generateKey(gtin, batch);
-        return this.keyCache[key];
-    }
+    /**
+     * Reads the Batch (parsed from the json at the {@link INFO_PATH}) from DSU from the provided KeySSI
+     * @param {string|KeySSI} keySSI
+     * @param {function(err, Batch)} callback
+     * @see Manager#_getDSUInfo
+     * @private
+     */
+    _getBatch(keySSI, callback);
 
     /**
      * Creates a {@link Batch} dsu
-     * @param gtin
+     * @param {string|number} gtin
      * @param {Batch} batch
-     * @param {function(err, keySSI, keySSI)} callback first keySSI if for the batch, the second for its' product dsu
+     * @param {function(err, keySSI, string)} callback first keySSI if for the batch, the second for its' product dsu
      */
     create(gtin, batch, callback) {
-        this.batchService.create(gtin, batch, (err, keySSI) => {
+        let self = this;
+        self.batchService.create(gtin, batch, (err, keySSI) => {
             if (err)
                 return callback(err);
-            console.log(`Batch ${batch.batchNumber} created for product '${gtin}'`);
-            let key = this._getProductKey(gtin);
-            super.loadDSU(key, (err, dsu) => {
+            const record = keySSI.getIdentifier();
+            const dbKey = self._genCompostKey(gtin, batch.batchNumber);
+            self.insertRecord(dbKey, record, (err) => {
                 if (err)
-                    return callback(err);
-                let path = `${BATCH_MOUNT_PATH}/${batch.batchNumber}`
-                dsu.mount(path, keySSI.getIdentifier(), (err) => {
-                    if (err)
-                        return callback(err);
-                    console.log(`Batch ${batch.batchNumber} mounted at '${path}' for product ${gtin}`);
-                    callback(undefined, keySSI, key);
-                });
+                    return self._err(`Could not inset record with gtin ${gtin} and batch ${batch.batchNumber} on table ${self.tableName}`, err, callback);
+                const path =`${self.tableName}/${dbKey}`;
+                console.log(`batch ${batch.batchNumber} created stored at '${path}'`);
+                callback(undefined, keySSI, path);
             });
         });
     }
@@ -76,31 +72,35 @@ class BatchManager extends Manager{
     /**
      * reads the specific Batch information from a given gtin (if exists and is registered to the mah)
      *
-     * @param {string} gtin
-     * @param {string} batchNumber
-     * @param {function(err, Batch)} callback
+     * @param {string|number} gtin
+     * @param {string|number} batchNumber
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
+     * @param {function(err, Batch|KeySSI)} callback returns the batch if readDSU, the keySSI otherwise
      */
-    getOne(gtin, batchNumber, callback){
-        this.storage.getObject(this._getMountPath(gtin, batchNumber), (err, batch) => {
+    getOne(gtin, batchNumber, readDSU, callback){
+        if (!callback){
+            callback = readDSU;
+            readDSU = true;
+        }
+        let self = this;
+        self.getRecord(self._genCompostKey(gtin, batchNumber), (err, batchSSI) => {
             if (err)
-                return callback(err);
-            callback(undefined, batch);
+                return self._err(`Could not load record with gtin ${gtin} and batchNumber ${batchNumber} on table ${self.tableName}`, err, callback);
+            if (!readDSU)
+                return callback(undefined, batchSSI);
+            self._getBatch(batchSSI, callback);
         });
     }
 
     /**
      * Removes a product from the list (does not delete/invalidate DSU, simply 'forgets' the reference)
-     * @param {string} gtin
+     * @param {string|number} gtin
+     * @param {string|number} batchNumber
      * @param {function(err)} callback
      */
-    remove(gtin, callback) {
-        let mount_path = this._getMountPath(gtin);
-        this.storage.unmount(mount_path, (err) => {
-            if (err)
-                return callback(err);
-            console.log(`Product ${gtin} removed from mount point ${mount_path}`);
-            callback();
-        });
+    remove(gtin, batchNumber, callback) {
+        let self = this;
+        self.deleteRecord(self._genCompostKey(gtin, batchNumber), callback);
     }
 
     /**
@@ -109,11 +109,7 @@ class BatchManager extends Manager{
      * @returns {Batch}
      */
     fromModel(model){
-        return new Batch({
-            batchNumber: model.batchNumber.value,
-            expiry: model.expiry.value,
-            serialNumbers: JSON.parse(JSON.stringify(model.serialNumbers.value))
-        });
+        return new Batch(super.fromModel(model));
     }
 
     /**
@@ -134,22 +130,23 @@ class BatchManager extends Manager{
         });
     }
 
-    getAll(gtin, callback){
+    getAll(gtin, readDSU, callback){
+        if (!callback){
+            callback = readDSU;
+            readDSU = true;
+        }
         let self = this;
-        let key = this._getProductKey(gtin);
-        this.loadDSU(key, (err, dsu) => {
-           if (err)
-               return callback(err);
-           dsu.listMountedDSUs(BATCH_MOUNT_PATH, (err, mounts) => {
-               if (err)
-                   return callback(err);
-               mounts = mounts.map(m => {
-                   m.batchNumber = m.path;
-                   m.path = self._getMountPath(gtin, m.path);
-                   return m;
-               });
-               super.readAll(mounts, callback);
-           });
+        self.query(() => true, undefined, 100, (err, records) => {
+            if (err)
+                return self._err(`Could not perform query`, err, callback);
+            if (!readDSU)
+                return callback(undefined, records);
+            super._iterator(records.slice(), self._getBatch, (err, result) => {
+                if (err)
+                    return self._err(`Could not parse batches ${JSON.stringify(records)}`, err, callback);
+                console.log(`Parsed ${result.length} batches`);
+                callback(undefined, result);
+            });
         });
     }
 }
