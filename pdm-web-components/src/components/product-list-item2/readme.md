@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property | Attribute   | Description | Type     | Default     |
-| -------- | ----------- | ----------- | -------- | ----------- |
-| `keySSI` | `key-s-s-i` |             | `string` | `undefined` |
+| Property    | Attribute   | Description | Type     | Default            |
+| ----------- | ----------- | ----------- | -------- | ------------------ |
+| `manager`   | `manager`   |             | `string` | `"ProductManager"` |
+| `reference` | `reference` |             | `string` | `undefined`        |
 
 
 ## Methods

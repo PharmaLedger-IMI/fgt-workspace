@@ -7,14 +7,25 @@
 
 ## Properties
 
-| Property    | Attribute    | Description | Type     | Default             |
-| ----------- | ------------ | ----------- | -------- | ------------------- |
-| `tableTile` | `table-tile` |             | `string` | `'PDM Ionic Table'` |
+| Property            | Attribute             | Description                 | Type      | Default             |
+| ------------------- | --------------------- | --------------------------- | --------- | ------------------- |
+| `canQuery`          | `can-query`           |                             | `boolean` | `false`             |
+| `currentPage`       | `current-page`        |                             | `number`  | `undefined`         |
+| `iconName`          | `icon-name`           |                             | `string`  | `undefined`         |
+| `itemReferenceName` | `item-reference-name` |                             | `string`  | `"reference"`       |
+| `itemType`          | `item-type`           |                             | `string`  | `undefined`         |
+| `itemsPerPage`      | `items-per-page`      |                             | `number`  | `10`                |
+| `loadingMessage`    | `loading-message`     |                             | `string`  | `"Loading..."`      |
+| `manager`           | `manager`             |                             | `string`  | `undefined`         |
+| `mode`              | `mode`                | can be 'bymodel' or 'byref' | `string`  | `"bymodel"`         |
+| `noContentMessage`  | `no-content-message`  |                             | `string`  | `"No Content"`      |
+| `sort`              | `sort`                |                             | `string`  | `undefined`         |
+| `title`             | `title`               |                             | `string`  | `'PDM Ionic Table'` |
 
 
 ## Methods
 
-### `setServiceProvider(serviceProvider: Function) => Promise<void>`
+### `refresh() => Promise<void>`
 
 
 

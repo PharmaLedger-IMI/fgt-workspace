@@ -27,13 +27,28 @@ export namespace Components {
         "type": string;
     }
     interface PdmIonTable {
-        "setServiceProvider": (serviceProvider: Function) => Promise<void>;
-        "tableTile": string;
+        "canQuery"?: boolean;
+        "currentPage"?: number;
+        "iconName"?: string;
+        "itemReferenceName"?: string;
+        "itemType": string;
+        "itemsPerPage"?: number;
+        "loadingMessage": string;
+        "manager": string;
+        /**
+          * can be 'bymodel' or 'byref'
+         */
+        "mode": string;
+        "noContentMessage": string;
+        "refresh": () => Promise<void>;
+        "sort"?: string;
+        "title": string;
     }
     interface ProductListItem {
     }
     interface ProductListItem2 {
-        "keySSI": string;
+        "manager": string;
+        "reference": string;
         "refresh": () => Promise<void>;
     }
 }
@@ -91,7 +106,21 @@ declare namespace LocalJSX {
         "type"?: string;
     }
     interface PdmIonTable {
-        "tableTile"?: string;
+        "canQuery"?: boolean;
+        "currentPage"?: number;
+        "iconName"?: string;
+        "itemReferenceName"?: string;
+        "itemType"?: string;
+        "itemsPerPage"?: number;
+        "loadingMessage"?: string;
+        "manager"?: string;
+        /**
+          * can be 'bymodel' or 'byref'
+         */
+        "mode"?: string;
+        "noContentMessage"?: string;
+        "sort"?: string;
+        "title"?: string;
     }
     interface ProductListItem {
         /**
@@ -100,7 +129,8 @@ declare namespace LocalJSX {
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
     }
     interface ProductListItem2 {
-        "keySSI"?: string;
+        "manager"?: string;
+        "reference"?: string;
     }
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;

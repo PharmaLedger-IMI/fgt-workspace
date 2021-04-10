@@ -1,10 +1,9 @@
 import {Component, Host, h, Element, Prop, State, Watch, Method} from '@stencil/core';
 import HostElement from './../../decorators/HostElement';
+import { WebManagerService, ControllerManager } from '../../services/WebManagerService';
+import wizard from '../../services/WizardService';
 
-// @ts-ignore
-const Product = require('wizard').Model.Product;
-// @ts-ignore
-const WebComponentService = require('wizard').Services.WebComponentService;
+const Product = wizard.Model.Product;
 
 @Component({
   tag: 'product-list-item2',
@@ -17,31 +16,34 @@ export class ProductListItem2 {
 
   @Element() element;
 
-  @Prop() keySSI: string;
+  @Prop() reference: string;
 
-  private webComponentService;
+  @Prop() manager: string = "ProductManager";
+
+  private webManager: ControllerManager = undefined;
 
   @State() product: typeof Product = undefined;
 
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
-
-    this.webComponentService = this.webComponentService || new WebComponentService();
+    this.webManager = await WebManagerService.getWebManager(this.manager);
     await this.loadProduct();
   }
 
-  @Watch('keySSI')
   async loadProduct(){
-    if (!this.webComponentService)
+    if (!this.webManager)
       return;
-    this.webComponentService.getInfo(this.keySSI, (err, info) => {
-      if (err)
-        return console.log(`Could not read info from keySSI ${this.keySSI}`);
-      this.product = info;
+    this.webManager.getOne(this.reference, true, (err, product) => {
+      if (err){
+        console.log(`Could not get Product with gtin ${this.reference}`, err);
+        return;
+      }
+      this.product = product;
     });
   }
 
+  @Watch('reference')
   @Method()
   async refresh(){
     this.product = undefined;
@@ -103,11 +105,11 @@ export class ProductListItem2 {
   }
 
   addBatches(){
-    const batches = this.product && this.product.batches ? this.product.batches.map(b => this.addBatch(b)) : (<ion-skeleton-text animated></ion-skeleton-text>);
+    const batches = this.product ? this.product.batches.map(b => this.addBatch(b)) : (<ion-skeleton-text animated></ion-skeleton-text>);
     return(
       <ion-grid className="ion-padding-horizontal">
         <ion-row>
-          <ion-col size="12" data-for="@batches">
+          <ion-col size="12">
             {batches}
           </ion-col>
         </ion-row>
