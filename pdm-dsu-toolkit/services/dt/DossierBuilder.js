@@ -2,15 +2,7 @@
  * @module dt
  */
 
-/**
- * Enum of Accepted Key Types
- */
-const KEY_TYPE = {
-    CONST: "const",
-    SEED: "seed"
-}
-
-const {_getByName} = require('./commands');
+const {_getByName } = require('./commands');
 const {_getResolver, _getKeySSISpace} = require('./commands/utils');
 
 /**

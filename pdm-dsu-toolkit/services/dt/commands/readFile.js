@@ -21,14 +21,6 @@ class ReadFileCommand extends Command{
         this.dataToString = !source;
     }
 
-    _parseCommand(command, next, callback){
-        if (!callback){
-            callback = next;
-            next = undefined;
-        }
-        callback(undefined, typeof command === 'string' ? command : command[0]);
-    }
-
     /**
      * @param {string[]|string} command the command split into words
      * @param {string[]} next the following Commands

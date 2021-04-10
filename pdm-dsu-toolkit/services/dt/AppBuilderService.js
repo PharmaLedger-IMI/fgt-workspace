@@ -284,7 +284,7 @@ function AppBuilderService(environment, opts) {
             if (err)
                 return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper( err));
             let commands = filesToCommands(files);
-            if (!commands || commands.length === 0){
+            if (commands.length === 0){
                 console.log(`Application ${slotPath} does not require patching`);
                 return callback(undefined, dsu);
             }

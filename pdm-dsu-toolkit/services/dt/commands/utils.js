@@ -72,16 +72,11 @@ const DSU_TYPE = {
     SEED: "seed"
 }
 
-const VAR = 'var';
-const CMD = 'cmd';
-
 module.exports = {
     _getFS,
     _getResolver,
     _getKeySSISpace,
     _err,
     KEY_TYPE,
-    DSU_TYPE,
-    VAR,
-    CMD
+    DSU_TYPE
 };

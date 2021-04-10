@@ -6,7 +6,7 @@
 /**
  */
 const Command = require('./Command');
-const { _err, VAR, CMD} = require('./utils');
+const { _err } = require('./utils');
 
 /**
  * Defines a variable that can later be used in the script

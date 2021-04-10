@@ -6,7 +6,7 @@
 /**
  */
 const Command = require('./Command');
-const { _err, VAR, CMD } = require('./utils');
+const { _err } = require('./utils');
 const endCommand = 'endwith';
 const startCommand = 'with';
 

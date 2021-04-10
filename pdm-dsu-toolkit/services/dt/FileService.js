@@ -72,7 +72,7 @@ function FileService(options) {
     this.getFile = function(appName, fileName, callback){
         const suffix = `${appName}/${fileName}`;
         const base = constructUrlBase();
-        const joiner = suffix && base[base.length - 1] !== '/' && suffix[0] !== '/'
+        const joiner = suffix !== '/' && base[base.length - 1] !== '/' && suffix[0] !== '/'
             ? '/'
             : '';
 
