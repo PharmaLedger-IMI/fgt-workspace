@@ -87,6 +87,9 @@ function createDSUFolders(dsu, folders, callback){
 	iterator(folders.slice());
 }
 
+const constants = require('opendsu').constants;
+const system = require('opendsu').loadApi('system');
+
 /**
  * Util Method to select POST strategy per DSU api.
  * - Forked from PrivateSky
@@ -96,25 +99,39 @@ function createDSUFolders(dsu, folders, callback){
  */
 function getPostHandlerFor(apiname){
 
-	function getBaseURL() {
-		//opendsu.loadApi('system').getEnvironmentVariable(opendsu.constants.BDNS_ROOT_HOSTS);
+	function getBaseURL(){
+		switch ($$.environmentType) {
+			case constants.ENVIRONMENT_TYPES.SERVICE_WORKER_ENVIRONMENT_TYPE:
+				let scope = self.registration.scope;
 
-		let protocol, host, port;
-		try {
-			protocol = window.location.protocol;
-			host = window.location.hostname;
-			port = window.location.port;
+				let parts = scope.split("/");
+				return `${parts[0]}//${parts[2]}`;
 
-		} catch (e){
-			// Only used in tests
-			if (process.env.BDNS_ROOT_HOSTS)
-				return `${process.env.BDNS_ROOT_HOSTS}/${apiname}`;
-			protocol = "http:";
-			host = "localhost";
-			port = "8080";
+			case constants.ENVIRONMENT_TYPES.BROWSER_ENVIRONMENT_TYPE:
+				const protocol = window.location.protocol;
+				const host = window.location.hostname;
+				const port = window.location.port;
+
+				return `${protocol}//${host}:${port}`;
+
+			case constants.ENVIRONMENT_TYPES.WEB_WORKER_ENVIRONMENT_TYPE:
+				return self.location.origin;
+
+			case constants.ENVIRONMENT_TYPES.NODEJS_ENVIRONMENT_TYPE:
+				let baseUrl = system.getEnvironmentVariable(constants.BDNS_ROOT_HOSTS);
+				if (typeof baseUrl === "undefined") {
+					baseUrl = "http://localhost:8080";
+				} else {
+					const myURL = new URL(baseUrl);
+					baseUrl = myURL.origin;
+				}
+				if (baseUrl.endsWith("/")) {
+					baseUrl = baseUrl.slice(0, -1);
+				}
+				return baseUrl;
+
+			default:
 		}
-
-		return `${protocol}//${host}:${port}/${apiname}`;
 	}
 
 	function doPost(url, data, options, callback) {
