@@ -14,17 +14,34 @@ export default class IssuedOrderController extends LocalizedController {
         self.setModel(self.getModel());
 
         console.log("IssuedOrderController initialized");
-        ['ok','cancel'].forEach(b => {
-            self.onTagClick(`try${b}`, self._handleTry(`${b}`).bind(self));
-        });
+        self.onTagClick(`tryOk`, self._handleTryOk.bind(self));
+        self.onTagClick(`tryCancel`, () => { self.closeModals(); });
         //self.on('input-has-changed', self._handleErrorElement.bind(self));
 
         self._setupBlankOrder();
     }
 
+
+    /**
+     * 
+     * @returns a function that validates the order, and if ok, sends an event named create-issued-order with the order.
+     */
+    _handleTryOk() {
+        console.log("_handleTryOk run");
+        let self = this;
+        if (self.hasErrors()) // bind to this on setting up _handleTry handler
+            return this.showErrorToast('There are errors in the form');
+        let order = self.orderManager.fromModel(self.getModel());
+        let errors = order.validate();
+        if (errors) {
+            return self.showErrorToast(errors);
+        }
+        self.send('create-issued-order', order);
+    }
+
     _setupBlankOrder() {
         let self = this;
-        self.participantManager.getIdentity( (err, participant) => {
+        self.participantManager.getIdentity((err, participant) => {
             if (err) {
                 return self.showErrorToast(err);
             }
@@ -45,16 +62,4 @@ export default class IssuedOrderController extends LocalizedController {
         */
     }
 
-    _handleTry(name){
-        return function() {
-            if (this.hasErrors()) // bind to this on setting up _handleTry handler
-                return this.showErrorToast('There are errors in the form');
-            switch (name){
-                case 'ok':
-                    return this._createIssuedOrder();
-                case 'cancel':
-                    return this._cancelIssuedOrder();
-            }
-        }
-    }
 }
