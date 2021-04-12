@@ -42,7 +42,15 @@ const { INFO_PATH , DEFAULT_QUERY_OPTIONS } = require('../constants');
  */
 class Manager{
     constructor(baseManager, tableName){
+        let self = this;
         this.storage = baseManager.db;
+        this.getStorage = () => {
+            if (!self.storage)
+                self.storage = baseManager.db;
+            if (!self.storage)
+                throw new Error(`DB is not initialized`);
+            return self.storage;
+        }
         this.tableName = tableName;
         this.getIdentity = baseManager.getIdentity.bind(baseManager);
         this._getResolver = baseManager._getResolver;
@@ -50,6 +58,12 @@ class Manager{
         this._loadDSU = baseManager._loadDSU;
         this._err = baseManager._err;
     }
+
+    /**
+     * Lazy loads the db
+     * Is created in the constructor
+     */
+    getStorage(){};
 
     /**
      * @param {object} object the business model object
@@ -302,7 +316,7 @@ class Manager{
             key = tableName;
             tableName = this._getTableName();
         }
-        this.storage.insertRecord(tableName, key, record, callback);
+        this.getStorage().insertRecord(tableName, key, record, callback);
     }
 
     /**
@@ -319,7 +333,7 @@ class Manager{
             key = tableName;
             tableName = this._getTableName();
         }
-        this.storage.updateRecord(tableName, key, newRecord, callback);
+        this.getStorage().updateRecord(tableName, key, newRecord, callback);
     }
 
     /**
@@ -334,7 +348,7 @@ class Manager{
             key = tableName;
             tableName = this._getTableName();
         }
-        this.storage.getRecord(tableName, key, callback);
+        this.getStorage().getRecord(tableName, key, callback);
     }
 
     /**
@@ -349,7 +363,7 @@ class Manager{
             key = tableName;
             tableName = this._getTableName();
         }
-        this.storage.deleteRecord(tableName, key, callback);
+        this.getStorage().deleteRecord(tableName, key, callback);
     }
 
     /**
@@ -368,7 +382,7 @@ class Manager{
             query = tableName;
             tableName = this._getTableName();
         }
-        this.storage.query(tableName, query, sort, limit, callback);
+        this.getStorage().query(tableName, query, sort, limit, callback);
     }
 }
 

@@ -60,20 +60,6 @@
             ]
         },
         {
-            "name": "pdm-web-components",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-web-components && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-web-components && npm run build"
-                }
-            ]
-        },
-        {
             "name": "pharmaledger-wallet",
             "src": "http://github.com/privatesky/menu-wallet-prototype.git",
             "actions": [
@@ -93,7 +79,11 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd pdm-dsu-toolkit && npm install && npm run prebuild"
+                    "cmd": "cd pdm-dsu-toolkit && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-dsu-toolkit && npm run prebuild"
                 }
             ]
         },
@@ -103,6 +93,15 @@
                 {
                     "type": "execute",
                     "cmd": "cd fgt-dsu-wizard && npm install && npm run prebuild"
+                }
+            ]
+        },
+        {
+            "name": "pdm-web-components",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-web-components && npm install && npm run build"
                 }
             ]
         },
@@ -366,6 +365,16 @@
                 {
                     "type": "execute",
                     "cmd": "cd fgt-dsu-wizard && npm run prebuild"
+                }
+            ]
+        },
+        {
+            "name": "Build Components",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-web-components && npm run build"
                 }
             ]
         },
