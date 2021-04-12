@@ -18,20 +18,16 @@ apihub-root/dossier-explorer/**
 apihub-root/messaging
 apihub-root/seedsBackup
 cardinal
+
+documentation/bin/draw.io.path
+!ddocumentation/bin/resources/drawings/*.md
+documentation/drawings/*.xml
+documentation/resources/drawings/
+
 dossier-explorer-ssapp
 dossier-explorer-wallet-prototype
+
 env.json.devel
-
-pdm-trust-loader/src/webcardinal
-pdm-trust-loader/src/bundles
-pdm-trust-loader/src/capacitor.js
-pdm-trust-loader/src/assets/ionic-core
-pdm-trust-loader/src/swPwa*
-pdm-trust-loader/src/swBoot.js
-pdm-trust-loader/src/workbox*
-pdm-trust-loader/docs
-
-!pdm-trust-loader/workbox-config.js
 
 fgt-mah-ssapp/code/constitution
 fgt-mah-ssapp/docs
@@ -40,23 +36,9 @@ fgt-mah-ssapp/code/assets/ionic-core
 fgt-mah-ssapp/code/assets/pdm-web-components
 fgt-mah-ssapp/seed
 
-/webcardinal
-!/.github
-
-web-cardinal-ion
-
 fgt-dsu-wizard/version.js
 fgt-dsu-wizard/build/bundles
 fgt-dsu-wizard/docs
-
-pdm-dsu-toolkit/build/bundles
-/pdm-dsu-toolkit/docs/
-
-
-documentation/bin/draw.io.path
-!ddocumentation/bin/resources/drawings/*.md
-documentation/drawings/*.xml
-documentation/resources/drawings/
 
 fgt-pharmacy-ssapp/code/constitution
 fgt-pharmacy-ssapp/code/scripts/bundles
@@ -70,11 +52,29 @@ fgt-wholesaler-ssapp/code/assets/ionic-core
 fgt-wholesaler-ssapp/code/assets/pdm-web-components
 fgt-wholesaler-ssapp/docs
 fgt-wholesaler-ssapp/seed
-gtin-resolver
-gtin-dsu-wizard
+
+latest-change-set.txt
+
 node_modules
+
 package-lock.json
+
 pharmaledger-wallet
+
+pdm-dsu-toolkit/build/bundles
+/pdm-dsu-toolkit/docs/
+
+pdm-trust-loader/src/webcardinal
+pdm-trust-loader/src/bundles
+pdm-trust-loader/src/capacitor.js
+pdm-trust-loader/src/assets/ionic-core
+pdm-trust-loader/src/swPwa*
+pdm-trust-loader/src/swBoot.js
+pdm-trust-loader/src/workbox*
+pdm-trust-loader/docs
+
+!pdm-trust-loader/workbox-config.js
+
 privatesky
 themes
 
@@ -84,7 +84,11 @@ tests/*/testWorkspace
 
 testReport.html
 
-latest-change-set.txt
+/webcardinal
+!/.github
+
+web-cardinal-ion
+
 .idea
 
 
@@ -530,4 +534,3 @@ iOSInjectionProject/
 
 
 !ionic-core/dist
-/fgt-mah-ssapp/code/assets/ionic-core/
