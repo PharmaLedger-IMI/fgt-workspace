@@ -12,9 +12,18 @@
     <ion-input name="input-requesterId" data-view-model="@requesterId"></ion-input>
 </ion-item>
 <ion-item>
-    <ion-label>{{ @shippingAddress.label }}</ion-label>
-    <ion-input name="input-shippingAddress" data-view-model="@shippingAddress"></ion-input>
+    <ion-label>{{ @senderId.label }}</ion-label>
+    <ion-input name="input-senderId" data-view-model="@senderId"></ion-input>
 </ion-item>
+<ion-item>
+    <ion-label>{{ @shipToAddress.label }}</ion-label>
+    <ion-input name="input-shipToAddress" data-view-model="@shipToAddress"></ion-input>
+</ion-item>
+<ion-item>
+    <ion-label>{{ @orderLines.label }}</ion-label>
+    <ion-input name="input-orderLines" data-view-model="@orderLines"></ion-input>
+</ion-item>
+<psk-text-input view-model="orderLines" required></psk-text-input>
 <ion-footer>
     <ion-toolbar>
         <ion-buttons slot="primary">

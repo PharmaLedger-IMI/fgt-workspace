@@ -35,6 +35,14 @@ export default class IssuedOrdersController extends LocalizedController {
         self.onTagClick("new-issued-order", () => {
             self._showOrderModal();
         });
+        self.on("create-issued-order", (event) => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            self.createIssuerOrder(event.detail, (err) => {
+                if (err)
+                    self.showErrorToast(err);
+            });
+        }, true);
     }
 
     _showOrderModal() {

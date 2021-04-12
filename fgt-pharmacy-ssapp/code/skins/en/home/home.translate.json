@@ -12,6 +12,28 @@
     "try-again": "Try Again?"
   },
   "none": "You are not identified as a Pharmacy. Please register",
+  "issuedOrder": {
+    "title": "New Issued Order",
+    "orderId": {
+      "label": "OrderID",
+      "required": true
+    },
+    "requesterId": {
+      "label": "Requester ID",
+      "required": true
+    },
+    "shipToAddress": {
+      "label": "Shipping Destination Address",
+      "required": true
+    },
+    "orderLines": {
+      "label": "OrderLines:",
+      "placeholder": "gtin1,quant1;gtin2,quant2;gtin3,quant3",
+      "required": true
+    },
+    "ok": "OK",
+    "cancel": "Cancel"
+  },
   "issuedOrders": {
     "title": "Issued Orders",
     "new": "New",
@@ -19,24 +41,6 @@
     "orderingPartnerHeader": "Issued By",
     "supplyingPartnerHeader": "Issued To",
     "none": "No orders issued..."
-  },
-  "issuedOrder": {
-    "title": "New Issued Order",
-    "orderId": {
-      "label": "OrderID",
-      "value": "x",
-      "required": true
-    },
-    "requesterId": {
-      "label": "Requester ID",
-      "required": true
-    },
-    "shippingAddress": {
-      "label": "Shipping Address",
-      "required": true
-    },
-    "ok": "OK",
-    "cancel": "Cancel"
   },
   "receivedShipments": {
     "title": "Received Shipments",

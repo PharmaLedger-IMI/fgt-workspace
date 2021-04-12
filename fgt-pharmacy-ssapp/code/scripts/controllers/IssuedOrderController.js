@@ -14,12 +14,11 @@ export default class IssuedOrderController extends LocalizedController {
         self.setModel(self.getModel());
 
         console.log("IssuedOrderController initialized");
-        /*
-        Object.entries(self.getModel().buttons).forEach(b => {
-            self.onTagClick(`try${b[0]}`, self._handleTry(`${b[0]}`).bind(self));
-        });
-        */
+        Object.entries(['button-ok','button-cancel'].forEach(b => {
+            self.onTagClick(`try${b}`, self._handleTry(`${b}`).bind(self));
+        }));
         //self.on('input-has-changed', self._handleErrorElement.bind(self));
+
         self._setupBlankOrder();
     }
 
@@ -31,7 +30,9 @@ export default class IssuedOrderController extends LocalizedController {
             }
             self.model.orderId.value = Math.floor(Math.random() * Math.floor(99999999999)); // TODO sequential unique numbering ? It should comes from the ERP anyway.
             self.model.requesterId.value = participant.id;
-            self.model.shippingAddress.value = participant.address;
+            self.model.senderId.value = '';
+            self.model.shipToAddress.value = participant.address;
+            self.model.orderLines.value = '';
             console.log(self.model.toObject());
         });
         /*
@@ -42,5 +43,18 @@ export default class IssuedOrderController extends LocalizedController {
             );
         self.orderManager.toModel(self.model, order);
         */
+    }
+
+    _handleTry(name){
+        return function() {
+            if (this.hasErrors())
+                return this.showErrorToast('There are errors in the form');
+            switch (name){
+                case 'ok':
+                    return this._createIssuedOrder();
+                case 'cancel':
+                    return this._cancelIssuedOrder();
+            }
+        }
     }
 }
