@@ -142,7 +142,8 @@ class BaseManager {
             const dbSSI = getKeySSISpace().parse(relevant[self._cleanPath(DATABASE_MOUNT_PATH)]);
             if (!dbSSI)
                 return callback(`Could not retrive db ssi`);
-            self.db = require('opendsu').loadApi('db').getWalletDB(dbSSI, 'mydb');
+            const dbKey = dbSSI.derive();
+            self.db = require('opendsu').loadApi('db').getWalletDB(dbKey, 'mydb');
             console.log(`Database Cached`);
             self.participantConstSSI = relevant[self._cleanPath(PARTICIPANT_MOUNT_PATH)];
             self._getDIDString(identity, self.participantConstSSI, (err, didString) => {

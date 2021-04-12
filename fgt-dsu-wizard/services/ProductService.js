@@ -2,6 +2,7 @@
  * @module fgt-dsu-wizard.services
  */
 const utils = require('../../pdm-dsu-toolkit/services/utils');
+const { INFO_PATH } = require('../constants');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
@@ -9,7 +10,7 @@ const utils = require('../../pdm-dsu-toolkit/services/utils');
  */
 function ProductService(domain, strategy){
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");
-    const Product = require('../model').Product;
+    const Product = require('../model/Product');
     const endpoint = 'product';
     const keyGenFunction = require('../commands/setProductSSI').createProductSSI;
 
@@ -41,7 +42,7 @@ function ProductService(domain, strategy){
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);
-                dsu.writeFile('/info', JSON.stringify(product), (err) => {
+                dsu.writeFile(INFO_PATH, JSON.stringify(product), (err) => {
                     if (err)
                         return callback(err);
                     dsu.getKeySSIAsObject((err, keySSI) => {
@@ -62,7 +63,7 @@ function ProductService(domain, strategy){
             }
 
             utils.getDSUService().create(domain, getEndpointData(product), (builder, cb) => {
-                builder.addFileDataToDossier("/info", JSON.stringify(product), cb);
+                builder.addFileDataToDossier(INFO_PATH, JSON.stringify(product), cb);
             }, callback);
         }
     };

@@ -42,7 +42,7 @@ let conf = argParser(process.argv);
 const generateSecrets = function(id) {
     return {
         "name": {
-            "secret": "PDM the Wholesaler",
+            "secret": "PDM the MAH",
             "public": true,
             "required": true
         },
@@ -52,7 +52,7 @@ const generateSecrets = function(id) {
             "required": true
         },
         "email": {
-            "secret": "wholesaler@pdmfc.com",
+            "secret": "mah@pdmfc.com",
             "public": true,
             "required": true
         },
@@ -134,7 +134,7 @@ const setupBatches = function(participantManager, products, callback){
             });
         }
 
-        batchIterator(batches.slice(), (err, batches) => {
+        batchIterator(product.gtin, batches.slice(), (err, batches) => {
             if (err)
                 return callback(err);
             batchesObject[product.gtin] = batches;
@@ -191,6 +191,8 @@ instantiateSSApp((err, walletSSI, walletDSU, credentials) => {
                 console.log(`${conf.app} instantiated\ncredentials:`);
                 console.log(credentials)
                 console.log(`ID: ${credentials.id.secret}`);
+                console.log(`SSI: ${walletSSI}`);
+                process.exit(0);
             });
         });
     });

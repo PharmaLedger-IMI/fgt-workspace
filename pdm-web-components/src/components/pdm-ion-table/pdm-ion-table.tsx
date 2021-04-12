@@ -50,6 +50,10 @@ export class PdmIonTable implements ComponentInterface {
     await this.loadContents();
   }
 
+  async componentWillRender() {
+    this.refresh();
+  }
+
   _getQueryOptions(){
     const queryOptions: QueryOptions = {
       query: () => true,

@@ -19,7 +19,7 @@
 <!--                                pulling-text="Pull to refresh"-->
 <!--                                refreshing-spinner="circles"-->
 <!--                                refreshing-text="Refreshing...">-->
-                            <div data-for="@stock">
+                            <div data-for="@batches">
                                 <product-list-item data-view-model="@"></product-list-item>
                             </div>
 <!--                        </ion-refresher-content>-->
@@ -27,7 +27,11 @@
 <!--                </ion-content>-->
             </ion-list>
 
-            <pdm-ion-table title="@title" manager="StockManager" itemType="product-list-item"></pdm-ion-table>
+            <pdm-ion-table itemReferenceName="reference"
+                           title="@title" mode="byref"
+                           manager="StockManager"
+                           itemType="product-list-item2"
+                           iconName="stats-chart-outline"></pdm-ion-table>
 
         </div>
         <div slot="false">
