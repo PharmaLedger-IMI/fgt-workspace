@@ -27,12 +27,12 @@ const MESSAGE_TABLE = 'messages'
 
 /**
  * Default Query options to be used by the managers to query the database
- * @type {{query: (function(item): boolean), limit: number, sort: undefined}}
+ * @type {{query: string[]|undefined, limit: number|undefined, sort: string|undefined}}
  */
 const DEFAULT_QUERY_OPTIONS = {
-    query: (item) => true,
+    query: "gtin like .*",
     sort: undefined,
-    limit: 10
+    limit: undefined
 }
 
 module.exports = {

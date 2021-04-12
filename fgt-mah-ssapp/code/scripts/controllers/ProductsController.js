@@ -1,58 +1,68 @@
-import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
+import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
 const Product = require('wizard').Model.Product;
 
-export default class ProductsController extends ContainerController {
+export default class ProductsController extends LocalizedController {
+
+    getModel = () => ({
+        mah: {},
+        products: []
+    });
+
     constructor(element, history) {
         super(element, history);
         const wizard = require('wizard');
-        const LocaleService = wizard.Services.LocaleService;
-        LocaleService.bindToLocale(this, LocaleService.supported.en_US, "products");
+        const LocaleService = wizard.Services.WebcLocaleService;
+        LocaleService.bindToLocale(this,"products");
         this.participantManager = wizard.Managers.getParticipantManager();
-        this.productManager = wizard.Managers.getProductManager(this.participantManager.getParticipantDSU());
+        this.productManager = wizard.Managers.getProductManager(this.participantManager);
 
-        this.model = this.setModel({
-            mah: {},
-            products: [],
-            hasProducts: false
-        });
+        this.setModel(this.getModel());
 
         let self = this;
-        this.on('add-product', (event) => {
-            event.stopImmediatePropagation();
-            self._showProductModal();
-        });
+        // this.on('add-product', (event) => {
+        //     event.stopImmediatePropagation();
+        //     self._showProductModal();
+        // });
 
-        this.on('perform-add-product', (event) => {
-            event.stopImmediatePropagation();
-            self._addProduct(event.detail, (err) => {
-                if (err) {
-                    this.showError(err);
-                    return;
-                }
-                self.closeModal('product-modal');
-                self.getProductsAsync();
-            });
-        });
+        // this.on('perform-add-product', (event) => {
+        //     event.stopImmediatePropagation();
+        //     self._addProduct(event.detail, (err) => {
+        //         if (err) {
+        //             this.showError(err);
+        //             return;
+        //         }
+        //         self.closeModal('product-modal');
+        //         self.getProductsAsync();
+        //     });
+        // });
+        //
+        // this.on('manage-batches', (event) => {
+        //     event.stopImmediatePropagation();
+        //     const gtin = event.target.getAttribute("gtin");
+        //     this.History.navigateToPageByUrl("/batches", {gtin: gtin});
+        // });
 
-        this.on('manage-batches', (event) => {
-            event.stopImmediatePropagation();
-            const gtin = event.target.getAttribute("gtin");
-            this.History.navigateToPageByUrl("/batches", {gtin: gtin});
-        });
+        self.model.addExpression('hasProducts', () => {
+            return typeof self.model.products !== 'undefined' && self.model.products.length > 0;
+        }, 'stock');
 
-        this.getProductsAsync();
+        this.on('refresh', (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            this.getProductsAsync();
+        }, {capture: true});
     }
-
-    _showProductModal(){
-        let self = this;
-        self.participantManager.getParticipant((err, actor) => {
-           if (err)
-               throw err;
-            self.showModal('product-modal', self.productManager.toModel(new Product({
-                manufName: actor.name
-            })), true);
-        });
-    }
+    //
+    // _showProductModal(){
+    //     let self = this;
+    //     self.participantManager.getParticipant((err, actor) => {
+    //        if (err)
+    //            throw err;
+    //         self.showModal('product-modal', self.productManager.toModel(new Product({
+    //             manufName: actor.name
+    //         })), true);
+    //     });
+    // }
 
     /**
      *
@@ -80,7 +90,6 @@ export default class ProductsController extends ContainerController {
      */
     updateProducts(products){
         this.model['products'] = products;
-        this.model['hasProducts'] = products.length > 0;
     }
 
     /**
@@ -89,7 +98,7 @@ export default class ProductsController extends ContainerController {
      */
     getProductsAsync(){
         let self = this;
-        self.productManager.getAll((err, products) => {
+        self.productManager.getAll(true, (err, products) => {
             if (err)
                 throw err;
             self.updateProducts(products);

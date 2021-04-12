@@ -1,13 +1,12 @@
-import LocalizedController from "./LocalizedController.js";
+import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
 
-export default class ParticipantController extends LocalizedController {
+export default class HomeController extends LocalizedController {
     getModel = () => ({
         participant: undefined
     });
 
     constructor(element, history) {
         super(element, history);
-        console.log(`The translation model in the Home controller is: ${WebCardinal.translations.en}`);
         super.bindLocale(this, "");
         this.setModel(this.getModel());
         this.model.addExpression('identified', () => {

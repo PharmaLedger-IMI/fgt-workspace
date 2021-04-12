@@ -21,7 +21,9 @@
     "test.watch": "stencil test --spec --e2e --watchAll",
     "generate": "stencil generate"
   },
-  "dependencies": {},
+  "dependencies": {
+    "stencil": "0.0.5"
+  },
   "license": "MIT",
   "devDependencies": {
     "@ionic/core": "^5.6.4",
