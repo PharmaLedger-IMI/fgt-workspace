@@ -14,7 +14,7 @@ export default class IssuedOrderController extends LocalizedController {
         self.setModel(self.getModel());
 
         console.log("IssuedOrderController initialized");
-        ['-ok','-cancel'].forEach(b => {
+        ['ok','cancel'].forEach(b => {
             self.onTagClick(`try${b}`, self._handleTry(`${b}`).bind(self));
         });
         //self.on('input-has-changed', self._handleErrorElement.bind(self));
