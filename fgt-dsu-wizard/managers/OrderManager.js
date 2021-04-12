@@ -99,7 +99,9 @@ class OrderManager extends Manager {
             });
         }
         console.log("model.orderLines.value=", model.orderLines.value, "converted to=", orderLines);
-        return new Order(model.orderId.value, model.requesterId.value, model.senderId.value, model.shipToAddress.value, OrderStatus.CREATED, orderLines);
+        const order = new Order(model.orderId.value, model.requesterId.value, model.senderId.value, model.shipToAddress.value, OrderStatus.CREATED, orderLines);
+        console.log("model ", model, "order ", order);
+        return order;
     }
 
     /**
