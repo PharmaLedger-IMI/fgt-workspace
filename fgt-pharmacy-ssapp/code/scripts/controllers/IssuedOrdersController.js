@@ -32,9 +32,19 @@ export default class IssuedOrdersController extends LocalizedController {
             self.getOrdersAsync();
         }, {capture: true});
 
+        // pressing "NEW" to create a new Issued Order
         self.onTagClick("new-issued-order", () => {
             self._showOrderModal();
         });
+
+        // pressing "CANCEL" while creating a new Issued Order
+        self.on("cancel-new-issued-order", (event) => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            self.hideModal();
+        }, true);
+
+        // pressing "OK" while creating a new Issued Order
         self.on("create-issued-order", (event) => {
             event.preventDefault();
             event.stopImmediatePropagation();

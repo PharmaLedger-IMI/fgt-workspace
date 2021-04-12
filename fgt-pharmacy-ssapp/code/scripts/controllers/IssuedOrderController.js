@@ -14,22 +14,19 @@ export default class IssuedOrderController extends LocalizedController {
         self.setModel(self.getModel());
 
         console.log("IssuedOrderController initialized");
-        self.onTagClick(`tryOk`, self._handleTryOk.bind(self));
-        self.onTagClick(`tryCancel`, () => { self.closeModals(); });
+        self.onTagClick(`tryOk`, () => { self._handleTryOk(); });
+        self.onTagClick(`tryCancel`, () => { self._handleTryCancel(); });
         //self.on('input-has-changed', self._handleErrorElement.bind(self));
 
         self._setupBlankOrder();
     }
 
-
     /**
-     * 
-     * @returns a function that validates the order, and if ok, sends an event named create-issued-order with the order.
+     * Sends an event named create-issued-order to the IssuedOrders controller.
      */
-    _handleTryOk() {
-        console.log("_handleTryOk run");
+     _handleTryOk() {
         let self = this;
-        if (self.hasErrors()) // bind to this on setting up _handleTry handler
+        if (self.hasErrors())
             return this.showErrorToast('There are errors in the form');
         let order = self.orderManager.fromModel(self.getModel());
         let errors = order.validate();
@@ -37,6 +34,14 @@ export default class IssuedOrderController extends LocalizedController {
             return self.showErrorToast(errors);
         }
         self.send('create-issued-order', order);
+    }
+
+    /**
+     * Sends an event named cancel-new-issued-order to the IssuedOrders controller.
+     */
+     _handleTryCancel() {
+        let self = this;
+        self.send('cancel-new-issued-order');
     }
 
     _setupBlankOrder() {
