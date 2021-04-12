@@ -22,6 +22,10 @@
       "label": "Requester ID",
       "required": true
     },
+    "senderId": {
+      "label": "Sender ID",
+      "required": true
+    },
     "shipToAddress": {
       "label": "Shipping Destination Address",
       "required": true
