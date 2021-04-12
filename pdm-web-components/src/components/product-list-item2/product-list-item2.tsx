@@ -1,6 +1,6 @@
 import {Component, Host, h, Element, Prop, State, Watch, Method} from '@stencil/core';
 import HostElement from './../../decorators/HostElement';
-import { WebManagerService, ControllerManager } from '../../services/WebManagerService';
+import { WebManagerService, WebManager } from '../../services/WebManagerService';
 import wizard from '../../services/WizardService';
 
 const Product = wizard.Model.Product;
@@ -20,7 +20,7 @@ export class ProductListItem2 {
 
   @Prop() manager: string = "ProductManager";
 
-  private webManager: ControllerManager = undefined;
+  private webManager: WebManager = undefined;
 
   @State() product: typeof Product = undefined;
 

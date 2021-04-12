@@ -23,7 +23,6 @@ class BatchManager extends Manager{
         super(participantManager, DB.batches);
         this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
         this.batchService = new (require('../services/BatchService'))(ANCHORING_DOMAIN);
-        this._getBatch = super._getDSUInfo;
     }
 
     /**
@@ -36,15 +35,6 @@ class BatchManager extends Manager{
     _genCompostKey(gtin, batchNumber){
         return `${gtin}-${batchNumber}`;
     }
-
-    /**
-     * Reads the Batch (parsed from the json at the {@link INFO_PATH}) from DSU from the provided KeySSI
-     * @param {string|KeySSI} keySSI
-     * @param {function(err, Batch, Archive)} callback
-     * @see Manager#_getDSUInfo
-     * @private
-     */
-    _getBatch(keySSI, callback){};
 
     /**
      * Creates a {@link Batch} dsu
@@ -82,14 +72,7 @@ class BatchManager extends Manager{
             callback = readDSU;
             readDSU = true;
         }
-        let self = this;
-        self.getRecord(self._genCompostKey(gtin, batchNumber), (err, batchSSI) => {
-            if (err)
-                return self._err(`Could not load record with gtin ${gtin} and batchNumber ${batchNumber} on table ${self.tableName}`, err, callback);
-            if (!readDSU)
-                return callback(undefined, batchSSI);
-            self._getBatch(batchSSI, callback);
-        });
+        super.getOne(this._genCompostKey(gtin, batchNumber), readDSU, callback);
     }
 
     /**
@@ -99,8 +82,7 @@ class BatchManager extends Manager{
      * @param {function(err)} callback
      */
     remove(gtin, batchNumber, callback) {
-        let self = this;
-        self.deleteRecord(self._genCompostKey(gtin, batchNumber), callback);
+        super.remove(this._genCompostKey(gtin, batchNumber), callback);
     }
 
     /**
@@ -119,22 +101,7 @@ class BatchManager extends Manager{
      * @param {function(err, Batch, Archive)} callback
      */
     update(gtin, newBatch, callback){
-        let self = this;
-        let dbKey = self._genCompostKey(gtin, newBatch.batchNumber);
-        self.getRecord(dbKey, (err, record) => {
-            if (err)
-                return self._err(`Unable to retrieve record ${gtin} from table ${this.tableName}`, err, callback);
-            self._getBatch(record, (err, batch, dsu) => {
-                if (err)
-                    return self._err(`unable to get Batch with ${dbKey} from SSI ${record}`, err, callback);
-                dsu.writeFile(INFO_PATH, JSON.stringify(newBatch), (err) => {
-                    if (err)
-                        return self._err(`Could not update Batch ${dbKey} with ${JSON.stringify(newBatch)}`, err, callback);
-                    console.log(`Batch ${newBatch.batchNumber} for Product ${gtin} updated`);
-                    callback(undefined, newBatch, dsu)
-                });
-            });
-        });
+        super.update(this._genCompostKey(gtin, newBatch.batchNumber), newBatch, callback);
     }
 
     /**

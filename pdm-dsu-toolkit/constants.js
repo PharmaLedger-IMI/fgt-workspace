@@ -25,6 +25,16 @@ const DID_METHOD = 'demo'
 const MESSAGE_REFRESH_RATE = 1000;
 const MESSAGE_TABLE = 'messages'
 
+/**
+ * Default Query options to be used by the managers to query the database
+ * @type {{query: (function(item): boolean), limit: number, sort: undefined}}
+ */
+const DEFAULT_QUERY_OPTIONS = {
+    query: (item) => true,
+    sort: undefined,
+    limit: 10
+}
+
 module.exports = {
     INFO_PATH,
     PARTICIPANT_MOUNT_PATH,
@@ -32,5 +42,6 @@ module.exports = {
     DATABASE_MOUNT_PATH,
     DID_METHOD,
     MESSAGE_REFRESH_RATE,
-    MESSAGE_TABLE
+    MESSAGE_TABLE,
+    DEFAULT_QUERY_OPTIONS
 }

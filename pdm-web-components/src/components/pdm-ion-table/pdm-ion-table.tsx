@@ -1,6 +1,6 @@
 import {Component, ComponentInterface, Host, h, Element, Prop, State, Watch, Method} from '@stencil/core';
 import HostElement from './../../decorators/HostElement';
-import { WebManagerService, ControllerManager, QueryOptions } from '../../services/WebManagerService';
+import { WebManagerService, WebManager, QueryOptions } from '../../services/WebManagerService';
 
 @Component({
   tag: 'pdm-ion-table',
@@ -39,7 +39,7 @@ export class PdmIonTable implements ComponentInterface {
 
   @Prop() sort?: string = undefined;
 
-  private webManager: ControllerManager = undefined;
+  private webManager: WebManager = undefined;
 
   @State() contents: string[] = undefined;
 

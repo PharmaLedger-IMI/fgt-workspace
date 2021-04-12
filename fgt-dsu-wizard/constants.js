@@ -30,8 +30,11 @@ const DB = {
     stock: 'stock'
 }
 
+const DEFAULT_QUERY_OPTIONS = require('../pdm-dsu-toolkit/constants').DEFAULT_QUERY_OPTIONS;
+
 module.exports = {
     DB,
+    DEFAULT_QUERY_OPTIONS,
     ANCHORING_DOMAIN,
     BATCH_MOUNT_PATH,
     INBOX_ORDER_LINES_PROP,

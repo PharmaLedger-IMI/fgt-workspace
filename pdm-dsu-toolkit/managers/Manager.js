@@ -1,4 +1,4 @@
-const { INFO_PATH } = require('../constants');
+const { INFO_PATH , DEFAULT_QUERY_OPTIONS } = require('../constants');
 /**
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
@@ -11,10 +11,34 @@ const { INFO_PATH } = require('../constants');
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
  *
+ *
+ * #### _Manager SPECIFIC DataBase Access API (CRUD)_
+ *
+ * Methods:
+ *  - {@link create} - Must be overwritten by child classes
+ *  - {@link getOne}
+ *  - {@link remove}
+ *  - {@link update} - Should be overwritten by child classes
+ *  - {@link getAll} - with querying capabilities via {@link DEFAULT_QUERY_OPTIONS} type configuration
+ *
+ * <strong>Assumes only reads/writes to {@link INFO_PATH} with JSON parsing to object</strong>
+ * Otherwise the methods need to be overwritten by child classes.
+ *
+ *
+ * #### _Manager INDEPENDENT DataBase Access API\)_
+ *
+ * Methods:
+ *  - {@link insertRecord}
+ *  - {@link getRecord}
+ *  - {@link deleteRecord}
+ *  - {@link updateRecord}
+ *  - {@link query} - with querying capabilities via {@link DEFAULT_QUERY_OPTIONS} type configuration
+ *
  * @param {BaseManager} baseManager the base manager to have access to the identity api
  * @param {string} tableName the default table name for this manager eg: MessageManager will write to the messages table
  * @module managers
  * @class Manager
+ * @abstract
  */
 class Manager{
     constructor(baseManager, tableName){
@@ -34,12 +58,14 @@ class Manager{
      */
     toModel(object, model){
         model = model || {};
-        for (let prop in object)
-            if (object.hasOwnProperty(prop)){
+        for (let prop in object) {
+            prop = typeof prop === 'number' ? '' + prop : prop;
+            if (object.hasOwnProperty(prop)) {
                 if (!model[prop])
                     model[prop] = {};
                 model[prop].value = object[prop];
             }
+        }
         return model;
     }
 
@@ -147,6 +173,118 @@ class Manager{
                 return self._err(`Could not get product`, err, callback);
             accumulator.push(product);
             iterator(records, getter, accumulator, callback);
+        });
+    }
+
+    /**
+     * Creates a new item
+     *
+     * Child classes should override this so they can be called without the key param in Web Components
+     * (and also to actually create the DSUs)
+     *
+     * @param {string} [key] key is optional so child classes can override them
+     * @param {object} item
+     * @param {function(err, object, Archive)} callback
+     */
+    create(key, item, callback) {
+        throw new Error (`Child classes must implement this`);
+    }
+
+    /**
+     * reads ssi for that gtin in the db. loads is and reads the info at '/info'
+     * @param {string} key
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
+     * @param {function(err, object|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
+     */
+    getOne(key, readDSU,  callback) {
+        if (!callback){
+            callback = readDSU;
+            readDSU = true;
+        }
+        let self = this;
+        self.getRecord(key, (err, itemSSI) => {
+            if (err)
+                return self._err(`Could not load record with key ${key} on table ${self._getTableName()}`, err, callback);
+            if (!readDSU)
+                return callback(undefined, itemSSI);
+            self._getDSUInfo(itemSSI, callback);
+        });
+    }
+
+    /**
+     * Removes a product from the list (does not delete/invalidate DSU, simply 'forgets' the reference)
+     * @param {string|number} key
+     * @param {function(err)} callback
+     */
+    remove(key, callback) {
+        let self = this;
+        self.deleteRecord(key, callback);
+    }
+
+    /**
+     * updates an item
+     *
+     * @param {string} [key] key is optional so child classes can override them
+     * @param {object} newItem
+     * @param {function(err, object, Archive)} callback
+     */
+    update(key, newItem, callback){
+        if (!callback)
+            return callback(`No key Provided...`);
+
+        let self = this;
+        self.getRecord(key, (err, record) => {
+            if (err)
+                return self._err(`Unable to retrieve record with key ${key} from table ${self._getTableName()}`, err, callback);
+            self._getDSUInfo(record, (err, item, dsu) => {
+                if (err)
+                    return self._err(`Key: ${key}: unable to read From DSU from SSI ${record}`, err, callback);
+                dsu.writeFile(INFO_PATH, JSON.stringify(newItem), (err) => {
+                    if (err)
+                        return self._err(`Could not update item ${key} with ${JSON.stringify(newItem)}`, err, callback);
+                    console.log(`Item ${key} in table ${self._getTableName()} updated`);
+                    callback(undefined, newItem, dsu)
+                });
+            });
+        });
+    }
+
+    /**
+     * Lists all registered items according to query options provided
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
+     * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
+     * @param {function(err, object[])} callback
+     */
+    getAll(readDSU, options, callback) {
+        if (!callback){
+            if (!options){
+                callback = readDSU;
+                options = DEFAULT_QUERY_OPTIONS;
+                readDSU = true;
+            }
+            if (typeof readDSU === 'boolean'){
+                callback = options;
+                options = DEFAULT_QUERY_OPTIONS;
+            }
+            if (typeof readDSU === 'object'){
+                callback = options;
+                options = readDSU;
+                readDSU = true;
+            }
+        }
+
+        let self = this;
+        self.query(options.query, options.sort, options.limit, (err, records) => {
+            if (err)
+                return self._err(`Could not perform query`, err, callback);
+            if (!readDSU)
+                return callback(undefined, records);
+            super._iterator(records.slice(), self._getDSUInfo, (err, result) => {
+                if (err)
+                    return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
+                console.log(`Parsed ${result.length} ${self._getTableName()}s`);
+                callback(undefined, result);
+            });
         });
     }
 
