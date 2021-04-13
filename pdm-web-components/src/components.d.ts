@@ -47,8 +47,8 @@ export namespace Components {
     interface ProductListItem {
     }
     interface ProductListItem2 {
+        "gtin": string;
         "manager": string;
-        "reference": string;
         "refresh": () => Promise<void>;
     }
 }
@@ -129,8 +129,8 @@ declare namespace LocalJSX {
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
     }
     interface ProductListItem2 {
+        "gtin"?: string;
         "manager"?: string;
-        "reference"?: string;
     }
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;

@@ -2,7 +2,7 @@ import wizardService from './WizardService';
 const Managers = wizardService.Managers;
 
 export interface QueryOptions {
-  query?: (item) => boolean,
+  query?: string[],
   sort?: string,
   limit?: number
 }

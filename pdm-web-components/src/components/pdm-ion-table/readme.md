@@ -19,7 +19,7 @@
 | `manager`           | `manager`             |                             | `string`  | `undefined`         |
 | `mode`              | `mode`                | can be 'bymodel' or 'byref' | `string`  | `"bymodel"`         |
 | `noContentMessage`  | `no-content-message`  |                             | `string`  | `"No Content"`      |
-| `sort`              | `sort`                |                             | `string`  | `undefined`         |
+| `sort`              | `sort`                |                             | `string`  | `"asc"`             |
 | `title`             | `title`               |                             | `string`  | `'PDM Ionic Table'` |
 
 

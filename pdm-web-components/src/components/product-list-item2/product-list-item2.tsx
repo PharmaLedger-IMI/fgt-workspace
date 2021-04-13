@@ -16,7 +16,7 @@ export class ProductListItem2 {
 
   @Element() element;
 
-  @Prop() reference: string;
+  @Prop() gtin: string;
 
   @Prop() manager: string = "ProductManager";
 
@@ -34,9 +34,9 @@ export class ProductListItem2 {
   async loadProduct(){
     if (!this.webManager)
       return;
-    this.webManager.getOne(this.reference, true, (err, product) => {
+    this.webManager.getOne(this.gtin, true, (err, product) => {
       if (err){
-        console.log(`Could not get Product with gtin ${this.reference}`, err);
+        console.log(`Could not get Product with gtin ${this.gtin}`, err);
         return;
       }
       this.product = product;

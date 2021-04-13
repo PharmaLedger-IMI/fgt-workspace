@@ -205,6 +205,33 @@ class Manager{
     }
 
     /**
+     * Must wrap the entry in an object like:
+     * <pre>
+     *     {
+     *         index1: ...
+     *         index2: ...
+     *         value: item
+     *     }
+     * </pre>
+     * so the DB can be queried by each of the indexes and still allow for lazy loading
+     * @param {string} key
+     * @param {object|string} [item]
+     * @param {string|object} record
+     * @return {object} the indexed object to be stored in the db
+     * @protected
+     */
+    _indexItem(key, item, record){
+        if (!record){
+            record = item;
+            item = undefined
+        }
+        return {
+            key: key,
+            value: record
+        }
+    };
+
+    /**
      * reads ssi for that gtin in the db. loads is and reads the info at '/info'
      * @param {string} key
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
@@ -292,7 +319,7 @@ class Manager{
             if (err)
                 return self._err(`Could not perform query`, err, callback);
             if (!readDSU)
-                return callback(undefined, records);
+                return callback(undefined, records.map(r => r.value));
             super._iterator(records.slice(), self._getDSUInfo, (err, result) => {
                 if (err)
                     return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);

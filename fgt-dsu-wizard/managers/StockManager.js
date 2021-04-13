@@ -100,16 +100,47 @@ class StockManager extends Manager{
         });
     }
 
-
     /**
-     * Lists all registered products
-     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
-     * @param {object} [options] query options. defaults to {@link Manager#DEFAULT_QUERY_OPTIONS}
-     * @param {function(err, Product[])} callback
+     * Lists all registered items according to query options provided
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
+     * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
+     * @param {function(err, object[])} callback
+     * @override
      */
-    getAll(readDSU, options, callback) {
-        //super.getAll(readDSU, options, callback);
-        callback(undefined, this._getGtins());
+    getAll(readDSU, options, callback){
+        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
+            query: ['gtin like /.*/g']
+        });
+
+        if (!callback){
+            if (!options){
+                callback = readDSU;
+                options = defaultOptions();
+                readDSU = true;
+            }
+            if (typeof readDSU === 'boolean'){
+                callback = options;
+                options = defaultOptions();
+            }
+            if (typeof readDSU === 'object'){
+                callback = options;
+                options = readDSU;
+                readDSU = true;
+            }
+        }
+        let self = this;
+        self.query(options.query, options.sort, options.limit, (err, records) => {
+            if (err)
+                return self._err(`Could not perform query`, err, callback);
+            if (!readDSU)
+                return callback(undefined, records);
+            super._iterator(records.slice(), super._getDSUInfo, (err, result) => {
+                if (err)
+                    return self._err(`Could not parse batches ${JSON.stringify(records)}`, err, callback);
+                console.log(`Parsed ${result.length} batches`);
+                callback(undefined, result);
+            });
+        });
     }
 
     _getFromStatus(){
