@@ -37,7 +37,7 @@ export class PdmIonTable implements ComponentInterface {
 
   @Prop() currentPage?: number = undefined;
 
-  @Prop() sort?: string = undefined;
+  @Prop() sort?: string = "asc";
 
   private webManager: WebManager = undefined;
 
@@ -56,7 +56,7 @@ export class PdmIonTable implements ComponentInterface {
 
   _getQueryOptions(){
     const queryOptions: QueryOptions = {
-      query: () => true,
+      query: [''],
       sort: this.sort,
       limit: this.itemsPerPage
     }
@@ -131,7 +131,7 @@ export class PdmIonTable implements ComponentInterface {
   getItem(reference){
     const Tag = this.itemType;
     if (this.mode === 'byref'){
-      const elem = (<Tag></Tag>)
+      const elem = (<Tag manager={this.manager}></Tag>)
       elem[this.itemReferenceName] = reference;
       return elem;
     } else if (this.mode === 'bymodel'){

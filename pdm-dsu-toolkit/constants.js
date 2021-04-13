@@ -30,7 +30,7 @@ const MESSAGE_TABLE = 'messages'
  * @type {{query: string[]|undefined, limit: number|undefined, sort: string|undefined}}
  */
 const DEFAULT_QUERY_OPTIONS = {
-    query: "gtin like .*",
+    query: ["key like /.*/g"],
     sort: undefined,
     limit: undefined
 }

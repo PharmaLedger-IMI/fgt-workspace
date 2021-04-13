@@ -1,4 +1,4 @@
-const {INFO_PATH, ANCHORING_DOMAIN, DB} = require('../constants');
+const {INFO_PATH, ANCHORING_DOMAIN, DB, DEFAULT_QUERY_OPTIONS} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Product = require('../model/Product');
 
@@ -24,7 +24,6 @@ class ProductManager extends Manager {
         super(participantManager, DB.products);
         this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
         this.batchManager = require('./BatchManager')(participantManager);
-        this._getProduct = super._getDSUInfo;
     }
 
     /**
@@ -44,19 +43,36 @@ class ProductManager extends Manager {
     }
 
     /**
-     * Reads the Product (parsed from the json at the {@link INFO_PATH}) from DSU from the provided KeySSI
-     * @param {string|KeySSI} keySSI
-     * @param {function(err, Product, Archive)} callback
-     * @see Manager#_getDSUInfo
-     * @private
+     * Must wrap the entry in an object like:
+     * <pre>
+     *     {
+     *         index1: ...
+     *         index2: ...
+     *         value: item
+     *     }
+     * </pre>
+     * so the DB can be queried by each of the indexes and still allow for lazy loading
+     * @param {string} key
+     * @param {Product} item
+     * @param {string|object} record
+     * @return {object} the indexed object to be stored in the db
+     * @protected
+     * @override
      */
-    _getProduct(keySSI, callback){};
+    _indexItem(key, item, record){
+        return {
+            gtin: key,
+            name: item.name,
+            value: record
+        }
+    };
 
     /**
      * Creates a {@link Product} dsu
      * @param {string|number} [gtin] the table key
      * @param {Product} product
      * @param {function(err, keySSI, string)} callback where the string is the mount path relative to the main DSU
+     * @override
      */
     create(gtin, product, callback) {
         if (!callback){
@@ -72,7 +88,7 @@ class ProductManager extends Manager {
                 if (err)
                     return self._err(`Could not create product DSU for ${product}`, err, callback);
                 const record = keySSI.getIdentifier();
-                self.insertRecord(gtin, record, (err) => {
+                self.insertRecord(gtin, self._indexItem(gtin, product, record), (err) => {
                     if (err)
                         return self._err(`Could not inset record with gtin ${gtin} on table ${self.tableName}`, err, callback);
                     const path =`${self.tableName}/${gtin}`;
@@ -88,6 +104,7 @@ class ProductManager extends Manager {
      * @param {string} gtin
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
      * @param {function(err, Product|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
+     * @override
      */
     getOne(gtin, readDSU,  callback) {
         super.getOne(gtin, readDSU, callback);
@@ -97,6 +114,7 @@ class ProductManager extends Manager {
      * Removes a product from the list (does not delete/invalidate DSU, simply 'forgets' the reference)
      * @param {string|number} gtin
      * @param {function(err)} callback
+     * @override
      */
     remove(gtin, callback) {
         super.remove(gtin, callback);
@@ -127,13 +145,41 @@ class ProductManager extends Manager {
 
 
     /**
-     * Lists all registered products
-     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
-     * @param {object} [options] query options. defaults to {@link Manager#DEFAULT_QUERY_OPTIONS}
-     * @param {function(err, Product[])} callback
+     * Lists all registered items according to query options provided
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
+     * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
+     * @param {function(err, object[])} callback
+     * @override
      */
-    getAll(readDSU, options, callback) {
-        super.getAll(readDSU, options, callback);
+    getAll(readDSU, options, callback){
+        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
+            query: ['gtin like /.*/g']
+        });
+
+        if (!callback){
+            if (!options){
+                callback = readDSU;
+                options = defaultOptions();
+                readDSU = true;
+            }
+            if (typeof readDSU === 'boolean'){
+                callback = options;
+                options = defaultOptions();
+            }
+            if (typeof readDSU === 'object'){
+                callback = options;
+                options = readDSU;
+                readDSU = true;
+            }
+        }
+
+        let self = this;
+        super.getAll(readDSU, options, (err, result) => {
+            if (err)
+                return self._err(`Could not parse Products ${JSON.stringify(result)}`, err, callback);
+            console.log(`Parsed ${result.length} products`);
+            callback(undefined, result);
+        });
     }
 
     /**
