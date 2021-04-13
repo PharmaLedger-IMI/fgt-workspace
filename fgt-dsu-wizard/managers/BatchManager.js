@@ -164,6 +164,8 @@ class BatchManager extends Manager{
             }
         }
 
+        options = options || defaultOptions();
+
         let self = this;
         super.getAll(readDSU, options, (err, result) => {
             if (err)

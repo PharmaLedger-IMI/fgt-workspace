@@ -100,7 +100,7 @@ export default class ProductsController extends LocalizedController {
         let self = this;
         self.productManager.getAll(true, (err, products) => {
             if (err)
-                throw err;
+                return self.showErrorToast(`Could not list products`, err);
             self.updateProducts(products);
         });
     }

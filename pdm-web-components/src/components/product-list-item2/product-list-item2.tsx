@@ -1,5 +1,6 @@
 import {Component, Host, h, Element, Prop, State, Watch, Method} from '@stencil/core';
-import HostElement from './../../decorators/HostElement';
+
+import {HostElement} from '../../decorators'
 import { WebManagerService, WebManager } from '../../services/WebManagerService';
 import wizard from '../../services/WizardService';
 
@@ -28,7 +29,7 @@ export class ProductListItem2 {
     if (!this.host.isConnected)
       return;
     this.webManager = await WebManagerService.getWebManager(this.manager);
-    await this.loadProduct();
+    return await this.loadProduct();
   }
 
   async loadProduct(){
@@ -39,11 +40,11 @@ export class ProductListItem2 {
         console.log(`Could not get Product with gtin ${this.gtin}`, err);
         return;
       }
-      this.product = product;
+      this.product = [...product];
     });
   }
 
-  @Watch('reference')
+  @Watch('gtin')
   @Method()
   async refresh(){
     this.product = undefined;

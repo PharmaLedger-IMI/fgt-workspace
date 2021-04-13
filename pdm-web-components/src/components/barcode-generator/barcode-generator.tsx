@@ -1,6 +1,6 @@
 import {Component, h, Prop, Element, State, Watch} from '@stencil/core';
 import {stringToBoolean} from "../../utils/utilFunctions";
-import bwipjs from "../../libs/bwip.js";
+import bwipjs from "../../../../cardinal/src/libs/bwip.js";
 const TWO_D_BARCODES = ["datamatrix","gs1datamatrix","qrcode"];
 
 @Component({

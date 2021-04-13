@@ -1,6 +1,6 @@
 {
   "theme": "pdm-theme",
-  "enableTranslations": true,
+  "translations": true,
   "pagesFallback": {
     "name": "Home",
     "path": "./"

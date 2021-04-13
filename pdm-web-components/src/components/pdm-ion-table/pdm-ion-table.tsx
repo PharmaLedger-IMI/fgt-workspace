@@ -1,6 +1,20 @@
-import {Component, ComponentInterface, Host, h, Element, Prop, State, Watch, Method} from '@stencil/core';
-import HostElement from './../../decorators/HostElement';
-import { WebManagerService, WebManager, QueryOptions } from '../../services/WebManagerService';
+import {
+  Component,
+  ComponentInterface,
+  Element,
+  Event,
+  EventEmitter,
+  h,
+  Host,
+  Method,
+  Prop,
+  State,
+  Watch
+} from '@stencil/core';
+
+import {WebManager, WebManagerService} from '../../services/WebManagerService';
+import {applyChain, extractChain, promisifyEventEmit} from "../../utils";
+import {HostElement} from '../../decorators'
 
 @Component({
   tag: 'pdm-ion-table',
@@ -12,62 +26,78 @@ export class PdmIonTable implements ComponentInterface {
 
   @Element() element;
 
+  /**
+   * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
+   */
+  @Event({
+    eventName: 'webcardinal:model:get',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getModelEvent: EventEmitter;
+
   @Prop() title = 'PDM Ionic Table';
 
   /**
    * can be 'bymodel' or 'byref'
    */
-  @Prop() mode: string = "bymodel"
+  @Prop() mode: string;
 
-  @Prop() canQuery?: boolean = false;
+  @Prop({attribute: 'can-query'}) canQuery?: boolean = false;
 
-  @Prop() iconName?: string = undefined;
+  @Prop({attribute: 'icon-name'}) iconName?: string = undefined;
 
   @Prop() manager: string;
 
-  @Prop() itemType: string;
+  @Prop({attribute: 'item-type'}) itemType: string;
 
-  @Prop() noContentMessage: string = "No Content";
+  @Prop({attribute: 'no-content-message'}) noContentMessage: string = "No Content";
 
-  @Prop() loadingMessage: string = "Loading...";
+  @Prop({attribute: 'loading-message'}) loadingMessage: string = "Loading...";
 
-  @Prop() itemReferenceName?: string = "reference";
+  @Prop({attribute: 'item-reference-name'}) itemReferenceName: string;
 
-  @Prop() itemsPerPage?: number = 10;
+  @Prop({attribute: 'items-per-page', mutable: true}) itemsPerPage?: number = 10;
 
-  @Prop() currentPage?: number = undefined;
+  @Prop({attribute: 'current-page', mutable: true}) currentPage?: number = undefined;
 
-  @Prop() sort?: string = "asc";
+  @Prop({mutable: true}) sort?: string = "asc";
 
   private webManager: WebManager = undefined;
 
-  @State() contents: string[] = undefined;
+  @State() contents: [] = undefined;
+
+  private model = undefined;
+  private chain = '';
 
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
     this.webManager = await WebManagerService.getWebManager(this.manager);
-    await this.loadContents();
+    await this._getModel();
   }
 
-  async componentWillRender() {
-    this.refresh();
-  }
+  async _getModel(){
+    this.chain = extractChain(this.host);
 
-  _getQueryOptions(){
-    const queryOptions: QueryOptions = {
-      query: [''],
-      sort: this.sort,
-      limit: this.itemsPerPage
+    if (this.chain) {
+      try {
+        this.model = await promisifyEventEmit(this.getModelEvent);
+        if (this.chain !== '@')
+          this.model = applyChain(this.model, this.chain);
+      } catch (error) {
+        console.error(error);
+      }
     }
-    return queryOptions;
+    await this.loadContents();
   }
 
   async loadContents(){
     if (!this.webManager)
       return;
 
-    this.webManager.getAll( false, this._getQueryOptions(), (err, contents) => {
+    this.webManager.getAll( false, undefined, (err, contents) => {
       if (err){
         console.log(`Could not list items`, err);
         return;
@@ -130,15 +160,11 @@ export class PdmIonTable implements ComponentInterface {
 
   getItem(reference){
     const Tag = this.itemType;
-    if (this.mode === 'byref'){
-      const elem = (<Tag manager={this.manager}></Tag>)
-      elem[this.itemReferenceName] = reference;
-      return elem;
-    } else if (this.mode === 'bymodel'){
-      return (<Tag data-view-model={'@' + reference}></Tag>)
-    } else {
-      console.log(`Could not render component. Invalid mode. must be 'bymodel' or 'byref'`);
+    const props = {
+      manager: this.manager,
     }
+    props[this.itemReferenceName] = reference;
+    return (<Tag {...props}></Tag>);
   }
 
   getContent(){
@@ -146,15 +172,16 @@ export class PdmIonTable implements ComponentInterface {
       return this.getLoadingContent();
     if (!this.contents.length)
       return this.getEmptyContent();
-    let self = this;
     const content = [];
     this.contents.forEach(reference => {
-      content.push(self.getItem(reference));
+      content.push(reference);
     });
     return content;
   }
 
   render() {
+    if (!this.model)
+      return;
     return (
       <Host>
         <ion-list className="ion-margin ion-no-padding">

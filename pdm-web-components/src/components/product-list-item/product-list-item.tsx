@@ -1,6 +1,6 @@
 import {Component, Host, h, Event, Element, EventEmitter} from '@stencil/core';
-import HostElement from './../../decorators/HostElement';
-import { extractChain, applyChain, promisifyEventEmit } from '../../utils';
+import {applyChain, extractChain, promisifyEventEmit} from "../../utils";
+import {HostElement} from '../../decorators'
 
 
 @Component({
@@ -31,7 +31,10 @@ export class ProductListItem {
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
+    await this._getModel();
+  }
 
+  async _getModel(){
     this.chain = extractChain(this.host);
 
     if (this.chain) {

@@ -128,13 +128,16 @@ class StockManager extends Manager{
                 readDSU = true;
             }
         }
+
+        options = options || defaultOptions();
+
         let self = this;
         self.query(options.query, options.sort, options.limit, (err, records) => {
             if (err)
                 return self._err(`Could not perform query`, err, callback);
             if (!readDSU)
                 return callback(undefined, records);
-            super._iterator(records.slice(), super._getDSUInfo, (err, result) => {
+            super._iterator(records.slice(), super._getDSUInfo.bind(self), (err, result) => {
                 if (err)
                     return self._err(`Could not parse batches ${JSON.stringify(records)}`, err, callback);
                 console.log(`Parsed ${result.length} batches`);

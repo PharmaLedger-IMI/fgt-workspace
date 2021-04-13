@@ -13,7 +13,7 @@ export interface WebManager {
 }
 
 const bindAsControllerManager = function(manager){
-  return new class implements WebManager{
+  return new class implements WebManager {
     getOne = manager.getOne.bind(manager);
     getAll = manager.getAll.bind(manager);
   }

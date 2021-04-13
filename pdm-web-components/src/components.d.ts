@@ -30,7 +30,7 @@ export namespace Components {
         "canQuery"?: boolean;
         "currentPage"?: number;
         "iconName"?: string;
-        "itemReferenceName"?: string;
+        "itemReferenceName": string;
         "itemType": string;
         "itemsPerPage"?: number;
         "loadingMessage": string;
@@ -119,6 +119,10 @@ declare namespace LocalJSX {
          */
         "mode"?: string;
         "noContentMessage"?: string;
+        /**
+          * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
+         */
+        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
         "sort"?: string;
         "title"?: string;
     }
