@@ -162,7 +162,10 @@ class OrderManager extends Manager {
         //let orderLine1 = new OrderLine('123', 1, '', '');
         //let orderLine2 = new OrderLine('321', 5, '', '');
         //return new Order(orderId, orderingTradingPartnerId, '', shippingAddress, OrderStatus.CREATED, [orderLine1, orderLine2]);
-        self.getIdentity((participant) => {
+        self.getIdentity((err, participant) => {
+            if (err) {
+                return callback(err);
+            }
             let orderId = (new Date()).toISOString(); // TODO sequential unique numbering ? It should comes from the ERP anyway.
             let requesterId = participant.id;
             let senderId = '';
