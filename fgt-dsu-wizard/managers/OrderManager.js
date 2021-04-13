@@ -167,7 +167,8 @@ class OrderManager extends Manager {
             let requesterId = participant.id;
             let senderId = '';
             let shipToAddress = participant.address;
-            callback(undefined, new Order(orderId, requesterId, senderId, shipToAddress, OrderStatus.CREATED, []));
+            let order = new Order(orderId, requesterId, senderId, shipToAddress, OrderStatus.CREATED, []);
+            callback(undefined, order);
         });
     }
 

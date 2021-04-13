@@ -61,7 +61,8 @@ export default class IssuedOrderController extends LocalizedController {
         });
         */        
         self.orderManager.newBlankOrder( (err, order) => {
-            self.orderManager.toModel(self.model, order);
+            console.log("order", order);
+            self.orderManager.toModel(order, self.model);
             console.log("toModel", self.model);
         });
     }
