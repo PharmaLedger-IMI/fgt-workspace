@@ -117,7 +117,11 @@ instantiateSSApp((err, walletSSI, walletDSU, credentials) => {
     getParticipantManager(dsuStorage, (err, participantManager) => {
         if (err)
             throw err;
-        console.log("Done");
+        console.log(`${conf.app} instantiated\ncredentials:`);
+        console.log(credentials)
+        console.log(`ID: ${credentials.id.secret}`);
+        console.log(`SSI: ${walletSSI}`);
+        process.exit(0);
     });
 });
 
