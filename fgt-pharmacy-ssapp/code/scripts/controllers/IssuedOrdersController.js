@@ -37,21 +37,18 @@ export default class IssuedOrdersController extends LocalizedController {
             self._showOrderModal();
         });
 
-        // pressing "CANCEL" while creating a new Issued Order
+        // pressed "CANCEL" while creating a new Issued Order
         self.on("cancel-new-issued-order", (event) => {
             event.preventDefault();
             event.stopImmediatePropagation();
             self.hideModal();
         }, true);
 
-        // pressing "OK" while creating a new Issued Order
-        self.on("create-issued-order", (event) => {
+        // created a new Issued Order with success
+        self.on("created-issued-order", (event) => {
             event.preventDefault();
             event.stopImmediatePropagation();
-            self.createIssuerOrder(event.detail, (err) => {
-                if (err)
-                    self.showErrorToast(err);
-            });
+            self.hideModal();
         }, true);
     }
 

@@ -22,7 +22,7 @@ const OrderStatus = require('../model').OrderStatus;
 class OrderManager extends Manager {
     constructor(participantManager) {
         super(participantManager);
-        this.productService = new (require('../services').OrderService)(ANCHORING_DOMAIN);
+        this.orderService = new (require('../services').OrderService)(ANCHORING_DOMAIN);
     }
 
     /**
@@ -41,7 +41,7 @@ class OrderManager extends Manager {
      */
     create(order, callback) {
         let self = this;
-        self.productService.create(order, (err, keySSI) => {
+        self.orderService.create(order, (err, keySSI) => {
             if (err)
                 return callback(err);
             // jpsl technical protest: I disagree with Tiago in coding the mount here.
@@ -154,16 +154,25 @@ class OrderManager extends Manager {
 
     /**
      * Creates a blacnk {@link Order} with some specific initializations.
-     * @param {string} orderId
-     * @param {string} orderingTradingPartnerId
-     * @param {string} shippingAddress
-     * @returns {Order}
+     * Uses the participantManager to obtain some data.
+     * @param {function(err, order)} callback
      */
-    newBlankOrderSync(orderId, orderingTradingPartnerId, shippingAddress) {
+    newBlankOrder(callback) {
+        let self = this;
         //let orderLine1 = new OrderLine('123', 1, '', '');
         //let orderLine2 = new OrderLine('321', 5, '', '');
         //return new Order(orderId, orderingTradingPartnerId, '', shippingAddress, OrderStatus.CREATED, [orderLine1, orderLine2]);
-        return new Order(orderId, orderingTradingPartnerId, '', shippingAddress, OrderStatus.CREATED, []);
+        self.getIdentity((err, participant) => {
+            if (err) {
+                return callback(err);
+            }
+            let orderId = (new Date()).toISOString(); // TODO sequential unique numbering ? It should comes from the ERP anyway.
+            let requesterId = participant.id;
+            let senderId = '';
+            let shipToAddress = participant.address;
+            let order = new Order(orderId, requesterId, senderId, shipToAddress, OrderStatus.CREATED, []);
+            callback(undefined, order);
+        });
     }
 
     /**
