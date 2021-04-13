@@ -29,12 +29,13 @@ export default class IssuedOrderController extends LocalizedController {
         if (self.hasErrors())
             return this.showErrorToast('There are errors in the form');
         console.log(self.getModel());
-        let order = self.orderManager.fromModel(self.getModel());
-        let errors = order.validate();
-        if (errors) {
-            return self.showErrorToast(errors);
-        }
-        self.send('create-issued-order', order);
+        let order = self.orderManager.fromModel(self.model);
+        self.orderManager.create(order, (err, keySSI, mountPath) => {
+            if (err) {
+                return self.showErrorToast(err);
+            }
+            self.send('created-issued-order', order);    
+        });
     }
 
     /**

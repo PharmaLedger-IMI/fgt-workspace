@@ -22,7 +22,7 @@ const OrderStatus = require('../model').OrderStatus;
 class OrderManager extends Manager {
     constructor(participantManager) {
         super(participantManager);
-        this.productService = new (require('../services').OrderService)(ANCHORING_DOMAIN);
+        this.orderService = new (require('../services').OrderService)(ANCHORING_DOMAIN);
     }
 
     /**
@@ -41,7 +41,7 @@ class OrderManager extends Manager {
      */
     create(order, callback) {
         let self = this;
-        self.productService.create(order, (err, keySSI) => {
+        self.orderService.create(order, (err, keySSI) => {
             if (err)
                 return callback(err);
             // jpsl technical protest: I disagree with Tiago in coding the mount here.
