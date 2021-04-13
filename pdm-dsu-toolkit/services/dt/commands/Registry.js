@@ -11,6 +11,7 @@ const _availableCommands = {
     delete: require('./delete'),
     derive: require('./derive'),
     endwith: require('./endWith'),
+    gendb: require('./gendb'),
     genkey: require('./genKey'),
     getidentifier: require('./getIndentifier'),
     mount: require('./mount'),

@@ -277,16 +277,18 @@ const hasIonErrors = function(element, prefix){
  * @param {WebcController} controller
  * @param {HTMLElement} element the ion-input element
  * @param {string} prefix prefix to the name of the input elements
+ * @param {boolean} [force] defaults to false. if true ignores if the value changed or not
  * @returns {string|undefined} undefined if ok, the error otherwise
  */
-const updateModelAndGetErrors = function(controller, element, prefix){
+const updateModelAndGetErrors = function(controller, element, prefix, force){
+    force = !!force || false;
     if (!controller.model)
         return;
     let name = element.name.substring(prefix.length);
     if (typeof controller.model[name] === 'object') {
         let valueChanged = controller.model[name].value !== element.value;
         controller.model[name].value = element.value;
-        if (valueChanged || !controller.beenValidatedOnce){
+        if (valueChanged || force){
             const hasErrors = hasIonErrors(element, prefix);
             controller.model[name].error = hasErrors;
             updateStyleVariables(controller, element, hasErrors);
@@ -349,7 +351,7 @@ const controllerHasErrors = function(controller, prefix){
     let errors = [];
     let error;
     inputs.forEach(el => {
-        error = updateModelAndGetErrors(controller, el, prefix);
+        error = updateModelAndGetErrors(controller, el, prefix, true);
         if (error)
             errors.push(error);
     });
@@ -411,7 +413,6 @@ const bindIonicValidation = function(controller, onValidModel, onInvalidModel, p
     });
 
     controller.hasErrors = () => controllerHasErrors(controller, prefix);
-    controller.beenValidatedOnce = false;
 
     controller.on('ion-model-is-valid', (evt) => {
         evt.preventDefault();

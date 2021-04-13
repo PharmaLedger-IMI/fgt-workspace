@@ -158,6 +158,20 @@ function getPostHandlerFor(apiname){
 	return doPost;
 }
 
+/**
+ * Wrapper around
+ * <pre>
+ *     OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(msg, err));
+ * </pre>
+ * @param msg
+ * @param err
+ * @param callback
+ * @protected
+ */
+const _err = function(msg, err, callback){
+	return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(msg, err));
+}
+
 module.exports = {
 	getResolver,
 	getKeySSISpace,
@@ -165,5 +179,6 @@ module.exports = {
 	getPostHandlerFor,
 	selectMethod,
 	createDSUFolders,
-	getEnv
+	getEnv,
+	_err
 }
