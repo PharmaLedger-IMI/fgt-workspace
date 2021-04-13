@@ -76,24 +76,6 @@ export default class IssuedOrdersController extends LocalizedController {
         */
     }
 
-
-    /**
-     *
-     * @param order
-     * @param callback
-     * @private
-     */
-    _addOrderAsync(order, callback) {
-        let self = this;
-        // toggle lines to allow creation of Orders without a partner.
-        //self.orderManager.create(order,  order, (err, keySSI, path) => {
-        self.participantManager.createIssuedOrder(self.orderManager, order, (err, keySSI, path) => {
-            if (err)
-                return callback(err);
-            callback();
-        });
-    }
-
     /**
      * Updates the products model
      * @param {object[]} orders.

@@ -30,7 +30,7 @@ export default class IssuedOrderController extends LocalizedController {
             return this.showErrorToast('There are errors in the form');
         console.log(self.getModel());
         let order = self.orderManager.fromModel(self.model);
-        self.orderManager.createIssuedOrder(order, (err, keySSI, dbPath) => {
+        self.orderManager.createIssued(order, (err, keySSI, dbPath) => {
             if (err) {
                 return self.showErrorToast(err);
             }
@@ -61,7 +61,7 @@ export default class IssuedOrderController extends LocalizedController {
             console.log(self.model.toObject());
         });
         */        
-        self.orderManager.newBlankOrder( (err, order) => {
+        self.orderManager.newBlank( (err, order) => {
             console.log("order", order);
             self.orderManager.toModel(order, self.model);
             console.log("toModel", self.model);

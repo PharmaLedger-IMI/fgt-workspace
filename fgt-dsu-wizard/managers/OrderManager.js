@@ -39,7 +39,7 @@ class OrderManager extends Manager {
      * @param {Order} order
      * @param {function(err, keySSI, dbPath)} callback where the dbPath follows a "tableName/orderId" template.
      */
-    createIssuedOrder(order, callback) {
+    createIssued(order, callback) {
         let self = this;
         // TODO locate senderId and check if it can receive orders
         const orderId = order.orderId;
@@ -47,7 +47,7 @@ class OrderManager extends Manager {
             if (err)
                 return self._err(`Could not create product DSU for ${order}`, err, callback);
             const record = keySSI.getIdentifier();
-            self.insertRecord(gtin, self._indexItem(orderId, order, record), (err) => {
+            self.insertRecord(orderId, self._indexItem(orderId, order, record), (err) => {
                 if (err)
                     return self._err(`Could not insert record with orderId ${orderId} on table ${self.tableName}`, err, callback);
                 const path =`${self.tableName}/${orderId}`;
@@ -154,7 +154,7 @@ class OrderManager extends Manager {
      * Uses the participantManager to obtain some data.
      * @param {function(err, order)} callback
      */
-    newBlankOrder(callback) {
+    newBlank(callback) {
         let self = this;
         //let orderLine1 = new OrderLine('123', 1, '', '');
         //let orderLine2 = new OrderLine('321', 5, '', '');
