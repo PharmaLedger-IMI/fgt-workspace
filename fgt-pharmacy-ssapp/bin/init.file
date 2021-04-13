@@ -22,10 +22,18 @@ endwith
 
 mount $CONST$ /participant
 
+## Create the inner db DSU
+with createdsu seed traceability innerdb
+    define $INNER$ getidentifier
+endwith
+
+## Create the outer db DSU
 with createdsu seed traceability fordb
+    mount $INNER$ /data
     define $DB$ getidentifier
 endwith
 
+## mount it
 mount $DB$ /db
 
 ## PHARMACY INIT SCRIPT

@@ -139,18 +139,21 @@ class BaseManager {
             });
             if (!self._verifyRelevantMounts(relevant))
                 return callback(`Loader Initialization failed`);
-            const dbSSI = getKeySSISpace().parse(relevant[self._cleanPath(DATABASE_MOUNT_PATH)]);
+            let dbSSI = getKeySSISpace().parse(relevant[self._cleanPath(DATABASE_MOUNT_PATH)]);
             if (!dbSSI)
                 return callback(`Could not retrieve db ssi`);
+            dbSSI = dbSSI.derive();
             self.db = require('opendsu').loadApi('db').getWalletDB(dbSSI, 'mydb');
-            console.log(`Database Cached`);
-            self.participantConstSSI = relevant[self._cleanPath(PARTICIPANT_MOUNT_PATH)];
-            self._getDIDString(identity, self.participantConstSSI, (err, didString) => {
-                if (err)
-                    throw err;
-                console.log(`DID String is ${didString}`);
-                self.messenger = getMessageManager(self, didString);
-                callback();
+            self.db.on('initialised', ()=> {
+                console.log(`Database Cached`);
+                self.participantConstSSI = relevant[self._cleanPath(PARTICIPANT_MOUNT_PATH)];
+                self._getDIDString(identity, self.participantConstSSI, (err, didString) => {
+                    if (err)
+                        throw err;
+                    console.log(`DID String is ${didString}`);
+                    self.messenger = getMessageManager(self, didString);
+                    callback();
+                });
             });
         });
     }

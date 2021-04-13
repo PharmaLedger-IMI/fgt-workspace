@@ -95,10 +95,20 @@ class GenDBCommand extends Command {
             if (err)
                 return self._err(`Could not generate key`, err, callback);
             const db = require('opendsu').loadApi('db').getWalletDB(keySSI, arg.name);
+            let initialized = false;
             db.on('initialized', () => {
                 console.log('Database Initialized');
+                initialized = true;
                 callback(undefined, db.getShareableSSI());
             });
+
+            const doTimeout = function(){
+                if (!initialized){
+                    console.log(`db not initialized...`);
+                    return setTimeout(doTimeout, 100);
+                }
+            }
+            doTimeout();
         }));
     }
 }
