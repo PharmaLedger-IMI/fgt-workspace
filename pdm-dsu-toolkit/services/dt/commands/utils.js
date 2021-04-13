@@ -72,11 +72,16 @@ const DSU_TYPE = {
     SEED: "seed"
 }
 
+const DB_TYPE = {
+    WALLET: "wallet"
+}
+
 module.exports = {
     _getFS,
     _getResolver,
     _getKeySSISpace,
     _err,
     KEY_TYPE,
-    DSU_TYPE
+    DSU_TYPE,
+    DB_TYPE
 };

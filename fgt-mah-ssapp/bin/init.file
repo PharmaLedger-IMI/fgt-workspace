@@ -22,7 +22,7 @@ endwith
 
 mount $CONST$ /participant
 
-with createdsu seed traceability fordb
+with gendb mydb wallet traceability fordb
     define $DB$ getidentifier
 endwith
 
