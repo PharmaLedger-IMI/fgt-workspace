@@ -25,8 +25,12 @@ const INBOX_PATHS_AND_PROPS = [
 ];
 
 const DB = {
-    products: 'products',
     batches: 'batches',
+    issuedOrders: 'issuedOrders',
+    issuedShippments: 'issuedShippments',
+    products: 'products',
+    receivedOrders: 'receivedOrders',
+    receivedShippments: 'receivedShippments',
     stock: 'stock'
 }
 
