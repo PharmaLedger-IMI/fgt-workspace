@@ -35,6 +35,30 @@ class OrderManager extends Manager {
     }
 
     /**
+     * Must wrap the entry in an object like:
+     * <pre>
+     *     {
+     *         index1: ...
+     *         index2: ...
+     *         value: item
+     *     }
+     * </pre>
+     * so the DB can be queried by each of the indexes and still allow for lazy loading
+     * @param {string} key
+     * @param {Product} item
+     * @param {string|object} record
+     * @return {object} the indexed object to be stored in the db
+     * @protected
+     * @override
+     */
+    _indexItem(key, item, record) {
+        return {
+            orderId: key,
+            value: record
+        }
+    };
+
+    /**
      * Creates a {@link Order} dsu
      * @param {Order} order
      * @param {function(err, keySSI, dbPath)} callback where the dbPath follows a "tableName/orderId" template.
@@ -50,11 +74,11 @@ class OrderManager extends Manager {
             self.insertRecord(orderId, self._indexItem(orderId, order, record), (err) => {
                 if (err)
                     return self._err(`Could not insert record with orderId ${orderId} on table ${self.tableName}`, err, callback);
-                const path =`${self.tableName}/${orderId}`;
+                const path = `${self.tableName}/${orderId}`;
                 console.log(`Order ${orderId} created stored at DB '${path}'`);
                 // send a message to senderId
                 callback(undefined, keySSI, path);
-            });   
+            });
         });
     }
 
@@ -79,7 +103,7 @@ class OrderManager extends Manager {
      * @param model
      * @returns {Order}
      */
-     fromModel(model) {
+    fromModel(model) {
         // convert orderLines into an array of OrderLines
         let orderLines = [];
         let orderLinesStr = model.orderLines.value;
@@ -95,7 +119,6 @@ class OrderManager extends Manager {
                 }
             });
         }
-        console.log("model.orderLines.value=", model.orderLines.value, "converted to=", orderLines);
         const order = new Order(model.orderId.value, model.requesterId.value, model.senderId.value, model.shipToAddress.value, OrderStatus.CREATED, orderLines);
         console.log("model ", model, "order ", order);
         return order;
@@ -120,22 +143,22 @@ class OrderManager extends Manager {
      * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
      * @param {function(err, Order[])} callback
      */
-     listIssued(readDSU, options, callback) {
+    listIssued(readDSU, options, callback) {
         const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
             query: ['orderId like /.*/g']
         });
 
-        if (!callback){
-            if (!options){
+        if (!callback) {
+            if (!options) {
                 callback = readDSU;
                 options = defaultOptions();
                 readDSU = true;
             }
-            if (typeof readDSU === 'boolean'){
+            if (typeof readDSU === 'boolean') {
                 callback = options;
                 options = defaultOptions();
             }
-            if (typeof readDSU === 'object'){
+            if (typeof readDSU === 'object') {
                 callback = options;
                 options = readDSU;
                 readDSU = true;
