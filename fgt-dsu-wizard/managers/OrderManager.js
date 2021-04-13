@@ -158,6 +158,7 @@ class OrderManager extends Manager {
      * @param {function(err, order)} callback
      */
     newBlankOrder(callback) {
+        let self = this;
         //let orderLine1 = new OrderLine('123', 1, '', '');
         //let orderLine2 = new OrderLine('321', 5, '', '');
         //return new Order(orderId, orderingTradingPartnerId, '', shippingAddress, OrderStatus.CREATED, [orderLine1, orderLine2]);
