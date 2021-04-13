@@ -91,6 +91,8 @@ web-cardinal-ion
 
 .idea
 
+gtin-dsu-wizard
+
 
 # Created by https://www.toptal.com/developers/gitignore/api/jetbrains+all,vscode,netbeans,eclipse,node,objective-c,android
 # Edit at https://www.toptal.com/developers/gitignore?templates=jetbrains+all,vscode,netbeans,eclipse,node,objective-c,android

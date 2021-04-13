@@ -202,7 +202,7 @@ const getValidationAttributes = function(element){
 const hasRequiredAndLengthErrors = function(element, props){
     let {required, maxLength, minLength} = props;
     let value = element.value;
-    value = value ? value.trim() : value;
+    value = value && typeof value === 'string' ? value.trim() : value;
     if (required && !value)
         return "Field is required";
     if (!value) return;
@@ -286,7 +286,7 @@ const updateModelAndGetErrors = function(controller, element, prefix){
     if (typeof controller.model[name] === 'object') {
         let valueChanged = controller.model[name].value !== element.value;
         controller.model[name].value = element.value;
-        if (valueChanged){
+        if (valueChanged || !controller.beenValidatedOnce){
             const hasErrors = hasIonErrors(element, prefix);
             controller.model[name].error = hasErrors;
             updateStyleVariables(controller, element, hasErrors);
@@ -355,6 +355,7 @@ const controllerHasErrors = function(controller, prefix){
     });
     let hasErrors = errors.length > 0;
     controller.send(hasErrors ? 'ion-model-is-invalid' : 'ion-model-is-valid');
+    controller.beenValidatedOnce = true;
     return hasErrors;
 }
 
@@ -410,6 +411,7 @@ const bindIonicValidation = function(controller, onValidModel, onInvalidModel, p
     });
 
     controller.hasErrors = () => controllerHasErrors(controller, prefix);
+    controller.beenValidatedOnce = false;
 
     controller.on('ion-model-is-valid', (evt) => {
         evt.preventDefault();
