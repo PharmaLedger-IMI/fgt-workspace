@@ -1,4 +1,4 @@
-const { INFO_PATH, ISSUED_ORDERS_MOUNT_PATH: ISSUED_ORDERS_MOUNT_PATH, ANCHORING_DOMAIN } = require('../constants');
+const { DB, DEFAULT_QUERY_OPTIONS, INFO_PATH, ISSUED_ORDERS_MOUNT_PATH: ISSUED_ORDERS_MOUNT_PATH, ANCHORING_DOMAIN } = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Order = require('../model').Order;
 const OrderLine = require('../model').OrderLine;
@@ -21,7 +21,7 @@ const OrderStatus = require('../model').OrderStatus;
  */
 class OrderManager extends Manager {
     constructor(participantManager) {
-        super(participantManager);
+        super(participantManager, DB.issuedOrders);
         this.orderService = new (require('../services').OrderService)(ANCHORING_DOMAIN);
     }
 
@@ -37,27 +37,24 @@ class OrderManager extends Manager {
     /**
      * Creates a {@link Order} dsu
      * @param {Order} order
-     * @param {function(err, keySSI, mountPath)} callback where the string is the mount path relative to the main DSU
+     * @param {function(err, keySSI, dbPath)} callback where the dbPath follows a "tableName/orderId" template.
      */
-    create(order, callback) {
+    createIssuedOrder(order, callback) {
         let self = this;
+        // TODO locate senderId and check if it can receive orders
+        const orderId = order.orderId;
         self.orderService.create(order, (err, keySSI) => {
             if (err)
-                return callback(err);
-            // jpsl technical protest: I disagree with Tiago in coding the mount here.
-            // The creation code would be here, but I would write the mount inside ParticipantMager.
-            // Having the OrderManager changing mounts inside the Participant DSU violates
-            // the encapsulation principle.
-            // Tis means that the caller would have to call a ParticipantManager.createOrder(...)
-            // nethod (which does not exist). This would also affects all CRUD operations on Order.
-            // But Tiago is the architect, so we write things his way.
-            let mountPath = this._getMountPath(order.orderId);
-            self.storage.mount(mountPath, keySSI.getIdentifier(), (err) => {
+                return self._err(`Could not create product DSU for ${order}`, err, callback);
+            const record = keySSI.getIdentifier();
+            self.insertRecord(gtin, self._indexItem(orderId, order, record), (err) => {
                 if (err)
-                    return callback(err);
-                console.log(`Order ${order.orderId} created and mounted at '${mountPath}'`);
-                callback(undefined, keySSI, mountPath);
-            });
+                    return self._err(`Could not insert record with orderId ${orderId} on table ${self.tableName}`, err, callback);
+                const path =`${self.tableName}/${orderId}`;
+                console.log(`Order ${orderId} created stored at DB '${path}'`);
+                // send a message to senderId
+                callback(undefined, keySSI, path);
+            });   
         });
     }
 
