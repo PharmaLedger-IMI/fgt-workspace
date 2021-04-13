@@ -113,5 +113,4 @@ class GenDBCommand extends Command {
     }
 }
 
-
 module.exports = GenDBCommand;

@@ -44,7 +44,7 @@ export default class ProductsController extends LocalizedController {
 
         self.model.addExpression('hasProducts', () => {
             return typeof self.model.products !== 'undefined' && self.model.products.length > 0;
-        }, 'stock');
+        }, 'products');
 
         this.on('refresh', (evt) => {
             evt.preventDefault();

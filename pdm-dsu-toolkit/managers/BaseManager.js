@@ -166,8 +166,8 @@ class BaseManager {
     _loadDSU(keySSI, callback){
         let self = this;
         if (typeof keySSI === 'string'){
-            try{
-                keySSI = self._getKeySSISpace(keySSI);
+            try {
+                keySSI = self._getKeySSISpace().parse(keySSI);
             } catch (e) {
                 return self._err(`Could not parse SSI ${keySSI}`, e, callback);
             }

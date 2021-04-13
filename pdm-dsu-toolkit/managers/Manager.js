@@ -186,7 +186,7 @@ class Manager{
             if (err)
                 return self._err(`Could not get product`, err, callback);
             accumulator.push(product);
-            iterator(records, getter, accumulator, callback);
+            return self._iterator(records, getter, accumulator, callback);
         });
     }
 
@@ -318,9 +318,10 @@ class Manager{
         self.query(options.query, options.sort, options.limit, (err, records) => {
             if (err)
                 return self._err(`Could not perform query`, err, callback);
+            records = records.map(r => r.value);
             if (!readDSU)
-                return callback(undefined, records.map(r => r.value));
-            super._iterator(records.slice(), self._getDSUInfo, (err, result) => {
+                return callback(undefined, records);
+            self._iterator(records.slice(), self._getDSUInfo.bind(self), (err, result) => {
                 if (err)
                     return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
                 console.log(`Parsed ${result.length} ${self._getTableName()}s`);
