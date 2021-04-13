@@ -49,6 +49,7 @@ export default class IssuedOrdersController extends LocalizedController {
             event.preventDefault();
             event.stopImmediatePropagation();
             self.hideModal();
+            self.send("refresh"); // force refresh of the listing
         }, true);
     }
 
@@ -67,34 +68,28 @@ export default class IssuedOrdersController extends LocalizedController {
             expanded: false,
             centered: true
         });
-        /*
-        self.participantManager.newBlankOrder(self.orderManager, (err, order) => {
-            if (err)
-                return this.showError(err);
-            self.showModal('issued-order-modal', self.orderManager.toModel(order), true);
-        });
-        */
     }
 
     /**
-     * Updates the products model
+     * Updates the issued orders model
      * @param {object[]} orders.
      */
-    updateOrders(orders) {
+    updateIssued(orders) {
         this.model['orders'] = orders;
     }
 
     /**
-     * Retrieves the orders from the DSU and updates the model
-     * by calling {@link OrdersController#updateOrders} after retrieval
+     * Retrieves the issued orders from the DSU and updates the model
+     * by calling {@link IssuedOrdersController#updateIssued} after retrieval
      */
-    getOrdersAsync() {
+     getOrdersAsync() {
         let self = this;
-        self.orderManager.listIssued((err, orders) => {
+        self.orderManager.listIssued(true, (err, orders) => {
             console.log("getOrdersAsync gotOrders ", orders);
             if (err)
                 return self.showError(err);
-            self.updateOrders(orders);
+            self.updateIssued(orders);
         });
     }
 }
+
