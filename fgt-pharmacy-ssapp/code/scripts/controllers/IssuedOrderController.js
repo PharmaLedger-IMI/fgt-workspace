@@ -28,6 +28,7 @@ export default class IssuedOrderController extends LocalizedController {
         let self = this;
         if (self.hasErrors())
             return this.showErrorToast('There are errors in the form');
+        console.log(self.getModel());
         let order = self.orderManager.fromModel(self.getModel());
         let errors = order.validate();
         if (errors) {
@@ -46,6 +47,7 @@ export default class IssuedOrderController extends LocalizedController {
 
     _setupBlankOrder() {
         let self = this;
+        /*
         self.participantManager.getIdentity((err, participant) => {
             if (err) {
                 return self.showErrorToast(err);
@@ -57,14 +59,11 @@ export default class IssuedOrderController extends LocalizedController {
             self.model.orderLines.value = '';
             console.log(self.model.toObject());
         });
-        /*
-        let order = self.orderManager.newBlankOrderSync(
-            Math.floor(Math.random() * Math.floor(99999999999)),
-            participant.id, 
-            participant.address
-            );
-        self.orderManager.toModel(self.model, order);
-        */
+        */        
+        self.orderManager.newBlankOrder( (err, order) => {
+            self.orderManager.toModel(self.model, order);
+            console.log("toModel", self.model);
+        });
     }
 
 }

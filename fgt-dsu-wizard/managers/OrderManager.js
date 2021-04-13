@@ -154,16 +154,20 @@ class OrderManager extends Manager {
 
     /**
      * Creates a blacnk {@link Order} with some specific initializations.
-     * @param {string} orderId
-     * @param {string} orderingTradingPartnerId
-     * @param {string} shippingAddress
-     * @returns {Order}
+     * Uses the participantManager to obtain some data.
+     * @param {function(err, order)} callback
      */
-    newBlankOrderSync(orderId, orderingTradingPartnerId, shippingAddress) {
+    newBlankOrder(callback) {
         //let orderLine1 = new OrderLine('123', 1, '', '');
         //let orderLine2 = new OrderLine('321', 5, '', '');
         //return new Order(orderId, orderingTradingPartnerId, '', shippingAddress, OrderStatus.CREATED, [orderLine1, orderLine2]);
-        return new Order(orderId, orderingTradingPartnerId, '', shippingAddress, OrderStatus.CREATED, []);
+        self.getIdentity((participant) => {
+            let orderId = (new Date()).toISOString(); // TODO sequential unique numbering ? It should comes from the ERP anyway.
+            let requesterId = participant.id;
+            let senderId = '';
+            let shipToAddress = participant.address;
+            callback(undefined, new Order(orderId, requesterId, senderId, shipToAddress, OrderStatus.CREATED, []));
+        });
     }
 
     /**
