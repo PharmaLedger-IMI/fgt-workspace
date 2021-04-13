@@ -15,7 +15,7 @@ export default class IssuedOrdersController extends LocalizedController {
         const wizard = require('wizard');
 
         this.participantManager = wizard.Managers.getParticipantManager();
-        this.orderManager = wizard.Managers.getOrderManager(this.participantManager);
+        this.issuedOrderManager = wizard.Managers.getIssuedOrderManager(this.participantManager);
 
         this.setModel(this.getModel());
 
@@ -29,12 +29,12 @@ export default class IssuedOrdersController extends LocalizedController {
             console.log(evt);
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            self.getOrdersAsync();
+            self.getAll();
         }, {capture: true});
 
         // pressing "NEW" to create a new Issued Order
         self.onTagClick("new-issued-order", () => {
-            self._showOrderModal();
+            self._showCreateModal();
         });
 
         // pressed "CANCEL" while creating a new Issued Order
@@ -53,7 +53,7 @@ export default class IssuedOrdersController extends LocalizedController {
         }, true);
     }
 
-    _showOrderModal() {
+    _showCreateModal() {
         let self = this;
         // this.showIonicModal("a-generic-configurable-modal", false, {page: "registration"});
         self.createWebcModal({
@@ -74,7 +74,7 @@ export default class IssuedOrdersController extends LocalizedController {
      * Updates the issued orders model
      * @param {object[]} orders.
      */
-    updateIssued(orders) {
+    update(orders) {
         this.model['orders'] = orders;
     }
 
@@ -82,13 +82,13 @@ export default class IssuedOrdersController extends LocalizedController {
      * Retrieves the issued orders from the DSU and updates the model
      * by calling {@link IssuedOrdersController#updateIssued} after retrieval
      */
-     getOrdersAsync() {
+     getAll() {
         let self = this;
-        self.orderManager.listIssued(true, (err, orders) => {
-            console.log("getOrdersAsync gotOrders ", orders);
+        self.issuedOrderManager.getAll(true, (err, orders) => {
+            console.log("getAll got orders ", orders);
             if (err)
                 return self.showError(err);
-            self.updateIssued(orders);
+            self.update(orders);
         });
     }
 }

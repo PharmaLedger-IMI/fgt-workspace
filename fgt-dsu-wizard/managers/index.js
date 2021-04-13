@@ -16,10 +16,11 @@
  */
 module.exports = {
     Manager: require('../../pdm-dsu-toolkit/managers/Manager'),
-    getOrderManager: require('./OrderManager'),
+    getBatchManager: require('./BatchManager'),
+    getIssuedOrderManager: require('./IssuedOrderManager'),
     getParticipantManager: require('./ParticipantManager'),
     getProductManager: require('./ProductManager'),
-    getBatchManager: require('./BatchManager'),
+    getReceivedOrderManager: require('./ReceivedOrderManager'),
     getStockManager: require('./StockManager')
 
 }

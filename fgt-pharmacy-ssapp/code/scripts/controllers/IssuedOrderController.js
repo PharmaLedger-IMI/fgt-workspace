@@ -9,7 +9,7 @@ export default class IssuedOrderController extends LocalizedController {
         super.bindLocale(self, `issuedOrder`, true);
         const wizard = require('wizard');
         self.participantManager = wizard.Managers.getParticipantManager();
-        self.orderManager = wizard.Managers.getOrderManager(this.participantManager);
+        self.issuedOrderManager = wizard.Managers.getIssuedOrderManager(this.participantManager);
 
         self.setModel(self.getModel());
 
@@ -29,8 +29,8 @@ export default class IssuedOrderController extends LocalizedController {
         if (self.hasErrors())
             return this.showErrorToast('There are errors in the form');
         console.log(self.getModel());
-        let order = self.orderManager.fromModel(self.model);
-        self.orderManager.createIssued(order, (err, keySSI, dbPath) => {
+        let order = self.issuedOrderManager.fromModel(self.model);
+        self.issuedOrderManager.create(order, (err, keySSI, dbPath) => {
             if (err) {
                 return self.showErrorToast(err);
             }
@@ -48,23 +48,8 @@ export default class IssuedOrderController extends LocalizedController {
 
     _setupBlankOrder() {
         let self = this;
-        /*
-        self.participantManager.getIdentity((err, participant) => {
-            if (err) {
-                return self.showErrorToast(err);
-            }
-            self.model.orderId.value = Math.floor(Math.random() * Math.floor(99999999999)); // TODO sequential unique numbering ? It should comes from the ERP anyway.
-            self.model.requesterId.value = participant.id;
-            self.model.senderId.value = '';
-            self.model.shipToAddress.value = participant.address;
-            self.model.orderLines.value = '';
-            console.log(self.model.toObject());
-        });
-        */        
-        self.orderManager.newBlank( (err, order) => {
-            console.log("order", order);
-            self.orderManager.toModel(order, self.model);
-            console.log("toModel", self.model);
+        self.issuedOrderManager.newBlank( (err, order) => {
+            self.issuedOrderManager.toModel(order, self.model);
         });
     }
 
