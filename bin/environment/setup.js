@@ -66,7 +66,7 @@ const setupFullEnvironment = function(products, batches, callback){
             if (err)
                 return callback(err);
             result[APPS.MAH].push({
-                credentials: mahCredentials,
+                credentials: wholesalerCredentials,
                 products: products,
                 batches: batches
             });
