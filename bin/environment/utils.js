@@ -73,10 +73,69 @@ function impersonateDSUStorage(dsu){
     return dsu;
  }
 
+const argParser = function(defaultOpts, args){
+    let config = JSON.parse(JSON.stringify(defaultOpts));
+    if (!args)
+        return config;
+    args = args.slice(2);
+    const recognized = Object.keys(config);
+    const notation = recognized.map(r => '--' + r);
+    args.forEach(arg => {
+        if (arg.includes('=')){
+            let splits = arg.split('=');
+            if (notation.indexOf(splits[0]) !== -1) {
+                let result
+                try {
+                    result = eval(splits[1]);
+                } catch (e) {
+                    result = splits[1];
+                }
+                config[splits[0].substring(2)] = result;
+            }
+        }
+    });
+    return config;
+}
+
+let conf = argParser(process.argv);
+
+const parseEnvJS = function(strEnv){
+    return JSON.parse(strEnv.replace(/^export\sdefault\s/, ''));
+}
+
+const getEnvJs = function(app, callback){
+    const appPath = require('path').join(process.cwd(), conf.pathToApps, "trust-loader-config", app, "loader", "environment.js");
+    require('fs').readFile(appPath, (err, data) => {
+        if (err)
+            return callback(`Could not find Application ${app} at ${{appPath}} : ${err}`);
+        return callback(undefined, parseEnvJS(data.toString()));
+    });
+}
+
+const instantiateSSApp = function(credentials, callback){
+    getEnvJs(conf.app, (err, env) => {
+        if (err)
+            throw err;
+
+        let config = require("opendsu").loadApi("config");
+        config.autoconfigFromEnvironment(env);
+
+        const appService = new (dt.AppBuilderService)(env);
+        appService.buildWallet(credentials, (err, keySII, dsu) => {
+            if (err)
+                throw err;
+            console.log(`App ${env.appName} created with credentials ${JSON.stringify(credentials, undefined, 2)}.\nSSI: ${{keySII}}`);
+            callback(undefined, keySII, dsu, credentials);
+        });
+    });
+}
+
 module.exports = {
     generateProductName,
     generateGtin,
     generateBatchNumber,
     genDate,
-    impersonateDSUStorage
+    impersonateDSUStorage,
+    argParser,
+    instantiateSSApp
 }
