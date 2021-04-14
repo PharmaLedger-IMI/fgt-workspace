@@ -1,5 +1,5 @@
 {
-  "title": "PDM DSU Trust Loader",
+  "title": "PDM Trust Loader",
   "anchoring": "default",
   "form": {
     "title": "Please enter your credentials",
@@ -15,7 +15,7 @@
       "label": "Id:",
       "type": "text",
       "placeholder": "Please enter your id here...",
-      "value": "#ThIsIsiD=",
+      "value": "#id11",
       "public": true,
       "required": true
     },
@@ -23,7 +23,7 @@
       "label": "Email:",
       "type": "email",
       "placeholder": "Please enter your email here...",
-      "value": "pdm@pdmfc.com",
+      "value": "mail@pdmfc.com",
       "public": true,
       "required": true
     },
@@ -40,8 +40,7 @@
       "type": "text",
       "placeholder": "Enter your address...",
       "required": true,
-      "public": true,
-      "value": "Address"
+      "value": "This in an Address"
     },
     "pass": {
       "label": "Password:",
