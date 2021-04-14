@@ -89,10 +89,9 @@ const getEnvJs = function(app, callback){
     });
 }
 
-const setupProducts = function(participantManager, callback){
+const setupProducts = function(participantManager, products, batches, callback){
     const productManager = getProductManager(participantManager);
-    const getProducts = require('./products/productsRandom');
-    const products = getProducts();
+    products = products || require('./products/productsRandom');
     const iterator = function(productsCopy, callback){
         const product = productsCopy.shift();
         if (!product){
@@ -108,9 +107,13 @@ const setupProducts = function(participantManager, callback){
     iterator(products.slice(), callback);
 }
 
-const setupBatches = function(participantManager, products, callback){
+const setupBatches = function(participantManager, products, batches,  callback){
     const batchManager = getBatchManager(participantManager);
-    const getBatches = require('./batches/batchesRandom');
+    const getBatches = !batches
+        ? require('./batches/batchesRandom')
+        : function(gtin){
+            return batches[gtin + ''];
+        }
 
     const batchesObject = {};
 
@@ -119,13 +122,13 @@ const setupBatches = function(participantManager, products, callback){
         if (!product)
             return callback(undefined, batchesObject);
 
-        const batches = getBatches();
+        const pBatches = getBatches(product.gtin);
 
         const batchIterator = function(gtin, batchesCopy, callback){
             const batch = batchesCopy.shift();
             if (!batch){
-                console.log(`${batches.length} batches created for ${gtin}`);
-                return callback(undefined, batches);
+                console.log(`${pBatches.length} batches created for ${gtin}`);
+                return callback(undefined, pBatches);
             }
             batchManager.create(gtin, batch, (err, keySSI, path) => {
                 if (err)
@@ -134,7 +137,7 @@ const setupBatches = function(participantManager, products, callback){
             });
         }
 
-        batchIterator(product.gtin, batches.slice(), (err, batches) => {
+        batchIterator(product.gtin, pBatches.slice(), (err, batches) => {
             if (err)
                 return callback(err);
             batchesObject[product.gtin] = batches;
@@ -175,7 +178,7 @@ const instantiateSSApp = function(callback){
     });
 }
 
-const createMAH = function(callback) {
+const createMAH = function(products, batches, callback) {
     instantiateSSApp((err, walletSSI, walletDSU, credentials) => {
         if (err)
             throw err;

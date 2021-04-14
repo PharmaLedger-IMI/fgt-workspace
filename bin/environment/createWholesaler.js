@@ -90,14 +90,18 @@ const getEnvJs = function(app, callback){
     });
 }
 
-const setupStock = function(participantManager, products, batches, callback){
+const setupStocks = function(participantManager, products, batches, stocks, callback){
+    if (!callback){
+        callback = stocks;
+        stocks = undefined;
+    }
     if (!callback){
         callback = batches;
         batches = undefined;
     }
     if (!callback) {
         callback = products;
-        products = callback;
+        products = undefined;
     }
 
     products = products || require('./products/productsRandom');
@@ -105,16 +109,18 @@ const setupStock = function(participantManager, products, batches, callback){
 
     const stockManager = getStockManager(participantManager);
 
-    const stocks = [];
-
-    products.forEach((p, i) => {
-       const stock = new Stock(p);
-       stock.batches = batches[i];
-       stock.batches.forEach(b => {
-           b.quantity = Math.floor(Math.random() * 500) + 1;
-       })
-        stock.push(stock);
-    });
+    stocks = stocks || [];
+    if (!stocks){
+        stocks = [];
+        products.forEach((p, i) => {
+            const stock = new Stock(p);
+            stock.batches = batches[i];
+            stock.batches.forEach(b => {
+                b.quantity = Math.floor(Math.random() * 500) + 1;
+            })
+            stock.push(stock);
+        });
+    }
 
     const stockIterator = function(stocksCopy){
         const stock = stocksCopy.shift();
@@ -162,7 +168,7 @@ const instantiateSSApp = function(callback){
     });
 }
 
-const createWholesaler = function(products, batches){
+const createWholesaler = function(products, batches, stock, callback){
     instantiateSSApp((err, walletSSI, walletDSU, credentials) => {
         if (err)
             throw err;
@@ -170,18 +176,14 @@ const createWholesaler = function(products, batches){
         getParticipantManager(dsuStorage, (err, participantManager) => {
             if (err)
                 throw err;
-            setupProducts(participantManager, (err, products) => {
+            setupStocks(participantManager, products, batches,(err, stocks) => {
                 if (err)
                     throw err;
-                setupBatches(participantManager, products, (err, batches) => {
-                    if (err)
-                        throw err;
-                    console.log(`${conf.app} instantiated\ncredentials:`);
-                    console.log(credentials)
-                    console.log(`ID: ${credentials.id.secret}`);
-                    participantManager.shutdownMessenger();
-                    callback(undefined, credentials, products, batches);
-                });
+                console.log(`${conf.app} instantiated\ncredentials:`);
+                console.log(credentials)
+                console.log(`ID: ${credentials.id.secret}`);
+                participantManager.shutdownMessenger();
+                callback(undefined, credentials, products, batches, stocks);
             });
         });
     });
