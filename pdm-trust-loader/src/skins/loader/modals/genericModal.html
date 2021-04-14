@@ -1,0 +1,19 @@
+<ion-header class="modal-class">
+    <ion-toolbar class="modal-class">
+        <ion-img class="modal-class" align=center" src="assets/images/logo.svg"></ion-img>
+        <ion-title size="small" align="center" >{{ @title }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<div class="modal-content">
+
+</div>
+<ion-footer class="modal-class">
+    <ion-toolbar>
+        <ion-buttons slot="primary">
+            <ion-button name="button-login" type="submit" color="primary" data-tag="trylogin">{{ @buttons.login }}</ion-button>
+        </ion-buttons>
+        <ion-buttons slot="secondary">
+            <ion-button name="button-login" color="secondary" data-tag="tryregister">{{ @buttons.register }}</ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-footer>

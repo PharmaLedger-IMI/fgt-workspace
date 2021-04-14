@@ -12,5 +12,8 @@
       "indexed": false,
       "tag": "home"
     }
+  ],
+  "skins": [
+    { "name": "loader" }
   ]
 }
