@@ -18,37 +18,15 @@ const defaultOps = {
 
 let conf = argParser(defaultOps, process.argv);
 
-const setup = function(participantManager, products, batches, stocks, callback){
+const setup = function(participantManager, stocks, callback){
     if (!callback){
         callback = stocks;
         stocks = undefined;
     }
-    if (!callback){
-        callback = batches;
-        batches = undefined;
-    }
-    if (!callback) {
-        callback = products;
-        products = undefined;
-    }
-
-    products = products || require('./products/productsRandom');
-    batches = products || require('./batches/batchesRandom');
 
     const stockManager = getStockManager(participantManager);
 
-    stocks = stocks || [];
-    if (!stocks){
-        stocks = [];
-        products.forEach((p, i) => {
-            const stock = new Stock(p);
-            stock.batches = batches[i];
-            stock.batches.forEach(b => {
-                b.quantity = Math.floor(Math.random() * 500) + 1;
-            })
-            stock.push(stock);
-        });
-    }
+    stocks = stocks || require('./stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj();
 
     const stockIterator = function(stocksCopy){
         const stock = stocksCopy.shift();

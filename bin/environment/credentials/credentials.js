@@ -1,36 +1,36 @@
 const generateWholesalerCredentials = function(id) {
     return {
         "name": {
-            "value": "PDM the Wholesaler",
+            "secret": "PDM the Wholesaler",
             "public": true,
             "required": true
         },
         "id": {
-            "value": id,
+            "secret": id,
             "public": true,
             "required": true
         },
         "email": {
-            "value": "wholesaler@pdmfc.com",
+            "secret": "wholesaler@pdmfc.com",
             "public": true,
             "required": true
         },
         "tin": {
-            "value": 500000000,
+            "secret": 500000000,
             "public": true,
             "required": true
         },
         "address": {
             "required": true,
-            "value": "This in an Address"
+            "secret": "This in an Address"
         },
         "pass": {
             "required": true,
-            "value": "This1sSuchAS3curePassw0rd"
+            "secret": "This1sSuchAS3curePassw0rd"
         },
         "passrepeat": {
             "required": true,
-            "value": "This1sSuchAS3curePassw0rd"
+            "secret": "This1sSuchAS3curePassw0rd"
         },
     }
 };

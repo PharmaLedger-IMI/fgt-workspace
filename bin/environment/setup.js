@@ -1,7 +1,7 @@
 process.env.NO_LOGS = true;
 
 const { APPS, getCredentials } = require('./credentials/credentials');
-const { argParser } = require('./utils');
+const { argParser, jsonStringifyReplacer } = require('./utils');
 
 const getProducts = require('./products/productsRandom');
 
@@ -99,7 +99,7 @@ const setupProdEnvironment = function(callback){
     });
 }
 
-const setup = function(type, credentials, manager, ...args){
+const setup = function(type, result, ...args){
     const callback = args.pop();
 
     const cb = function(ssi, type){
@@ -111,15 +111,16 @@ const setup = function(type, credentials, manager, ...args){
         }
     }
 
+    const products = args.shift() || getProducts();
+    const batches = args.shift();
+
     switch(type){
         case APPS.MAH:
-            const products = args.shift() || getProducts();
-            const batches = args.shift() || undefined;
-            return require('./createMah').setup(manager, products, batches, cb(credentials.ssi, APPS.MAH));
+            return require('./createMah').setup(result.manager, products, batches, cb(result.ssi, APPS.MAH));
         case APPS.WHOLESALER:
-            return require('./createWholesaler').setup(manager, ...args, cb(credentials.ssi, APPS.WHOLESALER));
+            return require('./createWholesaler').setup(result.manager, require('./stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj(products, batches) , cb(result.ssi, APPS.WHOLESALER));
         case APPS.PHARMACY:
-            return require('./createPharmacy').setup(manager, ...args, cb(credentials.ssi, APPS.PHARMACY));
+            return require('./createPharmacy').setup(result.manager, ...args, cb(result.ssi, APPS.PHARMACY));
         default:
             callback(`unsupported config: ${type}`);
     }
@@ -143,7 +144,7 @@ const create = function(app, credentials, callback){
                 manager: manager
             };
             results[type].push(result);
-            return shouldSetup ? setup(type, result, manager, callback) : callback();
+            return shouldSetup ? setup(type, result, callback) : callback();
         }
     }
 
@@ -164,14 +165,6 @@ const create = function(app, credentials, callback){
 }
 
 const conf = argParser(defaultOps, process.argv);
-
-function jsonStringifyReplacer(key, value){
-    if(key === 'manager' && value.constructor.name)
-        return value.constructor.name;
-    if (key === 'serialNumbers')
-        return value.join(', ');
-    return value;
-}
 
 create(conf.app, (err) => {
     if (err)
