@@ -23,7 +23,7 @@ class ProductManager extends Manager {
     constructor(participantManager) {
         super(participantManager, DB.products);
         this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
-        this.batchManager = require('./BatchManager')(participantManager);
+        this.batchManager = require('./BatchManager')(participantManager, participantManager.force);
     }
 
     /**
