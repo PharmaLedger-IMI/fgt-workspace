@@ -34,7 +34,11 @@ const getMultiple = () => {
 }
 
 const getProd = () => {
-    return getMultiple();
+    const MULTIPLE = {};
+    MULTIPLE[APPS.MAH] = [getCredentials(APPS.MAH, 'merkl')];
+    MULTIPLE[APPS.WHOLESALER] = [];
+    MULTIPLE[APPS.PHARMACY] = [];
+    return MULTIPLE;
 }
 
 const mapper = function(type, arr){

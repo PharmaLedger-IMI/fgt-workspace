@@ -118,45 +118,56 @@ const APPS = {
     PROD: 'prod'
 }
 
-const MERKL = {
-    "name": {
-        "secret": "Merkl",
-        "public": true,
-        "required": true
-    },
-    "id": {
-        "secret": 'MERKL id',
-        "public": true,
-        "required": true
-    },
-    "email": {
-        "secret": "mah@merkl.com",
-        "public": true,
-        "required": true
-    },
-    "tin": {
-        "secret": 1234566789,
-        "public": true,
-        "required": true
-    },
-    "address": {
-        "required": true,
-        "secret": "merkl's address"
-    },
-    "pass": {
-        "required": true,
-        "secret": "MerklPassw0rd"
-    },
-    "passrepeat": {
-        "required": true,
-        "secret": "MerklPassw0rd"
-    },
-    products: require('../products/productsRandom'),
-    batches: undefined,
+
+const getMerkl = function(){
+    const MERKL = {
+        "name": {
+            "secret": "Merkl",
+            "public": true,
+            "required": true
+        },
+        "id": {
+            "secret": 'MERKL id',
+            "public": true,
+            "required": true
+        },
+        "email": {
+            "secret": "mah@merkl.com",
+            "public": true,
+            "required": true
+        },
+        "tin": {
+            "secret": 1234566789,
+            "public": true,
+            "required": true
+        },
+        "address": {
+            "required": true,
+            "secret": "merkl's address"
+        },
+        "pass": {
+            "required": true,
+            "secret": "MerklPassw0rd"
+        },
+        "passrepeat": {
+            "required": true,
+            "secret": "MerklPassw0rd"
+        },
+    }
+    MERKL.products = require('../products/productsRandom')();
+    MERKL.batches = {};
+    MERKL.products.forEach(p => {
+        MERKL.batches[p.gtin] = require('../batches/batchesRandom')(p.gtin);
+    });
+    MERKL.stocks = require('../stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj(MERKL.products, MERKL.batches);
+    return MERKL;
 }
 
+
 const PROD = {}
-PROD[APPS.MAH] = [MERKL]
+PROD[APPS.MAH] = {
+    merkl: getMerkl()
+}
 
 const getCredentials = function(type, reference){
     if (typeof reference === 'string')
@@ -175,5 +186,6 @@ const getCredentials = function(type, reference){
 
 module.exports = {
     getCredentials,
-    APPS
+    APPS,
+    getMerkl
 }
