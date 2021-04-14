@@ -150,7 +150,9 @@ const MERKL = {
     "passrepeat": {
         "required": true,
         "secret": "MerklPassw0rd"
-    }
+    },
+    products: require('../products/productsRandom'),
+    batches: undefined,
 }
 
 const PROD = {}

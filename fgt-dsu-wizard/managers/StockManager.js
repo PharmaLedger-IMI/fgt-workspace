@@ -237,13 +237,14 @@ class StockManager extends Manager{
 
 let stockManager;
 /**
- * @param {DB} database
- * @param {BaseManager} baseManager
+ * @param {ParticipantManager} [participantManager] only required the first time, if not forced
+ * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
+ * Makes Participant Manager required again!
  * @returns {StockManager}
  */
-const getStockManager = function (baseManager) {
-    if (!stockManager)
-        stockManager = new StockManager(baseManager);
+const getStockManager = function (participantManager, force) {
+    if (!stockManager || force)
+        stockManager = new StockManager(participantManager);
     return stockManager;
 }
 

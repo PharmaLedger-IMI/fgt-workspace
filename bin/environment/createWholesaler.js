@@ -23,7 +23,7 @@ const setup = function(participantManager, stocks, callback){
         stocks = undefined;
     }
 
-    const stockManager = getStockManager(participantManager);
+    const stockManager = getStockManager(participantManager, true);
 
     stocks = stocks || require('./stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj();
 

@@ -158,6 +158,10 @@ let messageManager;
  * @module managers
  */
 const getMessageManager = function(baseManager, didString, onNewMessage, force) {
+    if (typeof onNewMessage === 'boolean'){
+        force = onNewMessage;
+        onNewMessage = undefined;
+    }
     if (!messageManager || force) {
         if (!baseManager || !didString)
             throw new Error("Missing Objects for instantiation");
