@@ -4,6 +4,7 @@ const { APPS, getCredentials } = require('./credentials/credentials');
 const { argParser, jsonStringifyReplacer } = require('./utils');
 
 const getProducts = require('./products/productsRandom');
+const { getStockFromProductsAndBatchesObj } = require('./stocks/stocksRandomFromProducts');
 
 const defaultOps = {
     app: APPS.MAH,
@@ -16,11 +17,25 @@ results[APPS.MAH] = [];
 results[APPS.WHOLESALER] = [];
 results[APPS.PHARMACY] = [];
 
+const getSingle = () => {
+    const SINGLE = {}
+    SINGLE[APPS.MAH] = [getCredentials(APPS.MAH)];
+    SINGLE[APPS.WHOLESALER] = [getCredentials(APPS.WHOLESALER)];
+    SINGLE[APPS.PHARMACY] = [];
+    return SINGLE;
+}
 
-const FULL = {}
-FULL[APPS.MAH] = [getCredentials(APPS.MAH)];
-FULL[APPS.WHOLESALER] = [getCredentials(APPS.WHOLESALER)];
-FULL[APPS.PHARMACY] = [getCredentials(APPS.PHARMACY)];
+const getMultiple = () => {
+    const MULTIPLE = {};
+    MULTIPLE[APPS.MAH] = [getCredentials(APPS.MAH), getCredentials(APPS.MAH), getCredentials(APPS.MAH)];
+    MULTIPLE[APPS.WHOLESALER] = [getCredentials(APPS.WHOLESALER), getCredentials(APPS.WHOLESALER), getCredentials(APPS.WHOLESALER), getCredentials(APPS.WHOLESALER)];
+    MULTIPLE[APPS.PHARMACY] = [];
+    return MULTIPLE;
+}
+
+const getProd = () => {
+    return getMultiple();
+}
 
 const mapper = function(type, arr){
     return arr[type].map(a => ({"type": type, credentials: a}));
@@ -29,73 +44,85 @@ const mapper = function(type, arr){
 const setupFullEnvironment = function(actors, callback){
     if (!callback){
         callback = actors
-        actors = FULL
+        actors = SINGLE
     }
 
     const createIterator = function(participants, callback){
         const participant = participants.shift();
         if (!participant)
-            return callback(undefined, actors);
-        create(participant.type, participant.credentials, (err) => {
-            if (err)
-                return callback(err);
-            return createIterator(participants, callback);
-        });
+            return callback();
+        create(participant.type, participant.credentials, (err) => err
+            ? callback(err)
+            : createIterator(participants, callback));
     }
-
-    const actorsCopy = [...mapper(APPS.MAH, actors),
-            ...mapper(APPS.WHOLESALER, actors),
-            ...mapper(APPS.PHARMACY, actors)];
 
     const setupMAHIterator = function(mahsCopy, callback){
         const mah = mahsCopy.shift();
         if (!mah)
-            return callback(undefined, actors);
-        setup(mah.type, mah.credentials,
-            mah.manager,
+            return callback();
+        setup(APPS.MAH, mah,
             mah.credentials.products || getProducts(),
-            mah.credentials.batches || undefined, (err) => {
-                if (err)
-                    return callback(err);
-                return setupMAHIterator(mahsCopy, callback);
-        });
+            mah.credentials.batches || undefined, (err) => err
+                ? callback(err)
+                : setupMAHIterator(mahsCopy, callback));
     }
-
-    const wholesalersCopy = mapper(APPS.WHOLESALER, actors);
-    const pharmacyCopy = mapper(APPS.PHARMACY, actors);
 
     const setupWholesalerIterator = function(wholesalersCopy, products, batches, callback){
         const wholesaler = wholesalersCopy.shift();
         if (!wholesaler)
-            return callback(undefined, );
+            return callback();
 
-        setup(wholesaler.type, wholesaler.credentials,
-            wholesaler.manager,
-            wholesaler.credentials.stock || getProducts(), (err) => err
+        setup(APPS.WHOLESALER, wholesaler,
+            wholesaler.credentials.stock, (err) => err
                     ? callback(err)
                     : setupMAHIterator(wholesalersCopy, callback));
     }
 
+    const setupPharmacyIterator = function(pharmaciesCopy, products, batches, wholesalers, callback){
+        const pharmacy = pharmaciesCopy.shift();
+        if (!pharmacy)
+            return callback();
+
+        setup(APPS.PHARMACY, pharmacy.credentials, pharmacy.manager, batches,
+            wholesalers, pharmacy.credentials.stock, (err) => err
+                ? callback(err)
+                : setupPharmacyIterator(pharmaciesCopy, callback));
+    }
+
+    const actorsCopy = [...mapper(APPS.MAH, actors),
+        ...mapper(APPS.WHOLESALER, actors),
+        ...mapper(APPS.PHARMACY, actors)];
+
     createIterator(actorsCopy, (err, actors) => {
         if (err)
             return callback(err);
-        setupMAHIterator(mapper(APPS.MAH, actors), (err, productsObj) => {
+        setupMAHIterator(results[APPS.MAH].slice(), (err) => {
            if (err)
                return callback(err);
 
-        });
-    });
-}
+           const allProducts = results[APPS.MAH].reduce((acc, mah) => {
+               acc.push(...mah.results[0])
+           }, []);
 
-const setupProdEnvironment = function(callback){
-    const getProdParticipants = function(){
-        return {}
-    }
-    return setupFullEnvironment(getProdParticipants(), (err) => {
-        if (err)
-            return callback(err);
-        console.log("Production Environment setup");
-        callback();
+            const allBatchesObj = results[APPS.MAH].reduce((acc, mah) => {
+                Object.keys(mah.results[1]).forEach(key => {
+                    if (key in acc)
+                        console.warn(`batches are being overwritten`);
+                    acc[key] = mah.results[1][key];
+                });
+            }, {});
+
+            setupWholesalerIterator(results[APPS.WHOLESALER].slice(), allProducts, allBatchesObj, (err) => {
+                if (err)
+                    return callback (err);
+                setupPharmacyIterator(results[APPS.PHARMACY].slice(), allProducts, allBatchesObj, results[APPS.WHOLESALER], (err) => {
+                    if (err)
+                        return callback(err);
+                    callback();
+                });
+            });
+
+        });
     });
 }
 
@@ -111,16 +138,22 @@ const setup = function(type, result, ...args){
         }
     }
 
-    const products = args.shift() || getProducts();
-    const batches = args.shift();
+    let products, batches;
 
     switch(type){
         case APPS.MAH:
+            products = args.shift() || getProducts();
+            batches = args.shift();
             return require('./createMah').setup(result.manager, products, batches, cb(result.ssi, APPS.MAH));
         case APPS.WHOLESALER:
-            return require('./createWholesaler').setup(result.manager, require('./stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj(products, batches) , cb(result.ssi, APPS.WHOLESALER));
+            products = args.shift() || getProducts();
+            batches = args.shift();
+            return require('./createWholesaler').setup(result.manager, getStockFromProductsAndBatchesObj(products, batches) , cb(result.ssi, APPS.WHOLESALER));
         case APPS.PHARMACY:
-            return require('./createPharmacy').setup(result.manager, ...args, cb(result.ssi, APPS.PHARMACY));
+            products = args.shift() || getProducts();
+            batches = args.shift() || undefined;
+            const stocks = args.shift() || getStockFromProductsAndBatchesObj(products, batches)
+            return require('./createPharmacy').setup(result.manager, products, batches, stocks, cb(result.ssi, APPS.PHARMACY));
         default:
             callback(`unsupported config: ${type}`);
     }
@@ -155,10 +188,12 @@ const create = function(app, credentials, callback){
             return require('./createWholesaler').create(credentials, cb(APPS.WHOLESALER));
         case APPS.PHARMACY:
             return require('./createPharmacy').create(credentials, cb(APPS.PHARMACY));
-        case APPS.FULL:
-            return setupFullEnvironment(callback);
+        case APPS.SINGLE:
+            return setupFullEnvironment(getSingle(), callback);
+        case APPS.MULTIPLE:
+            return setupFullEnvironment(getMultiple(), callback);
         case APPS.PROD:
-            return setupProdEnvironment(callback);
+            return setupFullEnvironment(getProd(), callback);
         default:
             callback(`unsupported config: ${app}`);
     }
@@ -170,6 +205,16 @@ create(conf.app, (err) => {
     if (err)
         throw err;
     console.log(`Environment set for ${conf.app}`);
-    console.log(`Results:\n${JSON.stringify(results, jsonStringifyReplacer, 2)}`);
+    // console.log(`Results:\n${JSON.stringify(results, jsonStringifyReplacer, 2)}`);
+    console.log(`Ids per Participant:`);
+    console.log(JSON.stringify(Object.keys(results).map(key => {
+        return {
+            type: key,
+            created: results[key].length ? results[key].map(p => ({
+                id: p.credentials.id.secret,
+                ssi: p.ssi
+            })) : 'none'
+        } ;
+    }), undefined, 2));
     process.exit(0);
 });
