@@ -78,7 +78,7 @@ const setupBatches = function(participantManager, products, batches,  callback){
             return callback(err);
         const output = [];
         Object.keys(batchesObj).forEach(gtin => {
-            output.push(`The following batches per gtin have been created:\nGtin: ${gtin}\nBatches: ${batchesObj[gtin].join(', ')}`);
+            output.push(`The following batches per gtin have been created:\nGtin: ${gtin}\nBatches: ${batchesObj[gtin].map(b => b.batchNumber).join(', ')}`);
         });
         console.log(output.join('\n'));
         callback(undefined, batchesObj);
@@ -98,7 +98,7 @@ const setup = function(participantManager, products, batches, callback){
 }
 
 const create = function(credentials,  callback) {
-    instantiateSSApp(credentials, (err, walletSSI, walletDSU, credentials) => {
+    instantiateSSApp(conf.app, conf.pathToApps, dt, credentials, (err, walletSSI, walletDSU, credentials) => {
         if (err)
             throw err;
         const dsuStorage = impersonateDSUStorage(walletDSU.getWritableDSU());

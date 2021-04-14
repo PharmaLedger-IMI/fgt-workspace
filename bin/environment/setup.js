@@ -4,7 +4,6 @@ const { APPS, getCredentials } = require('./credentials/credentials');
 const { argParser } = require('./utils');
 
 const getProducts = require('./products/productsRandom');
-const getBatches = require('./batches/batchesRandom');
 
 const defaultOps = {
     app: APPS.MAH,
@@ -12,10 +11,10 @@ const defaultOps = {
     products: './products/productsRandom.js'
 }
 
-const result = {};
-result[APPS.MAH] = [];
-result[APPS.WHOLESALER] = [];
-result[APPS.PHARMACY] = [];
+const results = {};
+results[APPS.MAH] = [];
+results[APPS.WHOLESALER] = [];
+results[APPS.PHARMACY] = [];
 
 
 const FULL = {}
@@ -23,14 +22,14 @@ FULL[APPS.MAH] = [getCredentials(APPS.MAH)];
 FULL[APPS.WHOLESALER] = [getCredentials(APPS.WHOLESALER)];
 FULL[APPS.PHARMACY] = [getCredentials(APPS.PHARMACY)];
 
+const mapper = function(type, arr){
+    return arr[type].map(a => ({"type": type, credentials: a}));
+}
+
 const setupFullEnvironment = function(actors, callback){
     if (!callback){
         callback = actors
         actors = FULL
-    }
-
-    const mapper = function(type, arr){
-        return arr[type].map(a => ({"type": type, credentials: a}));
     }
 
     const createIterator = function(participants, callback){
@@ -62,7 +61,8 @@ const setupFullEnvironment = function(actors, callback){
         });
     }
 
-    const wholesalersCopy =
+    const wholesalersCopy = mapper(APPS.WHOLESALER, actors);
+    const pharmacyCopy = mapper(APPS.PHARMACY, actors);
 
     const setupWholesalerIterator = function(wholesalersCopy, products, batches, callback){
         const wholesaler = wholesalersCopy.shift();
@@ -103,36 +103,47 @@ const setup = function(type, credentials, manager, ...args){
     const callback = args.pop();
 
     const cb = function(ssi, type){
-        return function(err, ...results){
-            const callback = results.pop();
+        return function(err, ...result){
             if (err)
                 return callback(err);
-            result[type].filter(r => r.ssi === ssi)
+            results[type].filter(r => r.ssi === ssi)[0].results = result;
+            callback(undefined, ...result)
         }
     }
 
     switch(type){
         case APPS.MAH:
-            return require('./createMah').setup(credentials, cb(credentials.ssi, APPS.MAH));
+            const products = args.shift() || getProducts();
+            const batches = args.shift() || undefined;
+            return require('./createMah').setup(manager, products, batches, cb(credentials.ssi, APPS.MAH));
         case APPS.WHOLESALER:
-            return require('./createWholesaler').create(credentials, cb(credentials.ssi, APPS.WHOLESALER));
+            return require('./createWholesaler').setup(manager, ...args, cb(credentials.ssi, APPS.WHOLESALER));
         case APPS.PHARMACY:
-            return require('./createPharmacy').create(credentials, cb(credentials.ssi, APPS.PHARMACY));
+            return require('./createPharmacy').setup(manager, ...args, cb(credentials.ssi, APPS.PHARMACY));
         default:
             callback(`unsupported config: ${type}`);
     }
 }
 
 const create = function(app, credentials, callback){
+    let shouldSetup = false;
+    if (!callback){
+        callback = credentials;
+        credentials = getCredentials(app);
+        shouldSetup = true;
+    }
+
     const cb = function(type){
         return function(err, credentials, ssi, manager){
             if (err)
                 return callback(err);
-            result[type].push({
+            const result = {
                 credentials: credentials,
                 ssi: ssi,
                 manager: manager
-            });
+            };
+            results[type].push(result);
+            return shouldSetup ? setup(type, result, manager, callback) : callback();
         }
     }
 
@@ -153,10 +164,19 @@ const create = function(app, credentials, callback){
 }
 
 const conf = argParser(defaultOps, process.argv);
+
+function jsonStringifyReplacer(key, value){
+    if(key === 'manager' && value.constructor.name)
+        return value.constructor.name;
+    if (key === 'serialNumbers')
+        return value.join(', ');
+    return value;
+}
+
 create(conf.app, (err) => {
     if (err)
         throw err;
     console.log(`Environment set for ${conf.app}`);
-    console.log(`Results:\n${JSON.stringify(result, undefined, 2)}`);
+    console.log(`Results:\n${JSON.stringify(results, jsonStringifyReplacer, 2)}`);
     process.exit(0);
 });

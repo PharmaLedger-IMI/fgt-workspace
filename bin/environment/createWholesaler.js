@@ -8,6 +8,8 @@ const { getParticipantManager, getStockManager, getBatchManager } = require('../
 const { impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 const {Stock, Product, Batch} = require('../../fgt-dsu-wizard/model');
 
+const { getCredentials, APPS } = require('./credentials/credentials');
+
 const defaultOps = {
     app: "fgt-wholesaler-wallet",
     pathToApps: "../../",
@@ -74,7 +76,7 @@ const setup = function(participantManager, products, batches, stocks, callback){
 }
 
 const create = function(credentials, callback){
-    instantiateSSApp((err, walletSSI, walletDSU, credentials) => {
+    instantiateSSApp(conf.app, conf.pathToApps, dt, credentials, (err, walletSSI, walletDSU, credentials) => {
         if (err)
             throw err;
         const dsuStorage = impersonateDSUStorage(walletDSU.getWritableDSU());
