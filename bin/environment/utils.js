@@ -128,6 +128,14 @@ const instantiateSSApp = function(app, pathToApps, dt, credentials, callback){
     });
 }
 
+function jsonStringifyReplacer(key, value){
+    if(key === 'manager' && value.constructor.name)
+        return value.constructor.name;
+    if (key === 'serialNumbers')
+        return value.join(', ');
+    return value;
+}
+
 module.exports = {
     generateProductName,
     generateGtin,
@@ -135,5 +143,6 @@ module.exports = {
     genDate,
     impersonateDSUStorage,
     argParser,
-    instantiateSSApp
+    instantiateSSApp,
+    jsonStringifyReplacer
 }
