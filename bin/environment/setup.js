@@ -19,7 +19,7 @@ result[APPS.WHOLESALER] = [];
 result[APPS.PHARMACY] = [];
 
 
-const argParser = function(args){
+const argParser = function (args) {
     let config = JSON.parse(JSON.stringify(defaultOps));
     if (!args)
         return config;
@@ -27,7 +27,7 @@ const argParser = function(args){
     const recognized = Object.keys(config);
     const notation = recognized.map(r => '--' + r);
     args.forEach(arg => {
-        if (arg.includes('=')){
+        if (arg.includes('=')) {
             let splits = arg.split('=');
             if (notation.indexOf(splits[0]) !== -1) {
                 let result
@@ -43,12 +43,12 @@ const argParser = function(args){
     return config;
 }
 
-const setupFullEnvironment = function(products, batches, callback){
-    if (!callback){
+const setupFullEnvironment = function (products, batches, callback) {
+    if (!callback) {
         callback = batches;
         batches = undefined;
     }
-    if (!callback){
+    if (!callback) {
         callback = products;
         products = undefined;
     }
@@ -65,22 +65,32 @@ const setupFullEnvironment = function(products, batches, callback){
         execute(APPS.WHOLESALER, (err, wholesalerCredentials, products, batches, stocks) => {
             if (err)
                 return callback(err);
-            result[APPS.MAH].push({
+            result[APPS.WHOLESALER].push({
                 credentials: wholesalerCredentials,
                 products: products,
                 batches: batches
+            });
+
+            execute(APPS.PHARMACY, (err, pharmacyCredentials, products, batches, stocks) => {
+                if (err)
+                    return callback(err);
+                result[APPS.PHARMACY].push({
+                    credentials: pharmacyCredentials,
+                    products: products,
+                    batches: batches
+                });
             });
         });
     });
 }
 
-const setupProdEnvironment = function(callback){
+const setupProdEnvironment = function (callback) {
 
 }
 
 
-const execute = function(config, callback){
-    switch(config.app){
+const execute = function (config, callback) {
+    switch (config.app) {
         case APPS.MAH:
             return require('./createMah')((err, mahCredentials, products, batches) => {
                 if (err)
