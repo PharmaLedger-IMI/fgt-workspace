@@ -113,7 +113,8 @@ const APPS = {
     MAH: 'fgt-mah-wallet',
     WHOLESALER: 'fgt-wholesaler-wallet',
     PHARMACY: 'fgt-pharmacy-wallet',
-    FULL: 'full',
+    MULTIPLE: 'multiple',
+    SINGLE: 'single',
     PROD: 'prod'
 }
 
@@ -166,7 +167,7 @@ const getCredentials = function(type, reference){
         case APPS.PHARMACY:
             return generatePharmacyCredentials(Math.floor(Math.random() * 999999999));
         default:
-            throw new Error(`invalid request`);
+            return;
     }
 }
 

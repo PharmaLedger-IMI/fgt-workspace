@@ -60,13 +60,16 @@ const {getMessageManager, Message} = require('./MessageManager');
  * All other Managers in this architecture can inherit from this to get access to the getIdentity && getEnvironment API from the credentials set in the pdm-loader
  *
  * @param {DSUStorage} dsuStorage the controllers dsu storage
+ * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
+ * Makes DSU Storage required again!
  * @param {function(err, BaseManager)} [callback] optional callback. called after initialization. mostly for testing
  * @module managers
  * @class BaseManager
  * @abstract
  */
 class BaseManager {
-    constructor(dsuStorage, callback) {
+    constructor(dsuStorage, force, callback) {
+        this.force = force;
         this.DSUStorage = dsuStorage;
         this.rootDSU = undefined;
         this.db = undefined;
@@ -151,14 +154,14 @@ class BaseManager {
                 return callback(`Could not retrieve db ssi`);
             dbSSI = dbSSI.derive();
             self.db = require('opendsu').loadApi('db').getWalletDB(dbSSI, 'mydb');
-            self.db.on('initialised', ()=> {
+            self.db.on('initialised', () => {
                 console.log(`Database Cached`);
                 self.participantConstSSI = relevant[self._cleanPath(PARTICIPANT_MOUNT_PATH)];
                 self._getDIDString(identity, self.participantConstSSI, (err, didString) => {
                     if (err)
                         throw err;
                     console.log(`DID String is ${didString}`);
-                    self.messenger = getMessageManager(self, didString);
+                    self.messenger = getMessageManager(self, didString, self.force);
                     callback();
                 });
             });
