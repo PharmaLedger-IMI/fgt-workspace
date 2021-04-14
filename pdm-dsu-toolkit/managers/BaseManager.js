@@ -101,6 +101,13 @@ class BaseManager {
         this.messenger.getMessages(callback);
     }
 
+    /**
+     * Stops the message service listener
+     */
+    shutdownMessenger(){
+        this.messenger.shutdown();
+    }
+
     _getRootDSU(){
         if (!this.rootDSU)
             throw new Error("ParticipantDSU not cached");

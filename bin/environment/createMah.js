@@ -146,7 +146,7 @@ const setupBatches = function(participantManager, products, callback){
         if (err)
             return callback(err);
         const output = [];
-        Object.keys(batchesObj).forEach(gtin =>{
+        Object.keys(batchesObj).forEach(gtin => {
             output.push(`The following batches per gtin have been created:\nGtin: ${gtin}\nBatches: ${batchesObj[gtin].join(', ')}`);
         });
         console.log(output.join('\n'));
@@ -175,31 +175,33 @@ const instantiateSSApp = function(callback){
     });
 }
 
-instantiateSSApp((err, walletSSI, walletDSU, credentials) => {
-    if (err)
-        throw err;
-    const dsuStorage = impersonateDSUStorage(walletDSU.getWritableDSU());
-    getParticipantManager(dsuStorage, (err, participantManager) => {
+const createMAH = function(callback) {
+    instantiateSSApp((err, walletSSI, walletDSU, credentials) => {
         if (err)
             throw err;
-        setupProducts(participantManager, (err, products) => {
+        const dsuStorage = impersonateDSUStorage(walletDSU.getWritableDSU());
+        getParticipantManager(dsuStorage, (err, participantManager) => {
             if (err)
                 throw err;
-            setupBatches(participantManager, products, (err, batches) => {
+            setupProducts(participantManager, (err, products) => {
                 if (err)
                     throw err;
-                console.log(`${conf.app} instantiated\ncredentials:`);
-                console.log(credentials)
-                console.log(`ID: ${credentials.id.secret}`);
-                console.log(`SSI: ${walletSSI}`);
-                process.exit(0);
+                setupBatches(participantManager, products, (err, batches) => {
+                    if (err)
+                        throw err;
+                    console.log(`${conf.app} instantiated\ncredentials:`);
+                    console.log(credentials);
+                    console.log(`ID: ${credentials.id.secret}`);
+                    console.log(`SSI: ${walletSSI}`);
+                    participantManager.shutdownMessenger();
+                    callback(undefined, credentials, products, batches);
+                });
             });
         });
     });
-});
+}
 
-
-
+module.exports = createMAH;
 
 
 

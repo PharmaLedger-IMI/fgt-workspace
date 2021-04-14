@@ -47,9 +47,17 @@ class MessageManager extends Manager{
         this.did = undefined;
         let self = this;
         this._listeners = {};
+        this.timer = undefined;
         this.getOwnDID((err, didDoc) => err
             ? createOpenDSUErrorWrapper(`Could not get Own DID`, err)
             : self._startMessageListener(didDoc));
+    }
+
+    shutdown(){
+        if (!this.timer)
+            return console.log(`The message service for ${this.didString} is not running`);
+        clearInterval(this.timer);
+        console.log(`The messenger for ${this.didString} stopped`);
     }
 
     _receiveMessage(message, callback){
@@ -112,18 +120,14 @@ class MessageManager extends Manager{
 
     _startMessageListener(did){
         let self = this;
-        setTimeout(() => {
+        self.timer = setInterval(() => {
             did.readMessage((err, message) => {
-                if (err){
-                    console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
-                    return self._startMessageListener(did);
-                }
-
+                if (err)
+                    return console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
                 self._receiveMessage(message, (err, message) => {
                     if (err)
-                        console.log(createOpenDSUErrorWrapper(`Failed to receive message`, err));
+                        return console.log(createOpenDSUErrorWrapper(`Failed to receive message`, err));
                     console.log(`Message received ${message}`);
-                    self._startMessageListener(did);
                 });
             });
         }, MESSAGE_REFRESH_RATE);
