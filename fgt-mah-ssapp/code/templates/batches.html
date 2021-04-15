@@ -1,0 +1,28 @@
+<webc-container controller="BatchesController" translations="true">
+    <div data-if="@hasBatches">
+        <div slot="true">
+            <ion-list class="ion-margin ion-no-padding">
+                <ion-list-header lines="inset">
+                    <ion-icon class="ion-padding" name="stats-chart-outline"></ion-icon>
+                    <ion-label>{{ @title }}</ion-label>
+                    <ion-button class="ion-padding-horizontal" fill="outline">{{ @buttons.add-batch }}</ion-button>
+                </ion-list-header>
+                <div data-for="@batches">
+                    <product-list-item data-view-model="@"></product-list-item>
+                </div>
+            </ion-list>
+
+            <!--            <pdm-ion-table title="@title"-->
+            <!--                           item-reference="products"-->
+            <!--                           mode="bymodel"-->
+            <!--                           can-query="false"-->
+            <!--                           icon-name="stats-chart-outline"-->
+            <!--                           item-type="product-list-item"></pdm-ion-table>-->
+        </div>
+        <div slot="false">
+            <ion-item>
+                <ion-label>{{ @none }}</ion-label>
+            </ion-item>
+        </div>
+    </div>
+</webc-container>

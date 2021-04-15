@@ -107,7 +107,7 @@ export class PdmIonTable implements ComponentInterface {
   @State() contents: [] = undefined;
 
   private model = undefined;
-  private chain = '';
+  private chain: string = '';
 
   async componentWillLoad() {
     if (!this.host.isConnected)

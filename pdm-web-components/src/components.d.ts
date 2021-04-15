@@ -26,6 +26,8 @@ export namespace Components {
          */
         "type": string;
     }
+    interface BatchListItem {
+    }
     interface PdmIonTable {
         /**
           * Shows the search bar or not. (not working)
@@ -81,6 +83,12 @@ declare global {
         prototype: HTMLBarcodeGeneratorElement;
         new (): HTMLBarcodeGeneratorElement;
     };
+    interface HTMLBatchListItemElement extends Components.BatchListItem, HTMLStencilElement {
+    }
+    var HTMLBatchListItemElement: {
+        prototype: HTMLBatchListItemElement;
+        new (): HTMLBatchListItemElement;
+    };
     interface HTMLPdmIonTableElement extends Components.PdmIonTable, HTMLStencilElement {
     }
     var HTMLPdmIonTableElement: {
@@ -107,6 +115,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "barcode-generator": HTMLBarcodeGeneratorElement;
+        "batch-list-item": HTMLBatchListItemElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "product-list-item": HTMLProductListItemElement;
         "product-list-item2": HTMLProductListItem2Element;
@@ -133,6 +142,12 @@ declare namespace LocalJSX {
           * description: `The barcode type. Accepted values are 'gs1datamatrix','datamatrix','qrcode', 'code128','code11','isbn'.`, isMandatory: true, propertyType: `string`
          */
         "type"?: string;
+    }
+    interface BatchListItem {
+        /**
+          * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
+         */
+        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
     }
     interface PdmIonTable {
         /**
@@ -193,6 +208,7 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;
+        "batch-list-item": BatchListItem;
         "pdm-ion-table": PdmIonTable;
         "product-list-item": ProductListItem;
         "product-list-item2": ProductListItem2;
@@ -204,6 +220,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "barcode-generator": LocalJSX.BarcodeGenerator & JSXBase.HTMLAttributes<HTMLBarcodeGeneratorElement>;
+            "batch-list-item": LocalJSX.BatchListItem & JSXBase.HTMLAttributes<HTMLBatchListItemElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "product-list-item": LocalJSX.ProductListItem & JSXBase.HTMLAttributes<HTMLProductListItemElement>;
             "product-list-item2": LocalJSX.ProductListItem2 & JSXBase.HTMLAttributes<HTMLProductListItem2Element>;

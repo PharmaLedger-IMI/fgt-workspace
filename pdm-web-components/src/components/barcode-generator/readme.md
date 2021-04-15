@@ -21,6 +21,7 @@
 
 ### Used by
 
+ - [batch-list-item](../batch-list-item)
  - [product-list-item](../product-list-item)
  - [product-list-item2](../product-list-item2)
  - [stock-list-item](../stock-list-item)
@@ -28,6 +29,7 @@
 ### Graph
 ```mermaid
 graph TD;
+  batch-list-item --> barcode-generator
   product-list-item --> barcode-generator
   product-list-item2 --> barcode-generator
   stock-list-item --> barcode-generator
