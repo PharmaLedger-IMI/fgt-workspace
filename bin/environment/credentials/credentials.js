@@ -169,6 +169,15 @@ PROD[APPS.MAH] = {
     merck: getMerck()
 }
 
+const getDummyWholesalers = function(count){
+    count = count || 1;
+    const result = [];
+    for (let i=0; i < count; i++){
+        result.push(getCredentials(APPS.WHOLESALER))
+    }
+    return result;
+}
+
 const getCredentials = function(type, reference){
     if (typeof reference === 'string')
         return PROD[type][reference];
@@ -186,5 +195,6 @@ const getCredentials = function(type, reference){
 
 module.exports = {
     getCredentials,
-    APPS
+    APPS,
+    getDummyWholesalers
 }
