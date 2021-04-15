@@ -110,12 +110,12 @@ const generateMAHCredentials = function(id) {
 };
 
 const APPS = {
-    MAH: 'fgt-mah-wallet',
-    WHOLESALER: 'fgt-wholesaler-wallet',
-    PHARMACY: 'fgt-pharmacy-wallet',
-    MULTIPLE: 'multiple',
-    SINGLE: 'single',
-    PROD: 'prod'
+    MAH: 'fgt-mah-wallet',                  // instantiates a MAH with random content
+    WHOLESALER: 'fgt-wholesaler-wallet',    // instantiates a Wholesaler with random content
+    PHARMACY: 'fgt-pharmacy-wallet',        // instantiates a Pharmacy with random content
+    MULTIPLE: 'multiple',                   // instantiates a Multiple connected Actors
+    SINGLE: 'single',                       // instantiates a One of each actors, connected
+    PROD: 'prod'                            // instantiates a the Production Env
 }
 
 
