@@ -6,7 +6,7 @@ const generateWholesalerCredentials = function(id) {
             "required": true
         },
         "id": {
-            "secret": id,
+            "secret": `WHS${id}`,
             "public": true,
             "required": true
         },
@@ -44,7 +44,7 @@ const generatePharmacyCredentials = function(id) {
             "required": true
         },
         "id": {
-            "secret": id,
+            "secret": `PHA${id}`,
             "public": true,
             "required": true
         },
@@ -82,7 +82,7 @@ const generateMAHCredentials = function(id) {
             "required": true
         },
         "id": {
-            "secret": id,
+            "secret": `MAH${id}`,
             "public": true,
             "required": true
         },
@@ -125,17 +125,17 @@ const APPS = {
 const getMerck = function(){
     const MERCK = {
         "name": {
-            "secret": "Merkl",
+            "secret": "Merck",
             "public": true,
             "required": true
         },
         "id": {
-            "secret": 'MERKL id',
+            "secret": 'MERCK id',
             "public": true,
             "required": true
         },
         "email": {
-            "secret": "mah@merkl.com",
+            "secret": "mah@merck.com",
             "public": true,
             "required": true
         },
@@ -146,15 +146,15 @@ const getMerck = function(){
         },
         "address": {
             "required": true,
-            "secret": "merkl's address"
+            "secret": "merck's address"
         },
         "pass": {
             "required": true,
-            "secret": "MerklPassw0rd"
+            "secret": "MerckPassw0rd"
         },
         "passrepeat": {
             "required": true,
-            "secret": "MerklPassw0rd"
+            "secret": "MerckPassw0rd"
         }
     }
     MERCK.products = require('../products/productsRandom')();

@@ -120,17 +120,16 @@ class MessageManager extends Manager{
 
     _startMessageListener(did){
         let self = this;
-        self.timer = setInterval(() => {
-            did.readMessage((err, message) => {
+        did.readMessage((err, message) => {
+            if (err)
+                return console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
+            self._startMessageListener(did);
+            self._receiveMessage(message, (err, message) => {
                 if (err)
-                    return console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
-                self._receiveMessage(message, (err, message) => {
-                    if (err)
-                        return console.log(createOpenDSUErrorWrapper(`Failed to receive message`, err));
-                    console.log(`Message received ${message}`);
-                });
+                    return console.log(createOpenDSUErrorWrapper(`Failed to receive message`, err));
+                console.log(`Message received ${message}`);
             });
-        }, MESSAGE_REFRESH_RATE);
+        });
     }
 
     getOwnDID(callback){
