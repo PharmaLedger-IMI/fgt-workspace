@@ -1,4 +1,5 @@
 
+
 export function stringToBoolean(str){
   if(typeof str === "boolean"){
     return str;

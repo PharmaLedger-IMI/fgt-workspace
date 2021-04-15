@@ -196,18 +196,6 @@ class StockManager extends Manager{
         tempStock[STATUS.IN_STOCK] = stock;
         return tempStock;
     }
-    //
-    // getAll(callback){
-    //     if (this.stock)
-    //         return callback(undefined, this.stock);
-    //     // this.storage.getObject(STOCK_PATH, (err, stock) => {
-    //     //    if (err)
-    //     //        return callback(err);
-    //     //    this.stock = stock;
-    //     //    console.log("Retrieved stock");
-    //     //    callback(undefined, this.toModel(stock));
-    //     // });
-    // }
 
     /**
      * @param {STATUS} [status] defaults to {@link STATUS.IN_STOCK}

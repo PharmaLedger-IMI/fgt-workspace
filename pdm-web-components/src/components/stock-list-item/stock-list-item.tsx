@@ -3,12 +3,13 @@ import {extractChain, promisifyEventEmit} from "../../utils";
 import {HostElement} from '../../decorators'
 import { applyChain } from "../../utils";
 
+
 @Component({
-  tag: 'product-list-item',
-  styleUrl: 'product-list-item.css',
+  tag: 'stock-list-item',
+  styleUrl: 'stock-list-item.css',
   shadow: false,
 })
-export class ProductListItem {
+export class StockListItem {
 
   @HostElement() host: HTMLElement;
 

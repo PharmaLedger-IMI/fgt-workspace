@@ -1,7 +1,7 @@
 import {Component, Host, h, Element, Prop, State, Watch, Method} from '@stencil/core';
 
+import {WebManager, WebManagerService} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
-import { WebManagerService, WebManager } from '../../services/WebManagerService';
 import wizard from '../../services/WizardService';
 
 const Product = wizard.Model.Product;
