@@ -119,8 +119,8 @@ const APPS = {
 }
 
 
-const getMerkl = function(){
-    const MERKL = {
+const getMerck = function(){
+    const MERCK = {
         "name": {
             "secret": "Merkl",
             "public": true,
@@ -152,21 +152,21 @@ const getMerkl = function(){
         "passrepeat": {
             "required": true,
             "secret": "MerklPassw0rd"
-        },
+        }
     }
-    MERKL.products = require('../products/productsRandom')();
-    MERKL.batches = {};
-    MERKL.products.forEach(p => {
-        MERKL.batches[p.gtin] = require('../batches/batchesRandom')(p.gtin);
+    MERCK.products = require('../products/productsRandom')();
+    MERCK.batches = {};
+    MERCK.products.forEach(p => {
+        MERCK.batches[p.gtin] = require('../batches/batchesRandom')(p.gtin);
     });
-    MERKL.stocks = require('../stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj(MERKL.products, MERKL.batches);
-    return MERKL;
+    MERCK.stocks = require('../stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj(MERCK.products, MERCK.batches);
+    return MERCK;
 }
 
 
 const PROD = {}
 PROD[APPS.MAH] = {
-    merkl: getMerkl()
+    merck: getMerck()
 }
 
 const getCredentials = function(type, reference){
@@ -186,6 +186,5 @@ const getCredentials = function(type, reference){
 
 module.exports = {
     getCredentials,
-    APPS,
-    getMerkl
+    APPS
 }
