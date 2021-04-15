@@ -34,7 +34,7 @@ const create = function (credentials, callback) {
             console.log(credentials)
             console.log(`ID: ${credentials.id.secret}`);
             console.log(`SSI: ${walletSSI}`);
-            process.exit(0);
+            callback(undefined, credentials, walletSSI, participantManager);
         });
     });
 }
