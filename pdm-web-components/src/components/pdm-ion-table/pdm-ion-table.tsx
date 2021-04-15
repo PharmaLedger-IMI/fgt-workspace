@@ -13,8 +13,14 @@ import {
 } from '@stencil/core';
 
 import {WebManager, WebManagerService} from '../../services/WebManagerService';
-import {applyChain, extractChain, promisifyEventEmit} from "../../utils";
+import {extractChain, promisifyEventEmit} from "../../utils";
 import {HostElement} from '../../decorators'
+import { applyChain } from "../../utils";
+
+const ION_TABLE_MODES = {
+  BY_MODEL: "bymodel",
+  BY_REF: "byref"
+}
 
 @Component({
   tag: 'pdm-ion-table',
@@ -37,31 +43,63 @@ export class PdmIonTable implements ComponentInterface {
   })
   getModelEvent: EventEmitter;
 
+  /**
+   * Graphical Params
+   */
+
   @Prop() title = 'PDM Ionic Table';
 
-  /**
-   * can be 'bymodel' or 'byref'
-   */
-  @Prop() mode: string;
-
-  @Prop({attribute: 'can-query'}) canQuery?: boolean = false;
-
   @Prop({attribute: 'icon-name'}) iconName?: string = undefined;
-
-  @Prop() manager: string;
-
-  @Prop({attribute: 'item-type'}) itemType: string;
 
   @Prop({attribute: 'no-content-message'}) noContentMessage: string = "No Content";
 
   @Prop({attribute: 'loading-message'}) loadingMessage: string = "Loading...";
 
-  @Prop({attribute: 'item-reference-name'}) itemReferenceName: string;
 
+  /**
+   * Component Setup Params
+   */
+
+  /**
+   * can be any of {@link ION_TABLE_MODES}
+   * Decides if the tables works by:
+   *  - {@link ION_TABLE_MODES.BY_MODEL}: uses the WebCardinal model api
+   */
+  @Prop() mode: string = ION_TABLE_MODES.BY_REF;
+
+  /**
+   * Shows the search bar or not. (not working)
+   */
+  @Prop({attribute: 'can-query'}) canQuery?: boolean = false;
+
+  /**
+   * sets the name of the manager to use
+   * Only required if mode if {@link PdmIonTable#mode} is set to {@link ION_TABLE_MODES.BY_REF}
+   */
+  @Prop() manager?: string;
+
+
+  /**
+   * The tag for the item type that the table should use eg: 'li' would create list items
+   */
+  @Prop({attribute: 'item-type'}) itemType: string;
+
+
+  /**
+   * if the {@link PdmIonTable} is set to mode:
+   *  - {@link ION_TABLE_MODES.BY_REF}: must be the querying attribute name so the items can query their own value
+   *  - {@link ION_TABLE_MODES.BY_MODEL}: must be the model chain for content list
+   */
+  @Prop({attribute: 'item-reference'}) itemReference: string;
+
+
+  /**
+   * Querying/paginating Params - only available when mode is set by ref
+   */
+  @Prop({attribute: 'query', mutable: true}) query?: string = undefined;
+  @Prop({attribute: 'page-count', mutable: true}) pageCount?: number = 0;
   @Prop({attribute: 'items-per-page', mutable: true}) itemsPerPage?: number = 10;
-
   @Prop({attribute: 'current-page', mutable: true}) currentPage?: number = undefined;
-
   @Prop({mutable: true}) sort?: string = "asc";
 
   private webManager: WebManager = undefined;
@@ -74,30 +112,47 @@ export class PdmIonTable implements ComponentInterface {
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
-    this.webManager = await WebManagerService.getWebManager(this.manager);
-    await this._getModel();
+    console.log(`connected`)
+    switch(this.mode){
+      case ION_TABLE_MODES.BY_MODEL:
+        await this._getModel();
+        break;
+      case ION_TABLE_MODES.BY_REF:
+        await this.loadContents();
+    }
+
   }
 
   async _getModel(){
+    console.log(`before chain extract`)
     this.chain = extractChain(this.host);
-
-    if (this.chain) {
-      try {
-        this.model = await promisifyEventEmit(this.getModelEvent);
-        if (this.chain !== '@')
-          this.model = applyChain(this.model, this.chain);
-      } catch (error) {
-        console.error(error);
-      }
+    console.log(`after chain extract ${this.chain}`)
+    this.chain = this.chain || '@';
+    try {
+      console.log(`getting model`)
+      this.model = await promisifyEventEmit(this.getModelEvent);
+      console.log(`connected`)
+      if (this.chain !== '@')
+        this.model = applyChain(this.model, this.chain);
+      return;
+    } catch (error) {
+      console.error(error);
     }
-    await this.loadContents();
+
+    BindingService.bindChildNodes(this.host, {
+      model: this.model,
+      translationModel: {},
+      recursive: true,
+      chainPrefix: this.chain ? this.chain.slice(1) : null
+    });
   }
 
   async loadContents(){
+    this.webManager = this.webManager || await WebManagerService.getWebManager(this.manager);
     if (!this.webManager)
       return;
 
-    this.webManager.getAll( false, undefined, (err, contents) => {
+    await this.webManager.getAll( true, undefined, (err, contents) => {
       if (err){
         console.log(`Could not list items`, err);
         return;
@@ -158,16 +213,25 @@ export class PdmIonTable implements ComponentInterface {
     )
   }
 
-  getItem(reference){
+  getItem(reference?: string){
     const Tag = this.itemType;
-    const props = {
-      manager: this.manager,
+    if (reference){
+      const props = {
+        manager: this.manager,
+      }
+      props[this.itemReference] = reference;
+      return (<Tag {...props}></Tag>);
     }
-    props[this.itemReferenceName] = reference;
-    return (<Tag {...props}></Tag>);
+    return (<Tag data-view-model={'@'}></Tag>)
   }
 
   getContent(){
+    switch (this.mode){
+      case ION_TABLE_MODES.BY_MODEL:
+        return (<div data-for={'@' + this.itemReference}>
+          {this.getItem()}
+        </div>)
+    }
     if (!this.contents)
       return this.getLoadingContent();
     if (!this.contents.length)
@@ -180,7 +244,7 @@ export class PdmIonTable implements ComponentInterface {
   }
 
   render() {
-    if (!this.model)
+    if ((!this.model && !this.contents))
       return;
     return (
       <Host>

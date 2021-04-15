@@ -27,21 +27,41 @@ export namespace Components {
         "type": string;
     }
     interface PdmIonTable {
+        /**
+          * Shows the search bar or not. (not working)
+         */
         "canQuery"?: boolean;
         "currentPage"?: number;
         "iconName"?: string;
-        "itemReferenceName": string;
+        /**
+          * if the {@link PdmIonTable} is set to mode:  - {@link ION_TABLE_MODES.BY_REF}: must be the querying attribute name so the items can query their own value  - {@link ION_TABLE_MODES.BY_MODEL}: must be the model chain for content list
+         */
+        "itemReference": string;
+        /**
+          * The tag for the item type that the table should use eg: 'li' would create list items
+         */
         "itemType": string;
         "itemsPerPage"?: number;
         "loadingMessage": string;
-        "manager": string;
         /**
-          * can be 'bymodel' or 'byref'
+          * sets the name of the manager to use Only required if mode if {@link PdmIonTable#mode} is set to {@link ION_TABLE_MODES.BY_REF}
+         */
+        "manager"?: string;
+        /**
+          * can be any of {@link ION_TABLE_MODES} Decides if the tables works by:  - {@link ION_TABLE_MODES.BY_MODEL}: uses the WebCardinal model api
          */
         "mode": string;
         "noContentMessage": string;
+        "pageCount"?: number;
+        /**
+          * Querying/paginating Params - only available when mode is set by ref
+         */
+        "query"?: string;
         "refresh": () => Promise<void>;
         "sort"?: string;
+        /**
+          * Graphical Params
+         */
         "title": string;
     }
     interface ProductListItem {
@@ -50,6 +70,8 @@ export namespace Components {
         "gtin": string;
         "manager": string;
         "refresh": () => Promise<void>;
+    }
+    interface StockListItem {
     }
 }
 declare global {
@@ -77,11 +99,18 @@ declare global {
         prototype: HTMLProductListItem2Element;
         new (): HTMLProductListItem2Element;
     };
+    interface HTMLStockListItemElement extends Components.StockListItem, HTMLStencilElement {
+    }
+    var HTMLStockListItemElement: {
+        prototype: HTMLStockListItemElement;
+        new (): HTMLStockListItemElement;
+    };
     interface HTMLElementTagNameMap {
         "barcode-generator": HTMLBarcodeGeneratorElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "product-list-item": HTMLProductListItemElement;
         "product-list-item2": HTMLProductListItem2Element;
+        "stock-list-item": HTMLStockListItemElement;
     }
 }
 declare namespace LocalJSX {
@@ -106,16 +135,28 @@ declare namespace LocalJSX {
         "type"?: string;
     }
     interface PdmIonTable {
+        /**
+          * Shows the search bar or not. (not working)
+         */
         "canQuery"?: boolean;
         "currentPage"?: number;
         "iconName"?: string;
-        "itemReferenceName"?: string;
+        /**
+          * if the {@link PdmIonTable} is set to mode:  - {@link ION_TABLE_MODES.BY_REF}: must be the querying attribute name so the items can query their own value  - {@link ION_TABLE_MODES.BY_MODEL}: must be the model chain for content list
+         */
+        "itemReference"?: string;
+        /**
+          * The tag for the item type that the table should use eg: 'li' would create list items
+         */
         "itemType"?: string;
         "itemsPerPage"?: number;
         "loadingMessage"?: string;
+        /**
+          * sets the name of the manager to use Only required if mode if {@link PdmIonTable#mode} is set to {@link ION_TABLE_MODES.BY_REF}
+         */
         "manager"?: string;
         /**
-          * can be 'bymodel' or 'byref'
+          * can be any of {@link ION_TABLE_MODES} Decides if the tables works by:  - {@link ION_TABLE_MODES.BY_MODEL}: uses the WebCardinal model api
          */
         "mode"?: string;
         "noContentMessage"?: string;
@@ -123,7 +164,15 @@ declare namespace LocalJSX {
           * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
          */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
+        "pageCount"?: number;
+        /**
+          * Querying/paginating Params - only available when mode is set by ref
+         */
+        "query"?: string;
         "sort"?: string;
+        /**
+          * Graphical Params
+         */
         "title"?: string;
     }
     interface ProductListItem {
@@ -136,11 +185,18 @@ declare namespace LocalJSX {
         "gtin"?: string;
         "manager"?: string;
     }
+    interface StockListItem {
+        /**
+          * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
+         */
+        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
+    }
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;
         "pdm-ion-table": PdmIonTable;
         "product-list-item": ProductListItem;
         "product-list-item2": ProductListItem2;
+        "stock-list-item": StockListItem;
     }
 }
 export { LocalJSX as JSX };
@@ -151,6 +207,7 @@ declare module "@stencil/core" {
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "product-list-item": LocalJSX.ProductListItem & JSXBase.HTMLAttributes<HTMLProductListItemElement>;
             "product-list-item2": LocalJSX.ProductListItem2 & JSXBase.HTMLAttributes<HTMLProductListItem2Element>;
+            "stock-list-item": LocalJSX.StockListItem & JSXBase.HTMLAttributes<HTMLStockListItemElement>;
         }
     }
 }
