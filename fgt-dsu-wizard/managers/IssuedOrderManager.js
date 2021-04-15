@@ -191,9 +191,9 @@ let issuedOrderManager;
  * @param {Archive} dsu
  * @returns {OrderManager}
  */
-const getIssuedOrderManager = function (dsu) {
-    if (!issuedOrderManager)
-        issuedOrderManager = new IssuedOrderManager(dsu);
+const getIssuedOrderManager = function (participantManager, force) {
+    if (!issuedOrderManager || force)
+        issuedOrderManager = new IssuedOrderManager(participantManager);
     return issuedOrderManager;
 }
 
