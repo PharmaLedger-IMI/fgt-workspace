@@ -36,7 +36,7 @@ const setup = function (participantManager, products, wholesalers, stocks, callb
     issuedOrderManager.newBlank((err, order) => {
         if (err)
             return callback(err);
-        order.senderId = wholesalers[0].id;
+        order.senderId = wholesalers[0].id.secret;
         const orderLine1 = new OrderLine(product0.gtin, 1, order.requesterId, order.senderId);
         order.orderLines.push(orderLine1);
         issuedOrderManager.create(order, (err, keySSI) => {            
