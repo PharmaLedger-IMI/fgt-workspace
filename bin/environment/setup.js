@@ -159,8 +159,9 @@ const setup = function(type, result, ...args){
             return require('./createWholesaler').setup(result.manager, getStockFromProductsAndBatchesObj(products, batches) , cb(result.ssi, APPS.WHOLESALER));
         case APPS.PHARMACY:
             products = args.shift() || getProducts();
+            batches = args.shift() || undefined;
             const wholesalers = args.shift();
-            const stocks = args.shift() || getStockFromProductsAndBatchesObj(products);
+            const stocks = getStockFromProductsAndBatchesObj(products, batches);
             return require('./createPharmacy').setup(result.manager, products, wholesalers, stocks, cb(result.ssi, APPS.PHARMACY));
         default:
             callback(`unsupported config: ${type}`);
