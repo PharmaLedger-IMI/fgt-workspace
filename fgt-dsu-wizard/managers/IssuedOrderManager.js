@@ -39,13 +39,19 @@ class IssuedOrderManager extends OrderManager {
 
     /**
      * Creates a {@link Order} dsu
+     * @param {string|number} [orderId] the table key
      * @param {Order} order
      * @param {function(err, keySSI, dbPath)} callback where the dbPath follows a "tableName/orderId" template.
      */
-    create(order, callback) {
+    create(orderId, order, callback) {
+        if (!callback){
+            callback = order;
+            order = orderId;
+            orderId = order.orderId;
+        }
         let self = this;
         // TODO locate senderId and check if it can receive orders
-        const orderId = order.orderId;
+
         self.orderService.create(order, (err, keySSI) => {
             if (err)
                 return self._err(`Could not create product DSU for ${order}`, err, callback);
