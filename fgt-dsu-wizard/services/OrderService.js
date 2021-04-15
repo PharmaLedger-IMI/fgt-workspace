@@ -67,6 +67,7 @@ function OrderService(domain, strategy){
             dsu.writeFile('/info', JSON.stringify(order), (err) => {
                 if (err)
                     return callback(err);
+                console.log("Order /info ", JSON.stringify(order));
                 createOrderLines(order, (err, orderLines) => {
                     if (err)
                         return callback(err);
