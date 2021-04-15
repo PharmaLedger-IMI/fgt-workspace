@@ -7,13 +7,15 @@ const dt = require('../../pdm-dsu-toolkit/services/dt');
 const { getParticipantManager, getProductManager, getBatchManager } = require('../../fgt-dsu-wizard/managers');
 const { impersonateDSUStorage } = require('./utils');
 
+const { APPS } = require('./credentials/credentials');
+
 const defaultOps = {
     app: "fgt-pharmacy-wallet",
     pathToApps: "../../",
     id: undefined
 }
 
-const argParser = function(args){
+const argParser = function (args) {
     let config = JSON.parse(JSON.stringify(defaultOps));
     if (!args)
         return config;
@@ -21,7 +23,7 @@ const argParser = function(args){
     const recognized = Object.keys(config);
     const notation = recognized.map(r => '--' + r);
     args.forEach(arg => {
-        if (arg.includes('=')){
+        if (arg.includes('=')) {
             let splits = arg.split('=');
             if (notation.indexOf(splits[0]) !== -1) {
                 let result
@@ -39,57 +41,20 @@ const argParser = function(args){
 
 let conf = argParser(process.argv);
 
-const generateSecrets = function(id) {
-    return {
-        "name": {
-            "secret": "PDM the Pharmacy",
-            "public": true,
-            "required": true
-        },
-        "id": {
-            "secret": id,
-            "public": true,
-            "required": true
-        },
-        "email": {
-            "secret": "pharmacy@pdmfc.com",
-            "public": true,
-            "required": true
-        },
-        "tin": {
-            "secret": 500000000,
-            "public": true,
-            "required": true
-        },
-        "address": {
-            "required": true,
-            "secret": "This in an Address"
-        },
-        "pass": {
-            "required": true,
-            "secret": "This1sSuchAS3curePassw0rd"
-        },
-        "passrepeat": {
-            "required": true,
-            "secret": "This1sSuchAS3curePassw0rd"
-        }
-    }
-};
-
-const parseEnvJS = function(strEnv){
+const parseEnvJS = function (strEnv) {
     return JSON.parse(strEnv.replace(/^export\sdefault\s/, ''));
 }
 
-const getEnvJs = function(app, callback){
+const getEnvJs = function (app, callback) {
     const appPath = path.join(process.cwd(), conf.pathToApps, "trust-loader-config", app, "loader", "environment.js");
     require('fs').readFile(appPath, (err, data) => {
         if (err)
-            return callback(`Could not find Application ${app} at ${{appPath}} : ${err}`);
+            return callback(`Could not find Application ${app} at ${{ appPath }} : ${err}`);
         return callback(undefined, parseEnvJS(data.toString()));
     });
 }
 
-const instantiateSSApp = function(callback){
+const instantiateSSApp = function (callback) {
     getEnvJs(conf.app, (err, env) => {
         if (err)
             throw err;
@@ -104,12 +69,13 @@ const instantiateSSApp = function(callback){
         appService.buildWallet(credentials, (err, keySII, dsu) => {
             if (err)
                 throw err;
-            console.log(`App ${env.appName} created with credentials ${JSON.stringify(credentials, undefined, 2)}.\nSSI: ${{keySII}}`);
+            console.log(`App ${env.appName} created with credentials ${JSON.stringify(credentials, undefined, 2)}.\nSSI: ${{ keySII }}`);
             callback(undefined, keySII, dsu, credentials);
         });
     });
 }
 
+/*
 instantiateSSApp((err, walletSSI, walletDSU, credentials) => {
     if (err)
         throw err;
@@ -124,9 +90,33 @@ instantiateSSApp((err, walletSSI, walletDSU, credentials) => {
         process.exit(0);
     });
 });
+*/
 
+const setup = function (participant, issuedOrders, receivedShipments, callback) {
+    callback(undefined, issuedOrders, receivedShipments);
+}
 
+const create = function (credentials, callback) {
+    instantiateSSApp(APPS.PHARMACY, conf.pathToApps, dt, credentials, (err, walletSSI, walletDSU, credentials) => {
+        if (err)
+            throw err;
+        const dsuStorage = impersonateDSUStorage(walletDSU.getWritableDSU());
+        getParticipantManager(dsuStorage, (err, participantManager) => {
+            if (err)
+                throw err;
+            console.log(`${conf.app} instantiated\ncredentials:`);
+            console.log(credentials)
+            console.log(`ID: ${credentials.id.secret}`);
+            console.log(`SSI: ${walletSSI}`);
+            process.exit(0);
+        });
+    });
+}
 
+module.exports = {
+    create,
+    setup
+};
 
 
 
