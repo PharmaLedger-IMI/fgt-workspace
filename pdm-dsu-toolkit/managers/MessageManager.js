@@ -77,7 +77,7 @@ class MessageManager extends Manager{
     }
 
     _saveToInbox(message, callback){
-        this.insertRecord(Date.now().toISOString(), message, callback);
+        this.insertRecord(Date.now() + '', message, callback);
     }
 
     /**
@@ -98,12 +98,12 @@ class MessageManager extends Manager{
      * @param {function(err)}callback
      */
     sendMessage(did, message, callback){
-        if (typeof did === 'string')
-            return this._getDID(did, (err, didDoc) => err
+        if (typeof did !== 'object')
+            return this._getDID(did + '', (err, didDoc) => err
                 ? _err(`Could not get DID Document for string ${did}`, err, callback)
-                : sendMessage(didDoc, message, callback));
+                : this.sendMessage(didDoc, message, callback));
 
-        this.getOwnDID((selfDID) => {
+        this.getOwnDID((err, selfDID) => {
             selfDID.sendMessage(message, did.getIdentifier(), err => err
                 ? _err(`Could not send Message`, err, callback)
                 : callback());

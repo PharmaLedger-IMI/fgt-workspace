@@ -57,7 +57,7 @@ class Manager{
         this._getKeySSISpace = baseManager._getKeySSISpace;
         this._loadDSU = baseManager._loadDSU;
         this._err = baseManager._err;
-        this.sendMessage = function(did, api, message, callback){
+        this._sendMessage = function(did, api, message, callback){
             if (!callback){
                 callback = message;
                 message = api;
@@ -65,10 +65,10 @@ class Manager{
             }
             return baseManager.sendMessage(did, api, message, callback);
         }
-        this.registerMessageListener = function(listener){
+        this._registerMessageListener = function(listener){
             return baseManager.registerMessageListener(this.tableName, listener);
         }
-        this.getMessage = function(callback){
+        this._getMessage = function(callback){
             return baseManager.getMessages(this.tableName, callback);
         }
     }
@@ -80,11 +80,30 @@ class Manager{
      * @param {string} message
      * @param {function(err)} callback
      */
-    sendMessage(did, api, message, callback){}
+    sendMessage(did, api, message, callback){
+        return this._sendMessage(did, api, message, callback);
+    }
 
-    registerMessageListener(listener){}
+    /**
+     * Send a message to the specified DID
+     * @param {string|W3cDID} did
+     * @param {string} [api] defaults to the tableName
+     * @param {string} message
+     * @param {function(err)} callback
+     */
+    _sendMessage(did, api, message, callback){}
 
-    getMessages(callback){}
+    registerMessageListener(listener){
+        return this._registerMessageListener(listener);
+    }
+
+    _registerMessageListener(listener){}
+
+    getMessages(callback){
+        return this._getMessages(callback);
+    }
+
+    _getMessages(callback){}
 
     /**
      * Stops the message service listener
