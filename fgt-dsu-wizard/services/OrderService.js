@@ -53,7 +53,7 @@ function OrderService(domain, strategy){
         statusService.create(status, (err, keySSI) => {
             if (err)
                 return callback(err);
-            console.log(`Status DSU created with SSI ${keySSI.getIdentifier(true)}`);
+            console.log(`OrderStatus DSU created with SSI ${keySSI.getIdentifier(true)}`);
             callback(undefined, keySSI);
         });
     }
@@ -80,7 +80,7 @@ function OrderService(domain, strategy){
                             dsu.mount("/status", keySSI.getIdentifier(), (err) => {
                                 if (err)
                                     return callback(err);
-                                console.log(`Status DSU (${keySSI.getIdentifier(true)}) mounted at '/status'`);
+                                console.log(`OrderStatus DSU (${keySSI.getIdentifier(true)}) mounted at '/status'`);
                                 dsu.getKeySSIAsObject((err, keySSI) => {
                                     if (err)
                                         return callback(err);
