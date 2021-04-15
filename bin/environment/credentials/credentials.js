@@ -22,6 +22,7 @@ const generateWholesalerCredentials = function(id) {
         },
         "address": {
             "required": true,
+            "public": true,
             "secret": "This in an Address"
         },
         "pass": {
@@ -59,6 +60,7 @@ const generatePharmacyCredentials = function(id) {
         },
         "address": {
             "required": true,
+            "public": true,
             "secret": "This in an Address"
         },
         "pass": {
@@ -96,6 +98,7 @@ const generateMAHCredentials = function(id) {
         },
         "address": {
             "required": true,
+            "public": true,
             "secret": "This in an Address"
         },
         "pass": {
