@@ -149,14 +149,20 @@ class MessageManager extends Manager{
 let messageManager;
 
 /**
- * @param {BaseManager} baseManager the base manager to have access to the identity api
+ * @param {BaseManager} baseManager  only required the first time, if not forced
  * @param {string} didString
  * @param {function(Message)} [onNewMessage]
+ * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
+ * Makes DSU Storage required again!
  * @returns {MessageManager}
  * @module managers
  */
-const getMessageManager = function(baseManager, didString, onNewMessage) {
-    if (!messageManager) {
+const getMessageManager = function(baseManager, didString, onNewMessage, force) {
+    if (typeof onNewMessage === 'boolean'){
+        force = onNewMessage;
+        onNewMessage = undefined;
+    }
+    if (!messageManager || force) {
         if (!baseManager || !didString)
             throw new Error("Missing Objects for instantiation");
         messageManager = new MessageManager(baseManager, didString, onNewMessage);

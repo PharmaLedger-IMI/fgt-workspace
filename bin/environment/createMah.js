@@ -7,7 +7,7 @@ const dt = require('./../../pdm-dsu-toolkit/services/dt');
 const { getParticipantManager, getProductManager, getBatchManager } = require('../../fgt-dsu-wizard/managers');
 const { impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 
-const { getCredentials, APPS } = require('./credentials/credentials');
+const { APPS } = require('./credentials/credentials');
 
 const defaultOps = {
     app: "fgt-mah-wallet",
@@ -18,7 +18,7 @@ const defaultOps = {
 let conf = argParser(defaultOps, process.argv);
 
 const setupProducts = function(participantManager, products, batches, callback){
-    const productManager = getProductManager(participantManager);
+    const productManager = getProductManager(participantManager, true);
     products = products || require('./products/productsRandom');
     const iterator = function(productsCopy, callback){
         const product = productsCopy.shift();
@@ -36,7 +36,7 @@ const setupProducts = function(participantManager, products, batches, callback){
 }
 
 const setupBatches = function(participantManager, products, batches,  callback){
-    const batchManager = getBatchManager(participantManager);
+    const batchManager = getBatchManager(participantManager, true);
     const getBatches = !batches
         ? require('./batches/batchesRandom')
         : function(gtin){
@@ -78,7 +78,7 @@ const setupBatches = function(participantManager, products, batches,  callback){
             return callback(err);
         const output = [];
         Object.keys(batchesObj).forEach(gtin => {
-            output.push(`The following batches per gtin have been created:\nGtin: ${gtin}\nBatches: ${batchesObj[gtin].join(', ')}`);
+            output.push(`The following batches per gtin have been created:\nGtin: ${gtin}\nBatches: ${batchesObj[gtin].map(b => b.batchNumber).join(', ')}`);
         });
         console.log(output.join('\n'));
         callback(undefined, batchesObj);
@@ -98,11 +98,11 @@ const setup = function(participantManager, products, batches, callback){
 }
 
 const create = function(credentials,  callback) {
-    instantiateSSApp(credentials, (err, walletSSI, walletDSU, credentials) => {
+    instantiateSSApp(APPS.MAH, conf.pathToApps, dt, credentials, (err, walletSSI, walletDSU, credentials) => {
         if (err)
             throw err;
         const dsuStorage = impersonateDSUStorage(walletDSU.getWritableDSU());
-        getParticipantManager(dsuStorage, (err, participantManager) => {
+        getParticipantManager(dsuStorage, true, (err, participantManager) => {
             if (err)
                 throw err;
             console.log(`${conf.app} instantiated\ncredentials:`);

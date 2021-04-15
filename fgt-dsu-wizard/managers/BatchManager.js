@@ -178,12 +178,14 @@ class BatchManager extends Manager{
 
 let batchManager;
 /**
- * @param {BaseManager} BaseManager
+ * @param {BaseManager} [participantManager] only required the first time, if not forced
+ * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
+ * Makes BaseManager required again!
  * @returns {BatchManager}
  */
-const getBatchManager = function (BaseManager) {
-    if (!batchManager)
-        batchManager = new BatchManager(BaseManager);
+const getBatchManager = function (participantManager, force) {
+    if (!batchManager || force)
+        batchManager = new BatchManager(participantManager);
     return batchManager;
 }
 
