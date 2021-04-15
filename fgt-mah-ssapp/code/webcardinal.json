@@ -11,9 +11,5 @@
       "indexed": false,
       "tag": "home"
     }
-  ],
-  "skins": [
-    { "name": "default" },
-    { "name": "advanced", "translations": true }
   ]
 }
