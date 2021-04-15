@@ -32,7 +32,7 @@ const setup = function (participantManager, products, wholesalers, stocks, callb
         return callback("Products has zero length.");
     if (wholesalers.length <=0)
         return callback("Wholesalers has zero length.");
-    const product0 = product[0];
+    const product0 = products[0];
     issuedOrderManager.newBlank((err, order) => {
         if (err)
             return callback(err);
