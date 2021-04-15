@@ -57,6 +57,40 @@ class Manager{
         this._getKeySSISpace = baseManager._getKeySSISpace;
         this._loadDSU = baseManager._loadDSU;
         this._err = baseManager._err;
+        this.sendMessage = function(did, api, message, callback){
+            if (!callback){
+                callback = message;
+                message = api;
+                api = this.tableName;
+            }
+            return baseManager.sendMessage(did, api, message, callback);
+        }
+        this.registerMessageListener = function(listener){
+            return baseManager.registerMessageListener(this.tableName, listener);
+        }
+        this.getMessage = function(callback){
+            return baseManager.getMessages(this.tableName, callback);
+        }
+    }
+
+    /**
+     * Send a message to the specified DID
+     * @param {string|W3cDID} did
+     * @param {string} [api] defaults to the tableName
+     * @param {string} message
+     * @param {function(err)} callback
+     */
+    sendMessage(did, api, message, callback){}
+
+    registerMessageListener(listener){}
+
+    getMessages(callback){}
+
+    /**
+     * Stops the message service listener
+     */
+    shutdownMessenger(){
+        this.messenger.shutdown();
     }
 
     /**
