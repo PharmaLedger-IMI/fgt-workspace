@@ -27,7 +27,7 @@ const create = function (credentials, callback) {
         if (err)
             throw err;
         const dsuStorage = impersonateDSUStorage(walletDSU.getWritableDSU());
-        getParticipantManager(dsuStorage, (err, participantManager) => {
+        getParticipantManager(dsuStorage, true,(err, participantManager) => {
             if (err)
                 throw err;
             console.log(`${conf.app} instantiated\ncredentials:`);
