@@ -21,7 +21,7 @@ const getSingle = () => {
     const SINGLE = {}
     SINGLE[APPS.MAH] = [getCredentials(APPS.MAH)];
     SINGLE[APPS.WHOLESALER] = [getCredentials(APPS.WHOLESALER)];
-    SINGLE[APPS.PHARMACY] = [];
+    SINGLE[APPS.PHARMACY] = [getCredentials(APPS.PHARMACY)];
     return SINGLE;
 }
 
@@ -29,7 +29,7 @@ const getMultiple = () => {
     const MULTIPLE = {};
     MULTIPLE[APPS.MAH] = [getCredentials(APPS.MAH), getCredentials(APPS.MAH), getCredentials(APPS.MAH)];
     MULTIPLE[APPS.WHOLESALER] = [getCredentials(APPS.WHOLESALER), getCredentials(APPS.WHOLESALER), getCredentials(APPS.WHOLESALER), getCredentials(APPS.WHOLESALER)];
-    MULTIPLE[APPS.PHARMACY] = [];
+    MULTIPLE[APPS.PHARMACY] = [getCredentials(APPS.PHARMACY), getCredentials(APPS.PHARMACY)];
     return MULTIPLE;
 }
 
