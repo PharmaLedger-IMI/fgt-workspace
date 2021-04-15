@@ -139,12 +139,12 @@ export class PdmIonTable implements ComponentInterface {
       console.error(error);
     }
 
-    BindingService.bindChildNodes(this.host, {
-      model: this.model,
-      translationModel: {},
-      recursive: true,
-      chainPrefix: this.chain ? this.chain.slice(1) : null
-    });
+    // BindingService.bindChildNodes(this.host, {
+    //   model: this.model,
+    //   translationModel: {},
+    //   recursive: true,
+    //   chainPrefix: this.chain ? this.chain.slice(1) : null
+    // });
   }
 
   async loadContents(){
