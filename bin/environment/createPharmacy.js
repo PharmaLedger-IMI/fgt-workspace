@@ -16,7 +16,7 @@ const defaultOps = {
     id: undefined
 }
 
-let conf = argParser(process.argv);
+let conf = argParser(defaultOps, process.argv);
 
 
 const setup = function (participantManager, products, wholesalers, stocks, callback) {
