@@ -21,7 +21,7 @@ let conf = argParser(defaultOps, process.argv);
 
 const setup = function (participantManager, products, wholesalers, stocks, callback) {
     // TODO move this to a function that generates issuedOrders ?
-    const issuedOrderManager = getIssuedOrderManager(participantManager);
+    const issuedOrderManager = getIssuedOrderManager(participantManager, true);
 
     let issuedOrders = [];
 
