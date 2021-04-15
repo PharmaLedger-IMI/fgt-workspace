@@ -23,7 +23,7 @@ class ProductManager extends Manager {
     constructor(participantManager) {
         super(participantManager, DB.products);
         this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
-        this.batchManager = require('./BatchManager')(participantManager);
+        this.batchManager = require('./BatchManager')(participantManager, participantManager.force);
     }
 
     /**
@@ -202,11 +202,13 @@ class ProductManager extends Manager {
 
 let productManager;
 /**
- * @param {ParticipantManager} participantManager
+ * @param {ParticipantManager} [participantManager] only required the first time, if not forced
+ * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
+ * Makes Participant Manager required again!
  * @returns {ProductManager}
  */
-const getProductManager = function (participantManager) {
-    if (!productManager)
+const getProductManager = function (participantManager, force) {
+    if (!productManager || force)
         productManager = new ProductManager(participantManager);
     return productManager;
 }

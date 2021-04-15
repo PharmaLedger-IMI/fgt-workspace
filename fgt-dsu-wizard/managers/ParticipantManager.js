@@ -21,11 +21,13 @@ const BaseManager = require('../../pdm-dsu-toolkit/managers/BaseManager');
  * Should eventually integrate with the WP3 decisions
  *
  * @param {DSUStorage} dsuStorage the controllers dsu storage
+ * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
+ * Makes DSU Storage required again!
  * @param {function(err, ParticipantManager)} [callback}
  */
 class ParticipantManager extends BaseManager{
-    constructor(dsuStorage, callback) {
-        super(dsuStorage, callback);
+    constructor(dsuStorage, force, callback) {
+        super(dsuStorage, force, callback);
     };
 
     /**
@@ -44,15 +46,23 @@ class ParticipantManager extends BaseManager{
 let participantManager;
 
 /**
- * @param {DSUStorage} [dsuStorage] only required the first time
- * @param {function(err, ParticipantManager)} [callback}
+ * @param {DSUStorage} [dsuStorage] only required the first time, if not forced
+ * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
+ * Makes DSU Storage required again!
+ * @param {function(err, ParticipantManager)} [callback]
  * @returns {ParticipantManager}
  */
-const getParticipantManager = function (dsuStorage, callback) {
-    if (!participantManager) {
+const getParticipantManager = function (dsuStorage, force, callback) {
+    if (!callback){
+        if (typeof force === 'function'){
+            callback = force;
+            force = false;
+        }
+    }
+    if (!participantManager || force) {
         if (!dsuStorage)
             throw new Error("No DSUStorage provided");
-        participantManager = new ParticipantManager(dsuStorage, callback);
+        participantManager = new ParticipantManager(dsuStorage, force, callback);
     }
     return participantManager;
 }

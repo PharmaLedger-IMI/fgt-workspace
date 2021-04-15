@@ -97,14 +97,12 @@ const argParser = function(defaultOpts, args){
     return config;
 }
 
-let conf = argParser(process.argv);
-
 const parseEnvJS = function(strEnv){
     return JSON.parse(strEnv.replace(/^export\sdefault\s/, ''));
 }
 
-const getEnvJs = function(app, callback){
-    const appPath = require('path').join(process.cwd(), conf.pathToApps, "trust-loader-config", app, "loader", "environment.js");
+const getEnvJs = function(app, pathToApps,callback){
+    const appPath = require('path').join(process.cwd(), pathToApps, "trust-loader-config", app, "loader", "environment.js");
     require('fs').readFile(appPath, (err, data) => {
         if (err)
             return callback(`Could not find Application ${app} at ${{appPath}} : ${err}`);
@@ -112,8 +110,8 @@ const getEnvJs = function(app, callback){
     });
 }
 
-const instantiateSSApp = function(credentials, callback){
-    getEnvJs(conf.app, (err, env) => {
+const instantiateSSApp = function(app, pathToApps, dt, credentials, callback){
+    getEnvJs(app, pathToApps,(err, env) => {
         if (err)
             throw err;
 
@@ -130,6 +128,14 @@ const instantiateSSApp = function(credentials, callback){
     });
 }
 
+function jsonStringifyReplacer(key, value){
+    if(key === 'manager' && value.constructor.name)
+        return value.constructor.name;
+    if (key === 'serialNumbers')
+        return value.join(', ');
+    return value;
+}
+
 module.exports = {
     generateProductName,
     generateGtin,
@@ -137,5 +143,6 @@ module.exports = {
     genDate,
     impersonateDSUStorage,
     argParser,
-    instantiateSSApp
+    instantiateSSApp,
+    jsonStringifyReplacer
 }
