@@ -39,6 +39,7 @@
       "label": "Registered Address:",
       "type": "text",
       "placeholder": "Enter your address...",
+      "public": true,
       "required": true,
       "value": "This in an Address"
     },

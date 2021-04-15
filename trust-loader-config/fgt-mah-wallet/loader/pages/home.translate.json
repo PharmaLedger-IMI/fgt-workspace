@@ -40,6 +40,7 @@
       "type": "text",
       "placeholder": "Enter your address...",
       "required": true,
+      "public": true,
       "value": "This in an Address"
     },
     "pass": {
