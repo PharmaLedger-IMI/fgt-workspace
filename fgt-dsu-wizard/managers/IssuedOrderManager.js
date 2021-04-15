@@ -63,7 +63,7 @@ class IssuedOrderManager extends OrderManager {
                 console.log(`Order ${orderId} created stored at DB '${path}'`);
                 // send a message to senderId
                 // TODO derive sReadSSI from keySSI
-                this.sendMessage(order.senderId, DB.receivedOrders, keySSI, (err) => {
+                this.sendMessage(order.senderId, DB.receivedOrders, keySSI.getIdentifier(), (err) => {
                     if (err)
                         return callback(err);
                     callback(undefined, keySSI, path);
