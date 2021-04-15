@@ -62,7 +62,12 @@ class IssuedOrderManager extends OrderManager {
                 const path = `${self.tableName}/${orderId}`;
                 console.log(`Order ${orderId} created stored at DB '${path}'`);
                 // send a message to senderId
-                callback(undefined, keySSI, path);
+                // TODO derive sReadSSI from keySSI
+                this.sendMessage(order.senderId, DB.receivedOrders, keySSI, (err) => {
+                    if (err)
+                        return callback(err);
+                    callback(undefined, keySSI, path);
+                });
             });
         });
     }
