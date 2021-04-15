@@ -5,7 +5,7 @@
                 <ion-list-header lines="inset">
                     <ion-icon class="ion-padding" name="stats-chart-outline"></ion-icon>
                     <ion-label>{{ @title }}</ion-label>
-                    <ion-button class="ion-padding-horizontal" fill="outline">Add Stuff</ion-button>
+                    <ion-button class="ion-padding-horizontal" fill="outline">{{ @buttons.add-product }}</ion-button>
                 </ion-list-header>
                 <div data-for="@products">
                     <product-list-item data-view-model="@"></product-list-item>

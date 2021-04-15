@@ -94,7 +94,7 @@ export default class ProductsController extends LocalizedController {
 
     /**
      * Retrieves the products from the DSU and updates the model
-     * by calling {@link ProductsController#updateProducts} after retrieval
+     * by calling {@link ProductsController#updateBatches} after retrieval
      */
     getProductsAsync(){
         let self = this;
