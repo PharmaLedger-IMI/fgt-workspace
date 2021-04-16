@@ -210,7 +210,7 @@ class IssuedOrderManager extends OrderManager {
 
 let issuedOrderManager;
 /**
- * @param {Archive} dsu
+ * @param {ParticipantManager} participantManager
  * @returns {OrderManager}
  */
 const getIssuedOrderManager = function (participantManager, force) {

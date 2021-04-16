@@ -1,6 +1,8 @@
 const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const OrderManager = require("./OrderManager");
 const Order = require('../model').Order;
+const OrderLine = require('../model').OrderLine;
+const OrderStatus = require('../model').OrderStatus;
 
 /**
  * Issued Order Manager Class - concrete OrderManager for issuedOrders.
@@ -36,30 +38,6 @@ class ReceivedOrderManager extends OrderManager {
     };
 
     /**
-     * Creates a {@link Order} dsu
-     * @param {Order} order
-     * @param {function(err, keySSI, dbPath)} callback where the dbPath follows a "tableName/orderId" template.
-     */
-    create(order, callback) {
-        let self = this;
-        // TODO locate senderId and check if it can receive orders
-        const orderId = order.orderId;
-        self.orderService.create(order, (err, keySSI) => {
-            if (err)
-                return self._err(`Could not create product DSU for ${order}`, err, callback);
-            const record = keySSI.getIdentifier();
-            self.insertRecord(orderId, self._indexItem(orderId, order, record), (err) => {
-                if (err)
-                    return self._err(`Could not insert record with orderId ${orderId} on table ${self.tableName}`, err, callback);
-                const path = `${self.tableName}/${orderId}`;
-                console.log(`Order ${orderId} created stored at DB '${path}'`);
-                // send a message to senderId
-                callback(undefined, keySSI, path);
-            });
-        });
-    }
-
-    /**
      * Lists all issued orders.
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
      * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
@@ -88,13 +66,15 @@ class ReceivedOrderManager extends OrderManager {
         }
 
         let self = this;
+        /*
         super.getAll(readDSU, options, (err, result) => {
             if (err)
                 return self._err(`Could not parse ReceivedOrders ${JSON.stringify(result)}`, err, callback);
             console.log(`Parsed ${result.length} orders`);
             callback(undefined, result);
         });
-        /*
+        */
+        
         let orderLine1 = new OrderLine('123', 1, '', '');
         let orderLine2 = new OrderLine('321', 5, '', '');
         let order1 = new Order("IOID1", "TPID1", 'WHSID555', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
@@ -109,9 +89,9 @@ class ReceivedOrderManager extends OrderManager {
             order1,order2,order1,order2,order1,order2,order1,order2,
             order1,order2,order1,order2,order1,order2,order1,order2,
         ]);
-        */
+        
         /*
-        super.listMounts(ISSUED_ORDERS_MOUNT_PATH, (err, mounts) => {
+        super.listMounts(RECEIVED_ORDERS_MOUNT_PATH, (err, mounts) => {
             if (err)
                 return callback(err);
             console.log(`Found ${mounts.length} orders at ${ISSUED_ORDERS_MOUNT_PATH}`);
@@ -128,12 +108,12 @@ class ReceivedOrderManager extends OrderManager {
 
 let receivedOrderManager;
 /**
- * @param {Archive} dsu
+ * @param {ParticipantManager} participantManager
  * @returns {OrderManager}
  */
-const getReceivedOrderManager = function (dsu) {
-    if (!receivedOrderManager)
-        receivedOrderManager = new ReceivedOrderManager(dsu);
+const getReceivedOrderManager = function (participantManager, force) {
+    if (!receivedOrderManager || force)
+        receivedOrderManager = new ReceivedOrderManager(participantManager);
     return receivedOrderManager;
 }
 

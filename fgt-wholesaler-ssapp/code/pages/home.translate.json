@@ -3,7 +3,7 @@
   "welcome": "Welcome back",
   "menu": {
     "dashboard": "Dashboard",
-    "orders": "Orders",
+    "receivedOrders": "Received Orders",
     "shipments": "Shipments",
     "stock": "Stock"
   },
@@ -12,6 +12,14 @@
     "try-again": "Try Again?"
   },
   "none": "You are not identified as a Marketing Authorization holder. Please register",
+  "receivedOrders": {
+    "title": "Received Orders",
+    "refresh": "Refresh",
+    "numberHeader": "ID",
+    "orderingPartnerHeader": "Issued By",
+    "supplyingPartnerHeader": "Issued To",
+    "none": "No orders issued..."
+  },
   "stock": {
     "title": "Stocks",
     "gtinHeader": "Gtin",
