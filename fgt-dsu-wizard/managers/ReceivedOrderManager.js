@@ -11,6 +11,7 @@ const OrderStatus = require('../model').OrderStatus;
 class ReceivedOrderManager extends OrderManager {
     constructor(participantManager) {
         super(participantManager, DB.receivedOrders);
+        this.participantManager = participantManager; // jpsl: TODO needed to work aroung the Manager.getMessages()
     }
 
     /**
@@ -38,7 +39,7 @@ class ReceivedOrderManager extends OrderManager {
     };
 
     /**
-     * Lists all issued orders.
+     * Lists all received orders.
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
      * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
      * @param {function(err, Order[])} callback
@@ -66,15 +67,15 @@ class ReceivedOrderManager extends OrderManager {
         }
 
         let self = this;
-        /*
+
         super.getAll(readDSU, options, (err, result) => {
             if (err)
                 return self._err(`Could not parse ReceivedOrders ${JSON.stringify(result)}`, err, callback);
             console.log(`Parsed ${result.length} orders`);
             callback(undefined, result);
         });
-        */
-        
+
+        /*
         let orderLine1 = new OrderLine('123', 1, '', '');
         let orderLine2 = new OrderLine('321', 5, '', '');
         let order1 = new Order("IOID1", "TPID1", 'WHSID555', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
@@ -89,7 +90,8 @@ class ReceivedOrderManager extends OrderManager {
             order1,order2,order1,order2,order1,order2,order1,order2,
             order1,order2,order1,order2,order1,order2,order1,order2,
         ]);
-        
+        */
+
         /*
         super.listMounts(RECEIVED_ORDERS_MOUNT_PATH, (err, mounts) => {
             if (err)
@@ -103,6 +105,22 @@ class ReceivedOrderManager extends OrderManager {
             super.readAll(mounts, callback);
         });
         */
+    }
+
+
+    /**
+     * Process incoming, looking for receivedOrder messages.
+     * @param {function(err)} callback
+     */
+    processMessages(callback) {
+        let self = this;
+        console.log("Processing messages");
+        // TODO: self.getMessages() is broken. Go to the messageManager diretcly.
+        self.participantManager.messenger.getMessages((err, records) => {
+            console.log("Processing records: ", err, records);
+            // TODO persist to receivedOrders
+            // and then delete message after processing.
+        });
     }
 }
 
