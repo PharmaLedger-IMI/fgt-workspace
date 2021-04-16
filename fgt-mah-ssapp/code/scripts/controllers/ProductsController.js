@@ -46,10 +46,11 @@ export default class ProductsController extends LocalizedController {
             return typeof self.model.products !== 'undefined' && self.model.products.length > 0;
         }, 'products');
 
-        this.on('refresh', (evt) => {
+        self.on('refresh', (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
             this.getProductsAsync();
+            // self.element.querySelector('pdm-ion-table').refresh();
         }, {capture: true});
     }
     //

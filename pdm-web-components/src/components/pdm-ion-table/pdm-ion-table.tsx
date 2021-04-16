@@ -15,7 +15,6 @@ import {
 import {WebManager, WebManagerService} from '../../services/WebManagerService';
 import {extractChain, promisifyEventEmit} from "../../utils";
 import {HostElement} from '../../decorators'
-import { applyChain } from "../../utils";
 
 const ION_TABLE_MODES = {
   BY_MODEL: "bymodel",
@@ -104,37 +103,22 @@ export class PdmIonTable implements ComponentInterface {
 
   private webManager: WebManager = undefined;
 
-  @State() contents: [] = undefined;
+  @State() model = undefined;
 
-  private model = undefined;
   private chain: string = '';
 
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
     console.log(`connected`)
-    switch(this.mode){
-      case ION_TABLE_MODES.BY_MODEL:
-        await this._getModel();
-        break;
-      case ION_TABLE_MODES.BY_REF:
-        await this.loadContents();
-    }
-
+    await this.refresh();
   }
 
   async _getModel(){
-    console.log(`before chain extract`)
     this.chain = extractChain(this.host);
-    console.log(`after chain extract ${this.chain}`)
     this.chain = this.chain || '@';
     try {
-      console.log(`getting model`)
       this.model = await promisifyEventEmit(this.getModelEvent);
-      console.log(`connected`)
-      if (this.chain !== '@')
-        this.model = applyChain(this.model, this.chain);
-      return;
     } catch (error) {
       console.error(error);
     }
@@ -157,7 +141,7 @@ export class PdmIonTable implements ComponentInterface {
         console.log(`Could not list items`, err);
         return;
       }
-      this.contents = contents;
+      this.model = contents;
     });
   }
 
@@ -166,8 +150,13 @@ export class PdmIonTable implements ComponentInterface {
   @Watch('currentPage')
   @Method()
   async refresh(){
-    this.contents = undefined;
-    await this.loadContents();
+    switch(this.mode){
+      case ION_TABLE_MODES.BY_REF:
+        await this.loadContents();
+        break;
+      case ION_TABLE_MODES.BY_MODEL:
+        await this._getModel();
+    }
   }
 
   getTableHead(){
@@ -213,39 +202,49 @@ export class PdmIonTable implements ComponentInterface {
     )
   }
 
-  getItem(reference?: string){
+  getItem(reference){
     const Tag = this.itemType;
-    if (reference){
-      const props = {
-        manager: this.manager,
-      }
-      props[this.itemReference] = reference;
-      return (<Tag {...props}></Tag>);
+    let props = {};
+    switch(this.mode){
+      case ION_TABLE_MODES.BY_REF:
+        props = {
+          manager: this.manager,
+        }
+        props[this.itemReference] = reference;
+        break;
+      case ION_TABLE_MODES.BY_MODEL:
+        props['model'] = reference;
+        break;
     }
-    return (<Tag data-view-model={'@'}></Tag>)
+
+    return (<Tag {...props}></Tag>);
   }
 
   getContent(){
+    if (!this.model)
+      return this.getLoadingContent();
+    const content = [];
     switch (this.mode){
       case ION_TABLE_MODES.BY_MODEL:
-        return (<div data-for={'@' + this.itemReference}>
-          {this.getItem()}
-        </div>)
+        if (!this.model[this.itemReference].length)
+          return this.getEmptyContent();
+        this.model[this.itemReference].forEach(item => {
+          content.push(this.getItem(item));
+        });
+        break;
+      case ION_TABLE_MODES.BY_REF:
+        if (!this.model.length)
+          return this.getEmptyContent();
+        this.model.forEach(reference => {
+          content.push(this.getItem(reference));
+        });
+        break;
     }
-    if (!this.contents)
-      return this.getLoadingContent();
-    if (!this.contents.length)
-      return this.getEmptyContent();
-    const content = [];
-    this.contents.forEach(reference => {
-      content.push(reference);
-    });
     return content;
   }
 
+  @Watch('model')
   render() {
-    if ((!this.model && !this.contents))
-      return;
     return (
       <Host>
         <ion-list className="ion-margin ion-no-padding">

@@ -75,16 +75,16 @@ export class BatchListItem {
   }
 
   addSerials(){
-    const serials = this.model.serials ? this.model.serials.map(s => this.addSerial(s)) : '';
-    return(
-      <ion-grid className="ion-padding-horizontal">
-        <ion-row>
-          <ion-col size="12">
-            {serials}
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    )
+    // const serials = this.model.serialNumbers ? this.model.serialsNumbers.map(s => this.addSerial(s)) : '';
+    // return(
+    //   <ion-grid className="ion-padding-horizontal">
+    //     <ion-row>
+    //       <ion-col size="12">
+    //         {serials}
+    //       </ion-col>
+    //     </ion-row>
+    //   </ion-grid>
+    // )
   }
 
   addButtons(){
