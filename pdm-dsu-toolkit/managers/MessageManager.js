@@ -66,7 +66,7 @@ class MessageManager extends Manager{
         self._saveToInbox(message, (err) => {
             if (err)
                 return _err(`Could not save message to inbox`, err, callback);
-            console.log(`Message ${JSON.stringify(message)} saved to table ${self._getTableName()}`);
+            console.log(`Message ${JSON.stringify(message)} saved to table ${self._getTableName()} on DID ${self.didString}`);
             if (api in self._listeners) {
                 console.log(`Found ${self._listeners[api].length} listeners for the ${api} message api`)
                 self._listeners[api].forEach(apiListener => {

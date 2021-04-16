@@ -225,5 +225,15 @@ create(conf.app, (err) => {
             })) : 'none'
         } ;
     }), undefined, 2));
-    process.exit(0);
+	// jpsl: debug - Wholesaler does not seem to have any records in table messages
+	// wait 2 seconds for message processing
+	/*
+	setTimeout(()=>{
+		//console.log(results);
+		let aWhsManager = results['fgt-wholesaler-wallet'][0].manager;
+		//console.log(aWhsManager);
+		aWhsManager.getMessages((err,records) => { console.log("err",err,"records",records); });
+	}, 2000);
+	*/
+	setTimeout(()=>{ process.exit(0); }, 3000);
 });
