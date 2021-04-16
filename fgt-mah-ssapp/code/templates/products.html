@@ -1,4 +1,4 @@
-<webc-container controller="ProductsController" translations="true">
+<webc-container controller="ProductsController">
     <div data-if="@hasProducts">
         <div slot="true">
             <ion-list class="ion-margin ion-no-padding">
@@ -11,13 +11,6 @@
                     <product-list-item data-view-model="@"></product-list-item>
                 </div>
             </ion-list>
-
-<!--            <pdm-ion-table title="@title"-->
-<!--                           item-reference="products"-->
-<!--                           mode="bymodel"-->
-<!--                           can-query="false"-->
-<!--                           icon-name="stats-chart-outline"-->
-<!--                           item-type="product-list-item"></pdm-ion-table>-->
         </div>
         <div slot="false">
             <ion-item>
@@ -25,4 +18,10 @@
             </ion-item>
         </div>
     </div>
+
+<!--    <pdm-ion-table title="@title"-->
+<!--                   item-reference="products"-->
+<!--                   mode="bymodel"-->
+<!--                   icon-name="stats-chart-outline"-->
+<!--                   item-type="product-list-item1"></pdm-ion-table>-->
 </webc-container>

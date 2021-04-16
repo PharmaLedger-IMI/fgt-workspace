@@ -68,6 +68,9 @@ export namespace Components {
     }
     interface ProductListItem {
     }
+    interface ProductListItem1 {
+        "model": any;
+    }
     interface ProductListItem2 {
         "gtin": string;
         "manager": string;
@@ -101,6 +104,12 @@ declare global {
         prototype: HTMLProductListItemElement;
         new (): HTMLProductListItemElement;
     };
+    interface HTMLProductListItem1Element extends Components.ProductListItem1, HTMLStencilElement {
+    }
+    var HTMLProductListItem1Element: {
+        prototype: HTMLProductListItem1Element;
+        new (): HTMLProductListItem1Element;
+    };
     interface HTMLProductListItem2Element extends Components.ProductListItem2, HTMLStencilElement {
     }
     var HTMLProductListItem2Element: {
@@ -118,6 +127,7 @@ declare global {
         "batch-list-item": HTMLBatchListItemElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "product-list-item": HTMLProductListItemElement;
+        "product-list-item1": HTMLProductListItem1Element;
         "product-list-item2": HTMLProductListItem2Element;
         "stock-list-item": HTMLStockListItemElement;
     }
@@ -196,6 +206,9 @@ declare namespace LocalJSX {
          */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
     }
+    interface ProductListItem1 {
+        "model"?: any;
+    }
     interface ProductListItem2 {
         "gtin"?: string;
         "manager"?: string;
@@ -211,6 +224,7 @@ declare namespace LocalJSX {
         "batch-list-item": BatchListItem;
         "pdm-ion-table": PdmIonTable;
         "product-list-item": ProductListItem;
+        "product-list-item1": ProductListItem1;
         "product-list-item2": ProductListItem2;
         "stock-list-item": StockListItem;
     }
@@ -223,6 +237,7 @@ declare module "@stencil/core" {
             "batch-list-item": LocalJSX.BatchListItem & JSXBase.HTMLAttributes<HTMLBatchListItemElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "product-list-item": LocalJSX.ProductListItem & JSXBase.HTMLAttributes<HTMLProductListItemElement>;
+            "product-list-item1": LocalJSX.ProductListItem1 & JSXBase.HTMLAttributes<HTMLProductListItem1Element>;
             "product-list-item2": LocalJSX.ProductListItem2 & JSXBase.HTMLAttributes<HTMLProductListItem2Element>;
             "stock-list-item": LocalJSX.StockListItem & JSXBase.HTMLAttributes<HTMLStockListItemElement>;
         }

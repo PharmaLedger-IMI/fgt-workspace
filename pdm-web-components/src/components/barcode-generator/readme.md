@@ -23,6 +23,7 @@
 
  - [batch-list-item](../batch-list-item)
  - [product-list-item](../product-list-item)
+ - [product-list-item1](../product-list-item1)
  - [product-list-item2](../product-list-item2)
  - [stock-list-item](../stock-list-item)
 
@@ -31,6 +32,7 @@
 graph TD;
   batch-list-item --> barcode-generator
   product-list-item --> barcode-generator
+  product-list-item1 --> barcode-generator
   product-list-item2 --> barcode-generator
   stock-list-item --> barcode-generator
   style barcode-generator fill:#f9f,stroke:#333,stroke-width:4px

@@ -1,50 +1,23 @@
-import {Component, Host, h, Event, Element, EventEmitter} from '@stencil/core';
-import {extractChain, promisifyEventEmit} from "../../utils";
+import {Component, Host, h, Element, Prop, Watch} from '@stencil/core';
 import {HostElement} from '../../decorators'
-import { applyChain } from "../../utils";
+
 
 @Component({
-  tag: 'product-list-item',
-  styleUrl: 'product-list-item.css',
+  tag: 'product-list-item1',
+  styleUrl: 'product-list-item1.css',
   shadow: false,
 })
-export class ProductListItem {
+export class ProductListItem1 {
 
   @HostElement() host: HTMLElement;
 
   @Element() element;
 
-  /**
-   * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
-   */
-  @Event({
-    eventName: 'webcardinal:model:get',
-    bubbles: true,
-    composed: true,
-    cancelable: true,
-  })
-  getModelEvent: EventEmitter;
-
-  private model = undefined;
-  private chain = '';
+  @Prop() model = undefined;
 
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
-    await this._getModel();
-  }
-
-  async _getModel(){
-    this.chain = extractChain(this.host);
-
-    if (this.chain) {
-      try {
-        this.model = await promisifyEventEmit(this.getModelEvent);
-        this.model = applyChain(this.model, this.chain);
-      } catch (error) {
-        console.error(error);
-      }
-    }
   }
 
   addBarCode(){
@@ -59,17 +32,18 @@ export class ProductListItem {
 
   addLabel(){
     return(
-    <ion-label className="ion-padding-horizontal ion-align-self-center">
-      <h3>{this.model.gtin}</h3>
-      <h5>{this.model.name}</h5>
-      <p>{this.model.description}</p>
-    </ion-label>)
+      <ion-label className="ion-padding-horizontal ion-align-self-center">
+        <h3>{this.model.gtin}</h3>
+        <h5>{this.model.name}</h5>
+        <p>{this.model.description}</p>
+      </ion-label>)
   }
 
   addBatch(batch){
     return(
       <ion-chip outline color="primary">
         <ion-label className="ion-padding-start">{batch.batchNumber}</ion-label>
+        <ion-badge className="ion-margin ion-padding-horizontal" color="success">{batch.quantity}</ion-badge>
       </ion-chip>
     )
   }
@@ -97,6 +71,7 @@ export class ProductListItem {
     )
   }
 
+  @Watch('model')
   render() {
     if (!this.model)
       return;
