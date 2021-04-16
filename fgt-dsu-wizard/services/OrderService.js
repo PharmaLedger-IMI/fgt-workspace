@@ -85,6 +85,7 @@ function OrderService(domain, strategy){
                                 dsu.getKeySSIAsObject((err, keySSI) => {
                                     if (err)
                                         return callback(err);
+                                    console.log("Finished creating Order "+keySSI.getIdentifier(true));
                                     callback(undefined, keySSI);
                                 });
                             });

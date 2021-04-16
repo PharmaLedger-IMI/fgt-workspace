@@ -62,10 +62,13 @@ class IssuedOrderManager extends OrderManager {
                 const path = `${self.tableName}/${orderId}`;
                 console.log(`Order ${orderId} created stored at DB '${path}'`);
                 // send a message to senderId
+                // TODO send the message before inserting record ? The message gives error if senderId does not exist/not listening.
                 // TODO derive sReadSSI from keySSI
-                this.sendMessage(order.senderId, DB.receivedOrders, keySSI.getIdentifier(), (err) => {
+                const aKey = keySSI.getIdentifier();
+                this.sendMessage(order.senderId, DB.receivedOrders, aKey, (err) => {
                     if (err)
                         return callback(err);
+                    console.log("Message sent to "+order.senderId+", "+DB.receivedOrders+", "+aKey);
                     callback(undefined, keySSI, path);
                 });
             });
