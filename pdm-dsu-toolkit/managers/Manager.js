@@ -68,7 +68,10 @@ class Manager{
         this._registerMessageListener = function(listener){
             return baseManager.registerMessageListener(this.tableName, listener);
         }
-        this._getMessage = function(callback){
+        this._getMessages = function(callback){
+            // jpsl: Why distinct tablename ? All messages seem to be in table "messages".
+            // Also, BaseManager.getMessages(callback) does not have a tablename argument.
+            // TODO: So far I am working around this method.
             return baseManager.getMessages(this.tableName, callback);
         }
     }
