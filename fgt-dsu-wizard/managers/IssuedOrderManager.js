@@ -52,9 +52,23 @@ class IssuedOrderManager extends OrderManager {
         let self = this;
         // TODO locate senderId and check if it can receive orders
 
+        // TODO locate MAH id from order.orderLine[i].gtin and send
+        // messages to all MAHs.
+        const sendOrderLinesToMAH = function(orderLines) {
+            //console.log("Handling rest of orderLines ", orderLines);
+            if (!orderLines || orderLines.length<=0)
+                return; // done
+            const orderLine0 = orderLines[0];
+            const gtin = orderLine0.gtin;
+            console.log("TODO resolve gtin "+gtin+" to MAH id and send messsage");
+            orderLines.shift();
+            sendOrderLinesToMAH(orderLines);
+        }
+        sendOrderLinesToMAH([...order.orderLines]);
+
         self.orderService.create(order, (err, keySSI) => {
             if (err)
-                return self._err(`Could not create product DSU for ${order}`, err, callback);
+                return self._err(`Could not create product DSU for ${order}`, err, callback);                
             const record = keySSI.getIdentifier();
             self.insertRecord(orderId, self._indexItem(orderId, order, record), (err) => {
                 if (err)
