@@ -120,9 +120,11 @@ class MessageManager extends Manager{
 
     _startMessageListener(did){
         let self = this;
+        console.log("_startMessageListener", did.getIdentifier());
         did.readMessage((err, message) => {
             if (err)
                 return console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
+            console.log("did.readMessage", message);
             self._startMessageListener(did);
             self._receiveMessage(message, (err, message) => {
                 if (err)
