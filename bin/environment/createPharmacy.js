@@ -43,8 +43,11 @@ const setup = function (participantManager, products, wholesalers, stocks, callb
             if (err)
                 return callback(err);
             issuedOrders.push(order);
-            // last step
-            callback(undefined, issuedOrders, receivedShipments);
+            // wait 3 sec - let other process messages - remove when adding more orders
+            setTimeout(() => {
+                // last step
+                callback(undefined, issuedOrders, receivedShipments);
+            }, 3000);
         });
     });
 }
