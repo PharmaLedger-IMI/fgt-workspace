@@ -45,8 +45,8 @@
                     <webc-template template="dashboard" disable-container></webc-template>
                 </ion-tab>
 
-                <ion-tab tab="tab-orders">
-                    <webc-template template="orders" disable-container></webc-template>
+                <ion-tab tab="tab-receivedOrders">
+                    <webc-template template="receivedOrders" disable-container></webc-template>
                 </ion-tab>
 
                 <ion-tab tab="tab-shipments">
@@ -64,9 +64,9 @@
                     <ion-label>{{ @menu.dashboard }}</ion-label>
                 </ion-tab-button>
 
-                <ion-tab-button tab="tab-orders">
+                <ion-tab-button tab="tab-receivedOrders">
                     <ion-icon name="reader-outline"></ion-icon>
-                    <ion-label>{{ @menu.orders }}</ion-label>
+                    <ion-label>{{ @menu.receivedOrders }}</ion-label>
                     <ion-badge data-view-model="@scheduleCounter"></ion-badge>
                 </ion-tab-button>
 
