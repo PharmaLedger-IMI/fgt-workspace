@@ -25,7 +25,7 @@ assert.callback("DB Indexing test", (testFinishCallback) => {
             let storageSSI = keySSIApis.createSeedSSI("default");
 
             let mydb = db.getWalletDB(storageSSI, "testDb");
-            mydb.insertRecord("test", "123456", { "api": "receivedOrders", "message": "PPnBCBmwjbvmf16Dsf1bfag2Ex8aaTYe1xVJjpExgKTdDtcQGzcc83BnG5UDAcLxZtDvhgxvhNqFD9dNqDmdHbofeCoEeqfDq" }, function (err, res) {
+            mydb.insertRecord("test", "123456", "{ \"api\": \"receivedOrders\", \"message\": \"PPnBCBmwjbvmf16Dsf1bfag2Ex8aaTYe1xVJjpExgKTdDtcQGzcc83BnG5UDAcLxZtDvhgxvhNqFD9dNqDmdHbofeCoEeqfDq\" }", function (err, res) {
                 testPersistence(mydb.getShareableSSI());
             });
         });
