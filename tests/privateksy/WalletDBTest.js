@@ -11,7 +11,7 @@ assert.callback("DB Indexing test", (testFinishCallback) => {
         function testPersistence(sreadSSI) {
             console.log("Persistence DSU is:", sreadSSI.getAnchorId());
             let mydb = db.getSharedDB(sreadSSI, "testDb");
-            mydb.filter("test", "api like /.*/g", undefined, 10, (err, records) => {
+            mydb.filter("test", "__timestamp > 0", undefined, 10, (err, records) => {
                 console.log(err, records);
                 testFinishCallback();
             });

@@ -115,7 +115,7 @@ class MessageManager extends Manager{
             callback = api;
             api = MESSAGE_TABLE;
         }
-        this.query(api, "key like /.*/g", undefined, 10, callback);
+        this.query(api, "__timestamp > 0", undefined, 10, callback);
     }
 
     _startMessageListener(did){
