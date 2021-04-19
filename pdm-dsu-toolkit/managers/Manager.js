@@ -400,6 +400,7 @@ class Manager{
             key = tableName;
             tableName = this._getTableName();
         }
+        console.log("insertRecord tableName="+tableName, "key", key, "record", record);
         this.getStorage().insertRecord(tableName, key, record, callback);
     }
 
@@ -466,6 +467,7 @@ class Manager{
             query = tableName;
             tableName = this._getTableName();
         }
+        console.log("query tableName="+tableName+" query=\""+query+"\" sort="+sort+" limit="+limit);
         this.getStorage().query(tableName, query, sort, limit, callback);
     }
 }
