@@ -11,7 +11,7 @@ assert.callback("DB Indexing test", (testFinishCallback) => {
         function testPersistence(sreadSSI) {
             console.log("Persistence DSU is:", sreadSSI.getAnchorId());
             let mydb = db.getSharedDB(sreadSSI, "testDb");
-            mydb.query("test", "key like /.*/g", undefined, 10, (err, records) => {
+            mydb.filter("test", "api like /.*/g", undefined, 10, (err, records) => {
                 console.log(err, records);
                 testFinishCallback();
             });
@@ -25,12 +25,8 @@ assert.callback("DB Indexing test", (testFinishCallback) => {
             let storageSSI = keySSIApis.createSeedSSI("default");
 
             let mydb = db.getWalletDB(storageSSI, "testDb");
-            mydb.insertRecord("test", "key1", { value: "v0" }, function (err, res) {
-                mydb.updateRecord("test", "key1", { value: "v1" }, function (err, res) {
-                    mydb.updateRecord("test", "key1", { value: "v2" }, function (err, res) {
-                        testPersistence(mydb.getShareableSSI());
-                    });
-                });
+            mydb.insertRecord("test", "123456", { "api": "receivedOrders", "message": "PPnBCBmwjbvmf16Dsf1bfag2Ex8aaTYe1xVJjpExgKTdDtcQGzcc83BnG5UDAcLxZtDvhgxvhNqFD9dNqDmdHbofeCoEeqfDq" }, function (err, res) {
+                testPersistence(mydb.getShareableSSI());
             });
         });
     });
