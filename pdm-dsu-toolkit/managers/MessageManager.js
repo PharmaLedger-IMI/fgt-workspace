@@ -124,6 +124,18 @@ class MessageManager extends Manager{
         did.readMessage((err, message) => {
             if (err)
                 return console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
+            // jpsl: did.readMessage appears to return a string, but db.insertRecord requires a record object.
+            // ... So JSON.parse the message into an object.
+            // https://opendsu.slack.com/archives/C01DQ33HYQJ/p1618848231120300
+            if (typeof message == "string") {
+                try {
+                    message = JSON.parse(message);
+                } catch (error) {
+                    console.log(createOpenDSUErrorWrapper(`Could not JSON.parse message ${message}`, err));
+                    self._startMessageListener(did);
+                    return;
+                }
+            }
             console.log("did.readMessage", message);
             self._startMessageListener(did);
             self._receiveMessage(message, (err, message) => {
