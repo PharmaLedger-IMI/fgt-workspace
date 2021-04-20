@@ -77,7 +77,9 @@ class MessageManager extends Manager{
     }
 
     _saveToInbox(message, callback){
-        this.insertRecord(Date.now() + '', message, callback);
+        const key = Date.now() + '';
+        message.key = key; // jpsl: add a key to the message, so that it can be deleted later based on the record object
+        this.insertRecord(key, message, callback);
     }
 
     /**
