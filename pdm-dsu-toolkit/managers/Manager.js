@@ -440,7 +440,7 @@ class Manager{
      * Wrapper around the storage's deleteRecord where the tableName defaults to the manager's
      * @param {string} [tableName] defaults to the manager's table name
      * @param {string} key
-     * @param {function(err)} callback
+     * @param {function(err,record)} callback
      */
     deleteRecord(tableName, key, callback){
         if (!callback){

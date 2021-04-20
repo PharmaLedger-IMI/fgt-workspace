@@ -112,6 +112,29 @@ class MessageManager extends Manager{
         });
     }
 
+    /**
+     * Delete a message from the MESSAGE_TABLE.
+     * @param {string} [tableName] defaults to MESSAGE_TABLE
+     * @param {object} message. Must have a key property.
+     * @param {function(err)} callback 
+     * @returns 
+     */
+    deleteMessage(tableName, message, callback) {
+        if (!callback){
+            callback = message;
+            message = tableName;
+            tableName = MESSAGE_TABLE;
+        }
+        if (!message)
+            return callback("Message undefined");
+        if (!message.key)
+            return callback(`Message ${message} key property undefined`);
+        this.deleteRecord(tableName, message.key, (err,record) => {
+            console.log("Deleting record", err, record);
+            return callback(err);
+        });
+    }
+    
     getMessages(api, callback){
         if (!callback){
             callback = api;

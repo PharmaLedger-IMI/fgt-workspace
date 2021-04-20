@@ -208,11 +208,29 @@ const create = function(app, credentials, callback){
     }
 }
 
-const conf = argParser(defaultOps, process.argv);
+const processPendingMessages = function (callback) {
+    switch (conf.app) {
+        case APPS.SINGLE:
+            // This is for --app=single - there is one MAH, WHS and PHA.
+            // jpsl: Wait for messages ? There should be a better way...
+            setTimeout(() => {
+                //console.log(results);
+                // jpsl: Is there a simpler way to get the whsManager ? Yes if one had used and WholesalerFactory pattern.
+                let aWhsManager = results['fgt-wholesaler-wallet'][0].manager;
+                //console.log(aWhsManager);
+                //aWhsManager.getMessages((err,records) => { console.log("err",err,"records",records); });
+                require('./createWholesaler').processOrders(aWhsManager, (err) => {
+                    //setTimeout(()=>{ callback(err); }, 3000);
+                    return callback(err);
+                });
+            }, 1000);
+            break;
+        default:
+            return callback();
+    }
+}
 
-create(conf.app, (err) => {
-    if (err)
-        throw err;
+const printResults = function (callback) {
     console.log(`Environment set for ${conf.app}`);
     // console.log(`Results:\n${JSON.stringify(results, jsonStringifyReplacer, 2)}`);
     console.log(`Ids per Participant:`);
@@ -223,15 +241,24 @@ create(conf.app, (err) => {
                 id: p.credentials.id.secret,
                 ssi: p.ssi
             })) : 'none'
-        } ;
-    }), undefined, 2));
-	// jpsl: debug - Wholesaler does not seem to have any records in table messages
-	// wait 2 seconds for message processing
-	setTimeout(()=>{
-		//console.log(results);
-		let aWhsManager = results['fgt-wholesaler-wallet'][0].manager;
-		//console.log(aWhsManager);
-		aWhsManager.getMessages((err,records) => { console.log("err",err,"records",records); });
-	}, 2000);
-	setTimeout(()=>{ process.exit(0); }, 3000);
+        };
+    }), undefined, 2))
+    callback();
+}
+
+const conf = argParser(defaultOps, process.argv);
+
+create(conf.app, (err) => {
+    if (err)
+        throw err;
+    // jpsl: TODO discuss with Tiago the processing of pending messages.
+    processPendingMessages((err) => {
+        if (err)
+            throw err;
+        printResults((err) => {
+            if (err)
+                throw err;
+            process.exit(0);
+        });
+    });
 });
