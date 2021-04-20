@@ -4,7 +4,7 @@ const path = require('path');
 
 require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
 const dt = require('./../../pdm-dsu-toolkit/services/dt');
-const { getParticipantManager, getStockManager } = require('../../fgt-dsu-wizard/managers');
+const { getParticipantManager, getReceivedOrderManager, getStockManager } = require('../../fgt-dsu-wizard/managers');
 const { impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 
 const { APPS } = require('./credentials/credentials');
@@ -16,6 +16,18 @@ const defaultOps = {
 }
 
 let conf = argParser(defaultOps, process.argv);
+
+// jpsl: To discuss wit Tiago.
+// Process all pending ReceivedOrders and ReceivedShipments messages.
+/**
+ * 
+ * @param {ParticipantManager} participantManager 
+ * @param {function(err)} callback
+ */
+const processOrders = function(participantManager, callback) {
+    const receivedOrderManager = getReceivedOrderManager(participantManager, true); // force a new instance
+    receivedOrderManager.processMessages(callback);
+}
 
 const setup = function(participantManager, stocks, callback){
     if (!callback){
@@ -72,7 +84,8 @@ const create = function(credentials, callback){
 
 module.exports = {
     create,
-    setup
+    setup,
+    processOrders
 };
 
 

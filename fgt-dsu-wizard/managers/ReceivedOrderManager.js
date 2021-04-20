@@ -115,11 +115,37 @@ class ReceivedOrderManager extends OrderManager {
     processMessages(callback) {
         let self = this;
         console.log("Processing messages");
-        // TODO: self.getMessages() is broken. Go to the messageManager diretcly.
+        // TODO: self.getMessages() is broken. Go to the messageManager directly.
+        // jpsl to Tiago: IMHO, the entry point for this should start at the participant, and not at the ReceivedOrderManager.
+        // TODO optimize and ask for api = receivedOrders only
         self.participantManager.messenger.getMessages((err, records) => {
             console.log("Processing records: ", err, records);
-            // TODO persist to receivedOrders
-            // and then delete message after processing.
+            if (err)
+                return callback(err);
+            const processMessageRecord = function (record, callback) {
+                if (!record.api || record.api != DB.receivedOrders) {
+                    console.log(`Message record ${record} does not have api=${DB.receivedOrders}`);
+                    return callback();
+                }
+                // TODO persist to receivedOrders
+                // and then delete message after processing.
+                console.log("Going to delete messages's record", record);
+                //self.participantManager.messenger.deleteMessage(record, callback);
+                callback();
+            };
+            const iterateRecords = function (records) {
+                if (!records || !Array.isArray(records))
+                    return callback(`Message records ${records} is not an array!`);
+                if (records.length <= 0)
+                    return callback(); // done
+                const record = records.shift();
+                processMessageRecord(record, (err) => {
+                    if (err)
+                        return callback(err);
+                    iterateRecords(records);
+                });
+            }
+            iterateRecords([...records], callback);
         });
     }
 }
