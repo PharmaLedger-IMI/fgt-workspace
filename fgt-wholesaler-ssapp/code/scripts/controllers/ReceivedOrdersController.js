@@ -35,7 +35,12 @@ export default class ReceivedOrdersController extends LocalizedController {
         // pressing "NEW" to create a new received Order
         self.onTagClick("refreshMessages", () => {
             console.log("REFRESH button pressed");
-            self.receivedOrderManager.processMessages();
+            // scan pending messages
+            self.receivedOrderManager.processMessages( (err) => {
+                if (err)
+                    return self.showErrorToast(err);
+                self.getAll();
+            });
         });
     }
 
