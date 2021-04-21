@@ -125,6 +125,10 @@ class ReceivedOrderManager extends OrderManager {
             const processMessageRecord = function (record, callback) {
                 // Process one record. If the message is broken, DO NOT DELETE IT, log to console, and skip to the next.
                 console.log(`Processing record`, record);
+                if (record.__deleted) {
+                    console.log("Skipping deleted record");
+                    return callback();
+                }
                 if (!record.api || record.api != DB.receivedOrders) {
                     console.log(`Message record ${record} does not have api=${DB.receivedOrders}`);
                     return callback();
@@ -153,7 +157,6 @@ class ReceivedOrderManager extends OrderManager {
                         // and then delete message after processing.
                         console.log("Going to delete messages's record", record);
                         self.participantManager.messenger.deleteMessage(record, callback);
-                        callback();
                     });
                 });
             };
