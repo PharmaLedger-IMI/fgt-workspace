@@ -29,6 +29,7 @@ export namespace Components {
     interface BatchListItem {
     }
     interface PdmIonTable {
+        "buttons"?: string[];
         /**
           * Shows the search bar or not. (not working)
          */
@@ -55,6 +56,7 @@ export namespace Components {
         "mode": string;
         "noContentMessage": string;
         "pageCount"?: number;
+        "paginated"?: boolean;
         /**
           * Querying/paginating Params - only available when mode is set by ref
          */
@@ -73,7 +75,6 @@ export namespace Components {
     }
     interface ProductListItem2 {
         "gtin": string;
-        "manager": string;
         "refresh": () => Promise<void>;
     }
     interface StockListItem {
@@ -160,6 +161,7 @@ declare namespace LocalJSX {
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
     }
     interface PdmIonTable {
+        "buttons"?: string[];
         /**
           * Shows the search bar or not. (not working)
          */
@@ -190,6 +192,7 @@ declare namespace LocalJSX {
          */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
         "pageCount"?: number;
+        "paginated"?: boolean;
         /**
           * Querying/paginating Params - only available when mode is set by ref
          */
@@ -211,7 +214,6 @@ declare namespace LocalJSX {
     }
     interface ProductListItem2 {
         "gtin"?: string;
-        "manager"?: string;
     }
     interface StockListItem {
         /**
