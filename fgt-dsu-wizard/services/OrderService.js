@@ -7,7 +7,7 @@ const utils = require('../../pdm-dsu-toolkit/services/utils');
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
  */
-function OrderService(domain, strategy){
+function OrderService(domain, strategy) {
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");
     const model = require('../model');
     const Order = model.Order;
@@ -25,7 +25,7 @@ function OrderService(domain, strategy){
      * @param {Order} order
      * @param {function(err, keySSI)} callback
      */
-    this.create = function(order, callback){
+    this.create = function (order, callback) {
         // if product is invalid, abort immediatly.
         if (typeof order === 'object') {
             let err = order.validate();
@@ -33,7 +33,7 @@ function OrderService(domain, strategy){
                 return callback(err);
         }
 
-        if (isSimple){
+        if (isSimple) {
             createSimple(order, callback);
         } else {
             createAuthorized(order, callback);
@@ -41,12 +41,40 @@ function OrderService(domain, strategy){
     }
 
     /**
+     * Reads a DSU and also parses the order information.
+     * @param {object} keySSI
+     * @param {function(err, dsu, order)} callback where order is the domain {@link Order}.
+     */
+    this.read = function (keySSI, callback) {
+        const opendsu = require("opendsu");
+        //Load resolver library
+        const resolver = opendsu.loadApi("resolver");
+
+        resolver.loadDSU(keySSI, (err, dsu) => {
+            if (err)
+                return callback(err);
+            dsu.readFile("/info", (err, data) => {
+                if (err)
+                    return callback(err);
+                let order;
+                try {
+                    order = JSON.parse(data.toString());  //Convert data (buffer) to string and then assume it is JSON
+                } catch (err) {
+                    return callback(`Error passing Order object from keySSI ${keySSSI} /info data ${data}`);
+                }
+                // TODO transform each orderLines[] into OrderLine
+                callback(undefine, dsu, order);
+            });
+        });
+    }
+
+    /**
      * Creates the original OrderStatus DSU
      * @param {OrderStatus} [status]: defaults to OrderStatus.CREATED
      * @param {function(err, keySSI)} callback
      */
-    let createOrderStatus = function(status, callback){
-        if (typeof status === 'function'){
+    let createOrderStatus = function (status, callback) {
+        if (typeof status === 'function') {
             callback = status;
             status = OrderStatus.CREATED;
         }
@@ -58,7 +86,7 @@ function OrderService(domain, strategy){
         });
     }
 
-    let createSimple = function(order, callback){
+    let createSimple = function (order, callback) {
         let keyGenFunction = require('../commands/setOrderSSI').createOrderSSI;
         let templateKeySSI = keyGenFunction(order, domain);
         utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
@@ -85,7 +113,7 @@ function OrderService(domain, strategy){
                                 dsu.getKeySSIAsObject((err, keySSI) => {
                                     if (err)
                                         return callback(err);
-                                    console.log("Finished creating Order "+keySSI.getIdentifier(true));
+                                    console.log("Finished creating Order " + keySSI.getIdentifier(true));
                                     callback(undefined, keySSI);
                                 });
                             });
@@ -96,8 +124,8 @@ function OrderService(domain, strategy){
         });
     }
 
-    let createAuthorized = function(order, callback){
-        let getEndpointData = function (order){
+    let createAuthorized = function (order, callback) {
+        let getEndpointData = function (order) {
             return {
                 endpoint: endpoint,
                 data: {
@@ -108,7 +136,7 @@ function OrderService(domain, strategy){
         }
 
         utils.getDSUService().create(domain, getEndpointData(order), (builder, cb) => {
-            builder.addFileDataToDossier("/info", JSON.stringify(order), (err)=> {
+            builder.addFileDataToDossier("/info", JSON.stringify(order), (err) => {
                 if (err)
                     return cb(err);
                 createOrderLines(order, (err, orderLines) => {
@@ -138,10 +166,10 @@ function OrderService(domain, strategy){
      * @param {function} callback
      * @return {Object[]} keySSIs
      */
-    let createOrderLines = function(order, callback){
+    let createOrderLines = function (order, callback) {
         let orderLines = [];
 
-        let iterator = function(order, items, callback){
+        let iterator = function (order, items, callback) {
             let orderLine = items.shift();
             if (!orderLine)
                 return callback(undefined, orderLines);
