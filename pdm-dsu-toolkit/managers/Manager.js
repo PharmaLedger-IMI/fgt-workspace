@@ -304,7 +304,7 @@ class Manager{
                 return self._err(`Could not load record with key ${key} on table ${self._getTableName()}`, err, callback);
             if (!readDSU)
                 return callback(undefined, itemSSI);
-            self._getDSUInfo(itemSSI, callback);
+            self._getDSUInfo(itemSSI.value || itemSSI, callback);
         });
     }
 

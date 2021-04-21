@@ -111,7 +111,8 @@ export class PdmIonTable implements ComponentInterface {
     if (!this.host.isConnected)
       return;
     console.log(`connected`)
-    await this.refresh();
+    if (this.mode === ION_TABLE_MODES.BY_MODEL)
+      await this.refresh();
   }
 
   async _getModel(){
@@ -136,7 +137,7 @@ export class PdmIonTable implements ComponentInterface {
     if (!this.webManager)
       return;
 
-    await this.webManager.getAll( true, undefined, (err, contents) => {
+    await this.webManager.getAll( false, undefined, (err, contents) => {
       if (err){
         console.log(`Could not list items`, err);
         return;
