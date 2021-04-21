@@ -161,7 +161,7 @@ class ReceivedOrderManager extends OrderManager {
                 if (!records || !Array.isArray(records))
                     return callback(`Message records ${records} is not an array!`);
                 if (records.length <= 0)
-                    return callback(); // done
+                    return callback(); // done without error
                 const record = records.shift();
                 processMessageRecord(record, (err) => {
                     if (err)
