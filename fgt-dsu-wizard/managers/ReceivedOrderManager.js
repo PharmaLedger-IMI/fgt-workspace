@@ -107,6 +107,59 @@ class ReceivedOrderManager extends OrderManager {
         */
     }
 
+    _processMessageRecord(record, callback) {
+        let self = this;
+        // Process one record. If the message is broken, DO NOT DELETE IT, log to console, and skip to the next.
+        console.log(`Processing record`, record);
+        if (record.__deleted) {
+            console.log("Skipping deleted record.");
+            return callback();
+        }
+        if (!record.api || record.api != DB.receivedOrders) {
+            console.log(`Message record ${record} does not have api=${DB.receivedOrders}. Skipping record.`);
+            return callback();
+        }
+        if (!record.message || typeof record.message != "string") {
+            console.log(`Message record ${record} does not have property message as non-empty string with keySSI. Skipping record.`);
+            return callback();
+        }
+        const orderSReadSSIStr = record.message;
+        self._getDSUInfo(orderSReadSSIStr, (err, orderObj, orderDsu) => {
+            if (err) {
+                console.log(`Could not read DSU from message keySSI in record ${record}. Skipping record.`);
+                return callback();
+            }
+            console.log(`ReceivedOrder`, orderObj);
+            const orderId = orderObj.orderId;
+            if (!orderId) {
+                console.log("ReceivedOrder doest not have an orderId. Skipping record.");
+                return callback();
+            }
+            self.insertRecord(orderId, self._indexItem(orderId, orderObj, orderSReadSSIStr), (err) => {
+                if (err) {
+                    console.log("insertRecord failed", err);
+                    return callback();
+                }
+                // and then delete message after processing.
+                console.log("Going to delete messages's record", record);
+                self.participantManager.messenger.deleteMessage(record, callback);
+            });
+        });
+    };
+
+    _iterateMessageRecords(records, callback) {
+        let self = this;
+        if (!records || !Array.isArray(records))
+            return callback(`Message records ${records} is not an array!`);
+        if (records.length <= 0)
+            return callback(); // done without error
+        const record0 = records.shift();
+        self._processMessageRecord(record0, (err) => {
+            if (err)
+                return callback(err);
+            self._iterateMessageRecords(records, callback);
+        });
+    };
 
     /**
      * Process incoming, looking for receivedOrder messages.
@@ -122,57 +175,8 @@ class ReceivedOrderManager extends OrderManager {
             console.log("Processing records: ", err, records);
             if (err)
                 return callback(err);
-            const processMessageRecord = function (record, callback) {
-                // Process one record. If the message is broken, DO NOT DELETE IT, log to console, and skip to the next.
-                console.log(`Processing record`, record);
-                if (record.__deleted) {
-                    console.log("Skipping deleted record");
-                    return callback();
-                }
-                if (!record.api || record.api != DB.receivedOrders) {
-                    console.log(`Message record ${record} does not have api=${DB.receivedOrders}`);
-                    return callback();
-                }
-                if (!record.message || typeof record.message != "string") {
-                    console.log(`Message record ${record} does not have property message as non-empty string with keySSI.`);
-                    return callback();
-                }
-                const orderSReadSSIStr = record.message;
-                self._getDSUInfo(orderSReadSSIStr, (err, orderObj, orderDsu) => {
-                    if (err) {
-                        console.log(`Could not read DSU from message keySSI in record ${record}`);
-                        return callback();
-                    }
-                    console.log(`ReceivedOrder`, orderObj);
-                    const orderId = orderObj.orderId;
-                    if (!orderId) {
-                        console.log("ReceivedOrder doest not have an orderId");
-                        return callback();
-                    }
-                    self.insertRecord(orderId, self._indexItem(orderId, orderObj, orderSReadSSIStr), (err) => {
-                        if (err) {
-                            console.log("insertRecord failed", err);
-                            return callback();
-                        }
-                        // and then delete message after processing.
-                        console.log("Going to delete messages's record", record);
-                        self.participantManager.messenger.deleteMessage(record, callback);
-                    });
-                });
-            };
-            const iterateRecords = function (records, callback) {
-                if (!records || !Array.isArray(records))
-                    return callback(`Message records ${records} is not an array!`);
-                if (records.length <= 0)
-                    return callback(); // done without error
-                const record = records.shift();
-                processMessageRecord(record, (err) => {
-                    if (err)
-                        return callback(err);
-                    iterateRecords(records, callback);
-                });
-            };
-            iterateRecords([...records], callback);
+            let messageRecords = [...records]; // clone for iteration with shift()
+            self._iterateMessageRecords(messageRecords, callback);
         });
     }
 }
