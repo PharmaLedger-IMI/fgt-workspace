@@ -30,9 +30,9 @@ assert.callback("DB query+deleteRecord test", (testFinishCallback) => {
 
             let mydb = db.getWalletDB(storageSSI, "testDb");
 
-            mydb.insertRecord("test", "123", { "api": "receivedOrders", "message": "Payload1", key: "123" }, function (err, res) {
-                mydb.insertRecord("test", "456", { "api": "receivedOrders", "message": "Payload2", key: "456" }, function (err, res) {
-                    mydb.insertRecord("test", "789", { "api": "receivedOrders", "message": "Payload3", key: "789" }, function (err, res) {
+            mydb.insertRecord("test", "123", { "api": "receivedOrders", "message": "Payload1", "key": "123" }, function (err, res) {
+                mydb.insertRecord("test", "456", { "api": "receivedOrders", "message": "Payload2", "key": "456" }, function (err, res) {
+                    mydb.insertRecord("test", "789", { "api": "receivedOrders", "message": "Payload3", "key": "789" }, function (err, res) {
                         testPersistence(mydb.getShareableSSI());
                     });
                 });
