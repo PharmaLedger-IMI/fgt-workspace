@@ -19,7 +19,7 @@ let conf = argParser(defaultOps, process.argv);
 
 const setupProducts = function(participantManager, products, batches, callback){
     const productManager = getProductManager(participantManager, true);
-    products = products || require('./products/productsRandom');
+    products = products || require('./products/productsRandom')();
     const iterator = function(productsCopy, callback){
         const product = productsCopy.shift();
         if (!product){
