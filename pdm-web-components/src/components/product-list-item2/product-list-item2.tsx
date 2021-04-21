@@ -40,14 +40,13 @@ export class ProductListItem2 {
         console.log(`Could not get Product with gtin ${this.gtin}`, err);
         return;
       }
-      this.product = [...product];
+      this.product = product;
     });
   }
 
   @Watch('gtin')
   @Method()
   async refresh(){
-    this.product = undefined;
     await this.loadProduct();
   }
 
@@ -106,7 +105,7 @@ export class ProductListItem2 {
   }
 
   addBatches(){
-    const batches = this.product ? this.product.batches.map(b => this.addBatch(b)) : (<ion-skeleton-text animated></ion-skeleton-text>);
+    const batches = !!this.product && !!this.product.batches ? this.product.batches.map(b => this.addBatch(b)) : (<ion-skeleton-text animated></ion-skeleton-text>);
     return(
       <ion-grid className="ion-padding-horizontal">
         <ion-row>
