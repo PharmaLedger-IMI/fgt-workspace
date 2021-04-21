@@ -173,6 +173,8 @@ class ProductManager extends Manager {
             }
         }
 
+        options = options || defaultOptions();
+
         let self = this;
         self.query(options.query, options.sort, options.limit, (err, records) => {
             if (err)

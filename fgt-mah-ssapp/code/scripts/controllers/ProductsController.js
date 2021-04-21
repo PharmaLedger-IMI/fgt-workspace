@@ -49,8 +49,8 @@ export default class ProductsController extends LocalizedController {
         self.on('refresh', (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            this.getProductsAsync();
-            // self.element.querySelector('pdm-ion-table').refresh();
+            //this.getProductsAsync();
+            self.element.querySelector('pdm-ion-table').refresh();
         }, {capture: true});
     }
     //
