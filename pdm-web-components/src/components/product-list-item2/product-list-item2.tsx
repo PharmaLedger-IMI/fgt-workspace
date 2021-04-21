@@ -44,7 +44,7 @@ export class ProductListItem2 {
         return;
       }
       this.product = product;
-      self.batchManager.getAll(true, {query: `gtin like /${self.gtin}/g`}, (err, batches) => {
+      self.batchManager.getAll(true, {query: `gtin == ${self.gtin}`}, (err, batches) => {
         if (err){
           console.log(`Could not load batches for product ${self.gtin}`);
           return;
