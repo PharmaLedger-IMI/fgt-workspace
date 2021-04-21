@@ -15,7 +15,7 @@ class ReceivedOrderManager extends OrderManager {
     }
 
     /**
-     * Must wrap the entry in an object like:
+     * Must wrap the DB entry in an object like:
      * <pre>
      *     {
      *         index1: ...
@@ -132,20 +132,31 @@ class ReceivedOrderManager extends OrderManager {
                 if (!record.message || typeof record.message != "string") {
                     console.log(`Message record ${record} does not have property message as non-empty string with keySSI.`);
                     return callback();
-                }    
-                self._getDSUInfo(record.message, (err, orderObj, issuedOrderDsu) => {
+                }
+                const orderSReadSSIStr = record.message;
+                self._getDSUInfo(orderSReadSSIStr, (err, orderObj, orderDsu) => {
                     if (err) {
                         console.log(`Could not read DSU from message keySSI in record ${record}`);
                         return callback();
                     }
-                    console.log(`IssuedOrder`, orderObj);
-                    // TODO insert into DB
-                    // and then delete message after processing.
-                    console.log("Going to delete messages's record", record);
-                    //self.participantManager.messenger.deleteMessage(record, callback);
-                    callback();
+                    orderDsu
+                    console.log(`ReceivedOrder`, orderObj);
+                    const orderId = orderObj;
+                    if (!orderId) {
+                        console.log("ReceivedOrder doest not have an orderId");
+                        return callback();
+                    }
+                    self.insertRecord(orderId, self._indexItem(orderId, orderObj, orderSReadSSIStr), (err) => {
+                        if (err) {
+                            console.log("insertRecord failed",err);
+                            return callback();
+                        }
+                        // and then delete message after processing.
+                        console.log("Going to delete messages's record", record);
+                        self.participantManager.messenger.deleteMessage(record, callback);
+                        callback();
+                    });
                 });
-                // TODO persist to receivedOrders                
             };
             const iterateRecords = function (records) {
                 if (!records || !Array.isArray(records))

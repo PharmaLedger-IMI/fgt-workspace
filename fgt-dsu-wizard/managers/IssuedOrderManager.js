@@ -14,7 +14,7 @@ class IssuedOrderManager extends OrderManager {
     }
 
     /**
-     * Must wrap the entry in an object like:
+     * Must wrap the DB entry in an object like:
      * <pre>
      *     {
      *         index1: ...
