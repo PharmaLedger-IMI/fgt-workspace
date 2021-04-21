@@ -1,4 +1,19 @@
 const { INFO_PATH , DEFAULT_QUERY_OPTIONS } = require('../constants');
+
+class Page {
+    itemsPerPage = 10;
+    currentPage = 1;
+    totalPages = undefined;
+    items = [];
+
+    constructor(page) {
+        if (typeof page !== undefined)
+            for (let prop in page)
+                if (page.hasOwnProperty(prop))
+                    this[prop] = page[prop];
+    }
+}
+
 /**
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
@@ -383,6 +398,65 @@ class Manager{
                 console.log(`Parsed ${result.length} ${self._getTableName()}s`);
                 callback(undefined, result);
             });
+        });
+    }
+
+    /**
+     * Converts the text typed in a general text box into the query for the db
+     * Subclasses should override this
+     * @param {string} keyword
+     * @return {string[]} query
+     * @protected
+     */
+    _keywordToQuery(keyword){
+        keyword = keyword || '.*';
+        return [`key like /${keyword}/g`];
+    }
+
+    /**
+     * Returns a page object
+     * @param {number} itemsPerPage
+     * @param {number} page
+     * @param {string} keyword
+     * @param {string} sort
+     * @param {boolean} readDSU
+     * @param {function(err, Page)}callback
+     */
+    getPage(itemsPerPage, page, keyword, sort, readDSU, callback){
+        const self = this;
+        page = page || 1;
+
+        const options = {
+            query: self._keywordToQuery(keyword),
+            sort: sort,
+            limit: undefined
+        }
+
+        const toPage = function(currentPage, totalPages, items){
+            return new Page({
+                itemsPerPage: itemsPerPage,
+                currentPage: currentPage,
+                totalPages: totalPages,
+                items: items || []
+            });
+        }
+
+        const paginate = function(items){
+            const totalPages = Math.floor(items.length / itemsPerPage) + (items.length % itemsPerPage === 0 ? 0 : 1);
+            let startIndex = (page - 1) * itemsPerPage;
+            startIndex = startIndex === 0 ? startIndex : startIndex - 1;
+            const endIndex = startIndex + itemsPerPage >= items.length ? undefined: startIndex + itemsPerPage;
+            const sliced = items.slice(startIndex, endIndex);
+            return toPage(page, totalPages, sliced);
+        }
+
+        self.getAll(readDSU, options, (err, records) => {
+           if (err)
+               return self._err(`Could not retrieve records to page`, err, callback);
+           if (records.length <= itemsPerPage)
+               return callback(undefined, toPage(1, 1, records));
+           const page = paginate(records);
+           callback(undefined, page);
         });
     }
 

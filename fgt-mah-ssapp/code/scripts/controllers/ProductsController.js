@@ -19,6 +19,9 @@ export default class ProductsController extends LocalizedController {
         this.setModel(this.getModel());
 
         let self = this;
+        self.onTagEvent('add-product', 'click', () => {
+            console.log('add product');
+        });
         // this.on('add-product', (event) => {
         //     event.stopImmediatePropagation();
         //     self._showProductModal();

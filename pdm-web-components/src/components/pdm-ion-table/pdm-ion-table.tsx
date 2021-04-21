@@ -100,7 +100,7 @@ export class PdmIonTable implements ComponentInterface {
   @Prop({attribute: 'paginated', mutable: true}) paginated?: boolean = true;
   @Prop({attribute: 'page-count', mutable: true}) pageCount?: number = 0;
   @Prop({attribute: 'items-per-page', mutable: true}) itemsPerPage?: number = 10;
-  @Prop({attribute: 'current-page', mutable: true}) currentPage?: number = undefined;
+  @Prop({attribute: 'current-page', mutable: true}) currentPage?: number = 0;
   @Prop({mutable: true}) sort?: string = "asc";
 
   private webManager: WebManager = undefined;
@@ -125,32 +125,34 @@ export class PdmIonTable implements ComponentInterface {
     } catch (error) {
       console.error(error);
     }
-
-    // BindingService.bindChildNodes(this.host, {
-    //   model: this.model,
-    //   translationModel: {},
-    //   recursive: true,
-    //   chainPrefix: this.chain ? this.chain.slice(1) : null
-    // });
   }
 
-  async loadContents(){
+  async loadContents(pageNumber?: number){
     this.webManager = this.webManager || await WebManagerService.getWebManager(this.manager);
     if (!this.webManager)
       return;
 
-    await this.webManager.getAll( false, undefined, (err, contents) => {
-      if (err){
-        console.log(`Could not list items`, err);
-        return;
-      }
-      this.model = contents;
-    });
+    if (this.paginated){
+      await this.webManager.getPage(this.itemsPerPage, pageNumber || this.currentPage, this.canQuery ? this.query : undefined, this.sort, false, (err, contents) => {
+        if (err){
+          console.log(`Could not list items`, err);
+          return;
+        }
+        this.currentPage = contents.currentPage;
+        this.pageCount = contents.totalPages;
+        this.model = contents.items;
+      });
+    } else {
+      await this.webManager.getAll( false, undefined, (err, contents) => {
+        if (err){
+          console.log(`Could not list items`, err);
+          return;
+        }
+        this.model = contents;
+      });
+    }
   }
 
-  @Watch('sort')
-  @Watch('itemsPerPage')
-  @Watch('currentPage')
   @Method()
   async refresh(){
     switch(this.mode){
@@ -160,6 +162,11 @@ export class PdmIonTable implements ComponentInterface {
       case ION_TABLE_MODES.BY_MODEL:
         await this._getModel();
     }
+  }
+
+  private async changePage(offset: number){
+    if (this.currentPage + offset > 0 || this.currentPage + offset <= this.pageCount)
+      await this.loadContents(this.currentPage + offset);
   }
 
   getTableHead(){
@@ -181,15 +188,16 @@ export class PdmIonTable implements ComponentInterface {
         return;
       return (
         <ion-buttons slot="end">
-          <ion-button size="small">
+          <ion-button name="previous-page" size="small" onClick={() => self.changePage(-1)} disabled={self.currentPage <= 1}>
             <ion-icon slot="icon-only" name="chevron-back-circle-outline"></ion-icon>
           </ion-button>
-          <ion-button size="small">
+          <ion-label size="small">{self.currentPage}/{self.pageCount}</ion-label>
+          <ion-button name="next-page" size="small" onClick={() => self.changePage(1)} disabled={!(self.currentPage < self.pageCount)}>
             <ion-icon slot="icon-only" name="chevron-forward-circle-outline"></ion-icon>
           </ion-button>
         </ion-buttons>
       )
-    }
+    };
 
     const getButtons = function(){
       if (!self.buttons)

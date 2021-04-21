@@ -10,12 +10,14 @@ export interface QueryOptions {
 export interface WebManager {
   getOne(key, readDSU,  callback): void;
   getAll(readDSU, options, callback): void;
+  getPage(itemsPerPage, page, keyword, sort, readDSU, callback): void;
 }
 
 const bindAsControllerManager = function(manager){
   return new class implements WebManager {
     getOne = manager.getOne.bind(manager);
     getAll = manager.getAll.bind(manager);
+    getPage = manager.getPage.bind(manager);
   }
 }
 
