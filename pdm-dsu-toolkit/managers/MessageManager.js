@@ -129,12 +129,11 @@ class MessageManager extends Manager{
             return callback("Message undefined");
         if (!message.key)
             return callback(`Message ${message} key property undefined`);
-        this.deleteRecord(tableName, message.key, (err,record) => {
-            console.log("Deleting record", err, record);
+        this.deleteRecord(tableName, message.key, (err, oldRecord) => {
             return callback(err);
         });
     }
-    
+
     getMessages(api, callback){
         if (!callback){
             callback = api;
