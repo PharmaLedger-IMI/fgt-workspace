@@ -440,15 +440,18 @@ class Manager{
      * Wrapper around the storage's deleteRecord where the tableName defaults to the manager's
      * @param {string} [tableName] defaults to the manager's table name
      * @param {string} key
-     * @param {function(err,record)} callback
+     * @param {function(err, record)} callback
      */
-    deleteRecord(tableName, key, callback){
-        if (!callback){
+    deleteRecord(tableName, key, callback) {
+        if (!callback) {
             callback = key;
             key = tableName;
             tableName = this._getTableName();
         }
-        this.getStorage().deleteRecord(tableName, key, callback);
+        this.getStorage().deleteRecord(tableName, key, (err, oldRecord) => {
+            console.log("Deleted key", key, "old record", err, oldRecord);
+            callback(err, oldRecord);
+        });
     }
 
     /**
