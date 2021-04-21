@@ -128,7 +128,7 @@ class ReceivedOrderManager extends OrderManager {
                 if (!record.api || record.api != DB.receivedOrders) {
                     console.log(`Message record ${record} does not have api=${DB.receivedOrders}`);
                     return callback();
-                }    
+                }
                 if (!record.message || typeof record.message != "string") {
                     console.log(`Message record ${record} does not have property message as non-empty string with keySSI.`);
                     return callback();
@@ -147,7 +147,7 @@ class ReceivedOrderManager extends OrderManager {
                     }
                     self.insertRecord(orderId, self._indexItem(orderId, orderObj, orderSReadSSIStr), (err) => {
                         if (err) {
-                            console.log("insertRecord failed",err);
+                            console.log("insertRecord failed", err);
                             return callback();
                         }
                         // and then delete message after processing.
@@ -157,7 +157,7 @@ class ReceivedOrderManager extends OrderManager {
                     });
                 });
             };
-            const iterateRecords = function (records) {
+            const iterateRecords = function (records, callback) {
                 if (!records || !Array.isArray(records))
                     return callback(`Message records ${records} is not an array!`);
                 if (records.length <= 0)
