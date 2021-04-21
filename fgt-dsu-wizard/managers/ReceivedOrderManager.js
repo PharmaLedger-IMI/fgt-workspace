@@ -166,7 +166,7 @@ class ReceivedOrderManager extends OrderManager {
                 processMessageRecord(record, (err) => {
                     if (err)
                         return callback(err);
-                    iterateRecords(records);
+                    iterateRecords(records, callback);
                 });
             };
             iterateRecords([...records], callback);
