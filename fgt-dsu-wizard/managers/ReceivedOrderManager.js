@@ -139,9 +139,8 @@ class ReceivedOrderManager extends OrderManager {
                         console.log(`Could not read DSU from message keySSI in record ${record}`);
                         return callback();
                     }
-                    orderDsu
                     console.log(`ReceivedOrder`, orderObj);
-                    const orderId = orderObj;
+                    const orderId = orderObj.orderId;
                     if (!orderId) {
                         console.log("ReceivedOrder doest not have an orderId");
                         return callback();
