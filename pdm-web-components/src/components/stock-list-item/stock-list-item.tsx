@@ -81,8 +81,8 @@ export class StockListItem {
     return(
       <ion-grid className="ion-padding-horizontal">
         <ion-row>
-          <ion-col size="12" data-for="@batches">
-            {batches}
+          <ion-col size="12">
+            {...batches}
           </ion-col>
         </ion-row>
       </ion-grid>
