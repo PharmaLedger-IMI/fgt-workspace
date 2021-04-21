@@ -16,13 +16,41 @@ const assert = dc.assert;
 
 let testName = 'Querying test';
 
-const KEYSSI = '8XFFaUQX2zUGpo6UiMo15Jp9Z6L7JckT3pbkkcRT6JuevpBxMdw1dhTgGTxPukuTkCAshxPm7nqSN13WsG9g8NqjEitX72s4tibH';
-const gtin = 463013334241;
+const defaultOps = {
+   keyssi: '8XFFaUQX2zUGpo6UiMo15Jp9Z6L7JckT3pbkkcRT6JuevpBxMdw1dhTgGTxPukuTkCAshxPm7nqSN13WsG9g8NqjEitX72s4tibH',
+   gtin: 463013334241
+}
+
+const argParser = function(args){
+    let config = JSON.parse(JSON.stringify(defaultOps));
+    if (!args)
+        return config;
+    args = args.slice(2);
+    const recognized = Object.keys(config);
+    const notation = recognized.map(r => '--' + r);
+    args.forEach(arg => {
+        if (arg.includes('=')){
+            let splits = arg.split('=');
+            if (notation.indexOf(splits[0]) !== -1) {
+                let result
+                try {
+                    result = eval(splits[1]);
+                } catch (e) {
+                    result = splits[1];
+                }
+                config[splits[0].substring(2)] = result;
+            }
+        }
+    });
+    return config;
+}
+
+let conf = argParser(process.argv);
 
 assert.callback(testName, (testFinished) => {
     const resolver = require('opendsu').loadApi('resolver');
 
-    resolver.loadDSU(KEYSSI, (err, rootDSU) => {
+    resolver.loadDSU(conf.keyssi, (err, rootDSU) => {
         if (err)
            throw err;
         wizard.Managers.getParticipantManager(impersonateDSUStorage(rootDSU), true, (err, participant) => {
@@ -31,7 +59,7 @@ assert.callback(testName, (testFinished) => {
             const batchManager = wizard.Managers.getBatchManager(participant, true);
 
             batchManager.getAll(true, {
-                query: `gtin like /${gtin}/g`
+                query: `gtin like /${conf.gtin}/g`
             }, (err, queriedBatches) => {
                 if (err)
                     throw err;
