@@ -54,6 +54,7 @@ export class PdmIonTable implements ComponentInterface {
 
   @Prop({attribute: 'loading-message'}) loadingMessage: string = "Loading...";
 
+  @Prop({attribute: 'buttons', mutable: true}) buttons?: string[] = [];
 
   /**
    * Component Setup Params
@@ -96,6 +97,7 @@ export class PdmIonTable implements ComponentInterface {
    * Querying/paginating Params - only available when mode is set by ref
    */
   @Prop({attribute: 'query', mutable: true}) query?: string = undefined;
+  @Prop({attribute: 'paginated', mutable: true}) paginated?: boolean = true;
   @Prop({attribute: 'page-count', mutable: true}) pageCount?: number = 0;
   @Prop({attribute: 'items-per-page', mutable: true}) itemsPerPage?: number = 10;
   @Prop({attribute: 'current-page', mutable: true}) currentPage?: number = undefined;
@@ -174,15 +176,53 @@ export class PdmIonTable implements ComponentInterface {
                              show-clear-button="always"></ion-searchbar>);
     }
 
+    const getPagination = function(){
+      if (!self.paginated)
+        return;
+      return (
+        <ion-buttons slot="end">
+          <ion-button size="small">
+            <ion-icon slot="icon-only" name="chevron-back-circle-outline"></ion-icon>
+          </ion-button>
+          <ion-button size="small">
+            <ion-icon slot="icon-only" name="chevron-forward-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      )
+    }
+
+    const getButtons = function(){
+      if (!self.buttons)
+        return;
+      const accum = [];
+
+      const getButton = function(name, text){
+        return (
+          <ion-button data-tag={name}>
+            {text}
+          </ion-button>
+        )
+      }
+
+      Object.keys(self.buttons).forEach(name => {
+        accum.push(getButton(name, self.buttons[name]));
+      });
+
+      return (
+        <ion-buttons slot="end">
+          {... accum}
+        </ion-buttons>
+      )
+    }
+
     return (
       <ion-list-header lines="inset">
         <ion-toolbar>
           {getIcon()}
-          <ion-title>{this.title}</ion-title>
+          <ion-title>{self.title}</ion-title>
           {getSearchBar()}
-          <ion-buttons slot="end">
-            <ion-button className="ion-padding-horizontal" color="primary" fill="outline">Add Stuff</ion-button>
-          </ion-buttons>
+          {getButtons()}
+          {getPagination()}
         </ion-toolbar>
       </ion-list-header>
     );
@@ -208,9 +248,6 @@ export class PdmIonTable implements ComponentInterface {
     let props = {};
     switch(this.mode){
       case ION_TABLE_MODES.BY_REF:
-        props = {
-          manager: this.manager,
-        }
         props[this.itemReference] = reference;
         break;
       case ION_TABLE_MODES.BY_MODEL:
