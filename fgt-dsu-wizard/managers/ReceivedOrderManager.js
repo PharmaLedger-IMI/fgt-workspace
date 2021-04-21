@@ -123,15 +123,29 @@ class ReceivedOrderManager extends OrderManager {
             if (err)
                 return callback(err);
             const processMessageRecord = function (record, callback) {
+                // Process one record. If the message is broken, DO NOT DELETE IT, log to console, and skip to the next.
+                console.log(`Processing record`, record);
                 if (!record.api || record.api != DB.receivedOrders) {
                     console.log(`Message record ${record} does not have api=${DB.receivedOrders}`);
                     return callback();
-                }
-                // TODO persist to receivedOrders
-                // and then delete message after processing.
-                console.log("Going to delete messages's record", record);
-                //self.participantManager.messenger.deleteMessage(record, callback);
-                callback();
+                }    
+                if (!record.message || typeof record.message != "string") {
+                    console.log(`Message record ${record} does not have property message as non-empty string with keySSI.`);
+                    return callback();
+                }    
+                self._getDSUInfo(record.message, (err, orderObj, issuedOrderDsu) => {
+                    if (err) {
+                        console.log(`Could not read DSU from message keySSI in record ${record}`);
+                        return callback();
+                    }
+                    console.log(`IssuedOrder`, orderObj);
+                    // TODO insert into DB
+                    // and then delete message after processing.
+                    console.log("Going to delete messages's record", record);
+                    //self.participantManager.messenger.deleteMessage(record, callback);
+                    callback();
+                });
+                // TODO persist to receivedOrders                
             };
             const iterateRecords = function (records) {
                 if (!records || !Array.isArray(records))
@@ -144,7 +158,7 @@ class ReceivedOrderManager extends OrderManager {
                         return callback(err);
                     iterateRecords(records);
                 });
-            }
+            };
             iterateRecords([...records], callback);
         });
     }
