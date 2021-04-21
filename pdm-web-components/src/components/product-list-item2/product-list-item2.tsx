@@ -5,6 +5,7 @@ import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
 
 const Product = wizard.Model.Product;
+const Batch = wizard.Model.Batch;
 
 @Component({
   tag: 'product-list-item2',
@@ -19,28 +20,37 @@ export class ProductListItem2 {
 
   @Prop() gtin: string;
 
-  @Prop() manager: string = "ProductManager";
-
-  private webManager: WebManager = undefined;
+  private productManager: WebManager = undefined;
+  private batchManager: WebManager = undefined;
 
   @State() product: typeof Product = undefined;
+  @State() batches: typeof Batch[] = undefined;
 
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
-    this.webManager = await WebManagerService.getWebManager(this.manager);
+    this.productManager = await WebManagerService.getWebManager("ProductManager");
+    this.batchManager = await WebManagerService.getWebManager("BatchManager");
     return await this.loadProduct();
   }
 
   async loadProduct(){
-    if (!this.webManager)
+    let self = this;
+    if (!self.productManager)
       return;
-    this.webManager.getOne(this.gtin, true, (err, product) => {
+    self.productManager.getOne(self.gtin, true, (err, product) => {
       if (err){
-        console.log(`Could not get Product with gtin ${this.gtin}`, err);
+        console.log(`Could not get Product with gtin ${self.gtin}`, err);
         return;
       }
       this.product = product;
+      self.batchManager.getAll(true, {query: `gtin like /${self.gtin}/g`}, (err, batches) => {
+        if (err){
+          console.log(`Could not load batches for product ${self.gtin}`);
+          return;
+        }
+        self.batches = batches;
+      })
     });
   }
 
@@ -105,7 +115,7 @@ export class ProductListItem2 {
   }
 
   addBatches(){
-    const batches = !!this.product && !!this.product.batches ? this.product.batches.map(b => this.addBatch(b)) : (<ion-skeleton-text animated></ion-skeleton-text>);
+    const batches = !!this.product && !!this.batches ? this.batches.map(b => this.addBatch(b)) : (<ion-skeleton-text animated></ion-skeleton-text>);
     return(
       <ion-grid className="ion-padding-horizontal">
         <ion-row>
