@@ -34,16 +34,17 @@ assert.callback('Launch API Hub', (testFinishCallback) => {
                     throw err;
                 console.log('Updated bdns', bdns);
 
-                let orderLine1 = new OrderLine('123', 1, '', '');
-                let orderLine2 = new OrderLine('321', 5, '', '');
+                let orderLine1 = new OrderLine('123', 1, 'TPID1', 'WHSID555');
+                let orderLine2 = new OrderLine('321', 5, 'TPID1', 'WHSID555');
                 let order1 = new Order("IOID1", "TPID1", 'WHSID555', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
-                let order2 = new Order("IOID2", "TPID2", 'WHSID432', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
 
                 orderService.create(order1, (err, keySSI)=> {
                     if (err) {
                         console.log("orderService.create failed", err);
                         assert.isNull(err);
                     }
+                    let orderKeySSI = keySSI.getIdentifier(true);
+                    console.log("orderKeySSI", orderKeySSI);
                     testFinishCallback();
                 });
             });

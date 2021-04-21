@@ -41,34 +41,6 @@ function OrderService(domain, strategy) {
     }
 
     /**
-     * Reads a DSU and also parses the order information.
-     * @param {object} keySSI
-     * @param {function(err, dsu, order)} callback where order is the domain {@link Order}.
-     */
-    this.read = function (keySSI, callback) {
-        const opendsu = require("opendsu");
-        //Load resolver library
-        const resolver = opendsu.loadApi("resolver");
-
-        resolver.loadDSU(keySSI, (err, dsu) => {
-            if (err)
-                return callback(err);
-            dsu.readFile("/info", (err, data) => {
-                if (err)
-                    return callback(err);
-                let order;
-                try {
-                    order = JSON.parse(data.toString());  //Convert data (buffer) to string and then assume it is JSON
-                } catch (err) {
-                    return callback(`Error passing Order object from keySSI ${keySSSI} /info data ${data}`);
-                }
-                // TODO transform each orderLines[] into OrderLine
-                callback(undefine, dsu, order);
-            });
-        });
-    }
-
-    /**
      * Creates the original OrderStatus DSU
      * @param {OrderStatus} [status]: defaults to OrderStatus.CREATED
      * @param {function(err, keySSI)} callback
