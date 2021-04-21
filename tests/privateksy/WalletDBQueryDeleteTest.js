@@ -1,5 +1,5 @@
 // Ignore the test
-process.exit();
+//process.exit();
 
 require("../../privatesky/psknode/bundles/testsRuntime");
 const assert = require("double-check").assert;
@@ -15,11 +15,14 @@ assert.callback("DB query+deleteRecord test", (testFinishCallback) => {
             console.log("Persistence DSU is:", sreadSSI.getAnchorId());
             let mydb = db.getSharedDB(sreadSSI, "testDb");
             mydb.query("test", "__timestamp > 0", undefined, 10, (err, records) => {
-                console.log(err, records);
+                console.log("query1", err, records);
                 const record = records[1];
                 mydb.deleteRecord("test", record.key, (err, aRecord) => {
                     console.log("deletedRecord", err, aRecord);
-                    testFinishCallback();
+                    mydb.query("test", "__timestamp > 0", undefined, 10, (err, records) => {
+                        console.log("query2", err, records);
+                        testFinishCallback();
+                    });
                 });
             });
         }
