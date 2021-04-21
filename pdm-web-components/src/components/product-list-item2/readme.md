@@ -7,10 +7,9 @@
 
 ## Properties
 
-| Property  | Attribute | Description | Type     | Default            |
-| --------- | --------- | ----------- | -------- | ------------------ |
-| `gtin`    | `gtin`    |             | `string` | `undefined`        |
-| `manager` | `manager` |             | `string` | `"ProductManager"` |
+| Property | Attribute | Description | Type     | Default     |
+| -------- | --------- | ----------- | -------- | ----------- |
+| `gtin`   | `gtin`    |             | `string` | `undefined` |
 
 
 ## Methods
