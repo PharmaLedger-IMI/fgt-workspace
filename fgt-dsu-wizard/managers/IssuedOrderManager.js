@@ -41,7 +41,7 @@ class IssuedOrderManager extends OrderManager {
      * Creates a {@link Order} dsu
      * @param {string|number} [orderId] the table key
      * @param {Order} order
-     * @param {function(err, keySSI, dbPath)} callback where the dbPath follows a "tableName/orderId" template.
+     * @param {function(err, sReadSSI, dbPath)} callback where the dbPath follows a "tableName/orderId" template.
      */
     create(orderId, order, callback) {
         if (!callback){
@@ -69,7 +69,12 @@ class IssuedOrderManager extends OrderManager {
         self.orderService.create(order, (err, keySSI) => {
             if (err)
                 return self._err(`Could not create product DSU for ${order}`, err, callback);                
-            const record = keySSI.getIdentifier();
+            const keySSIStr = keySSI.getIdentifier();
+            const sReadSSI = keySSI.derive();
+            const sReadSSIStr = sReadSSI.getIdentifier();
+            console.log("Order seedSSI="+keySSIStr+" sReadSSI="+sReadSSIStr);
+            // storing the sReadSSI in base58
+            const record = sReadSSIStr;
             self.insertRecord(orderId, self._indexItem(orderId, order, record), (err) => {
                 if (err)
                     return self._err(`Could not insert record with orderId ${orderId} on table ${self.tableName}`, err, callback);
