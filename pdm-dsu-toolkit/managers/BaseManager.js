@@ -101,6 +101,13 @@ class BaseManager {
     }
 
     /**
+     * See {@link MessageManager#deleteMessage()}.
+     */
+    deleteMessage(message, callback){
+        this.messenger.deleteMessage(message, callback);
+    }
+
+    /**
      * See {@link MessageManager#getMessage()}.
      */
     getMessages(api, callback){
