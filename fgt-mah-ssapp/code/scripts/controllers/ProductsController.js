@@ -1,5 +1,4 @@
-import { LocalizedController, EVENT_SEND_ERROR } from "../../assets/pdm-web-components/index.esm.js";
-const Product = require('wizard').Model.Product;
+import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
 
 export default class ProductsController extends LocalizedController {
 
@@ -19,10 +18,10 @@ export default class ProductsController extends LocalizedController {
         self.onTagEvent('add-product', 'click', (evt) => {
             if (evt){
                 evt.preventDefault();
-                evt.preventImmediatePropagation();
-                self._showProductModal();
+                evt.stopImmediatePropagation();
             }
             console.log('add product');
+            self._showProductModal();
         });
         // this.on('add-product', (event) => {
         //     event.stopImmediatePropagation();
@@ -51,12 +50,6 @@ export default class ProductsController extends LocalizedController {
             evt.preventDefault();
             evt.stopImmediatePropagation();
             self.element.querySelector('pdm-ion-table').refresh();
-        }, {capture: true});
-
-        self.on(EVENT_SEND_ERROR, (evt) => {
-            evt.preventDefault();
-            evt.stopImmediatePropagation();
-            self.showErrorToast(evt);
         }, {capture: true});
     }
 
