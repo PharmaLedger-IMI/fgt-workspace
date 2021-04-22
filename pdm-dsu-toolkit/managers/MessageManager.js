@@ -84,8 +84,8 @@ class MessageManager extends Manager{
 
     /**
      *
-     * @param {string} api
-     * @param {function(Message)} onNewApiMsgListener
+     * @param {string} api - should match one the DB constants with the tableName.
+     * @param {function(Message)} onNewApiMsgListener where Message is an object obtained by JSON.parse(message)
      */
     registerListeners(api, onNewApiMsgListener){
         if (!(api in this._listeners))

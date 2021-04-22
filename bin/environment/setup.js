@@ -214,6 +214,10 @@ const processPendingMessages = function (callback) {
             // This is for --app=single - there is one MAH, WHS and PHA.
             // jpsl: Wait for messages ? There should be a better way...
             setTimeout(() => {
+                return callback();
+            }, 1000);
+            /*
+            setTimeout(() => {
                 //console.log(results);
                 // jpsl: Is there a simpler way to get the whsManager ? Yes if one had used and WholesalerFactory pattern.
                 let aWhsManager = results['fgt-wholesaler-wallet'][0].manager;
@@ -224,6 +228,7 @@ const processPendingMessages = function (callback) {
                     return callback(err);
                 });
             }, 1000);
+            */
             break;
         default:
             return callback();
