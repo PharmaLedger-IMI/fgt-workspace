@@ -31,6 +31,7 @@
 
 | Event                   | Description                                                                                                                | Type               |
 | ----------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `sendErrorEvent`        | Through this event errors are passed                                                                                       | `CustomEvent<any>` |
 | `webcardinal:model:get` | Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller). | `CustomEvent<any>` |
 
 

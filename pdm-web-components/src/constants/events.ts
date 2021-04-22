@@ -10,3 +10,5 @@ export const EVENT_ROUTING_GET = 'webcardinal:routing:get';
 export const EVENT_TAGS_GET = 'webcardinal:tags:get';
 export const EVENT_TRANSLATION_MODEL_GET = 'webcardinal:translationModel:get';
 
+export const EVENT_SEND_ERROR = 'component-error';
+

@@ -1,12 +1,9 @@
-import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
+import { LocalizedController, EVENT_SEND_ERROR } from "../../assets/pdm-web-components/index.esm.js";
 const Product = require('wizard').Model.Product;
 
 export default class ProductsController extends LocalizedController {
 
-    getModel = () => ({
-        mah: {},
-        products: []
-    });
+    getModel = () => ({});
 
     constructor(element, history) {
         super(element, history);
@@ -19,7 +16,12 @@ export default class ProductsController extends LocalizedController {
         this.setModel(this.getModel());
 
         let self = this;
-        self.onTagEvent('add-product', 'click', () => {
+        self.onTagEvent('add-product', 'click', (evt) => {
+            if (evt){
+                evt.preventDefault();
+                evt.preventImmediatePropagation();
+                self._showProductModal();
+            }
             console.log('add product');
         });
         // this.on('add-product', (event) => {
@@ -45,28 +47,33 @@ export default class ProductsController extends LocalizedController {
         //     this.History.navigateToPageByUrl("/batches", {gtin: gtin});
         // });
 
-        self.model.addExpression('hasProducts', () => {
-            return typeof self.model.products !== 'undefined' && self.model.products.length > 0;
-        }, 'products');
-
         self.on('refresh', (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            //this.getProductsAsync();
             self.element.querySelector('pdm-ion-table').refresh();
         }, {capture: true});
+
+        self.on(EVENT_SEND_ERROR, (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            self.showErrorToast(evt);
+        }, {capture: true});
     }
-    //
-    // _showProductModal(){
-    //     let self = this;
-    //     self.participantManager.getParticipant((err, actor) => {
-    //        if (err)
-    //            throw err;
-    //         self.showModal('product-modal', self.productManager.toModel(new Product({
-    //             manufName: actor.name
-    //         })), true);
-    //     });
-    // }
+
+    _showProductModal(){
+        this.createWebcModal({
+            template: "productModal",
+            controller: "productController",
+            disableBackdropClosing: false,
+            disableFooter: true,
+            disableHeader: true,
+            disableExpanding: true,
+            disableClosing: true,
+            disableCancelButton: true,
+            expanded: false,
+            centered: true
+        });
+    }
 
     /**
      *
@@ -80,32 +87,6 @@ export default class ProductsController extends LocalizedController {
             if (err)
                 return callback(err);
             callback();
-        });
-    }
-
-    /**
-     * Updates the products model
-     * @param {object[]} products where the properties must be:
-     * <ul>
-     *     <li>*gtin:* {@link Product#gtin}</li>
-     *     <li>*product:* {@link Product}</li>
-     *     <li>*index:* not implemented. for sorting/filtering purposes</li>
-     * </ul>
-     */
-    updateProducts(products){
-        this.model['products'] = products;
-    }
-
-    /**
-     * Retrieves the products from the DSU and updates the model
-     * by calling {@link ProductsController#updateBatches} after retrieval
-     */
-    getProductsAsync(){
-        let self = this;
-        self.productManager.getAll(true, (err, products) => {
-            if (err)
-                return self.showErrorToast(`Could not list products`, err);
-            self.updateProducts(products);
         });
     }
 }

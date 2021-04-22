@@ -1,4 +1,4 @@
-# product-list-item2
+# managed-product-list-item
 
 
 
@@ -10,6 +10,13 @@
 | Property | Attribute | Description | Type     | Default     |
 | -------- | --------- | ----------- | -------- | ----------- |
 | `gtin`   | `gtin`    |             | `string` | `undefined` |
+
+
+## Events
+
+| Event            | Description                          | Type               |
+| ---------------- | ------------------------------------ | ------------------ |
+| `sendErrorEvent` | Through this event errors are passed | `CustomEvent<any>` |
 
 
 ## Methods
@@ -34,8 +41,8 @@ Type: `Promise<void>`
 ### Graph
 ```mermaid
 graph TD;
-  product-list-item2 --> barcode-generator
-  style product-list-item2 fill:#f9f,stroke:#333,stroke-width:4px
+  managed-product-list-item --> barcode-generator
+  style managed-product-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

@@ -1,24 +1,4 @@
 <webc-container controller="ProductsController">
-<!--    <div data-if="@hasProducts">-->
-<!--        <div slot="true">-->
-<!--            <ion-list class="ion-margin ion-no-padding">-->
-<!--                <ion-list-header lines="inset">-->
-<!--                    <ion-icon class="ion-padding" name="stats-chart-outline"></ion-icon>-->
-<!--                    <ion-label>{{ @title }}</ion-label>-->
-<!--                    <ion-button class="ion-padding-horizontal" fill="outline">{{ @buttons.add-product }}</ion-button>-->
-<!--                </ion-list-header>-->
-<!--                <div data-for="@products">-->
-<!--                    <product-list-item data-view-model="@"></product-list-item>-->
-<!--                </div>-->
-<!--            </ion-list>-->
-<!--        </div>-->
-<!--        <div slot="false">-->
-<!--            <ion-item>-->
-<!--                <ion-label>{{ @none }}</ion-label>-->
-<!--            </ion-item>-->
-<!--        </div>-->
-<!--    </div>-->
-
     <pdm-ion-table title="@title"
                    item-reference="gtin"
                    paginated="true"
@@ -26,6 +6,6 @@
                    buttons="@buttons"
                    mode="byref"
                    icon-name="stats-chart-outline"
-                   item-type="product-list-item2"
+                   item-type="managed-product-list-item"
                    items-per-page="10"></pdm-ion-table>
 </webc-container>

@@ -17,6 +17,42 @@
       "list-error": "Could not list products"
     }
   },
+  "product": {
+    "title": "Create a Product",
+    "name": {
+      "label": "Product Name:",
+      "type": "text",
+      "required": true,
+      "input-mode": "text",
+      "min-length": 4
+    },
+    "gtin": {
+      "label": "Product Gtin:",
+      "type": "number",
+      "required": true,
+      "input-mode": "number",
+      "min-length": 12,
+      "max-length": 12
+    },
+    "manufName": {
+      "label": "Manufacturer Id:",
+      "type": "text",
+      "required": true,
+      "disabled": true,
+      "input-mode": "text",
+      "min-length": 4
+    },
+    "description": {
+      "label": "Product Description:",
+      "type": "text",
+      "required": true,
+      "input-mode": "text",
+      "value": "This is a description..."
+    },
+    "buttons": {
+      "create-product": "Create"
+    }
+  },
   "batches": {
     "title": "Manage Batches",
     "buttons": {

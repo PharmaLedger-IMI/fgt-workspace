@@ -1,22 +1,42 @@
-import {Component, Host, h, Element, Prop, State, Watch, Method} from '@stencil/core';
+import {Component, Host, h, Element, Prop, State, Watch, Method, Event, EventEmitter} from '@stencil/core';
 
 import {WebManager, WebManagerService} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
+import {EVENT_SEND_ERROR} from "../../constants/events";
 
 const Product = wizard.Model.Product;
 const Batch = wizard.Model.Batch;
 
 @Component({
-  tag: 'product-list-item2',
-  styleUrl: 'product-list-item2.css',
+  tag: 'managed-product-list-item',
+  styleUrl: 'managed-product-list-item.css',
   shadow: false,
 })
-export class ProductListItem2 {
+export class ManagedProductListItem {
 
   @HostElement() host: HTMLElement;
 
   @Element() element;
+
+  /**
+   * Through this event errors are passed
+   */
+  @Event({
+    eventName: EVENT_SEND_ERROR,
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  sendErrorEvent: EventEmitter;
+
+
+  private sendError(message: string, err?: object){
+    const event = this.sendErrorEvent.emit(message);
+    if (!event.defaultPrevented || err){
+      console.log(`Product Component: ${message}`, err);
+    }
+  }
 
   @Prop() gtin: string;
 
@@ -31,33 +51,33 @@ export class ProductListItem2 {
       return;
     this.productManager = await WebManagerService.getWebManager("ProductManager");
     this.batchManager = await WebManagerService.getWebManager("BatchManager");
-    return await this.loadProduct();
+    return await this.loadBatch();
   }
 
-  async loadProduct(){
+  async loadBatch(){
     let self = this;
     if (!self.productManager)
       return;
     self.productManager.getOne(self.gtin, true, (err, product) => {
       if (err){
-        console.log(`Could not get Product with gtin ${self.gtin}`, err);
+        self.sendError(`Could not get Product with gtin ${self.gtin}`, err);
         return;
       }
       this.product = product;
       self.batchManager.getAll(true, {query: `gtin == ${self.gtin}`}, (err, batches) => {
         if (err){
-          console.log(`Could not load batches for product ${self.gtin}`);
+          self.sendError(`Could not load batches for product ${self.gtin}`);
           return;
         }
         self.batches = batches;
-      })
+      });
     });
   }
 
   @Watch('gtin')
   @Method()
   async refresh(){
-    await this.loadProduct();
+    await this.loadBatch();
   }
 
   addBarCode(){
@@ -108,8 +128,7 @@ export class ProductListItem2 {
   addBatch(batch){
     return(
       <ion-chip outline color="primary">
-        <ion-label className="ion-padding-start">{batch.batchNumber}</ion-label>
-        <ion-badge className="ion-margin ion-padding-horizontal" color="success">{batch.quantity}</ion-badge>
+        <ion-label className="ion-padding-horizontal">{batch.batchNumber}</ion-label>
       </ion-chip>
     )
   }
