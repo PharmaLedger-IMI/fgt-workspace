@@ -11,6 +11,8 @@ const OrderStatus = require('../model').OrderStatus;
 class ReceivedOrderManager extends OrderManager {
     constructor(participantManager) {
         super(participantManager, DB.receivedOrders);
+        const self = this;
+        this.registerMessageListener((message) => { self._processMessageRecord(message, () => {}); });
         this.participantManager = participantManager; // jpsl: TODO needed to work aroung the Manager.getMessages()
     }
 
@@ -115,8 +117,8 @@ class ReceivedOrderManager extends OrderManager {
             console.log("Skipping deleted record.");
             return callback();
         }
-        if (!record.api || record.api != DB.receivedOrders) {
-            console.log(`Message record ${record} does not have api=${DB.receivedOrders}. Skipping record.`);
+        if (!record.api || record.api != this._getTableName()) {
+            console.log(`Message record ${record} does not have api=${this._getTableName()}. Skipping record.`);
             return callback();
         }
         if (!record.message || typeof record.message != "string") {

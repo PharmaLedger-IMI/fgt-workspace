@@ -17,9 +17,11 @@ const defaultOps = {
 
 let conf = argParser(defaultOps, process.argv);
 
-// jpsl: To discuss wit Tiago.
-// Process all pending ReceivedOrders and ReceivedShipments messages.
-/**
+/*
+ * jpsl: To discuss wit Tiago.
+ * Process all pending ReceivedOrders and ReceivedShipments messages.
+ * NO NEED TO CALL if setup was called first, and setup has an
+ * receivedOrderManager/receivedShippmentManager listening for messages.
  * 
  * @param {ParticipantManager} participantManager 
  * @param {function(err)} callback
@@ -36,6 +38,8 @@ const setup = function(participantManager, stocks, callback){
     }
 
     const stockManager = getStockManager(participantManager, true);
+    const issuedOrderManager = getIssuedOrderManager(participantManager, true);
+    const receivedOrderManager = getReceivedOrderManager(participantManager, true); // will handle incoming messages
 
     stocks = stocks || require('./stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj();
 
