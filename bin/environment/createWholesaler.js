@@ -26,9 +26,15 @@ let conf = argParser(defaultOps, process.argv);
  * @param {ParticipantManager} participantManager 
  * @param {function(err)} callback
  */
-const processOrders = function(participantManager, callback) {
+const processOrders = function (participantManager, callback) {
+
+    // NOT NEEDED. If a receivedOrderManager is already instantiated, itlistening to events.
+    /*
     const receivedOrderManager = getReceivedOrderManager(participantManager, true); // force a new instance
     receivedOrderManager.processMessages(callback);
+    */
+    // Just give some time for it to process messages.
+    setTimeout(() => { callback(); }, 1000);
 }
 
 const setup = function(participantManager, stocks, callback){
