@@ -173,7 +173,7 @@ class ReceivedOrderManager extends OrderManager {
         // TODO: self.getMessages() is broken. Go to the messageManager directly.
         // jpsl to Tiago: IMHO, the entry point for this should start at the participant, and not at the ReceivedOrderManager.
         // TODO optimize and ask for api = receivedOrders only
-        self.participantManager.messenger.getMessages((err, records) => {
+        self.getMessages((err, records) => {
             console.log("Processing records: ", err, records);
             if (err)
                 return callback(err);

@@ -4,7 +4,7 @@ const path = require('path');
 
 require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
 const dt = require('./../../pdm-dsu-toolkit/services/dt');
-const { getParticipantManager, getReceivedOrderManager, getStockManager } = require('../../fgt-dsu-wizard/managers');
+const { getIssuedOrderManager, getParticipantManager, getReceivedOrderManager, getStockManager } = require('../../fgt-dsu-wizard/managers');
 const { impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 
 const { APPS } = require('./credentials/credentials');

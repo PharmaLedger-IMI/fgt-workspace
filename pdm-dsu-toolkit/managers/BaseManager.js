@@ -100,8 +100,11 @@ class BaseManager {
         this.messenger.registerListeners(api, listener);
     }
 
-    getMessages(callback){
-        this.messenger.getMessages(callback);
+    /**
+     * See {@link MessageManager#getMessage()}.
+     */
+    getMessages(api, callback){
+        this.messenger.getMessages(api, callback);
     }
 
     /**

@@ -84,9 +84,6 @@ class Manager{
             return baseManager.registerMessageListener(this.tableName, listener);
         }
         this._getMessages = function(callback){
-            // jpsl: Why distinct tablename ? All messages seem to be in table "messages".
-            // Also, BaseManager.getMessages(callback) does not have a tablename argument.
-            // TODO: So far I am working around this method.
             return baseManager.getMessages(this.tableName, callback);
         }
     }
@@ -117,6 +114,14 @@ class Manager{
 
     _registerMessageListener(listener){}
 
+
+    /**
+     * Proxy call to {@link MessageManager#getMessages()} using tableName as the api value.
+     * 
+     * jpsl: PS to Tiago - I don't agree with proxying calls
+     * (without any explict reason). It would be better to get the messageManager
+     * and call the method there directly.
+     */
     getMessages(callback){
         return this._getMessages(callback);
     }
