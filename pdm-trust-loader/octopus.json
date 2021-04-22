@@ -37,7 +37,7 @@
       "actions": [
         {
           "type": "copy",
-          "src": "./node_modules/@ionic/core/dist/ionic",
+          "src": "../pdm-web-components/ionic-source/core/dist/ionic",
           "target": "./src/assets/ionic-core",
           "options": {
             "overwrite": true

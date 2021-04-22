@@ -36,6 +36,8 @@ export namespace Components {
         "gtin": string;
         "refresh": () => Promise<void>;
     }
+    interface PdmIonContent {
+    }
     interface PdmIonTable {
         "buttons"?: string[];
         /**
@@ -106,6 +108,12 @@ declare global {
         prototype: HTMLManagedProductListItemElement;
         new (): HTMLManagedProductListItemElement;
     };
+    interface HTMLPdmIonContentElement extends Components.PdmIonContent, HTMLStencilElement {
+    }
+    var HTMLPdmIonContentElement: {
+        prototype: HTMLPdmIonContentElement;
+        new (): HTMLPdmIonContentElement;
+    };
     interface HTMLPdmIonTableElement extends Components.PdmIonTable, HTMLStencilElement {
     }
     var HTMLPdmIonTableElement: {
@@ -129,6 +137,7 @@ declare global {
         "batch-list-item": HTMLBatchListItemElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
+        "pdm-ion-content": HTMLPdmIonContentElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "product-list-item": HTMLProductListItemElement;
         "stock-list-item": HTMLStockListItemElement;
@@ -174,6 +183,8 @@ declare namespace LocalJSX {
           * Through this event errors are passed
          */
         "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+    }
+    interface PdmIonContent {
     }
     interface PdmIonTable {
         "buttons"?: string[];
@@ -239,6 +250,7 @@ declare namespace LocalJSX {
         "batch-list-item": BatchListItem;
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-product-list-item": ManagedProductListItem;
+        "pdm-ion-content": PdmIonContent;
         "pdm-ion-table": PdmIonTable;
         "product-list-item": ProductListItem;
         "stock-list-item": StockListItem;
@@ -252,6 +264,7 @@ declare module "@stencil/core" {
             "batch-list-item": LocalJSX.BatchListItem & JSXBase.HTMLAttributes<HTMLBatchListItemElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
+            "pdm-ion-content": LocalJSX.PdmIonContent & JSXBase.HTMLAttributes<HTMLPdmIonContentElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "product-list-item": LocalJSX.ProductListItem & JSXBase.HTMLAttributes<HTMLProductListItemElement>;
             "stock-list-item": LocalJSX.StockListItem & JSXBase.HTMLAttributes<HTMLStockListItemElement>;

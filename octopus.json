@@ -102,6 +102,10 @@
                 {
                     "type": "execute",
                     "cmd": "cd pdm-web-components && npm install && npm run build"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-web-components && npm run install-ionic"
                 }
             ]
         },

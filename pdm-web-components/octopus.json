@@ -1,0 +1,27 @@
+{
+  "workDir": ".",
+  "dependencies": [
+    {
+      "name": "ionic-source",
+      "src": "https://github.com/ionic-team/ionic-framework.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false,
+          "options": {
+            "branch": "v5.6.4"
+          }
+        },
+        {
+          "type": "execute",
+          "cmd": "cd ionic-source/core && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd ionic-source/core && npm run build --debug"
+        }
+      ]
+    }
+  ]
+}

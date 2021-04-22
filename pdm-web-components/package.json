@@ -15,6 +15,7 @@
     "loader/"
   ],
   "scripts": {
+    "install-ionic": "node node_modules/octopus/scripts/run dependencies devmode",
     "build": "stencil build --dev --docs",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
@@ -22,7 +23,8 @@
     "generate": "stencil generate"
   },
   "dependencies": {
-    "stencil": "0.0.5"
+    "stencil": "0.0.5",
+    "octopus": "git+https://github.com/PrivateSky/octopus.git"
   },
   "license": "MIT",
   "devDependencies": {
