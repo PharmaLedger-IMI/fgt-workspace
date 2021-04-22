@@ -185,8 +185,10 @@ export class PdmIonTable implements ComponentInterface {
   }
 
   private async changePage(offset: number){
-    if (this.currentPage + offset > 0 || this.currentPage + offset <= this.pageCount)
+    if (this.currentPage + offset > 0 || this.currentPage + offset <= this.pageCount){
+      this.model = undefined;
       await this.loadContents(this.currentPage + offset);
+    }
   }
 
   getTableHead(){
