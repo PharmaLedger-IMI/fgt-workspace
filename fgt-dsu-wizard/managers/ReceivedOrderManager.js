@@ -144,7 +144,7 @@ class ReceivedOrderManager extends OrderManager {
                 }
                 // and then delete message after processing.
                 console.log("Going to delete messages's record", record);
-                self.participantManager.messenger.deleteMessage(record, callback);
+                self.deleteMessage(record, callback);
             });
         });
     };

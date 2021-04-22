@@ -83,6 +83,9 @@ class Manager{
         this._registerMessageListener = function(listener){
             return baseManager.registerMessageListener(this.tableName, listener);
         }
+        this._deleteMessage = function(message, callback){
+            return baseManager.deleteMessage(message, callback);
+        }
         this._getMessages = function(callback){
             return baseManager.getMessages(this.tableName, callback);
         }
@@ -114,6 +117,19 @@ class Manager{
 
     _registerMessageListener(listener){}
 
+
+    /**
+     * Proxy call to {@link MessageManager#deleteMessage()}.
+     * 
+     * jpsl: PS to Tiago - I don't agree with proxying calls
+     * (without any explict reason). It would be better to get the messageManager
+     * and call the method there directly.
+     */
+    deleteMessage(message, callback) {
+        return this._deleteMessage(message, callback);
+    }
+
+    _deleteMessage(message, callback) {}
 
     /**
      * Proxy call to {@link MessageManager#getMessages()} using tableName as the api value.
