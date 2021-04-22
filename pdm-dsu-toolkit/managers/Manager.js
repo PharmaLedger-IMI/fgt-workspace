@@ -137,14 +137,14 @@ class Manager{
                     return indexIterator(propsClone, callback);
                 self.getStorage().addIndex(self.tableName, index, (err) => {
                     if (err)
-                        return self._err(`Could not add index ${index} on table ${self.tableName}`);
+                        return self._err(`Could not add index ${index} on table ${self.tableName}`, err, callback);
                     console.log(`Added index ${index} to table ${self.tableName}`);
                     indexIterator(propsClone, callback);
                 });
             }
 
             indexIterator(props.slice(), err => err
-                ? self._err(`Could not update indexes for table ${self.tableName}`)
+                ? self._err(`Could not update indexes for table ${self.tableName}`, err, callback)
                 : callback());
         });
     }
