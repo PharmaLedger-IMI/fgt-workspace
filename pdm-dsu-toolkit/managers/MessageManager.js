@@ -137,9 +137,15 @@ class MessageManager extends Manager{
     getMessages(api, callback){
         if (!callback){
             callback = api;
-            api = MESSAGE_TABLE;
+            api = undefined;
         }
-        this.query(api, "__timestamp > 0", undefined, 10, callback);
+        if (api) {
+            // filter messages for this api only
+            this.query(MESSAGE_TABLE, `api == ${api}`, undefined, 10, callback);
+        } else {
+            // list all messages
+            this.query(MESSAGE_TABLE, "__timestamp > 0", undefined, 10, callback);
+        }
     }
 
     _startMessageListener(did){
