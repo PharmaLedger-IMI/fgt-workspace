@@ -96,11 +96,21 @@ class BatchManager extends Manager{
      * @override
      */
     getOne(gtin, batchNumber, readDSU, callback){
+        let key;
         if (!callback){
-            callback = readDSU;
-            readDSU = true;
+            if (typeof batchNumber === 'boolean'){
+                key = gtin;
+                callback = readDSU;
+                readDSU = batchNumber;
+            } else {
+                callback = readDSU;
+                readDSU = true;
+                key = this._genCompostKey(gtin, batchNumber)
+            }
+        } else {
+            key = this._genCompostKey(gtin, batchNumber);
         }
-        super.getOne(this._genCompostKey(gtin, batchNumber), readDSU, callback);
+        super.getOne(key, readDSU, callback);
     }
 
     /**
@@ -167,11 +177,18 @@ class BatchManager extends Manager{
         options = options || defaultOptions();
 
         let self = this;
-        super.getAll(readDSU, options, (err, result) => {
+        self.query(options.query, options.sort, options.limit, (err, records) => {
             if (err)
-                return self._err(`Could not parse Batches ${JSON.stringify(result)}`, err, callback);
-            console.log(`Parsed ${result.length} batches`);
-            callback(undefined, result);
+                return self._err(`Could not perform query`, err, callback);
+            if (!readDSU)
+                return callback(undefined, records.map(r => self._genCompostKey(r.gtin, r.batchNumber)));
+            records = records.map(r => r.value);
+            self._iterator(records.slice(), self._getDSUInfo.bind(self), (err, result) => {
+                if (err)
+                    return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
+                console.log(`Parsed ${result.length} ${self._getTableName()}s`);
+                callback(undefined, result);
+            });
         });
     }
 

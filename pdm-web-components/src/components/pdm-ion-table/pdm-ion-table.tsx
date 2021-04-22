@@ -15,6 +15,7 @@ import {
 import {WebManager, WebManagerService} from '../../services/WebManagerService';
 import {extractChain, promisifyEventEmit} from "../../utils";
 import {HostElement} from '../../decorators'
+import {EVENT_SEND_ERROR} from "../../constants/events";
 
 const ION_TABLE_MODES = {
   BY_MODEL: "bymodel",
@@ -41,6 +42,25 @@ export class PdmIonTable implements ComponentInterface {
     cancelable: true,
   })
   getModelEvent: EventEmitter;
+
+  /**
+   * Through this event errors are passed
+   */
+  @Event({
+    eventName: EVENT_SEND_ERROR,
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  sendErrorEvent: EventEmitter;
+
+
+  private sendError(message: string, err?: object){
+    const event = this.sendErrorEvent.emit(message);
+    if (!event.defaultPrevented || err){
+      console.log(`ION-TABLE ERROR: ${message}`, err);
+    }
+  }
 
   /**
    * Graphical Params
@@ -123,7 +143,7 @@ export class PdmIonTable implements ComponentInterface {
     try {
       this.model = await promisifyEventEmit(this.getModelEvent);
     } catch (error) {
-      console.error(error);
+      this.sendError(`Error getting model`, error);
     }
   }
 
@@ -135,7 +155,7 @@ export class PdmIonTable implements ComponentInterface {
     if (this.paginated){
       await this.webManager.getPage(this.itemsPerPage, pageNumber || this.currentPage, this.canQuery ? this.query : undefined, this.sort, false, (err, contents) => {
         if (err){
-          console.log(`Could not list items`, err);
+          this.sendError(`Could not list items`, err);
           return;
         }
         this.currentPage = contents.currentPage;
@@ -145,7 +165,7 @@ export class PdmIonTable implements ComponentInterface {
     } else {
       await this.webManager.getAll( false, undefined, (err, contents) => {
         if (err){
-          console.log(`Could not list items`, err);
+          this.sendError(`Could not list items`, err);
           return;
         }
         this.model = contents;

@@ -1,11 +1,9 @@
-import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
+import {EVENT_SEND_ERROR, LocalizedController} from "../../assets/pdm-web-components/index.esm.js";
 const Batch = require('wizard').Model.Batch;
 
-export default class ProductsController extends LocalizedController {
+export default class BatchesController extends LocalizedController {
 
-    getModel = () => ({
-        products: []
-    });
+    getModel = () => ({});
 
     constructor(element, history) {
         super(element, history);
@@ -19,27 +17,18 @@ export default class ProductsController extends LocalizedController {
 
         let self = this;
 
-        self.model.addExpression('hasBatches', () => {
-            return typeof self.model.batches !== 'undefined' && self.model.batches.length > 0;
-        }, 'batches');
-
-        this.on('refresh', (evt) => {
+        self.on('refresh', (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            this.getBatchesAsync();
+            self.element.querySelector('pdm-ion-table').refresh();
+        }, {capture: true});
+
+        self.on(EVENT_SEND_ERROR, (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            self.showErrorToast(evt);
         }, {capture: true});
     }
-    //
-    // _showProductModal(){
-    //     let self = this;
-    //     self.participantManager.getParticipant((err, actor) => {
-    //        if (err)
-    //            throw err;
-    //         self.showModal('product-modal', self.productManager.toModel(new Product({
-    //             manufName: actor.name
-    //         })), true);
-    //     });
-    // }
 
     /**
      *
@@ -53,32 +42,6 @@ export default class ProductsController extends LocalizedController {
             if (err)
                 return callback(err);
             callback();
-        });
-    }
-
-    /**
-     * Updates the batches model
-     * @param {Batch[]} batches where the properties must be:
-     * <ul>
-     *     <li>*gtin:* {@link Product#gtin}</li>
-     *     <li>*product:* {@link Product}</li>
-     *     <li>*index:* not implemented. for sorting/filtering purposes</li>
-     * </ul>
-     */
-    updateBatches(batches){
-        this.model['batches'] = batches;
-    }
-
-    /**
-     * Retrieves the products from the DSU and updates the model
-     * by calling {@link ProductsController#updateBatches} after retrieval
-     */
-    getBatchesAsync(){
-        let self = this;
-        self.batchManager.getAll(true, (err, products) => {
-            if (err)
-                return self.showErrorToast(`Could not list batches`, err);
-            self.updateBatches(products);
         });
     }
 }

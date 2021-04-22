@@ -28,6 +28,14 @@ export namespace Components {
     }
     interface BatchListItem {
     }
+    interface ManagedBatchListItem {
+        "gtinBatch": string;
+        "refresh": () => Promise<void>;
+    }
+    interface ManagedProductListItem {
+        "gtin": string;
+        "refresh": () => Promise<void>;
+    }
     interface PdmIonTable {
         "buttons"?: string[];
         /**
@@ -70,13 +78,6 @@ export namespace Components {
     }
     interface ProductListItem {
     }
-    interface ProductListItem1 {
-        "model": any;
-    }
-    interface ProductListItem2 {
-        "gtin": string;
-        "refresh": () => Promise<void>;
-    }
     interface StockListItem {
     }
 }
@@ -93,6 +94,18 @@ declare global {
         prototype: HTMLBatchListItemElement;
         new (): HTMLBatchListItemElement;
     };
+    interface HTMLManagedBatchListItemElement extends Components.ManagedBatchListItem, HTMLStencilElement {
+    }
+    var HTMLManagedBatchListItemElement: {
+        prototype: HTMLManagedBatchListItemElement;
+        new (): HTMLManagedBatchListItemElement;
+    };
+    interface HTMLManagedProductListItemElement extends Components.ManagedProductListItem, HTMLStencilElement {
+    }
+    var HTMLManagedProductListItemElement: {
+        prototype: HTMLManagedProductListItemElement;
+        new (): HTMLManagedProductListItemElement;
+    };
     interface HTMLPdmIonTableElement extends Components.PdmIonTable, HTMLStencilElement {
     }
     var HTMLPdmIonTableElement: {
@@ -105,18 +118,6 @@ declare global {
         prototype: HTMLProductListItemElement;
         new (): HTMLProductListItemElement;
     };
-    interface HTMLProductListItem1Element extends Components.ProductListItem1, HTMLStencilElement {
-    }
-    var HTMLProductListItem1Element: {
-        prototype: HTMLProductListItem1Element;
-        new (): HTMLProductListItem1Element;
-    };
-    interface HTMLProductListItem2Element extends Components.ProductListItem2, HTMLStencilElement {
-    }
-    var HTMLProductListItem2Element: {
-        prototype: HTMLProductListItem2Element;
-        new (): HTMLProductListItem2Element;
-    };
     interface HTMLStockListItemElement extends Components.StockListItem, HTMLStencilElement {
     }
     var HTMLStockListItemElement: {
@@ -126,10 +127,10 @@ declare global {
     interface HTMLElementTagNameMap {
         "barcode-generator": HTMLBarcodeGeneratorElement;
         "batch-list-item": HTMLBatchListItemElement;
+        "managed-batch-list-item": HTMLManagedBatchListItemElement;
+        "managed-product-list-item": HTMLManagedProductListItemElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "product-list-item": HTMLProductListItemElement;
-        "product-list-item1": HTMLProductListItem1Element;
-        "product-list-item2": HTMLProductListItem2Element;
         "stock-list-item": HTMLStockListItemElement;
     }
 }
@@ -160,6 +161,20 @@ declare namespace LocalJSX {
          */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
     }
+    interface ManagedBatchListItem {
+        "gtinBatch"?: string;
+        /**
+          * Through this event errors are passed
+         */
+        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+    }
+    interface ManagedProductListItem {
+        "gtin"?: string;
+        /**
+          * Through this event errors are passed
+         */
+        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+    }
     interface PdmIonTable {
         "buttons"?: string[];
         /**
@@ -188,6 +203,10 @@ declare namespace LocalJSX {
         "mode"?: string;
         "noContentMessage"?: string;
         /**
+          * Through this event errors are passed
+         */
+        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+        /**
           * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
          */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
@@ -209,12 +228,6 @@ declare namespace LocalJSX {
          */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
     }
-    interface ProductListItem1 {
-        "model"?: any;
-    }
-    interface ProductListItem2 {
-        "gtin"?: string;
-    }
     interface StockListItem {
         /**
           * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
@@ -224,10 +237,10 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;
         "batch-list-item": BatchListItem;
+        "managed-batch-list-item": ManagedBatchListItem;
+        "managed-product-list-item": ManagedProductListItem;
         "pdm-ion-table": PdmIonTable;
         "product-list-item": ProductListItem;
-        "product-list-item1": ProductListItem1;
-        "product-list-item2": ProductListItem2;
         "stock-list-item": StockListItem;
     }
 }
@@ -237,10 +250,10 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "barcode-generator": LocalJSX.BarcodeGenerator & JSXBase.HTMLAttributes<HTMLBarcodeGeneratorElement>;
             "batch-list-item": LocalJSX.BatchListItem & JSXBase.HTMLAttributes<HTMLBatchListItemElement>;
+            "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
+            "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "product-list-item": LocalJSX.ProductListItem & JSXBase.HTMLAttributes<HTMLProductListItemElement>;
-            "product-list-item1": LocalJSX.ProductListItem1 & JSXBase.HTMLAttributes<HTMLProductListItem1Element>;
-            "product-list-item2": LocalJSX.ProductListItem2 & JSXBase.HTMLAttributes<HTMLProductListItem2Element>;
             "stock-list-item": LocalJSX.StockListItem & JSXBase.HTMLAttributes<HTMLStockListItemElement>;
         }
     }
