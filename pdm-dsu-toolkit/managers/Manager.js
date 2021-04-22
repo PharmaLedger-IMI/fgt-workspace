@@ -562,6 +562,8 @@ class Manager{
         this.getStorage().insertRecord(tableName, key, record, (err) => {
             if (err)
                 return self._err(`Could not insert record with key ${key} in table ${tableName}`, err, callback);
+            if (!self.indexes)
+                return callback(undefined);
             self._indexTable(...self.indexes, (err, updated) => {
                 if (err)
                     return self._err(`Could not update table ${tableName}'s indexes`, err, callback);
