@@ -17,10 +17,12 @@ const Batch = require('../model').Batch;
  * </ul>
  *
  * @param {ParticipantManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @class BatchManager
  */
 class BatchManager extends Manager{
-    constructor(participantManager) {
-        super(participantManager, DB.batches);
+    constructor(participantManager, callback) {
+        super(participantManager, DB.batches, ['gtin', 'batchNumber'], callback);
         this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
         this.batchService = new (require('../services/BatchService'))(ANCHORING_DOMAIN);
     }
@@ -210,11 +212,16 @@ let batchManager;
  * @param {BaseManager} [participantManager] only required the first time, if not forced
  * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
  * Makes BaseManager required again!
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {BatchManager}
  */
-const getBatchManager = function (participantManager, force) {
+const getBatchManager = function (participantManager, force, callback) {
+    if (typeof force === 'function'){
+        callback = force;
+        force = false;
+    }
     if (!batchManager || force)
-        batchManager = new BatchManager(participantManager);
+        batchManager = new BatchManager(participantManager, callback);
     return batchManager;
 }
 
