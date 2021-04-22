@@ -18,70 +18,76 @@ const defaultOps = {
 let conf = argParser(defaultOps, process.argv);
 
 const setupProducts = function(participantManager, products, batches, callback){
-    const productManager = getProductManager(participantManager, true);
-    products = products || require('./products/productsRandom')();
-    const iterator = function(productsCopy, callback){
-        const product = productsCopy.shift();
-        if (!product){
-            console.log(`${products.length} products created`);
-            return callback(undefined, products);
+    getProductManager(participantManager, true, (err, productManager) => {
+        if (err)
+            return callback(err);
+        products = products || require('./products/productsRandom')();
+        const iterator = function(productsCopy, callback){
+            const product = productsCopy.shift();
+            if (!product){
+                console.log(`${products.length} products created`);
+                return callback(undefined, products);
+            }
+            productManager.create(product, (err, keySSI, path) => {
+                if (err)
+                    return callback(err);
+                iterator(productsCopy, callback);
+            });
         }
-        productManager.create(product, (err, keySSI, path) => {
-            if (err)
-                return callback(err);
-            iterator(productsCopy, callback);
-        });
-    }
-    iterator(products.slice(), callback);
+        iterator(products.slice(), callback);
+    });
 }
 
 const setupBatches = function(participantManager, products, batches,  callback){
-    const batchManager = getBatchManager(participantManager, true);
-    const getBatches = !batches
-        ? require('./batches/batchesRandom')
-        : function(gtin){
-            return batches[gtin + ''];
-        }
-
-    const batchesObject = {};
-
-    const productIterator = function(productsCopy, callback){
-        const product = productsCopy.shift();
-        if (!product)
-            return callback(undefined, batchesObject);
-
-        const pBatches = getBatches(product.gtin);
-
-        const batchIterator = function(gtin, batchesCopy, callback){
-            const batch = batchesCopy.shift();
-            if (!batch){
-                console.log(`${pBatches.length} batches created for ${gtin}`);
-                return callback(undefined, pBatches);
+    getBatchManager(participantManager, true, (err, batchManager) => {
+        if (err)
+            return callback(err);
+        const getBatches = !batches
+            ? require('./batches/batchesRandom')
+            : function(gtin){
+                return batches[gtin + ''];
             }
-            batchManager.create(gtin, batch, (err, keySSI, path) => {
+
+        const batchesObject = {};
+
+        const productIterator = function(productsCopy, callback){
+            const product = productsCopy.shift();
+            if (!product)
+                return callback(undefined, batchesObject);
+
+            const pBatches = getBatches(product.gtin);
+
+            const batchIterator = function(gtin, batchesCopy, callback){
+                const batch = batchesCopy.shift();
+                if (!batch){
+                    console.log(`${pBatches.length} batches created for ${gtin}`);
+                    return callback(undefined, pBatches);
+                }
+                batchManager.create(gtin, batch, (err, keySSI, path) => {
+                    if (err)
+                        return callback(err);
+                    batchIterator(gtin, batchesCopy, callback);
+                });
+            }
+
+            batchIterator(product.gtin, pBatches.slice(), (err, batches) => {
                 if (err)
                     return callback(err);
-                batchIterator(gtin, batchesCopy, callback);
+                batchesObject[product.gtin] = batches;
+                productIterator(productsCopy, callback);
             });
         }
 
-        batchIterator(product.gtin, pBatches.slice(), (err, batches) => {
+        productIterator(products.slice(), (err, batchesObj) => {
             if (err)
                 return callback(err);
-            batchesObject[product.gtin] = batches;
-            productIterator(productsCopy, callback);
+            const output = [];
+            Object.keys(batchesObj).forEach(gtin => {
+                output.push(`The following batches per gtin have been created:\nGtin: ${gtin}\nBatches: ${batchesObj[gtin].map(b => b.batchNumber).join(', ')}`);
+            });
+            console.log(output.join('\n'));
+            callback(undefined, batchesObj);
         });
-    }
-
-    productIterator(products.slice(), (err, batchesObj) => {
-        if (err)
-            return callback(err);
-        const output = [];
-        Object.keys(batchesObj).forEach(gtin => {
-            output.push(`The following batches per gtin have been created:\nGtin: ${gtin}\nBatches: ${batchesObj[gtin].map(b => b.batchNumber).join(', ')}`);
-        });
-        console.log(output.join('\n'));
-        callback(undefined, batchesObj);
     });
 }
 

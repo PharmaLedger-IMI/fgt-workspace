@@ -18,10 +18,12 @@ const Product = require('../model/Product');
  * </ul>
  *
  * @param {ParticipantManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @class ProductManager
  */
 class ProductManager extends Manager {
-    constructor(participantManager) {
-        super(participantManager, DB.products);
+    constructor(participantManager, callback) {
+        super(participantManager, DB.products, ['gtin'], callback);
         this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
         this.batchManager = require('./BatchManager')(participantManager, participantManager.force);
     }
@@ -219,11 +221,16 @@ let productManager;
  * @param {ParticipantManager} [participantManager] only required the first time, if not forced
  * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
  * Makes Participant Manager required again!
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {ProductManager}
  */
-const getProductManager = function (participantManager, force) {
+const getProductManager = function (participantManager, force, callback) {
+    if (typeof force === 'function'){
+        callback = force;
+        force = false;
+    }
     if (!productManager || force)
-        productManager = new ProductManager(participantManager);
+        productManager = new ProductManager(participantManager, callback);
     return productManager;
 }
 

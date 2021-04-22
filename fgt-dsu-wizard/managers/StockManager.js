@@ -23,12 +23,14 @@ const STATUS = {
  *
  * @param {Database} storage the DSU where the storage should happen or more commonly the Database Object
  * @param {BaseManager} baseManager the base manager to have access to the identity api
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+
  * @module managers
- * @class Manager
+ * @class StockManager
  */
 class StockManager extends Manager{
-    constructor(baseManager) {
-        super(baseManager, DB.stock);
+    constructor(baseManager, callback) {
+        super(baseManager, DB.stock, ['name', 'gtin', 'manufName'], callback);
         this.stock = this._genDummyStock();
     }
 
@@ -228,11 +230,16 @@ let stockManager;
  * @param {ParticipantManager} [participantManager] only required the first time, if not forced
  * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
  * Makes Participant Manager required again!
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {StockManager}
  */
-const getStockManager = function (participantManager, force) {
+const getStockManager = function (participantManager, force, callback) {
+    if (typeof force === 'function'){
+        callback = force;
+        force = false;
+    }
     if (!stockManager || force)
-        stockManager = new StockManager(participantManager);
+        stockManager = new StockManager(participantManager, callback);
     return stockManager;
 }
 

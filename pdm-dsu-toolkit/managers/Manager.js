@@ -26,7 +26,6 @@ class Page {
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
  *
- *
  * #### _Manager SPECIFIC DataBase Access API (CRUD)_
  *
  * Methods:
@@ -35,12 +34,12 @@ class Page {
  *  - {@link remove}
  *  - {@link update} - Should be overwritten by child classes
  *  - {@link getAll} - with querying capabilities via {@link DEFAULT_QUERY_OPTIONS} type configuration
+ *  - {@link getPage} - paging and querying capabilities
  *
  * <strong>Assumes only reads/writes to {@link INFO_PATH} with JSON parsing to object</strong>
  * Otherwise the methods need to be overwritten by child classes.
  *
- *
- * #### _Manager INDEPENDENT DataBase Access API\)_
+ * #### _Manager INDEPENDENT DataBase Access API_
  *
  * Methods:
  *  - {@link insertRecord}
@@ -51,12 +50,25 @@ class Page {
  *
  * @param {BaseManager} baseManager the base manager to have access to the identity api
  * @param {string} tableName the default table name for this manager eg: MessageManager will write to the messages table
+ * @param {string[]} [indexes] a list of indexes to add to the table in the db upon initialization. requires a callback!
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * Not used in this class. Child classes must implement if this functionality is required like:
+ * <pre>
+ *              if (this.indexes && callback){
+ *                  super._indexTable(...this.indexes, (err) => {
+ *                      if (err)
+ *                          return self._err(`Could not update Indexes`, err, callback);
+ *                      console.log(`Indexes for table ${self.tableName} updated`);
+ *                      callback(undefined, self);
+ *                  });
+ *              }
+ * </pre>
  * @module managers
  * @class Manager
  * @abstract
  */
 class Manager{
-    constructor(baseManager, tableName){
+    constructor(baseManager, tableName, indexes, callback){
         let self = this;
         this.storage = baseManager.db;
         this.getStorage = () => {
@@ -67,6 +79,7 @@ class Manager{
             return self.storage;
         }
         this.tableName = tableName;
+        this.indexes = indexes;
         this.getIdentity = baseManager.getIdentity.bind(baseManager);
         this._getResolver = baseManager._getResolver;
         this._getKeySSISpace = baseManager._getKeySSISpace;
@@ -89,6 +102,51 @@ class Manager{
         this._getMessages = function(callback){
             return baseManager.getMessages(this.tableName, callback);
         }
+        if (this.indexes && callback){
+            this._indexTable(...this.indexes, (err) => {
+                if (err)
+                    return self._err(`Could not update Indexes`, err, callback);
+                console.log(`Indexes for table ${self.tableName} updated`);
+                callback(undefined, self);
+            });
+        }
+    }
+
+    /**
+     * Should be called by child classes if then need to index the table.
+     * (Can't be called during the constructor of the Manager class due to the need of virtual method
+     * @param {string|function} props the last argument must be the callback. The properties passed
+     * must match the ones provided in {@link Manager#_indexItem} for this to work properly
+     * @private
+     */
+    _indexTable(...props){
+        if (!Array.isArray(props))
+            throw new Error(`Invalid properties provided`);
+        const callback = props.pop();
+        props.push('__timestamp');
+        const self = this;
+        self.getStorage().getIndexedFields(self.tableName, (err, indexes) => {
+            if (err)
+                return self._err(`Could not retrieve indexes from table ${self.tableName}`, err, callback);
+
+            const indexIterator = function(propsClone, callback){
+                const index = propsClone.shift();
+                if (!index)
+                    return callback(undefined, indexes);
+                if (index in indexes)
+                    return indexIterator(propsClone, callback);
+                self.getStorage().addIndex(self.tableName, index, (err) => {
+                    if (err)
+                        return self._err(`Could not add index ${index} on table ${self.tableName}`);
+                    console.log(`Added index ${index} to table ${self.tableName}`);
+                    indexIterator(propsClone, callback);
+                });
+            }
+
+            indexIterator(props.slice(), err => err
+                ? self._err(`Could not update indexes for table ${self.tableName}`)
+                : callback());
+        });
     }
 
     /**
