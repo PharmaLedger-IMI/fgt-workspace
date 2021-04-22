@@ -43,35 +43,39 @@ const setup = function(participantManager, stocks, callback){
         stocks = undefined;
     }
 
-    const stockManager = getStockManager(participantManager, true);
-    const issuedOrderManager = getIssuedOrderManager(participantManager, true);
-    const receivedOrderManager = getReceivedOrderManager(participantManager, true); // will handle incoming messages
-
-    stocks = stocks || require('./stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj();
-
-    const stockIterator = function(stocksCopy){
-        const stock = stocksCopy.shift();
-        if (!stock){
-            console.log(`${stocks.length} stock created`);
-            return callback(undefined, stocks);
-        }
-        stockManager.create(stock, (err, keySSI, path) => {
-            if (err)
-                return callback(err);
-            stockIterator(stocksCopy, callback);
-        });
-    }
-
-    stockIterator(stocks.slice(), (err, stocksObj) => {
+    getStockManager(participantManager, true, (err, stockManager) => {
         if (err)
             return callback(err);
-        const output = [];
-        Object.keys(stocksObj).forEach(gtin => {
-            output.push(`The following batches per gtin have been created:\nGtin: ${gtin}\nBatches: ${stocksObj[gtin].join(', ')}`);
-        });
-        console.log(output.join('\n'));
-        callback(undefined, stocksObj);
-    })
+
+        const issuedOrderManager = getIssuedOrderManager(participantManager, true);
+        const receivedOrderManager = getReceivedOrderManager(participantManager, true); // will handle incoming messages
+
+        stocks = stocks || require('./stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj();
+
+        const stockIterator = function(stocksCopy){
+            const stock = stocksCopy.shift();
+            if (!stock){
+                console.log(`${stocks.length} stock created`);
+                return callback(undefined, stocks);
+            }
+            stockManager.create(stock, (err, keySSI, path) => {
+                if (err)
+                    return callback(err);
+                stockIterator(stocksCopy, callback);
+            });
+        }
+
+        stockIterator(stocks.slice(), (err, stocksObj) => {
+            if (err)
+                return callback(err);
+            const output = [];
+            Object.keys(stocksObj).forEach(gtin => {
+                output.push(`The following batches per gtin have been created:\nGtin: ${gtin}\nBatches: ${stocksObj[gtin].join(', ')}`);
+            });
+            console.log(output.join('\n'));
+            callback(undefined, stocksObj);
+        })
+    });
 }
 
 const create = function(credentials, callback){
