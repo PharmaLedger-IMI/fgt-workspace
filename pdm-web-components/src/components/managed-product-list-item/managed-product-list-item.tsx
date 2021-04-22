@@ -30,7 +30,6 @@ export class ManagedProductListItem {
   })
   sendErrorEvent: EventEmitter;
 
-
   private sendError(message: string, err?: object){
     const event = this.sendErrorEvent.emit(message);
     if (!event.defaultPrevented || err){
