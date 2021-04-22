@@ -56,7 +56,7 @@ export default class ProductsController extends LocalizedController {
     _showProductModal(){
         this.createWebcModal({
             template: "productModal",
-            controller: "productController",
+            controller: "ProductController",
             disableBackdropClosing: false,
             disableFooter: true,
             disableHeader: true,

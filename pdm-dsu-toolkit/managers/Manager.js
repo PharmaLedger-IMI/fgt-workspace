@@ -116,7 +116,9 @@ class Manager{
      * Should be called by child classes if then need to index the table.
      * (Can't be called during the constructor of the Manager class due to the need of virtual method
      * @param {string|function} props the last argument must be the callback. The properties passed
-     * must match the ones provided in {@link Manager#_indexItem} for this to work properly
+     * must match the ones provided in {@link Manager#_indexItem} for this to work properly.
+     *
+     * callback receives the newly created indexes as the second argument
      * @private
      */
     _indexTable(...props){
@@ -128,24 +130,24 @@ class Manager{
         self.getStorage().getIndexedFields(self.tableName, (err, indexes) => {
             if (err)
                 return self._err(`Could not retrieve indexes from table ${self.tableName}`, err, callback);
-
+            const newIndexes = [];
             const indexIterator = function(propsClone, callback){
                 const index = propsClone.shift();
                 if (!index)
-                    return callback(undefined, indexes);
-                if (index in indexes)
+                    return callback(undefined, newIndexes);
+                if (indexes.indexOf(index) !== -1)
                     return indexIterator(propsClone, callback);
                 self.getStorage().addIndex(self.tableName, index, (err) => {
                     if (err)
                         return self._err(`Could not add index ${index} on table ${self.tableName}`, err, callback);
-                    console.log(`Added index ${index} to table ${self.tableName}`);
+                    newIndexes.push(index);
                     indexIterator(propsClone, callback);
                 });
             }
 
-            indexIterator(props.slice(), err => err
+            indexIterator(props.slice(), (err, updatedIndexes) => err
                 ? self._err(`Could not update indexes for table ${self.tableName}`, err, callback)
-                : callback());
+                : callback(undefined, updatedIndexes));
         });
     }
 
@@ -464,6 +466,8 @@ class Manager{
             }
         }
 
+        options = options || DEFAULT_QUERY_OPTIONS;
+
         let self = this;
         self.query(options.query, options.sort, options.limit, (err, records) => {
             if (err)
@@ -553,8 +557,19 @@ class Manager{
             key = tableName;
             tableName = this._getTableName();
         }
+        const self = this;
         console.log("insertRecord tableName="+tableName, "key", key, "record", record);
-        this.getStorage().insertRecord(tableName, key, record, callback);
+        this.getStorage().insertRecord(tableName, key, record, (err) => {
+            if (err)
+                return self._err(`Could not insert record with key ${key} in table ${tableName}`, err, callback);
+            self._indexTable(...self.indexes, (err, updated) => {
+                if (err)
+                    return self._err(`Could not update table ${tableName}'s indexes`, err, callback);
+                if (updated)
+                    updated.forEach(index => console.log(`Index ${index} created on table ${tableName}`));
+                callback(undefined);
+            });
+        });
     }
 
     /**
