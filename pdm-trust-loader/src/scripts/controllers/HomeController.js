@@ -20,7 +20,7 @@ export default class HomeController extends LocalizedController {
     constructor(element, history) {
         super(element, history);
         super.bindLocale(this);
-        this.setModel(this.getModel());
+        this.model = this.getModel();
 
         let self = this;
         this.on('perform-registration', async (event) => {
