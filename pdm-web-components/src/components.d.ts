@@ -36,6 +36,10 @@ export namespace Components {
         "gtin": string;
         "refresh": () => Promise<void>;
     }
+    interface ManagedReceivedOrderListItem {
+        "orderId": string;
+        "refresh": () => Promise<void>;
+    }
     interface PdmIonTable {
         "buttons"?: string[];
         /**
@@ -106,6 +110,12 @@ declare global {
         prototype: HTMLManagedProductListItemElement;
         new (): HTMLManagedProductListItemElement;
     };
+    interface HTMLManagedReceivedOrderListItemElement extends Components.ManagedReceivedOrderListItem, HTMLStencilElement {
+    }
+    var HTMLManagedReceivedOrderListItemElement: {
+        prototype: HTMLManagedReceivedOrderListItemElement;
+        new (): HTMLManagedReceivedOrderListItemElement;
+    };
     interface HTMLPdmIonTableElement extends Components.PdmIonTable, HTMLStencilElement {
     }
     var HTMLPdmIonTableElement: {
@@ -129,6 +139,7 @@ declare global {
         "batch-list-item": HTMLBatchListItemElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
+        "managed-received-order-list-item": HTMLManagedReceivedOrderListItemElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "product-list-item": HTMLProductListItemElement;
         "stock-list-item": HTMLStockListItemElement;
@@ -174,6 +185,13 @@ declare namespace LocalJSX {
           * Through this event errors are passed
          */
         "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+    }
+    interface ManagedReceivedOrderListItem {
+        /**
+          * Through this event errors are passed
+         */
+        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+        "orderId"?: string;
     }
     interface PdmIonTable {
         "buttons"?: string[];
@@ -239,6 +257,7 @@ declare namespace LocalJSX {
         "batch-list-item": BatchListItem;
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-product-list-item": ManagedProductListItem;
+        "managed-received-order-list-item": ManagedReceivedOrderListItem;
         "pdm-ion-table": PdmIonTable;
         "product-list-item": ProductListItem;
         "stock-list-item": StockListItem;
@@ -252,6 +271,7 @@ declare module "@stencil/core" {
             "batch-list-item": LocalJSX.BatchListItem & JSXBase.HTMLAttributes<HTMLBatchListItemElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
+            "managed-received-order-list-item": LocalJSX.ManagedReceivedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderListItemElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "product-list-item": LocalJSX.ProductListItem & JSXBase.HTMLAttributes<HTMLProductListItemElement>;
             "stock-list-item": LocalJSX.StockListItem & JSXBase.HTMLAttributes<HTMLStockListItemElement>;

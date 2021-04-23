@@ -18,7 +18,10 @@
     "numberHeader": "ID",
     "orderingPartnerHeader": "Issued By",
     "supplyingPartnerHeader": "Issued To",
-    "none": "No orders issued..."
+    "none": "No orders issued...",
+    "buttons": {
+      "refreshMessages": "Refresh"
+    }
   },
   "stock": {
     "title": "Stocks",

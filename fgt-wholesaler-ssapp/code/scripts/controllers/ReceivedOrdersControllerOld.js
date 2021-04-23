@@ -1,21 +1,27 @@
-import { LocalizedController, EVENT_SEND_ERROR } from "../../assets/pdm-web-components/index.esm.js";
+import LocalizedController from "./LocalizedController.js";
 
 /**
  * List all the received orders, and allows refresh from inbox.
  */
 export default class ReceivedOrdersController extends LocalizedController {
-    getModel = () => ({}); // creates a new uninitialized blank model
+    getModel = () => ({
+        pharmacy: undefined,
+        orders: []
+    }); // uninitialized blank model
 
     constructor(element, history) {
         super(element, history);
+        super.bindLocale(this, "receivedOrders");
         const wizard = require('wizard');
-        const LocaleService = wizard.Services.WebcLocaleService;
-        LocaleService.bindToLocale(this,"receivedOrders");
 
         this.participantManager = wizard.Managers.getParticipantManager();
         this.receivedOrderManager = wizard.Managers.getReceivedOrderManager(this.participantManager);
 
         this.setModel(this.getModel());
+
+        this.model.addExpression('hasOrders', () => {
+            return this.model.orders && this.model.orders.length > 0;
+        }, 'orders');
 
         let self = this;
         // the HomeController takes care of sending refresh events for each tab.
@@ -23,13 +29,7 @@ export default class ReceivedOrdersController extends LocalizedController {
             console.log(evt);
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            self.element.querySelector('pdm-ion-table').refresh()
-        }, {capture: true});
-
-        self.on(EVENT_SEND_ERROR, (evt) => {
-            evt.preventDefault();
-            evt.stopImmediatePropagation();
-            self.showErrorToast(evt);
+            self.getAll();
         }, {capture: true});
 
         // pressing "NEW" to create a new received Order
@@ -42,6 +42,14 @@ export default class ReceivedOrdersController extends LocalizedController {
                 self.getAll();
             });
         });
+    }
+
+    /**
+     * Updates the received orders model
+     * @param {object[]} orders.
+     */
+    update(orders) {
+        this.model['orders'] = orders;
     }
 
     /**

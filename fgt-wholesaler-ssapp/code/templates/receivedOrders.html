@@ -1,4 +1,17 @@
-<webc-container controller="ReceivedOrdersController" enable-translations="true">
+<webc-container controller="ReceivedOrdersController">
+    <pdm-ion-table
+        title="@title"
+        item-reference="orderId"
+        paginated="true"
+        manager="ReceivedOrdersManager"
+        buttons="@buttons"
+        mode="byref"
+        icon-name="stats-chart-outline"
+        item-type="managed-received-order-list-item"
+        items-per-page="10">
+    </pdm-ion-table>
+</webc-container>
+<!--
     <ion-header>
         <ion-toolbar>
             <ion-item>
@@ -44,4 +57,4 @@
             </ion-item>
         </div>
     </div>
-</webc-container>
+-->
