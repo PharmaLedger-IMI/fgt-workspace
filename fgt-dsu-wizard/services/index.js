@@ -5,7 +5,6 @@ module.exports = {
     DSUService: require('../../pdm-dsu-toolkit/services/DSUService'),
     ParticipantService: require('./ParticipantService'),
     InboxService: require("./InboxService"),
-    LocaleService: require("./LocaleService"),
     WebcLocaleService: require("../../pdm-dsu-toolkit/services/WebcLocaleService"),
     WebComponentService: require("../../pdm-dsu-toolkit/services/WebComponentService"),
     OrderLineService: require("./OrderLineService"),

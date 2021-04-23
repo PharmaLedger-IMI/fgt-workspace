@@ -21,6 +21,7 @@
     "title": "Create a Product",
     "name": {
       "label": "Product Name:",
+      "placeholder": "Insert product name...",
       "type": "text",
       "required": true,
       "input-mode": "text",
@@ -28,6 +29,7 @@
     },
     "gtin": {
       "label": "Product Gtin:",
+      "placeholder": "Insert product gtin...",
       "type": "number",
       "required": true,
       "input-mode": "number",
@@ -44,6 +46,7 @@
     },
     "description": {
       "label": "Product Description:",
+      "placeholder": "Insert product description...",
       "type": "text",
       "required": true,
       "input-mode": "text",

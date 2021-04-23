@@ -7,8 +7,7 @@ export default class ProductsController extends LocalizedController {
     constructor(element, history) {
         super(element, history);
         const wizard = require('wizard');
-        const LocaleService = wizard.Services.WebcLocaleService;
-        LocaleService.bindToLocale(this,"products");
+        super.bindLocale(this, "products");
         this.participantManager = wizard.Managers.getParticipantManager();
         this.productManager = wizard.Managers.getProductManager(this.participantManager);
 
