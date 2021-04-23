@@ -65,7 +65,7 @@ export class ManagedBatchListItem {
     });
   }
 
-  @Watch('gtin-batch')
+  @Watch('gtinBatch')
   @Method()
   async refresh(){
     await this.loadBatch();

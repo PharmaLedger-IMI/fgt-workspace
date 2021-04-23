@@ -15,7 +15,7 @@ import {
 import {WebManager, WebManagerService} from '../../services/WebManagerService';
 import {extractChain, promisifyEventEmit} from "../../utils";
 import {HostElement} from '../../decorators'
-import {EVENT_SEND_ERROR} from "../../constants/events";
+import {EVENT_SEND_ERROR, EVENT_MODEL_GET} from "../../constants/events";
 
 const ION_TABLE_MODES = {
   BY_MODEL: "bymodel",
@@ -36,7 +36,7 @@ export class PdmIonTable implements ComponentInterface {
    * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
    */
   @Event({
-    eventName: 'webcardinal:model:get',
+    eventName: EVENT_MODEL_GET,
     bubbles: true,
     composed: true,
     cancelable: true,
