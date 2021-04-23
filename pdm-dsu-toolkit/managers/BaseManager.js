@@ -97,7 +97,14 @@ class BaseManager {
     }
 
     registerMessageListener(api, listener){
-        this.messenger.registerListeners(api, listener);
+        const self = this;
+        if (this.messenger) { // initialization done
+            return this.messenger.registerListeners(api, listener);
+        } else {
+            console.log("Waiting for participant initialization");
+            setTimeout(() => { self.registerMessageListener(api, listener); },
+                10);
+        }
     }
 
     /**

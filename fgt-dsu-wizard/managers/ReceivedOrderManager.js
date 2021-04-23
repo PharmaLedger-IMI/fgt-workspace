@@ -10,7 +10,7 @@ const OrderStatus = require('../model').OrderStatus;
  */
 class ReceivedOrderManager extends OrderManager {
     constructor(participantManager) {
-        super(participantManager, DB.receivedOrders);
+        super(participantManager, DB.receivedOrders, [DB.receivedOrders]);
         const self = this;
         this.registerMessageListener((message) => { self._processMessageRecord(message, () => {}); });
         this.participantManager = participantManager; // jpsl: TODO needed to work aroung the Manager.getMessages()
