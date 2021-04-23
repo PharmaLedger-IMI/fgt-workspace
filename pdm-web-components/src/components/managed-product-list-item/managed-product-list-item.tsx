@@ -50,10 +50,10 @@ export class ManagedProductListItem {
       return;
     this.productManager = await WebManagerService.getWebManager("ProductManager");
     this.batchManager = await WebManagerService.getWebManager("BatchManager");
-    return await this.loadBatch();
+    return await this.loadProduct();
   }
 
-  async loadBatch(){
+  async loadProduct(){
     let self = this;
     if (!self.productManager)
       return;
@@ -76,7 +76,7 @@ export class ManagedProductListItem {
   @Watch('gtin')
   @Method()
   async refresh(){
-    await this.loadBatch();
+    await this.loadProduct();
   }
 
   addBarCode(){
