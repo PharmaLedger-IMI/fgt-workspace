@@ -36,7 +36,7 @@ export class ManagedOrderListItem {
     }
   }
 
-  @Prop({​​​​​​​​attribute: 'order-id'}​​​​​​​​) orderId: string;
+  @Prop({attribute: 'order-id'}) orderId: string;
 
   private receivedOrderManager: WebManager = undefined;
 
