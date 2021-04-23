@@ -80,6 +80,10 @@ export namespace Components {
          */
         "title": string;
     }
+    interface PdmSsappLoader {
+        "isLoading": boolean;
+        "timeout"?: number;
+    }
     interface ProductListItem {
     }
     interface StockListItem {
@@ -122,6 +126,12 @@ declare global {
         prototype: HTMLPdmIonTableElement;
         new (): HTMLPdmIonTableElement;
     };
+    interface HTMLPdmSsappLoaderElement extends Components.PdmSsappLoader, HTMLStencilElement {
+    }
+    var HTMLPdmSsappLoaderElement: {
+        prototype: HTMLPdmSsappLoaderElement;
+        new (): HTMLPdmSsappLoaderElement;
+    };
     interface HTMLProductListItemElement extends Components.ProductListItem, HTMLStencilElement {
     }
     var HTMLProductListItemElement: {
@@ -141,6 +151,7 @@ declare global {
         "managed-product-list-item": HTMLManagedProductListItemElement;
         "managed-received-order-list-item": HTMLManagedReceivedOrderListItemElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
+        "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
         "product-list-item": HTMLProductListItemElement;
         "stock-list-item": HTMLStockListItemElement;
     }
@@ -221,13 +232,13 @@ declare namespace LocalJSX {
         "mode"?: string;
         "noContentMessage"?: string;
         /**
+          * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
+         */
+        "onGetModelEvent"?: (event: CustomEvent<any>) => void;
+        /**
           * Through this event errors are passed
          */
         "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
-         */
-        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
         "pageCount"?: number;
         "paginated"?: boolean;
         /**
@@ -239,6 +250,10 @@ declare namespace LocalJSX {
           * Graphical Params
          */
         "title"?: string;
+    }
+    interface PdmSsappLoader {
+        "isLoading"?: boolean;
+        "timeout"?: number;
     }
     interface ProductListItem {
         /**
@@ -259,6 +274,7 @@ declare namespace LocalJSX {
         "managed-product-list-item": ManagedProductListItem;
         "managed-received-order-list-item": ManagedReceivedOrderListItem;
         "pdm-ion-table": PdmIonTable;
+        "pdm-ssapp-loader": PdmSsappLoader;
         "product-list-item": ProductListItem;
         "stock-list-item": StockListItem;
     }
@@ -273,6 +289,7 @@ declare module "@stencil/core" {
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
             "managed-received-order-list-item": LocalJSX.ManagedReceivedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderListItemElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
+            "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;
             "product-list-item": LocalJSX.ProductListItem & JSXBase.HTMLAttributes<HTMLProductListItemElement>;
             "stock-list-item": LocalJSX.StockListItem & JSXBase.HTMLAttributes<HTMLStockListItemElement>;
         }
