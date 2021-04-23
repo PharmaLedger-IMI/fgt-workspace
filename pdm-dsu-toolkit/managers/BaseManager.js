@@ -76,6 +76,7 @@ class BaseManager {
         this.participantConstSSI = undefined;
         this.did = undefined;
         this.messenger = undefined;
+        this.identity = undefined;
         this._getResolver = getResolver;
         this._getKeySSISpace = getKeySSISpace;
         this._err = _err;
@@ -201,10 +202,19 @@ class BaseManager {
      * @param {function(err, object)} callback
      */
     getIdentity(callback){
+        if (this.identity){
+            if (callback)
+                return callback(undefined, this.identity);
+            return  this.identity;
+        }
+
         let self = this;
-        self.DSUStorage.getObject(`${PARTICIPANT_MOUNT_PATH}${IDENTITY_MOUNT_PATH}${INFO_PATH}`, (err, participant) => err
-            ? self._err(`Could not get identity`, err, callback)
-            : callback(undefined, participant));
+        self.DSUStorage.getObject(`${PARTICIPANT_MOUNT_PATH}${IDENTITY_MOUNT_PATH}${INFO_PATH}`, (err, participant) => {
+            if (err)
+                return self._err(`Could not get identity`, err, callback);
+            self.identity = participant;
+            callback(undefined, participant)
+        });
     };
 
     /**

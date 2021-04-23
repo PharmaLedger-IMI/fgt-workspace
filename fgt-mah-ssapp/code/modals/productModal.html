@@ -15,20 +15,20 @@
 </ion-item>
 <ion-item>
     <ion-label position="stacked">{{ @gtin.label }}</ion-label>
-    <ion-input name="input-name" data-view-model="@gtin" clear-on-edit="true"></ion-input>
+    <ion-input name="input-gtin" data-view-model="@gtin" clear-on-edit="true"></ion-input>
 </ion-item>
 <ion-item>
     <ion-label position="stacked">{{ @manufName.label }}</ion-label>
-    <ion-input name="input-name" data-view-model="@manufName" clear-on-edit="true"></ion-input>
+    <ion-input name="input-manufName" data-view-model="@manufName" clear-on-edit="true"></ion-input>
 </ion-item>
 <ion-item>
     <ion-label position="stacked">{{ @description.label }}</ion-label>
-    <ion-input name="input-name" data-view-model="@description" clear-on-edit="true"></ion-input>
+    <ion-input name="input-description" data-view-model="@description" clear-on-edit="true"></ion-input>
 </ion-item>
 <ion-footer class="modal-class">
     <ion-toolbar>
         <ion-buttons slot="primary">
-            <ion-button name="button-create" expand="block" type="submit" color="primary" data-tag="try-create-product">{{ @buttons. }}</ion-button>
+            <ion-button name="button-create" expand="block" type="submit" color="primary" data-tag="try-create-product">{{ @buttons.create-product }}</ion-button>
         </ion-buttons>
     </ion-toolbar>
 </ion-footer>
