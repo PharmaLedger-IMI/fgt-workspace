@@ -80,15 +80,22 @@ class ReceivedOrderManager extends OrderManager {
             }
         }
 
+        options = options || defaultOptions();
+
         let self = this;
-
-        super.getAll(readDSU, options, (err, result) => {
+        self.query(options.query, options.sort, options.limit, (err, records) => {
             if (err)
-                return self._err(`Could not parse ReceivedOrders ${JSON.stringify(result)}`, err, callback);
-            console.log(`Parsed ${result.length} orders`);
-            callback(undefined, result);
+                return self._err(`Could not perform query`, err, callback);
+            if (!readDSU)
+                return callback(undefined, records.map(r => r.orderId));
+            records = records.map(r => r.value);
+            self._iterator(records.slice(), self._getDSUInfo.bind(self), (err, result) => {
+                if (err)
+                    return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
+                console.log(`Parsed ${result.length} ${self._getTableName()}s`);
+                callback(undefined, result);
+            });
         });
-
         /*
         let orderLine1 = new OrderLine('123', 1, '', '');
         let orderLine2 = new OrderLine('321', 5, '', '');
