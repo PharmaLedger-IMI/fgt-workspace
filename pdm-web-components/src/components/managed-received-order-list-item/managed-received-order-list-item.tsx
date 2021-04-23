@@ -116,7 +116,14 @@ export class ManagedOrderListItem {
     const self = this;
     let orderLines = (<ion-skeleton-text animated></ion-skeleton-text>);
     if (this.order && this.order.orderLines) {
-      orderLines = this.order.orderLines.map(ol => this.addOrderLine(ol));
+      const maxOrderLines = 2; // truncate orderLines to 2 entries
+      if (this.order.orderLines.length > maxOrderLines) {
+        orderLines = [...this.order.orderLines].slice(0,2).map(ol => this.addOrderLine(ol));
+        const suffix = ("...");
+        orderLines.push(suffix);
+      } else {
+        orderLines = this.order.orderLines.map(ol => this.addOrderLine(ol));
+      }
     }
     return (
       <ion-grid className="ion-padding-horizontal">
