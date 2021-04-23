@@ -17,7 +17,7 @@ export class PdmSsappLoader implements ComponentInterface {
 
   @Element() element;
 
-  @Prop() timeout?: number = -1;
+  @Prop() timeout?: number = 1000;
 
   @Prop() loader?: string = 'simple'
 
@@ -30,9 +30,6 @@ export class PdmSsappLoader implements ComponentInterface {
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
-    const self = this;
-    if (self.timeout !== -1)
-      setTimeout(self.markAsLoaded, self.timeout);
   }
 
   @Listen('ssapp-has-loaded', {
@@ -45,7 +42,9 @@ export class PdmSsappLoader implements ComponentInterface {
       evt.preventDefault();
       evt.stopImmediatePropagation();
     }
-    this.isLoading = false;
+    setTimeout(() => {
+      this.isLoading = false;
+    }, this.timeout)
   }
 
   @Listen('ssapp-update-status', {
@@ -107,10 +106,20 @@ export class PdmSsappLoader implements ComponentInterface {
     )
   }
 
+  private getMedicalLoader(){
+    return (
+      <span class="loader"></span>
+    )
+  }
+
   private getLoader(){
     switch (this.loader){
       case SUPPORTED_LOADERS.simple:
         return this.getSimpleLoader();
+      case SUPPORTED_LOADERS.medical:
+        return this.getMedicalLoader();
+      default:
+        throw new Error(`Unsupported loader ${this.loader}`)
     }
   }
 
