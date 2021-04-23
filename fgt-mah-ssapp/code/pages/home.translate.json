@@ -53,7 +53,8 @@
       "value": "This is a description..."
     },
     "buttons": {
-      "create-product": "Create"
+      "create-product": "Create",
+      "cancel": "Cancel"
     }
   },
   "batches": {

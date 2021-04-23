@@ -127,7 +127,7 @@ export class ManagedBatchListItem {
   }
 
   addSerialsNumbers(){
-    const serials = !! this.serialNumbers ? this.batch.serialNumbers.map(s => this.addSerialNumber(s)) : (<ion-skeleton-text animated></ion-skeleton-text>);
+    const serials = !! this.serialNumbers ? this.batch.serialNumbers.slice(0, 8).map(s => this.addSerialNumber(s)) : (<ion-skeleton-text animated></ion-skeleton-text>);
     return(
       <ion-grid className="ion-padding-horizontal">
         <ion-row>
