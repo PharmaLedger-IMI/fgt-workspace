@@ -78,15 +78,15 @@ export class ManagedOrderListItem {
     }
 
     const getRequesterIdLabel = function(){
-      if (!self.order || !self.order.getRequesterIdLabel)
+      if (!self.order || !self.order.requesterId)
         return (<h5><ion-skeleton-text animated></ion-skeleton-text> </h5>)
-      return (<h5>{self.order.getRequesterIdLabel}</h5>)
+      return (<h5>{self.order.requesterId}</h5>)
     }
 
     const getSenderIdLabel = function(){
-      if (!self.order || !self.order.getSenderIdLabel)
+      if (!self.order || !self.order.senderId)
         return (<h5><ion-skeleton-text animated></ion-skeleton-text> </h5>)
-      return (<h5>{self.order.getSenderIdLabel}</h5>)
+      return (<h5>{self.order.senderId}</h5>)
     }
 
     return(
