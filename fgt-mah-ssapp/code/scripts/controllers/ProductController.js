@@ -13,14 +13,17 @@ import { LocalizedController } from "../../assets/pdm-web-components/index.esm.j
  */
 export default class ProductController extends LocalizedController {
 
-    getModel = () => ({});
+    getModel = () => ({
+        manufName: {
+            value: this.productManager.getIdentity().id
+        }
+    });
 
     constructor(element, history) {
-        super(element, history);
+        super(element, history, true);
         let self = this;
         const wizard = require('wizard');
-        const LocaleService = wizard.Services.WebcLocaleService;
-        LocaleService.bindToLocale(self,"product", true);
+        super.bindLocale(self, `product`, true);
         this.participantManager = wizard.Managers.getParticipantManager();
         this.productManager = wizard.Managers.getProductManager(this.participantManager);
         self.setModel(self.getModel());

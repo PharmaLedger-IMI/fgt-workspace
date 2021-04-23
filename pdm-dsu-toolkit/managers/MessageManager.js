@@ -35,7 +35,7 @@ class Message{
  * @param {Database} storage the DSU where the storage should happen or more commonly the Database Object
  * @param {BaseManager} baseManager the base manager to have access to the identity api
  * @param {string} didString
- * @param {function(Message)} [onNewMessage] defaults to a console log
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @module managers
  * @class MessageManager
  */
@@ -194,26 +194,21 @@ let messageManager;
 /**
  * @param {BaseManager} baseManager  only required the first time, if not forced
  * @param {string} didString
- * @param {function(Message)} [onNewMessage]
  * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
  * Makes DSU Storage required again!
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {MessageManager}
  * @module managers
  */
-const getMessageManager = function(baseManager, didString, onNewMessage, force, callback) {
+const getMessageManager = function(baseManager, didString, force, callback) {
     if (typeof force === 'function'){
         callback = force;
         force = false;
     }
-    if (typeof onNewMessage === 'boolean'){
-        force = onNewMessage;
-        onNewMessage = undefined;
-    }
     if (!messageManager || force) {
         if (!baseManager || !didString)
             throw new Error("Missing Objects for instantiation");
-        messageManager = new MessageManager(baseManager, didString, onNewMessage, callback);
+        messageManager = new MessageManager(baseManager, didString, callback);
     }
     return messageManager;
 }
