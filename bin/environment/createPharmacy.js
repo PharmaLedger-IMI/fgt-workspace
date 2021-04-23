@@ -6,7 +6,7 @@ require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // t
 const dt = require('../../pdm-dsu-toolkit/services/dt');
 const { getParticipantManager, getIssuedOrderManager } = require('../../fgt-dsu-wizard/managers');
 const { Order, OrderLine } = require('../../fgt-dsu-wizard/model');
-const { impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
+const { generateRandomInt, impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 
 const { APPS } = require('./credentials/credentials');
 
@@ -19,35 +19,61 @@ const defaultOps = {
 let conf = argParser(defaultOps, process.argv);
 
 
+// aux functions
+const _createIssuedOrder = function (issuedOrderManager, products, wholesaler, callback) {
+    issuedOrderManager.newBlank((err, order) => {
+        if (err)
+            return callback(err);
+        order.senderId = wholesaler.id.secret;
+        // random number of order lines, one for each gtin
+        const randomProductIndex = generateRandomInt(1, products.length); // there must be at least 1 product
+        for (let productIndex = 0 ; productIndex < randomProductIndex ; productIndex++) {
+            const product = products[productIndex];
+            const quantity = generateRandomInt(1, 10);
+            const orderLine = new OrderLine(product.gtin, quantity, order.requesterId, order.senderId);
+            order.orderLines.push(orderLine);
+        }
+        //console.log("Creating order", order);
+        issuedOrderManager.create(order, (err, keySSI) => {
+            if (err)
+                return callback(err);
+            callback(undefined, order);
+        });
+    });
+};
+
+const _createManyIssuedOrders = function (countdown, issuedOrderManager, products, wholesaler, issuedOrders, receivedShipments, callback) {
+    if (countdown > 0) {
+        _createIssuedOrder(issuedOrderManager, products, wholesaler, (err, order) => {
+            if (err)
+                return callback(err);
+            issuedOrders.push(order);
+            _createManyIssuedOrders(countdown-1, issuedOrderManager, products, wholesaler, issuedOrders, receivedShipments, callback);
+        });
+    } else {
+        callback(undefined, issuedOrders, receivedShipments);
+    }
+};
+
 const setup = function (participantManager, products, wholesalers, stocks, callback) {
     // TODO move this to a function that generates issuedOrders ?
     const issuedOrderManager = getIssuedOrderManager(participantManager, true);
 
-    let issuedOrders = [];
-
-    let receivedShipments = [];
-
-    // Order#1 - products[0] ordered to wholesalers[0]
     if (products.length <=0)
         return callback("Products has zero length.");
     if (wholesalers.length <=0)
         return callback("Wholesalers has zero length.");
-    const product0 = products[0];
-    issuedOrderManager.newBlank((err, order) => {
-        if (err)
-            return callback(err);
-        order.senderId = wholesalers[0].id.secret;
-        const orderLine1 = new OrderLine(product0.gtin, 1, order.requesterId, order.senderId);
-        order.orderLines.push(orderLine1);
-        issuedOrderManager.create(order, (err, keySSI) => {            
-            if (err)
-                return callback(err);
-            issuedOrders.push(order);
-            // last step
-            callback(undefined, issuedOrders, receivedShipments);
-        });
+    
+    const wholesaler0 = wholesalers[0];
+
+    let issuedOrders = [];
+    let receivedShipments = [];
+    
+    // 20 orders on first wholesaler
+    _createManyIssuedOrders(20, issuedOrderManager, products, wholesaler0, issuedOrders, receivedShipments, (err) => {
+        callback(err, issuedOrders, receivedShipments);
     });
-}
+};
 
 const create = function (credentials, callback) {
     instantiateSSApp(APPS.PHARMACY, conf.pathToApps, dt, credentials, (err, walletSSI, walletDSU, credentials) => {
