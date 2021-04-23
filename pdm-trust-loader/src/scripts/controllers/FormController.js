@@ -19,13 +19,13 @@ export default class FormController extends LocalizedController {
         let self = this;
         super.bindLocale(self, `form`, true);
 
-        self.setModel(self.getModel());
+        self.model = self.getModel();
         console.log("FormController initialized");
-        Object.entries(self.getModel().buttons).forEach(b => {
+        Object.entries(self.model.buttons).forEach(b => {
             self.onTagClick(`try${b[0]}`, self._handleTry(`${b[0]}`).bind(self));
         });
 
-        self._createModalForm(this.getModel());
+        self._createModalForm(this.model.toObject());
     }
 
     _handleTry(name){
