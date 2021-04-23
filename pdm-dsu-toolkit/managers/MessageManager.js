@@ -40,8 +40,8 @@ class Message{
  * @class MessageManager
  */
 class MessageManager extends Manager{
-    constructor(baseManager, didString){
-        super(baseManager, MESSAGE_TABLE);
+    constructor(baseManager, didString, callback){
+        super(baseManager, MESSAGE_TABLE, ['api'], callback);
         this.w3cDID = require('opendsu').loadApi('w3cdid');
         this.didString = didString;
         this.did = undefined;
@@ -197,10 +197,15 @@ let messageManager;
  * @param {function(Message)} [onNewMessage]
  * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
  * Makes DSU Storage required again!
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {MessageManager}
  * @module managers
  */
-const getMessageManager = function(baseManager, didString, onNewMessage, force) {
+const getMessageManager = function(baseManager, didString, onNewMessage, force, callback) {
+    if (typeof force === 'function'){
+        callback = force;
+        force = false;
+    }
     if (typeof onNewMessage === 'boolean'){
         force = onNewMessage;
         onNewMessage = undefined;
@@ -208,7 +213,7 @@ const getMessageManager = function(baseManager, didString, onNewMessage, force) 
     if (!messageManager || force) {
         if (!baseManager || !didString)
             throw new Error("Missing Objects for instantiation");
-        messageManager = new MessageManager(baseManager, didString, onNewMessage);
+        messageManager = new MessageManager(baseManager, didString, onNewMessage, callback);
     }
     return messageManager;
 }
