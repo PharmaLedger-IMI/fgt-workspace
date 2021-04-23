@@ -39,23 +39,10 @@ export default class ReceivedOrdersController extends LocalizedController {
             self.receivedOrderManager.processMessages( (err) => {
                 if (err)
                     return self.showErrorToast(err);
-                self.getAll();
+                self.element.querySelector('pdm-ion-table').refresh()
             });
         });
     }
 
-    /**
-     * Retrieves the received orders from the DSU and updates the model
-     * by calling {@link ReceivedOrdersController#updatereceived} after retrieval
-     */
-     getAll() {
-        let self = this;
-        self.receivedOrderManager.getAll(true, (err, orders) => {
-            console.log("getAll got orders ", orders);
-            if (err)
-                return self.showError(err);
-            self.update(orders);
-        });
-    }
 }
 
