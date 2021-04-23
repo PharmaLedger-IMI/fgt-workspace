@@ -38,6 +38,6 @@ export default class ProductController extends LocalizedController {
         const product = self.productManager.fromModel(self.model);
 
 
-        this.send('perform-registration', product);
+        this.send('create-product', product);
     }
 }

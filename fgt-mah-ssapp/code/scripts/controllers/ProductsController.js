@@ -22,28 +22,26 @@ export default class ProductsController extends LocalizedController {
             console.log('add product');
             self._showProductModal();
         });
-        // this.on('add-product', (event) => {
-        //     event.stopImmediatePropagation();
-        //     self._showProductModal();
-        // });
 
-        // this.on('perform-add-product', (event) => {
-        //     event.stopImmediatePropagation();
-        //     self._addProduct(event.detail, (err) => {
-        //         if (err) {
-        //             this.showError(err);
-        //             return;
-        //         }
-        //         self.closeModal('product-modal');
-        //         self.getProductsAsync();
-        //     });
-        // });
-        //
-        // this.on('manage-batches', (event) => {
-        //     event.stopImmediatePropagation();
-        //     const gtin = event.target.getAttribute("gtin");
-        //     this.History.navigateToPageByUrl("/batches", {gtin: gtin});
-        // });
+        self.onTagEvent('cancel-create-product', 'click', (evt) => {
+            if (evt){
+                evt.preventDefault();
+                evt.stopImmediatePropagation();
+            }
+            self.hideModal();
+        });
+
+        self.on('create-product',  (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            self.productManager.create(evt.detail, (err) => {
+                if (err)
+                    return self.showErrorToast(`Could not create Product`, err);
+                self.hideModal();
+                self.showToast(`Product ${evt.details.name} with gtin ${evt.detail.gtin} has been created`);
+                self.send('refresh');
+            });
+        });
 
         self.on('refresh', (evt) => {
             evt.preventDefault();
