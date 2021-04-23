@@ -77,6 +77,15 @@ export class ManagedOrderListItem {
       return (<h3>{self.order.orderId}</h3>)
     }
 
+    return(
+      <ion-label className="ion-padding-horizontal ion-align-self-center">
+        {getOrderIdLabel()}
+      </ion-label>)
+  }
+
+  addRequester(){
+    const self = this;
+
     const getRequesterIdLabel = function(){
       if (!self.order || !self.order.requesterId)
         return (<h5><ion-skeleton-text animated></ion-skeleton-text> </h5>)
@@ -91,10 +100,33 @@ export class ManagedOrderListItem {
 
     return(
       <ion-label className="ion-padding-horizontal ion-align-self-center">
-        {getOrderIdLabel()}
         {getRequesterIdLabel()}
-        {getSenderIdLabel()}
       </ion-label>)
+  }
+
+  addOrderLine(orderLine){
+    return(
+      <ion-chip outline color="primary">
+        <ion-label className="ion-padding-horizontal">{orderLine.gtin}, {orderLine.quantity}</ion-label>
+      </ion-chip>
+    )
+  }
+
+  addOrderLines() {
+    const self = this;
+    let orderLines = (<ion-skeleton-text animated></ion-skeleton-text>);
+    if (this.order && this.order.orderLines) {
+      orderLines = this.order.orderLines.map(ol => this.addOrderLine(ol));
+    }
+    return (
+      <ion-grid className="ion-padding-horizontal">
+        <ion-row>
+          <ion-col size="12">
+            {orderLines}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    );
   }
 
   addButtons(){
@@ -121,6 +153,8 @@ export class ManagedOrderListItem {
       <Host>
         <ion-item className="ion-align-self-center">
           {this.addLabel()}
+          {this.addRequester()}
+          {this.addOrderLines()}
           {this.addButtons()}
         </ion-item>
       </Host>
