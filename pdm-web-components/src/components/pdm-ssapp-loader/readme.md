@@ -7,10 +7,32 @@
 
 ## Properties
 
-| Property    | Attribute    | Description | Type      | Default |
-| ----------- | ------------ | ----------- | --------- | ------- |
-| `isLoading` | `is-loading` |             | `boolean` | `true`  |
-| `timeout`   | `timeout`    |             | `number`  | `4000`  |
+| Property  | Attribute | Description | Type     | Default |
+| --------- | --------- | ----------- | -------- | ------- |
+| `timeout` | `timeout` |             | `number` | `-1`    |
+
+
+## Methods
+
+### `markAsLoaded(evt: any) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `updateStatus(evt: any) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
 
 
 ----------------------------------------------
