@@ -12,7 +12,7 @@ class ReceivedOrderManager extends OrderManager {
     constructor(participantManager) {
         super(participantManager, DB.receivedOrders, [DB.receivedOrders]);
         const self = this;
-        this.registerMessageListener((message) => { self._processMessageRecord(message, () => {}); });
+        this.registerMessageListener((message) => { self._processMessageRecord(message, () => { }); });
         this.participantManager = participantManager; // jpsl: TODO needed to work aroung the Manager.getMessages()
     }
 
@@ -39,6 +39,18 @@ class ReceivedOrderManager extends OrderManager {
             value: record
         }
     };
+
+    /**
+     * Converts the text typed in a general text box into the query for the db
+     * Subclasses should override this
+     * @param {string} keyword
+     * @return {string[]} query
+     * @protected
+     */
+    _keywordToQuery(keyword) {
+        keyword = keyword || '.*';
+        return [`orderId like /${keyword}/g`];
+    }
 
     /**
      * Lists all received orders.
@@ -68,15 +80,22 @@ class ReceivedOrderManager extends OrderManager {
             }
         }
 
+        options = options || defaultOptions();
+
         let self = this;
-
-        super.getAll(readDSU, options, (err, result) => {
+        self.query(options.query, options.sort, options.limit, (err, records) => {
             if (err)
-                return self._err(`Could not parse ReceivedOrders ${JSON.stringify(result)}`, err, callback);
-            console.log(`Parsed ${result.length} orders`);
-            callback(undefined, result);
+                return self._err(`Could not perform query`, err, callback);
+            if (!readDSU)
+                return callback(undefined, records.map(r => r.orderId));
+            records = records.map(r => r.value);
+            self._iterator(records.slice(), self._getDSUInfo.bind(self), (err, result) => {
+                if (err)
+                    return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
+                console.log(`Parsed ${result.length} ${self._getTableName()}s`);
+                callback(undefined, result);
+            });
         });
-
         /*
         let orderLine1 = new OrderLine('123', 1, '', '');
         let orderLine2 = new OrderLine('321', 5, '', '');
