@@ -42,6 +42,12 @@ function generateBatchNumber(){
     return batchNumber.join('');
 }
 
+function generateRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+}
+
 function impersonateDSUStorage(dsu){
     dsu.directAccessEnabled = false;
     dsu.enableDirectAccess = (callback) => callback();
@@ -140,6 +146,7 @@ module.exports = {
     generateProductName,
     generateGtin,
     generateBatchNumber,
+    generateRandomInt,
     genDate,
     impersonateDSUStorage,
     argParser,
