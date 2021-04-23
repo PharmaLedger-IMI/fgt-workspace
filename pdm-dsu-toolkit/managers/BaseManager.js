@@ -206,13 +206,14 @@ class BaseManager {
 
     /**
      * reads the participant information (if exists)
-     * @param {function(err, object)} callback
+     * @param {function(err, object)} [callback] only required if the identity is not cached
+     * @returns {object} identity (if cached and no callback is provided)
      */
     getIdentity(callback){
         if (this.identity){
             if (callback)
                 return callback(undefined, this.identity);
-            return  this.identity;
+            return this.identity;
         }
 
         let self = this;
@@ -249,6 +250,7 @@ class BaseManager {
                 if (err)
                     return callback(err);
                 console.log(`Participant updated`);
+                this.identity = participant;
                 callback(undefined, participant);
             });
         });
