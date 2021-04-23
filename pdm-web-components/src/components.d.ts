@@ -81,8 +81,9 @@ export namespace Components {
         "title": string;
     }
     interface PdmSsappLoader {
-        "isLoading": boolean;
+        "markAsLoaded": (evt: any) => Promise<void>;
         "timeout"?: number;
+        "updateStatus": (evt: any) => Promise<void>;
     }
     interface ProductListItem {
     }
@@ -252,7 +253,6 @@ declare namespace LocalJSX {
         "title"?: string;
     }
     interface PdmSsappLoader {
-        "isLoading"?: boolean;
         "timeout"?: number;
     }
     interface ProductListItem {

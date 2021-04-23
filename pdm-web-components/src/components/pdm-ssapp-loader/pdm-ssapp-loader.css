@@ -19,7 +19,7 @@
   display: inline-block;
   position: absolute;
   top: 0;
-  background-color: #333;
+  background-color: var(--ion-color);
   border-radius: 100%;
 
   -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
@@ -28,6 +28,7 @@
 
 .dot2 {
   top: auto;
+  background-color: var(--ion-text-color);
   bottom: 0;
   -webkit-animation-delay: -1.0s;
   animation-delay: -1.0s;
@@ -51,6 +52,11 @@
     }
 }
 
+ion-grid.status-grid {
+  position: fixed;
+  top: 55%;
+}
+
 #custom-overlay {
   position: fixed;
   top: 0;
@@ -59,11 +65,11 @@
   left: 0;
   z-index: 100000;
   width:100%;
-  background-color: #002a3e;
+  background-color: var(--ion-color-primary);
 }
 
 .flb {
-  background-color: #3ebffb;
+  background-color: var(--ion-background-color);
   height:100%;
   width:100%;
   animation: pulse 1s linear forwards;
@@ -82,11 +88,8 @@
 }
 #custom-overlay div.spinner {
   display: block;
-  margin: 0 auto;
-  width: 50%;
-  height: auto;
-  /*animation: animation 3100ms linear infinite both;*/
-  /*animation-delay: 1s;*/
+  animation: animation 3100ms linear infinite both;
+  animation-delay: 1s;
 }
 
 @keyframes pulse {
