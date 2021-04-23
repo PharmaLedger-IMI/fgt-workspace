@@ -10,7 +10,7 @@ const OrderStatus = require('../model').OrderStatus;
  */
 class IssuedOrderManager extends OrderManager {
     constructor(participantManager) {
-        super(participantManager, DB.issuedOrders);
+        super(participantManager, DB.issuedOrders, [DB.issuedOrders]);
     }
 
     /**
