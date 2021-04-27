@@ -30,8 +30,8 @@ const MESSAGE_TABLE = 'messages'
  * @type {{query: string[]|undefined, limit: number|undefined, sort: string|undefined}}
  */
 const DEFAULT_QUERY_OPTIONS = {
-    query: ["key like /.*/g"],
-    sort: undefined,
+    query: ["__timestamp > 0"],
+    sort: "asc",
     limit: undefined
 }
 

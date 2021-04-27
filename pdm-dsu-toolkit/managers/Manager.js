@@ -510,8 +510,8 @@ class Manager{
         page = page || 1;
 
         const options = {
-            query: self._keywordToQuery(keyword),
-            sort: sort,
+            query: keyword ? self._keywordToQuery(keyword) : ['__timestamp > 0'],
+            sort: sort || "asc",
             limit: undefined
         }
 
