@@ -73,6 +73,8 @@ pdm-trust-loader/src/swBoot.js
 pdm-trust-loader/src/workbox*
 pdm-trust-loader/docs
 
+pdm-web-components/docs
+
 !pdm-trust-loader/workbox-config.js
 
 privatesky

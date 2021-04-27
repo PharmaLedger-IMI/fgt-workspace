@@ -32,6 +32,8 @@ You will be present with a menu from where you can choose the SSApp you with to 
 
 [FGT DSU Wizard](fgt-dsu-wizard/index.html)
 
+[Web Components](pdm-web-components/index.html)
+
 [MAH Enterprise Wallet](fgt-mah-ssapp/index.html)
 
 [Wholesaler Wallet](fgt-wholesaler-ssapp/index.html)
