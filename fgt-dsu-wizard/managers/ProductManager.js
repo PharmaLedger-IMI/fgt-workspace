@@ -155,7 +155,8 @@ class ProductManager extends Manager {
      */
     getAll(readDSU, options, callback){
         const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
-            query: ['gtin like /.*/g']
+            query: ['__timestamp > 0'],
+            sort: "desc"
         });
 
         if (!callback){

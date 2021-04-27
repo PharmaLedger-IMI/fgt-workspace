@@ -5,7 +5,7 @@ export default class ProductsController extends LocalizedController {
     initializeModel = () => ({});
 
     constructor(element, history) {
-        super(element, history);
+        super(element, history, false);
         const wizard = require('wizard');
         super.bindLocale(this, "products");
         this.participantManager = wizard.Managers.getParticipantManager();
@@ -15,32 +15,17 @@ export default class ProductsController extends LocalizedController {
 
         let self = this;
         self.onTagEvent('add-product', 'click', (evt) => {
-            if (evt){
-                evt.preventDefault();
-                evt.stopImmediatePropagation();
-            }
-            console.log('add product');
             self._showProductModal();
         });
 
-        self.onTagEvent('cancel-create-product', 'click', (evt) => {
-            if (evt){
-                evt.preventDefault();
-                evt.stopImmediatePropagation();
-            }
+        self.onTagEvent('cancel-create-product', 'click', () => {
             self.hideModal();
         });
 
         self.on('create-product',  (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            self.productManager.create(evt.detail, (err) => {
-                if (err)
-                    return self.showErrorToast(`Could not create Product`, err);
-                self.hideModal();
-                self.showToast(`Product ${evt.details.name} with gtin ${evt.detail.gtin} has been created`);
-                self.send('refresh');
-            });
+            self._addProductAsync(evt.detail);
         });
 
         self.on('refresh', (evt) => {
@@ -68,15 +53,16 @@ export default class ProductsController extends LocalizedController {
     /**
      *
      * @param product
-     * @param callback
      * @private
      */
-    _addProduct(product, callback){
+    _addProductAsync(product){
         let self = this;
         self.productManager.create(product, (err, keySSI, path) => {
             if (err)
-                return callback(err);
-            callback();
+                return self.showErrorToast(`Could not create Product`, err);
+            self.hideModal();
+            self.showToast(`Product ${product.name} with gtin ${product.gtin} has been created`);
+            self.send('refresh');
         });
     }
 }

@@ -4,6 +4,7 @@ export default class HomeController extends BaseHomeController{
         super(element, history);
         let self = this;
         self.on(EVENT_SSAPP_HAS_LOADED, (evt) => {
+            // This event must bubble to be caught by the home controller
             if (self.model.participant)
                 self.showToast(`Welcome back to Finished Goods Traceability's App ${self.model.participant.name}`);
         }, {capture: true});

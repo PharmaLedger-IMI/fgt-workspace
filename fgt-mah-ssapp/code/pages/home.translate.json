@@ -52,7 +52,8 @@
       "required": true,
       "input-mode": "number",
       "min-length": 12,
-      "max-length": 12
+      "max-length": 12,
+      "max": 999999999999
     },
     "manufName": {
       "label": "Manufacturer Id:",

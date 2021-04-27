@@ -20,7 +20,7 @@ export default class ProductController extends LocalizedController {
     });
 
     constructor(element, history) {
-        super(element, history, true);
+        super(element, history, false);
         let self = this;
         const wizard = require('wizard');
         super.bindLocale(self, `product`, true);
@@ -33,11 +33,9 @@ export default class ProductController extends LocalizedController {
 
     _submitProduct = function () {
         let self = this;
-        if (self.hasErrors())
+        if (self.hasErrors(true))
             return this.showErrorToast('There are errors in the form');
         const product = self.productManager.fromModel(self.model);
-
-
         this.send('create-product', product);
     }
 }

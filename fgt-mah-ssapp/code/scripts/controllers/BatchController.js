@@ -1,13 +1,13 @@
-import ModalController from "../../cardinal/controllers/base-controllers/ModalController.js";
+import {LocalizedController} from "../../assets/pdm-web-components/index.esm";
 const Managers = require('wizard').Managers
 
-export default class BatchController extends ModalController {
+export default class BatchController extends LocalizedController {
     constructor(element, history) {
-        super(element, history);
-        const LocaleService = require('wizard').Services.LocaleService;
-        LocaleService.bindToLocale(this, LocaleService.supported.en_US, "batch");
-        let rootDSU = Managers.getParticipantManager(this.DSUStorage);
-        this.batchManager = Managers.getBatchManager(rootDSU);
+        super(element, history, false);
+        const LocaleService = require('wizard').Services.WebcLocaleService;
+        LocaleService.bindToLocale(this, "batch", true);
+        let participantManager = Managers.getParticipantManager();
+        this.batchManager = Managers.getBatchManager(participantManager);
         this.on('submit-batch', this._handleSubmit.bind(this));
     }
 
