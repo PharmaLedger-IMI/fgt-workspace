@@ -1,6 +1,6 @@
 {
   "name": "fgt-wholesaler-ssapp",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "The Pharmaledger Traceability Application for Wholesalers",
   "main": "index.js",
   "scripts": {

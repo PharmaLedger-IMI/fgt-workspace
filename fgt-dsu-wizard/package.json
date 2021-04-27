@@ -1,6 +1,6 @@
 {
   "name": "fgt-dsu-wizard",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Provides underlying API to handle DSUs in an enterprise environment",
   "main": "index.js",
   "scripts": {
