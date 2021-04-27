@@ -95,6 +95,10 @@ ion-grid.status-grid {
 #custom-overlay div.spinner {
   display: block;
 }
+
+#custom-overlay span.loader {
+  display: block;
+}
 /*END OF BACKGROUND*/
 
 /*MEDICAL LOADER*/
@@ -140,9 +144,11 @@ ion-grid.status-grid {
 
 @keyframes animloader {
   0% {
+    /*transform: translate(0%, -80%);*/
     background-position: 0px 80px;
   }
   100% {
+    /*transform: translate(0%, 0%);*/
     background-position: 0px 0px;
   }
 }
