@@ -2,7 +2,7 @@ import { LocalizedController } from "../../assets/pdm-web-components/index.esm.j
 
 export default class ProductsController extends LocalizedController {
 
-    getModel = () => ({});
+    initializeModel = () => ({});
 
     constructor(element, history) {
         super(element, history);
@@ -11,7 +11,7 @@ export default class ProductsController extends LocalizedController {
         this.participantManager = wizard.Managers.getParticipantManager();
         this.productManager = wizard.Managers.getProductManager(this.participantManager);
 
-        this.model = this.getModel();
+        this.model = this.initializeModel();
 
         let self = this;
         self.onTagEvent('add-product', 'click', (evt) => {

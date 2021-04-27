@@ -2,15 +2,14 @@ import LocalizedController from "./LocalizedController";
 import {EVENT_SSAPP_HAS_LOADED, EVENT_SSAPP_STATUS_UPDATE} from '../constants/events'
 
 export default class HomeController extends LocalizedController {
-    getModel = () => ({
+    initializeModel = () => ({
         participant: undefined
     });
 
     constructor(element, history) {
-        super(element, history);
+        super(element, history, true);
         super.bindLocale(this, "");
-        this.model = this.getModel();
-
+        this.model = this.initializeModel();
         this.model.addExpression('identified', () => {
             return this.model.participant !== undefined;
         }, "participant");

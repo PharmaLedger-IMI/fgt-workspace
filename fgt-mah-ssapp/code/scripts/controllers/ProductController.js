@@ -13,7 +13,7 @@ import { LocalizedController } from "../../assets/pdm-web-components/index.esm.j
  */
 export default class ProductController extends LocalizedController {
 
-    getModel = () => ({
+    initializeModel = () => ({
         manufName: {
             value: this.productManager.getIdentity().id
         }
@@ -26,7 +26,7 @@ export default class ProductController extends LocalizedController {
         super.bindLocale(self, `product`, true);
         this.participantManager = wizard.Managers.getParticipantManager();
         this.productManager = wizard.Managers.getProductManager(this.participantManager);
-        self.model = self.getModel();
+        self.model = self.initializeModel();
         self.onTagClick(`try-create-product`, self._submitProduct.bind(self));
         console.log("ProductController initialized");
     }

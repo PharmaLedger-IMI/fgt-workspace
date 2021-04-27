@@ -17,13 +17,13 @@ const { WebcController } = WebCardinal.controllers;
  *      constructor(element, history){
  *          super(element, history);
  *          super.bindLocale(this, pageName);
- *          this.setModel(this.getModel());
+ *          this.setModel(this.initializeModel());
  *      }
  * </pre>
  * @class LocalizedController
  */
 export default class LocalizedController extends WebcController {
-    getModel = () => {
+    initializeModel = () => {
         throw new Error("Child classes must implement this");
     }
 

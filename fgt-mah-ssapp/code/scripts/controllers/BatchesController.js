@@ -3,7 +3,7 @@ const Batch = require('wizard').Model.Batch;
 
 export default class BatchesController extends LocalizedController {
 
-    getModel = () => ({});
+    initializeModel = () => ({});
 
     constructor(element, history) {
         super(element, history);
@@ -13,7 +13,7 @@ export default class BatchesController extends LocalizedController {
         this.participantManager = wizard.Managers.getParticipantManager();
         this.batchManager = wizard.Managers.getBatchManager(this.participantManager);
 
-        this.model = this.getModel();
+        this.model = this.initializeModel();
 
         let self = this;
 

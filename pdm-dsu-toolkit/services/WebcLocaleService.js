@@ -90,8 +90,8 @@ const merge = function(target, source){
  */
 const bindToController = function(controller, page){
     if (!controller.localized) {
-        let getter = controller.getModel;
-        controller.getModel = () => {
+        let getter = controller.initializeModel;
+        controller.initializeModel = () => {
             let locale = localeService.getByPage(page, controller);
             if (!locale){
                 console.log(`No translations found for page ${page}`);
