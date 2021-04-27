@@ -1,4 +1,4 @@
-import LocalizedController from "./LocalizedController.js";
+import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
 const Product = require('wizard').Model.Product;
 
 export default class ShipmentController extends LocalizedController{

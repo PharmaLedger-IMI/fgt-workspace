@@ -1,10 +1,10 @@
-import LocalizedController from "./LocalizedController.js";
+import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
 
 /**
  * List all the orders, and allows the creation of new orders.
  */
 export default class IssuedOrdersController extends LocalizedController {
-    getModel = () => ({
+    initializeModel = () => ({
         pharmacy: undefined,
         orders: []
     }); // uninitialized blank model
@@ -17,7 +17,7 @@ export default class IssuedOrdersController extends LocalizedController {
         this.participantManager = wizard.Managers.getParticipantManager();
         this.issuedOrderManager = wizard.Managers.getIssuedOrderManager(this.participantManager);
 
-        this.setModel(this.getModel());
+        this.model = this.initializeModel();
 
         this.model.addExpression('hasOrders', () => {
             return this.model.orders && this.model.orders.length > 0;

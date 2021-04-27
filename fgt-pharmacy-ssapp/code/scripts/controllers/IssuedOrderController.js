@@ -1,7 +1,7 @@
-import LocalizedController from "./LocalizedController.js";
+import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
 export default class IssuedOrderController extends LocalizedController {
 
-    getModel = () => ({}); // initial empty model
+    initializeModel = () => ({}); // initial empty model
 
     constructor(element, history) {
         super(element, history);
@@ -11,7 +11,7 @@ export default class IssuedOrderController extends LocalizedController {
         self.participantManager = wizard.Managers.getParticipantManager();
         self.issuedOrderManager = wizard.Managers.getIssuedOrderManager(this.participantManager);
 
-        self.setModel(self.getModel());
+        self.model = self.initializeModel();
 
         console.log("IssuedOrderController initialized");
         self.onTagClick(`tryOk`, () => { self._handleTryOk(); });
@@ -28,7 +28,7 @@ export default class IssuedOrderController extends LocalizedController {
         let self = this;
         if (self.hasErrors())
             return this.showErrorToast('There are errors in the form');
-        console.log(self.getModel());
+        console.log(self.model.toObject());
         let order = self.issuedOrderManager.fromModel(self.model);
         self.issuedOrderManager.create(order, (err, keySSI, dbPath) => {
             if (err) {

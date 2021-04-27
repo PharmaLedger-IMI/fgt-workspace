@@ -1,0 +1,143 @@
+:root{
+    --ion-text-color: white;
+    --ion-background-color: #083140;
+    --ion-color: whitesmoke;
+
+    /*this is quite the hack while they dont let us get rid of */
+    /*--webc-modal-color: transparent;*/
+    --webc-modal-content-background: var(--ion-background-color);
+    --webc-modal-content-color: var(--ion-color);
+    --webc-modal-header-padding: 0px;
+    --webc-modal-header-border-width: 0px;
+    --webc-modal-content-border-color: var(--ion-color-medium-contrast);
+    --webc-modal-inner-padding: 0px 10px;
+
+    --ion-color-primary: #428cff;
+    --ion-color-primary-rgb: 66,140,255;
+    --ion-color-primary-contrast: #ffffff;
+    --ion-color-primary-contrast-rgb: 255,255,255;
+    --ion-color-primary-shade: #3a7be0;
+    --ion-color-primary-tint: #5598ff;
+
+    --ion-color-secondary: #50c8ff;
+    --ion-color-secondary-rgb: 80,200,255;
+    --ion-color-secondary-contrast: #ffffff;
+    --ion-color-secondary-contrast-rgb: 255,255,255;
+    --ion-color-secondary-shade: #46b0e0;
+    --ion-color-secondary-tint: #62ceff;
+
+    --ion-color-tertiary: #6a64ff;
+    --ion-color-tertiary-rgb: 106,100,255;
+    --ion-color-tertiary-contrast: #ffffff;
+    --ion-color-tertiary-contrast-rgb: 255,255,255;
+    --ion-color-tertiary-shade: #5d58e0;
+    --ion-color-tertiary-tint: #7974ff;
+
+    --ion-color-success: #2fdf75;
+    --ion-color-success-rgb: 47,223,117;
+    --ion-color-success-contrast: #000000;
+    --ion-color-success-contrast-rgb: 0,0,0;
+    --ion-color-success-shade: #29c467;
+    --ion-color-success-tint: #44e283;
+
+    --ion-color-warning: #ffd534;
+    --ion-color-warning-rgb: 255,213,52;
+    --ion-color-warning-contrast: #000000;
+    --ion-color-warning-contrast-rgb: 0,0,0;
+    --ion-color-warning-shade: #e0bb2e;
+    --ion-color-warning-tint: #ffd948;
+
+    --ion-color-danger: #ff4961;
+    --ion-color-danger-rgb: 255,73,97;
+    --ion-color-danger-contrast: #ffffff;
+    --ion-color-danger-contrast-rgb: 255,255,255;
+    --ion-color-danger-shade: #e04055;
+    --ion-color-danger-tint: #ff5b71;
+
+    --ion-color-dark: #f4f5f8;
+    --ion-color-dark-rgb: 244,245,248;
+    --ion-color-dark-contrast: #000000;
+    --ion-color-dark-contrast-rgb: 0,0,0;
+    --ion-color-dark-shade: #d7d8da;
+    --ion-color-dark-tint: #f5f6f9;
+
+    --ion-color-medium: #989aa2;
+    --ion-color-medium-rgb: 152,154,162;
+    --ion-color-medium-contrast: #000000;
+    --ion-color-medium-contrast-rgb: 0,0,0;
+    --ion-color-medium-shade: #86888f;
+    --ion-color-medium-tint: #a2a4ab;
+
+    --ion-color-light: #222428;
+    --ion-color-light-rgb: 34,36,40;
+    --ion-color-light-contrast: #ffffff;
+    --ion-color-light-contrast-rgb: 255,255,255;
+    --ion-color-light-shade: #1e2023;
+    --ion-color-light-tint: #383a3e;
+}
+
+/*WebCardinal CSS hacks*/
+webc-modal{
+    --background: var(--ion-background-color);
+    --padding: 2px;
+    --header-border: 0px;
+}
+
+
+/*ion-footer.modal-class {*/
+/*    --margin-top: 10px;*/
+/*}*/
+
+ion-title.modal-class {
+
+}
+
+ion-item{
+    --background: transparent;
+}
+
+ion-modal{
+    --ion-background-color: #ffffff;
+    --backdrop-opacity: 0.5;
+}
+
+ion-toolbar.menu{
+    --align-content: center;
+}
+
+ion-content.main-content{
+    --background:  url("assets/images/bg1.png") 0 0/100% 100%;
+}
+
+ion-icon{
+    --color: whitesmoke;
+}
+
+ion-img.main-logo{
+    height: 5%;
+    width: 5%;
+    margin: 5px 15px 5px 15px;
+}
+
+ion-img.menu-logo{
+    align-content: center;
+    max-height:50%;
+    max-width: 50%;
+    margin: 5px 15px 5px 15px;
+}
+
+ion-img.modal-class{
+    max-width: 100%;
+    padding: 15px 30% 0px 30%;
+}
+
+div.with-gradient{
+    opacity: 0.7;
+    background: linear-gradient(180deg, #00345b 0%, #008798 100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+}

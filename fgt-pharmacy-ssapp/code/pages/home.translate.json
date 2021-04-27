@@ -1,5 +1,23 @@
 {
   "title": "Finished Goods Traceability - Pharmacy",
+  "loading": {
+    "loading": {
+      "status": "Loading Application...",
+      "progress": 10
+    },
+    "loaded": {
+      "status": "Application Loaded!",
+      "progress": 70
+    },
+    "booting": {
+      "status": "Booting Application",
+      "progress": 90
+    },
+    "booted": {
+      "status": "Welcome",
+      "progress": 100
+    }
+  },
   "welcome": "Welcome back",
   "menu": {
     "dashboard": "Dashboard",
