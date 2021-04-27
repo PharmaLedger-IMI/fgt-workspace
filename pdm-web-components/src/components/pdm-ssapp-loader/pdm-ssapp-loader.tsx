@@ -54,8 +54,10 @@ export class PdmSsappLoader implements ComponentInterface {
   @Method()
   // @ts-ignore
   async updateStatus(evt){
-    evt.preventDefault();
-    evt.stopImmediatePropagation();
+    if (evt.prevendDefault)
+      evt.preventDefault();
+    if (evt.stopImmediatePropagation)
+      evt.stopImmediatePropagation();
     this.status = evt.detail.status;
     this.progress = evt.detail.progress;
   }
@@ -77,7 +79,7 @@ export class PdmSsappLoader implements ComponentInterface {
       return;
     return (
       <ion-col size="12">
-        <ion-item>
+        <ion-item lines="none">
           <ion-label color="secondary" class="ion-text-center" size="small">{this.progress}%</ion-label>
         </ion-item>
       </ion-col>
