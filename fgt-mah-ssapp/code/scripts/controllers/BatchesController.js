@@ -13,7 +13,7 @@ export default class BatchesController extends LocalizedController {
         this.participantManager = wizard.Managers.getParticipantManager();
         this.batchManager = wizard.Managers.getBatchManager(this.participantManager);
 
-        this.setModel(this.getModel());
+        this.model = this.getModel();
 
         let self = this;
 

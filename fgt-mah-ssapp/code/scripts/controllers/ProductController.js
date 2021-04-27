@@ -26,7 +26,7 @@ export default class ProductController extends LocalizedController {
         super.bindLocale(self, `product`, true);
         this.participantManager = wizard.Managers.getParticipantManager();
         this.productManager = wizard.Managers.getProductManager(this.participantManager);
-        self.setModel(self.getModel());
+        self.model = self.getModel();
         self.onTagClick(`try-create-product`, self._submitProduct.bind(self));
         console.log("ProductController initialized");
     }

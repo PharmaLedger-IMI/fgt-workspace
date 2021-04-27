@@ -11,7 +11,7 @@ export default class ProductsController extends LocalizedController {
         this.participantManager = wizard.Managers.getParticipantManager();
         this.productManager = wizard.Managers.getProductManager(this.participantManager);
 
-        this.setModel(this.getModel());
+        this.model = this.getModel();
 
         let self = this;
         self.onTagEvent('add-product', 'click', (evt) => {
