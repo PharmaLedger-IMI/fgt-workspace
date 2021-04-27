@@ -110,7 +110,7 @@ export class PdmSsappLoader implements ComponentInterface {
 
   private getMedicalLoader(){
     return (
-      <span class="no-cpu loader"></span>
+      <span class="try-force-gpu loader"></span>
     )
   }
 
