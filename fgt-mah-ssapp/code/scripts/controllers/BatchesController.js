@@ -6,7 +6,7 @@ export default class BatchesController extends LocalizedController {
     initializeModel = () => ({});
 
     constructor(element, history) {
-        super(element, history);
+        super(element, history, false);
         const wizard = require('wizard');
         const LocaleService = wizard.Services.WebcLocaleService;
         LocaleService.bindToLocale(this,"batches");
@@ -21,12 +21,6 @@ export default class BatchesController extends LocalizedController {
             evt.preventDefault();
             evt.stopImmediatePropagation();
             self.element.querySelector('pdm-ion-table').refresh();
-        }, {capture: true});
-
-        self.on(EVENT_SEND_ERROR, (evt) => {
-            evt.preventDefault();
-            evt.stopImmediatePropagation();
-            self.showErrorToast(evt);
         }, {capture: true});
     }
 

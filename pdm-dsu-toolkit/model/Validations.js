@@ -44,8 +44,8 @@ const ION_CONST = {
     name_key: "name",
     type_key: "type",
     required_key: "required",
-    max_length: "maxlength",
-    min_length: "minlength",
+    max_length: "max-length",
+    min_length: "min-length",
     max_value: "max",
     min_value: "min",
     input_tag: "ion-input",
@@ -69,7 +69,7 @@ const ION_CONST = {
                     {
                         variable: "--border-color",
                         set: "var(--ion-color-danger)",
-                        unset: "var(--ion-color)"
+                        unset: ""
                     }
                 ]
             }
@@ -286,7 +286,9 @@ const updateModelAndGetErrors = function(controller, element, prefix, force){
         return;
     let name = element.name.substring(prefix.length);
     if (typeof controller.model[name] === 'object') {
-        let valueChanged = controller.model[name].value !== element.value;
+        let valueChanged = (controller.model[name].value === undefined && !!element.value)
+            || (!!controller.model[name].value && controller.model[name].value !== element.value);
+
         controller.model[name].value = element.value;
         if (valueChanged || force){
             const hasErrors = hasIonErrors(element, prefix);
@@ -345,19 +347,19 @@ const updateStyleVariables = function(controller, element, hasErrors){
  * @param {WebcController} controller
  * @param {string} prefix
  * @return {boolean} if there are any errors in the model
+ * @param {boolean} force (Decides if forces the validation to happen even if fields havent changed)
  */
-const controllerHasErrors = function(controller, prefix){
+const controllerHasErrors = function(controller, prefix, force){
     let inputs = controller.element.querySelectorAll(`${ION_CONST.input_tag}[name^="${prefix}"]`);
     let errors = [];
     let error;
     inputs.forEach(el => {
-        error = updateModelAndGetErrors(controller, el, prefix, true);
+        error = updateModelAndGetErrors(controller, el, prefix, force);
         if (error)
             errors.push(error);
     });
     let hasErrors = errors.length > 0;
     controller.send(hasErrors ? 'ion-model-is-invalid' : 'ion-model-is-valid');
-    controller.beenValidatedOnce = true;
     return hasErrors;
 }
 
@@ -375,7 +377,6 @@ const controllerHasErrors = function(controller, prefix){
  *
  * where all the inputs are validated
  *
- * call this only after the setModel call for safety
  * @param {WebcController} controller
  * @param {function()} [onValidModel] the function to be called when the whole Controller model is valid
  * @param {function()} [onInvalidModel] the function to be called when any part of the model is invalid
@@ -403,7 +404,7 @@ const bindIonicValidation = function(controller, onValidModel, onInvalidModel, p
     controller.on('ionChange', (evt) => {
         evt.preventDefault();
         evt.stopImmediatePropagation();
-        let element = evt.srcElement;
+        let element = evt.target;
         if (!element.name) return;
         let errors = updateModelAndGetErrors(controller, element, prefix);
         if (errors)     // one fails, all fail
@@ -412,7 +413,7 @@ const bindIonicValidation = function(controller, onValidModel, onInvalidModel, p
             controllerHasErrors(controller, prefix);
     });
 
-    controller.hasErrors = () => controllerHasErrors(controller, prefix);
+    controller.hasErrors = (force) => controllerHasErrors(controller, prefix, force);
 
     controller.on('ion-model-is-valid', (evt) => {
         evt.preventDefault();

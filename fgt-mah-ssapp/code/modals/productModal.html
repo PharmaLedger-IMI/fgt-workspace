@@ -10,15 +10,15 @@
 </ion-item>
 <ion-item>
     <ion-label position="stacked">{{ @gtin.label }}</ion-label>
-    <ion-input name="input-gtin" data-view-model="@gtin" clear-on-edit="true"></ion-input>
+    <ion-input name="input-gtin" data-view-model="@gtin" max="@gtin.max" max="@gtin.min" max-length="@gtin.max-length" min-length="@gtin.min-length" clear-on-edit="true"></ion-input>
 </ion-item>
 <ion-item>
     <ion-label position="stacked">{{ @manufName.label }}</ion-label>
-    <ion-input name="input-manufName" data-view-model="@manufName" clear-on-edit="true"></ion-input>
+    <ion-input name="input-manufName" data-view-model="@manufName" min-length="@manufName.min-length" clear-on-edit="true"></ion-input>
 </ion-item>
 <ion-item>
     <ion-label position="stacked">{{ @description.label }}</ion-label>
-    <ion-input name="input-description" data-view-model="@description" clear-on-edit="true"></ion-input>
+    <ion-input name="input-description" data-view-model="@description" min-length="@description.min-length" clear-on-edit="true"></ion-input>
 </ion-item>
 <ion-footer class="modal-class">
     <ion-toolbar>

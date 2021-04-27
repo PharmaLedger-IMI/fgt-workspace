@@ -117,6 +117,7 @@ ion-grid.status-grid {
   background-repeat: no-repeat;
   box-sizing: border-box;
   animation: animloader 6s linear infinite;
+  will-change: background-position;
 }
 .loader::after {
   content: '';
@@ -140,6 +141,7 @@ ion-grid.status-grid {
   width: 6px;
   height: 6px;
   animation: animloader1 6s linear infinite;
+  will-change: box-shadow;
 }
 
 @keyframes animloader {
@@ -172,6 +174,14 @@ ion-grid.status-grid {
   100% {
     box-shadow: 4px -100px rgba(255, 255, 255, 0), 8px -90px rgba(255, 255, 255, 0), 10px -120px rgba(255, 255, 255, 0), 15px -45px rgba(255, 255, 255, 0);
   }
+}
+
+/* Hack to try and force the CSS animation to be rendered by the GPU over the CPU*/
+.try-force-gpu {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  will-change: transform;
 }
 
 /*END OF MEDICAL LOADER*/
