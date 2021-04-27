@@ -124,14 +124,14 @@ import LoaderService from "../services/LoaderService.js";
  * @class HomeController
  */
 export default class HomeController extends LocalizedController {
-    getModel = () => ({
+    initializeModel = () => ({
         participant: undefined
     });
 
     constructor(element, history) {
         super(element, history);
         super.bindLocale(this);
-        this.setModel(this.getModel());
+        this.model = this.initializeModel();
 
         let self = this;
         this.on('perform-registration', async (event) => {

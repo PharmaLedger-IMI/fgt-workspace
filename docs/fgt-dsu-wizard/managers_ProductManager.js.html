@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-dsu-wizard.module_commands.html">commands</a></li><li><a href="fgt-dsu-wizard.module.managers.html">managers</a></li><li><a href="fgt-dsu-wizard.module_model.html">model</a></li><li><a href="fgt-dsu-wizard.module_services.html">services</a></li><li><a href="fgt-mah-ssapp.module_managers.html">managers</a></li><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Classes</h3><ul><li><a href="BatchManager.html">BatchManager</a></li><li><a href="fgt-dsu-wizard.module_model-Batch.html">Batch</a></li><li><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html">ParticipantManager</a></li><li><a href="Manager.html">Manager</a></li><li><a href="OrderManager.html">OrderManager</a></li><li><a href="ProductManager.html">ProductManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getBatchManager">getBatchManager</a></li><li><a href="global.html#getOrderManager">getOrderManager</a></li><li><a href="global.html#getProductManager">getProductManager</a></li><li><a href="global.html#getStockManager">getStockManager</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-dsu-wizard.module_commands.html">commands</a></li><li><a href="fgt-dsu-wizard.module.managers.html">managers</a></li><li><a href="fgt-dsu-wizard.module_model.html">model</a></li><li><a href="fgt-dsu-wizard.module_services.html">services</a></li><li><a href="fgt-mah-ssapp.module_managers.html">managers</a></li><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Classes</h3><ul><li><a href="BatchManager.html">BatchManager</a></li><li><a href="fgt-dsu-wizard.module_model-Batch.html">Batch</a></li><li><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html">ParticipantManager</a></li><li><a href="IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="OrderManager.html">OrderManager</a></li><li><a href="ProductManager.html">ProductManager</a></li><li><a href="ReceivedOrderManager.html">ReceivedOrderManager</a></li><li><a href="Stock.html">Stock</a></li><li><a href="StockManager.html">StockManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getBatchManager">getBatchManager</a></li><li><a href="global.html#getIssuedOrderManager">getIssuedOrderManager</a></li><li><a href="global.html#getProductManager">getProductManager</a></li><li><a href="global.html#getReceivedOrderManager">getReceivedOrderManager</a></li><li><a href="global.html#getStockManager">getStockManager</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,9 +109,11 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const {INFO_PATH, PRODUCT_MOUNT_PATH, ANCHORING_DOMAIN} = require('../constants');
+            <pre class="prettyprint source linenums"><code>const {INFO_PATH, ANCHORING_DOMAIN, DB, DEFAULT_QUERY_OPTIONS} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
-const Product = require('../model').Product;
+const Product = require('../model/Product');
+
+
 /**
  * Product Manager Class
  *
@@ -126,110 +128,199 @@ const Product = require('../model').Product;
  *     &lt;li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)&lt;/li>
  * &lt;/ul>
  *
- * @param {Archive} storageDSU the DSU where the storage should happen
+ * @param {ParticipantManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @class ProductManager
  */
-class ProductManager extends Manager{
-    constructor(storageDSU) {
-        super(storageDSU);
-        this.productService = new (require('../services').ProductService)(ANCHORING_DOMAIN);
-        this.batchManager = require('./BatchManager')(storageDSU);
+class ProductManager extends Manager {
+    constructor(participantManager, callback) {
+        super(participantManager, DB.products, ['gtin'], callback);
+        this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
+        this.batchManager = require('./BatchManager')(participantManager, participantManager.force);
     }
 
     /**
-     * Returns the mount path for a given gtin
+     * Binds the {@link Product#manufName} to the Product
+     * @param {Product} product
+     * @param {function(err, Product)} callback
      * @private
      */
-    _getMountPath(gtin){
-        return `${PRODUCT_MOUNT_PATH}/${gtin}`;
-    }
-
-    /**
-     * Creates a {@link Product} dsu
-     * @param {Product} product
-     * @param {function(err, keySSI, string)} callback where the string is the mount path relative to the main DSU
-     */
-    create(product, callback) {
+    _bindMah(product, callback){
         let self = this;
-        self.productService.create(product, (err, keySSI) => {
+        self.getIdentity((err, mah) => {
             if (err)
-                return callback(err);
-            let mount_path = this._getMountPath(product.gtin);
-            self.storage.mount(mount_path, keySSI.getIdentifier(), (err) => {
-                if (err)
-                    return callback(err);
-                console.log(`Product ${product.gtin} created and mounted at '${mount_path}'`);
-                callback(undefined, keySSI, mount_path);
-            });
-        });
-    }
-
-    /**
-     * reads the product information (the /info path) from a given gtin (if exists and is registered to the mah)
-     * @param {string} gtin
-     * @param {function(err, Product)} callback
-     */
-    getOne(gtin, callback){
-        this.storage.getObject(`${this._getMountPath(gtin)}${INFO_PATH}`, (err, product) => {
-            if (err)
-                return callback(err);
+                return self._err(`Could not retrieve identity`, err, callback);
+            product.manufName = mah.id;
             callback(undefined, product);
         });
     }
 
     /**
-     * Removes a product from the list (does not delete/invalidate DSU, simply 'forgets' the reference)
+     * Must wrap the entry in an object like:
+     * &lt;pre>
+     *     {
+     *         index1: ...
+     *         index2: ...
+     *         value: item
+     *     }
+     * &lt;/pre>
+     * so the DB can be queried by each of the indexes and still allow for lazy loading
+     * @param {string} key
+     * @param {Product} item
+     * @param {string|object} record
+     * @return {object} the indexed object to be stored in the db
+     * @protected
+     * @override
+     */
+    _indexItem(key, item, record){
+        return {
+            gtin: key,
+            name: item.name,
+            value: record
+        }
+    };
+
+    /**
+     * Creates a {@link Product} dsu
+     * @param {string|number} [gtin] the table key
+     * @param {Product} product
+     * @param {function(err, keySSI, string)} callback where the string is the mount path relative to the main DSU
+     * @override
+     */
+    create(gtin, product, callback) {
+        if (!callback){
+            callback = product;
+            product = gtin;
+            gtin = product.gtin;
+        }
+        let self = this;
+        self._bindMah(product, (err, product) => {
+            if (err)
+                return self._err(`Could not bind mah to product`, err, callback);
+            self.productService.create(product, (err, keySSI) => {
+                if (err)
+                    return self._err(`Could not create product DSU for ${product}`, err, callback);
+                const record = keySSI.getIdentifier();
+                self.insertRecord(gtin, self._indexItem(gtin, product, record), (err) => {
+                    if (err)
+                        return self._err(`Could not inset record with gtin ${gtin} on table ${self.tableName}`, err, callback);
+                    const path =`${self.tableName}/${gtin}`;
+                    console.log(`Product ${gtin} created stored at '${path}'`);
+                    callback(undefined, keySSI, path);
+                });
+            });
+        });
+    }
+
+    /**
+     * reads ssi for that gtin in the db. loads is and reads the info at '/info'
      * @param {string} gtin
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
+     * @param {function(err, Product|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
+     * @override
+     */
+    getOne(gtin, readDSU,  callback) {
+        super.getOne(gtin, readDSU, callback);
+    }
+
+    /**
+     * Removes a product from the list (does not delete/invalidate DSU, simply 'forgets' the reference)
+     * @param {string|number} gtin
      * @param {function(err)} callback
+     * @override
      */
     remove(gtin, callback) {
-        let self = this;
-        let mount_path = this._getMountPath(gtin);
-        self.storage.unmount(mount_path, (err) => {
-            if (err)
-                return callback(err);
-            console.log(`Product ${gtin} removed from mount point ${mount_path}`);
-            callback();
-        });
+        super.remove(gtin, callback);
     }
 
     /**
-     * Edits/Overwrites the product details
-     * @param {string} gtin
-     * @param {function(err)} callback
+     * updates a product from the list
+     * @param {string|number} [gtin] the table key
+     * @param {Product} newProduct
+     * @param {function(err, Product, Archive)} callback
+     * @override
      */
-    edit(gtin, callback) {
+    update(gtin, newProduct, callback){
+        if (!callback){
+            callback = newProduct;
+            newProduct = gtin;
+            gtin = newProduct.gtin;
+        }
         let self = this;
-        let mount_path = this._getMountPath(gtin);
-        self.storage.writeFile(`${mount_path}${INFO_PATH}`, (err) => {
+
+        super.update(gtin, newProduct, (err, storedData, dsu) => {
             if (err)
-                return callback(err);
+                return self._err(`Could not update product with gtin ${gtin}`, err, callback);
             console.log(`Product ${gtin} updated`);
-            callback();
+            callback(undefined, newProduct, dsu)
+        });
+    }
+
+
+    /**
+     * Lists all registered items according to query options provided
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
+     * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
+     * @param {function(err, object[])} callback
+     * @override
+     */
+    getAll(readDSU, options, callback){
+        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
+            query: ['gtin like /.*/g']
+        });
+
+        if (!callback){
+            if (!options){
+                callback = readDSU;
+                options = defaultOptions();
+                readDSU = true;
+            }
+            if (typeof readDSU === 'boolean'){
+                callback = options;
+                options = defaultOptions();
+            }
+            if (typeof readDSU === 'object'){
+                callback = options;
+                options = readDSU;
+                readDSU = true;
+            }
+        }
+
+        options = options || defaultOptions();
+
+        let self = this;
+        self.query(options.query, options.sort, options.limit, (err, records) => {
+            if (err)
+                return self._err(`Could not perform query`, err, callback);
+            if (!readDSU)
+                return callback(undefined, records.map(r => r.gtin));
+            records = records.map(r => r.value);
+            self._iterator(records.slice(), self._getDSUInfo.bind(self), (err, result) => {
+                if (err)
+                    return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
+                console.log(`Parsed ${result.length} ${self._getTableName()}s`);
+                callback(undefined, result);
+            });
         });
     }
 
     /**
-     * Lists all registered products
-     * @param {function(err, Product[])} callback
+     * Converts the text typed in a general text box into the query for the db
+     * Subclasses should override this
+     * @param {string} keyword
+     * @return {string[]} query
+     * @protected
      */
-    getAll(callback) {
-        super.listMounts(PRODUCT_MOUNT_PATH, (err, mounts) => {
-            if (err)
-                return callback(err);
-            console.log(`Found ${mounts.length} products at ${PRODUCT_MOUNT_PATH}`);
-            mounts = mounts.map(m => {
-                m.gtin = m.path;
-                m.path = `${PRODUCT_MOUNT_PATH}/${m.path}`;
-                return m;
-            });
-            super.readAll(mounts, callback);
-        });
+    _keywordToQuery(keyword){
+        keyword = keyword || '.*';
+        return [`gtin like /${keyword}/g`];
     }
 
     /**
      *
      * @param model
      * @returns {Product}
+     * @override
      */
     fromModel(model){
         return new Product(super.fromModel(model));
@@ -238,12 +329,19 @@ class ProductManager extends Manager{
 
 let productManager;
 /**
- * @param {Archive} dsu
+ * @param {ParticipantManager} [participantManager] only required the first time, if not forced
+ * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
+ * Makes Participant Manager required again!
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {ProductManager}
  */
-const getProductManager = function (dsu) {
-    if (!productManager)
-        productManager = new ProductManager(dsu);
+const getProductManager = function (participantManager, force, callback) {
+    if (typeof force === 'function'){
+        callback = force;
+        force = false;
+    }
+    if (!productManager || force)
+        productManager = new ProductManager(participantManager, callback);
     return productManager;
 }
 
