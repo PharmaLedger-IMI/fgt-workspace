@@ -156,7 +156,7 @@ class ProductManager extends Manager {
     getAll(readDSU, options, callback){
         const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
             query: ['__timestamp > 0'],
-            sort: "desc"
+            sort: "asc"
         });
 
         if (!callback){
