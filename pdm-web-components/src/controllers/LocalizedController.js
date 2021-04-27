@@ -156,7 +156,7 @@ export default class LocalizedController extends WebcController {
     self.on(EVENT_SEND_MESSAGE, (evt) => {
       evt.preventDefault();
       evt.stopImmediatePropagation();
-      self.showErrorToast(evt.detail);
+      self.showToast(evt.detail);
     }, {capture: true});
   }
 
