@@ -2,6 +2,26 @@
     "workDir": ".",
     "dependencies": [
         {
+            "name": "cardinal",
+            "src": "http://github.com/privatesky/cardinal.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "2ffbfae1d80b3251c5d39c3820fb2e99dba7bda3"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd cardinal && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd cardinal && npm run build"
+                }
+            ]
+        },
+        {
             "name": "privatesky",
             "src": "http://github.com/privatesky/privatesky.git",
             "actions": [
@@ -9,7 +29,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "c325c1261803ef4f3301cb7c7bba4cb771345bc8"
+                    "commit": "4cab7e1c0b1620bf2c32a0abf5b00a31ea6b26e5"
                 },
                 {
                     "type": "execute",
@@ -27,33 +47,14 @@
             ]
         },
         {
-            "name": "cardinal",
-            "src": "https://github.com/PrivateSky/cardinal.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "3ac61b6f75bd376a8778cbc25907d9bfc7bccb79"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd cardinal && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd cardinal && npm run build"
-                }
-            ]
-        },
-        {
             "name": "webcardinal",
             "src": "https://github.com/webcardinal/webcardinal-bundler",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false
+                    "collectLog": false,
+                    "commit": "16c870c38009936ce84a10b669049b538e11126a"
                 },
                 {
                     "type": "execute",
@@ -82,7 +83,11 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd pdm-dsu-toolkit && npm install && npm run prebuild"
+                    "cmd": "cd pdm-dsu-toolkit && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-dsu-toolkit && npm run prebuild"
                 }
             ]
         },
@@ -92,6 +97,15 @@
                 {
                     "type": "execute",
                     "cmd": "cd fgt-dsu-wizard && npm install && npm run prebuild"
+                }
+            ]
+        },
+        {
+            "name": "pdm-web-components",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-web-components && npm install && npm run build"
                 }
             ]
         },
@@ -117,27 +131,7 @@
             ]
         },
         {
-            "name": "apihub-root/fgt-mah-wallet/loader",
-            "src": "https://github.com/PrivateSky/trust-loader.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "7fb45ead4022ed835c01e0071a914c0673c46ee0"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npm run build"
-                }
-            ]
-        },
-        {
-            "name": "Build and deploy PDM Trust Loader to Wholesaler and Pharmacy",
+            "name": "Build and deploy PDM Trust Loader to Wholesaler and Pharmacy & mah",
             "src": ".",
             "actions": [
                 {
@@ -164,6 +158,18 @@
                     "type": "copy",
                     "src": "./pdm-trust-loader/src",
                     "target": "./apihub-root/fgt-pharmacy-wallet/loader",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "remove",
+                    "target": "./apihub-root/fgt-mah-wallet/loader"
+                },
+                {
+                    "type": "copy",
+                    "src": "./pdm-trust-loader/src",
+                    "target": "./apihub-root/fgt-mah-wallet/loader",
                     "options": {
                         "overwrite": true
                     }
@@ -209,7 +215,8 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false
+                    "collectLog": false,
+                    "commit": "793cde9bcf5568c16c3fe9d0160bb24c964c8ad8"
                 },
                 {
                     "type": "execute",
@@ -224,7 +231,8 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false
+                    "collectLog": false,
+                    "commit": "347d1aceaf1f06b09d0307f9b78049f313b783aa"
                 },
                 {
                     "type": "execute",
@@ -239,7 +247,8 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false
+                    "collectLog": false,
+                    "commit": "82ea912284cbd8b19a8a2a8ab40d03103b983c7a"
                 },
                 {
                     "type": "execute",
@@ -271,7 +280,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "7fb45ead4022ed835c01e0071a914c0673c46ee0"
+                    "commit": "dd2d5a6bd5c431478cd6a75239e2c3f72c6fdff4"
                 },
                 {
                     "type": "execute",
@@ -329,6 +338,15 @@
                     "cmd": "cd fgt-wholesaler-ssapp && npm install"
                 }
             ]
+        },
+        {
+            "name": "Install workbox cli globally",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "npm install -g workbox-cli@5.1.4"
+                }
+            ]
         }
     ],
     "build-use-case": [
@@ -363,7 +381,17 @@
             ]
         },
         {
-            "name": "Build and deploy PDM Trust Loader to WHolesaler & Pharmacy",
+            "name": "Build Components",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-web-components && npm run build"
+                }
+            ]
+        },
+        {
+            "name": "Build and deploy PDM Trust Loader to WHolesaler & Pharmacy & mah",
             "src": ".",
             "actions": [
                 {
@@ -390,6 +418,18 @@
                     "type": "copy",
                     "src": "./pdm-trust-loader/src",
                     "target": "./apihub-root/fgt-pharmacy-wallet/loader",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "remove",
+                    "target": "./apihub-root/fgt-mah-wallet/loader"
+                },
+                {
+                    "type": "copy",
+                    "src": "./pdm-trust-loader/src",
+                    "target": "./apihub-root/fgt-mah-wallet/loader",
                     "options": {
                         "overwrite": true
                     }
@@ -426,14 +466,6 @@
                     "type": "copy",
                     "src": "./fgt-mah-ssapp/seed",
                     "target": "./apihub-root/fgt-mah-wallet/wallet-patch/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "./fgt-mah-ssapp/seed",
-                    "target": "./apihub-root/fgt-mah-wallet/apps-patch/fgt-mah-ssapp/seed",
                     "options": {
                         "overwrite": true
                     }
@@ -506,7 +538,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npm install"
+                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npx workbox generateSW"
                 },
                 {
                     "type": "execute",
