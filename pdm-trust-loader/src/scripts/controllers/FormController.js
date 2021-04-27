@@ -12,14 +12,14 @@ import LocalizedController from './LocalizedController.js'
  */
 export default class FormController extends LocalizedController {
 
-    getModel = () => ({});
+    initializeModel = () => ({});
 
     constructor(element, history) {
         super(element, history);
         let self = this;
         super.bindLocale(self, `form`, true);
 
-        self.model = self.getModel();
+        self.model = self.initializeModel();
         console.log("FormController initialized");
         Object.entries(self.model.buttons).forEach(b => {
             self.onTagClick(`try${b[0]}`, self._handleTry(`${b[0]}`).bind(self));

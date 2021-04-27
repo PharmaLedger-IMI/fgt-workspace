@@ -1,6 +1,7 @@
 /**
  * @module controllers
  */
+
 import {EVENT_SEND_ERROR} from "../constants/events";
 
 /**
@@ -18,13 +19,14 @@ const {WebcController} = WebCardinal.controllers;
  *      constructor(element, history){
  *          super(element, history);
  *          super.bindLocale(this, pageName);
- *          this.setModel(this.getModel());
+ *          this.model = this.initializeModel();
  *      }
  * </pre>
+ * @module controllers
  * @class LocalizedController
  */
 export default class LocalizedController extends WebcController {
-  getModel = () => {
+  initializeModel = () => {
     throw new Error("Child classes must implement this");
   }
 
@@ -127,16 +129,28 @@ export default class LocalizedController extends WebcController {
       require('wizard').Model.Validations.bindIonicValidation(controller);
   }
 
-  constructor(element, history) {
-    super(element, history);
+  /**
+   * Makes the controller listen for the {@link EVENT_SEND_ERROR} event and show the error toast to the user
+   * @protected
+   */
+  _bindErrorHandler(){
     let self = this;
     self.on(EVENT_SEND_ERROR, (evt) => {
-      if (evt) {
-        evt.preventDefault();
-        evt.stopImmediatePropagation();
-      }
-      console.log(evt);
+      evt.preventDefault();
+      evt.stopImmediatePropagation();
       self.showErrorToast(evt);
     }, {capture: true});
+  }
+
+  /**
+   *
+   * @param {HTMLElement} element
+   * @param {*} history
+   * @param {boolean} [bindErrorHandler] defaults to false. binds (or not) the error handler to the controller
+   */
+  constructor(element, history, bindErrorHandler) {
+    super(element, history);
+    if (!!bindErrorHandler)
+     this._bindErrorHandler();
   }
 }
