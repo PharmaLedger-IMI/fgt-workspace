@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul><h3>Classes</h3><ul><li><a href="module-controllers-LocalizedController.html">LocalizedController</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getPendingOrdersAsync">getPendingOrdersAsync</a></li><li><a href="global.html#getStockAsync">getStockAsync</a></li><li><a href="global.html#updatePendingOrders">updatePendingOrders</a></li><li><a href="global.html#updateStock">updateStock</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getAll">getAll</a></li><li><a href="global.html#getPendingOrdersAsync">getPendingOrdersAsync</a></li><li><a href="global.html#getStockAsync">getStockAsync</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updatePendingOrders">updatePendingOrders</a></li><li><a href="global.html#updateStock">updateStock</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,11 +109,11 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import LocalizedController from "./LocalizedController.js";
+            <pre class="prettyprint source linenums"><code>import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
 const Product = require('wizard').Model.Product;
 
 export default class StockController extends LocalizedController{
-    getModel = () => ({
+    initializeModel = () => ({
         stock: []
     });
 
@@ -125,18 +125,17 @@ export default class StockController extends LocalizedController{
         const participantManager = wizard.Managers.getParticipantManager();
         this.stockManager = wizard.Managers.getStockManager(participantManager);
 
-        this.setModel(this.getModel());
+        this.model = this.initializeModel();
 
         this.model.addExpression('hasStock', () => {
             return typeof this.model.stock !== 'undefined' &amp;&amp; this.model.stock.length > 0;
         }, 'stock');
 
-        this.on('ionTabsDidChange', (evt) => {
-            console.log(evt);
+        this.on('refresh', (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
             this.getStockAsync();
-        })
-
-        this.getStockAsync();
+        }, {capture: true});
     }
 
     /**

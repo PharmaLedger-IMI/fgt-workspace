@@ -686,6 +686,10 @@
                 {
                     "type": "execute",
                     "cmd": "cd pdm-trust-loader && npm run docs"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-web-components && npm run docs"
                 }
             ]
         },
@@ -749,6 +753,15 @@
                     "type": "copy",
                     "src": "pdm-trust-loader/docs/",
                     "target": "docs/pdm-trust-loader",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+
+                    "type": "copy",
+                    "src": "pdm-web-components/docs/",
+                    "target": "docs/pdm-web-components",
                     "options": {
                         "overwrite": true
                     }

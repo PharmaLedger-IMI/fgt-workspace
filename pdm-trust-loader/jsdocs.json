@@ -12,8 +12,7 @@
         "exclude": [
             "./src/bundles",
             "./src/webcardinal",
-            "./src/assets/ionic-core",
-            "/src/asset/pwa",
+            "./src/assets",
             "./src/swBoot.js",
             "./src/swPwa.js"
         ],

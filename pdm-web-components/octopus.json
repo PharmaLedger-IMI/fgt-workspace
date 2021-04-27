@@ -1,0 +1,38 @@
+{
+  "workDir": ".",
+  "dependencies": [
+  ],
+  "build": [
+  ],
+  "docs": [
+    {
+      "name": "Documentation Theme Install (globally)",
+      "src": "",
+      "description": "This hack is only used because the better-docs theme has a security vulnerability that would be assumed as a security risk for the repo, when its only used to generate documentation",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "sh -c \"theme=`npm ls -g better-docs | grep better-docs` && [ -z \\\"$theme\\\" ] && npm install -g better-docs taffydb || echo \\\"Documentation Theme already Installed\\\"\""
+        }
+      ]
+    },
+    {
+      "name": "Documentation",
+      "src": ".",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "node ./node_modules/markdown-include/bin/cli.js ./mdCompile.json"
+        },
+        {
+          "type": "execute",
+          "cmd": "jsdoc -c jsdocs.json -t \"$(npm root -g)/better-docs\""
+        },
+        {
+          "type": "execute",
+          "cmd": "cd docs && ./../workdocs/bin/correct_windows_names.sh ."
+        }
+      ]
+    }
+  ]
+}

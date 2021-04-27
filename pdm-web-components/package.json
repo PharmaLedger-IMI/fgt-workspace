@@ -19,7 +19,8 @@
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
-    "generate": "stencil generate"
+    "generate": "stencil generate",
+    "docs": "node ./node_modules/octopus/scripts/run docs"
   },
   "dependencies": {
     "stencil": "0.0.5"
@@ -27,6 +28,9 @@
   "license": "MIT",
   "devDependencies": {
     "@ionic/core": "^5.6.4",
-    "@stencil/core": "^2.5.2"
+    "@stencil/core": "^2.5.2",
+    "jsdoc": "^3.6.6",
+    "markdown-include": "^0.4.3",
+    "octopus": "git+https://github.com/PrivateSky/octopus.git#1.0"
   }
 }

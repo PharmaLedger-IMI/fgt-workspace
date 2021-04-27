@@ -12,7 +12,7 @@
         "exclude": [
             "./code/scripts/bundles",
             "./code/constitution",
-            "./code/assets/ionic-core",
+            "./code/assets",
             "./code/scripts/capacitor.js"
         ],
         "includePattern": ".+\\.js(doc|x)?$",
