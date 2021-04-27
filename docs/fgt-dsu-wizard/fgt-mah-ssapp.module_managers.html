@@ -90,7 +90,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-dsu-wizard.module_commands.html">commands</a></li><li><a href="fgt-dsu-wizard.module.managers.html">managers</a></li><li><a href="fgt-dsu-wizard.module_model.html">model</a></li><li><a href="fgt-dsu-wizard.module_services.html">services</a></li><li><a href="fgt-mah-ssapp.module_managers.html">managers</a></li><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Classes</h3><ul><li><a href="BatchManager.html">BatchManager</a></li><li><a href="fgt-dsu-wizard.module_model-Batch.html">Batch</a></li><li><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html">ParticipantManager</a></li><li><a href="Manager.html">Manager</a></li><li><a href="OrderManager.html">OrderManager</a></li><li><a href="ProductManager.html">ProductManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getBatchManager">getBatchManager</a></li><li><a href="global.html#getOrderManager">getOrderManager</a></li><li><a href="global.html#getProductManager">getProductManager</a></li><li><a href="global.html#getStockManager">getStockManager</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-dsu-wizard.module_commands.html">commands</a></li><li><a href="fgt-dsu-wizard.module.managers.html">managers</a></li><li><a href="fgt-dsu-wizard.module_model.html">model</a></li><li><a href="fgt-dsu-wizard.module_services.html">services</a></li><li><a href="fgt-mah-ssapp.module_managers.html">managers</a></li><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Classes</h3><ul><li><a href="BatchManager.html">BatchManager</a></li><li><a href="fgt-dsu-wizard.module_model-Batch.html">Batch</a></li><li><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html">ParticipantManager</a></li><li><a href="IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="OrderManager.html">OrderManager</a></li><li><a href="ProductManager.html">ProductManager</a></li><li><a href="ReceivedOrderManager.html">ReceivedOrderManager</a></li><li><a href="Stock.html">Stock</a></li><li><a href="StockManager.html">StockManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getBatchManager">getBatchManager</a></li><li><a href="global.html#getIssuedOrderManager">getIssuedOrderManager</a></li><li><a href="global.html#getProductManager">getProductManager</a></li><li><a href="global.html#getReceivedOrderManager">getReceivedOrderManager</a></li><li><a href="global.html#getStockManager">getStockManager</a></li></ul></div>
                 
             </nav>
         </div>
@@ -204,7 +204,7 @@
         
         <span class="code-name">
             
-                getParticipantManager<span class="signature">(dsuStorage<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {ParticipantManager}</span>
+                getParticipantManager<span class="signature">(dsuStorage<span class="signature-attributes">opt</span>, force<span class="signature-attributes">opt</span>, callback<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {ParticipantManager}</span>
             
         </span>
     </h4>
@@ -275,7 +275,78 @@
 
   
 
-  <td class="description last"><p>only required the first time</p></td>
+  <td class="description last"><p>only required the first time, if not forced</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>force</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">boolean</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>defaults to false. overrides the singleton behaviour and forces a new instance.
+Makes DSU Storage required again!</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>callback</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">function</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
 </tr>
 
 
@@ -323,7 +394,7 @@
         <p class="tag-source">
             <a href="managers_ParticipantManager.js.html" class="button">View Source</a>
             <span>
-                <a href="managers_ParticipantManager.js.html">managers/ParticipantManager.js</a>, <a href="managers_ParticipantManager.js.html#line49">line 49</a>
+                <a href="managers_ParticipantManager.js.html">managers/ParticipantManager.js</a>, <a href="managers_ParticipantManager.js.html#line55">line 55</a>
             </span>
         </p>
     
