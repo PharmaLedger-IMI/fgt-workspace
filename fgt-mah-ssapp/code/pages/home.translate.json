@@ -43,7 +43,7 @@
       "type": "text",
       "required": true,
       "input-mode": "text",
-      "min-length": 4
+      "minlength": 4
     },
     "gtin": {
       "label": "Product Gtin:",
@@ -51,8 +51,8 @@
       "type": "number",
       "required": true,
       "input-mode": "number",
-      "min-length": 12,
-      "max-length": 12,
+      "minlength": 12,
+      "maxlength": 12,
       "max": 999999999999
     },
     "manufName": {
@@ -61,7 +61,7 @@
       "required": true,
       "disabled": true,
       "input-mode": "text",
-      "min-length": 4
+      "minlength": 4
     },
     "description": {
       "label": "Product Description:",
@@ -69,7 +69,8 @@
       "type": "text",
       "required": true,
       "input-mode": "text",
-      "value": "This is a description..."
+      "value": "This is a description...",
+      "minlength": 10
     },
     "buttons": {
       "create-product": "Create",
