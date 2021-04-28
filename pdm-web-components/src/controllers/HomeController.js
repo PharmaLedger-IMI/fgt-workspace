@@ -24,13 +24,8 @@ export default class HomeController extends LocalizedController {
         this.on(EVENT_NAVIGATE_TAB, (evt) => {
           evt.preventDefault();
           evt.stopImmediatePropagation();
-          const el = self.element.querySelector(`ion-tabs`);
-          if (!el){
-            console.log(`A tab navigation request was received, but no ion-tabs could be found...`)
-            return;
-          }
-          el.select(evt.detail.tab);
-        }, {capture: true});
+          self._navigateToTab.call(self, evt.detail);
+        });
 
         this.participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, false, (err, pManager) => {
             if (err)
@@ -41,6 +36,17 @@ export default class HomeController extends LocalizedController {
             console.log("Home controller initialized");
             this._testParticipant();
         });
+    }
+
+    _navigateToTab(props){
+      let self = this;
+      const el = self.element.querySelector(`ion-tabs`);
+      if (!el){
+        console.log(`A tab navigation request was received, but no ion-tabs could be found...`)
+        return;
+      }
+      self.setState(props.props);
+      el.select(props.tab);
     }
 
     _updateLoading(status, progress){
