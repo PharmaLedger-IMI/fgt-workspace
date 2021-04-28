@@ -151,7 +151,7 @@ export class ManagedProductListItem {
       if (!self.product)
         return (<ion-skeleton-text animated></ion-skeleton-text>)
       return (
-        <ion-button slot="primary">
+        <ion-button slot="primary" data-tag="add-batch">
           <ion-icon name="file-tray-stacked-outline"></ion-icon>
         </ion-button>
       )

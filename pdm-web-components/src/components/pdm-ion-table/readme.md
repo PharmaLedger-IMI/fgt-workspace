@@ -48,6 +48,19 @@ Type: `Promise<void>`
 
 
 
+## Dependencies
+
+### Depends on
+
+- [multi-spinner](../multi-spinner)
+
+### Graph
+```mermaid
+graph TD;
+  pdm-ion-table --> multi-spinner
+  style pdm-ion-table fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

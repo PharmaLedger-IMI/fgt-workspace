@@ -1,11 +1,6 @@
 import {Component, Host, h, Element, Prop, ComponentInterface, Listen, Method, State} from '@stencil/core';
 import {HostElement} from '../../decorators'
 
-const SUPPORTED_LOADERS = {
-  simple: 'simple',
-  medical: 'medical'
-}
-
 @Component({
   tag: 'pdm-ssapp-loader',
   styleUrl: 'pdm-ssapp-loader.css',
@@ -99,30 +94,10 @@ export class PdmSsappLoader implements ComponentInterface {
     )
   }
 
-  private getSimpleLoader(){
-    return (
-      <div class="spinner">
-        <div class="dot1"></div>
-        <div class="dot2"></div>
-      </div>
-    )
-  }
-
-  private getMedicalLoader(){
-    return (
-      <span class="try-force-gpu loader"></span>
-    )
-  }
-
   private getLoader(){
-    switch (this.loader){
-      case SUPPORTED_LOADERS.simple:
-        return this.getSimpleLoader();
-      case SUPPORTED_LOADERS.medical:
-        return this.getMedicalLoader();
-      default:
-        throw new Error(`Unsupported loader ${this.loader}`)
-    }
+    return (
+      <multi-spinner type={this.loader}></multi-spinner>
+    )
   }
 
   render() {

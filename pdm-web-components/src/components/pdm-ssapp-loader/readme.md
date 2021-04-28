@@ -36,6 +36,19 @@ Type: `Promise<void>`
 
 
 
+## Dependencies
+
+### Depends on
+
+- [multi-spinner](../multi-spinner)
+
+### Graph
+```mermaid
+graph TD;
+  pdm-ssapp-loader --> multi-spinner
+  style pdm-ssapp-loader fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

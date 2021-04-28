@@ -266,10 +266,13 @@ export class PdmIonTable implements ComponentInterface {
 
   getLoadingContent(){
     return (
-      <ion-tem>
-        <ion-icon name="refresh-outline"></ion-icon>
-        {this.loadingMessage}
-      </ion-tem>
+      <ion-grid>
+        <ion-row class="ion-justify-content-center">
+          <ion-col size="5" class="ion-justify-content-center">
+              <multi-spinner type="circle"></multi-spinner>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     )
   }
 
