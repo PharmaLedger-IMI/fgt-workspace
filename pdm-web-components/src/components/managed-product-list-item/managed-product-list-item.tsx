@@ -30,11 +30,30 @@ export class ManagedProductListItem {
   })
   sendErrorEvent: EventEmitter;
 
+  /**
+   * Through this event navigation requests to tabs are made
+   */
+  @Event({
+    eventName: 'ssapp-navigate-tab',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  sendNavigateTab: EventEmitter;
+
   private sendError(message: string, err?: object){
     const event = this.sendErrorEvent.emit(message);
-    if (!event.defaultPrevented || err){
+    if (!event.defaultPrevented || err)
       console.log(`Product Component: ${message}`, err);
-    }
+  }
+
+  private navigateToTab(tab, props){
+    const event = this.sendNavigateTab.emit({
+      tab: tab,
+      props: props
+    });
+    if (!event.defaultPrevented)
+      console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
 
   @Prop() gtin: string;
@@ -151,7 +170,7 @@ export class ManagedProductListItem {
       if (!self.product)
         return (<ion-skeleton-text animated></ion-skeleton-text>)
       return (
-        <ion-button slot="primary" data-tag="add-batch">
+        <ion-button slot="primary" onClick={() => self.navigateToTab('tab-batches', {gtin: self.gtin})}>
           <ion-icon name="file-tray-stacked-outline"></ion-icon>
         </ion-button>
       )
