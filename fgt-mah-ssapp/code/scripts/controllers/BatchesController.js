@@ -1,4 +1,4 @@
-import {EVENT_SEND_ERROR, LocalizedController} from "../../assets/pdm-web-components/index.esm.js";
+import {EVENT_SEND_ERROR, LocalizedController, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
 const Batch = require('wizard').Model.Batch;
 
 export default class BatchesController extends LocalizedController {
@@ -17,7 +17,7 @@ export default class BatchesController extends LocalizedController {
 
         let self = this;
 
-        self.on('refresh', (evt) => {
+        self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
             self.element.querySelector('pdm-ion-table').refresh();
