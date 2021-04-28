@@ -77,8 +77,8 @@ export default class FormController extends LocalizedController {
             ${['number', 'date'].indexOf(attributes.type) !== -1 ? `inputmode="${attributes.type}"` : `inputmode="text"`} 
             ${attributes.max ? `max="${attributes.max}"` : ""} 
             ${attributes.min ? `min="${attributes.min}"` : ""} 
-            ${attributes["max-length"] ? `max-length="${attributes['max-length']}"` : ""} 
-            ${attributes["min-length"] ? `min-length="${attributes['min-length']}"` : ""}  
+            ${attributes["maxlength"] ? `maxlength="${attributes['maxlength']}"` : ""} 
+            ${attributes["minlength"] ? `minlength="${attributes['minlength']}"` : ""}  
             type="${attributes.type}" required="${attributes.required}" clear-on-edit="true" value="${attributes.value}"></ion-input>
     </ion-item>`
             }

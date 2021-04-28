@@ -44,8 +44,8 @@ const ION_CONST = {
     name_key: "name",
     type_key: "type",
     required_key: "required",
-    max_length: "max-length",
-    min_length: "min-length",
+    max_length: "maxlength",
+    min_length: "minlength",
     max_value: "max",
     min_value: "min",
     input_tag: "ion-input",
@@ -189,7 +189,7 @@ const getValidationAttributes = function(element){
         max: element[ION_CONST.max_value],
         maxlength: element[ION_CONST.max_length],
         min: element[ION_CONST.min_value],
-        minlength: element[ION_CONST.max_length]
+        minlength: element[ION_CONST.min_length]
     };
 }
 
