@@ -1,5 +1,5 @@
 import LocalizedController from "./LocalizedController";
-import {EVENT_SSAPP_HAS_LOADED, EVENT_SSAPP_STATUS_UPDATE} from '../constants/events'
+import {EVENT_SSAPP_HAS_LOADED, EVENT_SSAPP_STATUS_UPDATE, EVENT_REFRESH, EVENT_NAVIGATE_TAB} from '../constants/events'
 
 export default class HomeController extends LocalizedController {
     initializeModel = () => ({
@@ -18,7 +18,18 @@ export default class HomeController extends LocalizedController {
         this.on('ionTabsWillChange', (evt) => {
             const el = self.element.querySelector(`ion-tab[tab="${evt.detail.tab}"] webc-container`);
             if (el)
-                el.dispatchEvent(new Event(`refresh`));
+                el.dispatchEvent(new Event(EVENT_REFRESH));
+        }, {capture: true});
+
+        this.on(EVENT_NAVIGATE_TAB, (evt) => {
+          evt.preventDefault();
+          evt.stopImmediatePropagation();
+          const el = self.element.querySelector(`ion-tabs`);
+          if (!el){
+            console.log(`A tab navigation request was received, but no ion-tabs could be found...`)
+            return;
+          }
+          el.select(evt.detail.tab);
         }, {capture: true});
 
         this.participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, false, (err, pManager) => {

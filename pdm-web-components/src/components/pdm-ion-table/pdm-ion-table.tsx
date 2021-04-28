@@ -57,9 +57,8 @@ export class PdmIonTable implements ComponentInterface {
 
   private sendError(message: string, err?: object){
     const event = this.sendErrorEvent.emit(message);
-    if (!event.defaultPrevented || err){
+    if (!event.defaultPrevented || err)
       console.log(`ION-TABLE ERROR: ${message}`, err);
-    }
   }
 
   /**

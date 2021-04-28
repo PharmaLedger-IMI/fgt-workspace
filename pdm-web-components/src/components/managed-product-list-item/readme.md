@@ -14,9 +14,10 @@
 
 ## Events
 
-| Event            | Description                          | Type               |
-| ---------------- | ------------------------------------ | ------------------ |
-| `sendErrorEvent` | Through this event errors are passed | `CustomEvent<any>` |
+| Event                | Description                                             | Type               |
+| -------------------- | ------------------------------------------------------- | ------------------ |
+| `sendErrorEvent`     | Through this event errors are passed                    | `CustomEvent<any>` |
+| `ssapp-navigate-tab` | Through this event navigation requests to tabs are made | `CustomEvent<any>` |
 
 
 ## Methods

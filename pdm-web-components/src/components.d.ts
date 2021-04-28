@@ -208,6 +208,10 @@ declare namespace LocalJSX {
           * Through this event errors are passed
          */
         "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
     }
     interface ManagedReceivedOrderListItem {
         /**

@@ -14,4 +14,6 @@ export const EVENT_SEND_ERROR = 'send-error-event';
 export const EVENT_SEND_MESSAGE = 'send-message-event';
 export const EVENT_SSAPP_HAS_LOADED = 'ssapp-has-loaded';
 export const EVENT_SSAPP_STATUS_UPDATE = 'ssapp-update-status';
+export const EVENT_REFRESH = 'ssapp-refresh'
+export const EVENT_NAVIGATE_TAB = 'ssapp-navigate-tab'
 
