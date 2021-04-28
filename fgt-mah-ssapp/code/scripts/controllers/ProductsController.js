@@ -1,4 +1,4 @@
-import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
+import { LocalizedController, EVENT_REFRESH, EVENT_NAVIGATE_TAB } from "../../assets/pdm-web-components/index.esm.js";
 
 export default class ProductsController extends LocalizedController {
 
@@ -14,7 +14,7 @@ export default class ProductsController extends LocalizedController {
         this.model = this.initializeModel();
 
         let self = this;
-        self.onTagEvent('add-product', 'click', (evt) => {
+        self.onTagEvent('add-product', 'click', () => {
             self._showProductModal();
         });
 
@@ -28,7 +28,7 @@ export default class ProductsController extends LocalizedController {
             self._addProductAsync(evt.detail);
         });
 
-        self.on('refresh', (evt) => {
+        self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
             self.element.querySelector('pdm-ion-table').refresh();
@@ -62,7 +62,7 @@ export default class ProductsController extends LocalizedController {
                 return self.showErrorToast(`Could not create Product`, err);
             self.hideModal();
             self.showToast(`Product ${product.name} with gtin ${product.gtin} has been created`);
-            self.send('refresh');
+            self.send(EVENT_REFRESH);
         });
     }
 }
