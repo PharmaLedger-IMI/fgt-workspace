@@ -40,6 +40,9 @@ export namespace Components {
         "orderId": string;
         "refresh": () => Promise<void>;
     }
+    interface MultiSpinner {
+        "type"?: string;
+    }
     interface PdmIonTable {
         "buttons"?: string[];
         /**
@@ -122,6 +125,12 @@ declare global {
         prototype: HTMLManagedReceivedOrderListItemElement;
         new (): HTMLManagedReceivedOrderListItemElement;
     };
+    interface HTMLMultiSpinnerElement extends Components.MultiSpinner, HTMLStencilElement {
+    }
+    var HTMLMultiSpinnerElement: {
+        prototype: HTMLMultiSpinnerElement;
+        new (): HTMLMultiSpinnerElement;
+    };
     interface HTMLPdmIonTableElement extends Components.PdmIonTable, HTMLStencilElement {
     }
     var HTMLPdmIonTableElement: {
@@ -152,6 +161,7 @@ declare global {
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
         "managed-received-order-list-item": HTMLManagedReceivedOrderListItemElement;
+        "multi-spinner": HTMLMultiSpinnerElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
         "product-list-item": HTMLProductListItemElement;
@@ -205,6 +215,9 @@ declare namespace LocalJSX {
          */
         "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
         "orderId"?: string;
+    }
+    interface MultiSpinner {
+        "type"?: string;
     }
     interface PdmIonTable {
         "buttons"?: string[];
@@ -275,6 +288,7 @@ declare namespace LocalJSX {
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-product-list-item": ManagedProductListItem;
         "managed-received-order-list-item": ManagedReceivedOrderListItem;
+        "multi-spinner": MultiSpinner;
         "pdm-ion-table": PdmIonTable;
         "pdm-ssapp-loader": PdmSsappLoader;
         "product-list-item": ProductListItem;
@@ -290,6 +304,7 @@ declare module "@stencil/core" {
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
             "managed-received-order-list-item": LocalJSX.ManagedReceivedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderListItemElement>;
+            "multi-spinner": LocalJSX.MultiSpinner & JSXBase.HTMLAttributes<HTMLMultiSpinnerElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;
             "product-list-item": LocalJSX.ProductListItem & JSXBase.HTMLAttributes<HTMLProductListItemElement>;
