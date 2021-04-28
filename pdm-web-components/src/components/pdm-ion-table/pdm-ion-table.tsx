@@ -121,7 +121,7 @@ export class PdmIonTable implements ComponentInterface {
   @Prop({attribute: 'page-count', mutable: true}) pageCount?: number = 0;
   @Prop({attribute: 'items-per-page', mutable: true}) itemsPerPage?: number = 10;
   @Prop({attribute: 'current-page', mutable: true}) currentPage?: number = 0;
-  @Prop({mutable: true}) sort?: string = "asc";
+  @Prop({mutable: true}) sort?: string = undefined;
 
   private webManager: WebManager = undefined;
 
