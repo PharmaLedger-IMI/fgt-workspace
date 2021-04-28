@@ -3,7 +3,9 @@ const Batch = require('wizard').Model.Batch;
 
 export default class BatchesController extends LocalizedController {
 
-    initializeModel = () => ({});
+    initializeModel = () => ({
+        query: ''
+    });
 
     constructor(element, history) {
         super(element, history, false);
@@ -20,6 +22,12 @@ export default class BatchesController extends LocalizedController {
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
+            const state = self.getState();
+            if (state && state.gtin){
+                self.setState(undefined);
+                self.model.query = state.gtin;
+            }
+
             self.element.querySelector('pdm-ion-table').refresh();
         }, {capture: true});
     }

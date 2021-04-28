@@ -47,7 +47,7 @@ export class ManagedProductListItem {
       console.log(`Product Component: ${message}`, err);
   }
 
-  private navigateToTab(tab, props){
+  private navigateToTab(tab: string,  props: any){
     const event = this.sendNavigateTab.emit({
       tab: tab,
       props: props

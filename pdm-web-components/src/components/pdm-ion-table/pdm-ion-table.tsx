@@ -152,7 +152,7 @@ export class PdmIonTable implements ComponentInterface {
       return;
 
     if (this.paginated){
-      await this.webManager.getPage(this.itemsPerPage, pageNumber || this.currentPage, this.canQuery ? this.query : undefined, this.sort, false, (err, contents) => {
+      await this.webManager.getPage(this.itemsPerPage, pageNumber || this.currentPage, this.query, this.sort, false, (err, contents) => {
         if (err){
           this.sendError(`Could not list items`, err);
           return;
