@@ -31,7 +31,7 @@ const MESSAGE_TABLE = 'messages'
  */
 const DEFAULT_QUERY_OPTIONS = {
     query: ["__timestamp > 0"],
-    sort: "asc",
+    sort: "dsc",
     limit: undefined
 }
 

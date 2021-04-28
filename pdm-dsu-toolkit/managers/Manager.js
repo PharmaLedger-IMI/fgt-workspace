@@ -511,7 +511,7 @@ class Manager{
 
         const options = {
             query: keyword ? self._keywordToQuery(keyword) : ['__timestamp > 0'],
-            sort: sort || "asc",
+            sort: sort || "dsc",
             limit: undefined
         }
 
