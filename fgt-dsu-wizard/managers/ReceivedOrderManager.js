@@ -13,7 +13,6 @@ class ReceivedOrderManager extends OrderManager {
         super(participantManager, DB.receivedOrders, ['orderId']);
         const self = this;
         this.registerMessageListener((message) => { self._processMessageRecord(message, () => { }); });
-        this.participantManager = participantManager; // jpsl: TODO needed to work aroung the Manager.getMessages()
     }
 
     /**
