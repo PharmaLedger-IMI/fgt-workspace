@@ -7,12 +7,17 @@ const tir = require("../../privatesky/psknode/tests/util/tir");
 const dc = require("double-check");
 const assert = dc.assert;
 
-const w3cDID = require('../../privatesky/modules/opendsu/w3cdid');
-const keySSI = require("../../privatesky/modules/opendsu/keyssi")
+
+const opendsu = require("opendsu");
+const w3cDID = opendsu.loadApi('w3cdid')
+const keySSI = opendsu.loadApi("keyssi");
+
+
 
 
 assert.callback('w3cDID MQ test', (testFinished) => {
-	const message = "Hello DID based MQs!";
+	//const message = { api: "testqueue", message: "Hello DID based MQs!" };
+	const message = JSON.stringify({ api: "testqueue", message: "Hello DID based MQs!" });
     tir.launchVirtualMQNode(function (err, port) {
         if (err) {
             throw err;
