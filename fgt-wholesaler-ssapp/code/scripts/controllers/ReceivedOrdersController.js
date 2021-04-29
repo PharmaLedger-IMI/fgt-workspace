@@ -1,4 +1,4 @@
-import { LocalizedController, EVENT_SEND_ERROR } from "../../assets/pdm-web-components/index.esm.js";
+import { LocalizedController, EVENT_SEND_ERROR, EVENT_REFRESH } from "../../assets/pdm-web-components/index.esm.js";
 
 /**
  * List all the received orders, and allows refresh from inbox.
@@ -8,10 +8,8 @@ export default class ReceivedOrdersController extends LocalizedController {
 
     constructor(element, history) {
         super(element, history);
+        super.bindLocale(this, "receivedOrders");
         const wizard = require('wizard');
-        const LocaleService = wizard.Services.WebcLocaleService;
-        LocaleService.bindToLocale(this,"receivedOrders");
-
         this.participantManager = wizard.Managers.getParticipantManager();
         this.receivedOrderManager = wizard.Managers.getReceivedOrderManager(this.participantManager);
 
@@ -19,7 +17,7 @@ export default class ReceivedOrdersController extends LocalizedController {
 
         let self = this;
         // the HomeController takes care of sending refresh events for each tab.
-        self.on('refresh', (evt) => {
+        self.on(EVENT_REFRESH, (evt) => {
             console.log(evt);
             evt.preventDefault();
             evt.stopImmediatePropagation();
