@@ -104,7 +104,7 @@ class BaseManager {
         } else {
             console.log("Waiting for participant initialization");
             setTimeout(() => { self.registerMessageListener(api, listener); },
-                10);
+                100);
         }
     }
 
