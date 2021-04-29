@@ -1,4 +1,14 @@
 import { HomeController as BaseHomeController, EVENT_SSAPP_HAS_LOADED } from "../../assets/pdm-web-components/index.esm.js";
+
+/**
+ * Central Controller
+ *
+ * Controls Application Flow
+ *
+ * Holds all other Controllers and manages identity, database access and messaging via {@link BaseHomeController} and {@link ParticipantManager}
+ * @class HomeController
+ * @module controllers
+ */
 export default class HomeController extends BaseHomeController{
     constructor(element, history) {
         super(element, history);
