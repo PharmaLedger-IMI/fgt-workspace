@@ -536,6 +536,8 @@ class Manager{
         self.getAll(readDSU, options, (err, records) => {
            if (err)
                return self._err(`Could not retrieve records to page`, err, callback);
+            if (records.length === 0)
+                return callback(undefined, toPage(0, 0, records));
            if (records.length <= itemsPerPage)
                return callback(undefined, toPage(1, 1, records));
            const page = paginate(records);
