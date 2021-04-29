@@ -1,5 +1,13 @@
-import { LocalizedController, EVENT_REFRESH, EVENT_NAVIGATE_TAB } from "../../assets/pdm-web-components/index.esm.js";
+import { LocalizedController, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
 
+/**
+ * Controls Application Flow
+ * Makes the bridge between the UI and the ProductManager
+ *
+ * Handles listing and querying of Products
+ * @class ProductsController
+ * @module controllers
+ */
 export default class ProductsController extends LocalizedController {
 
     initializeModel = () => ({});
@@ -59,7 +67,7 @@ export default class ProductsController extends LocalizedController {
         let self = this;
         self.productManager.create(product, (err, keySSI, path) => {
             if (err)
-                return self.showErrorToast(`Could not create Product`, err);
+                return self.showErrorToast(`Could not create Product ${JSON.stringify(product, undefined, 2)}`, err);
             self.hideModal();
             self.showToast(`Product ${product.name} with gtin ${product.gtin} has been created`);
             self.send(EVENT_REFRESH);
