@@ -40,6 +40,12 @@ export namespace Components {
         "orderId": string;
         "refresh": () => Promise<void>;
     }
+    interface MenuTabButton {
+        "iconName"?: string;
+        "label"?: string;
+        "mode"?: string;
+        "tab": string;
+    }
     interface MultiSpinner {
         "type"?: string;
     }
@@ -125,6 +131,12 @@ declare global {
         prototype: HTMLManagedReceivedOrderListItemElement;
         new (): HTMLManagedReceivedOrderListItemElement;
     };
+    interface HTMLMenuTabButtonElement extends Components.MenuTabButton, HTMLStencilElement {
+    }
+    var HTMLMenuTabButtonElement: {
+        prototype: HTMLMenuTabButtonElement;
+        new (): HTMLMenuTabButtonElement;
+    };
     interface HTMLMultiSpinnerElement extends Components.MultiSpinner, HTMLStencilElement {
     }
     var HTMLMultiSpinnerElement: {
@@ -161,6 +173,7 @@ declare global {
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
         "managed-received-order-list-item": HTMLManagedReceivedOrderListItemElement;
+        "menu-tab-button": HTMLMenuTabButtonElement;
         "multi-spinner": HTMLMultiSpinnerElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
@@ -219,6 +232,16 @@ declare namespace LocalJSX {
          */
         "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
         "orderId"?: string;
+    }
+    interface MenuTabButton {
+        "iconName"?: string;
+        "label"?: string;
+        "mode"?: string;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "tab"?: string;
     }
     interface MultiSpinner {
         "type"?: string;
@@ -292,6 +315,7 @@ declare namespace LocalJSX {
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-product-list-item": ManagedProductListItem;
         "managed-received-order-list-item": ManagedReceivedOrderListItem;
+        "menu-tab-button": MenuTabButton;
         "multi-spinner": MultiSpinner;
         "pdm-ion-table": PdmIonTable;
         "pdm-ssapp-loader": PdmSsappLoader;
@@ -308,6 +332,7 @@ declare module "@stencil/core" {
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
             "managed-received-order-list-item": LocalJSX.ManagedReceivedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderListItemElement>;
+            "menu-tab-button": LocalJSX.MenuTabButton & JSXBase.HTMLAttributes<HTMLMenuTabButtonElement>;
             "multi-spinner": LocalJSX.MultiSpinner & JSXBase.HTMLAttributes<HTMLMultiSpinnerElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;

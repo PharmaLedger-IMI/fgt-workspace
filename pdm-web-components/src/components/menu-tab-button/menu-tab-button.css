@@ -1,0 +1,22 @@
+:host {
+  display: inherit;
+  --ripple-color: var(--color-selected);
+  --background-focused-opacity: 1;
+  --ion-icon-color: var(--ion-icon-color);
+  flex: inherit;
+  flex-direction: inherit;
+  background: var(--background);
+  color: var(--color)
+}
+
+menu-tab-button{
+  display: inherit;
+}
+
+ion-icon.menu-tab-button{
+  color: var(--ion-text-color)
+}
+
+ion-item.menu-tab-selected{
+  --ion-text-color: var(--ion-color-primary);
+}

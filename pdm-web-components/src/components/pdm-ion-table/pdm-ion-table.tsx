@@ -174,7 +174,7 @@ export class PdmIonTable implements ComponentInterface {
 
   @Watch('query')
   async _updateByQuery(newQuery: string, oldQuery:string){
-    if (!!oldQuery && oldQuery.startsWith('@')) // For WebCardinal Compatibility, otherwise it would trigger when they changed the value initially
+    if (!this.host || !this.host.isConnected) // For WebCardinal Compatibility, otherwise it would trigger when they changed the value initially
       return
 
     if (!newQuery && !oldQuery)
@@ -274,15 +274,15 @@ export class PdmIonTable implements ComponentInterface {
     return (
       <ion-grid>
         <ion-row class="ion-justify-content-center">
-          <ion-col size="4" className="ion-justify-content-center">
-            <ion-tem lines="none">
-              <ion-button slot="start" onClick={() => this.refresh()}>
+          <ion-col size="4" class="ion-justify-content-center">
+            <ion-item lines="none">
+              <ion-button slot="start" fill="none" onClick={() => this.refresh()}>
                 <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
               </ion-button>
               <ion-label class="ion-text-center">
                 {this.noContentMessage}
               </ion-label>
-            </ion-tem>
+            </ion-item>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -339,7 +339,6 @@ export class PdmIonTable implements ComponentInterface {
     return content;
   }
 
-  @Watch('model')
   render() {
     return (
       <Host>
