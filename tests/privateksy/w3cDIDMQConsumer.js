@@ -9,9 +9,7 @@ const assert = dc.assert;
 
 
 const opendsu = require("opendsu");
-const { createConsensusManager } = require("../../privatesky/psknode/bundles/testsRuntime");
-const w3cDID = opendsu.loadApi('w3cdid')
-const keySSI = opendsu.loadApi("keyssi");
+const w3cDID = opendsu.loadApi('w3cdid');
 
 function consume(did) {
     did.readMessage((err, msg) => {
