@@ -70,7 +70,7 @@ const setup = function (participantManager, products, wholesalers, stocks, callb
     let receivedShipments = [];
     
     // 20 orders on first wholesaler
-    _createManyIssuedOrders(20, issuedOrderManager, products, wholesaler0, issuedOrders, receivedShipments, (err) => {
+    _createManyIssuedOrders(2, issuedOrderManager, products, wholesaler0, issuedOrders, receivedShipments, (err) => {
         callback(err, issuedOrders, receivedShipments);
     });
 };
