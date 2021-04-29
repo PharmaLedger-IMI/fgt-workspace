@@ -172,6 +172,19 @@ export class PdmIonTable implements ComponentInterface {
     }
   }
 
+  @Watch('query')
+  async _updateByQuery(newQuery: string, oldQuery:string){
+    if (!!oldQuery && oldQuery.startsWith('@')) // For WebCardinal Compatibility, otherwise it would trigger when they changed the value initially
+      return
+
+    if (!newQuery && !oldQuery)
+      return;
+    if (newQuery === oldQuery)
+      return;
+    this.model = undefined;
+    await this.refresh();
+  }
+
   @Method()
   async refresh(){
     switch(this.mode){
@@ -259,7 +272,20 @@ export class PdmIonTable implements ComponentInterface {
 
   getEmptyContent(){
     return (
-      <ion-tem>{this.noContentMessage}</ion-tem>
+      <ion-grid>
+        <ion-row class="ion-justify-content-center">
+          <ion-col size="4" className="ion-justify-content-center">
+            <ion-tem lines="none">
+              <ion-button slot="start" onClick={() => this.refresh()}>
+                <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+              </ion-button>
+              <ion-label class="ion-text-center">
+                {this.noContentMessage}
+              </ion-label>
+            </ion-tem>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     )
   }
 

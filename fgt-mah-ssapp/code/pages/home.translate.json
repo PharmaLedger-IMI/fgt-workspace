@@ -86,9 +86,43 @@
       "list-error": "Could not list batches"
     }
   },
-  "errors": {
-    "register": "Unable to register",
-    "try-again": "Try Again?"
+  "batch": {
+    "title": "Create a Batch",
+    "batchNumber": {
+      "label": "BatchNumber:",
+      "placeholder": "Insert batch number...",
+      "type": "text",
+      "required": true,
+      "input-mode": "text",
+      "minlength": 4
+    },
+    "gtin": {
+      "label": "Product Gtin:",
+      "placeholder": "Insert product gtin...",
+      "type": "number",
+      "required": true,
+      "input-mode": "number",
+      "minlength": 12,
+      "maxlength": 12,
+      "max": 999999999999
+    },
+    "expiry": {
+      "label": "Expiration date:",
+      "type": "date",
+      "required": true,
+      "input-mode": "date"
+    },
+    "serialNumbers": {
+      "label": "Serial Numbers:",
+      "placeholder": "Insert serial numbers (comma separated)...",
+      "type": "text",
+      "required": true,
+      "input-mode": "text"
+    },
+    "buttons": {
+      "create-batch": "Create",
+      "cancel": "Cancel"
+    }
   },
-  "none": "You are not identified as a Marketing Authorization holder. Please register"
+  "none": "You are not identified as a Marketing Authorization holder. This application was not correctly built"
 }

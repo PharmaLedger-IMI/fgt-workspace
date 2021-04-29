@@ -1,15 +1,12 @@
-/**
- * @module controllers
- */
-
-/**
- *
- */
 import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
 
-
 /**
+ * Controls Application Flow
+ * Makes the bridge between the UI and the ProductManager
+ *
+ * Handles data input and validation for the manipulation of Products
  * @class ProductController
+ * @module controllers
  */
 export default class ProductController extends LocalizedController {
 
