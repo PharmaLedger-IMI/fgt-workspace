@@ -106,6 +106,7 @@ class MessageManager extends Manager{
                 : this.sendMessage(didDoc, message, callback));
 
         this.getOwnDID((err, selfDID) => {
+            console.log("Sending message", message, "to did", did.getIdentifier());
             selfDID.sendMessage(message, did.getIdentifier(), err => err
                 ? _err(`Could not send Message`, err, callback)
                 : callback());
@@ -154,6 +155,7 @@ class MessageManager extends Manager{
         did.readMessage((err, message) => {
             if (err)
                 return console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
+            console.log("did.readMessage", message);
             // jpsl: did.readMessage appears to return a string, but db.insertRecord requires a record object.
             // ... So JSON.parse the message into an object.
             // https://opendsu.slack.com/archives/C01DQ33HYQJ/p1618848231120300
@@ -166,7 +168,6 @@ class MessageManager extends Manager{
                     return;
                 }
             }
-            console.log("did.readMessage", message);
             self._startMessageListener(did);
             self._receiveMessage(message, (err, message) => {
                 if (err)
