@@ -68,20 +68,20 @@ function OrderService(domain, strategy) {
                 if (err)
                     return callback(err);
                 console.log("Order /info ", JSON.stringify(order));
-                createOrderLines(order, (err, orderLines) => {
+                createOrderStatus((err, statusSSI) => {
                     if (err)
                         return callback(err);
-                    dsu.writeFile('/lines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
+                    // Mount must take string version of keyssi
+                    dsu.mount("/status", statusSSI.getIdentifier(), (err) => {
                         if (err)
                             return callback(err);
-                        createOrderStatus((err, keySSI) => {
+                        console.log(`OrderStatus DSU (${statusSSI.getIdentifier(true)}) mounted at '/status'`);
+                        createOrderLines(order, statusSSI, (err, orderLines) => {
                             if (err)
                                 return callback(err);
-                            // Mount must take string version of keyssi
-                            dsu.mount("/status", keySSI.getIdentifier(), (err) => {
+                            dsu.writeFile('/lines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
                                 if (err)
                                     return callback(err);
-                                console.log(`OrderStatus DSU (${keySSI.getIdentifier(true)}) mounted at '/status'`);
                                 dsu.getKeySSIAsObject((err, keySSI) => {
                                     if (err)
                                         return callback(err);
@@ -136,16 +136,17 @@ function OrderService(domain, strategy) {
      * Creates OrderLines DSUs for each orderLine in order
      * @param {Order} order
      * @param {function} callback
+     * @param {KeySSI} statusSSI keySSI to the OrderStatus DSU
      * @return {Object[]} keySSIs
      */
-    let createOrderLines = function (order, callback) {
+    let createOrderLines = function (order, statusSSI, callback) {
         let orderLines = [];
 
         let iterator = function (order, items, callback) {
             let orderLine = items.shift();
             if (!orderLine)
                 return callback(undefined, orderLines);
-            orderLineService.create(order.orderId, orderLine, (err, keySSI) => {
+            orderLineService.create(order.orderId, orderLine, statusSSI, (err, keySSI) => {
                 if (err)
                     return callback(err);
                 orderLines.push(keySSI);

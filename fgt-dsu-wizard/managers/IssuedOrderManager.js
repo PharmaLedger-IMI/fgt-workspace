@@ -10,7 +10,7 @@ const OrderStatus = require('../model').OrderStatus;
  */
 class IssuedOrderManager extends OrderManager {
     constructor(participantManager) {
-        super(participantManager, DB.issuedOrders, ['orderId']);
+        super(participantManager, DB.issuedOrders, ['orderId', 'senderId']);
     }
 
     /**
@@ -24,7 +24,7 @@ class IssuedOrderManager extends OrderManager {
      * </pre>
      * so the DB can be queried by each of the indexes and still allow for lazy loading
      * @param {string} key
-     * @param {Product} item
+     * @param {Order} item
      * @param {string|object} record
      * @return {object} the indexed object to be stored in the db
      * @protected
@@ -33,6 +33,7 @@ class IssuedOrderManager extends OrderManager {
     _indexItem(key, item, record) {
         return {
             orderId: key,
+            senderId: item.senderId,
             value: record
         }
     };

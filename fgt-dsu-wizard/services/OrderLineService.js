@@ -19,9 +19,10 @@ function OrderLineService(domain, strategy){
      * @param {string} orderId
      * @param {OrderLine} orderLine
      * @param {function} callback
+     * @param {KeySSI} statusSSI the keySSI for the OrderSatus DSU
      * @return {string} keySSI
      */
-    this.create = function(orderId, orderLine, callback){
+    this.create = function(orderId, orderLine, statusSSI, callback){
 
         let data = typeof orderLine == 'object' ? JSON.stringify(orderLine) : orderLine;
 

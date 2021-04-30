@@ -1,16 +1,13 @@
 const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
-const OrderManager = require("./OrderManager");
-const Order = require('../model').Order;
 const OrderLine = require('../model').OrderLine;
-const OrderStatus = require('../model').OrderStatus;
 
 /**
- * Issued Order Manager Class - concrete OrderManager for issuedOrders.
+ * Issued OrderLine Manager Class.
  * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
  */
 class ReceivedOrderManager extends OrderManager {
     constructor(participantManager) {
-        super(participantManager, DB.receivedOrders, ['orderId', 'requesterId']);
+        super(participantManager, DB.receivedOrders, ['orderId']);
         const self = this;
         this.registerMessageListener((message) => { self._processMessageRecord(message, () => { }); });
     }
