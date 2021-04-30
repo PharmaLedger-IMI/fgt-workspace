@@ -33,11 +33,7 @@ class ReceivedOrderManager extends OrderManager {
      * @override
      */
     _indexItem(key, item, record) {
-        return {
-            orderId: key,
-            requesterId: item.requesterId,
-            value: record
-        }
+        return {...super._indexItem(key, item, record), requesterId: item.requesterId}
     };
 
     /**
@@ -46,6 +42,7 @@ class ReceivedOrderManager extends OrderManager {
      * @param {string} keyword
      * @return {string[]} query
      * @protected
+     * @override
      */
     _keywordToQuery(keyword) {
         keyword = keyword || '.*';
@@ -59,9 +56,7 @@ class ReceivedOrderManager extends OrderManager {
      * @param {function(err, Order[])} callback
      */
     getAll(readDSU, options, callback) {
-        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
-            query: ['orderId like /.*/g']
-        });
+        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS);
 
         if (!callback) {
             if (!options) {
