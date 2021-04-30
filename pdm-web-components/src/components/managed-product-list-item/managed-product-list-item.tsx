@@ -145,7 +145,7 @@ export class ManagedProductListItem {
 
   addBatch(gtinBatch){
     return(
-      <batch-chip gtin-batch={gtinBatch} loader-type={SUPPORTED_LOADERS.circles} mode="detail"></batch-chip>
+      <batch-chip gtin-batch={gtinBatch} loader-type={SUPPORTED_LOADERS.bubblingSmall} mode="detail"></batch-chip>
     )
   }
 
