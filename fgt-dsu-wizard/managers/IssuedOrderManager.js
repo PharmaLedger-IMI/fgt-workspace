@@ -31,11 +31,7 @@ class IssuedOrderManager extends OrderManager {
      * @override
      */
     _indexItem(key, item, record) {
-        return {
-            orderId: key,
-            senderId: item.senderId,
-            value: record
-        }
+        return {...super._indexItem(key, item, record), senderId: item.senderId};
     };
 
     /**
