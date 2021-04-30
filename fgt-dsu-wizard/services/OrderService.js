@@ -2,6 +2,7 @@
  * @module fgt-dsu-wizard.services
  */
 const utils = require('../../pdm-dsu-toolkit/services/utils');
+const {STATUS_MOUNT_PATH, INFO_PATH} = require('../constants');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
@@ -64,7 +65,7 @@ function OrderService(domain, strategy) {
         utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);
-            dsu.writeFile('/info', JSON.stringify(order), (err) => {
+            dsu.writeFile(INFO_PATH, JSON.stringify(order), (err) => {
                 if (err)
                     return callback(err);
                 console.log("Order /info ", JSON.stringify(order));
@@ -72,7 +73,7 @@ function OrderService(domain, strategy) {
                     if (err)
                         return callback(err);
                     // Mount must take string version of keyssi
-                    dsu.mount("/status", statusSSI.getIdentifier(), (err) => {
+                    dsu.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(), (err) => {
                         if (err)
                             return callback(err);
                         console.log(`OrderStatus DSU (${statusSSI.getIdentifier(true)}) mounted at '/status'`);
@@ -108,19 +109,19 @@ function OrderService(domain, strategy) {
         }
 
         utils.getDSUService().create(domain, getEndpointData(order), (builder, cb) => {
-            builder.addFileDataToDossier("/info", JSON.stringify(order), (err) => {
+            builder.addFileDataToDossier(INFO_PATH, JSON.stringify(order), (err) => {
                 if (err)
                     return cb(err);
-                createOrderLines(order, (err, orderLines) => {
+                createOrderStatus((err, statusSSI) => {
                     if (err)
                         return cb(err);
-                    builder.addFileDataToDossier('/lines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
+                    builder.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(), (err) => {
                         if (err)
                             return cb(err);
-                        createOrderStatus((err, keySSI) => {
+                        createOrderLines(order, statusSSI, (err, orderLines) => {
                             if (err)
                                 return cb(err);
-                            builder.mount('/status', keySSI.getIdentifier(), (err) => {
+                            builder.addFileDataToDossier('/lines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
                                 if (err)
                                     return cb(err);
                                 cb();
@@ -146,7 +147,7 @@ function OrderService(domain, strategy) {
             let orderLine = items.shift();
             if (!orderLine)
                 return callback(undefined, orderLines);
-            orderLineService.create(order.orderId, orderLine, statusSSI, (err, keySSI) => {
+            orderLineService.create(order.orderId, orderLine, statusSSI.derive(), (err, keySSI) => {
                 if (err)
                     return callback(err);
                 orderLines.push(keySSI);

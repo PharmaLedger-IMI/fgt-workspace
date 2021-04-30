@@ -3,6 +3,8 @@
  */
 const utils = require('../../pdm-dsu-toolkit/services/utils');
 
+const {STATUS_MOUNT_PATH, INFO_PATH} = require('../constants');
+
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
@@ -19,7 +21,7 @@ function OrderLineService(domain, strategy){
      * @param {string} orderId
      * @param {OrderLine} orderLine
      * @param {function} callback
-     * @param {KeySSI} statusSSI the keySSI for the OrderSatus DSU
+     * @param {KeySSI} statusSSI the keySSI for the OrderStus DSU
      * @return {string} keySSI
      */
     this.create = function(orderId, orderLine, statusSSI, callback){
@@ -38,13 +40,17 @@ function OrderLineService(domain, strategy){
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);
-                dsu.writeFile('/info', data, (err) => {
+                dsu.writeFile(INFO_PATH, data, (err) => {
                     if (err)
                         return callback(err);
-                    dsu.getKeySSIAsObject((err, keySSI) => {
+                    dsu.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(), (err) => {
                         if (err)
                             return callback(err);
-                        callback(undefined, keySSI);
+                        dsu.getKeySSIAsObject((err, keySSI) => {
+                            if (err)
+                                return callback(err);
+                            callback(undefined, keySSI);
+                        });
                     });
                 });
             });
@@ -61,7 +67,7 @@ function OrderLineService(domain, strategy){
             }
 
             utils.getDSUService().create(domain, getEndpointData(orderLine), (builder, cb) => {
-                builder.addFileDataToDossier("/info", data, cb);
+                builder.addFileDataToDossier(INFO_PATH, data, cb);
             }, callback);
         }
     };
