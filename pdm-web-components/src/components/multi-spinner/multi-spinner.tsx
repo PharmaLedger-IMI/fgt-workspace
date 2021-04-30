@@ -29,6 +29,26 @@ export class MultiSpinner implements ComponentInterface {
     )
   }
 
+  private getBubblingLoader(){
+    return (
+      <div class="bubblingG">
+	      <span id="bubblingG_1"></span>
+        <span id="bubblingG_2"></span>
+        <span id="bubblingG_3"></span>
+      </div>
+    )
+  }
+
+  private getBubblingSmallLoader(){
+    return (
+      <div class="ion-padding-horizontal bubblingS">
+        <span id="bubblingS_1"></span>
+        <span id="bubblingS_2"></span>
+        <span id="bubblingS_3"></span>
+      </div>
+    )
+  }
+
   private getCubeLoader(){
     return (
       <div class="spinner-cube">
@@ -86,6 +106,10 @@ export class MultiSpinner implements ComponentInterface {
         return this.getDotsLoader();
       case SUPPORTED_LOADERS.halfCircle:
         return this.getHalfCircleLoader();
+      case SUPPORTED_LOADERS.bubbling:
+        return this.getBubblingLoader();
+      case SUPPORTED_LOADERS.bubblingSmall:
+        return this.getBubblingSmallLoader();
       default:
         throw new Error(`Unsupported loader ${this.type}`)
     }

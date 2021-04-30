@@ -4,5 +4,7 @@ export const SUPPORTED_LOADERS = {
   cube: "cube",
   circles: "circles",
   dots: 'dots',
-  halfCircle: 'half-circle'
+  halfCircle: 'half-circle',
+  bubbling: 'bubbling',
+  bubblingSmall: 'bubbling-small'
 }
