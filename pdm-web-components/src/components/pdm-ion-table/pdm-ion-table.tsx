@@ -16,6 +16,7 @@ import {WebManager, WebManagerService} from '../../services/WebManagerService';
 import {extractChain, promisifyEventEmit} from "../../utils";
 import {HostElement} from '../../decorators'
 import {EVENT_SEND_ERROR, EVENT_MODEL_GET} from "../../constants/events";
+import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 
 const ION_TABLE_MODES = {
   BY_MODEL: "bymodel",
@@ -275,14 +276,12 @@ export class PdmIonTable implements ComponentInterface {
       <ion-grid>
         <ion-row class="ion-justify-content-center">
           <ion-col size="4" class="ion-justify-content-center">
-            <ion-item lines="none">
               <ion-button slot="start" fill="none" onClick={() => this.refresh()}>
                 <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
               </ion-button>
               <ion-label class="ion-text-center">
                 {this.noContentMessage}
               </ion-label>
-            </ion-item>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -294,7 +293,7 @@ export class PdmIonTable implements ComponentInterface {
       <ion-grid>
         <ion-row class="ion-justify-content-center">
           <ion-col size="5" class="ion-justify-content-center">
-              <multi-spinner type="circle"></multi-spinner>
+              <multi-spinner type={SUPPORTED_LOADERS.circles}></multi-spinner>
           </ion-col>
         </ion-row>
       </ion-grid>

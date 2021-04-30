@@ -240,6 +240,147 @@
 
 /*END OF MEDICAL LOADER*/
 
+/*3 DOTS*/
+.dotdotdot {
+  margin: 100px auto 0;
+  width: 70px;
+  text-align: center;
+}
+
+.dotdotdot > div {
+  width: 18px;
+  height: 18px;
+  background-color: var(--ion-color);
+
+  border-radius: 100%;
+  display: inline-block;
+  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.dotdotdot .bounce1 {
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+
+.dotdotdot .bounce2 {
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+  0%, 80%, 100% { -webkit-transform: scale(0) }
+  40% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  } 40% {
+      -webkit-transform: scale(1.0);
+      transform: scale(1.0);
+    }
+}
+/*END OF 3 DOTS*/
+
+/*HALF CIRCLE*/
+/* Inspirated from  http://www.alessioatzeni.com/wp-content/tutorials/html-css/CSS3-loading-animation-loop/index.html */
+.ouro {
+  position: relative;
+  display:inline-block;
+  height: 46px;
+  width: 46px;
+  margin: 1em;
+  border-radius: 50%;
+  background: none repeat scroll 0 0 var(--ion-color);
+  overflow:hidden;
+  box-shadow: 0 0 10px rgba(0,0,0,.1) inset, 0 0 25px rgba(0,0,255,0.075);
+}
+
+.ouro:after {
+  content: "";
+  position: absolute;
+  top: 9px; left: 9px;
+  display: block;
+  height: 28px; width: 28px;
+  background: none repeat scroll 0 0 #F2F2F2;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(0,0,0,.1);
+}
+.ouro > span {
+  position: absolute;
+  height: 100%; width: 50%;
+  overflow: hidden;
+}
+.left  { left:0   }
+.right { left:50% }
+
+.anim {
+  position: absolute;
+  left: 100%; top: 0;
+  height: 100%; width: 100%;
+  border-radius: 999px;
+  background: none repeat scroll 0 0 var(--ion-color-primary);
+  opacity: 0.8;
+  -webkit-animation: ui-spinner-rotate-left 3s infinite;
+  animation: ui-spinner-rotate-left 3s infinite;
+  -webkit-transform-origin: 0 50% 0;
+  transform-origin: 0 50% 0;
+}
+.left .anim {
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
+.right .anim {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+  left: -100%;
+  -webkit-transform-origin: 100% 50% 0;
+  transform-origin: 100% 50% 0;
+}
+
+/* v2 */
+.ouro2 .anim {
+  -webkit-animation-delay:0s;
+  animation-delay:0s;
+}
+.ouro2 .right .anim{
+  -webkit-animation-delay: 1.5s;
+  animation-delay: 1.5s;
+}
+
+@keyframes ui-spinner-rotate-right{
+  0%{transform:rotate(0deg)}
+  25%{transform:rotate(180deg)}
+  50%{transform:rotate(180deg)}
+  75%{transform:rotate(360deg)}
+  100%{transform:rotate(360deg)}
+}
+@keyframes ui-spinner-rotate-left{
+  0%{transform:rotate(0deg)}
+  25%{transform:rotate(0deg)}
+  50%{transform:rotate(180deg)}
+  75%{transform:rotate(180deg)}
+  100%{transform:rotate(360deg)}
+}
+
+@-webkit-keyframes ui-spinner-rotate-right{
+  0%{-webkit-transform:rotate(0deg)}
+  25%{-webkit-transform:rotate(180deg)}
+  50%{-webkit-transform:rotate(180deg)}
+  75%{-webkit-transform:rotate(360deg)}
+  100%{-webkit-transform:rotate(360deg)}
+}
+@-webkit-keyframes ui-spinner-rotate-left{
+  0%{-webkit-transform:rotate(0deg)}
+  25%{-webkit-transform:rotate(0deg)}
+  50%{-webkit-transform:rotate(180deg)}
+  75%{-webkit-transform:rotate(180deg)}
+  100%{-webkit-transform:rotate(360deg)}
+}
+/*END OF HALF CIRCLE*/
+
 @keyframes pulse {
   0% {
     opacity:0;

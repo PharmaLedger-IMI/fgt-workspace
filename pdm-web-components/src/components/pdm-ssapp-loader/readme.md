@@ -7,10 +7,10 @@
 
 ## Properties
 
-| Property  | Attribute | Description | Type     | Default    |
-| --------- | --------- | ----------- | -------- | ---------- |
-| `loader`  | `loader`  |             | `string` | `'simple'` |
-| `timeout` | `timeout` |             | `number` | `1000`     |
+| Property  | Attribute | Description | Type     | Default                    |
+| --------- | --------- | ----------- | -------- | -------------------------- |
+| `loader`  | `loader`  |             | `string` | `SUPPORTED_LOADERS.simple` |
+| `timeout` | `timeout` |             | `number` | `1000`                     |
 
 
 ## Methods

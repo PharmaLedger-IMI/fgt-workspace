@@ -1,5 +1,6 @@
 import {Component, Host, h, Element, Prop, ComponentInterface, Listen, Method, State} from '@stencil/core';
 import {HostElement} from '../../decorators'
+import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 
 @Component({
   tag: 'pdm-ssapp-loader',
@@ -14,7 +15,7 @@ export class PdmSsappLoader implements ComponentInterface {
 
   @Prop() timeout?: number = 1000;
 
-  @Prop() loader?: string = 'simple'
+  @Prop() loader?: string = SUPPORTED_LOADERS.simple;
 
   @State() isLoading: boolean = true;
 

@@ -26,6 +26,13 @@ export namespace Components {
          */
         "type": string;
     }
+    interface BatchChip {
+        "expiryThreshold"?: number;
+        "gtinBatch": string;
+        "loaderType"?: string;
+        "mode"?: string;
+        "quantity"?: number;
+    }
     interface BatchListItem {
     }
     interface ManagedBatchListItem {
@@ -107,6 +114,12 @@ declare global {
         prototype: HTMLBarcodeGeneratorElement;
         new (): HTMLBarcodeGeneratorElement;
     };
+    interface HTMLBatchChipElement extends Components.BatchChip, HTMLStencilElement {
+    }
+    var HTMLBatchChipElement: {
+        prototype: HTMLBatchChipElement;
+        new (): HTMLBatchChipElement;
+    };
     interface HTMLBatchListItemElement extends Components.BatchListItem, HTMLStencilElement {
     }
     var HTMLBatchListItemElement: {
@@ -169,6 +182,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "barcode-generator": HTMLBarcodeGeneratorElement;
+        "batch-chip": HTMLBatchChipElement;
         "batch-list-item": HTMLBatchListItemElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
@@ -201,6 +215,13 @@ declare namespace LocalJSX {
           * description: `The barcode type. Accepted values are 'gs1datamatrix','datamatrix','qrcode', 'code128','code11','isbn'.`, isMandatory: true, propertyType: `string`
          */
         "type"?: string;
+    }
+    interface BatchChip {
+        "expiryThreshold"?: number;
+        "gtinBatch"?: string;
+        "loaderType"?: string;
+        "mode"?: string;
+        "quantity"?: number;
     }
     interface BatchListItem {
         /**
@@ -311,6 +332,7 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;
+        "batch-chip": BatchChip;
         "batch-list-item": BatchListItem;
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-product-list-item": ManagedProductListItem;
@@ -328,6 +350,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "barcode-generator": LocalJSX.BarcodeGenerator & JSXBase.HTMLAttributes<HTMLBarcodeGeneratorElement>;
+            "batch-chip": LocalJSX.BatchChip & JSXBase.HTMLAttributes<HTMLBatchChipElement>;
             "batch-list-item": LocalJSX.BatchListItem & JSXBase.HTMLAttributes<HTMLBatchListItemElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
