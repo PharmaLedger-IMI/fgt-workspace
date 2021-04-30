@@ -1,12 +1,6 @@
 import {Component, Host, h, Element, Prop, ComponentInterface} from '@stencil/core';
 import {HostElement} from '../../decorators'
-
-const SUPPORTED_LOADERS = {
-  simple: 'simple',
-  medical: 'medical',
-  cube: "cube",
-  circle: "circle"
-}
+import {SUPPORTED_LOADERS} from './supported-loader'
 
 @Component({
   tag: 'multi-spinner',
@@ -19,7 +13,7 @@ export class MultiSpinner implements ComponentInterface {
 
   @Element() element;
 
-  @Prop() type?: string = 'simple'
+  @Prop() type?: string = SUPPORTED_LOADERS.simple;
 
   async componentWillLoad() {
     if (!this.host.isConnected)
@@ -53,6 +47,25 @@ export class MultiSpinner implements ComponentInterface {
     )
   }
 
+  private getDotsLoader(){
+    return (
+      <div class="dotdotdot">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+      </div>
+    )
+  }
+
+  private getHalfCircleLoader(){
+    return (
+      <span class="ouro ouro2">
+        <span class="left"><span class="anim"></span></span>
+        <span class="right"><span class="anim"></span></span>
+      </span>
+    )
+  }
+
   private getMedicalLoader(){
     return (
       <span class="try-force-gpu loader"></span>
@@ -67,8 +80,12 @@ export class MultiSpinner implements ComponentInterface {
         return this.getMedicalLoader();
       case SUPPORTED_LOADERS.cube:
         return this.getCubeLoader();
-      case SUPPORTED_LOADERS.circle:
+      case SUPPORTED_LOADERS.circles:
         return this.getCircleLoader();
+      case SUPPORTED_LOADERS.dots:
+        return this.getDotsLoader();
+      case SUPPORTED_LOADERS.halfCircle:
+        return this.getHalfCircleLoader();
       default:
         throw new Error(`Unsupported loader ${this.type}`)
     }

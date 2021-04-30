@@ -4,9 +4,9 @@ import {WebManager, WebManagerService} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
 import {EVENT_SEND_ERROR} from "../../constants/events";
+import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 
 const Product = wizard.Model.Product;
-const Batch = wizard.Model.Batch;
 
 @Component({
   tag: 'managed-product-list-item',
@@ -62,7 +62,7 @@ export class ManagedProductListItem {
   private batchManager: WebManager = undefined;
 
   @State() product: typeof Product = undefined;
-  @State() batches: typeof Batch[] = undefined;
+  @State() batches: string[] = undefined;
 
   async componentWillLoad() {
     if (!this.host.isConnected)
@@ -82,7 +82,7 @@ export class ManagedProductListItem {
         return;
       }
       this.product = product;
-      self.batchManager.getAll(true, {query: `gtin == ${self.gtin}`}, (err, batches) => {
+      self.batchManager.getAll(false, {query: `gtin == ${self.gtin}`}, (err, batches) => {
         if (err){
           self.sendError(`Could not load batches for product ${self.gtin}`);
           return;
@@ -143,11 +143,9 @@ export class ManagedProductListItem {
       </ion-label>)
   }
 
-  addBatch(batch){
+  addBatch(gtinBatch){
     return(
-      <ion-chip outline color="primary">
-        <ion-label className="ion-padding-horizontal">{batch.batchNumber}</ion-label>
-      </ion-chip>
+      <batch-chip gtin-batch={gtinBatch} loader-type={SUPPORTED_LOADERS.circles} mode="detail"></batch-chip>
     )
   }
 
@@ -186,7 +184,7 @@ export class ManagedProductListItem {
   render() {
     return (
       <Host>
-        <ion-item className="ion-align-self-center">
+        <ion-item className="ion-align-self-center main-item">
           {this.addBarCode()}
           {this.addLabel()}
           {this.addBatches()}

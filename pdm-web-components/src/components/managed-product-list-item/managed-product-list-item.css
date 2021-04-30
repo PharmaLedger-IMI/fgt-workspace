@@ -3,8 +3,16 @@
   --background: inherit;
 }
 
-ion-chip {
-  height: 28px;
-  --ion-padding: 8px;
-  --ion-margin: 8px;
+ion-item.main-item{
+  animation: 1s linear fadein;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }

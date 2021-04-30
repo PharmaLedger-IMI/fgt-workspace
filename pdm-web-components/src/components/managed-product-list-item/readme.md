@@ -38,11 +38,14 @@ Type: `Promise<void>`
 ### Depends on
 
 - [barcode-generator](../barcode-generator)
+- [batch-chip](../batch-chip)
 
 ### Graph
 ```mermaid
 graph TD;
   managed-product-list-item --> barcode-generator
+  managed-product-list-item --> batch-chip
+  batch-chip --> multi-spinner
   style managed-product-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
