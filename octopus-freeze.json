@@ -29,7 +29,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "4cab7e1c0b1620bf2c32a0abf5b00a31ea6b26e5"
+                    "commit": "9e35cc44c559bba4294596ed55a464504c754428"
                 },
                 {
                     "type": "execute",
@@ -232,7 +232,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "347d1aceaf1f06b09d0307f9b78049f313b783aa"
+                    "commit": "7dfa8dd6bd13239b698e0bd1a71e0aa353e16ba2"
                 },
                 {
                     "type": "execute",
@@ -248,7 +248,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "82ea912284cbd8b19a8a2a8ab40d03103b983c7a"
+                    "commit": "8e8d13a44fadff7a2c31e2bc6fd2dd1db2b10bbe"
                 },
                 {
                     "type": "execute",
@@ -698,6 +698,10 @@
                 {
                     "type": "execute",
                     "cmd": "cd pdm-trust-loader && npm run docs"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-web-components && npm run docs"
                 }
             ]
         },
@@ -757,6 +761,14 @@
                     "type": "copy",
                     "src": "pdm-trust-loader/docs/",
                     "target": "docs/pdm-trust-loader",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "pdm-web-components/docs/",
+                    "target": "docs/pdm-web-components",
                     "options": {
                         "overwrite": true
                     }
