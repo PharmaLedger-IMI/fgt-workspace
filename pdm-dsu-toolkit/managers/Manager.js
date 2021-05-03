@@ -219,10 +219,7 @@ class Manager{
         if (!record.api || record.api !== this._getTableName())
             return callback(`Message record ${record} does not have api=${this._getTableName()}. Skipping record.`);
 
-        if (!record.message || typeof record.message != "string")
-            return callback(`Message record ${record} does not have property message as non-empty string with keySSI. Skipping record.`);
-
-        self._processMessageRecord(record, (err) => {
+        self._processMessageRecord(record.message, (err) => {
             if (err)
                 return self._err(`Record processing failed: ${JSON.stringify(record)}`, err, callback);
             // and then delete message after processing.

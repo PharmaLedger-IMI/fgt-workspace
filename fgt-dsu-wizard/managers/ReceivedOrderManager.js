@@ -13,7 +13,7 @@ class ReceivedOrderManager extends OrderManager {
         super(participantManager, DB.receivedOrders, ['orderId', 'requesterId']);
         const self = this;
         this.registerMessageListener((message) => {
-            self._processMessageRecord(message, (err) => {
+            self.processMessageRecord(message, (err) => {
                 if (err)
                     console.log(`Could not process message: ${err}`);
             });

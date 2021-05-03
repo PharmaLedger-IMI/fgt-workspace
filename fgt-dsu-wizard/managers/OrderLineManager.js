@@ -1,15 +1,32 @@
 const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const OrderLine = require('../model').OrderLine;
-const Manager = require('wizard').Managers.Manager;
+const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 /**
  * Issued OrderLine Manager Class.
  * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
  */
 class OrderLineManager extends Manager {
-    constructor(participantManager) {
-        super(participantManager, DB.orderLines, ['gtin', 'quantity', 'requesterId', 'senderId']);
+    constructor(participantManager, callback) {
+        super(participantManager, DB.orderLines, ['gtin', 'date', 'requesterId', 'senderId'], callback);
         const self = this;
-        this.registerMessageListener((message) => { self._processMessageRecord(message, () => { }); });
+        this.registerMessageListener((message) => {
+            self.processMessageRecord(message, (err) => {
+                if (err)
+                    console.log(`Error processing message: ${message}`);
+                });
+            });
+    }
+
+    /**
+     * generates the db's key for the OrderLine
+     * @param {string|number} requesterId
+     * @param {string|number} gtin
+     * @param {string|number} date
+     * @return {string}
+     * @protected
+     */
+    _genCompostKey(requesterId, gtin, date){
+        return `${requesterId}-${gtin}-${date}`;
     }
 
     /**
@@ -31,8 +48,10 @@ class OrderLineManager extends Manager {
      */
     _indexItem(key, item, record) {
         return {
-            orderId: key,
+            gtin: item.gtin,
+            date: Date.now(),
             requesterId: item.requesterId,
+            senderId: item.senderId,
             value: record
         }
     };
@@ -46,7 +65,7 @@ class OrderLineManager extends Manager {
      */
     _keywordToQuery(keyword) {
         keyword = keyword || '.*';
-        return [`orderId like /${keyword}/g`];
+        return [`gtin like /${keyword}/g`];
     }
 
     /**
@@ -57,7 +76,8 @@ class OrderLineManager extends Manager {
      */
     getAll(readDSU, options, callback) {
         const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
-            query: ['orderId like /.*/g']
+            query: ['date > 0'],
+            sort: 'dsc'
         });
 
         if (!callback) {
@@ -93,111 +113,42 @@ class OrderLineManager extends Manager {
                 callback(undefined, result);
             });
         });
-        /*
-        let orderLine1 = new OrderLine('123', 1, '', '');
-        let orderLine2 = new OrderLine('321', 5, '', '');
-        let order1 = new Order("IOID1", "TPID1", 'WHSID555', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
-        let order2 = new Order("IOID2", "TPID2", 'WHSID432', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
-        return callback(undefined, [
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-        ]);
-        */
-
-        /*
-        super.listMounts(RECEIVED_ORDERS_MOUNT_PATH, (err, mounts) => {
-            if (err)
-                return callback(err);
-            console.log(`Found ${mounts.length} orders at ${ISSUED_ORDERS_MOUNT_PATH}`);
-            mounts = mounts.map(m => {
-                console.log("Listing mounted m", m);
-                m.path = `${ISSUED_ORDERS_MOUNT_PATH}/${m.path}`;
-                return m;
-            });
-            super.readAll(mounts, callback);
-        });
-        */
     }
 
     _processMessageRecord(message, callback) {
         let self = this;
-        if (!message || typeof message != "string") {
-            console.log(`Message record ${message} does not have property message as non-empty string with keySSI. Skipping record.`);
-            return callback();
-        }
-        const orderSReadSSIStr = message.message;
-        self._getDSUInfo(orderSReadSSIStr, (err, orderObj, orderDsu) => {
+        if (!message || typeof message !== "string")
+            return callback(`Message ${message} does not have  non-empty string with keySSI. Skipping record.`);
+
+        const orderLineSSI = message;
+        self._getDSUInfo(orderLineSSI, (err, orderLine, orderDsu) => {
             if (err) {
                 console.log(`Could not read DSU from message keySSI in record ${message}. Skipping record.`);
                 return callback();
             }
-            console.log(`ReceivedOrder`, orderObj);
-            const orderId = orderObj.orderId;
-            if (!orderId) {
-                console.log("ReceivedOrder doest not have an orderId. Skipping record.");
-                return callback();
-            }
-            self.insertRecord(orderId, self._indexItem(orderId, orderObj, orderSReadSSIStr), (err) => {
-                if (err) {
-                    console.log("insertRecord failed", err);
-                    return callback();
-                }
-                // and then delete message after processing.
-                console.log("Going to delete messages's record", message);
-                self.deleteMessage(message, callback);
-            });
+            console.log(`Received OrderLine`, orderLine);
+            const indexedItem = self._indexItem(undefined, orderLine, orderLineSSI);
+            self.insertRecord(self._genCompostKey(orderLine.requesterId, orderLine.gtin, indexedItem.date), indexedItem, callback);
         });
     };
-
-    _iterateMessageRecords(records, callback) {
-        let self = this;
-        if (!records || !Array.isArray(records))
-            return callback(`Message records ${records} is not an array!`);
-        if (records.length <= 0)
-            return callback(); // done without error
-        const record0 = records.shift();
-        self._processMessageRecord(record0, (err) => {
-            if (err)
-                return callback(err);
-            self._iterateMessageRecords(records, callback);
-        });
-    };
-
-    /**
-     * Process incoming, looking for receivedOrder messages.
-     * @param {function(err)} callback
-     */
-    processMessages(callback) {
-        let self = this;
-        console.log("Processing messages");
-        // TODO: self.getMessages() is broken. Go to the messageManager directly.
-        // jpsl to Tiago: IMHO, the entry point for this should start at the participant, and not at the ReceivedOrderManager.
-        // TODO optimize and ask for api = receivedOrders only
-        self.getMessages((err, records) => {
-            console.log("Processing records: ", err, records);
-            if (err)
-                return callback(err);
-            let messageRecords = [...records]; // clone for iteration with shift()
-            self._iterateMessageRecords(messageRecords, callback);
-        });
-    }
 }
 
-let receivedOrderManager;
+let orderLineManager;
 /**
  * @param {ParticipantManager} participantManager
- * @returns {OrderManager}
+ * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
+ * Makes BaseManager required again!
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @returns {OrderLineManager}
  */
-const getReceivedOrderManager = function (participantManager, force) {
-    if (!receivedOrderManager || force)
-        receivedOrderManager = new ReceivedOrderManager(participantManager);
-    return receivedOrderManager;
+const getOrderLineManager = function (participantManager, force, callback) {
+    if (typeof force === 'function'){
+        callback = force;
+        force = false;
+    }
+    if (!orderLineManager || force)
+        orderLineManager = new OrderLineManager(participantManager, callback);
+    return orderLineManager;
 }
 
-module.exports = getReceivedOrderManager;
+module.exports = getOrderLineManager;

@@ -10,7 +10,7 @@ const OrderStatus = require('../model').OrderStatus;
  */
 class IssuedOrderManager extends OrderManager {
     constructor(participantManager) {
-        super(participantManager, DB.issuedOrders, [ 'senderId']);
+        super(participantManager, DB.issuedOrders, ['senderId']);
     }
 
     /**
@@ -63,7 +63,7 @@ class IssuedOrderManager extends OrderManager {
                     return self._err(`Could not resolve MAH for ${orderLine}`, err, callback);
                 if (typeof ssi !== 'string')
                     ssi = ssi.getIdentifier();
-                self.sendMessage(mahId, ssi, (err) => {
+                self.sendMessage(mahId, DB.orderLines, ssi, (err) => {
                     if (err)
                         return self._err(`Could not send message to MAH ${mahId} for orderLine ${JSON.stringify(orderLine)} with ssi ${ssi}`, err, callback);
                     console.log(`Orderline ${JSON.stringify(orderLine)} transmitted to MAH ${mahId}`);
