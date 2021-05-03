@@ -24,12 +24,12 @@ class OrderManager extends Manager {
     /**
      * generates the db's key for the Order
      * @param {string|number} requesterId
-     * @param {string|number} batchNumber
+     * @param {string|number} orderId
      * @return {string}
      * @protected
      */
-    _genCompostKey(requesterId, batchNumber){
-        return `${requesterId}-${batchNumber}`;
+    _genCompostKey(requesterId, orderId){
+        return `${requesterId}-${orderId}`;
     }
 
     /**

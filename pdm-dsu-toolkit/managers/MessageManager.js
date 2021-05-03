@@ -70,7 +70,7 @@ class MessageManager extends Manager{
             if (api in self._listeners) {
                 console.log(`Found ${self._listeners[api].length} listeners for the ${api} message api`)
                 self._listeners[api].forEach(apiListener => {
-                    apiListener(message);
+                    apiListener(message.message);
                 });
             }
         });

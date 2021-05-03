@@ -96,7 +96,7 @@ class ReceivedOrderManager extends OrderManager {
             if (err)
                 return self._err(`Could not perform query`, err, callback);
             if (!readDSU)
-                return callback(undefined, records.map(r => r.orderId));
+                return callback(undefined, records.map(r => self._genCompostKey(r.requesterId, r.orderId)));
             records = records.map(r => r.value);
             self._iterator(records.slice(), self._getDSUInfo.bind(self), (err, result) => {
                 if (err)
@@ -146,7 +146,7 @@ class ReceivedOrderManager extends OrderManager {
      */
     _processMessageRecord(message, callback) {
         let self = this;
-        if (!message || typeof message != "string")
+        if (!message || typeof message !== "string")
             return callback(`Message ${message} does not have  non-empty string with keySSI. Skipping record.`);
 
         const orderSReadSSIStr = message;
@@ -159,7 +159,7 @@ class ReceivedOrderManager extends OrderManager {
             if (!orderId)
                 return callback("ReceivedOrder doest not have an orderId. Skipping record.");
 
-            self.insertRecord(self._genCompostKey(order.requesterId, orderId), self._indexItem(orderId, orderObj, orderSReadSSIStr), callback);
+            self.insertRecord(self._genCompostKey(orderObj.requesterId, orderId), self._indexItem(orderId, orderObj, orderSReadSSIStr), callback);
         });
     };
 }
