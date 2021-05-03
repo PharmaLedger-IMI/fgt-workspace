@@ -16,8 +16,9 @@ function OrderLineService(domain, strategy){
 
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
+
     /**
-     * Creates an order DSU
+     * Creates an orderLine DSU
      * @param {string} orderId
      * @param {OrderLine} orderLine
      * @param {function} callback

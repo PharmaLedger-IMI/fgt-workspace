@@ -21,6 +21,27 @@ function OrderService(domain, strategy) {
 
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
 
+
+    this.resolveMAH = function(orderLine, callback){
+        const keyGen = require('../commands/setProductSSI').createProductSSI;
+        const productSSI = keyGen({gtin: orderLine.gtin}, domain);
+        utils.getResolver().loadDSU(productSSI, (err, dsu) => {
+            if (err)
+                return callback(`Could not load Product DSU ${err}`);
+            dsu.readFile(INFO_PATH, (err, data) => {
+                if (err)
+                    return callback(`Could not read product from dsu ${err}`);
+                try{
+                    const product = JSON.parse(data);
+                    callback(undefined, product.manufName);
+                } catch (e){
+                    return callback(`Could not parse Product data ${err}`)
+                }
+            });
+        });
+    }
+
+
     /**
      * Creates an order
      * @param {Order} order
@@ -44,7 +65,7 @@ function OrderService(domain, strategy) {
     /**
      * Creates the original OrderStatus DSU
      * @param {OrderStatus} [status]: defaults to OrderStatus.CREATED
-     * @param {function(err, keySSI)} callback
+     * @param {function(err, keySSI, orderLinesSSI)} callback
      */
     let createOrderStatus = function (status, callback) {
         if (typeof status === 'function') {
@@ -88,7 +109,7 @@ function OrderService(domain, strategy) {
                                     if (err)
                                         return callback(err);
                                     console.log("Finished creating Order " + keySSI.getIdentifier(true));
-                                    callback(undefined, keySSI);
+                                    callback(undefined, keySSI, orderLines);
                                 });
                             });
                         });
