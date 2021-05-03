@@ -39,6 +39,10 @@ export namespace Components {
         "gtinBatch": string;
         "refresh": () => Promise<void>;
     }
+    interface ManagedOrderlineListItem {
+        "orderLine": string;
+        "refresh": () => Promise<void>;
+    }
     interface ManagedProductListItem {
         "gtin": string;
         "refresh": () => Promise<void>;
@@ -132,6 +136,12 @@ declare global {
         prototype: HTMLManagedBatchListItemElement;
         new (): HTMLManagedBatchListItemElement;
     };
+    interface HTMLManagedOrderlineListItemElement extends Components.ManagedOrderlineListItem, HTMLStencilElement {
+    }
+    var HTMLManagedOrderlineListItemElement: {
+        prototype: HTMLManagedOrderlineListItemElement;
+        new (): HTMLManagedOrderlineListItemElement;
+    };
     interface HTMLManagedProductListItemElement extends Components.ManagedProductListItem, HTMLStencilElement {
     }
     var HTMLManagedProductListItemElement: {
@@ -185,6 +195,7 @@ declare global {
         "batch-chip": HTMLBatchChipElement;
         "batch-list-item": HTMLBatchListItemElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
+        "managed-orderline-list-item": HTMLManagedOrderlineListItemElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
         "managed-received-order-list-item": HTMLManagedReceivedOrderListItemElement;
         "menu-tab-button": HTMLMenuTabButtonElement;
@@ -235,6 +246,17 @@ declare namespace LocalJSX {
           * Through this event errors are passed
          */
         "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+    }
+    interface ManagedOrderlineListItem {
+        /**
+          * Through this event errors are passed
+         */
+        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "orderLine"?: string;
     }
     interface ManagedProductListItem {
         "gtin"?: string;
@@ -335,6 +357,7 @@ declare namespace LocalJSX {
         "batch-chip": BatchChip;
         "batch-list-item": BatchListItem;
         "managed-batch-list-item": ManagedBatchListItem;
+        "managed-orderline-list-item": ManagedOrderlineListItem;
         "managed-product-list-item": ManagedProductListItem;
         "managed-received-order-list-item": ManagedReceivedOrderListItem;
         "menu-tab-button": MenuTabButton;
@@ -353,6 +376,7 @@ declare module "@stencil/core" {
             "batch-chip": LocalJSX.BatchChip & JSXBase.HTMLAttributes<HTMLBatchChipElement>;
             "batch-list-item": LocalJSX.BatchListItem & JSXBase.HTMLAttributes<HTMLBatchListItemElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
+            "managed-orderline-list-item": LocalJSX.ManagedOrderlineListItem & JSXBase.HTMLAttributes<HTMLManagedOrderlineListItemElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
             "managed-received-order-list-item": LocalJSX.ManagedReceivedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderListItemElement>;
             "menu-tab-button": LocalJSX.MenuTabButton & JSXBase.HTMLAttributes<HTMLMenuTabButtonElement>;

@@ -13,6 +13,7 @@
                             <menu-tab-button icon-name="analytics-outline" label="@menu.dashboard" tab="tab-dashboard"></menu-tab-button>
                             <menu-tab-button icon-name="reader-outline" label="@menu.products" tab="tab-products"></menu-tab-button>
                             <menu-tab-button icon-name="reader-outline" label="@menu.batches" tab="tab-batches"></menu-tab-button>
+                            <menu-tab-button icon-name="reader-outline" label="@menu.orderLines" tab="tab-orderLines"></menu-tab-button>
                         </ion-list>
                     </ion-content>
                 </ion-menu>
@@ -41,12 +42,16 @@
                 <ion-tab tab="tab-batches">
                     <webc-template template="batches" disable-container></webc-template>
                 </ion-tab>
+                <ion-tab tab="tab-orderLines">
+                    <webc-template template="orderLines" disable-container></webc-template>
+                </ion-tab>
             </ion-content>
 
             <ion-tab-bar slot="bottom">
                 <menu-tab-button icon-name="analytics-outline" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>
                 <menu-tab-button icon-name="reader-outline" label="@menu.products" tab="tab-products" mode="bar"></menu-tab-button>
                 <menu-tab-button icon-name="reader-outline" label="@menu.batches" tab="tab-batches" mode="bar"></menu-tab-button>
+                <menu-tab-button icon-name="reader-outline" label="@menu.orderLines" tab="tab-orderLines" mode="bar"></menu-tab-button>
             </ion-tab-bar>
         </ion-tabs>
     </ion-app>

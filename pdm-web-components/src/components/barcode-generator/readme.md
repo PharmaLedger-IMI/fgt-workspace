@@ -23,6 +23,7 @@
 
  - [batch-list-item](../batch-list-item)
  - [managed-batch-list-item](../managed-batch-list-item)
+ - [managed-orderline-list-item](../managed-orderline-list-item)
  - [managed-product-list-item](../managed-product-list-item)
  - [product-list-item](../product-list-item)
  - [stock-list-item](../stock-list-item)
@@ -32,6 +33,7 @@
 graph TD;
   batch-list-item --> barcode-generator
   managed-batch-list-item --> barcode-generator
+  managed-orderline-list-item --> barcode-generator
   managed-product-list-item --> barcode-generator
   product-list-item --> barcode-generator
   stock-list-item --> barcode-generator

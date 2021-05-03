@@ -16,6 +16,8 @@ class ReceivedOrderManager extends OrderManager {
             self.processMessageRecord(message, (err) => {
                 if (err)
                     console.log(`Could not process message: ${err}`);
+                if (self.controller)
+                    self.controller.refresh();
             });
         });
     }

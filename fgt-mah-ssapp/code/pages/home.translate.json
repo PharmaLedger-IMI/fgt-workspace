@@ -21,7 +21,8 @@
   "menu": {
     "dashboard": "Dashboard",
     "products": "Products",
-    "batches": "Batches"
+    "batches": "Batches",
+    "orderLines": "Orders"
   },
   "dashboard": {
     "welcome": "This is a Dashboard"
@@ -122,6 +123,15 @@
     "buttons": {
       "create-batch": "Create",
       "cancel": "Cancel"
+    }
+  },
+  "orderLines": {
+    "title": "Manage Orders",
+    "buttons": {
+      "add-product": "Add Order?"
+    },
+    "errors": {
+      "list-error": "Could not list orders"
     }
   },
   "none": "You are not identified as a Marketing Authorization holder. This application was not correctly built"

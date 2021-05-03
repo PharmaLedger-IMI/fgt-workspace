@@ -12,6 +12,7 @@ export default class ReceivedOrdersController extends LocalizedController {
         const wizard = require('wizard');
         this.participantManager = wizard.Managers.getParticipantManager();
         this.receivedOrderManager = wizard.Managers.getReceivedOrderManager(this.participantManager);
+        this.receivedOrderManager.bindController(this);
 
         this.model = this.initializeModel();
 
