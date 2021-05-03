@@ -47,23 +47,34 @@ class IssuedOrderManager extends OrderManager {
             orderId = order.orderId;
         }
         let self = this;
-        // TODO locate senderId and check if it can receive orders
 
-        // TODO locate MAH id from order.orderLine[i].gtin and send
         // messages to all MAHs.
-        const sendOrderLinesToMAH = function(orderLines) {
+        // the order is the same for the orderlines and their ssis because of the way the code is written
+        const sendOrderLinesToMAH = function(orderLines, orderLinesSSIs, callback) {
+            const orderLine = orderLines.shift();
+            let ssi = orderLinesSSIs.shift();
             //console.log("Handling rest of orderLines ", orderLines);
-            if (!orderLines || orderLines.length<=0)
-                return; // done
-            const orderLine0 = orderLines[0];
-            const gtin = orderLine0.gtin;
-            console.log("TODO resolve gtin "+gtin+" to MAH id and send messsage");
-            orderLines.shift();
-            sendOrderLinesToMAH(orderLines);
-        }
-        sendOrderLinesToMAH([...order.orderLines]);
+            if (!orderLine){
+                console.log(`All orderlines transmited to MAH`)
+                return callback();
+            }
+            self.orderService.resolveMAH(orderLine, (err, mahId) => {
+                if (err)
+                    return self._err(`Could not resolve MAH for ${orderLine}`, err, callback);
+                if (typeof ssi !== 'string')
+                    ssi = ssi.getIdentifier();
+                self.sendMessage(mahId, ssi, (err) => {
+                    if (err)
+                        return self._err(`Could not send message to MAH ${mahId} for orderLine ${JSON.stringify(orderLine)} with ssi ${ssi}`, err, callback);
+                    console.log(`Orderline ${JSON.stringify(orderLine)} transmitted to MAH ${mahId}`);
+                    callback();
+                })
+            });
 
-        self.orderService.create(order, (err, keySSI) => {
+            sendOrderLinesToMAH(orderLines, orderLinesSSIs, callback);
+        }
+
+        self.orderService.create(order, (err, keySSI, orderLinesSSIs) => {
             if (err)
                 return self._err(`Could not create product DSU for ${order}`, err, callback);                
             const keySSIStr = keySSI.getIdentifier();
@@ -83,9 +94,13 @@ class IssuedOrderManager extends OrderManager {
                 const aKey = keySSI.getIdentifier();
                 this.sendMessage(order.senderId, DB.receivedOrders, aKey, (err) => {
                     if (err)
-                        return callback(err);
+                        return self._err(`Could not sent message to ${order.orderId} with ${DB.receivedOrders}`, err, callback);
                     console.log("Message sent to "+order.senderId+", "+DB.receivedOrders+", "+aKey);
-                    callback(undefined, keySSI, path);
+                    sendOrderLinesToMAH([...order.orderLines], [...orderLinesSSIs], (err) => {
+                        if (err)
+                            return self._err(`Could not transmit orderLines to The manufacturers`, err, callback);
+                        callback(undefined, keySSI, path);
+                    });
                 });
             });
         });
