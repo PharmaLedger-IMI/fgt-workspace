@@ -17,6 +17,28 @@ function OrderLineService(domain, strategy){
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
 
+    this.get = function(keySSI, callback){
+        utils.getResolver().loadDSU(keySSI, (err, dsu) => {
+            if (err)
+                return callback(err);
+            dsu.readFile(INFO_PATH, (err, data) => {
+                if (err)
+                    return callback(err);
+                try{
+                    const orderLine = JSON.parse(data);
+                    dsu.readFile(`${STATUS_MOUNT_PATH/INFO_PATH}`, {ignoreMounts: false}, (err, status) => {
+                        if (err)
+                            return callback(`could not retrieve orderLine status`);
+                        orderLine.status = status.toString();
+                       callback(undefined, orderLine);
+                    });
+                } catch (e){
+                    callback(`Could not parse orderLine in DSU ${keySSI.getIdentifier()}`);
+                }
+            })
+        });
+    }
+
     /**
      * Creates an orderLine DSU
      * @param {string} orderId

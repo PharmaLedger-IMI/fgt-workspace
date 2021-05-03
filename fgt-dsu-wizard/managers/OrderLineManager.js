@@ -1,4 +1,4 @@
-const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
+const { DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN } = require('../constants');
 const OrderLine = require('../model').OrderLine;
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 /**
@@ -9,6 +9,7 @@ class OrderLineManager extends Manager {
     constructor(participantManager, callback) {
         super(participantManager, DB.orderLines, ['gtin', 'date', 'requesterId', 'senderId'], callback);
         const self = this;
+        this.orderLineService = new (require('../services/OrderLineService'))(ANCHORING_DOMAIN);
         this.registerMessageListener((message) => {
             self.processMessageRecord(message, (err) => {
                 if (err)
@@ -71,6 +72,27 @@ class OrderLineManager extends Manager {
     }
 
     /**
+     * reads ssi for that OrderLine in the db. loads is and reads the info at '/info' and the status at '/status/info
+     * @param {string} key
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
+     * @param {function(err, object|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
+     */
+    getOne(key, readDSU,  callback) {
+        if (!callback){
+            callback = readDSU;
+            readDSU = true;
+        }
+        let self = this;
+        self.getRecord(key, (err, itemSSI) => {
+            if (err)
+                return self._err(`Could not load record with key ${key} on table ${self._getTableName()}`, err, callback);
+            if (!readDSU)
+                return callback(undefined, itemSSI);
+            self.orderLineService.get(itemSSI.value || itemSSI, callback);
+        });
+    }
+
+    /**
      * Lists all received orders.
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
      * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
@@ -108,7 +130,7 @@ class OrderLineManager extends Manager {
             if (!readDSU)
                 return callback(undefined, records.map(r => self._genCompostKey(r.requesterId, r.gtin, r.date)));
             records = records.map(r => r.value);
-            self._iterator(records.slice(), self._getDSUInfo.bind(self), (err, result) => {
+            self._iterator(records.slice(), self.orderLineService.get, (err, result) => {
                 if (err)
                     return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
                 console.log(`Parsed ${result.length} ${self._getTableName()}s`);

@@ -61,7 +61,6 @@ export class ManagedOrderlineListItem {
   private orderLineManager: WebManager = undefined;
 
   @State() line: typeof OrderLine = undefined;
-  @State() batches: string[] = undefined;
 
   async componentWillLoad() {
     if (!this.host.isConnected)
@@ -112,7 +111,7 @@ export class ManagedOrderlineListItem {
     return {
       requesterId: props[0],
       gtin: props[1],
-      date: new Date(parseInt(props[2]) * 1000)
+      date: (new Date(parseInt(props[2]) * 1000)).toLocaleDateString("en-US")
     }
   }
 
@@ -144,12 +143,6 @@ export class ManagedOrderlineListItem {
         {getRequesterLabel()}
         {getDateLabel()}
       </ion-label>)
-  }
-
-  addBatch(gtinBatch){
-    return(
-      <batch-chip gtin-batch={gtinBatch} loader-type={SUPPORTED_LOADERS.bubblingSmall} mode="detail"></batch-chip>
-    )
   }
 
   addDetails(){
