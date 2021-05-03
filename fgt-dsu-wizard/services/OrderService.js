@@ -80,7 +80,8 @@ function OrderService(domain, strategy) {
                         createOrderLines(order, statusSSI, (err, orderLines) => {
                             if (err)
                                 return callback(err);
-                            dsu.writeFile('/lines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
+                            const lines = JSON.stringify(orderLines.map(o => o.getIdentifier(true)));
+                            dsu.writeFile('/lines', lines, (err) => {
                                 if (err)
                                     return callback(err);
                                 dsu.getKeySSIAsObject((err, keySSI) => {
@@ -143,11 +144,12 @@ function OrderService(domain, strategy) {
     let createOrderLines = function (order, statusSSI, callback) {
         let orderLines = [];
 
+        statusSSI = statusSSI.derive();
         let iterator = function (order, items, callback) {
             let orderLine = items.shift();
             if (!orderLine)
                 return callback(undefined, orderLines);
-            orderLineService.create(order.orderId, orderLine, statusSSI.derive(), (err, keySSI) => {
+            orderLineService.create(order.orderId, orderLine, statusSSI, (err, keySSI) => {
                 if (err)
                     return callback(err);
                 orderLines.push(keySSI);
