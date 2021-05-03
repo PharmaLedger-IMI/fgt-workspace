@@ -1,6 +1,6 @@
 {
   "name": "pdm-dsu-toolkit",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Proposes a Standard Enterprise DSU SSApp Architecture && Provides the underlying API to handle DSUs in that environment",
   "main": "index.js",
   "scripts": {
