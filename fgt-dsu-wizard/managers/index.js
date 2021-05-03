@@ -21,6 +21,6 @@ module.exports = {
     getParticipantManager: require('./ParticipantManager'),
     getProductManager: require('./ProductManager'),
     getReceivedOrderManager: require('./ReceivedOrderManager'),
-    getStockManager: require('./StockManager')
-
+    getStockManager: require('./StockManager'),
+    getOrderLineManager: require('./OrderLineManager')
 }
