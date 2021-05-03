@@ -1,6 +1,6 @@
 {
   "name": "fgt-pharmacy-ssapp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "The Pharmaledger Traceability Application for Pharmacies",
   "main": "index.js",
   "scripts": {
