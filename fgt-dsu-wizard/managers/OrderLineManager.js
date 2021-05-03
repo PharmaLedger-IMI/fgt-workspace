@@ -1,13 +1,13 @@
 const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const OrderLine = require('../model').OrderLine;
-
+const Manager = require('wizard').Managers.Manager;
 /**
  * Issued OrderLine Manager Class.
  * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
  */
-class ReceivedOrderManager extends OrderManager {
+class OrderLineManager extends Manager {
     constructor(participantManager) {
-        super(participantManager, DB.receivedOrders, ['orderId']);
+        super(participantManager, DB.orderLines, ['gtin', 'quantity', 'requesterId', 'senderId']);
         const self = this;
         this.registerMessageListener((message) => { self._processMessageRecord(message, () => { }); });
     }
@@ -23,7 +23,7 @@ class ReceivedOrderManager extends OrderManager {
      * </pre>
      * so the DB can be queried by each of the indexes and still allow for lazy loading
      * @param {string} key
-     * @param {Order} item
+     * @param {OrderLine} item
      * @param {string|object} record
      * @return {object} the indexed object to be stored in the db
      * @protected
@@ -125,26 +125,16 @@ class ReceivedOrderManager extends OrderManager {
         */
     }
 
-    _processMessageRecord(record, callback) {
+    _processMessageRecord(message, callback) {
         let self = this;
-        // Process one record. If the message is broken, DO NOT DELETE IT, log to console, and skip to the next.
-        console.log(`Processing record`, record);
-        if (record.__deleted) {
-            console.log("Skipping deleted record.");
+        if (!message || typeof message != "string") {
+            console.log(`Message record ${message} does not have property message as non-empty string with keySSI. Skipping record.`);
             return callback();
         }
-        if (!record.api || record.api !== this._getTableName()) {
-            console.log(`Message record ${record} does not have api=${this._getTableName()}. Skipping record.`);
-            return callback();
-        }
-        if (!record.message || typeof record.message != "string") {
-            console.log(`Message record ${record} does not have property message as non-empty string with keySSI. Skipping record.`);
-            return callback();
-        }
-        const orderSReadSSIStr = record.message;
+        const orderSReadSSIStr = message.message;
         self._getDSUInfo(orderSReadSSIStr, (err, orderObj, orderDsu) => {
             if (err) {
-                console.log(`Could not read DSU from message keySSI in record ${record}. Skipping record.`);
+                console.log(`Could not read DSU from message keySSI in record ${message}. Skipping record.`);
                 return callback();
             }
             console.log(`ReceivedOrder`, orderObj);
@@ -159,8 +149,8 @@ class ReceivedOrderManager extends OrderManager {
                     return callback();
                 }
                 // and then delete message after processing.
-                console.log("Going to delete messages's record", record);
-                self.deleteMessage(record, callback);
+                console.log("Going to delete messages's record", message);
+                self.deleteMessage(message, callback);
             });
         });
     };
