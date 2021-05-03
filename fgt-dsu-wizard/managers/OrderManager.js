@@ -22,6 +22,17 @@ class OrderManager extends Manager {
     }
 
     /**
+     * generates the db's key for the Order
+     * @param {string|number} requesterId
+     * @param {string|number} batchNumber
+     * @return {string}
+     * @protected
+     */
+    _genCompostKey(requesterId, batchNumber){
+        return `${requesterId}-${batchNumber}`;
+    }
+
+    /**
      * Must wrap the entry in an object like:
      * <pre>
      *     {
@@ -40,7 +51,7 @@ class OrderManager extends Manager {
      */
     _indexItem(key, item, record) {
         return {
-            orderId: key,
+            orderId: item.orderId,
             products: item.orderLines.map(ol => ol.gtin).join(','),
             value: record
         }

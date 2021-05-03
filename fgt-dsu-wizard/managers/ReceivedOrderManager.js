@@ -12,7 +12,21 @@ class ReceivedOrderManager extends OrderManager {
     constructor(participantManager) {
         super(participantManager, DB.receivedOrders, ['orderId', 'requesterId']);
         const self = this;
-        this.registerMessageListener((message) => { self._processMessageRecord(message, () => { }); });
+        this.registerMessageListener((message) => {
+            self._processMessageRecord(message, (err) => {
+                if (err)
+                    console.log(`Could not process message: ${err}`);
+            });
+        });
+    }
+
+
+    /**
+     * Not necessary for this manager
+     * @override
+     */
+    create(key, item, callback) {
+        callback(`This manager does not have this functionality`);
     }
 
     /**
@@ -123,83 +137,37 @@ class ReceivedOrderManager extends OrderManager {
         */
     }
 
-    _processMessageRecord(record, callback) {
+    /**
+     * Processes the received messages, saves them to the the table and deletes the message
+     * @param {*} message
+     * @param {function(err)} callback
+     * @protected
+     * @override
+     */
+    _processMessageRecord(message, callback) {
         let self = this;
-        // Process one record. If the message is broken, DO NOT DELETE IT, log to console, and skip to the next.
-        console.log(`Processing record`, record);
-        if (record.__deleted) {
-            console.log("Skipping deleted record.");
-            return callback();
-        }
-        if (!record.api || record.api !== this._getTableName()) {
-            console.log(`Message record ${record} does not have api=${this._getTableName()}. Skipping record.`);
-            return callback();
-        }
-        if (!record.message || typeof record.message != "string") {
-            console.log(`Message record ${record} does not have property message as non-empty string with keySSI. Skipping record.`);
-            return callback();
-        }
-        const orderSReadSSIStr = record.message;
+        if (!message || typeof message != "string")
+            return callback(`Message ${message} does not have  non-empty string with keySSI. Skipping record.`);
+
+        const orderSReadSSIStr = message;
         self._getDSUInfo(orderSReadSSIStr, (err, orderObj, orderDsu) => {
-            if (err) {
-                console.log(`Could not read DSU from message keySSI in record ${record}. Skipping record.`);
-                return callback();
-            }
+            if (err)
+                return self._err(`Could not read DSU from message keySSI in record ${record}. Skipping record.`, err, callback);
+
             console.log(`ReceivedOrder`, orderObj);
             const orderId = orderObj.orderId;
-            if (!orderId) {
-                console.log("ReceivedOrder doest not have an orderId. Skipping record.");
-                return callback();
-            }
-            self.insertRecord(orderId, self._indexItem(orderId, orderObj, orderSReadSSIStr), (err) => {
-                if (err) {
-                    console.log("insertRecord failed", err);
-                    return callback();
-                }
-                // and then delete message after processing.
-                console.log("Going to delete messages's record", record);
-                self.deleteMessage(record, callback);
-            });
+            if (!orderId)
+                return callback("ReceivedOrder doest not have an orderId. Skipping record.");
+
+            self.insertRecord(self._genCompostKey(order.requesterId, orderId), self._indexItem(orderId, orderObj, orderSReadSSIStr), callback);
         });
     };
-
-    _iterateMessageRecords(records, callback) {
-        let self = this;
-        if (!records || !Array.isArray(records))
-            return callback(`Message records ${records} is not an array!`);
-        if (records.length <= 0)
-            return callback(); // done without error
-        const record0 = records.shift();
-        self._processMessageRecord(record0, (err) => {
-            if (err)
-                return callback(err);
-            self._iterateMessageRecords(records, callback);
-        });
-    };
-
-    /**
-     * Process incoming, looking for receivedOrder messages.
-     * @param {function(err)} callback
-     */
-    processMessages(callback) {
-        let self = this;
-        console.log("Processing messages");
-        // TODO: self.getMessages() is broken. Go to the messageManager directly.
-        // jpsl to Tiago: IMHO, the entry point for this should start at the participant, and not at the ReceivedOrderManager.
-        // TODO optimize and ask for api = receivedOrders only
-        self.getMessages((err, records) => {
-            console.log("Processing records: ", err, records);
-            if (err)
-                return callback(err);
-            let messageRecords = [...records]; // clone for iteration with shift()
-            self._iterateMessageRecords(messageRecords, callback);
-        });
-    }
 }
 
 let receivedOrderManager;
 /**
  * @param {ParticipantManager} participantManager
+ * @param {boolean} force
  * @returns {OrderManager}
  */
 const getReceivedOrderManager = function (participantManager, force) {

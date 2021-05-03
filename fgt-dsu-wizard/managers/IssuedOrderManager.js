@@ -10,7 +10,7 @@ const OrderStatus = require('../model').OrderStatus;
  */
 class IssuedOrderManager extends OrderManager {
     constructor(participantManager) {
-        super(participantManager, DB.issuedOrders, ['orderId', 'senderId']);
+        super(participantManager, DB.issuedOrders, [ 'senderId']);
     }
 
     /**
@@ -72,7 +72,7 @@ class IssuedOrderManager extends OrderManager {
             console.log("Order seedSSI="+keySSIStr+" sReadSSI="+sReadSSIStr);
             // storing the sReadSSI in base58
             const record = sReadSSIStr;
-            self.insertRecord(orderId, self._indexItem(orderId, order, record), (err) => {
+            self.insertRecord(super._genCompostKey(order.requesterId, order.orderId), self._indexItem(orderId, order, record), (err) => {
                 if (err)
                     return self._err(`Could not insert record with orderId ${orderId} on table ${self.tableName}`, err, callback);
                 const path = `${self.tableName}/${orderId}`;

@@ -33,7 +33,8 @@ const DB = {
     products: 'products',
     receivedOrders: 'receivedOrders',
     receivedShippments: 'receivedShippments',
-    stock: 'stock'
+    stock: 'stock',
+    orderLines: 'orderLines'
 }
 
 const DEFAULT_QUERY_OPTIONS = require('../pdm-dsu-toolkit/constants').DEFAULT_QUERY_OPTIONS;
