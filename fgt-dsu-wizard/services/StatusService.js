@@ -2,6 +2,7 @@
  * @module fgt-dsu-wizard.services
  */
 const utils = require('../../pdm-dsu-toolkit/services/utils');
+const {INFO_PATH} = require('../constants');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
@@ -36,7 +37,7 @@ function StatusService(domain, strategy){
             selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);
-                dsu.writeFile('/info', data, (err) => {
+                dsu.writeFile(INFO_PATH, data, (err) => {
                     if (err)
                         return callback(err);
                     dsu.getKeySSIAsObject((err, keySSI) => {
@@ -53,7 +54,7 @@ function StatusService(domain, strategy){
                 }
 
             utils.getDSUService().create(domain, endpointData, (builder, cb) => {
-                builder.addFileDataToDossier("/info", data, cb);
+                builder.addFileDataToDossier(INFO_PATH, data, cb);
             }, callback);
         }
     };

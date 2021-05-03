@@ -205,6 +205,80 @@ class Manager{
     _getMessages(callback){}
 
     /**
+     * Processes the received messages, saves them to the the table and deletes the message
+     * @param record
+     * @param {function(err)} callback
+     */
+    processMessageRecord(record, callback) {
+        let self = this;
+        // Process one record. If the message is broken, DO NOT DELETE IT, log to console, and skip to the next.
+        console.log(`Processing record`, record);
+        if (record.__deleted)
+            return callback("Skipping deleted record.");
+
+        if (!record.api || record.api !== this._getTableName())
+            return callback(`Message record ${record} does not have api=${this._getTableName()}. Skipping record.`);
+
+        if (!record.message || typeof record.message != "string")
+            return callback(`Message record ${record} does not have property message as non-empty string with keySSI. Skipping record.`);
+
+        self._processMessageRecord(record, (err) => {
+            if (err)
+                return self._err(`Record processing failed: ${JSON.stringify(record)}`, err, callback);
+            // and then delete message after processing.
+            console.log("Going to delete messages's record", record);
+            self.deleteMessage(record, callback);
+        });
+    };
+
+    /**
+     * Processes the received messages, for the presumed api (tableName)
+     * Each child class must implement this behaviour if desired
+     * @param {*} message
+     * @param {function(err)} callback
+     */
+    _processMessageRecord(message, callback){
+        callback(`Message processing is not implemented for ${this.tableName}`);
+    }
+
+    /**
+     *
+     * @param records
+     * @param callback
+     * @return {*}
+     * @private
+     */
+    _iterateMessageRecords(records, callback) {
+        let self = this;
+        if (!records || !Array.isArray(records))
+            return callback(`Message records ${records} is not an array!`);
+        if (records.length <= 0)
+            return callback(); // done without error
+        const record0 = records.shift();
+        self.processMessageRecord(record0, (err) => {
+            if (err)
+                console.log(err);
+            self._iterateMessageRecords(records, callback);
+        });
+    };
+
+    /**
+     * Process incoming, looking for receivedOrder messages.
+     * @param {function(err)} callback
+     */
+    processMessages(callback) {
+        let self = this;
+        console.log("Processing messages");
+        self.getMessages((err, records) => {
+            console.log("Processing records: ", err, records);
+            if (err)
+                return callback(err);
+            let messageRecords = [...records]; // clone for iteration with shift()
+            self._iterateMessageRecords(messageRecords, callback);
+        });
+    }
+
+    /**
      * Stops the message service listener
      */
     shutdownMessenger(){
@@ -353,7 +427,7 @@ class Manager{
      * @param {function(err, object, Archive)} callback
      */
     create(key, item, callback) {
-        throw new Error (`Child classes must implement this`);
+        callback(`The creation method is not implemneted for this Manager ${this.tableName}`);
     }
 
     /**
