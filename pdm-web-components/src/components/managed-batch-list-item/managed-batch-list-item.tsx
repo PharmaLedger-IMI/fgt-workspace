@@ -161,7 +161,7 @@ export class ManagedBatchListItem {
   render() {
     return (
       <Host>
-        <ion-item className="ion-align-self-center">
+        <ion-item className="main-item ion-align-self-center">
           {this.addBarCode()}
           {this.addLabel()}
           {this.addSerialsNumbers()}

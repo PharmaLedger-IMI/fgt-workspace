@@ -80,6 +80,7 @@ class Manager{
         }
         this.tableName = tableName;
         this.indexes = indexes;
+        this.controller = undefined;
         this.getIdentity = baseManager.getIdentity.bind(baseManager);
         this._getResolver = baseManager._getResolver;
         this._getKeySSISpace = baseManager._getKeySSISpace;
@@ -110,6 +111,15 @@ class Manager{
                 callback(undefined, self);
             });
         }
+    }
+
+    /**
+     * Util method to give optional access to the controller for event sending purposes
+     * and UI operations when required eg: refresh the view
+     * @param controller
+     */
+    bindController(controller){
+        this.controller = controller;
     }
 
     /**

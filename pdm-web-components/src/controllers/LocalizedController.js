@@ -2,7 +2,8 @@
  * @module controllers
  */
 
-import {EVENT_SEND_ERROR, EVENT_SEND_MESSAGE} from "../constants/events";
+import {EVENT_SEND_ERROR, EVENT_SEND_MESSAGE, EVENT_REFRESH} from "../constants/events";
+import {Refresher} from "@ionic/core/dist/types/components/refresher/refresher";
 
 /**
  *
@@ -158,6 +159,10 @@ export default class LocalizedController extends WebcController {
       evt.stopImmediatePropagation();
       self.showToast(evt.detail);
     }, {capture: true});
+  }
+
+  refresh(){
+    this.send(EVENT_REFRESH, {}, {capture: true});
   }
 
   /**

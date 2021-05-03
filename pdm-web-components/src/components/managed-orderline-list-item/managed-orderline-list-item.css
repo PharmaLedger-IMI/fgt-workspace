@@ -1,9 +1,3 @@
-
-ion-chip {
-  height: 28px;
-  --ion-padding: 8px;
-  --ion-margin: 8px;
-}
 :host {
   display: block;
   --background: inherit;

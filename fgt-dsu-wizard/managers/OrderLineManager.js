@@ -13,6 +13,8 @@ class OrderLineManager extends Manager {
             self.processMessageRecord(message, (err) => {
                 if (err)
                     console.log(`Error processing message: ${message}`);
+                if (self.controller)
+                    self.controller.refresh();
                 });
             });
     }
@@ -104,7 +106,7 @@ class OrderLineManager extends Manager {
             if (err)
                 return self._err(`Could not perform query`, err, callback);
             if (!readDSU)
-                return callback(undefined, records.map(r => r.orderId));
+                return callback(undefined, records.map(r => self._genCompostKey(r.requesterId, r.gtin, r.date)));
             records = records.map(r => r.value);
             self._iterator(records.slice(), self._getDSUInfo.bind(self), (err, result) => {
                 if (err)
@@ -113,6 +115,10 @@ class OrderLineManager extends Manager {
                 callback(undefined, result);
             });
         });
+    }
+
+    bindController(controller){
+        this.controller = controller;
     }
 
     _processMessageRecord(message, callback) {

@@ -20,6 +20,7 @@
 
 ### Used by
 
+ - [managed-orderline-list-item](../managed-orderline-list-item)
  - [managed-product-list-item](../managed-product-list-item)
 
 ### Depends on
@@ -30,6 +31,7 @@
 ```mermaid
 graph TD;
   batch-chip --> multi-spinner
+  managed-orderline-list-item --> batch-chip
   managed-product-list-item --> batch-chip
   style batch-chip fill:#f9f,stroke:#333,stroke-width:4px
 ```
