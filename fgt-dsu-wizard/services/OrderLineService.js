@@ -26,11 +26,11 @@ function OrderLineService(domain, strategy){
                     return callback(err);
                 try{
                     const orderLine = JSON.parse(data);
-                    dsu.readFile(`${STATUS_MOUNT_PATH/INFO_PATH}`, {ignoreMounts: false}, (err, status) => {
+                    dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
                         if (err)
                             return callback(`could not retrieve orderLine status`);
                         orderLine.status = status.toString();
-                       callback(undefined, orderLine);
+                        callback(undefined, orderLine);
                     });
                 } catch (e){
                     callback(`Could not parse orderLine in DSU ${keySSI.getIdentifier()}`);
