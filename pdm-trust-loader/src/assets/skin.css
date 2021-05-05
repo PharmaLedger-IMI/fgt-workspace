@@ -84,6 +84,10 @@ webc-modal{
 }
 
 
+webc-app-root{
+    --mode: none;
+}
+
 /*ion-footer.modal-class {*/
 /*    --margin-top: 10px;*/
 /*}*/
