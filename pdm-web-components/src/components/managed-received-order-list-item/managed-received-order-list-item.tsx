@@ -1,6 +1,6 @@
 import {Component, Host, h, Element, Prop, State, Watch, Method, Event, EventEmitter} from '@stencil/core';
 
-import {WebManager, WebManagerService} from '../../services/WebManagerService';
+import {WebResolver, WebManagerService} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
 import {EVENT_SEND_ERROR} from "../../constants/events";
@@ -38,7 +38,7 @@ export class ManagedOrderListItem {
 
   @Prop({attribute: 'order-id'}) orderId: string;
 
-  private receivedOrderManager: WebManager = undefined;
+  private receivedOrderManager: WebResolver = undefined;
 
   @State() order: typeof Order = undefined;
 

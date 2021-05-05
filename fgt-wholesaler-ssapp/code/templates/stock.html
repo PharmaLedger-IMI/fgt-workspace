@@ -1,43 +1,11 @@
-<webc-container controller="StockController" enable-translations="true">
-    <div data-if="@hasStock">
-        <div slot="true">
-            <ion-list class="ion-margin ion-no-padding">
-                <ion-list-header lines="inset">
-                    <ion-toolbar>
-                        <ion-icon slot="start" class="ion-padding" name="stats-chart-outline"></ion-icon>
-                        <ion-title>{{ @title }}</ion-title>
-<!--                        <ion-searchbar animated debounce="1000" placeholder="search..." search-icon="search-outline" show-clear-button="always"></ion-searchbar>-->
-                        <ion-buttons slot="end">
-                            <ion-button class="ion-padding-horizontal" color="primary" fill="outline">Add Stuff</ion-button>
-                        </ion-buttons>
-                    </ion-toolbar>
-                </ion-list-header>
-<!--                <ion-content force-overscroll="true" scroll-events="true" scroll-y="true">-->
-<!--                    <ion-refresher slot="fixed" pull-factor="0.5" pull-min="100" pull-max="200">-->
-<!--                        <ion-refresher-content-->
-<!--                                pulling-icon="chevron-down-circles-outline"-->
-<!--                                pulling-text="Pull to refresh"-->
-<!--                                refreshing-spinner="circles"-->
-<!--                                refreshing-text="Refreshing...">-->
-                            <div data-for="@stock">
-                                <stock-list-item data-view-model="@"></stock-list-item>
-                            </div>
-<!--                        </ion-refresher-content>-->
-<!--                    </ion-refresher>-->
-<!--                </ion-content>-->
-            </ion-list>
-
-<!--            <pdm-ion-table itemReferenceName="reference"-->
-<!--                           title="@title" mode="bymodel"-->
-<!--                           manager="StockManager"-->
-<!--                           itemType="product-list-item"-->
-<!--                           iconName="stats-chart-outline"></pdm-ion-table>-->
-
-        </div>
-        <div slot="false">
-            <ion-item>
-                <ion-label>{{ @none }}</ion-label>
-            </ion-item>
-        </div>
-    </div>
+<webc-container controller="StockController">
+    <pdm-ion-table title="@title"
+                   item-reference="gtin"
+                   paginated="true"
+                   manager="StockManager"
+                   buttons="@buttons"
+                   mode="byref"
+                   icon-name="stats-chart-outline"
+                   item-type="managed-stock-list-item"
+                   items-per-page="10"></pdm-ion-table>
 </webc-container>

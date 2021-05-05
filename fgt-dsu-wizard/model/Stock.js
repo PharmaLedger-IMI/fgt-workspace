@@ -1,4 +1,5 @@
-const Product = require('./Product')
+const Product = require('./Product');
+const StockStatus = require('./StockStatus');
 
 /**
  * @module fgt-dsu-wizard.model
@@ -6,6 +7,7 @@ const Product = require('./Product')
  */
 class Stock extends Product{
     batches = [];
+    status = undefined;
 
     constructor(stock) {
         super(stock)
@@ -13,6 +15,7 @@ class Stock extends Product{
             for (let prop in stock)
                 if (stock.hasOwnProperty(prop))
                     this[prop] = stock[prop];
+        this.status = this.status || StockStatus.AVAILABLE;
     }
 
     getQuantity(){
@@ -28,4 +31,4 @@ class Stock extends Product{
     }
 }
 
-module.exports = Product;
+module.exports = Stock;

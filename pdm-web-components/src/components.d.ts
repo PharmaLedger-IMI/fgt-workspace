@@ -51,6 +51,10 @@ export namespace Components {
         "orderId": string;
         "refresh": () => Promise<void>;
     }
+    interface ManagedStockListItem {
+        "gtin": string;
+        "refresh": () => Promise<void>;
+    }
     interface MenuTabButton {
         "iconName"?: string;
         "label"?: string;
@@ -154,6 +158,12 @@ declare global {
         prototype: HTMLManagedReceivedOrderListItemElement;
         new (): HTMLManagedReceivedOrderListItemElement;
     };
+    interface HTMLManagedStockListItemElement extends Components.ManagedStockListItem, HTMLStencilElement {
+    }
+    var HTMLManagedStockListItemElement: {
+        prototype: HTMLManagedStockListItemElement;
+        new (): HTMLManagedStockListItemElement;
+    };
     interface HTMLMenuTabButtonElement extends Components.MenuTabButton, HTMLStencilElement {
     }
     var HTMLMenuTabButtonElement: {
@@ -198,6 +208,7 @@ declare global {
         "managed-orderline-list-item": HTMLManagedOrderlineListItemElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
         "managed-received-order-list-item": HTMLManagedReceivedOrderListItemElement;
+        "managed-stock-list-item": HTMLManagedStockListItemElement;
         "menu-tab-button": HTMLMenuTabButtonElement;
         "multi-spinner": HTMLMultiSpinnerElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
@@ -275,6 +286,17 @@ declare namespace LocalJSX {
          */
         "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
         "orderId"?: string;
+    }
+    interface ManagedStockListItem {
+        "gtin"?: string;
+        /**
+          * Through this event errors are passed
+         */
+        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
     }
     interface MenuTabButton {
         "iconName"?: string;
@@ -360,6 +382,7 @@ declare namespace LocalJSX {
         "managed-orderline-list-item": ManagedOrderlineListItem;
         "managed-product-list-item": ManagedProductListItem;
         "managed-received-order-list-item": ManagedReceivedOrderListItem;
+        "managed-stock-list-item": ManagedStockListItem;
         "menu-tab-button": MenuTabButton;
         "multi-spinner": MultiSpinner;
         "pdm-ion-table": PdmIonTable;
@@ -379,6 +402,7 @@ declare module "@stencil/core" {
             "managed-orderline-list-item": LocalJSX.ManagedOrderlineListItem & JSXBase.HTMLAttributes<HTMLManagedOrderlineListItemElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
             "managed-received-order-list-item": LocalJSX.ManagedReceivedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderListItemElement>;
+            "managed-stock-list-item": LocalJSX.ManagedStockListItem & JSXBase.HTMLAttributes<HTMLManagedStockListItemElement>;
             "menu-tab-button": LocalJSX.MenuTabButton & JSXBase.HTMLAttributes<HTMLMenuTabButtonElement>;
             "multi-spinner": LocalJSX.MultiSpinner & JSXBase.HTMLAttributes<HTMLMultiSpinnerElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;

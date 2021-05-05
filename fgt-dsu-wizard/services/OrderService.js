@@ -41,6 +41,36 @@ function OrderService(domain, strategy) {
         });
     }
 
+    /**
+     * Resolves the DSU and loads the Order object with all its properties, mutable or not
+     * @param {KeySSI} keySSI
+     * @param {function(err, Order)} callback
+     */
+    this.get = function(keySSI, callback){
+        utils.getResolver().loadDSU(keySSI, (err, dsu) => {
+            if (err)
+                return callback(err);
+            dsu.readFile(INFO_PATH, (err, data) => {
+                if (err)
+                    return callback(err);
+                try{
+                    const order = JSON.parse(data);
+                    dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
+                        if (err)
+                            return callback(`could not retrieve orderLine status`);
+                        try{
+                            order.status = JSON.parse(status);
+                            callback(undefined, order);
+                        } catch (e) {
+                            callback(`unable to parse Order status: ${data.toString()}`);
+                        }
+                    });
+                } catch (e){
+                    callback(`Could not parse order in DSU ${keySSI.getIdentifier()}`);
+                }
+            })
+        });
+    }
 
     /**
      * Creates an order

@@ -1,6 +1,6 @@
 import {Component, Host, h, Prop, Element, State} from '@stencil/core';
 import {HostElement} from "../../decorators";
-import {WebManagerService} from "../../services/WebManagerService";
+import {WebManagerService, WebResolver} from "../../services/WebManagerService";
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 
 // @ts-ignore
@@ -34,7 +34,7 @@ export class BatchChip {
 
   @Prop({attribute: "expiry-threshold", mutable: true}) expiryThreshold?: number = 30;
 
-  private batchManager = undefined;
+  private batchResolver: WebResolver = undefined;
 
   @State() batch: typeof Batch = undefined;
 
@@ -43,14 +43,14 @@ export class BatchChip {
       return;
     if (this.mode !== CHIP_TYPE.DETAIL)
       return;
-    this.batchManager = await WebManagerService.getWebManager("BatchManager");
+    this.batchResolver = await WebManagerService.getWebManager("BatchManager");
     return await this.loadBatch();
   }
 
   async loadBatch(){
     if (this.mode !== CHIP_TYPE.DETAIL)
       return;
-    this.batchManager.getOne(this.gtinBatch, true, (err, batch: typeof Batch) => {
+    this.batchResolver.getOne(this.gtinBatch, true, (err, batch: typeof Batch) => {
       if (err)
         return console.log(`Could nor read batch information for ${this.gtinBatch}`);
       this.batch = batch;

@@ -7,12 +7,6 @@ ion-item.main-item{
   animation: 1s linear fadein;
 }
 
-ion-chip {
-  height: 28px;
-  --ion-padding: 8px;
-  --ion-margin: 8px;
-}
-
 @keyframes fadein {
   from {
     opacity: 0;
