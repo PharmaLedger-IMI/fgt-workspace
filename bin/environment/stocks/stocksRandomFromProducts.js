@@ -29,8 +29,9 @@ const getStockFromProductsAndBatchesObj = function(products, batchesObj, omitSer
     const stocks = [];
     prods.forEach(product => {
         const stock = new Stock(product);
-        const numberOfBatches = Math.floor(Math.random() * stock.batches.length) || 1;
-        stock.batches = getRandom(getBatches(product.gtin), numberOfBatches).map(b => {
+        const batchesForProd = getBatches(stock.gtin);
+        const numberOfBatches = Math.floor(Math.random() * batchesForProd.length) || 1;
+        stock.batches = getRandom(batchesForProd, numberOfBatches).map(b => {
             if (!b.quantity){
                 const quantity = Math.floor(Math.random() * b.serialNumbers.length) || 1;
                 const serials = getRandom(b.serialNumbers, quantity);
