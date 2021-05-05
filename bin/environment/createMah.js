@@ -45,7 +45,7 @@ const setupBatches = function(participantManager, products, batches,  callback){
         const getBatches = !batches
             ? require('./batches/batchesRandom')
             : function(gtin){
-                return batches[gtin + ''];
+                return batches[gtin + ''].slice();
             }
 
         const batchesObject = {};

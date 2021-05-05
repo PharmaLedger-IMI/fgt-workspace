@@ -147,7 +147,7 @@ const setup = function(type, result, ...args){
         }
     }
 
-    let products, batches;
+    let products, batches, stocks;
 
     switch(type){
         case APPS.MAH:
@@ -155,13 +155,18 @@ const setup = function(type, result, ...args){
             batches = args.shift();
             return require('./createMah').setup(result.manager, products, batches, cb(result.ssi, APPS.MAH));
         case APPS.WHOLESALER:
-            products = args.shift() || getProducts();
-            batches = args.shift();
-            return require('./createWholesaler').setup(result.manager, getStockFromProductsAndBatchesObj(products, batches) , cb(result.ssi, APPS.WHOLESALER));
+            if (args.length === 1){
+                stocks = args.shift();
+            } else {
+                products = args.shift() || getProducts();
+                batches = args.shift();
+                stocks = getStockFromProductsAndBatchesObj(products, batches);
+            }
+            return require('./createWholesaler').setup(result.manager, stocks , cb(result.ssi, APPS.WHOLESALER));
         case APPS.PHARMACY:
             products = args.shift() || getProducts();
             const wholesalers = args.shift() || getDummyWholesalers();
-            const stocks = args.shift() || getStockFromProductsAndBatchesObj(products);
+            stocks = args.shift() || getStockFromProductsAndBatchesObj(products);
             return require('./createPharmacy').setup(result.manager, products, wholesalers, stocks, cb(result.ssi, APPS.PHARMACY));
         default:
             callback(`unsupported config: ${type}`);
