@@ -1,13 +1,8 @@
-const {INFO_PATH, DB} = require('../constants');
+const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Stock = require('../model/Stock');
 const Batch = require('../model/Batch');
-
-const STATUS = {
-    IN_STOCK: "instock",
-    RESERVED: "reserved",
-    IN_TRANSIT: "intransit"
-}
+const StockStatus = require('../model/StockStatus');
 
 /**
  * Manager Classes in this context should do the bridge between the controllers
@@ -31,7 +26,6 @@ const STATUS = {
 class StockManager extends Manager{
     constructor(baseManager, callback) {
         super(baseManager, DB.stock, ['name', 'gtin', 'manufName'], callback);
-        this.stock = this._genDummyStock();
     }
 
     /**
@@ -49,35 +43,11 @@ class StockManager extends Manager{
         let self = this;
         self.insertRecord(gtin, stock, (err) => {
             if (err)
-                return self._err(`Could not inset record with gtin ${gtin} on table ${self.tableName}`, err, callback);
+                return self._err(`Could not insert record with gtin ${gtin} on table ${self.tableName}`, err, callback);
             const path =`${self.tableName}/${gtin}`;
-            console.log(`Product ${gtin} created stored at '${path}'`);
+            console.log(`Stock ${gtin} created stored at '${path}'`);
             callback(undefined, stock, path);
         });
-    }
-
-    /**
-     * reads ssi for that gtin in the db. loads is and reads the info at '/info'
-     * @param {string} gtin
-     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
-     * @param {function(err, Stock|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
-     */
-    getOne(gtin, readDSU,  callback) {
-        //super.getOne(gtin, false, callback);
-        return new Stock({
-            gtin: gtin,
-            name: "cenas",
-            batches: this._getBatches()
-        });
-    }
-
-    /**
-     * Removes a product from the list (does not delete/invalidate DSU, simply 'forgets' the reference)
-     * @param {string|number} gtin
-     * @param {function(err)} callback
-     */
-    remove(gtin, callback) {
-        super.remove(gtin, callback);
     }
 
     /**
@@ -99,6 +69,26 @@ class StockManager extends Manager{
                 return self._err(`Could not update product with gtin ${gtin}`, err, callback);
             console.log(`Product ${gtin} updated`);
             callback(undefined, newStock)
+        });
+    }
+
+    /**
+     * reads ssi for that gtin in the db. loads is and reads the info at '/info'
+     * @param {string} gtin
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
+     * @param {function(err, Product|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
+     * @override
+     */
+    getOne(gtin, readDSU,  callback) {
+        if (!callback){
+            callback = readDSU;
+            readDSU = true;
+        }
+        let self = this;
+        self.getRecord(gtin, (err, stock) => {
+            if (err)
+                return self._err(`Could not load record with key ${gtin} on table ${self._getTableName()}`, err, callback);
+            callback(undefined, stock);
         });
     }
 
@@ -138,80 +128,9 @@ class StockManager extends Manager{
             if (err)
                 return self._err(`Could not perform query`, err, callback);
             if (!readDSU)
-                return callback(undefined, records);
-            super._iterator(records.slice(), super._getDSUInfo.bind(self), (err, result) => {
-                if (err)
-                    return self._err(`Could not parse batches ${JSON.stringify(records)}`, err, callback);
-                console.log(`Parsed ${result.length} batches`);
-                callback(undefined, result);
-            });
+                return callback(undefined, records.map(r => r.gtin));
+            callback(undefined, records);
         });
-    }
-
-    _getFromStatus(){
-        let stock = {};
-        Object.values(STATUS).forEach(s => stock[s] = {});
-        return stock;
-    }
-
-    _getGtins(){
-        return [178567958612, 178567959872, 1785667958612, 178547698612];
-    }
-
-    _getBatches(){
-        let batches = ["TS134", "FD214", "UY2345"];
-        let bat = [];
-        batches.forEach(batch =>{
-            let b = new Batch({
-                batchNumber: batch,
-                expiry: 'cenas',
-                serialNumbers: [123546789, 987654321, 987123564]
-            });
-            b.quantity = 300;
-            bat.push(b);
-        });
-        return bat;
-    }
-
-    _genDummyStock(){
-        let gtins = this._getGtins();
-        let batches = ["TS134", "FD214", "UY2345"];
-
-        let stock = {};
-        gtins.forEach((gtin, i) => {
-            let bat = [];
-            batches.forEach(batch =>{
-                let b = new Batch({
-                    batchNumber: batch,
-                    expiry: 'cenas',
-                    serialNumbers: [123546789, 987654321, 987123564]
-                });
-                b.quantity = 300;
-                bat.push(b);
-            })
-            stock[gtin] = {
-                name: "Product" + i,
-                batches: bat
-            };
-        });
-        let tempStock = this._getFromStatus();
-        tempStock[STATUS.IN_STOCK] = stock;
-        return tempStock;
-    }
-
-    /**
-     * @param {STATUS} [status] defaults to {@link STATUS.IN_STOCK}
-     * @param callback
-     */
-    getByStatus(status, callback){
-        if (typeof status === 'function'){
-            callback = status;
-            status = STATUS.IN_STOCK;
-        }
-
-        if (!status in this.stock)
-            return callback("Status not found in stock");
-        callback(undefined, this.stock[status]);
     }
 
     toModel(filteredStock, model){

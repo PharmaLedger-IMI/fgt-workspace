@@ -2,6 +2,7 @@
  * @module fgt-dsu-wizard.services
  */
 const utils = require('../../pdm-dsu-toolkit/services/utils');
+const {STATUS_MOUNT_PATH, INFO_PATH} = require('../constants');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
@@ -24,6 +25,28 @@ function BatchService(domain, strategy){
     }
 
     /**
+     * Resolves the DSU and loads the Batch object with all its properties, mutable or not
+     * @param {KeySSI} keySSI
+     * @param {function(err, Order)} callback
+     */
+    this.get = function(keySSI, callback){
+        utils.getResolver().loadDSU(keySSI, (err, dsu) => {
+            if (err)
+                return callback(err);
+            dsu.readFile(INFO_PATH, (err, data) => {
+                if (err)
+                    return callback(err);
+                try{
+                    const batch = JSON.parse(data);
+                    callback(undefined, batch);
+                } catch (e) {
+                    callback(`unable to parse Batch: ${data.toString()}`);
+                }
+            });
+        });
+    }
+
+    /**
      * Creates a {@link Batch} DSU
      * @param {string} gtin
      * @param {Batch} batch
@@ -38,7 +61,7 @@ function BatchService(domain, strategy){
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);
-                dsu.writeFile('/info', data, (err) => {
+                dsu.writeFile(INFO_PATH, data, (err) => {
                     if (err)
                         return callback(err);
                     dsu.getKeySSIAsObject((err, keySSI) => {
@@ -60,7 +83,7 @@ function BatchService(domain, strategy){
             }
 
             utils.getDSUService().create(domain, getEndpointData(batch), (builder, cb) => {
-                builder.addFileDataToDossier("/info", data, cb);
+                builder.addFileDataToDossier(INFO_PATH, data, cb);
             }, callback);
         }
     };

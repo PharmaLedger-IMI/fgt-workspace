@@ -148,6 +148,7 @@ export class PdmIonTable implements ComponentInterface {
   }
 
   async loadContents(pageNumber?: number){
+    // @ts-ignore
     this.webManager = this.webManager || await WebManagerService.getWebManager(this.manager);
     if (!this.webManager)
       return;

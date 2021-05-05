@@ -17,6 +17,11 @@ function OrderLineService(domain, strategy){
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
 
+    /**
+     * Resolves the DSU and loads the OrderLine object with all its properties, mutable or not
+     * @param {KeySSI} keySSI
+     * @param {function(err, OrderLine)} callback
+     */
     this.get = function(keySSI, callback){
         utils.getResolver().loadDSU(keySSI, (err, dsu) => {
             if (err)
@@ -29,8 +34,12 @@ function OrderLineService(domain, strategy){
                     dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
                         if (err)
                             return callback(`could not retrieve orderLine status`);
-                        orderLine.status = status.toString();
-                        callback(undefined, orderLine);
+                        try{
+                            orderLine.status = JSON.parse(status);
+                            callback(undefined, orderLine);
+                        } catch (e) {
+                            callback(`unable to parse OrderLine status: ${data.toString()}`);
+                        }
                     });
                 } catch (e){
                     callback(`Could not parse orderLine in DSU ${keySSI.getIdentifier()}`);

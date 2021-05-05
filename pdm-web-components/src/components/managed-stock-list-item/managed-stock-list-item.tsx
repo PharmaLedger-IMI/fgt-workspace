@@ -1,19 +1,19 @@
 import {Component, Host, h, Element, Prop, State, Watch, Method, Event, EventEmitter} from '@stencil/core';
 
-import {WebManagerService, WebResolver} from '../../services/WebManagerService';
+import {WebManagerService, WebManager} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
 import {EVENT_SEND_ERROR} from "../../constants/events";
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 
-const OrderLine = wizard.Model.OrderLine;
+const Stock = wizard.Model.Stock;
 
 @Component({
-  tag: 'managed-orderline-list-item',
-  styleUrl: 'managed-orderline-list-item.css',
+  tag: 'managed-stock-list-item',
+  styleUrl: 'managed-stock-list-item.css',
   shadow: false,
 })
-export class ManagedOrderlineListItem {
+export class ManagedProductListItem {
 
   @HostElement() host: HTMLElement;
 
@@ -56,45 +56,49 @@ export class ManagedOrderlineListItem {
       console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
 
-  @Prop({attribute: 'order-line', mutable: true}) orderLine: string;
+  @Prop() gtin: string;
 
-  private orderLineManager: WebResolver = undefined;
+  private stockManager: WebManager = undefined;
 
-  @State() line: typeof OrderLine = undefined;
+  @State() stock: typeof Stock = undefined;
+  @State() batches: string[] = undefined;
+  @State() quantity: number = undefined;
 
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
-    this.orderLineManager = await WebManagerService.getWebManager("OrderLineManager");
-    return await this.loadOrderLine();
+    this.stockManager = await WebManagerService.getWebManager("StockManager");
+    return await this.loadStock();
   }
 
-  async loadOrderLine(){
+  async loadStock(){
     let self = this;
-    if (!self.orderLineManager)
+    if (!self.stockManager)
       return;
-    self.orderLineManager.getOne(self.orderLine, true, (err, line) => {
+    self.stockManager.getOne(self.gtin, true, (err, stock) => {
       if (err){
-        self.sendError(`Could not get OrderLine with reference ${self.orderLine}`, err);
+        self.sendError(`Could not get Product with gtin ${self.gtin}`, err);
         return;
       }
-      this.line = line;
+      this.stock = new Stock(stock);
+      this.batches = [...stock.batches];
+      this.quantity = this.stock.getQuantity();
     });
   }
 
-  @Watch('orderLine')
+  @Watch('gtin')
   @Method()
   async refresh(){
-    await this.loadOrderLine();
+    await this.loadStock();
   }
 
   addBarCode(){
     const self = this;
 
     const getBarCode = function(){
-      if (!self.line || !self.line.gtin)
+      if (!self.stock || !self.stock.gtin)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
-      return (<barcode-generator class="ion-align-self-center" type="code128" size="32" scale="6" data={self.line.gtin}></barcode-generator>);
+      return (<barcode-generator class="ion-align-self-center" type="code128" size="32" scale="6" data={self.stock.gtin}></barcode-generator>);
     }
 
     return(
@@ -104,58 +108,48 @@ export class ManagedOrderlineListItem {
     )
   }
 
-  private getPropsFromKey(){
-    if (!this.orderLine)
-      return undefined;
-    const props = this.orderLine.split('-');
-    return {
-      requesterId: props[0],
-      gtin: props[1],
-      date: (new Date(parseInt(props[2]) * 1000)).toLocaleDateString("en-US")
-    }
-  }
-
   addLabel(){
     const self = this;
 
     const getGtinLabel = function(){
-      if (!props || !props.gtin)
-        return (<h3><ion-skeleton-text animated></ion-skeleton-text> </h3>);
-      return (<h3>{props.gtin}</h3>)
+      if (!self.stock || !self.stock.gtin)
+        return (<h3><ion-skeleton-text animated></ion-skeleton-text> </h3>)
+      return (<h3>{self.stock.gtin}</h3>)
     }
 
-    const getRequesterLabel = function(){
-      if (!props || !props.requesterId)
+    const getNameLabel = function(){
+      if (!self.stock || !self.stock.name)
         return (<h5><ion-skeleton-text animated></ion-skeleton-text> </h5>)
-      return (<h5>{props.requesterId}</h5>)
+      return (<h5>{self.stock.name}</h5>)
     }
 
-    const getDateLabel = function(){
-      if (!props || !props.date)
+    const getQuantityLabel = function(){
+      if (!self.stock || !self.stock.description)
         return (<p><ion-skeleton-text animated></ion-skeleton-text> </p>)
-      return (<p>{props.date}</p>)
+      return (<p>{self.stock.quantity}</p>)
     }
-    const props = self.getPropsFromKey();
 
     return(
       <ion-label className="ion-padding-horizontal ion-align-self-center">
         {getGtinLabel()}
-        {getRequesterLabel()}
-        {getDateLabel()}
+        {getNameLabel()}
+        {getQuantityLabel()}
       </ion-label>)
   }
 
-  addDetails(){
-    if (!this.line)
-      return (<multi-loader type={SUPPORTED_LOADERS.bubblingSmall}></multi-loader>)
+  addBatch(batch){
+    return(
+      <batch-chip gtin-batch={this.stock.gtin + '-' + batch.batchNumber} loader-type={SUPPORTED_LOADERS.bubblingSmall} mode="detail" quantity={this.quantity}></batch-chip>
+    )
+  }
+
+  addBatches(){
+    const batches = !!this.stock && !!this.batches ? this.batches.map(b => this.addBatch(b)) : (<ion-skeleton-text animated></ion-skeleton-text>);
     return(
       <ion-grid className="ion-padding-horizontal">
         <ion-row>
-          <ion-col size="3">
-            <ion-chip outline class="ion-padding-horizontal" color="primary">{this.line.quantity}</ion-chip>
-          </ion-col>
-          <ion-col size="3">
-            <ion-chip outline class="ion-padding-horizontal" color="primary">{this.line.status}</ion-chip>
+          <ion-col size="12">
+            {batches}
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -165,10 +159,10 @@ export class ManagedOrderlineListItem {
   addButtons(){
     let self = this;
     const getButtons = function(){
-      if (!self.line)
+      if (!self.stock)
         return (<ion-skeleton-text animated></ion-skeleton-text>)
       return (
-        <ion-button slot="primary" onClick={() => self.navigateToTab('tab-batches', {orderLine: self.orderLine})}>
+        <ion-button slot="primary" onClick={() => self.navigateToTab('tab-batches', {gtin: self.gtin})}>
           <ion-icon name="file-tray-stacked-outline"></ion-icon>
         </ion-button>
       )
@@ -187,7 +181,7 @@ export class ManagedOrderlineListItem {
         <ion-item className="ion-align-self-center main-item">
           {this.addBarCode()}
           {this.addLabel()}
-          {this.addDetails()}
+          {this.addBatches()}
           {this.addButtons()}
         </ion-item>
       </Host>

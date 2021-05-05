@@ -21,6 +21,7 @@
 ### Used by
 
  - [managed-product-list-item](../managed-product-list-item)
+ - [managed-stock-list-item](../managed-stock-list-item)
 
 ### Depends on
 
@@ -31,6 +32,7 @@
 graph TD;
   batch-chip --> multi-spinner
   managed-product-list-item --> batch-chip
+  managed-stock-list-item --> batch-chip
   style batch-chip fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

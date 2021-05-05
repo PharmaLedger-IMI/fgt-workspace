@@ -15,5 +15,7 @@ module.exports = {
     Pharmacy: require('./Pharmacy'),
     Wholesaler: require('./Wholesaler'),
     Validations: require('../../pdm-dsu-toolkit/model/Validations'),
-    Utils: require('../../pdm-dsu-toolkit/model/Utils')
+    Utils: require('../../pdm-dsu-toolkit/model/Utils'),
+    Stock: require('./Stock'),
+    StockStatus: require('./StockStatus')
 }

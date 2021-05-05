@@ -15,6 +15,7 @@
  * </ul>
  */
 module.exports = {
+    Resolvers: require('./resolvers'),
     Manager: require('../../pdm-dsu-toolkit/managers/Manager'),
     getBatchManager: require('./BatchManager'),
     getIssuedOrderManager: require('./IssuedOrderManager'),
