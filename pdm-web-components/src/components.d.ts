@@ -8,10 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface BarcodeGenerator {
         "data": any;
-        /**
-          * description: `This option allows to print the input data below the generated barcode.`, isMandatory: false, propertyType: `boolean`
-         */
-        "includeText": boolean;
+        "includeText"?: boolean;
         "scale"?: any;
         /**
           * description: `The size of the barcode in mm. Default is set to 32 mm.`, isMandatory: false, propertyType: `integer`
@@ -72,6 +69,7 @@ export namespace Components {
     }
     interface MoreChip {
         "color"?: string;
+        "float"?: string;
         "iconName"?: string;
         "outline"?: boolean;
         "text"?: string;
@@ -249,9 +247,6 @@ declare global {
 declare namespace LocalJSX {
     interface BarcodeGenerator {
         "data"?: any;
-        /**
-          * description: `This option allows to print the input data below the generated barcode.`, isMandatory: false, propertyType: `boolean`
-         */
         "includeText"?: boolean;
         "scale"?: any;
         /**
@@ -348,6 +343,7 @@ declare namespace LocalJSX {
     }
     interface MoreChip {
         "color"?: string;
+        "float"?: string;
         "iconName"?: string;
         /**
           * Through this event errors are passed

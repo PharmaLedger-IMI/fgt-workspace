@@ -44,12 +44,11 @@ ion-badge{
 
 ion-chip {
   --ion-color-primary: inherit;
-  --ion-border-color: inherit;
-  --ion-text-color: inherit;
+  --ion-border-color: var(--color-step);
+  --ion-text-color: var(--color-step);
   height: 28px;
   --ion-padding: 8px;
   --ion-margin: 8px;
-  --color-step: inherit;
   animation: 0.5s linear fadein;
 }
 
