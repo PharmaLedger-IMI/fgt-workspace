@@ -32,6 +32,8 @@ export class BatchChip {
 
   @Prop() outline?: boolean = true;
 
+  @Prop() float?: string = undefined;
+
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
@@ -68,6 +70,10 @@ export class BatchChip {
       outline: this.outline,
       color: this.color
     }
+    if (this.float)
+      { // @ts-ignore
+        props.className = `ion-float-${this.float}`;
+      }
     return (
       <ion-chip {...props} onClick={() => this.sendShowMoreEvent()}>
         {this.getIcon()}

@@ -104,7 +104,7 @@ export class ManagedOrderListItem {
       if (this.order.orderLines.length > this.orderlineCount) {
         orderLines = [...this.order.orderLines].slice(0, this.orderlineCount).map(ol => this.addOrderLine(ol));
         orderLines.push((
-          <more-chip></more-chip>
+          <more-chip color="secondary" icon-name="add-circle-outline"></more-chip>
         ));
       } else {
         orderLines = this.order.orderLines.map(ol => this.addOrderLine(ol));
@@ -127,8 +127,8 @@ export class ManagedOrderListItem {
       if (!self.order)
         return (<ion-skeleton-text animated></ion-skeleton-text>)
       return (
-        <ion-button slot="primary">
-          <ion-icon name="file-tray-stacked-outline"></ion-icon>
+        <ion-button slot="primary" alt="Process Order">
+          <ion-icon name="cog-outline"></ion-icon>
         </ion-button>
       )
     }

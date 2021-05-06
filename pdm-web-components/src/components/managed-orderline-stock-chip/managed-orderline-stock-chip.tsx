@@ -2,7 +2,7 @@ import {Component, Host, h, Prop, Element, State} from '@stencil/core';
 import {HostElement} from "../../decorators";
 import {WebManagerService, WebResolver} from "../../services/WebManagerService";
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
-import {getSteppedColor} from "../../utils/colorUtils";
+import {getSteppedColor, FALLBACK_COLOR} from "../../utils/colorUtils";
 
 // @ts-ignore
 const Stock = require('wizard').Model.Stock;
@@ -73,21 +73,23 @@ export class ManagedOrderlineStockChip {
   private renderQuantity(){
     if (!this.quantity && this.quantity !== 0)
       return;
-    if (!this.stock)
-      return (
-        <ion-badge className="ion-margin ion-padding-horizontal">{this.quantity}</ion-badge>
-      )
     return (
-      <ion-badge class="ion-margin ion-padding-horizontal" style={{
-        '--color-step': `var(${getSteppedColor(this.threshold, this.quantity, this.stock.getQuantity())})`
-      }}>{this.quantity}</ion-badge>
+      <ion-badge class="ion-margin ion-padding-horizontal">{this.quantity}</ion-badge>
     )
+  }
+
+  private getColor(){
+    if (!this.stock)
+      return `var(${FALLBACK_COLOR})`;
+    return `var(${getSteppedColor(this.threshold, this.quantity, this.stock.getQuantity())})`
   }
 
   private renderDetail(){
     return (
       <Host>
-        <ion-chip outline color="primary">
+        <ion-chip outline style={{
+          "--color-step": this.getColor()
+        }}>
           <ion-label class="ion-padding-start">{this.gtin}</ion-label>
           {this.renderQuantity()}
         </ion-chip>
@@ -96,6 +98,8 @@ export class ManagedOrderlineStockChip {
   }
 
   render() {
+    if (!this.host.isConnected)
+      return;
     switch(this.mode){
       case CHIP_TYPE.SIMPLE:
         return this.renderSimple();

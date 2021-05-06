@@ -1,18 +1,21 @@
 import {Component, h, Prop, Element, State, Watch} from '@stencil/core';
 import {stringToBoolean} from "../../utils/utilFunctions";
 import bwipjs from "../../../../cardinal/src/libs/bwip.js";
+import {HostElement} from "../../decorators";
 const TWO_D_BARCODES = ["datamatrix","gs1datamatrix","qrcode"];
 
 @Component({
   tag: 'barcode-generator',
   styleUrl: 'barcode-generator.css',
-  shadow: true,
+  shadow: false,
 })
 export class BarcodeGenerator {
 
+  @HostElement() host: HTMLElement;
+
   @Element() element;
 
-  @Prop() data:any;
+  @Prop({attribute: 'data', mutable: true}) data:any;
 
   /**
    * description: `The barcode type. Accepted values are 'gs1datamatrix','datamatrix','qrcode', 'code128','code11','isbn'.`,
@@ -36,19 +39,20 @@ export class BarcodeGenerator {
   @Prop() size?:any = 32;
 
   @Prop() scale?:any = 3;
-  /**
-   * description: `This option allows to print the input data below the generated barcode.`,
-   * isMandatory: false,
-   * propertyType: `boolean`
-   */
-  @Prop() includeText:boolean = false;
+
+  @Prop() includeText?:boolean = false;
 
   @State() isLoaded = false;
+
+  async componentWillLoad(){
+    if (!this.host.isConnected)
+      return;
+  }
 
   @Watch("data")
   drawQRCodeCanvas(){
     if(this.data.length){
-      let canvas = this.element.querySelector("canvas") || this.element.shadowRoot.querySelector('canvas');
+      let canvas = this.element.querySelector("canvas");
       if (!canvas)
           throw new Error('Could not find the canvas element');
 
@@ -97,6 +101,8 @@ export class BarcodeGenerator {
   }
 
   render() {
+    if(!this.host.isConnected)
+      return;
     return (
       <canvas></canvas>
     );

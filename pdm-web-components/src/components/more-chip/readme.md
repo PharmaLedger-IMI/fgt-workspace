@@ -10,6 +10,7 @@
 | Property   | Attribute   | Description | Type      | Default     |
 | ---------- | ----------- | ----------- | --------- | ----------- |
 | `color`    | `color`     |             | `string`  | `'primary'` |
+| `float`    | `float`     |             | `string`  | `undefined` |
 | `iconName` | `icon-name` |             | `string`  | `undefined` |
 | `outline`  | `outline`   |             | `boolean` | `true`      |
 | `text`     | `text`      |             | `string`  | `undefined` |
