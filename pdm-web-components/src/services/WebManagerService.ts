@@ -1,6 +1,8 @@
 import wizardService from './WizardService';
 const Managers = wizardService.Managers;
 
+const WebResolverMaxTimeout = 100;
+
 export interface QueryOptions {
   query?: string[],
   sort?: string,
@@ -24,9 +26,21 @@ const bindAsControllerManager = function(manager): WebManager{
   }
 }
 
+/**
+ * Hack so many simultaneous requests to generate a Key and load its DSU dont freeze the UI
+ * @param resolver
+ */
+const delayRequest = function(resolver: WebResolver){
+  return function(...args){
+    setTimeout(() => {
+      resolver.getOne.call(resolver, ...args);
+    }, Math.floor(Math.random() * WebResolverMaxTimeout));
+  }
+}
+
 const bindAsControllerResolver = function(resolver): WebManager{
   return new class implements WebManager {
-    getOne = resolver.getOne.bind(resolver);
+    getOne = delayRequest(resolver);
     getAll = () => {
       console.log(`getAll Not available in this Manager`)
     };
@@ -36,6 +50,11 @@ const bindAsControllerResolver = function(resolver): WebManager{
   }
 }
 
+/**
+ * Tries to get the Previously Instantiated WebManager by Name.
+ * If unable falls back to the matching WebSResolver
+ * @param managerName
+ */
 const getWebManager = async function(managerName: string): Promise<WebManager> {
   const changeToResolver = function(name){
     if (name.indexOf("Manager") === -1)

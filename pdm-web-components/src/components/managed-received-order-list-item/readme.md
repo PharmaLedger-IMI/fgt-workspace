@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property  | Attribute  | Description | Type     | Default     |
-| --------- | ---------- | ----------- | -------- | ----------- |
-| `orderId` | `order-id` |             | `string` | `undefined` |
+| Property         | Attribute         | Description | Type     | Default     |
+| ---------------- | ----------------- | ----------- | -------- | ----------- |
+| `orderId`        | `order-id`        |             | `string` | `undefined` |
+| `orderlineCount` | `orderline-count` |             | `number` | `2`         |
 
 
 ## Events
@@ -31,6 +32,21 @@ Type: `Promise<void>`
 
 
 
+
+## Dependencies
+
+### Depends on
+
+- [managed-orderline-stock-chip](../managed-orderline-stock-chip)
+- [more-chip](../more-chip)
+
+### Graph
+```mermaid
+graph TD;
+  managed-received-order-list-item --> managed-orderline-stock-chip
+  managed-received-order-list-item --> more-chip
+  style managed-received-order-list-item fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 

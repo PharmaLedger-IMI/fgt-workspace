@@ -38,6 +38,8 @@ export class ManagedOrderListItem {
 
   @Prop({attribute: 'order-id'}) orderId: string;
 
+  @Prop({attribute: 'orderline-count'}) orderlineCount?: number = 2;
+
   private receivedOrderManager: WebResolver = undefined;
 
   @State() order: typeof Order = undefined;
@@ -58,7 +60,7 @@ export class ManagedOrderListItem {
         self.sendError(`Could not get Order with id ${self.orderId}`, err);
         return;
       }
-      this.order = order;
+      self.order = order;
     });
   }
 
@@ -77,50 +79,33 @@ export class ManagedOrderListItem {
       return (<h3>{self.order.orderId}</h3>)
     }
 
-    return(
-      <ion-label className="ion-padding-horizontal ion-align-self-center">
-        {getOrderIdLabel()}
-      </ion-label>)
-  }
-
-  addRequester(){
-    const self = this;
-
     const getRequesterIdLabel = function(){
       if (!self.order || !self.order.requesterId)
         return (<h5><ion-skeleton-text animated></ion-skeleton-text> </h5>)
       return (<h5>{self.order.requesterId}</h5>)
     }
 
-    const getSenderIdLabel = function(){
-      if (!self.order || !self.order.senderId)
-        return (<h5><ion-skeleton-text animated></ion-skeleton-text> </h5>)
-      return (<h5>{self.order.senderId}</h5>)
-    }
-
     return(
       <ion-label className="ion-padding-horizontal ion-align-self-center">
+        {getOrderIdLabel()}
         {getRequesterIdLabel()}
       </ion-label>)
   }
 
   addOrderLine(orderLine){
     return(
-      <ion-chip outline color="primary">
-        <ion-label className="ion-padding-horizontal">{orderLine.gtin}, {orderLine.quantity}</ion-label>
-      </ion-chip>
+      <managed-orderline-stock-chip gtin={orderLine.gtin} quantity={orderLine.quantity} mode="detail"></managed-orderline-stock-chip>
     )
   }
 
   addOrderLines() {
-    const self = this;
     let orderLines = (<ion-skeleton-text animated></ion-skeleton-text>);
     if (this.order && this.order.orderLines) {
-      const maxOrderLines = 2; // truncate orderLines to 2 entries
-      if (this.order.orderLines.length > maxOrderLines) {
-        orderLines = [...this.order.orderLines].slice(0,2).map(ol => this.addOrderLine(ol));
-        const suffix = ("...");
-        orderLines.push(suffix);
+      if (this.order.orderLines.length > this.orderlineCount) {
+        orderLines = [...this.order.orderLines].slice(0, this.orderlineCount).map(ol => this.addOrderLine(ol));
+        orderLines.push((
+          <more-chip></more-chip>
+        ));
       } else {
         orderLines = this.order.orderLines.map(ol => this.addOrderLine(ol));
       }
@@ -158,9 +143,8 @@ export class ManagedOrderListItem {
   render() {
     return (
       <Host>
-        <ion-item className="ion-align-self-center">
+        <ion-item className="ion-align-self-center main-item">
           {this.addLabel()}
-          {this.addRequester()}
           {this.addOrderLines()}
           {this.addButtons()}
         </ion-item>

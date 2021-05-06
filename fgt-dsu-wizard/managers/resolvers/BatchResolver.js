@@ -1,20 +1,13 @@
 const {ANCHORING_DOMAIN} = require('../../constants');
+const Resolver  = require('../../../pdm-dsu-toolkit/managers').Resolver
 
 /**
  * Resolver classes substitute Managers when they're not available to be resolve a
  * Const DSU and extract the updated Information when required
  */
-class BatchResolver {
+class BatchResolver extends Resolver{
     constructor(){
-        this.batchService = new (require('../../services/BatchService'))(ANCHORING_DOMAIN);
-    }
-
-    getOne(key, readDSU, callback){
-        const params = key.split('-');
-        const keySSI = this.batchService.generateKey(params[0], params[1]);
-        if (!readDSU)
-            return callback(undefined, keySSI.getIdentifier());
-        this.batchService.get(keySSI, callback);
+        super(new (require('../../services/BatchService'))(ANCHORING_DOMAIN));
     }
 }
 

@@ -43,12 +43,20 @@ export namespace Components {
         "orderLine": string;
         "refresh": () => Promise<void>;
     }
+    interface ManagedOrderlineStockChip {
+        "gtin": string;
+        "loaderType"?: string;
+        "mode"?: string;
+        "quantity"?: number;
+        "threshold"?: number;
+    }
     interface ManagedProductListItem {
         "gtin": string;
         "refresh": () => Promise<void>;
     }
     interface ManagedReceivedOrderListItem {
         "orderId": string;
+        "orderlineCount"?: number;
         "refresh": () => Promise<void>;
     }
     interface ManagedStockListItem {
@@ -56,10 +64,17 @@ export namespace Components {
         "refresh": () => Promise<void>;
     }
     interface MenuTabButton {
+        "badge"?: number;
         "iconName"?: string;
         "label"?: string;
         "mode"?: string;
         "tab": string;
+    }
+    interface MoreChip {
+        "color"?: string;
+        "iconName"?: string;
+        "outline"?: boolean;
+        "text"?: string;
     }
     interface MultiSpinner {
         "type"?: string;
@@ -146,6 +161,12 @@ declare global {
         prototype: HTMLManagedOrderlineListItemElement;
         new (): HTMLManagedOrderlineListItemElement;
     };
+    interface HTMLManagedOrderlineStockChipElement extends Components.ManagedOrderlineStockChip, HTMLStencilElement {
+    }
+    var HTMLManagedOrderlineStockChipElement: {
+        prototype: HTMLManagedOrderlineStockChipElement;
+        new (): HTMLManagedOrderlineStockChipElement;
+    };
     interface HTMLManagedProductListItemElement extends Components.ManagedProductListItem, HTMLStencilElement {
     }
     var HTMLManagedProductListItemElement: {
@@ -169,6 +190,12 @@ declare global {
     var HTMLMenuTabButtonElement: {
         prototype: HTMLMenuTabButtonElement;
         new (): HTMLMenuTabButtonElement;
+    };
+    interface HTMLMoreChipElement extends Components.MoreChip, HTMLStencilElement {
+    }
+    var HTMLMoreChipElement: {
+        prototype: HTMLMoreChipElement;
+        new (): HTMLMoreChipElement;
     };
     interface HTMLMultiSpinnerElement extends Components.MultiSpinner, HTMLStencilElement {
     }
@@ -206,10 +233,12 @@ declare global {
         "batch-list-item": HTMLBatchListItemElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-orderline-list-item": HTMLManagedOrderlineListItemElement;
+        "managed-orderline-stock-chip": HTMLManagedOrderlineStockChipElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
         "managed-received-order-list-item": HTMLManagedReceivedOrderListItemElement;
         "managed-stock-list-item": HTMLManagedStockListItemElement;
         "menu-tab-button": HTMLMenuTabButtonElement;
+        "more-chip": HTMLMoreChipElement;
         "multi-spinner": HTMLMultiSpinnerElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
@@ -269,6 +298,13 @@ declare namespace LocalJSX {
         "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
         "orderLine"?: string;
     }
+    interface ManagedOrderlineStockChip {
+        "gtin"?: string;
+        "loaderType"?: string;
+        "mode"?: string;
+        "quantity"?: number;
+        "threshold"?: number;
+    }
     interface ManagedProductListItem {
         "gtin"?: string;
         /**
@@ -286,6 +322,7 @@ declare namespace LocalJSX {
          */
         "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
         "orderId"?: string;
+        "orderlineCount"?: number;
     }
     interface ManagedStockListItem {
         "gtin"?: string;
@@ -299,6 +336,7 @@ declare namespace LocalJSX {
         "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
     }
     interface MenuTabButton {
+        "badge"?: number;
         "iconName"?: string;
         "label"?: string;
         "mode"?: string;
@@ -307,6 +345,16 @@ declare namespace LocalJSX {
          */
         "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
         "tab"?: string;
+    }
+    interface MoreChip {
+        "color"?: string;
+        "iconName"?: string;
+        /**
+          * Through this event errors are passed
+         */
+        "onShowMoreEvent"?: (event: CustomEvent<any>) => void;
+        "outline"?: boolean;
+        "text"?: string;
     }
     interface MultiSpinner {
         "type"?: string;
@@ -380,10 +428,12 @@ declare namespace LocalJSX {
         "batch-list-item": BatchListItem;
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-orderline-list-item": ManagedOrderlineListItem;
+        "managed-orderline-stock-chip": ManagedOrderlineStockChip;
         "managed-product-list-item": ManagedProductListItem;
         "managed-received-order-list-item": ManagedReceivedOrderListItem;
         "managed-stock-list-item": ManagedStockListItem;
         "menu-tab-button": MenuTabButton;
+        "more-chip": MoreChip;
         "multi-spinner": MultiSpinner;
         "pdm-ion-table": PdmIonTable;
         "pdm-ssapp-loader": PdmSsappLoader;
@@ -400,10 +450,12 @@ declare module "@stencil/core" {
             "batch-list-item": LocalJSX.BatchListItem & JSXBase.HTMLAttributes<HTMLBatchListItemElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-orderline-list-item": LocalJSX.ManagedOrderlineListItem & JSXBase.HTMLAttributes<HTMLManagedOrderlineListItemElement>;
+            "managed-orderline-stock-chip": LocalJSX.ManagedOrderlineStockChip & JSXBase.HTMLAttributes<HTMLManagedOrderlineStockChipElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
             "managed-received-order-list-item": LocalJSX.ManagedReceivedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderListItemElement>;
             "managed-stock-list-item": LocalJSX.ManagedStockListItem & JSXBase.HTMLAttributes<HTMLManagedStockListItemElement>;
             "menu-tab-button": LocalJSX.MenuTabButton & JSXBase.HTMLAttributes<HTMLMenuTabButtonElement>;
+            "more-chip": LocalJSX.MoreChip & JSXBase.HTMLAttributes<HTMLMoreChipElement>;
             "multi-spinner": LocalJSX.MultiSpinner & JSXBase.HTMLAttributes<HTMLMultiSpinnerElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;
