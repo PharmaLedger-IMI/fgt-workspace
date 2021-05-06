@@ -16,7 +16,3 @@ menu-tab-button{
 ion-icon.menu-tab-button{
   color: var(--ion-text-color)
 }
-
-ion-item.menu-tab-selected{
-  --ion-text-color: var(--ion-color-primary);
-}

@@ -1,4 +1,4 @@
-import {Component, Host, h, Prop, Element, Event, EventEmitter, Listen, State} from '@stencil/core';
+import {Component, h, Prop, Element, Event, EventEmitter, Listen, State} from '@stencil/core';
 import {HostElement} from "../../decorators";
 
 
@@ -32,6 +32,8 @@ export class MenuTabButton {
   @Prop({attribute: 'icon-name', mutable: true}) iconName?: string = undefined;
 
   @Prop({attribute: 'label', mutable: true}) label?: string = "tab button label";
+
+  @Prop({attribute: 'badge', mutable: true}) badge?: number = undefined;
 
   @Prop({attribute: 'tab'}) tab: string;
 
@@ -67,25 +69,33 @@ export class MenuTabButton {
       console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
 
-  _getMenuMode(){
+  private getBadge(slot?: string){
+    if (!this.badge)
+      return;
+    const props = !!slot ? {slot: slot} : {};
     return (
-      <Host>
-        <ion-item button="true" onClick={() => this.navigateToTab(this.tab)} class={this.selected ? "menu-tab-selected" : ""}>
+      <ion-badge {...props}>{this.badge}</ion-badge>
+    )
+  }
+
+  _getMenuMode(){
+    const props = !!this.selected ? {color: "primary"} : {};
+    return (
+        <ion-item button="true" onClick={() => this.navigateToTab(this.tab)} {...props}>
           {this._getIcon()}
           <ion-label class="ion-padding-horizontal">{this.label}</ion-label>
+          {this.getBadge("end")}
         </ion-item>
-      </Host>
     );
   }
 
   _getTabBarMode(){
     return (
-      <Host>
         <ion-tab-button tab={this.tab}>
           <ion-icon name={this.iconName}></ion-icon>
           <ion-label>{this.label}</ion-label>
+          {this.getBadge()}
         </ion-tab-button>
-      </Host>
     );
   }
 

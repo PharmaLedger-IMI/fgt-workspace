@@ -13,6 +13,7 @@
  */
 module.exports = {
     Manager: require('./Manager'),
+    Resolver: require('./resolvers/Resolver'),
     BaseManager: require('./BaseManager'),
     MessageManager: require('./MessageManager')
 }

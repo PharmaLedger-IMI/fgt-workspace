@@ -1,16 +1,11 @@
 :host {
-  display: block;
-  --background: inherit;
-  --ion-color-primary: inherit;
-  --ion-border-color: inherit;
-  --ion-text-color: inherit;
+  display: inherit;
+  --ion-color-primary: var(--ion-color-primary);
+  --ion-border-color: var(--ion-border-color);
+  --ion-text-color: var(--ion-text-color);
 }
 
-ion-chip {
-  height: 28px;
-  --ion-padding: 8px;
-  --ion-margin: 8px;
-
+managed-orderline-stock-chip{
   --ion-color-primary: inherit;
   --ion-border-color: inherit;
   --ion-text-color: inherit;
@@ -40,8 +35,22 @@ ion-chip {
   --color-step-100: var(--ion-color-primary);
 }
 
-ion-item.main-item{
-  animation: 1s linear fadein;
+ion-badge{
+  --ion-color-primary: inherit;
+  --ion-text-color: inherit;
+  --color-step: inherit;
+  background-color: var(--color-step);
+}
+
+ion-chip {
+  --ion-color-primary: inherit;
+  --ion-border-color: inherit;
+  --ion-text-color: inherit;
+  height: 28px;
+  --ion-padding: 8px;
+  --ion-margin: 8px;
+  --color-step: inherit;
+  animation: 0.5s linear fadein;
 }
 
 @keyframes fadein {

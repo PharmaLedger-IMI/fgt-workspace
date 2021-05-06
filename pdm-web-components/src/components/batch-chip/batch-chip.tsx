@@ -2,6 +2,7 @@ import {Component, Host, h, Prop, Element, State} from '@stencil/core';
 import {HostElement} from "../../decorators";
 import {WebManagerService, WebResolver} from "../../services/WebManagerService";
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
+import {calculateDiffInDays, getSteppedColor} from "../../utils/colorUtils";
 
 // @ts-ignore
 const Batch = require('wizard').Model.Batch;
@@ -10,8 +11,6 @@ const CHIP_TYPE = {
   SIMPLE: "simple",
   DETAIL: "detail"
 }
-
-const FALLBACK_COLOR = '--ion-color-primary;'
 
 @Component({
   tag: 'batch-chip',
@@ -61,41 +60,6 @@ export class BatchChip {
     return this.gtinBatch.split('-')[1];
   }
 
-  private parseDates(threshold, currentVal, referenceVal){
-    const dayDiff = this.calculateDiffInDays(new Date(currentVal), referenceVal)
-    if (dayDiff >= threshold)
-      return FALLBACK_COLOR;
-    return this.calculateStep(dayDiff, threshold);
-  }
-
-  private calculateStep(currentVal, referenceVal){
-    let colorStep = 100;
-    if (currentVal < referenceVal){
-      const exactVal = Math.floor(currentVal/referenceVal * 100);
-      colorStep = Math.floor(exactVal/5) * 5;
-      colorStep = colorStep < 0 ? 0 : colorStep;
-    }
-    return `--color-step-${colorStep}`;
-  }
-
-  private getSteppedColor(threshold, currentVal, referenceVal){
-    if (referenceVal instanceof Date)
-      return this.parseDates(threshold, currentVal, referenceVal);
-
-    if (typeof currentVal !== typeof referenceVal){
-      console.log(`invalid values received: ${currentVal} - ${referenceVal}`);
-      return FALLBACK_COLOR;
-    }
-
-    const diff = referenceVal - currentVal;
-    return this.calculateStep(diff, threshold);
-  }
-
-  private calculateDiffInDays(current, reference){
-    const timeDiff = current.getTime() - reference.getTime();
-    return Math.floor(timeDiff/ (1000 * 3600 * 24));
-  }
-
   private renderExpiryInfo(){
     if (!this.batch)
       return (
@@ -103,16 +67,16 @@ export class BatchChip {
       )
     const self = this;
     const getDaysTillExpiryString = function(){
-      const daysLeft = self.calculateDiffInDays(new Date(self.batch.expiry), new Date());
+      const daysLeft = calculateDiffInDays(new Date(self.batch.expiry), new Date());
       if (daysLeft <= 0)
         return '-';
       return `${daysLeft}d`;
     }
-    const element = (
-      <ion-badge class="ion-margin ion-padding-horizontal">{getDaysTillExpiryString()}</ion-badge>
+    return (
+      <ion-badge class="ion-margin ion-padding-horizontal" style={{
+        "--color-step": `var(${getSteppedColor(this.expiryThreshold, this.batch.expiry, new Date())})`
+      }}>{getDaysTillExpiryString()}</ion-badge>
     )
-    this.element.style.setProperty('--color-step', `var(${this.getSteppedColor(this.expiryThreshold, this.batch.expiry, new Date())})`);
-    return element;
   }
 
   private renderSimple(){

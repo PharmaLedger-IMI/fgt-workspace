@@ -112,6 +112,10 @@ ion-content.main-content{
     --background:  url("assets/images/bg1.png") 0 0/100% 100%;
 }
 
+ion-content.tab-content{
+    --background: none;
+}
+
 ion-icon{
     --color: whitesmoke;
 }

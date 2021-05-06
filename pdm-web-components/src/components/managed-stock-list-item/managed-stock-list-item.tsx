@@ -80,9 +80,9 @@ export class ManagedProductListItem {
         self.sendError(`Could not get Product with gtin ${self.gtin}`, err);
         return;
       }
-      this.stock = new Stock(stock);
-      this.batches = [...stock.batches];
-      this.quantity = this.stock.getQuantity();
+      self.stock = new Stock(stock);
+      self.batches = [...stock.batches];
+      self.quantity = this.stock.getQuantity();
     });
   }
 
