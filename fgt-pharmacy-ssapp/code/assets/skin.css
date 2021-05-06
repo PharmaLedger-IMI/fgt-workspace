@@ -86,6 +86,7 @@ webc-modal{
 webc-app-root{
     --mode: none;
 }
+
 /*ion-footer.modal-class {*/
 /*    --margin-top: 10px;*/
 /*}*/
@@ -109,6 +110,10 @@ ion-toolbar.menu{
 
 ion-content.main-content{
     --background:  url("assets/images/bg1.png") 0 0/100% 100%;
+}
+
+ion-content.tab-content{
+    --background: none;
 }
 
 ion-icon{
