@@ -1,11 +1,14 @@
-<webc-container controller="OrderLinesController">
-    <pdm-ion-table title="@title"
-                   item-reference="order-line"
-                   paginated="true"
-                   manager="OrderLineManager"
-                   buttons="@buttons"
-                   mode="byref"
-                   icon-name="stats-chart-outline"
-                   item-type="managed-orderline-list-item"
-                   items-per-page="10"></pdm-ion-table>
-</webc-container>
+<ion-content class="tab-content" overflow-scroll="true">
+    <webc-container controller="OrderLinesController">
+        <pdm-ion-table title="@title"
+                       item-reference="order-line"
+                       paginated="true"
+                       manager="OrderLineManager"
+                       buttons="@buttons"
+                       mode="byref"
+                       icon-name="stats-chart-outline"
+                       item-type="managed-orderline-list-item"
+                       items-per-page="10"></pdm-ion-table>
+    </webc-container>
+</ion-content>
+
