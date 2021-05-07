@@ -44,8 +44,8 @@ ion-badge{
 
 ion-chip {
   --ion-color-primary: inherit;
-  --ion-border-color: var(--color-step);
-  --ion-text-color: var(--color-step);
+  --color: var(--color-step);
+  border-color: var(--color-step-rgba);
   height: 28px;
   --ion-padding: 8px;
   --ion-margin: 8px;

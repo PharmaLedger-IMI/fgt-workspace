@@ -1,6 +1,7 @@
 const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const OrderManager = require("./OrderManager");
 const Order = require('../model').Order;
+const Stock = require('../model').Stock;
 const OrderLine = require('../model').OrderLine;
 const OrderStatus = require('../model').OrderStatus;
 
@@ -64,6 +65,28 @@ class ReceivedOrderManager extends OrderManager {
         keyword = keyword || '.*';
         return [`orderId like /${keyword}/g`];
     }
+
+    // /**
+    //  * Loads Stock that gtin in the db. loads is and reads the info at '/info'
+    //  * @param {string} gtin
+    //  * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
+    //  * @param {function(err, object|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
+    //  */
+    // getOne(gtin, readDSU,  callback) {
+    //     if (!callback){
+    //         callback = readDSU;
+    //         readDSU = true;
+    //     }
+    //     let self = this;
+    //     self.getRecord(gtin, (err, stock) => {
+    //         if (err)
+    //             return self._err(`Could not load Stock for product ${gtin} on table ${self._getTableName()}`, err, callback);
+    //         stock = new Stock(stock);
+    //         if (!readDSU)
+    //             return callback(undefined, stock);
+    //         // sort the orderlines
+    //     });
+    // }
 
     /**
      * Lists all received orders.

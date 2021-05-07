@@ -29,16 +29,35 @@ export class ManagedOrderListItem {
   })
   sendErrorEvent: EventEmitter;
 
+  /**
+   * Through this event navigation requests to tabs are made
+   */
+  @Event({
+    eventName: 'ssapp-navigate-tab',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  sendNavigateTab: EventEmitter;
+
   private sendError(message: string, err?: object){
     const event = this.sendErrorEvent.emit(message);
-    if (!event.defaultPrevented || err){
-      console.log(`Order Component: ${message}`, err);
-    }
+    if (!event.defaultPrevented || err)
+      console.log(`Product Component: ${message}`, err);
+  }
+
+  private navigateToTab(tab: string,  props: any){
+    const event = this.sendNavigateTab.emit({
+      tab: tab,
+      props: props
+    });
+    if (!event.defaultPrevented)
+      console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
 
   @Prop({attribute: 'order-id'}) orderId: string;
 
-  @Prop({attribute: 'orderline-count'}) orderlineCount?: number = 2;
+  @Prop({attribute: 'orderline-count'}) orderlineCount?: number = 4;
 
   private receivedOrderManager: WebResolver = undefined;
 
@@ -104,7 +123,7 @@ export class ManagedOrderListItem {
       if (this.order.orderLines.length > this.orderlineCount) {
         orderLines = [...this.order.orderLines].slice(0, this.orderlineCount).map(ol => this.addOrderLine(ol));
         orderLines.push((
-          <more-chip color="secondary" icon-name="add-circle-outline"></more-chip>
+          <more-chip color="secondary" text="..."></more-chip>
         ));
       } else {
         orderLines = this.order.orderLines.map(ol => this.addOrderLine(ol));
@@ -127,7 +146,7 @@ export class ManagedOrderListItem {
       if (!self.order)
         return (<ion-skeleton-text animated></ion-skeleton-text>)
       return (
-        <ion-button slot="primary" alt="Process Order">
+        <ion-button slot="primary" alt="Process Order" onClick={() => self.navigateToTab('tab-order', {orderId: self.order.orderId, requesterId: self.order.requesterId})}>
           <ion-icon name="cog-outline"></ion-icon>
         </ion-button>
       )
