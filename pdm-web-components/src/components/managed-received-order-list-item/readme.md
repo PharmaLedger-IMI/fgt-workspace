@@ -10,7 +10,7 @@
 | Property         | Attribute         | Description | Type     | Default     |
 | ---------------- | ----------------- | ----------- | -------- | ----------- |
 | `orderId`        | `order-id`        |             | `string` | `undefined` |
-| `orderlineCount` | `orderline-count` |             | `number` | `2`         |
+| `orderlineCount` | `orderline-count` |             | `number` | `4`         |
 
 
 ## Events
