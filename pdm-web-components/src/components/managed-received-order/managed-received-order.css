@@ -1,3 +1,21 @@
 :host {
   display: block;
+  --ion-color-primary: inherit;
+  --ion-color-seconday: inherit;
+  --ion-color-primary-contrast: inherit;
+}
+
+managed-received-order{
+  --ion-color-primary: inherit;
+  --ion-color-secondary: inherit;
+  --ion-color-primary-contrast: inherit;
+  --color: var(--ion-color-primary-contrast)
+}
+
+ion-card-title{
+  color: var(--ion-color-primary)
+}
+
+ion-card-subtitle{
+  color: var(--ion-color-secondary)
 }

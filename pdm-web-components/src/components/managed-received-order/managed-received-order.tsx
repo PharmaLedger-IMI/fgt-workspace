@@ -60,15 +60,27 @@ export class ManagedReceivedOrder {
 
   @Prop({attribute: 'title-string'}) titleString: string = 'Process Order';
 
-  @Prop({attribute: 'details-string'}) detailsString: string = 'Details';
+  @Prop({attribute: 'details-string'}) detailsString: string = 'Details:';
 
   @Prop({attribute: 'products-string'}) productsString: string = 'Products:';
+
+  @Prop({attribute: 'available-string'}) availableString: string = 'Available:';
+
+  @Prop({attribute: 'products-string'}) unavailableString: string = 'Unavailable:';
+
+  @Prop({attribute: 'stock-string'}) stockString: string = 'Stock:';
+
+  @Prop({attribute: 'no-stock-string'}) noStockString: string = 'Empty';
 
   @State() order: typeof Order = undefined;
 
   @State() orderLines: typeof OrderLine[] = undefined;
 
-  @State() stockForProduct:  typeof Stock = undefined;
+  @State() stockForProduct: [] = undefined;
+
+  @State() selectedProduct: number = undefined;
+
+  private result: any = undefined;
 
   private receivedOrderManager: WebManager = undefined;
 
@@ -84,10 +96,13 @@ export class ManagedReceivedOrder {
 
   async loadOrder(){
     let self = this;
-    await self.receivedOrderManager.getOne(this.orderId, true, (err, order) => {
+    if (!this.orderId || this.orderId.startsWith('@')) // for webcardinal model compatibility
+      return;
+    await self.receivedOrderManager.getOne(this.orderId, true, async (err, order) => {
       if (err)
         return this.sendError(`Could not retrieve order ${self.orderId}`);
       self.order = order;
+      await self.loadOrderLinesAsync();
     });
   }
 
@@ -111,7 +126,7 @@ export class ManagedReceivedOrder {
         }
         result.push({
           orderLine: orderLine,
-          stock: stock
+          stock: new Stock(stock)
         });
         orderLineIterator(orderLinesCopy, callback);
       });
@@ -120,7 +135,7 @@ export class ManagedReceivedOrder {
     orderLineIterator(self.order.orderLines.slice(), (err, result) => {
       if (err)
         return console.log(err);
-      result = result.sort((first, second) => {
+      self.result = result.sort((first, second) => {
         if (first.stock === second.stock)
           return 0;
         if (!!first.stock && !second.stock)
@@ -129,6 +144,7 @@ export class ManagedReceivedOrder {
           return -1;
         return first.stock.getQuantity() - second.stock.getQuantity();
       });
+      self.orderLines = self.result.map(r => r.orderLine);
     });
   }
 
@@ -136,6 +152,31 @@ export class ManagedReceivedOrder {
   @Method()
   async refresh(){
     await this.loadOrder();
+  }
+
+  @Watch('selectedProduct')
+  async selectProduct(oldGtin, newGtin){
+    if (oldGtin === newGtin)
+      return;
+    this.stockForProduct = undefined;
+    this.updateStock();
+  }
+
+  private updateStock(){
+    const self = this;
+    if (!self.result)
+      this.stockForProduct = [];
+    const productStock = this.result.filter(r => r.orderLine.gtin === self.selectedProduct);
+    if (!productStock.length)
+      self.stockForProduct = [];
+    if (productStock.length !== 1)
+      return self.sendError(`More than one stock reference received. should be impossible`);
+
+    this.stockForProduct = productStock[0].stock.batches.sort((b1, b2) => {
+      const date1 = new Date(b1.expiry).getTime();
+      const date2 = new Date(b2.expiry).getTime();
+      return date1 - date2;
+    });
   }
 
   private getHeader(){
@@ -159,13 +200,37 @@ export class ManagedReceivedOrder {
     return (
       <ion-item>
         <ion-item>
-          <ion-label>{}</ion-label>
+          <ion-label>{this.order.shipToAddress}</ion-label>
         </ion-item>
         <div slot="end">
           {this.getMap()}
         </div>
       </ion-item>
     )
+  }
+
+  private getAvailableStock(){
+    const self = this;
+
+    const getEmpty = function(){
+      return (<ion-item><ion-label>{self.noStockString}</ion-label></ion-item>)
+    }
+
+    const getBatch = function(batch){
+        return(
+          <batch-chip gtin-batch={self.selectedProduct + '-' + batch.batchNumber} mode="detail" quantity={batch.quantity}></batch-chip>
+        )
+    }
+
+    if (!self.stockForProduct)
+      return self.getLoading('cube');
+    if (!self.stockForProduct.length)
+      return getEmpty()
+    return self.stockForProduct.map(b => getBatch(b));
+  }
+
+  private selectOrderLine(gtin){
+    this.selectedProduct = gtin;
   }
 
   private getContent(){
@@ -175,11 +240,48 @@ export class ManagedReceivedOrder {
       if (!self.order)
         return self.getLoading();
 
-      return [self.getLocalizationInfo()]
+      return self.getLocalizationInfo();
     }
 
     const getOrderLines = function(){
+      if (!self.orderLines)
+        return (self.getLoading());
 
+      const genOrderLine = function(orderLine, available){
+        return (
+          <managed-orderline-stock-chip onClick={() => self.selectOrderLine(orderLine.gtin)} gtin={orderLine.gtin} quantity={orderLine.quantity} mode="detail" available={available}></managed-orderline-stock-chip>
+        )
+      }
+
+      function getUnavailable(){
+        const unavailable = self.result.filter(r => r.orderLine.quantity > r.stock.getQuantity());
+        if (!unavailable.length)
+          return [];
+        const getHeader = function(){
+          return (
+            <ion-item-divider>{self.unavailableString}</ion-item-divider>
+          )
+        }
+        const output = [getHeader()];
+        unavailable.forEach(u => output.push(genOrderLine(u.orderLine, u.stock.getQuantity())));
+        return output;
+      }
+
+      function getAvailable(){
+        const available = self.result.filter(r => r.orderLine.quantity <= r.stock.getQuantity());
+        if (!available.length)
+          return [];
+        const getHeader = function(){
+          return (
+            <ion-item-divider>{self.availableString}</ion-item-divider>
+          )
+        }
+        const output = [getHeader()];
+        available.forEach(u => output.push(genOrderLine(u.orderLine, u.stock.getQuantity())));
+        return output;
+      }
+
+      return [...getUnavailable(), ...getAvailable()];
     }
 
     return (
@@ -188,10 +290,26 @@ export class ManagedReceivedOrder {
           <ion-label>{this.detailsString}</ion-label>
         </ion-item-divider>
         {getDetails()}
-        <ion-item-divider>
-          <ion-label>{this.productsString}</ion-label>
-        </ion-item-divider>
-        {getOrderLines()}
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6">
+              <ion-item-group>
+                <ion-item-divider>
+                  <ion-label>{this.productsString}</ion-label>
+                </ion-item-divider>
+                {...getOrderLines()}
+              </ion-item-group>
+            </ion-col>
+            <ion-col size="6">
+              <ion-item-group>
+                <ion-item-divider>
+                  <ion-label>{this.stockString}</ion-label>
+                </ion-item-divider>
+                {...self.getAvailableStock()}
+              </ion-item-group>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-card-content>
     )
   }

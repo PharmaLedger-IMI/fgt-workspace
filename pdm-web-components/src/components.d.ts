@@ -41,6 +41,7 @@ export namespace Components {
         "refresh": () => Promise<void>;
     }
     interface ManagedOrderlineStockChip {
+        "available"?: number;
         "gtin": string;
         "loaderType"?: string;
         "mode"?: string;
@@ -50,6 +51,17 @@ export namespace Components {
     interface ManagedProductListItem {
         "gtin": string;
         "refresh": () => Promise<void>;
+    }
+    interface ManagedReceivedOrder {
+        "availableString": string;
+        "detailsString": string;
+        "noStockString": string;
+        "orderId": string;
+        "productsString": string;
+        "refresh": () => Promise<void>;
+        "stockString": string;
+        "titleString": string;
+        "unavailableString": string;
     }
     interface ManagedReceivedOrderListItem {
         "orderId": string;
@@ -171,6 +183,12 @@ declare global {
         prototype: HTMLManagedProductListItemElement;
         new (): HTMLManagedProductListItemElement;
     };
+    interface HTMLManagedReceivedOrderElement extends Components.ManagedReceivedOrder, HTMLStencilElement {
+    }
+    var HTMLManagedReceivedOrderElement: {
+        prototype: HTMLManagedReceivedOrderElement;
+        new (): HTMLManagedReceivedOrderElement;
+    };
     interface HTMLManagedReceivedOrderListItemElement extends Components.ManagedReceivedOrderListItem, HTMLStencilElement {
     }
     var HTMLManagedReceivedOrderListItemElement: {
@@ -233,6 +251,7 @@ declare global {
         "managed-orderline-list-item": HTMLManagedOrderlineListItemElement;
         "managed-orderline-stock-chip": HTMLManagedOrderlineStockChipElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
+        "managed-received-order": HTMLManagedReceivedOrderElement;
         "managed-received-order-list-item": HTMLManagedReceivedOrderListItemElement;
         "managed-stock-list-item": HTMLManagedStockListItemElement;
         "menu-tab-button": HTMLMenuTabButtonElement;
@@ -294,6 +313,7 @@ declare namespace LocalJSX {
         "orderLine"?: string;
     }
     interface ManagedOrderlineStockChip {
+        "available"?: number;
         "gtin"?: string;
         "loaderType"?: string;
         "mode"?: string;
@@ -311,11 +331,33 @@ declare namespace LocalJSX {
          */
         "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
     }
+    interface ManagedReceivedOrder {
+        "availableString"?: string;
+        "detailsString"?: string;
+        "noStockString"?: string;
+        /**
+          * Through this event errors are passed
+         */
+        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSendNavigateTab"?: (event: CustomEvent<any>) => void;
+        "orderId"?: string;
+        "productsString"?: string;
+        "stockString"?: string;
+        "titleString"?: string;
+        "unavailableString"?: string;
+    }
     interface ManagedReceivedOrderListItem {
         /**
           * Through this event errors are passed
          */
         "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
         "orderId"?: string;
         "orderlineCount"?: number;
     }
@@ -426,6 +468,7 @@ declare namespace LocalJSX {
         "managed-orderline-list-item": ManagedOrderlineListItem;
         "managed-orderline-stock-chip": ManagedOrderlineStockChip;
         "managed-product-list-item": ManagedProductListItem;
+        "managed-received-order": ManagedReceivedOrder;
         "managed-received-order-list-item": ManagedReceivedOrderListItem;
         "managed-stock-list-item": ManagedStockListItem;
         "menu-tab-button": MenuTabButton;
@@ -448,6 +491,7 @@ declare module "@stencil/core" {
             "managed-orderline-list-item": LocalJSX.ManagedOrderlineListItem & JSXBase.HTMLAttributes<HTMLManagedOrderlineListItemElement>;
             "managed-orderline-stock-chip": LocalJSX.ManagedOrderlineStockChip & JSXBase.HTMLAttributes<HTMLManagedOrderlineStockChipElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
+            "managed-received-order": LocalJSX.ManagedReceivedOrder & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderElement>;
             "managed-received-order-list-item": LocalJSX.ManagedReceivedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderListItemElement>;
             "managed-stock-list-item": LocalJSX.ManagedStockListItem & JSXBase.HTMLAttributes<HTMLManagedStockListItemElement>;
             "menu-tab-button": LocalJSX.MenuTabButton & JSXBase.HTMLAttributes<HTMLMenuTabButtonElement>;

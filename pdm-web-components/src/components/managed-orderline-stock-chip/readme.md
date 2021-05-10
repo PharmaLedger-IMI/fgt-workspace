@@ -9,6 +9,7 @@
 
 | Property     | Attribute     | Description | Type     | Default                           |
 | ------------ | ------------- | ----------- | -------- | --------------------------------- |
+| `available`  | `available`   |             | `number` | `undefined`                       |
 | `gtin`       | `gtin`        |             | `string` | `undefined`                       |
 | `loaderType` | `loader-type` |             | `string` | `SUPPORTED_LOADERS.bubblingSmall` |
 | `mode`       | `mode`        |             | `string` | `CHIP_TYPE.SIMPLE`                |
@@ -20,11 +21,13 @@
 
 ### Used by
 
+ - [managed-received-order](../managed-received-order)
  - [managed-received-order-list-item](../managed-received-order-list-item)
 
 ### Graph
 ```mermaid
 graph TD;
+  managed-received-order --> managed-orderline-stock-chip
   managed-received-order-list-item --> managed-orderline-stock-chip
   style managed-orderline-stock-chip fill:#f9f,stroke:#333,stroke-width:4px
 ```

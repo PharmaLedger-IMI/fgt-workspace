@@ -17,13 +17,11 @@ export default class BatchesController extends LocalizedController {
 
     constructor(element, history) {
         super(element, history, false);
+        super.bindLocale(this, "batches");
         const wizard = require('wizard');
-        const LocaleService = wizard.Services.WebcLocaleService;
-        LocaleService.bindToLocale(this,"batches");
+        this.model = this.initializeModel();
         this.participantManager = wizard.Managers.getParticipantManager();
         this.batchManager = wizard.Managers.getBatchManager(this.participantManager);
-
-        this.model = this.initializeModel();
 
         let self = this;
 
