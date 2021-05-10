@@ -1,5 +1,12 @@
 <ion-content class="tab-content" overflow-scroll="true">
     <webc-container controller="OrderController">
-        <managed-received-order order-id="@orderReference"></managed-received-order>
+        <managed-received-order order-id="@orderReference"
+            title-string="@title"
+            details-string="@details"
+            products-string="@products"
+            available-string="@available"
+            unavailable-string="@unavailable"
+            stock-string="@stock"
+            no-stock-string="@noStock"></managed-received-order>
     </webc-container>
 </ion-content>
