@@ -7,16 +7,19 @@
 
 ## Properties
 
-| Property            | Attribute            | Description | Type     | Default           |
-| ------------------- | -------------------- | ----------- | -------- | ----------------- |
-| `availableString`   | `available-string`   |             | `string` | `'Available:'`    |
-| `detailsString`     | `details-string`     |             | `string` | `'Details:'`      |
-| `noStockString`     | `no-stock-string`    |             | `string` | `'Empty'`         |
-| `orderId`           | `order-id`           |             | `string` | `undefined`       |
-| `productsString`    | `products-string`    |             | `string` | `'Products:'`     |
-| `stockString`       | `stock-string`       |             | `string` | `'Stock:'`        |
-| `titleString`       | `title-string`       |             | `string` | `'Process Order'` |
-| `unavailableString` | `unavailable-string` |             | `string` | `'Unavailable:'`  |
+| Property              | Attribute            | Description | Type     | Default                        |
+| --------------------- | -------------------- | ----------- | -------- | ------------------------------ |
+| `availableString`     | `available-string`   |             | `string` | `'Available:'`                 |
+| `confirmedString`     | `confirmed-string`   |             | `string` | `'Confirmed:'`                 |
+| `detailsString`       | `details-string`     |             | `string` | `'Details:'`                   |
+| `noStockString`       | `no-stock-string`    |             | `string` | `'Empty'`                      |
+| `orderId`             | `order-id`           |             | `string` | `undefined`                    |
+| `productsString`      | `products-string`    |             | `string` | `'Products:'`                  |
+| `remainingString`     | `remaining-string`   |             | `string` | `'Remaining:'`                 |
+| `selectProductString` | `select-product`     |             | `string` | `'Please Select a Product...'` |
+| `stockString`         | `stock-string`       |             | `string` | `'Stock:'`                     |
+| `titleString`         | `title-string`       |             | `string` | `'Process Order'`              |
+| `unavailableString`   | `unavailable-string` |             | `string` | `'Unavailable:'`               |
 
 
 ## Events
@@ -30,6 +33,16 @@
 ## Methods
 
 ### `refresh() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `selectOrderLine(gtin: any) => Promise<void>`
 
 
 

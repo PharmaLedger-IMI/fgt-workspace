@@ -1,12 +1,17 @@
-import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
 import {WebManager, WebManagerService} from "../../services/WebManagerService";
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 import {HostElement} from "../../decorators";
 import {EVENT_SEND_ERROR, EVENT_NAVIGATE_TAB} from "../../constants/events";
 
-
+const ItemClasses = {
+  selected: "selected",
+  unnecessary: 'unnecessary',
+  normal: 'normal',
+  finished: 'finished'
+}
 // @ts-ignore
-const {Order, OrderLine, Stock} = require('wizard').Model;
+const {Order, OrderLine, Stock, Batch} = require('wizard').Model;
 
 @Component({
   tag: 'managed-received-order',
@@ -68,15 +73,21 @@ export class ManagedReceivedOrder {
 
   @Prop({attribute: 'unavailable-string'}) unavailableString: string = 'Unavailable:';
 
+  @Prop({attribute: 'confirmed-string'}) confirmedString: string = 'Confirmed:';
+
   @Prop({attribute: 'stock-string'}) stockString: string = 'Stock:';
 
   @Prop({attribute: 'no-stock-string'}) noStockString: string = 'Empty';
+
+  @Prop({attribute: 'select-product'}) selectProductString: string = 'Please Select a Product...';
+
+  @Prop({attribute: 'remaining-string'}) remainingString: string = 'Remaining:';
 
   @State() order: typeof Order = undefined;
 
   @State() orderLines: typeof OrderLine[] = undefined;
 
-  @State() stockForProduct: [] = undefined;
+  @State() stockForProduct = undefined;
 
   @State() selectedProduct: number = undefined;
 
@@ -85,6 +96,8 @@ export class ManagedReceivedOrder {
   private receivedOrderManager: WebManager = undefined;
 
   private stockManager: WebManager = undefined;
+
+  private batchSeparatorIndex: any = {index: undefined};
 
   async componentWillLoad() {
     if (!this.host.isConnected)
@@ -155,11 +168,29 @@ export class ManagedReceivedOrder {
   }
 
   @Watch('selectedProduct')
-  async selectProduct(oldGtin, newGtin){
+  async selectProduct(newGtin, oldGtin){
     if (oldGtin === newGtin)
       return;
-    this.stockForProduct = undefined;
+    if (!!this.orderLines.filter(o => o.gtin === newGtin)[0].confirmed)
+      return;
     this.updateStock();
+  }
+
+  @Listen('ionItemReorder')
+  async updateOrder(evt){
+    const self = this;
+    const getDifference = function(){
+      return self.batchSeparatorIndex.hasNext ? 2 : 1;
+    }
+    const newStock = self.stockForProduct.slice();
+    self.stockForProduct = undefined;
+    const movedBatch = newStock.splice(evt.detail.from > this.batchSeparatorIndex.index ? evt.detail.from - getDifference() : evt.detail.from, 1);
+    const result = [];
+    if (evt.detail.to > 0)
+      result.push(...newStock.slice(0, evt.detail.to));
+    result.push(...movedBatch, ...newStock.slice(evt.detail.to, Number.MAX_VALUE));
+    await evt.detail.complete();
+    self.stockForProduct = [...result];
   }
 
   private updateStock(){
@@ -181,7 +212,7 @@ export class ManagedReceivedOrder {
 
   private getHeader(){
     return (
-      <ion-card-header>
+      <ion-card-header className="ion-padding">
         <ion-card-title>{this.titleString}</ion-card-title>
         <ion-card-subtitle>{this.orderId}</ion-card-subtitle>
       </ion-card-header>
@@ -207,6 +238,78 @@ export class ManagedReceivedOrder {
     )
   }
 
+  private splitStockByQuantity(stock?: any){
+    stock = stock || this.stockForProduct.slice();
+    const self = this;
+
+    const getBatchSeparator = function(){
+      return (
+        <ion-item-divider>
+          <ion-label className="ion-padding-horizontal">{self.remainingString}</ion-label>
+        </ion-item-divider>
+      )
+    }
+
+    const getBatch = function(batch, status = ItemClasses.normal){
+
+      const getReorder = function(){
+        if (status === ItemClasses.unnecessary)
+          return;
+        return (
+          <ion-reorder slot="end">
+            <ion-icon name="menu-outline"></ion-icon>
+          </ion-reorder>
+        )
+      }
+
+      return(
+        <ion-item className={status} disabled={status === ItemClasses.unnecessary}>
+          <batch-chip gtin-batch={self.selectedProduct + '-' + batch.batchNumber} mode="detail" quantity={batch.quantity}></batch-chip>
+          {getReorder()}
+        </ion-item>
+      )
+    }
+
+    let accum = 0;
+    self.batchSeparatorIndex = {index: undefined};
+    const batches = [];
+    const requiredQuantity = self.orderLines.filter(o => o.gtin === self.selectedProduct)[0].quantity
+    stock.forEach((batch, i) => {
+      if (accum >= requiredQuantity){
+        batches.push(getBatch(batch));
+        // @ts-ignore
+      } else if (accum + batch.quantity > requiredQuantity) {
+        const batch1 = new Batch(batch);
+        const batch2 = new Batch(batch);
+        batch1.quantity = requiredQuantity - accum;
+        // @ts-ignore
+        batch2.quantity = batch.quantity - batch1.quantity;
+        batches.push(getBatch(batch1, ItemClasses.selected));
+        batches.push(getBatchSeparator());
+        self.batchSeparatorIndex = {
+          index: batches.length - 1,
+          hasNext: true
+        };
+        batches.push(getBatch(batch2, ItemClasses.unnecessary));
+      } else if(accum + batch.quantity === requiredQuantity){
+        batches.push(getBatch(batch, ItemClasses.selected));
+        if (i < stock.length - 1){
+          batches.push(getBatchSeparator());
+          self.batchSeparatorIndex = {
+            index: batches.length - 1,
+            hasNext: false
+          };
+        }
+      } else {
+        batches.push(getBatch(batch, ItemClasses.selected));
+      }
+      // @ts-ignore
+      accum += batch.quantity;
+    });
+
+    return batches;
+  }
+
   private getAvailableStock(){
     const self = this;
 
@@ -214,118 +317,156 @@ export class ManagedReceivedOrder {
       return (<ion-item><ion-label>{self.noStockString}</ion-label></ion-item>)
     }
 
-    const getBatch = function(batch){
-        return(
-          <ion-item>
-            <batch-chip gtin-batch={self.selectedProduct + '-' + batch.batchNumber} mode="detail" quantity={batch.quantity}></batch-chip>
-            <ion-reorder slot="end">
-              <ion-icon name="pizza"></ion-icon>
-            </ion-reorder>
-          </ion-item>
-        )
+    const getSelectProduct = function(){
+      return (<ion-item><ion-label>{self.selectProductString}</ion-label></ion-item>)
     }
 
+    if (!self.selectedProduct)
+      return getSelectProduct();
     if (!self.stockForProduct)
-      return self.getLoading('cube');
+      return self.getLoading(SUPPORTED_LOADERS.cube);
     if (!self.stockForProduct.length)
-      return getEmpty()
+      return getEmpty();
+
+    const stockElements = this.splitStockByQuantity();
     return (
       <ion-reorder-group disabled="false">
-        {...self.stockForProduct.map(b => getBatch(b))}
+        {...stockElements}
       </ion-reorder-group>
     )
   }
 
-  private selectOrderLine(gtin){
+  @Method()
+  selectOrderLine(gtin){
     this.selectedProduct = gtin;
   }
 
-  private getContent(){
+  private getDetails(){
+    if (!this.order)
+      return this.getLoading();
+
+    return this.getLocalizationInfo();
+  }
+
+  private markProductAsConfirmed(gtin, confirmed = true){
+    let orderLine = this.orderLines.filter(o => o.gtin === gtin);
+    if (orderLine.length !== 1)
+      return;
+    orderLine = orderLine[0];
+    // @ts-ignore
+    orderLine.confirmed = confirmed;
+    this.selectedProduct = undefined;
+    this.orderLines = [...this.orderLines];
+  }
+
+  private getOrderLines(){
     const self = this;
+    if (!self.orderLines)
+      return [self.getLoading(SUPPORTED_LOADERS.medical)];
 
-    const getDetails = function(){
-      if (!self.order)
-        return self.getLoading();
+    const genOrderLine = function(orderLine, available){
 
-      return self.getLocalizationInfo();
+      const getConfirmButton = function(){
+        if (orderLine.gtin !== self.selectedProduct)
+          return;
+        return (
+          <ion-button color="success" slot="end" onClick={() => self.markProductAsConfirmed(orderLine.gtin)}>
+            <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+          </ion-button>)
+      }
+
+      const getCancelButton = function(){
+        if (orderLine.gtin !== self.selectedProduct)
+          return;
+        return (
+          <ion-button color="danger" slot="end" onClick={() => self.markProductAsConfirmed(orderLine.gtin, false)}>
+            <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
+          </ion-button>)
+      }
+
+      return (
+        <ion-item>
+          <managed-orderline-stock-chip onClick={() => self.selectOrderLine(orderLine.gtin)} gtin={orderLine.gtin} quantity={orderLine.quantity} mode="detail" available={available}></managed-orderline-stock-chip>
+          {!!orderLine.confirmed ? getCancelButton() : getConfirmButton()}
+        </ion-item>
+      )
     }
 
-    const getOrderLines = function(){
-      if (!self.orderLines)
-        return (self.getLoading());
-
-      const genOrderLine = function(orderLine, available){
+    function getUnavailable(){
+      const unavailable = self.result.filter(r => r.orderLine.quantity > r.stock.getQuantity() && !r.orderLine.confirmed);
+      if (!unavailable.length)
+        return [];
+      const getHeader = function(){
         return (
-          <managed-orderline-stock-chip onClick={() => self.selectOrderLine(orderLine.gtin)} gtin={orderLine.gtin} quantity={orderLine.quantity} mode="detail" available={available}></managed-orderline-stock-chip>
+          <ion-item-divider className="ion-padding-horizontal">{self.unavailableString}</ion-item-divider>
         )
       }
-
-      function getUnavailable(){
-        const unavailable = self.result.filter(r => r.orderLine.quantity > r.stock.getQuantity());
-        if (!unavailable.length)
-          return [];
-        const getHeader = function(){
-          return (
-            <ion-item-divider>{self.unavailableString}</ion-item-divider>
-          )
-        }
-        const output = [getHeader()];
-        unavailable.forEach(u => output.push(genOrderLine(u.orderLine, u.stock.getQuantity())));
-        return output;
-      }
-
-      function getAvailable(){
-        const available = self.result.filter(r => r.orderLine.quantity <= r.stock.getQuantity());
-        if (!available.length)
-          return [];
-        const getHeader = function(){
-          return (
-            <ion-item-divider>{self.availableString}</ion-item-divider>
-          )
-        }
-        const output = [getHeader()];
-        available.forEach(u => output.push(genOrderLine(u.orderLine, u.stock.getQuantity())));
-        return output;
-      }
-
-      return [...getUnavailable(), ...getAvailable()];
+      const output = [getHeader()];
+      unavailable.forEach(u => output.push(genOrderLine(u.orderLine, u.stock.getQuantity())));
+      return output;
     }
 
-    return (
-      <ion-card-content>
-        <ion-item-divider>
-          <ion-label>{this.detailsString}</ion-label>
-        </ion-item-divider>
-        {getDetails()}
-        <ion-grid>
-          <ion-row>
-            <ion-col size="6">
-              <ion-item-group className="ion-no-padding">
-                <ion-item-divider className="ion-padding-horizontal">
-                  <ion-label>{this.productsString}</ion-label>
-                </ion-item-divider>
-                {...getOrderLines()}
-              </ion-item-group>
-            </ion-col>
-            <ion-col size="6">
-              <ion-item-group className="ion-no-padding">
-                <ion-item-divider className="ion-padding-horizontal">
-                  <ion-label>{this.stockString}</ion-label>
-                </ion-item-divider>
-                {self.getAvailableStock()}
-              </ion-item-group>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-card-content>
-    )
+    function getAvailable(){
+      const available = self.result.filter(r => r.orderLine.quantity <= r.stock.getQuantity() && !r.orderLine.confirmed);
+      if (!available.length)
+        return [];
+      const getHeader = function(){
+        return (
+          <ion-item-divider className="ion-padding-horizontal">{self.availableString}</ion-item-divider>
+        )
+      }
+      const output = available.length === self.result.length ? [] : [getHeader()];
+      available.forEach(u => output.push(genOrderLine(u.orderLine, u.stock.getQuantity())));
+      return output;
+    }
+
+    function getConfirmed(){
+      const confirmed = self.result.filter(r => !!r.orderLine.confirmed);
+      if (!confirmed.length)
+        return [];
+      const getHeader = function(){
+        return (
+          <ion-item-divider className="ion-padding-horizontal">{self.confirmedString}</ion-item-divider>
+        )
+      }
+      const output = confirmed.length === self.result.length ? [] : [getHeader()];
+      confirmed.forEach(u => output.push(genOrderLine(u.orderLine, u.stock.getQuantity())));
+      return output;
+    }
+
+    return [...getUnavailable(), ...getAvailable(), ...getConfirmed()];
   }
 
   render() {
     return (
       <ion-card className="ion-margin">
         {this.getHeader()}
-        {this.getContent()}
+        <ion-card-content>
+          <ion-item-divider>
+            <ion-label>{this.detailsString}</ion-label>
+          </ion-item-divider>
+          {this.getDetails()}
+          <ion-grid>
+            <ion-row>
+              <ion-col size="6">
+                <ion-item-group>
+                  <ion-item-divider className="ion-padding-horizontal">
+                    <ion-label>{this.productsString}</ion-label>
+                  </ion-item-divider>
+                  {...this.getOrderLines()}
+                </ion-item-group>
+              </ion-col>
+              <ion-col size="6">
+                <ion-item-group>
+                  <ion-item-divider className="ion-padding-horizontal">
+                    <ion-label>{this.stockString}</ion-label>
+                  </ion-item-divider>
+                  {this.getAvailableStock()}
+                </ion-item-group>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
       </ion-card>
     );
   }

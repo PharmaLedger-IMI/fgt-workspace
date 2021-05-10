@@ -48,7 +48,8 @@
     "stock": "Stock:",
     "noStock": "No Stock for selected Product",
     "available": "Available:",
-    "unavailable": "Unavailable:"
+    "unavailable": "Unavailable:",
+    "selectProduct": "Please select a product"
   },
   "stock": {
     "title": "Stocks",
