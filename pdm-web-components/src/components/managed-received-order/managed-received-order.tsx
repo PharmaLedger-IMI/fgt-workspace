@@ -11,7 +11,7 @@ const {Order, OrderLine, Stock} = require('wizard').Model;
 @Component({
   tag: 'managed-received-order',
   styleUrl: 'managed-received-order.css',
-  shadow: true,
+  shadow: false,
 })
 export class ManagedReceivedOrder {
 
@@ -66,7 +66,7 @@ export class ManagedReceivedOrder {
 
   @Prop({attribute: 'available-string'}) availableString: string = 'Available:';
 
-  @Prop({attribute: 'products-string'}) unavailableString: string = 'Unavailable:';
+  @Prop({attribute: 'unavailable-string'}) unavailableString: string = 'Unavailable:';
 
   @Prop({attribute: 'stock-string'}) stockString: string = 'Stock:';
 
@@ -193,7 +193,7 @@ export class ManagedReceivedOrder {
   }
 
   private getMap(){
-    return this.getLoading(SUPPORTED_LOADERS.circles);
+    return (<ion-icon slot="end" name="map-outline"></ion-icon>)
   }
 
   private getLocalizationInfo(){
@@ -202,9 +202,7 @@ export class ManagedReceivedOrder {
         <ion-item>
           <ion-label>{this.order.shipToAddress}</ion-label>
         </ion-item>
-        <div slot="end">
-          {this.getMap()}
-        </div>
+        {this.getMap()}
       </ion-item>
     )
   }
@@ -218,7 +216,12 @@ export class ManagedReceivedOrder {
 
     const getBatch = function(batch){
         return(
-          <batch-chip gtin-batch={self.selectedProduct + '-' + batch.batchNumber} mode="detail" quantity={batch.quantity}></batch-chip>
+          <ion-item>
+            <batch-chip gtin-batch={self.selectedProduct + '-' + batch.batchNumber} mode="detail" quantity={batch.quantity}></batch-chip>
+            <ion-reorder slot="end">
+              <ion-icon name="pizza"></ion-icon>
+            </ion-reorder>
+          </ion-item>
         )
     }
 
@@ -226,7 +229,11 @@ export class ManagedReceivedOrder {
       return self.getLoading('cube');
     if (!self.stockForProduct.length)
       return getEmpty()
-    return self.stockForProduct.map(b => getBatch(b));
+    return (
+      <ion-reorder-group disabled="false">
+        {...self.stockForProduct.map(b => getBatch(b))}
+      </ion-reorder-group>
+    )
   }
 
   private selectOrderLine(gtin){
@@ -293,19 +300,19 @@ export class ManagedReceivedOrder {
         <ion-grid>
           <ion-row>
             <ion-col size="6">
-              <ion-item-group>
-                <ion-item-divider>
+              <ion-item-group className="ion-no-padding">
+                <ion-item-divider className="ion-padding-horizontal">
                   <ion-label>{this.productsString}</ion-label>
                 </ion-item-divider>
                 {...getOrderLines()}
               </ion-item-group>
             </ion-col>
             <ion-col size="6">
-              <ion-item-group>
-                <ion-item-divider>
+              <ion-item-group className="ion-no-padding">
+                <ion-item-divider className="ion-padding-horizontal">
                   <ion-label>{this.stockString}</ion-label>
                 </ion-item-divider>
-                {...self.getAvailableStock()}
+                {self.getAvailableStock()}
               </ion-item-group>
             </ion-col>
           </ion-row>
@@ -316,7 +323,7 @@ export class ManagedReceivedOrder {
 
   render() {
     return (
-      <ion-card>
+      <ion-card className="ion-margin">
         {this.getHeader()}
         {this.getContent()}
       </ion-card>
