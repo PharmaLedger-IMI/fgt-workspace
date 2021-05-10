@@ -29,8 +29,7 @@ export class PdmSsappLoader implements ComponentInterface {
   }
 
   @Listen('ssapp-has-loaded', {
-    target: "body",
-    capture: true
+    target: "body"
   })
   @Method()
   async markAsLoaded(evt){
