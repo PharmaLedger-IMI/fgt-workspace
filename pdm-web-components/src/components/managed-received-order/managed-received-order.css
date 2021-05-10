@@ -19,3 +19,19 @@ ion-card-title{
 ion-card-subtitle{
   color: var(--ion-color-secondary)
 }
+
+ion-item.selected{
+  --color: var(--ion-color-success)
+}
+
+ion-item.finished{
+
+}
+
+ion-item.unnecessary{
+  --color: red
+}
+
+ion-item.normal{
+
+}

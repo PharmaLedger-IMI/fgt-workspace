@@ -49,7 +49,7 @@ export class PdmSsappLoader implements ComponentInterface {
   @Method()
   // @ts-ignore
   async updateStatus(evt){
-    if (evt.prevendDefault)
+    if (evt.preventDefault)
       evt.preventDefault();
     if (evt.stopImmediatePropagation)
       evt.stopImmediatePropagation();
