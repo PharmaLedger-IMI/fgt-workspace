@@ -1,16 +1,5 @@
 <ion-content class="tab-content" overflow-scroll="true">
     <webc-container controller="OrderController">
-        <ion-card>
-            <ion-card-header>
-                <ion-card-subtitle>{{ @requesterId }}</ion-card-subtitle>
-                <ion-card-title>{{ @orderId }}</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-                <ion-item>
-                    <ion-label position="stacked">{{ @shipToAddress.label }}</ion-label>
-                    <ion-label>{{ @shipToAddress.value }}</ion-label>
-                </ion-item>
-            </ion-card-content>
-        </ion-card>
+        <managed-received-order order-id="@orderReference"></managed-received-order>
     </webc-container>
 </ion-content>

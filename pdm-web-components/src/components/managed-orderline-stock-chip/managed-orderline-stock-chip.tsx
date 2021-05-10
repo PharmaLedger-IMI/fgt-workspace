@@ -27,6 +27,8 @@ export class ManagedOrderlineStockChip {
 
   @Prop({attribute: "quantity", mutable: true}) quantity?: number = undefined;
 
+  @Prop({attribute: "available", mutable: true}) available?: number = undefined;
+
   @Prop({attribute: "mode"}) mode?: string = CHIP_TYPE.SIMPLE;
 
   @Prop({attribute: "loader-type"}) loaderType?: string = SUPPORTED_LOADERS.bubblingSmall;
@@ -42,7 +44,7 @@ export class ManagedOrderlineStockChip {
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
-    if (this.mode !== CHIP_TYPE.DETAIL)
+    if (this.mode !== CHIP_TYPE.DETAIL || !!this.available)
       return;
     this.stockManager = await WebManagerService.getWebManager("StockManager");
     return await this.loadBatch();
@@ -79,9 +81,9 @@ export class ManagedOrderlineStockChip {
   }
 
   private getColor(){
-    if (!this.stock)
+    if (!this.stock && !this.available)
       return `var(${FALLBACK_COLOR})`;
-    return `var(${getSteppedColor(this.threshold, this.quantity, this.stock.getQuantity())})`
+    return `var(${getSteppedColor(this.threshold, this.quantity, this.available? this.available : this.stock.getQuantity())})`
   }
 
   private renderDetail(){

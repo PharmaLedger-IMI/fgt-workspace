@@ -41,6 +41,15 @@
       "refreshMessages": "Refresh"
     }
   },
+  "receivedOrder": {
+    "title": "Process Order",
+    "details": "Details:",
+    "products": "Products:",
+    "stock": "Stock:",
+    "noStock": "No Stock for selected Product",
+    "available": "Available:",
+    "unavailable": "Unavailable:"
+  },
   "stock": {
     "title": "Stocks",
     "gtinHeader": "Gtin",
