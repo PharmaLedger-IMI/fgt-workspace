@@ -10,7 +10,7 @@ const genProduct = function(){
     });
 }
 
-const getProducts = () => Array.from(new Array(Math.floor(Math.random() * 11) + 20).keys()).map(n => genProduct());
+const getProducts = () => Array.from(new Array(Math.floor(Math.random() * 11) + 5).keys()).map(n => genProduct());
 
 
 module.exports = getProducts;

@@ -52,7 +52,7 @@ export class BatchListItem {
     if (!this.model || !this.model.batchNumber)
       return
     return(
-      <ion-thumbnail className="ion-align-self-center" slot="start">
+      <ion-thumbnail class="ion-align-self-center" slot="start">
         <barcode-generator class="ion-align-self-center" size="16" type="gs1datamatrix" scale="3" data={this.model.batchNumber}></barcode-generator>
       </ion-thumbnail>
     )
@@ -60,7 +60,7 @@ export class BatchListItem {
 
   addLabel(){
     return(
-      <ion-label className="ion-padding-horizontal ion-align-self-center">
+      <ion-label class="ion-padding-horizontal ion-align-self-center">
         <h3>{this.model.batchNumber}</h3>
         <h5>{this.model.expiry}</h5>
       </ion-label>)
@@ -77,7 +77,7 @@ export class BatchListItem {
   addSerials(){
     // const serials = this.model.serialNumbers ? this.model.serialsNumbers.map(s => this.addSerial(s)) : '';
     // return(
-    //   <ion-grid className="ion-padding-horizontal">
+    //   <ion-grid class="ion-padding-horizontal">
     //     <ion-row>
     //       <ion-col size="12">
     //         {serials}
@@ -89,7 +89,7 @@ export class BatchListItem {
 
   addButtons(){
     return(
-      <ion-buttons className="ion-align-self-center ion-padding" slot="end">
+      <ion-buttons class="ion-align-self-center ion-padding" slot="end">
         <ion-button slot="primary">
           <ion-icon name="file-tray-stacked-outline"></ion-icon>
         </ion-button>
@@ -103,7 +103,7 @@ export class BatchListItem {
 
     return (
       <Host>
-        <ion-item className="ion-align-self-center">
+        <ion-item class="ion-align-self-center">
           {this.addBarCode()}
           {this.addLabel()}
           {this.addSerials()}

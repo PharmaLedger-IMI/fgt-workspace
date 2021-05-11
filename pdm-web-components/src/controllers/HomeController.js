@@ -16,7 +16,8 @@ export default class HomeController extends LocalizedController {
         const self = this;
         self._updateLoading(this.model.loading.loading.status, this.model.loading.loading.progress)
         this.on('ionTabsWillChange', (evt) => {
-            const el = self.element.querySelector(`ion-tab[tab="${evt.detail.tab}"] webc-container`);
+            const el = self.element.querySelector(`ion-tab[tab="${evt.detail.tab}"] webc-container`)
+              || self.querySelector(`ion-tab[tab="${evt.detail.tab}"] ion-content`);
             if (el)
                 el.dispatchEvent(new Event(EVENT_REFRESH));
         }, {capture: true});

@@ -98,7 +98,7 @@ export class ManagedOrderlineListItem {
     }
 
     return(
-      <ion-thumbnail className="ion-align-self-center" slot="start">
+      <ion-thumbnail class="ion-align-self-center" slot="start">
         {getBarCode()}
       </ion-thumbnail>
     )
@@ -138,7 +138,7 @@ export class ManagedOrderlineListItem {
     const props = self.getPropsFromKey();
 
     return(
-      <ion-label className="ion-padding-horizontal ion-align-self-center">
+      <ion-label class="ion-padding-horizontal ion-align-self-center">
         {getGtinLabel()}
         {getRequesterLabel()}
         {getDateLabel()}
@@ -149,7 +149,7 @@ export class ManagedOrderlineListItem {
     if (!this.line)
       return (<multi-loader type={SUPPORTED_LOADERS.bubblingSmall}></multi-loader>)
     return(
-      <ion-grid className="ion-padding-horizontal">
+      <ion-grid class="ion-padding-horizontal">
         <ion-row>
           <ion-col size="3">
             <ion-chip outline class="ion-padding-horizontal" color="primary">{this.line.quantity}</ion-chip>
@@ -175,7 +175,7 @@ export class ManagedOrderlineListItem {
     }
 
     return(
-      <ion-buttons className="ion-align-self-center ion-padding" slot="end">
+      <ion-buttons class="ion-align-self-center ion-padding" slot="end">
         {getButtons()}
       </ion-buttons>
     )
@@ -184,7 +184,7 @@ export class ManagedOrderlineListItem {
   render() {
     return (
       <Host>
-        <ion-item className="ion-align-self-center main-item">
+        <ion-item class="ion-align-self-center main-item">
           {this.addBarCode()}
           {this.addLabel()}
           {this.addDetails()}

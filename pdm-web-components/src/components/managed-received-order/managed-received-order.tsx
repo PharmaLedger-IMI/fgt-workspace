@@ -212,7 +212,7 @@ export class ManagedReceivedOrder {
 
   private getHeader(){
     return (
-      <ion-card-header className="ion-padding">
+      <ion-card-header class="ion-padding">
         <ion-card-title>{this.titleString}</ion-card-title>
         <ion-card-subtitle>{this.orderId}</ion-card-subtitle>
       </ion-card-header>
@@ -245,7 +245,7 @@ export class ManagedReceivedOrder {
     const getBatchSeparator = function(){
       return (
         <ion-item-divider>
-          <ion-label className="ion-padding-horizontal">{self.remainingString}</ion-label>
+          <ion-label class="ion-padding-horizontal">{self.remainingString}</ion-label>
         </ion-item-divider>
       )
     }
@@ -263,7 +263,7 @@ export class ManagedReceivedOrder {
       }
 
       return(
-        <ion-item className={status} disabled={status === ItemClasses.unnecessary}>
+        <ion-item class={status} disabled={status === ItemClasses.unnecessary}>
           <batch-chip gtin-batch={self.selectedProduct + '-' + batch.batchNumber} mode="detail" quantity={batch.quantity}></batch-chip>
           {getReorder()}
         </ion-item>
@@ -330,14 +330,14 @@ export class ManagedReceivedOrder {
 
     const stockElements = this.splitStockByQuantity();
     return (
-      <ion-reorder-group disabled="false">
+      <ion-reorder-group disabled={false}>
         {...stockElements}
       </ion-reorder-group>
     )
   }
 
   @Method()
-  selectOrderLine(gtin){
+  async selectOrderLine(gtin){
     this.selectedProduct = gtin;
   }
 
@@ -366,29 +366,29 @@ export class ManagedReceivedOrder {
 
     const genOrderLine = function(orderLine, available){
 
-      const getConfirmButton = function(){
+      const getButton = function(){
         if (orderLine.gtin !== self.selectedProduct)
-          return;
-        return (
-          <ion-button color="success" slot="end" onClick={() => self.markProductAsConfirmed(orderLine.gtin)}>
-            <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
-          </ion-button>)
+          return undefined;
+        return {
+          button: !! orderLine.confirmed ? "cancel" : "confirm"
+        }
       }
 
-      const getCancelButton = function(){
-        if (orderLine.gtin !== self.selectedProduct)
-          return;
-        return (
-          <ion-button color="danger" slot="end" onClick={() => self.markProductAsConfirmed(orderLine.gtin, false)}>
-            <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
-          </ion-button>)
+      const receiveAction = function(evt){
+        evt.preventDefault();
+        evt.stopImmediatePropagation();
+        const {gtin, action} = evt.detail.data;
+        self.markProductAsConfirmed(gtin, action === "confirmed");
       }
 
       return (
-        <ion-item>
-          <managed-orderline-stock-chip onClick={() => self.selectOrderLine(orderLine.gtin)} gtin={orderLine.gtin} quantity={orderLine.quantity} mode="detail" available={available}></managed-orderline-stock-chip>
-          {!!orderLine.confirmed ? getCancelButton() : getConfirmButton()}
-        </ion-item>
+          <managed-orderline-stock-chip onSendAction={receiveAction}
+                                        onClick={() => self.selectOrderLine(orderLine.gtin)}
+                                        gtin={orderLine.gtin}
+                                        quantity={orderLine.quantity}
+                                        mode="detail"
+                                        available={available}
+                                        {...getButton()}></managed-orderline-stock-chip>
       )
     }
 
@@ -398,7 +398,7 @@ export class ManagedReceivedOrder {
         return [];
       const getHeader = function(){
         return (
-          <ion-item-divider className="ion-padding-horizontal">{self.unavailableString}</ion-item-divider>
+          <ion-item-divider class="ion-padding-horizontal">{self.unavailableString}</ion-item-divider>
         )
       }
       const output = [getHeader()];
@@ -412,7 +412,7 @@ export class ManagedReceivedOrder {
         return [];
       const getHeader = function(){
         return (
-          <ion-item-divider className="ion-padding-horizontal">{self.availableString}</ion-item-divider>
+          <ion-item-divider class="ion-padding-horizontal">{self.availableString}</ion-item-divider>
         )
       }
       const output = available.length === self.result.length ? [] : [getHeader()];
@@ -426,7 +426,7 @@ export class ManagedReceivedOrder {
         return [];
       const getHeader = function(){
         return (
-          <ion-item-divider className="ion-padding-horizontal">{self.confirmedString}</ion-item-divider>
+          <ion-item-divider class="ion-padding-horizontal">{self.confirmedString}</ion-item-divider>
         )
       }
       const output = confirmed.length === self.result.length ? [] : [getHeader()];
@@ -439,7 +439,7 @@ export class ManagedReceivedOrder {
 
   render() {
     return (
-      <ion-card className="ion-margin">
+      <ion-card class="ion-margin">
         {this.getHeader()}
         <ion-card-content>
           <ion-item-divider>
@@ -450,7 +450,7 @@ export class ManagedReceivedOrder {
             <ion-row>
               <ion-col size="6">
                 <ion-item-group>
-                  <ion-item-divider className="ion-padding-horizontal">
+                  <ion-item-divider class="ion-padding-horizontal">
                     <ion-label>{this.productsString}</ion-label>
                   </ion-item-divider>
                   {...this.getOrderLines()}
@@ -458,7 +458,7 @@ export class ManagedReceivedOrder {
               </ion-col>
               <ion-col size="6">
                 <ion-item-group>
-                  <ion-item-divider className="ion-padding-horizontal">
+                  <ion-item-divider class="ion-padding-horizontal">
                     <ion-label>{this.stockString}</ion-label>
                   </ion-item-divider>
                   {this.getAvailableStock()}

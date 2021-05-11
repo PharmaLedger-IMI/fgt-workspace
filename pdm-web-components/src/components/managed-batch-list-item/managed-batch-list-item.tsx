@@ -89,7 +89,7 @@ export class ManagedBatchListItem {
     }
 
     return(
-      <ion-thumbnail className="ion-align-self-center" slot="start">
+      <ion-thumbnail class="ion-align-self-center" slot="start">
         {getBarCode()}
       </ion-thumbnail>
     )
@@ -112,7 +112,7 @@ export class ManagedBatchListItem {
     }
 
     return(
-      <ion-label className="ion-padding-horizontal ion-align-self-center">
+      <ion-label class="ion-padding-horizontal ion-align-self-center">
         {getBatchNumberLabel()}
         {getExpiryLabel()}
       </ion-label>)
@@ -121,7 +121,7 @@ export class ManagedBatchListItem {
   addSerialNumber(serial){
     return(
       <ion-chip outline color="primary">
-        <ion-label className="ion-padding-horizontal">{serial}</ion-label>
+        <ion-label class="ion-padding-horizontal">{serial}</ion-label>
       </ion-chip>
     )
   }
@@ -129,7 +129,7 @@ export class ManagedBatchListItem {
   addSerialsNumbers(){
     const serials = !! this.serialNumbers ? this.batch.serialNumbers.slice(0, 8).map(s => this.addSerialNumber(s)) : (<ion-skeleton-text animated></ion-skeleton-text>);
     return(
-      <ion-grid className="ion-padding-horizontal">
+      <ion-grid class="ion-padding-horizontal">
         <ion-row>
           <ion-col size="12">
             {serials}
@@ -152,7 +152,7 @@ export class ManagedBatchListItem {
     }
 
     return(
-      <ion-buttons className="ion-align-self-center ion-padding" slot="end">
+      <ion-buttons class="ion-align-self-center ion-padding" slot="end">
         {getButtons()}
       </ion-buttons>
     )
@@ -161,7 +161,7 @@ export class ManagedBatchListItem {
   render() {
     return (
       <Host>
-        <ion-item className="main-item ion-align-self-center">
+        <ion-item class="main-item ion-align-self-center">
           {this.addBarCode()}
           {this.addLabel()}
           {this.addSerialsNumbers()}

@@ -105,7 +105,7 @@ export class ManagedOrderListItem {
     }
 
     return(
-      <ion-label className="ion-padding-horizontal ion-align-self-center">
+      <ion-label class="ion-padding-horizontal ion-align-self-center">
         {getOrderIdLabel()}
         {getRequesterIdLabel()}
       </ion-label>)
@@ -130,7 +130,7 @@ export class ManagedOrderListItem {
       }
     }
     return (
-      <ion-grid className="ion-padding-horizontal">
+      <ion-grid class="ion-padding-horizontal">
         <ion-row>
           <ion-col size="12">
             {orderLines}
@@ -146,14 +146,14 @@ export class ManagedOrderListItem {
       if (!self.order)
         return (<ion-skeleton-text animated></ion-skeleton-text>)
       return (
-        <ion-button slot="primary" alt="Process Order" onClick={() => self.navigateToTab('tab-order', {orderId: self.order.orderId, requesterId: self.order.requesterId})}>
+        <ion-button slot="primary" onClick={() => self.navigateToTab('tab-order', {orderId: self.order.orderId, requesterId: self.order.requesterId})}>
           <ion-icon name="cog-outline"></ion-icon>
         </ion-button>
       )
     }
 
     return(
-      <ion-buttons className="ion-align-self-center ion-padding" slot="end">
+      <ion-buttons class="ion-align-self-center ion-padding" slot="end">
         {getButtons()}
       </ion-buttons>
     )
@@ -162,7 +162,7 @@ export class ManagedOrderListItem {
   render() {
     return (
       <Host>
-        <ion-item className="ion-align-self-center main-item">
+        <ion-item class="ion-align-self-center main-item">
           {this.addLabel()}
           {this.addOrderLines()}
           {this.addButtons()}

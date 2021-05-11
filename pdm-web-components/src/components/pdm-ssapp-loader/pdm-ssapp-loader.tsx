@@ -75,7 +75,7 @@ export class PdmSsappLoader implements ComponentInterface {
     return (
       <ion-col size="12">
         <ion-item lines="none">
-          <ion-label color="secondary" class="ion-text-center" size="small">{this.progress}%</ion-label>
+          <ion-label color="secondary" class="ion-text-center">{this.progress}%</ion-label>
         </ion-item>
       </ion-col>
     )
