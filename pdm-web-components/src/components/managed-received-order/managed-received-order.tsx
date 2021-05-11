@@ -11,7 +11,7 @@ const ItemClasses = {
   finished: 'finished'
 }
 // @ts-ignore
-const {Order, OrderLine, Stock, Batch} = require('wizard').Model;
+const {Order, OrderLine, Stock, Batch, Shipment, ShipmentStatus, ShipmentLine} = require('wizard').Model;
 
 @Component({
   tag: 'managed-received-order',
@@ -61,6 +61,64 @@ export class ManagedReceivedOrder {
   //     console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   // }
 
+  /**
+   * Through this event shipment creation requests are made
+   */
+  @Event({
+    eventName: ShipmentStatus.CREATED,
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  sendCreateEvent: EventEmitter;
+
+  /**
+   * Through this event shipment rejection requests are made
+   */
+  @Event({
+    eventName: ShipmentStatus.REJECTED,
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  sendRejectEvent: EventEmitter;
+
+  private sendAction(action: string, props){
+    let handler;
+    switch (action){
+      case ShipmentStatus.REJECTED:
+        handler = this.sendRejectEvent;
+        break;
+      case ShipmentStatus.CREATED:
+        handler = this.sendCreateEvent;
+        break;
+      default:
+        return console.log(`invalid action`);
+    }
+    const event = handler.emit(this.buildShipment(Object.keys(props).reduce((accum, key) => {
+      accum[key] = props[key].selected
+      return accum;
+    }, {})));
+    if (!event.defaultPrevented)
+      console.log(`Action ${action} with props: ${props} not handled`);
+  }
+
+  private buildShipment(props){
+    const self = this;
+    const buildShipmentLine = function(batch){
+      return new ShipmentLine({
+        gtin: props.gtin,
+        quantity: batch.quantity,
+        batch: batch.batchNumber,
+        requesterId: self.order.requesterId
+      });
+    }
+
+    const shipment = new Shipment(undefined, undefined, this.order.requesterId, undefined, this.order.shipToAddress);
+    shipment.shipmentLines = Object.keys(props).map(gtin => props[gtin].map(b => buildShipmentLine(b)));
+    return shipment;
+  }
+
   @Prop({attribute: 'order-id', mutable: true}) orderId: string = undefined;
 
   @Prop({attribute: 'title-string'}) titleString: string = 'Process Order';
@@ -83,6 +141,12 @@ export class ManagedReceivedOrder {
 
   @Prop({attribute: 'remaining-string'}) remainingString: string = 'Remaining:';
 
+  @Prop({attribute: 'reject-string'}) rejectString: string = 'Reject';
+
+  @Prop({attribute: 'proceed-string'}) proceedString: string = 'Continue:';
+
+  @Prop({attribute: 'delay-string'}) delayString: string = 'Delay:';
+
   @State() order: typeof Order = undefined;
 
   @State() orderLines: typeof OrderLine[] = undefined;
@@ -93,11 +157,11 @@ export class ManagedReceivedOrder {
 
   private result: any = undefined;
 
+  private shipmentLines = {};
+
   private receivedOrderManager: WebManager = undefined;
 
   private stockManager: WebManager = undefined;
-
-  private batchSeparatorIndex: any = {index: undefined};
 
   async componentWillLoad() {
     if (!this.host.isConnected)
@@ -169,22 +233,22 @@ export class ManagedReceivedOrder {
 
   @Watch('selectedProduct')
   async selectProduct(newGtin, oldGtin){
-    if (oldGtin === newGtin)
+    if (!newGtin || oldGtin === newGtin)
       return;
-    if (!!this.orderLines.filter(o => o.gtin === newGtin)[0].confirmed)
+    if (!!this.result.filter(r => r.orderLine.gtin === newGtin)[0].confirmed)
       return;
-    this.updateStock();
+    this.stockForProduct = {...this.updateStock(newGtin)};
   }
 
   @Listen('ionItemReorder')
   async updateOrder(evt){
     const self = this;
     const getDifference = function(){
-      return self.batchSeparatorIndex.hasNext ? 2 : 1;
+      return (!!self.stockForProduct.divided ? 1 : 0) + (!!self.stockForProduct.remaining.length ? 1 : 0);
     }
     const newStock = self.stockForProduct.slice();
+    const movedBatch = newStock.splice(evt.detail.from > self.stockForProduct.selected.length ? evt.detail.from - getDifference() : evt.detail.from, 1);
     self.stockForProduct = undefined;
-    const movedBatch = newStock.splice(evt.detail.from > this.batchSeparatorIndex.index ? evt.detail.from - getDifference() : evt.detail.from, 1);
     const result = [];
     if (evt.detail.to > 0)
       result.push(...newStock.slice(0, evt.detail.to));
@@ -193,27 +257,58 @@ export class ManagedReceivedOrder {
     self.stockForProduct = [...result];
   }
 
-  private updateStock(){
+  private updateStock(gtin){
     const self = this;
+    if (gtin in self.shipmentLines)
+      return self.shipmentLines[gtin];
     if (!self.result)
-      this.stockForProduct = [];
-    const productStock = this.result.filter(r => r.orderLine.gtin === self.selectedProduct);
+      this.stockForProduct = {};
+    const productStock = this.result.filter(r => r.orderLine.gtin === gtin);
     if (!productStock.length)
-      self.stockForProduct = [];
+      self.stockForProduct = {};
     if (productStock.length !== 1)
       return self.sendError(`More than one stock reference received. should be impossible`);
 
-    this.stockForProduct = productStock[0].stock.batches.sort((b1, b2) => {
+    const result = productStock[0].stock.batches.sort((b1, b2) => {
       const date1 = new Date(b1.expiry).getTime();
       const date2 = new Date(b2.expiry).getTime();
       return date1 - date2;
     });
+
+    self.shipmentLines[gtin] = self.splitStockByQuantity(result, gtin);
+    return self.shipmentLines[gtin];
+  }
+
+  private getActionButtons(){
+
+    const self = this;
+    const getButton = function(action, color, text, enabled = true, margin = true, visible = true){
+      return (
+        <ion-button class={`${!visible ? 'ion-hide' : ''} ${!!margin ? 'ion-margin-horizontal' : ''}`}
+                    color={color} size="small"
+                    fill="outline"
+                    disabled={!enabled}
+                    onClick={() => self.sendAction(action, self.shipmentLines)}>
+          <ion-label>{text}</ion-label>
+        </ion-button>
+      )
+    }
+    return (
+      <ion-buttons class="ion-float-end ion-justify-content-end">
+        {getButton(ShipmentStatus.REJECTED, "danger", self.rejectString, true, false)}
+        {getButton(ShipmentStatus.ON_HOLD, "warning", self.delayString, true, true,false)}
+        {getButton(ShipmentStatus.CREATED, "success", self.proceedString, self.result && self.result.length === self.result.filter(r => r.orderLine.confirmed).length, false)}
+      </ion-buttons>
+    )
   }
 
   private getHeader(){
     return (
       <ion-card-header class="ion-padding">
-        <ion-card-title>{this.titleString}</ion-card-title>
+        <ion-card-title>
+          {this.titleString}
+          {this.getActionButtons()}
+        </ion-card-title>
         <ion-card-subtitle>{this.orderId}</ion-card-subtitle>
       </ion-card-header>
     )
@@ -224,13 +319,17 @@ export class ManagedReceivedOrder {
   }
 
   private getMap(){
-    return (<ion-icon slot="end" name="map-outline"></ion-icon>)
+    return (
+      <ion-thumbnail>
+        <ion-icon slot="end" name="map-outline"></ion-icon>
+      </ion-thumbnail>
+      )
   }
 
   private getLocalizationInfo(){
     return (
-      <ion-item>
-        <ion-item>
+      <ion-item class="ion-no-padding">
+        <ion-item class="ion-no-padding">
           <ion-label>{this.order.shipToAddress}</ion-label>
         </ion-item>
         {this.getMap()}
@@ -238,9 +337,49 @@ export class ManagedReceivedOrder {
     )
   }
 
-  private splitStockByQuantity(stock?: any){
-    stock = stock || this.stockForProduct.slice();
+  private splitStockByQuantity(stock: any, gtin){
     const self = this;
+    let accum = 0;
+    const result = {
+      selected: [],
+      divided: undefined,
+      remaining: []
+    };
+    const requiredQuantity = self.result.filter(r => r.orderLine.gtin === gtin)[0].orderLine.quantity
+    stock.forEach(batch => {
+      if (accum >= requiredQuantity){
+        result.remaining.push(batch);
+        // @ts-ignore
+      } else if (accum + batch.quantity > requiredQuantity) {
+        const batch1 = new Batch(batch);
+        const batch2 = new Batch(batch);
+        batch1.quantity = requiredQuantity - accum;
+        // @ts-ignore
+        batch2.quantity = batch.quantity - batch1.quantity;
+        result.selected.push(batch1);
+        result.divided = batch2
+      } else if(accum + batch.quantity === requiredQuantity){
+        result.selected.push(batch)
+      } else {
+        result.selected.push(batch);
+      }
+      // @ts-ignore
+      accum += batch.quantity;
+    });
+
+    return result;
+  }
+
+  private getAvailableStock(){
+    const self = this;
+
+    const getEmpty = function(){
+      return (<ion-item><ion-label>{self.noStockString}</ion-label></ion-item>)
+    }
+
+    const getSelectProduct = function(){
+      return (<ion-item><ion-label>{self.selectProductString}</ion-label></ion-item>)
+    }
 
     const getBatchSeparator = function(){
       return (
@@ -270,68 +409,19 @@ export class ManagedReceivedOrder {
       )
     }
 
-    let accum = 0;
-    self.batchSeparatorIndex = {index: undefined};
-    const batches = [];
-    const requiredQuantity = self.orderLines.filter(o => o.gtin === self.selectedProduct)[0].quantity
-    stock.forEach((batch, i) => {
-      if (accum >= requiredQuantity){
-        batches.push(getBatch(batch));
-        // @ts-ignore
-      } else if (accum + batch.quantity > requiredQuantity) {
-        const batch1 = new Batch(batch);
-        const batch2 = new Batch(batch);
-        batch1.quantity = requiredQuantity - accum;
-        // @ts-ignore
-        batch2.quantity = batch.quantity - batch1.quantity;
-        batches.push(getBatch(batch1, ItemClasses.selected));
-        batches.push(getBatchSeparator());
-        self.batchSeparatorIndex = {
-          index: batches.length - 1,
-          hasNext: true
-        };
-        batches.push(getBatch(batch2, ItemClasses.unnecessary));
-      } else if(accum + batch.quantity === requiredQuantity){
-        batches.push(getBatch(batch, ItemClasses.selected));
-        if (i < stock.length - 1){
-          batches.push(getBatchSeparator());
-          self.batchSeparatorIndex = {
-            index: batches.length - 1,
-            hasNext: false
-          };
-        }
-      } else {
-        batches.push(getBatch(batch, ItemClasses.selected));
-      }
-      // @ts-ignore
-      accum += batch.quantity;
-    });
-
-    return batches;
-  }
-
-  private getAvailableStock(){
-    const self = this;
-
-    const getEmpty = function(){
-      return (<ion-item><ion-label>{self.noStockString}</ion-label></ion-item>)
-    }
-
-    const getSelectProduct = function(){
-      return (<ion-item><ion-label>{self.selectProductString}</ion-label></ion-item>)
-    }
-
     if (!self.selectedProduct)
       return getSelectProduct();
     if (!self.stockForProduct)
       return self.getLoading(SUPPORTED_LOADERS.cube);
-    if (!self.stockForProduct.length)
+    if (self.stockForProduct.selected.length + self.stockForProduct.remaining.length + (self.stockForProduct.divided ? 1 : 0) === 0)
       return getEmpty();
 
-    const stockElements = this.splitStockByQuantity();
     return (
       <ion-reorder-group disabled={false}>
-        {...stockElements}
+        {...this.stockForProduct.selected.map(s => getBatch(s, ItemClasses.selected))}
+        {!!this.stockForProduct.divided || !!this.stockForProduct.remaining.length ? getBatchSeparator() : ''}
+        {getBatch(this.stockForProduct.divided, ItemClasses.unnecessary)}
+        {...this.stockForProduct.remaining.map(r => getBatch(r, ItemClasses.normal))}
       </ion-reorder-group>
     )
   }
@@ -349,14 +439,35 @@ export class ManagedReceivedOrder {
   }
 
   private markProductAsConfirmed(gtin, confirmed = true){
-    let orderLine = this.orderLines.filter(o => o.gtin === gtin);
+    let orderLine = this.result.filter(r => r.orderLine.gtin === gtin);
     if (orderLine.length !== 1)
       return;
-    orderLine = orderLine[0];
+    orderLine = orderLine[0].orderLine;
+    this.updateStock(gtin)
     // @ts-ignore
     orderLine.confirmed = confirmed;
     this.selectedProduct = undefined;
-    this.orderLines = [...this.orderLines];
+    this.orderLines = this.result.map(r => r.orderLine);
+  }
+
+  private markAllAsConfirmed(confirm = true){
+    if (confirm){
+      const available = this.result.filter(r => r.orderLine.quantity <= r.stock.getQuantity() && !r.orderLine.confirmed);
+      if (!available.length)
+        return;
+      available.forEach(a => {
+        this.updateStock(a.orderLine.gtin);
+        a.orderLine.confirmed = true
+      });
+    } else {
+      const confirmed = this.result.filter(r => !!r.orderLine.confirmed);
+      if (!confirmed.length)
+        return;
+      confirmed.forEach(c => c.orderLine.confirmed = false);
+    }
+
+    this.selectedProduct = undefined;
+    this.orderLines = this.result.map(r => r.orderLine);
   }
 
   private getOrderLines(){
@@ -378,7 +489,7 @@ export class ManagedReceivedOrder {
         evt.preventDefault();
         evt.stopImmediatePropagation();
         const {gtin, action} = evt.detail.data;
-        self.markProductAsConfirmed(gtin, action === "confirmed");
+        self.markProductAsConfirmed(gtin, action === "confirm");
       }
 
       return (
@@ -398,7 +509,7 @@ export class ManagedReceivedOrder {
         return [];
       const getHeader = function(){
         return (
-          <ion-item-divider class="ion-padding-horizontal">{self.unavailableString}</ion-item-divider>
+          <ion-item-divider>{self.unavailableString}</ion-item-divider>
         )
       }
       const output = [getHeader()];
@@ -412,10 +523,15 @@ export class ManagedReceivedOrder {
         return [];
       const getHeader = function(){
         return (
-          <ion-item-divider class="ion-padding-horizontal">{self.availableString}</ion-item-divider>
+          <ion-item-divider>
+            {self.availableString}
+            <ion-button color="success" slot="end" fill="clear" size="small" class="ion-float-end" onClick={() => self.markAllAsConfirmed()}>
+              <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+            </ion-button>
+          </ion-item-divider>
         )
       }
-      const output = available.length === self.result.length ? [] : [getHeader()];
+      const output = [getHeader()];
       available.forEach(u => output.push(genOrderLine(u.orderLine, u.stock.getQuantity())));
       return output;
     }
@@ -426,10 +542,15 @@ export class ManagedReceivedOrder {
         return [];
       const getHeader = function(){
         return (
-          <ion-item-divider class="ion-padding-horizontal">{self.confirmedString}</ion-item-divider>
+          <ion-item-divider>
+            {self.confirmedString}
+            <ion-button color="danger" slot="end" fill="clear" size="small" class="ion-float-end" onClick={() => self.markAllAsConfirmed(false)}>
+              <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
+            </ion-button>
+          </ion-item-divider>
         )
       }
-      const output = confirmed.length === self.result.length ? [] : [getHeader()];
+      const output = [getHeader()];
       confirmed.forEach(u => output.push(genOrderLine(u.orderLine, u.stock.getQuantity())));
       return output;
     }
@@ -450,7 +571,7 @@ export class ManagedReceivedOrder {
             <ion-row>
               <ion-col size="6">
                 <ion-item-group>
-                  <ion-item-divider class="ion-padding-horizontal">
+                  <ion-item-divider>
                     <ion-label>{this.productsString}</ion-label>
                   </ion-item-divider>
                   {...this.getOrderLines()}

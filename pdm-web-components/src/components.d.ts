@@ -57,11 +57,14 @@ export namespace Components {
     interface ManagedReceivedOrder {
         "availableString": string;
         "confirmedString": string;
+        "delayString": string;
         "detailsString": string;
         "noStockString": string;
         "orderId": string;
+        "proceedString": string;
         "productsString": string;
         "refresh": () => Promise<void>;
+        "rejectString": string;
         "remainingString": string;
         "selectOrderLine": (gtin: any) => Promise<void>;
         "selectProductString": string;
@@ -345,8 +348,13 @@ declare namespace LocalJSX {
     interface ManagedReceivedOrder {
         "availableString"?: string;
         "confirmedString"?: string;
+        "delayString"?: string;
         "detailsString"?: string;
         "noStockString"?: string;
+        /**
+          * Through this event shipment creation requests are made
+         */
+        "onSendCreateEvent"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
@@ -355,8 +363,14 @@ declare namespace LocalJSX {
           * Through this event navigation requests to tabs are made
          */
         "onSendNavigateTab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event shipment rejection requests are made
+         */
+        "onSendRejectEvent"?: (event: CustomEvent<any>) => void;
         "orderId"?: string;
+        "proceedString"?: string;
         "productsString"?: string;
+        "rejectString"?: string;
         "remainingString"?: string;
         "selectProductString"?: string;
         "stockString"?: string;

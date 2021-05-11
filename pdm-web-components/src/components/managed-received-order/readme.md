@@ -11,10 +11,13 @@
 | --------------------- | -------------------- | ----------- | -------- | ------------------------------ |
 | `availableString`     | `available-string`   |             | `string` | `'Available:'`                 |
 | `confirmedString`     | `confirmed-string`   |             | `string` | `'Confirmed:'`                 |
+| `delayString`         | `delay-string`       |             | `string` | `'Delay:'`                     |
 | `detailsString`       | `details-string`     |             | `string` | `'Details:'`                   |
 | `noStockString`       | `no-stock-string`    |             | `string` | `'Empty'`                      |
 | `orderId`             | `order-id`           |             | `string` | `undefined`                    |
+| `proceedString`       | `proceed-string`     |             | `string` | `'Continue:'`                  |
 | `productsString`      | `products-string`    |             | `string` | `'Products:'`                  |
+| `rejectString`        | `reject-string`      |             | `string` | `'Reject'`                     |
 | `remainingString`     | `remaining-string`   |             | `string` | `'Remaining:'`                 |
 | `selectProductString` | `select-product`     |             | `string` | `'Please Select a Product...'` |
 | `stockString`         | `stock-string`       |             | `string` | `'Stock:'`                     |
@@ -26,8 +29,10 @@
 
 | Event             | Description                                             | Type               |
 | ----------------- | ------------------------------------------------------- | ------------------ |
+| `sendCreateEvent` | Through this event shipment creation requests are made  | `CustomEvent<any>` |
 | `sendErrorEvent`  | Through this event errors are passed                    | `CustomEvent<any>` |
 | `sendNavigateTab` | Through this event navigation requests to tabs are made | `CustomEvent<any>` |
+| `sendRejectEvent` | Through this event shipment rejection requests are made | `CustomEvent<any>` |
 
 
 ## Methods

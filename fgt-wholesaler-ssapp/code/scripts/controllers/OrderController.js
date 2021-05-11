@@ -1,5 +1,7 @@
 import {LocalizedController, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
 
+const {ShipmentStatus, Shipment} = require('wizard').Model;
+
 /**
  * Controls Application Flow
  * Makes the bridge between the UI and the BatchManager
@@ -29,9 +31,15 @@ export default class OrderController extends LocalizedController {
             } else {
                 if (self.model.orderReference !== "")
                     self.model.orderReference = "";
-                // else
-                //     self.element.querySelector('managed-received-order').orderId = self.model.orderReference;
             }
         }, {capture: true});
+
+        self.on(ShipmentStatus.CREATED, self.createShipmentAsync.bind(self), {capture: true});
+        self.on(ShipmentStatus.REJECTED, self.createShipmentAsync.bind(self), {capture: true});
+    }
+
+    createShipmentAsync(evt){
+        console.log(evt);
+        const shipment = new Shipment(evt.detail);
     }
 }

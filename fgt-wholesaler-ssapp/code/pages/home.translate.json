@@ -49,7 +49,12 @@
     "noStock": "No Stock for selected Product",
     "available": "Available:",
     "unavailable": "Unavailable:",
-    "selectProduct": "Please select a product"
+    "selectProduct": "Please select a product",
+    "buttons": {
+      "reject": "Reject",
+      "proceed": "Create Shipment",
+      "delay": "Hold"
+    }
   },
   "stock": {
     "title": "Stocks",

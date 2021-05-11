@@ -1,14 +1,18 @@
+
+const OrderStatus = require('./OrderStatus');
 /**
  * @module fgt-dsu-wizard.model
  */
 const ShipmentStatus = {
-    CREATED: "created",
-    ACKNOWLEDGED: "acknowledged",
-    PICKUP: "pickup",
-    TRANSIT: "transit",
-    DELIVERED: "delivered",
-    RECEIVED: "received",
-    CONFIRMED: "confirmed"
+    CREATED: OrderStatus.CREATED,
+    REJECTED: OrderStatus.REJECTED,
+    ON_HOLD: OrderStatus.ON_HOLD,
+    ACKNOWLEDGED: OrderStatus.ACKNOWLEDGED,
+    PICKUP: OrderStatus.PICKUP,
+    TRANSIT: OrderStatus.TRANSIT,
+    DELIVERED: OrderStatus.DELIVERED,
+    RECEIVED: OrderStatus.RECEIVED,
+    CONFIRMED: OrderStatus.CONFIRMED
 }
 
 module.exports = ShipmentStatus;

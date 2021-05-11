@@ -15,6 +15,7 @@ const INBOX_RECEIVED_ORDERS_PATH = '/receivedOrders';
 const INBOX_RECEIVED_SHIPMENTS_PATH = '/receivedShipments';
 const INBOX_SHIPMENT_LINES_PATH = '/shipmentLines';
 const STOCK_PATH = '/stock';
+const LINES_PATH = '/lines';
 
 const STATUS_MOUNT_PATH = '/status';
 
@@ -29,12 +30,13 @@ const INBOX_PATHS_AND_PROPS = [
 const DB = {
     batches: 'batches',
     issuedOrders: 'issuedOrders',
-    issuedShippments: 'issuedShippments',
+    issuedShipments: 'issuedShipments',
     products: 'products',
     receivedOrders: 'receivedOrders',
-    receivedShippments: 'receivedShippments',
+    receivedShipments: 'receivedShipments',
     stock: 'stock',
-    orderLines: 'orderLines'
+    orderLines: 'orderLines',
+    shipmentLines: 'shipmentLines'
 }
 
 const DEFAULT_QUERY_OPTIONS = require('../pdm-dsu-toolkit/constants').DEFAULT_QUERY_OPTIONS;
@@ -60,5 +62,6 @@ module.exports = {
     INBOX_RECEIVED_ORDERS_PATH,
     INBOX_RECEIVED_SHIPMENTS_PATH,
     INBOX_SHIPMENT_LINES_PATH,
-    STOCK_PATH
+    STOCK_PATH,
+    LINES_PATH
 }
