@@ -133,7 +133,7 @@ export class ManagedOrderlineStockChip {
     }
 
     return (
-      <ion-button fill="clear" color={props.color} onClick={() => this.sendActionEvent()}>
+      <ion-button fill="clear" size="small" color={props.color} onClick={() => this.sendActionEvent()}>
         <ion-icon slot="icon-only" name={props.iconName}></ion-icon>
       </ion-button>
     )

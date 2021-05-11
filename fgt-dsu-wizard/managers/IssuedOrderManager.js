@@ -32,7 +32,7 @@ class IssuedOrderManager extends OrderManager {
      */
     _indexItem(key, item, record) {
         return {...super._indexItem(key, item, record), senderId: item.senderId};
-    };
+    }
 
     /**
      * Creates a {@link Order} dsu
@@ -228,9 +228,10 @@ class IssuedOrderManager extends OrderManager {
 let issuedOrderManager;
 /**
  * @param {ParticipantManager} participantManager
- * @returns {OrderManager}
+ * @param {boolean} force
+ * @returns {IssuedOrderManager}
  */
-const getIssuedOrderManager = function (participantManager, force) {
+const getIssuedOrderManager = function (participantManager, force, callback) {
     if (!issuedOrderManager || force)
         issuedOrderManager = new IssuedOrderManager(participantManager);
     return issuedOrderManager;

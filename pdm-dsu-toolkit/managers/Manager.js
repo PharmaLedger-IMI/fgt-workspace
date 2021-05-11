@@ -450,7 +450,7 @@ class Manager{
      * @param {string} key
      * @param {object|string} [item]
      * @param {string|object} record
-     * @return {object} the indexed object to be stored in the db
+     * @return {any} the indexed object to be stored in the db
      * @protected
      */
     _indexItem(key, item, record){

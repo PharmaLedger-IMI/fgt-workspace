@@ -3,6 +3,8 @@
  */
 const OrderStatus = {
     CREATED: "created",
+    REJECTED: 'rejected',
+    ON_HOLD: "hold",
     ACKNOWLEDGED: "acknowledged",
     PICKUP: "pickup",
     TRANSIT: "transit",

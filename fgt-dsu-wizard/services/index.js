@@ -10,6 +10,7 @@ module.exports = {
     OrderLineService: require("./OrderLineService"),
     OrderService: require("./OrderService"),
     ShipmentService: require("./ShipmentService"),
+    ShipmentLineService: require('./ShipmentLineService'),
     StatusService: require("./StatusService"),
     ProductService: require("./ProductService"),
     BatchService: require("./BatchService"),

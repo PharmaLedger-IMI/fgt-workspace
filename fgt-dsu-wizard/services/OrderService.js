@@ -10,9 +10,7 @@ const {STATUS_MOUNT_PATH, INFO_PATH} = require('../constants');
  */
 function OrderService(domain, strategy) {
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");
-    const model = require('../model');
-    const Order = model.Order;
-    const OrderStatus = model.OrderStatus;
+    const {Order, OrderStatus} = require('../model');
     const endpoint = 'order';
 
     domain = domain || "default";
