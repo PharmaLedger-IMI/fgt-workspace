@@ -1,8 +1,9 @@
-import {Component, Host, h, Prop, Element, State} from '@stencil/core';
+import {Component, Host, h, Prop, Element, State, Event, EventEmitter} from '@stencil/core';
 import {HostElement} from "../../decorators";
 import {WebManagerService, WebResolver} from "../../services/WebManagerService";
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 import {getSteppedColor, FALLBACK_COLOR} from "../../utils/colorUtils";
+import {OverlayEventDetail} from "@ionic/core";
 
 // @ts-ignore
 const Stock = require('wizard').Model.Stock;
@@ -10,6 +11,11 @@ const Stock = require('wizard').Model.Stock;
 const CHIP_TYPE = {
   SIMPLE: "simple",
   DETAIL: "detail"
+}
+
+const AVAILABLE_BUTTONS = {
+  CONFIRM: "confirm",
+  CANCEL: "cancel"
 }
 
 @Component({
@@ -23,6 +29,23 @@ export class ManagedOrderlineStockChip {
 
   @Element() element;
 
+  /**
+   * Through this event actions are passed
+   */
+  @Event()
+  sendAction: EventEmitter<OverlayEventDetail>;
+
+  private sendActionEvent(){
+    const event = this.sendAction.emit({
+      data: {
+        action: this.button,
+        gtin: this.gtin
+      }
+    });
+    if (!event.defaultPrevented)
+      console.log(`Ignored action: ${this.button} for gtin: ${this.gtin}`);
+  }
+
   @Prop({attribute: "gtin", mutable: true}) gtin: string = undefined;
 
   @Prop({attribute: "quantity", mutable: true}) quantity?: number = undefined;
@@ -34,6 +57,8 @@ export class ManagedOrderlineStockChip {
   @Prop({attribute: "loader-type"}) loaderType?: string = SUPPORTED_LOADERS.bubblingSmall;
 
   @Prop({attribute: "threshold", mutable: true}) threshold?: number = 30;
+
+  @Prop({attribute: "button", mutable: true}) button?: string = undefined;
 
   private stockManager: WebResolver = undefined;
 
@@ -86,6 +111,34 @@ export class ManagedOrderlineStockChip {
     return `var(${getSteppedColor(this.threshold, this.quantity, this.available? this.available : this.stock.getQuantity())})`
   }
 
+  private renderButton(){
+    if (!this.button)
+      return;
+    let props;
+    switch (this.button){
+      case AVAILABLE_BUTTONS.CONFIRM:
+        props = {
+          color: "success",
+          iconName: "checkmark-circle-outline"
+        };
+        break;
+      case AVAILABLE_BUTTONS.CANCEL:
+        props = {
+          color: "danger",
+          iconName: "close-circle-outline"
+        };
+        break;
+      default:
+        return;
+    }
+
+    return (
+      <ion-button fill="clear" color={props.color} onClick={() => this.sendActionEvent()}>
+        <ion-icon slot="icon-only" name={props.iconName}></ion-icon>
+      </ion-button>
+    )
+  }
+
   private renderDetail(){
     return (
       <Host>
@@ -94,6 +147,7 @@ export class ManagedOrderlineStockChip {
         }}>
           <ion-label class="ion-padding-start">{this.gtin}</ion-label>
           {this.renderQuantity()}
+          {this.renderButton()}
         </ion-chip>
       </Host>
     )

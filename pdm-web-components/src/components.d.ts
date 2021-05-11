@@ -5,6 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { OverlayEventDetail } from "@ionic/core";
 export namespace Components {
     interface BarcodeGenerator {
         "data": any;
@@ -42,6 +43,7 @@ export namespace Components {
     }
     interface ManagedOrderlineStockChip {
         "available"?: number;
+        "button"?: string;
         "gtin": string;
         "loaderType"?: string;
         "mode"?: string;
@@ -318,9 +320,14 @@ declare namespace LocalJSX {
     }
     interface ManagedOrderlineStockChip {
         "available"?: number;
+        "button"?: string;
         "gtin"?: string;
         "loaderType"?: string;
         "mode"?: string;
+        /**
+          * Through this event actions are passed
+         */
+        "onSendAction"?: (event: CustomEvent<OverlayEventDetail>) => void;
         "quantity"?: number;
         "threshold"?: number;
     }

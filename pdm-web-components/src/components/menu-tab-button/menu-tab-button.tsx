@@ -81,7 +81,7 @@ export class MenuTabButton {
   _getMenuMode(){
     const props = !!this.selected ? {color: "primary"} : {};
     return (
-        <ion-item button="true" onClick={() => this.navigateToTab(this.tab)} {...props}>
+        <ion-item button={true} onClick={() => this.navigateToTab(this.tab)} {...props}>
           {this._getIcon()}
           <ion-label class="ion-padding-horizontal">{this.label}</ion-label>
           {this.getBadge("end")}

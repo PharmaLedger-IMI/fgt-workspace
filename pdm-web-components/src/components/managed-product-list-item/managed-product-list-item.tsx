@@ -108,7 +108,7 @@ export class ManagedProductListItem {
     }
 
     return(
-      <ion-thumbnail className="ion-align-self-center" slot="start">
+      <ion-thumbnail class="ion-align-self-center" slot="start">
         {getBarCode()}
       </ion-thumbnail>
     )
@@ -136,7 +136,7 @@ export class ManagedProductListItem {
     }
 
     return(
-      <ion-label className="ion-padding-horizontal ion-align-self-center">
+      <ion-label class="ion-padding-horizontal ion-align-self-center">
         {getGtinLabel()}
         {getNameLabel()}
         {getDescriptionLabel()}
@@ -152,7 +152,7 @@ export class ManagedProductListItem {
   addBatches(){
     const batches = !!this.product && !!this.batches ? this.batches.map(b => this.addBatch(b)) : (<ion-skeleton-text animated></ion-skeleton-text>);
     return(
-      <ion-grid className="ion-padding-horizontal">
+      <ion-grid class="ion-padding-horizontal">
         <ion-row>
           <ion-col size="12">
             {batches}
@@ -175,7 +175,7 @@ export class ManagedProductListItem {
     }
 
     return(
-      <ion-buttons className="ion-align-self-center ion-padding" slot="end">
+      <ion-buttons class="ion-align-self-center ion-padding" slot="end">
         {getButtons()}
       </ion-buttons>
     )
@@ -184,7 +184,7 @@ export class ManagedProductListItem {
   render() {
     return (
       <Host>
-        <ion-item className="ion-align-self-center main-item">
+        <ion-item class="ion-align-self-center main-item">
           {this.addBarCode()}
           {this.addLabel()}
           {this.addBatches()}

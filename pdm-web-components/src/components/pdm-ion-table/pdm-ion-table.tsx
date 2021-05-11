@@ -210,25 +210,26 @@ export class PdmIonTable implements ComponentInterface {
     const getIcon = function(){
       if (!self.iconName)
         return;
-      return (<ion-icon slot="start" className="ion-padding" name={self.iconName}></ion-icon>)
+      return (<ion-icon slot="start" class="ion-padding" name={self.iconName}></ion-icon>)
     }
 
     const getSearchBar = function(){
       if (self.canQuery)
-        return (<ion-searchbar animated debounce="1000" placeholder="search..." search-icon="search-outline"
+        return (<ion-searchbar animated debounce={1000} placeholder="search..." search-icon="search-outline"
                              show-clear-button="always"></ion-searchbar>);
     }
 
     const getPagination = function(){
       if (!self.paginated)
         return;
+      // @ts-ignore
       return (
         <ion-buttons slot="end">
-          <ion-button name="previous-page" size="small" onClick={() => self.changePage(-1)} disabled={self.currentPage <= 1}>
+          <ion-button size="small" onClick={() => self.changePage(-1)} disabled={self.currentPage <= 1}>
             <ion-icon slot="icon-only" name="chevron-back-circle-outline"></ion-icon>
           </ion-button>
-          <ion-label size="small">{self.currentPage}/{self.pageCount}</ion-label>
-          <ion-button name="next-page" size="small" onClick={() => self.changePage(1)} disabled={!(self.currentPage < self.pageCount)}>
+          <ion-label>{self.currentPage}/{self.pageCount}</ion-label>
+          <ion-button size="small" onClick={() => self.changePage(1)} disabled={!(self.currentPage < self.pageCount)}>
             <ion-icon slot="icon-only" name="chevron-forward-circle-outline"></ion-icon>
           </ion-button>
         </ion-buttons>
@@ -273,11 +274,12 @@ export class PdmIonTable implements ComponentInterface {
   }
 
   getEmptyContent(){
+    // @ts-ignore
     return (
       <ion-grid>
         <ion-row class="ion-justify-content-center">
           <ion-col size="4" class="ion-justify-content-center">
-              <ion-button slot="start" fill="none" onClick={() => this.refresh()}>
+              <ion-button slot="start" fill="clear" onClick={() => this.refresh()}>
                 <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
               </ion-button>
               <ion-label class="ion-text-center">
@@ -342,7 +344,7 @@ export class PdmIonTable implements ComponentInterface {
   render() {
     return (
       <Host>
-        <ion-list className="ion-margin ion-no-padding">
+        <ion-list class="ion-margin ion-no-padding">
           {this.getTableHead()}
           {this.getContent()}
         </ion-list>

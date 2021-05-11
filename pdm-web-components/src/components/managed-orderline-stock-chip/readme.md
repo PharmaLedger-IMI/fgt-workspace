@@ -10,11 +10,19 @@
 | Property     | Attribute     | Description | Type     | Default                           |
 | ------------ | ------------- | ----------- | -------- | --------------------------------- |
 | `available`  | `available`   |             | `number` | `undefined`                       |
+| `button`     | `button`      |             | `string` | `undefined`                       |
 | `gtin`       | `gtin`        |             | `string` | `undefined`                       |
 | `loaderType` | `loader-type` |             | `string` | `SUPPORTED_LOADERS.bubblingSmall` |
 | `mode`       | `mode`        |             | `string` | `CHIP_TYPE.SIMPLE`                |
 | `quantity`   | `quantity`    |             | `number` | `undefined`                       |
 | `threshold`  | `threshold`   |             | `number` | `30`                              |
+
+
+## Events
+
+| Event        | Description                           | Type                                   |
+| ------------ | ------------------------------------- | -------------------------------------- |
+| `sendAction` | Through this event actions are passed | `CustomEvent<OverlayEventDetail<any>>` |
 
 
 ## Dependencies

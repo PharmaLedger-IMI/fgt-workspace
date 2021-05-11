@@ -72,10 +72,10 @@ export class BatchChip {
     }
     if (this.float)
       { // @ts-ignore
-        props.className = `ion-float-${this.float}`;
+        props.class = `ion-float-${this.float}`;
       }
     return (
-      <ion-chip classNmae="ion-padding-horizontal" {...props} onClick={() => this.sendShowMoreEvent()}>
+      <ion-chip class="ion-padding-horizontal" {...props} onClick={() => this.sendShowMoreEvent()}>
         {this.getIcon()}
         {this.getText()}
       </ion-chip>
