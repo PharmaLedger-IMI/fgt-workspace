@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-dsu-wizard.module_commands.html">commands</a></li><li><a href="fgt-dsu-wizard.module.managers.html">managers</a></li><li><a href="fgt-dsu-wizard.module_model.html">model</a></li><li><a href="fgt-dsu-wizard.module_services.html">services</a></li><li><a href="fgt-mah-ssapp.module_managers.html">managers</a></li><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Classes</h3><ul><li><a href="BatchManager.html">BatchManager</a></li><li><a href="fgt-dsu-wizard.module_model-Batch.html">Batch</a></li><li><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html">ParticipantManager</a></li><li><a href="IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="OrderManager.html">OrderManager</a></li><li><a href="ProductManager.html">ProductManager</a></li><li><a href="ReceivedOrderManager.html">ReceivedOrderManager</a></li><li><a href="Stock.html">Stock</a></li><li><a href="StockManager.html">StockManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getBatchManager">getBatchManager</a></li><li><a href="global.html#getIssuedOrderManager">getIssuedOrderManager</a></li><li><a href="global.html#getProductManager">getProductManager</a></li><li><a href="global.html#getReceivedOrderManager">getReceivedOrderManager</a></li><li><a href="global.html#getStockManager">getStockManager</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-dsu-wizard.module_commands.html">commands</a></li><li><a href="fgt-dsu-wizard.module.managers.html">managers</a></li><li><a href="fgt-dsu-wizard.module_model.html">model</a></li><li><a href="fgt-dsu-wizard.module_services.html">services</a></li><li><a href="fgt-mah-ssapp.module_managers.html">managers</a></li><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Classes</h3><ul><li><a href="BatchManager.html">BatchManager</a></li><li><a href="BatchResolver.html">BatchResolver</a></li><li><a href="fgt-dsu-wizard.module_model-Batch.html">Batch</a></li><li><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html">ParticipantManager</a></li><li><a href="IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="IssuedShipmentManager.html">IssuedShipmentManager</a></li><li><a href="OrderLineManager.html">OrderLineManager</a></li><li><a href="OrderManager.html">OrderManager</a></li><li><a href="ProductManager.html">ProductManager</a></li><li><a href="ReceivedOrderManager.html">ReceivedOrderManager</a></li><li><a href="ReceivedShipmentManager.html">ReceivedShipmentManager</a></li><li><a href="ShipmentManager.html">ShipmentManager</a></li><li><a href="Stock.html">Stock</a></li><li><a href="StockManager.html">StockManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getBatchManager">getBatchManager</a></li><li><a href="global.html#getBatchResolver">getBatchResolver</a></li><li><a href="global.html#getIssuedOrderManager">getIssuedOrderManager</a></li><li><a href="global.html#getIssuedShipmentManager">getIssuedShipmentManager</a></li><li><a href="global.html#getOrderLineManager">getOrderLineManager</a></li><li><a href="global.html#getProductManager">getProductManager</a></li><li><a href="global.html#getReceivedOrderManager">getReceivedOrderManager</a></li><li><a href="global.html#getReceivedShipmentManager">getReceivedShipmentManager</a></li><li><a href="global.html#getStockManager">getStockManager</a></li></ul></div>
                 
             </nav>
         </div>
@@ -112,6 +112,7 @@
             <pre class="prettyprint source linenums"><code>const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const OrderManager = require("./OrderManager");
 const Order = require('../model').Order;
+const Stock = require('../model').Stock;
 const OrderLine = require('../model').OrderLine;
 const OrderStatus = require('../model').OrderStatus;
 
@@ -121,10 +122,25 @@ const OrderStatus = require('../model').OrderStatus;
  */
 class ReceivedOrderManager extends OrderManager {
     constructor(participantManager) {
-        super(participantManager, DB.receivedOrders, ['orderId']);
+        super(participantManager, DB.receivedOrders, ['orderId', 'requesterId']);
         const self = this;
-        this.registerMessageListener((message) => { self._processMessageRecord(message, () => { }); });
-        this.participantManager = participantManager; // jpsl: TODO needed to work aroung the Manager.getMessages()
+        this.registerMessageListener((message) => {
+            self.processMessageRecord(message, (err) => {
+                if (err)
+                    console.log(`Could not process message: ${err}`);
+                if (self.controller)
+                    self.controller.refresh();
+            });
+        });
+    }
+
+
+    /**
+     * Not necessary for this manager
+     * @override
+     */
+    create(key, item, callback) {
+        callback(`This manager does not have this functionality`);
     }
 
     /**
@@ -138,17 +154,14 @@ class ReceivedOrderManager extends OrderManager {
      * &lt;/pre>
      * so the DB can be queried by each of the indexes and still allow for lazy loading
      * @param {string} key
-     * @param {Product} item
+     * @param {Order} item
      * @param {string|object} record
      * @return {object} the indexed object to be stored in the db
      * @protected
      * @override
      */
     _indexItem(key, item, record) {
-        return {
-            orderId: key,
-            value: record
-        }
+        return {...super._indexItem(key, item, record), requesterId: item.requesterId}
     };
 
     /**
@@ -157,11 +170,34 @@ class ReceivedOrderManager extends OrderManager {
      * @param {string} keyword
      * @return {string[]} query
      * @protected
+     * @override
      */
     _keywordToQuery(keyword) {
         keyword = keyword || '.*';
         return [`orderId like /${keyword}/g`];
     }
+
+    // /**
+    //  * Loads Stock that gtin in the db. loads is and reads the info at '/info'
+    //  * @param {string} gtin
+    //  * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
+    //  * @param {function(err, object|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
+    //  */
+    // getOne(gtin, readDSU,  callback) {
+    //     if (!callback){
+    //         callback = readDSU;
+    //         readDSU = true;
+    //     }
+    //     let self = this;
+    //     self.getRecord(gtin, (err, stock) => {
+    //         if (err)
+    //             return self._err(`Could not load Stock for product ${gtin} on table ${self._getTableName()}`, err, callback);
+    //         stock = new Stock(stock);
+    //         if (!readDSU)
+    //             return callback(undefined, stock);
+    //         // sort the orderlines
+    //     });
+    // }
 
     /**
      * Lists all received orders.
@@ -170,9 +206,7 @@ class ReceivedOrderManager extends OrderManager {
      * @param {function(err, Order[])} callback
      */
     getAll(readDSU, options, callback) {
-        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
-            query: ['orderId like /.*/g']
-        });
+        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS);
 
         if (!callback) {
             if (!options) {
@@ -198,7 +232,7 @@ class ReceivedOrderManager extends OrderManager {
             if (err)
                 return self._err(`Could not perform query`, err, callback);
             if (!readDSU)
-                return callback(undefined, records.map(r => r.orderId));
+                return callback(undefined, records.map(r => self._genCompostKey(r.requesterId, r.orderId)));
             records = records.map(r => r.value);
             self._iterator(records.slice(), self._getDSUInfo.bind(self), (err, result) => {
                 if (err)
@@ -239,83 +273,37 @@ class ReceivedOrderManager extends OrderManager {
         */
     }
 
-    _processMessageRecord(record, callback) {
+    /**
+     * Processes the received messages, saves them to the the table and deletes the message
+     * @param {*} message
+     * @param {function(err)} callback
+     * @protected
+     * @override
+     */
+    _processMessageRecord(message, callback) {
         let self = this;
-        // Process one record. If the message is broken, DO NOT DELETE IT, log to console, and skip to the next.
-        console.log(`Processing record`, record);
-        if (record.__deleted) {
-            console.log("Skipping deleted record.");
-            return callback();
-        }
-        if (!record.api || record.api != this._getTableName()) {
-            console.log(`Message record ${record} does not have api=${this._getTableName()}. Skipping record.`);
-            return callback();
-        }
-        if (!record.message || typeof record.message != "string") {
-            console.log(`Message record ${record} does not have property message as non-empty string with keySSI. Skipping record.`);
-            return callback();
-        }
-        const orderSReadSSIStr = record.message;
+        if (!message || typeof message !== "string")
+            return callback(`Message ${message} does not have  non-empty string with keySSI. Skipping record.`);
+
+        const orderSReadSSIStr = message;
         self._getDSUInfo(orderSReadSSIStr, (err, orderObj, orderDsu) => {
-            if (err) {
-                console.log(`Could not read DSU from message keySSI in record ${record}. Skipping record.`);
-                return callback();
-            }
+            if (err)
+                return self._err(`Could not read DSU from message keySSI in record ${record}. Skipping record.`, err, callback);
+
             console.log(`ReceivedOrder`, orderObj);
             const orderId = orderObj.orderId;
-            if (!orderId) {
-                console.log("ReceivedOrder doest not have an orderId. Skipping record.");
-                return callback();
-            }
-            self.insertRecord(orderId, self._indexItem(orderId, orderObj, orderSReadSSIStr), (err) => {
-                if (err) {
-                    console.log("insertRecord failed", err);
-                    return callback();
-                }
-                // and then delete message after processing.
-                console.log("Going to delete messages's record", record);
-                self.deleteMessage(record, callback);
-            });
+            if (!orderId)
+                return callback("ReceivedOrder doest not have an orderId. Skipping record.");
+
+            self.insertRecord(self._genCompostKey(orderObj.requesterId, orderId), self._indexItem(orderId, orderObj, orderSReadSSIStr), callback);
         });
     };
-
-    _iterateMessageRecords(records, callback) {
-        let self = this;
-        if (!records || !Array.isArray(records))
-            return callback(`Message records ${records} is not an array!`);
-        if (records.length &lt;= 0)
-            return callback(); // done without error
-        const record0 = records.shift();
-        self._processMessageRecord(record0, (err) => {
-            if (err)
-                return callback(err);
-            self._iterateMessageRecords(records, callback);
-        });
-    };
-
-    /**
-     * Process incoming, looking for receivedOrder messages.
-     * @param {function(err)} callback
-     */
-    processMessages(callback) {
-        let self = this;
-        console.log("Processing messages");
-        // TODO: self.getMessages() is broken. Go to the messageManager directly.
-        // jpsl to Tiago: IMHO, the entry point for this should start at the participant, and not at the ReceivedOrderManager.
-        // TODO optimize and ask for api = receivedOrders only
-        self.getMessages((err, records) => {
-            console.log("Processing records: ", err, records);
-            if (err)
-                return callback(err);
-            let messageRecords = [...records]; // clone for iteration with shift()
-            self._iterateMessageRecords(messageRecords, callback);
-        });
-    }
 }
 
 let receivedOrderManager;
 /**
  * @param {ParticipantManager} participantManager
+ * @param {boolean} force
  * @returns {OrderManager}
  */
 const getReceivedOrderManager = function (participantManager, force) {

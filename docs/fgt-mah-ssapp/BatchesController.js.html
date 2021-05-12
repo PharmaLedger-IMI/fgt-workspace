@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#getBatchesAsync">getBatchesAsync</a></li><li><a href="global.html#getProductsAsync">getProductsAsync</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#updateBatches">updateBatches</a></li><li><a href="global.html#updateProducts">updateProducts</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,93 +109,95 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
+            <pre class="prettyprint source linenums"><code>import {LocalizedController, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
 const Batch = require('wizard').Model.Batch;
-const Managers = require('wizard').Managers
 
-export default class BatchesController extends ContainerController {
+/**
+ * Controls Application Flow
+ * Makes the bridge between the UI and the BatchManager
+ *
+ * Handles listing and querying of Batches
+ * @class BatchesController
+ * @module controllers
+ */
+export default class BatchesController extends LocalizedController {
+
+    initializeModel = () => ({
+        query: ''
+    });
+
     constructor(element, history) {
-        super(element, history);
+        super(element, history, false);
+        super.bindLocale(this, "batches");
         const wizard = require('wizard');
-        const LocaleService = wizard.Services.LocaleService;
-        LocaleService.bindToLocale(this, LocaleService.supported.en_US, "batches");
-        let rootDSU = Managers.getParticipantManager().getParticipantDSU();
-        this.productManager = Managers.getProductManager(rootDSU);
-        this.batchManager = Managers.getBatchManager(rootDSU);
+        this.model = this.initializeModel();
+        this.participantManager = wizard.Managers.getParticipantManager();
+        this.batchManager = wizard.Managers.getBatchManager(this.participantManager);
 
         let self = this;
-        this.on('add-batch', (event) => {
-            event.stopImmediatePropagation();
-            self._showBatchModal();
+
+        self.onTagEvent('add-batch', 'click', () => {
+            self._showBatchModal(this.model.query);
         });
 
-        this.on('perform-add-batch', (event) => {
-            event.stopImmediatePropagation();
-            self._addBatch(event.detail, (err) => {
-                if (err)
-                    throw err;
-                self.closeModal('batch-modal');
-                self.getBatchesAsync();
-            });
+        self.onTagEvent('cancel-create-batch', 'click', () => {
+            self.hideModal();
         });
 
-        let state = this.History.getState();
-
-        this.model = this.setModel({
-            gtin: state.gtin,
-            batches: []
+        self.on('create-batch',  (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            self._addBatchAsync(evt.detail);
         });
 
-        this.model.addExpression('hasBatches', () => {
-            return typeof this.model.batches !== 'undefined' &amp;&amp; this.model.batches.length > 0;
-        }, 'batches');
-
-        this.getBatchesAsync();
+        self.on(EVENT_REFRESH, (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            const state = self.getState();
+            if (state &amp;&amp; state.gtin){
+                self.setState(undefined);
+                self.model.query = state.gtin;
+            } else {
+                if (self.model.query !== "")
+                    self.model.query = "";
+                else
+                    self.element.querySelector('pdm-ion-table').refresh();
+            }
+        }, {capture: true});
     }
 
-    _showBatchModal(){
-        this.showModal('batch-modal', this.batchManager.toModel(new Batch({
-            gtin: this.model.gtin
-        })), true);
+    _showBatchModal(gtin){
+        this.createWebcModal({
+            template: "batchModal",
+            controller: "BatchController",
+            state: {gtin: gtin},
+            disableBackdropClosing: false,
+            disableFooter: true,
+            disableHeader: true,
+            disableExpanding: true,
+            disableClosing: true,
+            disableCancelButton: true,
+            expanded: false,
+            centered: true
+        });
     }
 
     /**
      *
-     * @param {Batch} batch
-     * @param {function(err)} callback
+     * @param batch
+     * @param callback
      * @private
      */
-    _addBatch(batch, callback){
+    _addBatchAsync(batch, callback){
         let self = this;
-        self.batchManager.create(this.model.gtin, batch, (err, keySSI, productSSI) => {
+        if (!this.query)
+            return callback(`No gtin defined`);
+        self.batchManager.create(this.query, batch, (err, keySSI, path) => {
             if (err)
-                callback(err);
-            callback()
-        });
-    }
-
-    /**
-     * Updates the batches model
-     * @param {object[]} batches where the properties must be:
-     * &lt;ul>
-     *     &lt;li>*batchNumber:* {@link Batch#batchNumber}&lt;/li>
-     *     &lt;li>*expiry:* {@link Batch#expiry}&lt;/li>
-     *     &lt;li>*serials:* serial numbers&lt;/li>
-     * &lt;/ul>
-     */
-    updateBatches(batches){
-        this.model['batches'] = batches;
-    }
-
-    /**
-     * Retrieves the batches from the product DSU and updates the model
-     */
-    getBatchesAsync(){
-        let self = this;
-        self.batchManager.getAll(this.model.gtin, (err, batches) => {
-            if (err)
-                throw err;
-            self.updateBatches(batches);
+                return self.showErrorToast(`Could not create Batch ${JSON.stringify(batch, undefined, 2)}`, err);
+            self.hideModal();
+            self.showToast(`Batch ${batch.batchNumber} for Product ${self.query} has been created`);
+            self.send(EVENT_REFRESH);
         });
     }
 }</code></pre>

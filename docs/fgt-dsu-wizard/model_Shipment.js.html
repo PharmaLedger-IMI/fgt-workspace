@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-dsu-wizard.module_commands.html">commands</a></li><li><a href="fgt-dsu-wizard.module.managers.html">managers</a></li><li><a href="fgt-dsu-wizard.module_model.html">model</a></li><li><a href="fgt-dsu-wizard.module_services.html">services</a></li><li><a href="fgt-mah-ssapp.module_managers.html">managers</a></li><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Classes</h3><ul><li><a href="BatchManager.html">BatchManager</a></li><li><a href="fgt-dsu-wizard.module_model-Batch.html">Batch</a></li><li><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html">ParticipantManager</a></li><li><a href="IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="OrderManager.html">OrderManager</a></li><li><a href="ProductManager.html">ProductManager</a></li><li><a href="ReceivedOrderManager.html">ReceivedOrderManager</a></li><li><a href="Stock.html">Stock</a></li><li><a href="StockManager.html">StockManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getBatchManager">getBatchManager</a></li><li><a href="global.html#getIssuedOrderManager">getIssuedOrderManager</a></li><li><a href="global.html#getProductManager">getProductManager</a></li><li><a href="global.html#getReceivedOrderManager">getReceivedOrderManager</a></li><li><a href="global.html#getStockManager">getStockManager</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-dsu-wizard.module_commands.html">commands</a></li><li><a href="fgt-dsu-wizard.module.managers.html">managers</a></li><li><a href="fgt-dsu-wizard.module_model.html">model</a></li><li><a href="fgt-dsu-wizard.module_services.html">services</a></li><li><a href="fgt-mah-ssapp.module_managers.html">managers</a></li><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Classes</h3><ul><li><a href="BatchManager.html">BatchManager</a></li><li><a href="BatchResolver.html">BatchResolver</a></li><li><a href="fgt-dsu-wizard.module_model-Batch.html">Batch</a></li><li><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html">ParticipantManager</a></li><li><a href="IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="IssuedShipmentManager.html">IssuedShipmentManager</a></li><li><a href="OrderLineManager.html">OrderLineManager</a></li><li><a href="OrderManager.html">OrderManager</a></li><li><a href="ProductManager.html">ProductManager</a></li><li><a href="ReceivedOrderManager.html">ReceivedOrderManager</a></li><li><a href="ReceivedShipmentManager.html">ReceivedShipmentManager</a></li><li><a href="ShipmentManager.html">ShipmentManager</a></li><li><a href="Stock.html">Stock</a></li><li><a href="StockManager.html">StockManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getBatchManager">getBatchManager</a></li><li><a href="global.html#getBatchResolver">getBatchResolver</a></li><li><a href="global.html#getIssuedOrderManager">getIssuedOrderManager</a></li><li><a href="global.html#getIssuedShipmentManager">getIssuedShipmentManager</a></li><li><a href="global.html#getOrderLineManager">getOrderLineManager</a></li><li><a href="global.html#getProductManager">getProductManager</a></li><li><a href="global.html#getReceivedOrderManager">getReceivedOrderManager</a></li><li><a href="global.html#getReceivedShipmentManager">getReceivedShipmentManager</a></li><li><a href="global.html#getStockManager">getStockManager</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,7 +109,10 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
+            <pre class="prettyprint source linenums"><code>const ShipmentStatus = require('./ShipmentStatus');
+const ShipmentLine = require('./ShipmentLine');
+
+/**
  * @module fgt-dsu-wizard.model
  */
 class Shipment {
@@ -118,13 +121,52 @@ class Shipment {
     senderId;
     shipToAddress;
     status;
+    shipmentLines;
 
-    constructor(shipmentId, requesterId, senderId, shipToAddress, status){
+    constructor(shipmentId, requesterId, senderId, shipToAddress, status, shipmentLines){
         this.shipmentId = shipmentId;
         this.requesterId = requesterId;
         this.senderId = senderId;
         this.shipToAddress = shipToAddress;
-        this.status = status || "created";
+        this.status = status || ShipmentStatus.CREATED;
+        this.shipmentLines = shipmentLines ? shipmentLines.map(sl => new ShipmentLine(sl)) : [];
+    }
+
+    /**
+     * Validate if everything seems ok with the properties of this object.
+     * @returns undefined if all ok. An arry of errors if not all ok.
+     */
+    validate() {
+        const errors = [];
+        if (!this.shipmentId) {
+            errors.push('OrderID is required.');
+        }
+        if (!this.requesterId) {
+            errors.push('Ordering partner ID is required.');
+        }
+        if (!this.senderId) {
+            errors.push('Supplying partner ID is required.');
+        }
+        if (!this.shipToAddress) {
+            errors.push('ShipToAddress is required.');
+        }
+        if (!this.status) {
+            errors.push('status is required.');
+        }
+        if (!this.shipmentLines || this.shipmentLines.length == 0) {
+            errors.push('shipmentLines is required.');
+        } else {
+            this.shipmentLines.forEach((shipmentLine, index) => {
+                let orderLineErrors = shipmentLine.validate();
+                if (orderLineErrors) {
+                    orderLineErrors.forEach((error) => {
+                        errors.push("Shipment Line " + index + ": " + error);
+                    });
+                }
+            });
+        }
+
+        return errors.length === 0 ? undefined : errors;
     }
 }
 

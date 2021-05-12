@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#getBatchesAsync">getBatchesAsync</a></li><li><a href="global.html#getProductsAsync">getProductsAsync</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#updateBatches">updateBatches</a></li><li><a href="global.html#updateProducts">updateProducts</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,101 +109,79 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import ContainerController from "../../cardinal/controllers/base-controllers/ContainerController.js";
-const Product = require('wizard').Model.Product;
+            <pre class="prettyprint source linenums"><code>import { LocalizedController, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
 
-export default class ProductsController extends ContainerController {
+/**
+ * Controls Application Flow
+ * Makes the bridge between the UI and the ProductManager
+ *
+ * Handles listing and querying of Products
+ * @class ProductsController
+ * @module controllers
+ */
+export default class ProductsController extends LocalizedController {
+
+    initializeModel = () => ({});
+
     constructor(element, history) {
-        super(element, history);
+        super(element, history, false);
         const wizard = require('wizard');
-        const LocaleService = wizard.Services.LocaleService;
-        LocaleService.bindToLocale(this, LocaleService.supported.en_US, "products");
+        super.bindLocale(this, "products");
         this.participantManager = wizard.Managers.getParticipantManager();
-        this.productManager = wizard.Managers.getProductManager(this.participantManager.getParticipantDSU());
+        this.productManager = wizard.Managers.getProductManager(this.participantManager);
 
-        this.model = this.setModel({
-            mah: {},
-            products: [],
-            hasProducts: false
-        });
+        this.model = this.initializeModel();
 
         let self = this;
-        this.on('add-product', (event) => {
-            event.stopImmediatePropagation();
+        self.onTagEvent('add-product', 'click', () => {
             self._showProductModal();
         });
 
-        this.on('perform-add-product', (event) => {
-            event.stopImmediatePropagation();
-            self._addProduct(event.detail, (err) => {
-                if (err) {
-                    this.showError(err);
-                    return;
-                }
-                self.closeModal('product-modal');
-                self.getProductsAsync();
-            });
+        self.onTagEvent('cancel-create-product', 'click', () => {
+            self.hideModal();
         });
 
-        this.on('manage-batches', (event) => {
-            event.stopImmediatePropagation();
-            const gtin = event.target.getAttribute("gtin");
-            this.History.navigateToPageByUrl("/batches", {gtin: gtin});
+        self.on('create-product',  (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            self._addProductAsync(evt.detail);
         });
 
-        this.getProductsAsync();
+        self.on(EVENT_REFRESH, (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            self.element.querySelector('pdm-ion-table').refresh();
+        }, {capture: true});
     }
 
     _showProductModal(){
-        let self = this;
-        self.participantManager.getParticipant((err, actor) => {
-           if (err)
-               throw err;
-            self.showModal('product-modal', self.productManager.toModel(new Product({
-                manufName: actor.name
-            })), true);
+        this.createWebcModal({
+            template: "productModal",
+            controller: "ProductController",
+            disableBackdropClosing: false,
+            disableFooter: true,
+            disableHeader: true,
+            disableExpanding: true,
+            disableClosing: true,
+            disableCancelButton: true,
+            expanded: false,
+            centered: true
         });
     }
 
     /**
      *
      * @param product
-     * @param callback
      * @private
      */
-    _addProduct(product, callback){
+    _addProductAsync(product){
         let self = this;
         self.productManager.create(product, (err, keySSI, path) => {
             if (err)
-                return callback(err);
-            callback();
-        });
-    }
-
-    /**
-     * Updates the products model
-     * @param {object[]} products where the properties must be:
-     * &lt;ul>
-     *     &lt;li>*gtin:* {@link Product#gtin}&lt;/li>
-     *     &lt;li>*product:* {@link Product}&lt;/li>
-     *     &lt;li>*index:* not implemented. for sorting/filtering purposes&lt;/li>
-     * &lt;/ul>
-     */
-    updateProducts(products){
-        this.model['products'] = products;
-        this.model['hasProducts'] = products.length > 0;
-    }
-
-    /**
-     * Retrieves the products from the DSU and updates the model
-     * by calling {@link ProductsController#updateProducts} after retrieval
-     */
-    getProductsAsync(){
-        let self = this;
-        self.productManager.getAll((err, products) => {
-            if (err)
-                throw err;
-            self.updateProducts(products);
+                return self.showErrorToast(`Could not create Product ${JSON.stringify(product, undefined, 2)}`, err);
+            self.hideModal();
+            self.showToast(`Product ${product.name} with gtin ${product.gtin} has been created`);
+            self.send(EVENT_REFRESH);
         });
     }
 }</code></pre>
