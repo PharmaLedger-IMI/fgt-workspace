@@ -2,8 +2,7 @@
  * @module controllers
  */
 
-import {EVENT_SEND_ERROR, EVENT_SEND_MESSAGE, EVENT_REFRESH} from "../constants/events";
-import {Refresher} from "@ionic/core/dist/types/components/refresher/refresher";
+import {EVENT_SEND_ERROR, EVENT_SEND_MESSAGE, EVENT_REFRESH, EVENT_NAVIGATE_TAB} from "../constants/events";
 
 /**
  *
@@ -163,6 +162,13 @@ export default class LocalizedController extends WebcController {
 
   refresh(){
     this.send(EVENT_REFRESH, {}, {capture: true});
+  }
+
+  navigateToTab(tabName, props){
+    this.send(EVENT_NAVIGATE_TAB, {
+      tab: tabName,
+      props: props
+    });
   }
 
   /**

@@ -1,20 +1,18 @@
 import { LocalizedController, EVENT_REFRESH } from "../../assets/pdm-web-components/index.esm.js";
-const {ShipmentStatus, Shipment} = require('wizard').Model;
 
 /**
- * List all the received orders, and allows refresh from inbox.
+ * List all the Issued Shipments
  */
-export default class ReceivedOrdersController extends LocalizedController {
+export default class IssuedShipmentsController extends LocalizedController {
     initializeModel = () => ({}); // creates a new uninitialized blank model
 
     constructor(element, history) {
         super(element, history);
-        super.bindLocale(this, "receivedOrders");
+        super.bindLocale(this, "issuedShipments");
         this.model = this.initializeModel();
         const wizard = require('wizard');
         this.participantManager = wizard.Managers.getParticipantManager();
-        this.receivedOrderManager = wizard.Managers.getReceivedOrderManager(this.participantManager);
-        this.receivedOrderManager.bindController(this); // This allows for the manager to 'refresh' the view
+        this.issuedShipmentManager = wizard.Managers.getIssuedShipmentManager(this.participantManager);
 
         let self = this;
         // the HomeController takes care of sending refresh events for each tab.
@@ -24,7 +22,7 @@ export default class ReceivedOrdersController extends LocalizedController {
             evt.stopImmediatePropagation();
             self.element.querySelector('pdm-ion-table').refresh()
         }, {capture: true});
-
     }
+
 }
 

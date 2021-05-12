@@ -32,13 +32,11 @@
   "none": "You are not identified as a Marketing Authorization holder. Please register",
   "receivedOrders": {
     "title": "Received Orders",
-    "refresh": "Refresh",
     "numberHeader": "ID",
     "orderingPartnerHeader": "Issued By",
     "supplyingPartnerHeader": "Issued To",
     "none": "No orders issued...",
     "buttons": {
-      "refreshMessages": "Refresh"
     }
   },
   "receivedOrder": {
@@ -53,6 +51,30 @@
     "buttons": {
       "reject": "Reject",
       "proceed": "Create Shipment",
+      "delay": "Hold"
+    }
+  },
+  "issuedShipments": {
+    "title": "IssuedShipments",
+    "numberHeader": "ID",
+    "orderingPartnerHeader": "Issued By",
+    "supplyingPartnerHeader": "Issued To",
+    "none": "No shipments issued...",
+    "buttons": {
+    }
+  },
+  "issuedShipment": {
+    "title": "Create Shipment",
+    "details": "Details:",
+    "products": "Products:",
+    "stock": "Stock:",
+    "noStock": "No Stock for selected Product",
+    "available": "Available:",
+    "unavailable": "Unavailable:",
+    "selectProduct": "Please select a product",
+    "buttons": {
+      "reject": "Reject",
+      "proceed": "Confirm",
       "delay": "Hold"
     }
   },

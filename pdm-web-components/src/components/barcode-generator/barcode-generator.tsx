@@ -101,8 +101,6 @@ export class BarcodeGenerator {
   }
 
   render() {
-    if(!this.host.isConnected)
-      return;
     return (
       <canvas></canvas>
     );

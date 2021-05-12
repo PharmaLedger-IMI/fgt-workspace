@@ -31,11 +31,27 @@ export namespace Components {
         "mode"?: string;
         "quantity"?: number;
     }
-    interface BatchListItem {
-    }
     interface ManagedBatchListItem {
         "gtinBatch": string;
         "refresh": () => Promise<void>;
+    }
+    interface ManagedIssuedShipment {
+        "availableString": string;
+        "confirmedString": string;
+        "delayString": string;
+        "detailsString": string;
+        "noStockString": string;
+        "orderId": string;
+        "proceedString": string;
+        "productsString": string;
+        "refresh": () => Promise<void>;
+        "rejectString": string;
+        "remainingString": string;
+        "selectOrderLine": (gtin: any) => Promise<void>;
+        "selectProductString": string;
+        "stockString": string;
+        "titleString": string;
+        "unavailableString": string;
     }
     interface ManagedOrderlineListItem {
         "orderLine": string;
@@ -76,6 +92,12 @@ export namespace Components {
         "orderId": string;
         "orderlineCount"?: number;
         "refresh": () => Promise<void>;
+    }
+    interface ManagedShipmentListItem {
+        "refresh": () => Promise<void>;
+        "shipmentId": string;
+        "shipmentLineCount"?: number;
+        "type"?: string;
     }
     interface ManagedStockListItem {
         "gtin": string;
@@ -144,10 +166,6 @@ export namespace Components {
         "timeout"?: number;
         "updateStatus": (evt: any) => Promise<void>;
     }
-    interface ProductListItem {
-    }
-    interface StockListItem {
-    }
 }
 declare global {
     interface HTMLBarcodeGeneratorElement extends Components.BarcodeGenerator, HTMLStencilElement {
@@ -162,17 +180,17 @@ declare global {
         prototype: HTMLBatchChipElement;
         new (): HTMLBatchChipElement;
     };
-    interface HTMLBatchListItemElement extends Components.BatchListItem, HTMLStencilElement {
-    }
-    var HTMLBatchListItemElement: {
-        prototype: HTMLBatchListItemElement;
-        new (): HTMLBatchListItemElement;
-    };
     interface HTMLManagedBatchListItemElement extends Components.ManagedBatchListItem, HTMLStencilElement {
     }
     var HTMLManagedBatchListItemElement: {
         prototype: HTMLManagedBatchListItemElement;
         new (): HTMLManagedBatchListItemElement;
+    };
+    interface HTMLManagedIssuedShipmentElement extends Components.ManagedIssuedShipment, HTMLStencilElement {
+    }
+    var HTMLManagedIssuedShipmentElement: {
+        prototype: HTMLManagedIssuedShipmentElement;
+        new (): HTMLManagedIssuedShipmentElement;
     };
     interface HTMLManagedOrderlineListItemElement extends Components.ManagedOrderlineListItem, HTMLStencilElement {
     }
@@ -203,6 +221,12 @@ declare global {
     var HTMLManagedReceivedOrderListItemElement: {
         prototype: HTMLManagedReceivedOrderListItemElement;
         new (): HTMLManagedReceivedOrderListItemElement;
+    };
+    interface HTMLManagedShipmentListItemElement extends Components.ManagedShipmentListItem, HTMLStencilElement {
+    }
+    var HTMLManagedShipmentListItemElement: {
+        prototype: HTMLManagedShipmentListItemElement;
+        new (): HTMLManagedShipmentListItemElement;
     };
     interface HTMLManagedStockListItemElement extends Components.ManagedStockListItem, HTMLStencilElement {
     }
@@ -240,36 +264,23 @@ declare global {
         prototype: HTMLPdmSsappLoaderElement;
         new (): HTMLPdmSsappLoaderElement;
     };
-    interface HTMLProductListItemElement extends Components.ProductListItem, HTMLStencilElement {
-    }
-    var HTMLProductListItemElement: {
-        prototype: HTMLProductListItemElement;
-        new (): HTMLProductListItemElement;
-    };
-    interface HTMLStockListItemElement extends Components.StockListItem, HTMLStencilElement {
-    }
-    var HTMLStockListItemElement: {
-        prototype: HTMLStockListItemElement;
-        new (): HTMLStockListItemElement;
-    };
     interface HTMLElementTagNameMap {
         "barcode-generator": HTMLBarcodeGeneratorElement;
         "batch-chip": HTMLBatchChipElement;
-        "batch-list-item": HTMLBatchListItemElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
+        "managed-issued-shipment": HTMLManagedIssuedShipmentElement;
         "managed-orderline-list-item": HTMLManagedOrderlineListItemElement;
         "managed-orderline-stock-chip": HTMLManagedOrderlineStockChipElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
         "managed-received-order": HTMLManagedReceivedOrderElement;
         "managed-received-order-list-item": HTMLManagedReceivedOrderListItemElement;
+        "managed-shipment-list-item": HTMLManagedShipmentListItemElement;
         "managed-stock-list-item": HTMLManagedStockListItemElement;
         "menu-tab-button": HTMLMenuTabButtonElement;
         "more-chip": HTMLMoreChipElement;
         "multi-spinner": HTMLMultiSpinnerElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
-        "product-list-item": HTMLProductListItemElement;
-        "stock-list-item": HTMLStockListItemElement;
     }
 }
 declare namespace LocalJSX {
@@ -297,18 +308,44 @@ declare namespace LocalJSX {
         "mode"?: string;
         "quantity"?: number;
     }
-    interface BatchListItem {
-        /**
-          * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
-         */
-        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
-    }
     interface ManagedBatchListItem {
         "gtinBatch"?: string;
         /**
           * Through this event errors are passed
          */
         "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+    }
+    interface ManagedIssuedShipment {
+        "availableString"?: string;
+        "confirmedString"?: string;
+        "delayString"?: string;
+        "detailsString"?: string;
+        "noStockString"?: string;
+        /**
+          * Through this event shipment creation requests are made
+         */
+        "onCreated"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event shipment rejection requests are made
+         */
+        "onRejected"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSendNavigateTab"?: (event: CustomEvent<any>) => void;
+        "orderId"?: string;
+        "proceedString"?: string;
+        "productsString"?: string;
+        "rejectString"?: string;
+        "remainingString"?: string;
+        "selectProductString"?: string;
+        "stockString"?: string;
+        "titleString"?: string;
+        "unavailableString"?: string;
     }
     interface ManagedOrderlineListItem {
         /**
@@ -354,7 +391,11 @@ declare namespace LocalJSX {
         /**
           * Through this event shipment creation requests are made
          */
-        "onSendCreateEvent"?: (event: CustomEvent<any>) => void;
+        "onCreated"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event shipment rejection requests are made
+         */
+        "onRejected"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
@@ -363,10 +404,6 @@ declare namespace LocalJSX {
           * Through this event navigation requests to tabs are made
          */
         "onSendNavigateTab"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event shipment rejection requests are made
-         */
-        "onSendRejectEvent"?: (event: CustomEvent<any>) => void;
         "orderId"?: string;
         "proceedString"?: string;
         "productsString"?: string;
@@ -388,6 +425,19 @@ declare namespace LocalJSX {
         "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
         "orderId"?: string;
         "orderlineCount"?: number;
+    }
+    interface ManagedShipmentListItem {
+        /**
+          * Through this event errors are passed
+         */
+        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSendNavigateTab"?: (event: CustomEvent<any>) => void;
+        "shipmentId"?: string;
+        "shipmentLineCount"?: number;
+        "type"?: string;
     }
     interface ManagedStockListItem {
         "gtin"?: string;
@@ -476,36 +526,23 @@ declare namespace LocalJSX {
         "loader"?: string;
         "timeout"?: number;
     }
-    interface ProductListItem {
-        /**
-          * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
-         */
-        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
-    }
-    interface StockListItem {
-        /**
-          * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
-         */
-        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
-    }
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;
         "batch-chip": BatchChip;
-        "batch-list-item": BatchListItem;
         "managed-batch-list-item": ManagedBatchListItem;
+        "managed-issued-shipment": ManagedIssuedShipment;
         "managed-orderline-list-item": ManagedOrderlineListItem;
         "managed-orderline-stock-chip": ManagedOrderlineStockChip;
         "managed-product-list-item": ManagedProductListItem;
         "managed-received-order": ManagedReceivedOrder;
         "managed-received-order-list-item": ManagedReceivedOrderListItem;
+        "managed-shipment-list-item": ManagedShipmentListItem;
         "managed-stock-list-item": ManagedStockListItem;
         "menu-tab-button": MenuTabButton;
         "more-chip": MoreChip;
         "multi-spinner": MultiSpinner;
         "pdm-ion-table": PdmIonTable;
         "pdm-ssapp-loader": PdmSsappLoader;
-        "product-list-item": ProductListItem;
-        "stock-list-item": StockListItem;
     }
 }
 export { LocalJSX as JSX };
@@ -514,21 +551,20 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "barcode-generator": LocalJSX.BarcodeGenerator & JSXBase.HTMLAttributes<HTMLBarcodeGeneratorElement>;
             "batch-chip": LocalJSX.BatchChip & JSXBase.HTMLAttributes<HTMLBatchChipElement>;
-            "batch-list-item": LocalJSX.BatchListItem & JSXBase.HTMLAttributes<HTMLBatchListItemElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
+            "managed-issued-shipment": LocalJSX.ManagedIssuedShipment & JSXBase.HTMLAttributes<HTMLManagedIssuedShipmentElement>;
             "managed-orderline-list-item": LocalJSX.ManagedOrderlineListItem & JSXBase.HTMLAttributes<HTMLManagedOrderlineListItemElement>;
             "managed-orderline-stock-chip": LocalJSX.ManagedOrderlineStockChip & JSXBase.HTMLAttributes<HTMLManagedOrderlineStockChipElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
             "managed-received-order": LocalJSX.ManagedReceivedOrder & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderElement>;
             "managed-received-order-list-item": LocalJSX.ManagedReceivedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderListItemElement>;
+            "managed-shipment-list-item": LocalJSX.ManagedShipmentListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentListItemElement>;
             "managed-stock-list-item": LocalJSX.ManagedStockListItem & JSXBase.HTMLAttributes<HTMLManagedStockListItemElement>;
             "menu-tab-button": LocalJSX.MenuTabButton & JSXBase.HTMLAttributes<HTMLMenuTabButtonElement>;
             "more-chip": LocalJSX.MoreChip & JSXBase.HTMLAttributes<HTMLMoreChipElement>;
             "multi-spinner": LocalJSX.MultiSpinner & JSXBase.HTMLAttributes<HTMLMultiSpinnerElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;
-            "product-list-item": LocalJSX.ProductListItem & JSXBase.HTMLAttributes<HTMLProductListItemElement>;
-            "stock-list-item": LocalJSX.StockListItem & JSXBase.HTMLAttributes<HTMLStockListItemElement>;
         }
     }
 }

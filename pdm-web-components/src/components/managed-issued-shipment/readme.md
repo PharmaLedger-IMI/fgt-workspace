@@ -1,4 +1,4 @@
-# managed-received-order
+# managed-issued-shipment
 
 
 
@@ -68,10 +68,10 @@ Type: `Promise<void>`
 ### Graph
 ```mermaid
 graph TD;
-  managed-received-order --> batch-chip
-  managed-received-order --> managed-orderline-stock-chip
+  managed-issued-shipment --> batch-chip
+  managed-issued-shipment --> managed-orderline-stock-chip
   batch-chip --> multi-spinner
-  style managed-received-order fill:#f9f,stroke:#333,stroke-width:4px
+  style managed-issued-shipment fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

@@ -54,7 +54,7 @@ class IssuedShipmentManager extends ShipmentManager {
         if (!callback){
             callback = shipment;
             shipment = shipmentId;
-            shipmentId = shipment.orderId;
+            shipmentId = shipment.shipmentId;
         }
         let self = this;
 
@@ -160,7 +160,7 @@ let issuedShipmentManager;
  */
 const getIssuedShipmentManager = function (participantManager, force, callback) {
     if (!issuedShipmentManager || force)
-        issuedShipmentManager = new IssuedShipmentManager(participantManager);
+        issuedShipmentManager = new IssuedShipmentManager(participantManager, callback);
     return issuedShipmentManager;
 }
 

@@ -20,6 +20,7 @@
 
 ### Used by
 
+ - [managed-issued-shipment](../managed-issued-shipment)
  - [managed-product-list-item](../managed-product-list-item)
  - [managed-received-order](../managed-received-order)
  - [managed-stock-list-item](../managed-stock-list-item)
@@ -32,6 +33,7 @@
 ```mermaid
 graph TD;
   batch-chip --> multi-spinner
+  managed-issued-shipment --> batch-chip
   managed-product-list-item --> batch-chip
   managed-received-order --> batch-chip
   managed-stock-list-item --> batch-chip
