@@ -96,9 +96,9 @@ export class ManagedReceivedOrder {
 
   private buildShipment(props){
     const self = this;
-    const buildShipmentLine = function(batch){
+    const buildShipmentLine = function(gtin, batch){
       return new ShipmentLine({
-        gtin: props.gtin,
+        gtin: gtin,
         quantity: batch.quantity,
         batch: batch.batchNumber,
         requesterId: self.order.requesterId
@@ -106,7 +106,10 @@ export class ManagedReceivedOrder {
     }
 
     const shipment = new Shipment(undefined, this.order.requesterId, undefined, this.order.shipToAddress);
-    shipment.shipmentLines = Object.keys(props).map(gtin => props[gtin].map(b => buildShipmentLine(b)));
+    shipment.shipmentLines = Object.keys(props).reduce((accum, gtin) => {
+      accum.push(...props[gtin].map(b => buildShipmentLine(gtin, b)));
+      return accum;
+    }, []);
     return shipment;
   }
 
