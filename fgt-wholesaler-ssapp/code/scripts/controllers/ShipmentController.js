@@ -11,7 +11,7 @@ export default class ShipmentController extends LocalizedController{
         super.bindLocale(this, 'issuedShipment');
         this.model = this.initializeModel();
         const wizard = require('wizard');
-        this.issuedShipmentManager = wizard.Managers.getIssuedShipmentManager()
+        this.issuedShipmentManager = wizard.Managers.getIssuedShipmentManager();
         let self = this;
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
@@ -21,8 +21,7 @@ export default class ShipmentController extends LocalizedController{
                 self.setState(undefined);
                 self.model.shipmentReference = `${state.requesterId}-${state.orderId}`
             } else {
-                if (self.model.shipmentReference !== "")
-                    self.model.shipmentReference = "";
+                self.showErrorToast(`No Shipment Received`);
             }
         }, {capture: true});
     }
