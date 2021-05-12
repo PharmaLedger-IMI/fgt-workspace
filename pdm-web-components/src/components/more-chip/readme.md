@@ -28,11 +28,13 @@
 ### Used by
 
  - [managed-received-order-list-item](../managed-received-order-list-item)
+ - [managed-shipment-list-item](../managed-shipment-list-item)
 
 ### Graph
 ```mermaid
 graph TD;
   managed-received-order-list-item --> more-chip
+  managed-shipment-list-item --> more-chip
   style more-chip fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

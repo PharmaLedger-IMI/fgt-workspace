@@ -14,11 +14,11 @@ const ItemClasses = {
 const {Order, OrderLine, Stock, Batch, Shipment, ShipmentStatus, ShipmentLine} = require('wizard').Model;
 
 @Component({
-  tag: 'managed-received-order',
-  styleUrl: 'managed-received-order.css',
+  tag: 'managed-issued-shipment',
+  styleUrl: 'managed-issued-shipment.css',
   shadow: false,
 })
-export class ManagedReceivedOrder {
+export class ManagedIssuedSHipment {
 
   @HostElement() host: HTMLElement;
 
@@ -323,7 +323,7 @@ export class ManagedReceivedOrder {
       <ion-thumbnail>
         <ion-icon slot="end" name="map-outline"></ion-icon>
       </ion-thumbnail>
-      )
+    )
   }
 
   private getLocalizationInfo(){
@@ -493,13 +493,13 @@ export class ManagedReceivedOrder {
       }
 
       return (
-          <managed-orderline-stock-chip onSendAction={receiveAction}
-                                        onClick={() => self.selectOrderLine(orderLine.gtin)}
-                                        gtin={orderLine.gtin}
-                                        quantity={orderLine.quantity}
-                                        mode="detail"
-                                        available={available}
-                                        {...getButton()}></managed-orderline-stock-chip>
+        <managed-orderline-stock-chip onSendAction={receiveAction}
+                                      onClick={() => self.selectOrderLine(orderLine.gtin)}
+                                      gtin={orderLine.gtin}
+                                      quantity={orderLine.quantity}
+                                      mode="detail"
+                                      available={available}
+                                      {...getButton()}></managed-orderline-stock-chip>
       )
     }
 

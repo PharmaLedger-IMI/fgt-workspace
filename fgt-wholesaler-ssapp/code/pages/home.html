@@ -8,6 +8,10 @@
             </ion-header>
             <ion-content>
                 <ion-list>
+                    <menu-tab-button icon-name="analytics-outline" label="@menu.dashboard" tab="tab-dashboard"></menu-tab-button>
+                    <menu-tab-button icon-name="reader-outline" label="@menu.receivedOrders" tab="tab-received-orders"></menu-tab-button>
+                    <menu-tab-button icon-name="map-outline" label="@menu.shipments" tab="tab-issued-shipments"></menu-tab-button>
+                    <menu-tab-button icon-name="stats-chart-outline" label="@menu.stock" tab="tab-stock"></menu-tab-button>
                     <ion-item>
                         <ion-icon name="analytics-outline" slot="start"></ion-icon>
                         <ion-label>{{ @menu.dashboard }}</ion-label>
@@ -45,12 +49,12 @@
                     <webc-template template="dashboard" disable-container></webc-template>
                 </ion-tab>
 
-                <ion-tab tab="tab-receivedOrders">
+                <ion-tab tab="tab-received-orders">
                     <webc-template template="receivedOrders" disable-container></webc-template>
                 </ion-tab>
 
-                <ion-tab tab="tab-shipments">
-                    <webc-template template="shipments" disable-container></webc-template>
+                <ion-tab tab="tab-issued-shipments">
+                    <webc-template template="issuedShipments" disable-container></webc-template>
                 </ion-tab>
 
                 <ion-tab tab="tab-stock">
@@ -61,29 +65,18 @@
                 <ion-tab tab="tab-order">
                     <webc-template template="order" disable-container></webc-template>
                 </ion-tab>
+
+                <ion-tab tab="tab-shipment">
+                    <webc-template template="shipment" disable-container></webc-template>
+                </ion-tab>
+
             </ion-content>
 
             <ion-tab-bar slot="bottom">
-                <ion-tab-button tab="tab-dashboard">
-                    <ion-icon name="analytics-outline"></ion-icon>
-                    <ion-label>{{ @menu.dashboard }}</ion-label>
-                </ion-tab-button>
-
-                <ion-tab-button tab="tab-receivedOrders">
-                    <ion-icon name="reader-outline"></ion-icon>
-                    <ion-label>{{ @menu.receivedOrders }}</ion-label>
-                    <ion-badge data-view-model="@scheduleCounter"></ion-badge>
-                </ion-tab-button>
-
-                <ion-tab-button tab="tab-shipments">
-                    <ion-icon name="map-outline"></ion-icon>
-                    <ion-label>{{ @menu.shipments }}</ion-label>
-                </ion-tab-button>
-
-                <ion-tab-button tab="tab-stock">
-                    <ion-icon name="stats-chart-outline"></ion-icon>
-                    <ion-label>{{ @menu.stock }}</ion-label>
-                </ion-tab-button>
+                <menu-tab-button icon-name="analytics-outline" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>
+                <menu-tab-button icon-name="reader-outline" label="@menu.receivedOrders" tab="tab-received-orders" mode="bar"></menu-tab-button>
+                <menu-tab-button icon-name="map-outline" label="@menu.shipments" tab="tab-issued-shipments" mode="bar"></menu-tab-button>
+                <menu-tab-button icon-name="stats-chart-outline" label="@menu.stock" tab="tab-stock" mode="bar"></menu-tab-button>
             </ion-tab-bar>
         </ion-tabs>
     </ion-app>

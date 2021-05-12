@@ -34,12 +34,14 @@ export default class OrderController extends LocalizedController {
             }
         }, {capture: true});
 
-        self.on(ShipmentStatus.CREATED, self.createShipmentAsync.bind(self), {capture: true});
-        self.on(ShipmentStatus.REJECTED, self.createShipmentAsync.bind(self), {capture: true});
+        self.on(ShipmentStatus.CREATED, self.createShipment.bind(self), {capture: true});
+        self.on(ShipmentStatus.REJECTED, self.createShipment.bind(self), {capture: true});
     }
 
-    createShipmentAsync(evt){
-        console.log(evt);
+    createShipment(evt){
+        evt.preventDefault();
+        evt.stopImmediatePropagation();
         const shipment = new Shipment(evt.detail);
+        super.navigateToTab('tab-shipment', shipment);
     }
 }

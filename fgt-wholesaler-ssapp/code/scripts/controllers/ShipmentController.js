@@ -1,21 +1,29 @@
-import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
-const Product = require('wizard').Model.Product;
+import { LocalizedController, EVENT_REFRESH } from "../../assets/pdm-web-components/index.esm.js";
 
 export default class ShipmentController extends LocalizedController{
-    constructor(element, history) {
-        super(element, history, "shipment");
-        const wizard = require('wizard');
-        const participantManager = wizard.Managers.getParticipantManager();
-        //this.stockManager = wizard.Managers.getShipmentManager(participantManager);
 
-        // this.setModel({
-        //     stock: []
-        // });
-        //
-        // this.model.addExpression('hasStock', () => {
-        //     return typeof this.model.stock !== 'undefined' && this.model.stock.length > 0;
-        // }, 'stock');
-        //
-        // this.getStockAsync();
+    initializeModel = () => ({
+        shipmentReference: ''
+    });
+
+    constructor(element, history) {
+        super(element, history);
+        super.bindLocale(this, 'issuedShipment');
+        this.model = this.initializeModel();
+        const wizard = require('wizard');
+        this.issuedShipmentManager = wizard.Managers.getIssuedShipmentManager()
+        let self = this;
+        self.on(EVENT_REFRESH, (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            const state = self.getState();
+            if (state && state.shipmentId && state.requesterId){
+                self.setState(undefined);
+                self.model.shipmentReference = `${state.requesterId}-${state.orderId}`
+            } else {
+                if (self.model.shipmentReference !== "")
+                    self.model.shipmentReference = "";
+            }
+        }, {capture: true});
     }
 }
