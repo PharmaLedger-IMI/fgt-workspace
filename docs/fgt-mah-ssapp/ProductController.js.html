@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul><h3>Classes</h3><ul><li><a href="module-controllers-ProductController.html">ProductController</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,18 +109,15 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @module controllers
- */
+            <pre class="prettyprint source linenums"><code>import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
 
 /**
+ * Controls Application Flow
+ * Makes the bridge between the UI and the ProductManager
  *
- */
-import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
-
-
-/**
+ * Handles data input and validation for the manipulation of Products
  * @class ProductController
+ * @module controllers
  */
 export default class ProductController extends LocalizedController {
 
@@ -131,7 +128,7 @@ export default class ProductController extends LocalizedController {
     });
 
     constructor(element, history) {
-        super(element, history, true);
+        super(element, history, false);
         let self = this;
         const wizard = require('wizard');
         super.bindLocale(self, `product`, true);
@@ -144,11 +141,9 @@ export default class ProductController extends LocalizedController {
 
     _submitProduct = function () {
         let self = this;
-        if (self.hasErrors())
+        if (self.hasErrors(true))
             return this.showErrorToast('There are errors in the form');
         const product = self.productManager.fromModel(self.model);
-
-
         this.send('create-product', product);
     }
 }</code></pre>

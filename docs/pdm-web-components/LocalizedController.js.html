@@ -113,7 +113,7 @@
  * @module controllers
  */
 
-import {EVENT_SEND_ERROR} from "../constants/events";
+import {EVENT_SEND_ERROR, EVENT_SEND_MESSAGE, EVENT_REFRESH, EVENT_NAVIGATE_TAB} from "../constants/events";
 
 /**
  *
@@ -194,6 +194,8 @@ export default class LocalizedController extends WebcController {
    * @param {err} [err]
    */
   showErrorToast(message, err) {
+    if (this.useEvents)
+      return this.send(EVENT_SEND_ERROR, message, {capture: true});
     return this.showToast(message + (err ? `\n$err` : ''), 'Error', 'danger', 'Close');
   }
 
@@ -207,6 +209,9 @@ export default class LocalizedController extends WebcController {
    * @param {function()} buttonHandler
    */
   showToast(message, header, cssClass, button, buttonHandler) {
+    if (this.useEvents)
+      return this.send(EVENT_SEND_MESSAGE, message, {capture: true});
+
     const toast = this.createAndAddElement('ion-toast');
     toast.header = header;
     toast.message = message;
@@ -249,20 +254,53 @@ export default class LocalizedController extends WebcController {
     self.on(EVENT_SEND_ERROR, (evt) => {
       evt.preventDefault();
       evt.stopImmediatePropagation();
-      self.showErrorToast(evt);
+      self.showErrorToast(evt.detail);
     }, {capture: true});
+  }
+
+  /**
+   * Makes the controller listen for the {@link EVENT_SEND_MESSAGE} event and show the toast to the user
+   * @protected
+   */
+  _bindMessageHandler(){
+    let self = this;
+    self.on(EVENT_SEND_MESSAGE, (evt) => {
+      evt.preventDefault();
+      evt.stopImmediatePropagation();
+      self.showToast(evt.detail);
+    }, {capture: true});
+  }
+
+  refresh(){
+    this.send(EVENT_REFRESH, {}, {capture: true});
+  }
+
+  navigateToTab(tabName, props){
+    this.send(EVENT_NAVIGATE_TAB, {
+      tab: tabName,
+      props: props
+    });
   }
 
   /**
    *
    * @param {HTMLElement} element
    * @param {*} history
-   * @param {boolean} [bindErrorHandler] defaults to false. binds (or not) the error handler to the controller
+   * @param {boolean} [bindMessageHandlers] defaults to false. binds (or not) the error handler to the controller
    */
-  constructor(element, history, bindErrorHandler) {
+  constructor(element, history, bindMessageHandlers) {
     super(element, history);
-    if (!!bindErrorHandler)
-     this._bindErrorHandler();
+    if (typeof bindMessageHandlers === 'undefined'){
+      this.useEvents = false;
+    } else if(typeof bindMessageHandlers === 'boolean'){
+      if (bindMessageHandlers){
+        this._bindErrorHandler();
+        this._bindMessageHandler();
+        this.useEvents = false;
+      } else {
+        this.useEvents = true;
+      }
+    }
   }
 }
 </code></pre>
