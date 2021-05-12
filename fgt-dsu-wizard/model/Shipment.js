@@ -1,4 +1,5 @@
 const ShipmentStatus = require('./ShipmentStatus');
+const ShipmentLine = require('./ShipmentLine');
 
 /**
  * @module fgt-dsu-wizard.model
@@ -17,7 +18,7 @@ class Shipment {
         this.senderId = senderId;
         this.shipToAddress = shipToAddress;
         this.status = status || ShipmentStatus.CREATED;
-        this.shipmentLines = shipmentLines || [];
+        this.shipmentLines = shipmentLines ? shipmentLines.map(sl => new ShipmentLine(sl)) : [];
     }
 
     /**

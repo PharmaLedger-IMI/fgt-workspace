@@ -52,15 +52,6 @@ export class ManagedReceivedOrder {
       console.log(`Product Component: ${message}`, err);
   }
 
-  // private navigateToTab(tab: string,  props: any){
-  //   const event = this.sendNavigateTab.emit({
-  //     tab: tab,
-  //     props: props
-  //   });
-  //   if (!event.defaultPrevented)
-  //     console.log(`Tab Navigation request seems to have been ignored byt all components...`);
-  // }
-
   /**
    * Through this event shipment creation requests are made
    */
@@ -114,7 +105,7 @@ export class ManagedReceivedOrder {
       });
     }
 
-    const shipment = new Shipment(undefined, undefined, this.order.requesterId, undefined, this.order.shipToAddress);
+    const shipment = new Shipment(undefined, this.order.requesterId, undefined, this.order.shipToAddress);
     shipment.shipmentLines = Object.keys(props).map(gtin => props[gtin].map(b => buildShipmentLine(b)));
     return shipment;
   }

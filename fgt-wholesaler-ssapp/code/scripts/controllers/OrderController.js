@@ -29,8 +29,7 @@ export default class OrderController extends LocalizedController {
                 self.setState(undefined);
                 self.model.orderReference = `${state.requesterId}-${state.orderId}`
             } else {
-                if (self.model.orderReference !== "")
-                    self.model.orderReference = "";
+                self.showErrorToast(`No Order Received`);
             }
         }, {capture: true});
 
