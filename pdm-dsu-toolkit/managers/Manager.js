@@ -571,7 +571,7 @@ class Manager{
                 return self._err(`Could not perform query`, err, callback);
             records = records.map(r => r.value);
             if (!readDSU)
-                return callback(undefined, records);
+                return callback(undefined, records.map(r => r.pk)); // return the primary key if not read DSU
             self._iterator(records.slice(), self._getDSUInfo.bind(self), (err, result) => {
                 if (err)
                     return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
