@@ -12,11 +12,11 @@ const w3cDID = opendsu.loadApi('w3cdid');
 const defaultOps = {
     receiver: 'myfirstDemoIdentity', //'receiverWc3DIDString' + Math.floor(Math.random() * 10000000),
     sender: 'senderWc3DIDString' + Math.floor(Math.random() * 10000000),
-    kill: false,
     domain: 'traceability',
     didMethod: 'demo',
-    messages: 10,
-    timeout: 0
+    messages: 1,
+    kill: true,
+    timeout: 1000
 }
 
 const config = argParser(defaultOps, process.argv)
@@ -36,22 +36,18 @@ w3cDID.createIdentity(config.didMethod, config.sender, (err, senderDID) => {
     const forked = fork('dbAndDidChild.js');
     forked.on('message', (receiverDID) => {
         console.log(`received created and listening`);
-        if (config.kill){
-           forked.kill('SIGINT');
-           console.log(`received process shutdown`);
-        }
 
-        const sendMessage = function(receiver){
+        const sendMessage = function(){
            console.log("Sending message", JSON.stringify(someData), " to receiver ", config.receiver);
-           senderDID.sendMessage(JSON.stringify(someData), receiver.getIdentifier(),  (err) => {
+           senderDID.sendMessage(JSON.stringify(someData), receiverDID,  (err) => {
                if (err)
                    return console.log(`Error sending message`, err);
                msgCount++;
                console.log(`Message successfully sent ${msgCount}`);
                if (msgCount === config.messages){
                    timeMessagesSent = Date.now();
-                   console.log(`all messages sent in ${timeMessagesSent - timeAfterMessages}ms. closing test in 3 second`)
-                   setTimeout(() => process.exit(0), 3000);
+                   console.log(`all messages sent in ${timeMessagesSent - timeAfterMessages}ms. closing test in 1 second`)
+                   setTimeout(() => process.exit(0), 1000);
                }
            });
         }
@@ -59,16 +55,18 @@ w3cDID.createIdentity(config.didMethod, config.sender, (err, senderDID) => {
         const runTest = function(){
            timeBeforeMessages = Date.now();
            console.log(`Before Messages: ${timeBeforeMessages}`);
-           w3cDID.createIdentity(config.didMethod, config.receiver, (err, receiver) => {
-               if(err)
-                   throw err;
 
-               for (let i = 0; i < config.messages; i++)
-                   sendMessage(receiver);
+           for (let i = 0; i < config.messages; i++)
+               sendMessage();
 
-               timeAfterMessages = Date.now();
-               console.log(`After Messages: ${timeAfterMessages}. Elapsed: ${timeAfterMessages - timeBeforeMessages}`);
-           });
+           timeAfterMessages = Date.now();
+           console.log(`After Messages: ${timeAfterMessages}. Elapsed: ${timeAfterMessages - timeBeforeMessages}`);
+        }
+
+        if (config.kill){
+            forked.send({terminate: true});
+            if (config.timeout)
+                return setTimeout(runTest, config.timeout);
         }
 
         runTest();
