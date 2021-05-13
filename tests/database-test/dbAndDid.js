@@ -10,12 +10,12 @@ const opendsu = require("opendsu");
 const w3cDID = opendsu.loadApi('w3cdid');
 
 const defaultOps = {
-    receiver: 'myfirstDemoIdentity', //'receiverWc3DIDString' + Math.floor(Math.random() * 10000000),
+    receiver: 'receiverWc3DIDString' + Math.floor(Math.random() * 10000000),
     sender: 'senderWc3DIDString' + Math.floor(Math.random() * 10000000),
     domain: 'traceability',
     didMethod: 'demo',
     messages: 1,
-    kill: true,
+    kill: false,
     timeout: 1000
 }
 
@@ -65,8 +65,7 @@ w3cDID.createIdentity(config.didMethod, config.sender, (err, senderDID) => {
 
         if (config.kill){
             forked.send({terminate: true});
-            if (config.timeout)
-                return setTimeout(runTest, config.timeout);
+            return setTimeout(() => runTest(), 100); // on a timer just to allow the child to properly terminate
         }
 
         runTest();
@@ -75,6 +74,7 @@ w3cDID.createIdentity(config.didMethod, config.sender, (err, senderDID) => {
     forked.send({
         id: config.receiver,
         didMethod: config.didMethod,
-        messages: config.messages
+        messages: config.messages,
+        timeout: config.timeout
     });
 });
