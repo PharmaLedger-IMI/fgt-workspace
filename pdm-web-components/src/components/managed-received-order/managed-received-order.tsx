@@ -173,11 +173,11 @@ export class ManagedReceivedOrder {
       if (err)
         return this.sendError(`Could not retrieve order ${self.orderId}`);
       self.order = order;
-      await self.loadOrderLinesAsync();
+      self.loadOrderLinesAsync();
     });
   }
 
-  private async loadOrderLinesAsync(){
+  private loadOrderLinesAsync(){
     const self = this;
 
     const result = [];

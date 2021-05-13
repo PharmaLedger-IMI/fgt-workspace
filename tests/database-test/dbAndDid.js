@@ -1,49 +1,98 @@
 process.env.NO_LOGS = true;
 
-// update the require path!!!
-const getProductManager = require('../../fgt-dsu-wizard/managers/ProductManager');
-const {create, setup } = require('../../bin/environment/createMah');
-const { getCredentials, APPS } = require('../../bin/environment/credentials/credentials');
+const { fork } = require('child_process');
 
-create(getCredentials(APPS.MAH, Math.floor(Math.random() * 999999999) + 1), (err, credentials, walletSSI, participantManager) => {
-    if (err)
-        throw err;
-    setup(participantManager, undefined, undefined, (err, productsObj, batchesObj) => {
+require("../../privatesky/psknode/bundles/testsRuntime");
+
+const tir = require("../../privatesky/psknode/tests/util/tir");
+const dc = require("double-check");
+const assert = dc.assert;
+
+const opendsu = require("opendsu");
+const w3cDID = opendsu.loadApi('w3cdid');
+
+const identities = {
+    receiver: 'receiverWc3DIDString',
+    sender: 'senderWc3DIDString'
+}
+
+const messagesToSend = 10;
+
+let msgCount = 0;
+
+let timeBeforeMessages, timeAfterMessages, timeBeforeLoad, timeAfterLoad, timeMessagesSent;
+
+assert.callback('W3cDID MQ & readDSU stress test (hangs the browser)', (finished) => {
+    w3cDID.createIdentity("demo", identities.sender, (err, senderDID) => {
         if (err)
             throw err;
-        const gtin = Object.keys(batchesObj)[0];
-        const expectedBatches = batchesObj[gtin];
-        const productManager = getProductManager(participantManager, true);
 
-        const messages = ['message', 'other message', 'another message', 'one more',
-            'just one more', 'are we there yet', 'just a litle more', 'maybe its enough', 'no not yet']
+        const resolver = opendsu.loadApi('resolver');
+        const keyssi = opendsu.loadApi('keyssi');
 
-        const mockDID = 'WHS451289339';
+        const dsuKey = keyssi.createTemplateSeedSSI('traceability', 'somestring', undefined, 'v0', undefined)
+        resolver.createDSU(dsuKey, (err, dsu) => {
 
-        const messageCallback = function(err, ...args){
-            if (err)
-                return console.log(`Error sending message`, err);
-            console.log(...args);
-        }
+            const someData = {
+                key1: 'some value',
+                key2: 'other value'
+            }
 
-        const timeBeforeMessages = Date.now();
-        console.log(`Before Messages: ${timeBeforeMessages}`);
+            dsu.writeFile('/info', JSON.stringify(someData), (err) => {
+                if (err)
+                    throw err;
+               dsu.getKeySSIAsObject((err, keySSI) =>{
+                   if (err)
+                       throw err;
+                   dsu = undefined;
 
-        messages.forEach(m => participantManager.sendMessage(mockDID, 'someApi', m, messageCallback));
+                   const forked = fork('dbAndDidChild.js');
+                   forked.on('message', (receiverDID) => {
+                       console.log(`received created and listening`);
+                       //forked.kill('SIGINT');
+                       //console.log(`received process shutdown`);
 
-        const timeAfterMessages = Date.now();
-        console.log(`After Messages: ${timeAfterMessages}. elapsed: ${timeAfterMessages-timeBeforeMessages} ms`);
-        const timeBeforeQuery = Date.now();
-        console.log(`Before Query: ${timeBeforeMessages}`);
+                       const sendMessage = function(){
+                           senderDID.sendMessage(JSON.stringify(someData), receiverDID,  (err) => {
+                               if (err)
+                                   return console.log(`Error sending message`);
+                               console.log(`Message successfully sent`);
+                               msgCount++;
+                               if (msgCount === messagesToSend){
+                                   timeMessagesSent = Date.now();
+                                   console.log(`all messages sent in ${timeMessagesSent - timeAfterMessages}ms. closing test in 1 second`)
+                                   setTimeout(() => process.exit(0), 1000);
+                               }
+                           });
+                       }
 
-        // make a query
-        productManager.getAll(true, {
-            query: `gtin like /.*/g`
-        }, (err, products) => {
-            const timeAfterQuery = Date.now();
-            console.log(`After Messages: ${timeAfterQuery}. elapsed: ${timeAfterQuery-timeBeforeQuery} ms`);
+                       timeBeforeMessages = Date.now();
+                       console.log(`Before Messages: ${timeBeforeMessages}`)
+                       for (let i = 0; i < messagesToSend; i++)
+                           sendMessage();
+                       timeAfterMessages = Date.now();
+                       console.log(`After Messages: ${timeAfterMessages}. Elapsed: ${timeAfterMessages - timeBeforeMessages}`);
 
-            //process.exit(0);
+                       timeBeforeLoad = Date.now();
+                       console.log(`Before DSU load ${timeBeforeLoad}`)
+                       resolver.loadDSU(keySSI, (err, dsu) => {
+                           if (err)
+                               throw err;
+                           timeAfterLoad = Date.now();
+                           console.log(`After DSU load ${timeAfterLoad}. elapsed: ${timeAfterLoad - timeBeforeLoad}`)
+                           dsu.readFile('/info', (err, data) => {
+                               if (err)
+                                   throw err;
+                               console.log(`Time to read: ${Date.now() - timeAfterLoad}`);
+                               const result = JSON.parse(data);
+                               finished();
+                           })
+                       })
+                   });
+
+                   forked.send(identities.receiver);
+               });
+            });
         });
-    })
-});
+    });
+}, 3600000)
