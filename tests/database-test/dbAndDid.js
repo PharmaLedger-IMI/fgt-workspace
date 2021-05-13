@@ -15,7 +15,7 @@ const defaultOps = {
     kill: false,
     domain: 'traceability',
     didMethod: 'demo',
-    messages: 10,
+    messages: 1,
     timeout: 0
 }
 
@@ -60,6 +60,7 @@ let timeBeforeMessages, timeAfterMessages, timeBeforeLoad, timeAfterLoad, timeMe
                        const sendMessage = function(){
                            console.log("Sending message", JSON.stringify(someData), " to receiver ", config.receiver);
                            senderDID.sendMessage(JSON.stringify(someData), config.receiver /*receiverDID*/,  (err) => {
+                               console.log("sendMessage callback");
                                if (err)
                                    return console.log(`Error sending message`, err);
 
