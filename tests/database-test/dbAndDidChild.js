@@ -5,16 +5,25 @@ require("../../privatesky/psknode/bundles/openDSU");
 const opendsu = require("opendsu");
 const w3cDID = opendsu.loadApi('w3cdid');
 
+let identifier;
+
 process.on('message', (args) => {
-    const {id, didMethod, messages} = args;
+    const {id, didMethod, messages, terminate} = args;
+
+    if (terminate){
+        console.log(`Received termination notice. Shutting down listener for ${identifier}`);
+        process.exit(0);
+    }
+
     let messageCount = 0;
     w3cDID.createIdentity(didMethod, id, (err, did) => {
         if (err) {
             throw err;
         }
-        console.log(`${did.getIdentifier()} waiting for messages`);
+        identifier = did.getIdentifier();
+        console.log(`${identifier} waiting for messages`);
         const listen = function(){
-            console.log(`Listening for messages on ${did.getIdentifier()}`);
+            console.log(`Listening for messages on ${identifier}`);
             did.readMessage((err, msg) => {
                 if(err){
                     console.log(`ERROR:`, err);
@@ -30,6 +39,6 @@ process.on('message', (args) => {
             });
         }
         listen();
-        process.send(did.getIdentifier());
+        process.send(identifier);
     });
 })
