@@ -53,7 +53,7 @@ assert.callback('W3cDID MQ & readDSU stress test (hangs the browser)', (finished
                        // console.log(`received process shutdown`);
 
                        const sendMessage = function(){
-                           senderDID.sendMessage(JSON.stringify(someData), identities.receiver,  (err) => {
+                           senderDID.sendMessage(JSON.stringify(someData), identities.receiver /*receiverDID*/,  (err) => {
                                if (err)
                                    return console.log(`Error sending message`);
                                console.log(`Message successfully sent`);
