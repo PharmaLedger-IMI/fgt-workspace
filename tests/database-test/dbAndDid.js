@@ -2,35 +2,38 @@ process.env.NO_LOGS = true;
 
 const { fork } = require('child_process');
 
-require("../../privatesky/psknode/bundles/testsRuntime");
+const { argParser } = require('../../bin/environment/utils');
 
-const tir = require("../../privatesky/psknode/tests/util/tir");
-const dc = require("double-check");
-const assert = dc.assert;
+require("../../privatesky/psknode/bundles/openDSU");
 
 const opendsu = require("opendsu");
 const w3cDID = opendsu.loadApi('w3cdid');
 
-const identities = {
+const defaultOps = {
     receiver: 'myfirstDemoIdentity', //'receiverWc3DIDString' + Math.floor(Math.random() * 10000000),
     sender: 'senderWc3DIDString' + Math.floor(Math.random() * 10000000),
+    kill: false,
+    domain: 'traceability',
+    didMethod: 'demo',
+    messages: 10,
+    timeout: 0
 }
 
-const messagesToSend = 10;
+const config = argParser(defaultOps, process.argv)
 
 let msgCount = 0;
 
 let timeBeforeMessages, timeAfterMessages, timeBeforeLoad, timeAfterLoad, timeMessagesSent;
 
-assert.callback('W3cDID MQ & readDSU stress test (hangs the browser)', (finished) => {
-    w3cDID.createIdentity("demo", identities.sender, (err, senderDID) => {
+
+    w3cDID.createIdentity(config.didMethod, config.sender, (err, senderDID) => {
         if (err)
             throw err;
 
         const resolver = opendsu.loadApi('resolver');
         const keyssi = opendsu.loadApi('keyssi');
 
-        const dsuKey = keyssi.createTemplateSeedSSI('traceability', 'somestring', undefined, 'v0', undefined)
+        const dsuKey = keyssi.createTemplateSeedSSI(config.domain, 'somestring', undefined, 'v0', undefined)
         resolver.createDSU(dsuKey, (err, dsu) => {
 
             const someData = {
@@ -49,17 +52,20 @@ assert.callback('W3cDID MQ & readDSU stress test (hangs the browser)', (finished
                    // const forked = fork('dbAndDidChild.js');
                    // forked.on('message', (receiverDID) => {
                    //     console.log(`received created and listening`);
-                       // forked.kill('SIGINT');
-                       // console.log(`received process shutdown`);
+                   //     if (config.kill){
+                   //         forked.kill('SIGINT');
+                   //         console.log(`received process shutdown`);
+                   //     }
 
                        const sendMessage = function(){
                            console.log("Sending message", JSON.stringify(someData), " to receiver ", identities.receiver);
-                           senderDID.sendMessage(JSON.stringify(someData), identities.receiver /*receiverDID*/,  (err) => {
+                           senderDID.sendMessage(JSON.stringify(someData), config.receiver /*receiverDID*/,  (err) => {
+
                                if (err)
                                    return console.log(`Error sending message`);
                                console.log(`Message successfully sent`);
                                msgCount++;
-                               if (msgCount === messagesToSend){
+                               if (msgCount === config.messages){
                                    timeMessagesSent = Date.now();
                                    console.log(`all messages sent in ${timeMessagesSent - timeAfterMessages}ms. closing test in 1 second`)
                                    setTimeout(() => process.exit(0), 1000);
@@ -67,33 +73,48 @@ assert.callback('W3cDID MQ & readDSU stress test (hangs the browser)', (finished
                            });
                        }
 
-                       timeBeforeMessages = Date.now();
-                       console.log(`Before Messages: ${timeBeforeMessages}`)
-                       for (let i = 0; i < messagesToSend; i++)
-                           sendMessage();
-                       timeAfterMessages = Date.now();
-                       console.log(`After Messages: ${timeAfterMessages}. Elapsed: ${timeAfterMessages - timeBeforeMessages}`);
+                       const runTest = function(){
+                           timeBeforeMessages = Date.now();
+                           console.log(`Before Messages: ${timeBeforeMessages}`);
 
-                       timeBeforeLoad = Date.now();
-                       console.log(`Before DSU load ${timeBeforeLoad}`)
-                       resolver.loadDSU(keySSI, (err, dsu) => {
-                           if (err)
-                               throw err;
-                           timeAfterLoad = Date.now();
-                           console.log(`After DSU load ${timeAfterLoad}. elapsed: ${timeAfterLoad - timeBeforeLoad}`)
-                           dsu.readFile('/info', (err, data) => {
+                           for (let i = 0; i < config.messages; i++)
+                               sendMessage();
+
+                           timeAfterMessages = Date.now();
+                           console.log(`After Messages: ${timeAfterMessages}. Elapsed: ${timeAfterMessages - timeBeforeMessages}`);
+
+                           timeBeforeLoad = Date.now();
+                           console.log(`Before DSU load ${timeBeforeLoad}`);
+
+                           resolver.loadDSU(keySSI, (err, dsu) => {
                                if (err)
                                    throw err;
-                               console.log(`Time to read: ${Date.now() - timeAfterLoad}`);
-                               const result = JSON.parse(data);
-                               finished();
-                           })
-                       })
-                   // });
 
-                   // forked.send(identities.receiver);
-               });
+                               timeAfterLoad = Date.now();
+                               console.log(`After DSU load ${timeAfterLoad}. elapsed: ${timeAfterLoad - timeBeforeLoad}`);
+
+                               dsu.readFile('/info', (err, data) => {
+                                   if (err)
+                                       throw err;
+
+                                   console.log(`Time to read: ${Date.now() - timeAfterLoad}`);
+                                   const result = JSON.parse(data);
+                                   console.log(`Finished:`, result);
+                               });
+                           });
+                       }
+
+                       if (!config.timeout)
+                           return runTest();
+
+                       console.log(`Waiting for ${config.timeout} to run the test...`)
+                       setTimeout(() => {
+                           runTest();
+                       }, config.timeout);
+                   });
+               //
+               //     forked.send(config.receiver);
+               // });
             });
         });
     });
-}, 3600000)
