@@ -3,7 +3,7 @@ process.env.NO_LOGS = true;
 const { APPS } = require('./credentials/credentials');
 const { argParser } = require('./utils');
 
-const {create} = require('./setupEnvironement');
+const {create} = require('./setupEnvironment');
 
 const defaultOps = {
     app: APPS.MAH,

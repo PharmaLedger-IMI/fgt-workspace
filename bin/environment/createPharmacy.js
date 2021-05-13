@@ -58,7 +58,7 @@ const _createManyIssuedOrders = function (countdown, issuedOrderManager, product
 const setup = function (participantManager, products, wholesalers, stocks, callback) {
     // TODO move this to a function that generates issuedOrders ?
     const issuedOrderManager = getIssuedOrderManager(participantManager, true);
-
+    participantManager.issuedOrderManager = issuedOrderManager;
     if (products.length <=0)
         return callback("Products has zero length.");
     if (wholesalers.length <=0)
