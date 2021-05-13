@@ -31,14 +31,23 @@ process.on('message', (args) => {
                 }
                 console.log(`${did.getIdentifier()} received message: ${JSON.stringify(msg)}`);
                 if (++ messageCount === messages){
-                    console.log(`Received all ${messages} expected messages. Shutting Down...`)
+                    console.log(`Received all ${messages} expected messages. Shutting down listener for ${identifier}`);
                     process.exit(0)
                 }
 
                 listen();
             });
         }
+
         listen();
-        process.send(identifier);
+
+        if (!args.timeout)
+            return process.send(identifier);
+
+        console.log(`Waiting for ${args.timeout}ms for the listener to properly boot...`);
+        setTimeout(() => {
+            process.send(identifier);
+        }, args.timeout)
+
     });
 })
