@@ -41,7 +41,6 @@ export namespace Components {
         "delayString": string;
         "detailsString": string;
         "noStockString": string;
-        "orderId": string;
         "proceedString": string;
         "productsString": string;
         "refresh": () => Promise<void>;
@@ -49,6 +48,7 @@ export namespace Components {
         "remainingString": string;
         "selectOrderLine": (gtin: any) => Promise<void>;
         "selectProductString": string;
+        "shipmentId": string;
         "stockString": string;
         "titleString": string;
         "unavailableString": string;
@@ -337,12 +337,12 @@ declare namespace LocalJSX {
           * Through this event navigation requests to tabs are made
          */
         "onSendNavigateTab"?: (event: CustomEvent<any>) => void;
-        "orderId"?: string;
         "proceedString"?: string;
         "productsString"?: string;
         "rejectString"?: string;
         "remainingString"?: string;
         "selectProductString"?: string;
+        "shipmentId"?: string;
         "stockString"?: string;
         "titleString"?: string;
         "unavailableString"?: string;

@@ -1,14 +1,13 @@
-
-    <webc-container controller="ReceivedOrdersController">
-        <pdm-ion-table
-                title="@title"
-                item-reference="order-id"
-                paginated="true"
-                manager="ReceivedOrderManager"
-                buttons="@buttons"
-                mode="byref"
-                icon-name="stats-chart-outline"
-                item-type="managed-received-order-list-item"
-                items-per-page="10">
-        </pdm-ion-table>
-    </webc-container>
+<webc-container controller="ReceivedOrdersController">
+    <pdm-ion-table
+            title="@title"
+            item-reference="order-id"
+            paginated="true"
+            manager="ReceivedOrderManager"
+            buttons="@buttons"
+            mode="byref"
+            icon-name="stats-chart-outline"
+            item-type="managed-received-order-list-item"
+            items-per-page="10">
+    </pdm-ion-table>
+</webc-container>

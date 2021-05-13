@@ -51,20 +51,20 @@ function ShipmentLineService(domain, strategy){
     /**
      * Creates an orderLine DSU
      * @param {string} shipmentId
-     * @param {string} senderId
      * @param {ShipmentLine} shipmentLine
      * @param {function} callback
      * @param {KeySSI} statusSSI the keySSI for the OrderStus DSU
      * @return {string} keySSI
      */
-    this.create = function(shipmentId, senderId, shipmentLine, statusSSI, callback){
+    this.create = function(shipmentId, shipmentLine, statusSSI, callback){
 
         let data = typeof shipmentLine == 'object' ? JSON.stringify(shipmentLine) : shipmentLine;
 
         let keyGenData = {
             gtin: shipmentLine.gtin,
-            senderId: senderId,
-            shipmentId: shipmentId
+            senderId: shipmentLine.senderId,
+            shipmentId: shipmentId,
+            batch: shipmentLine.batch
         }
 
         if (isSimple){

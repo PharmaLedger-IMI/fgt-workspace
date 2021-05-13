@@ -103,7 +103,7 @@ function ShipmentService(domain, strategy) {
         statusService.create(status, (err, keySSI) => {
             if (err)
                 return callback(err);
-            console.log(`OrderStatus DSU created with SSI ${keySSI.getIdentifier(true)}`);
+            console.log(`ShipmentStatus DSU created with SSI ${keySSI.getIdentifier(true)}`);
             callback(undefined, keySSI);
         });
     }
@@ -198,7 +198,7 @@ function ShipmentService(domain, strategy) {
             let shipmentLine = items.shift();
             if (!shipmentLine)
                 return callback(undefined, shipmentLines);
-            shipmentLineService.create(shipment.shipmentId, shipment.senderId, shipmentLine, statusSSI, (err, keySSI) => {
+            shipmentLineService.create(shipment.shipmentId, shipmentLine, statusSSI, (err, keySSI) => {
                 if (err)
                     return callback(err);
                 shipmentLines.push(keySSI);

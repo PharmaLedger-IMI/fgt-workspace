@@ -18,7 +18,7 @@ const {Order, OrderLine, Stock, Batch, Shipment, ShipmentStatus, ShipmentLine} =
   styleUrl: 'managed-issued-shipment.css',
   shadow: false,
 })
-export class ManagedIssuedSHipment {
+export class ManagedIssuedShipment {
 
   @HostElement() host: HTMLElement;
 
@@ -110,18 +110,18 @@ export class ManagedIssuedSHipment {
         gtin: props.gtin,
         quantity: batch.quantity,
         batch: batch.batchNumber,
-        requesterId: self.order.requesterId
+        requesterId: self.shipment.requesterId
       });
     }
 
-    const shipment = new Shipment(undefined, undefined, this.order.requesterId, undefined, this.order.shipToAddress);
+    const shipment = new Shipment(undefined, undefined, this.shipment.requesterId, undefined, this.shipment.shipToAddress);
     shipment.shipmentLines = Object.keys(props).map(gtin => props[gtin].map(b => buildShipmentLine(b)));
     return shipment;
   }
 
-  @Prop({attribute: 'order-id', mutable: true}) orderId: string = undefined;
+  @Prop({attribute: 'shipment-id', mutable: true}) shipmentId: string = undefined;
 
-  @Prop({attribute: 'title-string'}) titleString: string = 'Process Order';
+  @Prop({attribute: 'title-string'}) titleString: string = 'Process Shipment';
 
   @Prop({attribute: 'details-string'}) detailsString: string = 'Details:';
 
@@ -147,9 +147,9 @@ export class ManagedIssuedSHipment {
 
   @Prop({attribute: 'delay-string'}) delayString: string = 'Delay:';
 
-  @State() order: typeof Order = undefined;
+  @State() shipment: typeof Shipment = undefined;
 
-  @State() orderLines: typeof OrderLine[] = undefined;
+  @State() orderLines: typeof ShipmentLine[] = undefined;
 
   @State() stockForProduct = undefined;
 
@@ -159,57 +159,77 @@ export class ManagedIssuedSHipment {
 
   private shipmentLines = {};
 
-  private receivedOrderManager: WebManager = undefined;
+  private issuedShipmentManager: WebManager = undefined;
 
   private stockManager: WebManager = undefined;
 
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
-    this.receivedOrderManager = await WebManagerService.getWebManager("ReceivedOrderManager");
+    this.issuedShipmentManager = await WebManagerService.getWebManager("IssuedShipmentManager");
     this.stockManager = await WebManagerService.getWebManager("StockManager");
-    return await this.loadOrder();
+    return await this.loadShipment();
   }
 
-  async loadOrder(){
+  async loadShipment(){
     let self = this;
-    if (!this.orderId || this.orderId.startsWith('@')) // for webcardinal model compatibility
+    if (!this.shipmentId || this.shipmentId.startsWith('@')) // for webcardinal model compatibility
       return;
-    await self.receivedOrderManager.getOne(this.orderId, true, async (err, order) => {
+
+    self.issuedShipmentManager.getOne(this.shipmentId, true, async (err, shipment) => {
       if (err)
-        return this.sendError(`Could not retrieve order ${self.orderId}`);
-      self.order = order;
-      await self.loadOrderLinesAsync();
+        return this.sendError(`Could not retrieve order ${self.shipmentId}`);
+      self.shipment = shipment;
+      self.loadShipmentLines((err, lines) => {
+        if (err)
+          return;
+        lines.forEach(line => {
+          self.updateStock(line.gtin, lines);
+        });
+      });
     });
   }
 
-  private async loadOrderLinesAsync(){
+  private recreateOrderLines(shipmentLines){
+    const byGtin = shipmentLines.reduce((accum, sl) => {
+      (accum[sl['gtin']] = accum[sl['gtin']] || []).push(sl);
+      return accum
+    }, {});
+    return Object.keys(byGtin).map(gtin => {
+      const quantity = byGtin[gtin].reduce((acc, sl) => acc + sl.quantity, 0);
+      const requesterId = byGtin[gtin][0].requesterId;
+      const senderId = byGtin[gtin][0].senderId;
+      return new OrderLine(gtin, quantity, requesterId, senderId);
+    });
+  }
+
+  private loadShipmentLines(callback?){
     const self = this;
 
     const result = [];
 
-    const orderLineIterator = function(orderLinesCopy, callback){
-      const orderLine = orderLinesCopy.shift();
-      if (!orderLine)
+    const shipmentLineIterator = function(linesCopy, callback){
+      const shipmentLine = linesCopy.shift();
+      if (!shipmentLine)
         return callback(undefined, result);
-      self.stockManager.getOne(orderLine.gtin, true, (err, stock) => {
+      self.stockManager.getOne(shipmentLine.gtin, true, (err, stock) => {
         if (err){
-          console.log(`Could not retrieve stock for product ${orderLine.gtin}`);
+          console.log(`Could not retrieve stock for product ${shipmentLine.gtin}`);
           result.push({
-            orderLine: orderLine,
+            orderLine: shipmentLine,
             stock: undefined
           })
-          return orderLineIterator(orderLinesCopy, callback);
+          return shipmentLineIterator(linesCopy, callback);
         }
         result.push({
-          orderLine: orderLine,
+          orderLine: shipmentLine,
           stock: new Stock(stock)
         });
-        orderLineIterator(orderLinesCopy, callback);
+        shipmentLineIterator(linesCopy, callback);
       });
     }
 
-    orderLineIterator(self.order.orderLines.slice(), (err, result) => {
+    shipmentLineIterator(self.recreateOrderLines(self.shipment.shipmentLines), (err, result) => {
       if (err)
         return console.log(err);
       self.result = result.sort((first, second) => {
@@ -221,14 +241,16 @@ export class ManagedIssuedSHipment {
           return -1;
         return first.stock.getQuantity() - second.stock.getQuantity();
       });
-      self.orderLines = self.result.map(r => r.orderLine);
+      self.orderLines = self.result.map(r => r.shipmentLine);
+      if (callback)
+        callback(undefined, self.shipment.shipmentLines);
     });
   }
 
-  @Watch('orderId')
+  @Watch('shipmentId')
   @Method()
   async refresh(){
-    await this.loadOrder();
+    await this.loadShipment();
   }
 
   @Watch('selectedProduct')
@@ -257,7 +279,7 @@ export class ManagedIssuedSHipment {
     self.stockForProduct = [...result];
   }
 
-  private updateStock(gtin){
+  private updateStock(gtin, shipmentLines?){
     const self = this;
     if (gtin in self.shipmentLines)
       return self.shipmentLines[gtin];
@@ -275,9 +297,11 @@ export class ManagedIssuedSHipment {
       return date1 - date2;
     });
 
-    self.shipmentLines[gtin] = self.splitStockByQuantity(result, gtin);
+    self.shipmentLines[gtin] = self.splitStockByQuantity(result, gtin, shipmentLines);
     return self.shipmentLines[gtin];
   }
+
+
 
   private getActionButtons(){
 
@@ -309,7 +333,7 @@ export class ManagedIssuedSHipment {
           {this.titleString}
           {this.getActionButtons()}
         </ion-card-title>
-        <ion-card-subtitle>{this.orderId}</ion-card-subtitle>
+        <ion-card-subtitle>{this.shipmentId}</ion-card-subtitle>
       </ion-card-header>
     )
   }
@@ -330,14 +354,14 @@ export class ManagedIssuedSHipment {
     return (
       <ion-item class="ion-no-padding">
         <ion-item class="ion-no-padding">
-          <ion-label>{this.order.shipToAddress}</ion-label>
+          <ion-label>{this.shipment.shipToAddress}</ion-label>
         </ion-item>
         {this.getMap()}
       </ion-item>
     )
   }
 
-  private splitStockByQuantity(stock: any, gtin){
+  private splitStockByQuantity(stock: any, gtin, shipmentLines?){
     const self = this;
     let accum = 0;
     const result = {
@@ -345,6 +369,28 @@ export class ManagedIssuedSHipment {
       divided: undefined,
       remaining: []
     };
+
+    if (shipmentLines) {
+      const getStockIndex = function (shipmentLine) {
+        for (let stockIndex = 0; stockIndex < stock.length; stockIndex++) {
+          if (stock[stockIndex].gtin === shipmentLine.gtin)
+            return stockIndex
+        }
+        return -1;
+      }
+
+      for (let slIndex = shipmentLines.length - 1; slIndex >= 0; slIndex--){
+        const sl = shipmentLines[slIndex];
+        const stockIndex = getStockIndex(sl);
+        if (stockIndex === -1){
+          // TODO handle missing stock (means other user has used up the stock)
+          continue;
+        }
+
+        stock.unshift(stock.splice(stockIndex, 1));
+      }
+    }
+
     const requiredQuantity = self.result.filter(r => r.orderLine.gtin === gtin)[0].orderLine.quantity
     stock.forEach(batch => {
       if (accum >= requiredQuantity){
@@ -432,7 +478,7 @@ export class ManagedIssuedSHipment {
   }
 
   private getDetails(){
-    if (!this.order)
+    if (!this.shipment)
       return this.getLoading();
 
     return this.getLocalizationInfo();

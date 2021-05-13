@@ -14,14 +14,14 @@
 | `delayString`         | `delay-string`       |             | `string` | `'Delay:'`                     |
 | `detailsString`       | `details-string`     |             | `string` | `'Details:'`                   |
 | `noStockString`       | `no-stock-string`    |             | `string` | `'Empty'`                      |
-| `orderId`             | `order-id`           |             | `string` | `undefined`                    |
 | `proceedString`       | `proceed-string`     |             | `string` | `'Continue:'`                  |
 | `productsString`      | `products-string`    |             | `string` | `'Products:'`                  |
 | `rejectString`        | `reject-string`      |             | `string` | `'Reject'`                     |
 | `remainingString`     | `remaining-string`   |             | `string` | `'Remaining:'`                 |
 | `selectProductString` | `select-product`     |             | `string` | `'Please Select a Product...'` |
+| `shipmentId`          | `shipment-id`        |             | `string` | `undefined`                    |
 | `stockString`         | `stock-string`       |             | `string` | `'Stock:'`                     |
-| `titleString`         | `title-string`       |             | `string` | `'Process Order'`              |
+| `titleString`         | `title-string`       |             | `string` | `'Process Shipment'`           |
 | `unavailableString`   | `unavailable-string` |             | `string` | `'Unavailable:'`               |
 
 
