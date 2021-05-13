@@ -21,6 +21,7 @@ const setupProducts = function(participantManager, products, batches, callback){
     getProductManager(participantManager, true, (err, productManager) => {
         if (err)
             return callback(err);
+        participantManager.productManager = productManager;
         products = products || require('./products/productsRandom')();
         const iterator = function(productsCopy, callback){
             const product = productsCopy.shift();
@@ -42,6 +43,7 @@ const setupBatches = function(participantManager, products, batches,  callback){
     getBatchManager(participantManager, true, (err, batchManager) => {
         if (err)
             return callback(err);
+        participantManager.batchManager = batchManager;
         const getBatches = !batches
             ? require('./batches/batchesRandom')
             : function(gtin){

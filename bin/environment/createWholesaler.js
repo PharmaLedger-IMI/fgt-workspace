@@ -46,7 +46,7 @@ const setup = function(participantManager, stocks, callback){
     getStockManager(participantManager, true, (err, stockManager) => {
         if (err)
             return callback(err);
-
+        participantManager.stockManager = stockManager;
         participantManager.receivedOrderManager = getReceivedOrderManager(participantManager, true); // will handle incoming messages. just to keep the reference and ensure its instantiated and listening
 
         stocks = stocks || require('./stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj();
