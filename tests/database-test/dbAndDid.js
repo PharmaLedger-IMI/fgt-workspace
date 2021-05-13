@@ -58,11 +58,10 @@ let timeBeforeMessages, timeAfterMessages, timeBeforeLoad, timeAfterLoad, timeMe
                    //     }
 
                        const sendMessage = function(){
-                           console.log("Sending message", JSON.stringify(someData), " to receiver ", identities.receiver);
+                           console.log("Sending message", JSON.stringify(someData), " to receiver ", config.receiver);
                            senderDID.sendMessage(JSON.stringify(someData), config.receiver /*receiverDID*/,  (err) => {
-
                                if (err)
-                                   return console.log(`Error sending message`);
+                                   return console.log(`Error sending message ${err}`);
                                console.log(`Message successfully sent`);
                                msgCount++;
                                if (msgCount === config.messages){
