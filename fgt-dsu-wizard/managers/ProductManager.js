@@ -34,7 +34,7 @@ class ProductManager extends Manager {
      * @param {function(err, Product)} callback
      * @private
      */
-    _bindMah(product, callback){
+    _bindParticipant(product, callback){
         let self = this;
         self.getIdentity((err, mah) => {
             if (err)
@@ -83,7 +83,7 @@ class ProductManager extends Manager {
             gtin = product.gtin;
         }
         let self = this;
-        self._bindMah(product, (err, product) => {
+        self._bindParticipant(product, (err, product) => {
             if (err)
                 return self._err(`Could not bind mah to product`, err, callback);
             self.productService.create(product, (err, keySSI) => {

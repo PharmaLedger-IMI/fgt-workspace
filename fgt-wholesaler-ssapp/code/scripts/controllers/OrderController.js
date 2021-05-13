@@ -40,8 +40,8 @@ export default class OrderController extends LocalizedController {
     createShipment(evt){
         evt.preventDefault();
         evt.stopImmediatePropagation();
-        const {shipmentId, requesterId, senderId, shipToAddress, status, shipmenLines} = evt.detail;
-        const shipment = new Shipment(shipmentId, requesterId, senderId, shipToAddress, status, shipmenLines);
+        const {shipmentId, requesterId, senderId, shipToAddress, status, shipmentLines} = evt.detail;
+        const shipment = new Shipment(shipmentId, requesterId, senderId, shipToAddress, status, shipmentLines);
         super.navigateToTab('tab-shipment', shipment);
     }
 }

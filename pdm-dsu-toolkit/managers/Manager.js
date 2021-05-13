@@ -173,6 +173,21 @@ class Manager{
     }
 
     /**
+     * Because Message sending is implemented as fire and forget (for the user experience)
+     * we need an async callback that might hold some specific logic
+     *
+     * Meant to be overridden by subclasses when needed
+     * @param err
+     * @param args
+     * @protected
+     */
+    _messageCallback(err, ...args){
+        if (err)
+            return console.log(err);
+        console.log(...args);
+    }
+
+    /**
      * Send a message to the specified DID
      * @param {string|W3cDID} did
      * @param {string} [api] defaults to the tableName
@@ -186,7 +201,6 @@ class Manager{
     }
 
     _registerMessageListener(listener){}
-
 
     /**
      * Proxy call to {@link MessageManager#deleteMessage()}.
@@ -286,9 +300,11 @@ class Manager{
     }
 
     /**
-     * Stops the message service listener
+     * Stops the message service listener when it is running
      */
     shutdownMessenger(){
+        if(!this.messenger)
+            return console.log(`No message listener active`);
         this.messenger.shutdown();
     }
 

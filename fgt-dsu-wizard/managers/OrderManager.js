@@ -55,7 +55,34 @@ class OrderManager extends Manager {
             products: item.orderLines.map(ol => ol.gtin).join(','),
             value: record
         }
-    };
+    }
+
+    // messages to all MAHs.
+    // the order is the same for the orderlines and their ssis because of the way the code is written
+    sendOrderLinesToMAH(orderLines, orderLinesSSIs, callback) {
+        const self = this;
+        const orderLine = orderLines.shift();
+        let ssi = orderLinesSSIs.shift();
+        //console.log("Handling rest of orderLines ", orderLines);
+        if (!orderLine){
+            console.log(`All orderlines transmited to MAH`)
+            return callback();
+        }
+        self.orderService.resolveMAH(orderLine, (err, mahId) => {
+            if (err)
+                return self._err(`Could not resolve MAH for ${orderLine}`, err, callback);
+            if (typeof ssi !== 'string')
+                ssi = ssi.getIdentifier();
+            self.sendMessage(mahId, DB.orderLines, ssi, (err) => {
+                if (err)
+                    return self._err(`Could not send message to MAH ${mahId} for orderLine ${JSON.stringify(orderLine)} with ssi ${ssi}`, err, callback);
+                console.log(`Orderline ${JSON.stringify(orderLine)} transmitted to MAH ${mahId}`);
+                callback();
+            })
+        });
+
+        self.sendOrderLinesToMAH(orderLines, orderLinesSSIs, callback);
+    }
 
     /**
      * Convert the OrderController view model into an Order.

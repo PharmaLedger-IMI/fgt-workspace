@@ -9,6 +9,7 @@ class Shipment {
     requesterId;
     senderId;
     shipToAddress;
+    shipFromAddress;
     status;
     shipmentLines;
 
