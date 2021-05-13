@@ -12,8 +12,8 @@ const opendsu = require("opendsu");
 const w3cDID = opendsu.loadApi('w3cdid');
 
 const identities = {
-    receiver: 'receiverWc3DIDString',
-    sender: 'senderWc3DIDString'
+    receiver: 'myfirstDemoIdentity', //'receiverWc3DIDString' + Math.floor(Math.random() * 10000000),
+    sender: 'senderWc3DIDString' + Math.floor(Math.random() * 10000000),
 }
 
 const messagesToSend = 10;
@@ -46,14 +46,14 @@ assert.callback('W3cDID MQ & readDSU stress test (hangs the browser)', (finished
                        throw err;
                    dsu = undefined;
 
-                   const forked = fork('dbAndDidChild.js');
-                   forked.on('message', (receiverDID) => {
-                       console.log(`received created and listening`);
-                       //forked.kill('SIGINT');
-                       //console.log(`received process shutdown`);
+                   // const forked = fork('dbAndDidChild.js');
+                   // forked.on('message', (receiverDID) => {
+                   //     console.log(`received created and listening`);
+                       // forked.kill('SIGINT');
+                       // console.log(`received process shutdown`);
 
                        const sendMessage = function(){
-                           senderDID.sendMessage(JSON.stringify(someData), receiverDID,  (err) => {
+                           senderDID.sendMessage(JSON.stringify(someData), identities.receiver,  (err) => {
                                if (err)
                                    return console.log(`Error sending message`);
                                console.log(`Message successfully sent`);
@@ -88,9 +88,9 @@ assert.callback('W3cDID MQ & readDSU stress test (hangs the browser)', (finished
                                finished();
                            })
                        })
-                   });
+                   // });
 
-                   forked.send(identities.receiver);
+                   // forked.send(identities.receiver);
                });
             });
         });
