@@ -62,7 +62,7 @@ w3cDID.createIdentity(config.didMethod, config.sender, (err, senderDID) => {
            timeAfterMessages = Date.now();
            console.log(`After Messages: ${timeAfterMessages}. Elapsed: ${timeAfterMessages - timeBeforeMessages}`);
 
-           setTimeout(() => console.log('after 10- sec'), 10000);
+           setTimeout(() => console.log('after 10 sec'), 10000);
         }
 
         if (config.kill){
