@@ -15,8 +15,8 @@ const defaultOps = {
     domain: 'traceability',
     didMethod: 'demo',
     messages: 1,
-    kill: false,
-    timeout: 1000
+    kill: true,
+    timeout: 200
 }
 
 const config = argParser(defaultOps, process.argv)
