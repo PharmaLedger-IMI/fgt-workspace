@@ -10,12 +10,12 @@ const opendsu = require("opendsu");
 const w3cDID = opendsu.loadApi('w3cdid');
 
 const defaultOps = {
-    receiver: 'receiverWc3DIDString' + Math.floor(Math.random() * 10000000),
+    receiver: 'myfirstDemoIdentity', //'receiverWc3DIDString' + Math.floor(Math.random() * 10000000),
     sender: 'senderWc3DIDString' + Math.floor(Math.random() * 10000000),
     domain: 'traceability',
     didMethod: 'demo',
-    messages: 1,
-    kill: true,
+    messages: 10,
+    kill: false,
     timeout: 200
 }
 
@@ -33,13 +33,13 @@ const someData = {
 w3cDID.createIdentity(config.didMethod, config.sender, (err, senderDID) => {
     if (err)
         throw err;
-    const forked = fork('dbAndDidChild.js');
-    forked.on('message', (receiverDID) => {
-        console.log(`received created and listening`);
+    // const forked = fork('dbAndDidChild.js');
+    // forked.on('message', (receiverDID) => {
+    //     console.log(`received created and listening`);
 
         const sendMessage = function(){
            console.log("Sending message", JSON.stringify(someData), " to receiver ", config.receiver);
-           senderDID.sendMessage(JSON.stringify(someData), receiverDID,  (err) => {
+           senderDID.sendMessage(JSON.stringify(someData), `did:demo:myfirstDemoIdentity`/*receiverDID*/,  (err) => {
                if (err)
                    return console.log(`Error sending message`, err);
                msgCount++;
@@ -61,20 +61,22 @@ w3cDID.createIdentity(config.didMethod, config.sender, (err, senderDID) => {
 
            timeAfterMessages = Date.now();
            console.log(`After Messages: ${timeAfterMessages}. Elapsed: ${timeAfterMessages - timeBeforeMessages}`);
+
+           setTimeout(() => console.log('after 10- sec'), 10000);
         }
 
-        if (config.kill){
-            forked.send({terminate: true});
-            return setTimeout(() => runTest(), 100); // on a timer just to allow the child to properly terminate
-        }
+        // if (config.kill){
+        //     forked.send({terminate: true});
+        //     return setTimeout(() => runTest(), 100); // on a timer just to allow the child to properly terminate
+        // }
 
         runTest();
-    });
-
-    forked.send({
-        id: config.receiver,
-        didMethod: config.didMethod,
-        messages: config.messages,
-        timeout: config.timeout
-    });
+    // });
+    //
+    // forked.send({
+    //     id: config.receiver,
+    //     didMethod: config.didMethod,
+    //     messages: config.messages,
+    //     timeout: config.timeout
+    // });
 });
