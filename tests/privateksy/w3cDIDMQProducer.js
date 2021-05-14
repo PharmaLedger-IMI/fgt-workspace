@@ -1,5 +1,5 @@
 // Ignore the test
-//process.exit();
+process.exit();
 
 require("../../privatesky/psknode/bundles/testsRuntime");
 
