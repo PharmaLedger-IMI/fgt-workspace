@@ -21,10 +21,11 @@ const { WebcController } = WebCardinal.controllers;
  *      }
  * </pre>
  * @class LocalizedController
+ * @abstract
  */
 export default class LocalizedController extends WebcController {
     initializeModel = () => {
-        throw new Error("Child classes must implement this");
+        throw new Error("Child classes must implement this for explicity's sake");
     }
 
     /**
@@ -122,6 +123,43 @@ export default class LocalizedController extends WebcController {
             ];
 
         return toast.present();
+    }
+
+    /**
+     * Instantiates a new Spinner
+     *
+     * API:
+     * <pre>
+     *     const loader = controller._getLoader('message', options);
+     *     await loader.present();
+     *     ...
+     *     await loader.dismiss();
+     * </pre>
+     *
+     * for styling the class
+     *
+     * @param {string} message
+     * @param {object} [options] accepts params:
+     *  - duration duration in ms. (no duration or 0) makes the spinner stay until dismissed (defaults to 0);
+     *  - cssClass css class to append. defaults to 'ion-loading'
+     *  - translucent defaults to true
+     *
+     * @return {ion-loading} a spinner
+     * @protected
+     */
+    _getLoader(message, options){
+        options = options || {};
+        let {duration, cssClass, translucent} = options;
+        duration = duration || 0;
+        cssClass = cssClass || 'ion-loading';
+        translucent = translucent !== false;
+        const loading = document.createElement('ion-loading');
+        loading.cssClass = cssClass;
+        loading.message = message;
+        loading.translucent = translucent;
+        loading.duration = duration;
+        document.body.appendChild(loading);
+        return loading;
     }
 
     /**
