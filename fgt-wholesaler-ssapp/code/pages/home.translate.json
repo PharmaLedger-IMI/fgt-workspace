@@ -39,8 +39,8 @@
     "buttons": {
     }
   },
-  "receivedOrder": {
-    "title": "Process Order",
+  "createShipment": {
+    "title": "Create Shipment",
     "details": "Details:",
     "products": "Products:",
     "stock": "Stock:",
@@ -48,9 +48,18 @@
     "available": "Available:",
     "unavailable": "Unavailable:",
     "selectProduct": "Please select a product",
+    "creation": {
+      "loading": "Creating Shipment. Please wait...",
+      "success": "Shipment Successfully created",
+      "error": {
+        "bind": "Could not bind participant to shipment",
+        "invalid": "Invalid Shipment: ",
+        "error": "Could not create new Shipment: "
+      }
+    },
     "buttons": {
       "reject": "Reject",
-      "proceed": "Create Shipment",
+      "proceed": "Create",
       "delay": "Hold"
     }
   },
@@ -63,8 +72,8 @@
     "buttons": {
     }
   },
-  "issuedShipment": {
-    "title": "Create Shipment",
+  "processShipment": {
+    "title": "Process Shipment",
     "details": "Details:",
     "products": "Products:",
     "stock": "Stock:",

@@ -101,6 +101,12 @@ const bindToController = function(controller, page){
             let model = getter();
             return merge(locale, model);
         };
+
+        let translator = controller.translate;
+        controller.translate = (key) => {
+            return translator.call(controller, page && page.length > 0 ? `${page}.${key}` : key);
+        }
+
         controller.localized = true;
     }
 }
