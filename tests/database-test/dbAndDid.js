@@ -14,9 +14,9 @@ const defaultOps = {
     sender: 'senderWc3DIDString' + Math.floor(Math.random() * 10000000),
     domain: 'traceability',
     didMethod: 'demo',
-    messages: 10,
-    kill: false,
-    timeout: 200
+    messages: 1,
+    kill: false,    // decides if kills the consumer after boot or not
+    timeout: 200    // timeout between the consumer started listening and actually sending the messages (or killing the consumer)
 }
 
 const config = argParser(defaultOps, process.argv)
@@ -33,13 +33,13 @@ const someData = {
 w3cDID.createIdentity(config.didMethod, config.sender, (err, senderDID) => {
     if (err)
         throw err;
-    // const forked = fork('dbAndDidChild.js');
-    // forked.on('message', (receiverDID) => {
-    //     console.log(`received created and listening`);
+    const forked = fork('dbAndDidChild.js');
+    forked.on('message', (receiverDID) => {
+        console.log(`received created and listening`);
 
         const sendMessage = function(){
            console.log("Sending message", JSON.stringify(someData), " to receiver ", config.receiver);
-           senderDID.sendMessage(JSON.stringify(someData), `did:demo:myfirstDemoIdentity`/*receiverDID*/,  (err) => {
+           senderDID.sendMessage(JSON.stringify(someData), receiverDID,  (err) => {
                if (err)
                    return console.log(`Error sending message`, err);
                msgCount++;
@@ -65,18 +65,18 @@ w3cDID.createIdentity(config.didMethod, config.sender, (err, senderDID) => {
            setTimeout(() => console.log('after 10- sec'), 10000);
         }
 
-        // if (config.kill){
-        //     forked.send({terminate: true});
-        //     return setTimeout(() => runTest(), 100); // on a timer just to allow the child to properly terminate
-        // }
+        if (config.kill){
+            forked.send({terminate: true});
+            return setTimeout(() => runTest(), 100); // on a timer just to allow the child to properly terminate
+        }
 
         runTest();
-    // });
-    //
-    // forked.send({
-    //     id: config.receiver,
-    //     didMethod: config.didMethod,
-    //     messages: config.messages,
-    //     timeout: config.timeout
-    // });
+    });
+
+    forked.send({
+        id: config.receiver,
+        didMethod: config.didMethod,
+        messages: config.messages,
+        timeout: config.timeout
+    });
 });
