@@ -11,7 +11,7 @@ process.on('message', (args) => {
     const {id, didMethod, messages, terminate} = args;
 
     if (terminate){
-        console.log(`Received termination notice. Shutting down listener for ${identifier}`);
+        console.log(`CONSUMER: Received termination notice. Shutting down listener for ${identifier}`);
         process.exit(0);
     }
 
@@ -21,17 +21,17 @@ process.on('message', (args) => {
             throw err;
         }
         identifier = did.getIdentifier();
-        console.log(`${identifier} waiting for messages`);
+        console.log(`CONSUMER: ${identifier} waiting for messages`);
         const listen = function(){
-            console.log(`Listening for messages on ${identifier}`);
+            console.log(`CONSUMER: Listening for messages on ${identifier}`);
             did.readMessage((err, msg) => {
                 if(err){
-                    console.log(`ERROR:`, err);
+                    console.log(`CONSUMER: ERROR:`, err);
                     return listen();
                 }
-                console.log(`${did.getIdentifier()} received message: ${JSON.stringify(msg)}`);
+                console.log(`CONSUMER: ${did.getIdentifier()} received message: ${JSON.stringify(msg)}`);
                 if (++ messageCount === messages){
-                    console.log(`Received all ${messages} expected messages. Shutting down listener for ${identifier}`);
+                    console.log(`CONSUMER: Received all ${messages} expected messages. Shutting down listener for ${identifier}`);
                     process.exit(0)
                 }
 
@@ -44,7 +44,7 @@ process.on('message', (args) => {
         if (!args.timeout)
             return process.send(identifier);
 
-        console.log(`Waiting for ${args.timeout}ms for the listener to properly boot...`);
+        console.log(`CONSUMER: Waiting for ${args.timeout}ms for the listener to properly boot...`);
         setTimeout(() => {
             process.send(identifier);
         }, args.timeout)

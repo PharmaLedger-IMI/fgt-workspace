@@ -14,7 +14,8 @@ const defaultOps = {
     sender: 'senderWc3DIDString' + Math.floor(Math.random() * 10000000),
     domain: 'traceability',
     didMethod: 'demo',
-    messages: 1,
+    messages: 10,
+    messageTimeout: 2,
     kill: false,    // decides if kills the consumer after boot or not
     timeout: 200    // timeout between the consumer started listening and actually sending the messages (or killing the consumer)
 }
@@ -35,18 +36,18 @@ w3cDID.createIdentity(config.didMethod, config.sender, (err, senderDID) => {
         throw err;
     const forked = fork('dbAndDidChild.js');
     forked.on('message', (receiverDID) => {
-        console.log(`received created and listening`);
+        console.log(`PRODUCER: received created and listening`);
 
         const sendMessage = function(){
-           console.log("Sending message", JSON.stringify(someData), " to receiver ", config.receiver);
+           console.log("PRODUCER: Sending message", JSON.stringify(someData), " to receiver ", config.receiver);
            senderDID.sendMessage(JSON.stringify(someData), receiverDID,  (err) => {
                if (err)
-                   return console.log(`Error sending message`, err);
+                   return console.log(`PRODUCER: Error sending message`, err);
                msgCount++;
-               console.log(`Message successfully sent ${msgCount}`);
+               console.log(`PRODUCER: Message successfully sent ${msgCount}`);
                if (msgCount === config.messages){
                    timeMessagesSent = Date.now();
-                   console.log(`all messages sent in ${timeMessagesSent - timeAfterMessages}ms. closing test in 1 second`)
+                   console.log(`PRODUCER: all messages sent in ${timeMessagesSent - timeAfterMessages}ms. closing test in 1 second`)
                    setTimeout(() => process.exit(0), 1000);
                }
            });
@@ -54,15 +55,29 @@ w3cDID.createIdentity(config.didMethod, config.sender, (err, senderDID) => {
 
         const runTest = function(){
            timeBeforeMessages = Date.now();
-           console.log(`Before Messages: ${timeBeforeMessages}`);
+           console.log(`PROCUCER: Before Messages: ${timeBeforeMessages}`);
 
-           for (let i = 0; i < config.messages; i++)
-               sendMessage();
+           if (!config.messageTimeout){
+               for (let i = 0; i < config.messages; i++)
+                   sendMessage();
 
-           timeAfterMessages = Date.now();
-           console.log(`After Messages: ${timeAfterMessages}. Elapsed: ${timeAfterMessages - timeBeforeMessages}`);
+           } else {
+               let counter = 0;
+               const iterator = function(){
+                   console.log(`PRODUCER: sending message ${++counter}`);
+                   sendMessage();
+                   if (counter < config.messages)
+                       setTimeout(() => iterator(), config.messageTimeout);
+                   else{
+                       timeAfterMessages = Date.now();
+                       console.log(`PRODUCER: After Messages: ${timeAfterMessages}. Elapsed: ${timeAfterMessages - timeBeforeMessages}`);
+                       setTimeout(() => console.log('PRODUCER: 10 seconds since messages sent...'), 10000);
+                   }
+               }
+               setTimeout(() => iterator(), config.timeout);
+           }
 
-           setTimeout(() => console.log('after 10 sec'), 10000);
+
         }
 
         if (config.kill){
