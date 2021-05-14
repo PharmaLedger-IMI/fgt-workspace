@@ -1,5 +1,5 @@
 // Ignore the test
-//process.exit();
+process.exit();
 
 require("../../privatesky/psknode/bundles/testsRuntime");
 
@@ -13,7 +13,7 @@ const w3cDID = opendsu.loadApi('w3cdid');
 
 const firstDIDIdentifier = "did:demo:myfirstDemoIdentity"; // PASTE THE DID identifier here
 
-const timeout = 0;
+const timeout = 2;
 const messages = 10;
 
 assert.callback('w3cDID MQ Producer test', (testFinished) => {
@@ -44,10 +44,11 @@ assert.callback('w3cDID MQ Producer test', (testFinished) => {
                 if (counter < messages)
                     setTimeout(() => iterator(), timeout);
                 else{
-                    console.log(`PRODUCER: All messages sent`);
-                    testFinished()
+                    console.log(`PRODUCER: All messages sent. waiting for 3 seconds before closing`);
+                    setTimeout(() => testFinished(), 3000);
                 }
             }
+            setTimeout(() => iterator(), timeout);
         }
     });
 }, 45000);
