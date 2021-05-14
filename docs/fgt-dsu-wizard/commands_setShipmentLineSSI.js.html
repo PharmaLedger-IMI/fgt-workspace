@@ -134,7 +134,7 @@ function createShipmentLineSSI(data, domain) {
         hint = {};
         hint[openDSU.constants.BRICKS_DOMAIN_KEY] = [domain, data[openDSU.constants.BRICKS_DOMAIN_KEY]].join('.');
     }
-    return keyssiSpace.createArraySSI(domain, [data.senderId, data.shipmentId, data.gtin], 'v0', hint ? JSON.stringify(hint) : undefined);
+    return keyssiSpace.createArraySSI(domain, [data.senderId, data.shipmentId, data.gtin, data.batch], 'v0', hint ? JSON.stringify(hint) : undefined);
 }
 
 /**

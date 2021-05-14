@@ -65,12 +65,13 @@
     "none": "No orders issued..."
   },
   "receivedShipments": {
-    "title": "Received Shipments",
-    "gtinHeader": "Gtin",
-    "nameHeader": "Name",
-    "batchesHeader": "Batches",
-    "quantityHeader": "Quantity",
-    "none": "No shipments received..."
+    "title": "Incoming Shipments",
+    "numberHeader": "ID",
+    "orderingPartnerHeader": "Issued By",
+    "supplyingPartnerHeader": "Issued To",
+    "none": "No shipments...",
+    "buttons": {
+    }
   },
   "stock": {
     "title": "Stock Manager",

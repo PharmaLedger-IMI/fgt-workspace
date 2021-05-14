@@ -285,6 +285,21 @@ class Manager{
     }
 
     /**
+     * Because Message sending is implemented as fire and forget (for the user experience)
+     * we need an async callback that might hold some specific logic
+     *
+     * Meant to be overridden by subclasses when needed
+     * @param err
+     * @param args
+     * @protected
+     */
+    _messageCallback(err, ...args){
+        if (err)
+            return console.log(err);
+        console.log(...args);
+    }
+
+    /**
      * Send a message to the specified DID
      * @param {string|W3cDID} did
      * @param {string} [api] defaults to the tableName
@@ -298,7 +313,6 @@ class Manager{
     }
 
     _registerMessageListener(listener){}
-
 
     /**
      * Proxy call to {@link MessageManager#deleteMessage()}.
@@ -398,9 +412,11 @@ class Manager{
     }
 
     /**
-     * Stops the message service listener
+     * Stops the message service listener when it is running
      */
     shutdownMessenger(){
+        if(!this.messenger)
+            return console.log(`No message listener active`);
         this.messenger.shutdown();
     }
 
@@ -665,10 +681,9 @@ class Manager{
         self.query(options.query, options.sort, options.limit, (err, records) => {
             if (err)
                 return self._err(`Could not perform query`, err, callback);
-            records = records.map(r => r.value);
             if (!readDSU)
-                return callback(undefined, records);
-            self._iterator(records.slice(), self._getDSUInfo.bind(self), (err, result) => {
+                return callback(undefined, records.map(r => r.pk)); // return the primary key if not read DSU
+            self._iterator(records.map(r => r.value), self._getDSUInfo.bind(self), (err, result) => {
                 if (err)
                     return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
                 console.log(`Parsed ${result.length} ${self._getTableName()}s`);

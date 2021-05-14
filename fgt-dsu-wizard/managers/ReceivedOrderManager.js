@@ -116,50 +116,7 @@ class ReceivedOrderManager extends OrderManager {
 
         options = options || defaultOptions();
 
-        let self = this;
-        self.query(options.query, options.sort, options.limit, (err, records) => {
-            if (err)
-                return self._err(`Could not perform query`, err, callback);
-            if (!readDSU)
-                return callback(undefined, records.map(r => self._genCompostKey(r.requesterId, r.orderId)));
-            records = records.map(r => r.value);
-            self._iterator(records.slice(), self._getDSUInfo.bind(self), (err, result) => {
-                if (err)
-                    return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
-                console.log(`Parsed ${result.length} ${self._getTableName()}s`);
-                callback(undefined, result);
-            });
-        });
-        /*
-        let orderLine1 = new OrderLine('123', 1, '', '');
-        let orderLine2 = new OrderLine('321', 5, '', '');
-        let order1 = new Order("IOID1", "TPID1", 'WHSID555', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
-        let order2 = new Order("IOID2", "TPID2", 'WHSID432', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
-        return callback(undefined, [
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-        ]);
-        */
-
-        /*
-        super.listMounts(RECEIVED_ORDERS_MOUNT_PATH, (err, mounts) => {
-            if (err)
-                return callback(err);
-            console.log(`Found ${mounts.length} orders at ${ISSUED_ORDERS_MOUNT_PATH}`);
-            mounts = mounts.map(m => {
-                console.log("Listing mounted m", m);
-                m.path = `${ISSUED_ORDERS_MOUNT_PATH}/${m.path}`;
-                return m;
-            });
-            super.readAll(mounts, callback);
-        });
-        */
+        super.getAll(readDSU, options, callback);
     }
 
     /**

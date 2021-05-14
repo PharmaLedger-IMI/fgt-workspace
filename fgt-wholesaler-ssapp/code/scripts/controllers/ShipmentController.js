@@ -8,7 +8,7 @@ export default class ShipmentController extends LocalizedController{
 
     constructor(element, history) {
         super(element, history);
-        super.bindLocale(this, 'issuedShipment');
+        super.bindLocale(this, 'processShipment');
         this.model = this.initializeModel();
         const wizard = require('wizard');
         const participantManager = wizard.Managers.getParticipantManager();

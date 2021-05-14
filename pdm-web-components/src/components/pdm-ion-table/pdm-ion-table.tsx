@@ -104,6 +104,11 @@ export class PdmIonTable implements ComponentInterface {
    */
   @Prop({attribute: 'item-type'}) itemType: string;
 
+  /**
+   * Option props to be passed to child elements in 'key1:attr1;key2:attr2' format
+   */
+  @Prop({attribute: 'item-props', mutable:true}) itemProps?: string = undefined;
+
 
   /**
    * if the {@link PdmIonTable} is set to mode:
@@ -313,6 +318,13 @@ export class PdmIonTable implements ComponentInterface {
       case ION_TABLE_MODES.BY_MODEL:
         props['model'] = reference;
         break;
+    }
+
+    if (!!this.itemProps){
+      this.itemProps.split(';').forEach(ip => {
+        const keyValue = ip.split(':');
+        props[keyValue[0]] = keyValue[1];
+      });
     }
 
     return (<Tag {...props}></Tag>);

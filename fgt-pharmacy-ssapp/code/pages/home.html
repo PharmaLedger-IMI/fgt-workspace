@@ -36,7 +36,7 @@
         </div>
 
         <ion-tabs id="main-content">
-            <ion-header>
+            <ion-header slot="top">
                 <ion-toolbar>
                     <ion-buttons slot="start">
                         <ion-menu-button auto-hide="true"></ion-menu-button>
@@ -45,25 +45,32 @@
                 </ion-toolbar>
             </ion-header>
 
-            <ion-content class="main-content">
-                <div class="with-gradient"></div>
 
-                <ion-tab tab="tab-dashboard">
+            <div class="with-gradient"></div>
+
+            <ion-tab tab="tab-dashboard">
+                <ion-content class="tab-content" overflow-scroll="true">
                     <webc-template template="dashboard" disable-container></webc-template>
-                </ion-tab>
+                </ion-content>
+            </ion-tab>
 
-                <ion-tab tab="tab-issuedOrders">
+            <ion-tab tab="tab-issuedOrders">
+                <ion-content class="tab-content" overflow-scroll="true">
                     <webc-template template="issuedOrders" disable-container></webc-template>
-                </ion-tab>
+                </ion-content>
+            </ion-tab>
 
-                <ion-tab tab="tab-receivedShipments">
+            <ion-tab tab="tab-receivedShipments">
+                <ion-content class="tab-content" overflow-scroll="true">
                     <webc-template template="receivedShipments" disable-container></webc-template>
-                </ion-tab>
+                </ion-content>
+            </ion-tab>
 
-                <ion-tab tab="tab-stock">
+            <ion-tab tab="tab-stock">
+                <ion-content class="tab-content" overflow-scroll="true">
                     <webc-template template="stock" disable-container></webc-template>
-                </ion-tab>
-            </ion-content>
+                </ion-content>
+            </ion-tab>
 
             <ion-tab-bar slot="bottom">
                 <ion-tab-button tab="tab-dashboard">
