@@ -108,6 +108,8 @@ class IssuedOrderManager extends OrderManager {
             }
         }
 
+        options = options || defaultOptions();
+
         let self = this;
         super.getAll(readDSU, options, (err, result) => {
             if (err)

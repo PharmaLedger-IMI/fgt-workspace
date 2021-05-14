@@ -109,7 +109,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const { ANCHORING_DOMAIN } = require('../constants');
+            <pre class="prettyprint source linenums"><code>const { ANCHORING_DOMAIN, DB } = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Order = require('../model').Order;
 const OrderLine = require('../model').OrderLine;
@@ -131,7 +131,7 @@ const OrderStatus = require('../model').OrderStatus;
  */
 class ShipmentManager extends Manager {
     constructor(participantManager, tableName, indexes, callback) {
-        super(participantManager, tableName, ['shipmentId', 'requesterId', 'products', 'batches', ...indexes], callback);
+        super(participantManager, tableName, ['shipmentId', 'products', 'batches', ...indexes], callback);
         this.shipmentService = new (require('../services').ShipmentService)(ANCHORING_DOMAIN);
     }
 
@@ -171,10 +171,71 @@ class ShipmentManager extends Manager {
         }
         return {
             shipmentId: item.shipmentId,
-            products: item.orderLines.map(ol => ol.gtin).join(','),
-            batches: item.orderLines.map(ol => ol.batch).join(','),
+            products: item.shipmentLines.map(ol => ol.gtin).join(','),
+            batches: item.shipmentLines.map(ol => ol.batch).join(','),
             value: record
         }
+    }
+
+    /**
+     * messages to all MAHs.
+     * the shipment is the same for the orderlines and their ssis because of the way the code is written
+     * @param shipmentLines
+     * @param shipmentLinesSSI
+     * @param callback
+     * @return {*}
+     */
+    sendShipmentLinesToMAH(shipmentLines, shipmentLinesSSI, callback) {
+        const self = this;
+        if (shipmentLines.length !== shipmentLinesSSI.length)
+            return callback(`Invalid arguments`);
+
+        const orderLineIterator = function(linesCopy,  mahs, callback){
+            if (!callback){
+                callback = mahs;
+                mahs = [];
+            }
+
+            const shipmentLine = linesCopy.shift();
+
+            if (!shipmentLine){
+                console.log(`All MAHs resolved`)
+                return callback(undefined, mahs);
+            }
+
+            self.shipmentService.resolveMAH(shipmentLine, (err, mahId) => {
+                if (err)
+                    return self._err(`Could not resolve MAH for ${shipmentLine}`, err, callback);
+                mahs.push(mahId);
+                orderLineIterator(linesCopy, mahs, callback);
+            });
+        }
+
+        orderLineIterator(shipmentLines.slice(), (err, resolvedMahs) => {
+            if (err)
+                return self._err(`Error resolving MAHs`, err, callback);
+
+            const byMAH = resolvedMahs.reduce((accum, mah, i) => {
+                (accum[mah] = accum[mah] || []).push(shipmentLinesSSI[i]);
+                return accum;
+            }, {});
+
+            Object.keys(byMAH).forEach(mahId => {
+                const ssis = byMAH[mahId].map(k => typeof k === 'string' ? k.getIdentifier() : k);
+
+                // ssis.forEach(ssi => {
+                //     self.sendMessage(mahId, DB.shipmentLines, ssi, (err) =>
+                //         self._messageCallback(err ? `Could not send message to MAH ${mahId} for shipmentLine ${JSON.stringify(byMAH[mahId])} with ssi ${ssi} ${err}` : err,
+                //             `ShipmentLines ${ssi} transmitted to MAH ${mahId}`));
+                // });
+                const message = JSON.stringify(ssis);
+                self.sendMessage(mahId, DB.shipmentLines, message, (err) =>
+                    self._messageCallback(err ? `Could not send message to MAH ${mahId} for shipmentLines ${JSON.stringify(byMAH[mahId])} with ssis ${ssis} ${err}` : err,
+                        `ShipmentLines ${JSON.stringify(ssis)} transmitted to MAH ${mahId}`));
+            });
+
+            callback();
+        });
     }
 }
 

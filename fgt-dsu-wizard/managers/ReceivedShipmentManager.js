@@ -68,28 +68,6 @@ class ReceivedShipmentManager extends ShipmentManager {
         return [`orderId like /${keyword}/g`];
     }
 
-    // /**
-    //  * Loads Stock that gtin in the db. loads is and reads the info at '/info'
-    //  * @param {string} gtin
-    //  * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
-    //  * @param {function(err, object|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
-    //  */
-    // getOne(gtin, readDSU,  callback) {
-    //     if (!callback){
-    //         callback = readDSU;
-    //         readDSU = true;
-    //     }
-    //     let self = this;
-    //     self.getRecord(gtin, (err, stock) => {
-    //         if (err)
-    //             return self._err(`Could not load Stock for product ${gtin} on table ${self._getTableName()}`, err, callback);
-    //         stock = new Stock(stock);
-    //         if (!readDSU)
-    //             return callback(undefined, stock);
-    //         // sort the orderlines
-    //     });
-    // }
-
     /**
      * Lists all received orders.
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
@@ -118,20 +96,7 @@ class ReceivedShipmentManager extends ShipmentManager {
 
         options = options || defaultOptions();
 
-        let self = this;
-        self.query(options.query, options.sort, options.limit, (err, records) => {
-            if (err)
-                return self._err(`Could not perform query`, err, callback);
-            if (!readDSU)
-                return callback(undefined, records.map(r => self._genCompostKey(r.requesterId, r.orderId)));
-            records = records.map(r => r.value);
-            self._iterator(records.slice(), self._getDSUInfo.bind(self), (err, result) => {
-                if (err)
-                    return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
-                console.log(`Parsed ${result.length} ${self._getTableName()}s`);
-                callback(undefined, result);
-            });
-        });
+        super.getAll(readDSU, options, callback);
     }
 
     /**

@@ -111,7 +111,7 @@
         <article>
             <pre class="prettyprint source linenums"><code>const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const ShipmentManager = require("./ShipmentManager");
-const {Shipment, Order, OrderStatus, ShipmentStatus} = require('../model');
+const {Shipment, Order, OrderStatus, ShipmentStatus, Wholesaler} = require('../model');
 
 /**
  * Issued Shipment Manager Class - concrete OrderManager for issuedShipments.
@@ -138,8 +138,8 @@ class IssuedShipmentManager extends ShipmentManager {
      *     }
      * &lt;/pre>
      * so the DB can be queried by each of the indexes and still allow for lazy loading
-     * @param {string} key
-     * @param {Order} item
+     * @param {string} [key]
+     * @param {Shipment} item
      * @param {string|object} record
      * @return {object} the indexed object to be stored in the db
      * @protected
@@ -154,12 +154,38 @@ class IssuedShipmentManager extends ShipmentManager {
         return {...super._indexItem(key, item, record), requesterId: item.requesterId};
     }
 
+    /**
+     * Binds the {@link Shipment#shipmentId} to the shipment and fills in participant details;
+     * @param {Shipment} shipment
+     * @param {function(err, Shipment)} callback
+     * @private
+     */
+    _bindParticipant(shipment, callback){
+        shipment.shipmentId = shipment.shipmentId || (new Date()).toISOString();
+
+        let self = this;
+        self.getIdentity((err, wholesaler) => {
+            if (err)
+                return self._err(`Could not retrieve identity`, err, callback);
+            wholesaler = new Wholesaler(wholesaler);
+            shipment.senderId = wholesaler.id;
+            shipment.shipFromAddress = wholesaler.originAddress || wholesaler.address;
+            shipment.shipmentLines = shipment.shipmentLines.map(sl => {
+                sl.senderId = wholesaler.id;
+                sl.status = shipment.status;
+                return sl;
+            })
+            callback(undefined, shipment);
+        });
+    }
+
 
     /**
      * Creates a {@link Shipment} dsu
      * @param {string|number} [shipmentId] the table key
      * @param {Shipment} shipment
      * @param {function(err, sReadSSI, dbPath)} callback where the dbPath follows a "tableName/shipmentId" template.
+     * @override
      */
     create(shipmentId, shipment, callback) {
         if (!callback){
@@ -169,58 +195,37 @@ class IssuedShipmentManager extends ShipmentManager {
         }
         let self = this;
 
-        // messages to all MAHs.
-        // the shipment is the same for the orderlines and their ssis because of the way the code is written
-        const sendShipmentLinesToMAH = function(shipmentLines, shipmentLinesSSI, callback) {
-            const shipmentLine = shipmentLines.shift();
-            let ssi = shipmentLinesSSI.shift();
-
-            if (!shipmentLine){
-                console.log(`All orderlines transmited to MAH`)
-                return callback();
-            }
-            self.shipmentService.resolveMAH(shipmentLine, (err, mahId) => {
-                if (err)
-                    return self._err(`Could not resolve MAH for ${shipmentLine}`, err, callback);
-                if (typeof ssi !== 'string')
-                    ssi = ssi.getIdentifier();
-                self.sendMessage(mahId, DB.shipmentLines, ssi, (err) => {
-                    if (err)
-                        return self._err(`Could not send message to MAH ${mahId} for orderLine ${JSON.stringify(shipmentLine)} with ssi ${ssi}`, err, callback);
-                    console.log(`Shipmentline ${JSON.stringify(shipmentLine)} transmitted to MAH ${mahId}`);
-                    callback();
-                })
-            });
-
-            sendShipmentLinesToMAH(shipmentLines, shipmentLinesSSI, callback);
-        }
-
         self.shipmentService.create(shipment, (err, keySSI, shipmentLinesSSIs) => {
             if (err)
                 return self._err(`Could not create product DSU for ${shipment}`, err, callback);
-            const keySSIStr = keySSI.getIdentifier();
-            const sReadSSI = keySSI.derive();
-            const record = sReadSSI.getIdentifier();
-            console.log("Order seedSSI="+ keySSIStr + " sReadSSI=" + record);
-            self.insertRecord(super._genCompostKey(shipment.senderId, shipment.shipmentId), self._indexItem(shipment, record), (err) => {
+            const record = keySSI.getIdentifier();
+            console.log("Shipment SSI=" + record);
+            self.insertRecord(super._genCompostKey(shipment.requesterId, shipment.shipmentId), self._indexItem(shipment, record), (err) => {
                 if (err)
                     return self._err(`Could not insert record with shipmentId ${shipment.shipmentId} on table ${self.tableName}`, err, callback);
                 const path = `${self.tableName}/${shipment.shipmentId}`;
                 console.log(`Shipment ${shipmentId} created stored at DB '${path}'`);
-                // send a message to senderId
-                // TODO send the message before inserting record ? The message gives error if senderId does not exist/not listening.
-                // TODO derive sReadSSI from keySSI
                 const aKey = keySSI.getIdentifier();
-                this.sendMessage(shipment.requesterId, DB.receivedShipments, aKey, (err) => {
-                    if (err)
-                        return self._err(`Could not sent message to ${shipment.shipmentId} with ${DB.receivedShipments}`, err, callback);
-                    console.log("Message sent to "+shipment.requesterId+", "+DB.receivedShipments+", "+aKey);
-                    sendShipmentLinesToMAH([...shipment.shipmentLines], [...shipmentLinesSSIs], (err) => err
-                            ? self._err(`Could not transmit shipmentLines to The manufacturers`, err, callback)
-                            : callback(undefined, keySSI, path));
-                });
+                self.sendMessage(shipment.requesterId, DB.receivedShipments, aKey, (err) =>
+                    self._messageCallback(err ? `Could not sent message to ${shipment.shipmentId} with ${DB.receivedShipments}: ${err}` : err,
+                        `Message sent to ${shipment.requesterId}, ${DB.receivedShipments}, ${aKey}`));
+
+                self.sendShipmentLinesToMAH([...shipment.shipmentLines], [...shipmentLinesSSIs], (err) => err
+                        ? self._err(`Could not transmit shipmentLines to The manufacturers`, err, callback)
+                        : callback(undefined, keySSI, path));
             });
         });
+    }
+
+    /**
+     *
+     * @param err
+     * @param message
+     * @protected
+     * @override
+     */
+    _messageCallback(err, message) {
+        super._messageCallback(err, message);
     }
 
     /**

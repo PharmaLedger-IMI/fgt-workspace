@@ -129,6 +129,10 @@ export namespace Components {
         "currentPage"?: number;
         "iconName"?: string;
         /**
+          * Option props to be passed to child elements in 'key1:attr1;key2:attr2' format
+         */
+        "itemProps"?: string;
+        /**
           * if the {@link PdmIonTable} is set to mode:  - {@link ION_TABLE_MODES.BY_REF}: must be the querying attribute name so the items can query their own value  - {@link ION_TABLE_MODES.BY_MODEL}: must be the model chain for content list
          */
         "itemReference": string;
@@ -483,6 +487,10 @@ declare namespace LocalJSX {
         "canQuery"?: boolean;
         "currentPage"?: number;
         "iconName"?: string;
+        /**
+          * Option props to be passed to child elements in 'key1:attr1;key2:attr2' format
+         */
+        "itemProps"?: string;
         /**
           * if the {@link PdmIonTable} is set to mode:  - {@link ION_TABLE_MODES.BY_REF}: must be the querying attribute name so the items can query their own value  - {@link ION_TABLE_MODES.BY_MODEL}: must be the model chain for content list
          */

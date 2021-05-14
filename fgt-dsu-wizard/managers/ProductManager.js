@@ -178,20 +178,7 @@ class ProductManager extends Manager {
 
         options = options || defaultOptions();
 
-        let self = this;
-        self.query(options.query, options.sort, options.limit, (err, records) => {
-            if (err)
-                return self._err(`Could not perform query`, err, callback);
-            if (!readDSU)
-                return callback(undefined, records.map(r => r.gtin));
-            records = records.map(r => r.value);
-            self._iterator(records.slice(), self._getDSUInfo.bind(self), (err, result) => {
-                if (err)
-                    return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
-                console.log(`Parsed ${result.length} ${self._getTableName()}s`);
-                callback(undefined, result);
-            });
-        });
+        super.getAll(readDSU, options, callback);
     }
 
     /**

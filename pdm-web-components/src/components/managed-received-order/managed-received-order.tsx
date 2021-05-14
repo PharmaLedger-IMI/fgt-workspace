@@ -414,7 +414,7 @@ export class ManagedReceivedOrder {
       <ion-reorder-group disabled={false}>
         {...this.stockForProduct.selected.map(s => getBatch(s, ItemClasses.selected))}
         {!!this.stockForProduct.divided || !!this.stockForProduct.remaining.length ? getBatchSeparator() : ''}
-        {getBatch(this.stockForProduct.divided, ItemClasses.unnecessary)}
+        {!!this.stockForProduct.divided ? getBatch(this.stockForProduct.divided, ItemClasses.unnecessary) : ''}
         {...this.stockForProduct.remaining.map(r => getBatch(r, ItemClasses.normal))}
       </ion-reorder-group>
     )
