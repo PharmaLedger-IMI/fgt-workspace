@@ -10,7 +10,7 @@ const opendsu = require("opendsu");
 const w3cDID = opendsu.loadApi('w3cdid');
 
 const defaultOps = {
-    receiver: 'myfirstDemoIdentity', //'receiverWc3DIDString' + Math.floor(Math.random() * 10000000),
+    receiver: 'receiverWc3DIDString' + Math.floor(Math.random() * 10000000),
     sender: 'senderWc3DIDString' + Math.floor(Math.random() * 10000000),
     domain: 'traceability',
     didMethod: 'demo',
