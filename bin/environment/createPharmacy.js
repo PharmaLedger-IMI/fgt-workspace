@@ -4,7 +4,7 @@ const path = require('path');
 
 require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
 const dt = require('../../pdm-dsu-toolkit/services/dt');
-const { getParticipantManager, getIssuedOrderManager } = require('../../fgt-dsu-wizard/managers');
+const { getParticipantManager, getIssuedOrderManager, getStockManager, getReceivedShipmentManager } = require('../../fgt-dsu-wizard/managers');
 const { Order, OrderLine } = require('../../fgt-dsu-wizard/model');
 const { generateRandomInt, impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 
@@ -55,23 +55,67 @@ const _createManyIssuedOrders = function (countdown, issuedOrderManager, product
     }
 };
 
-const setup = function (participantManager, products, wholesalers, stocks, callback) {
-    // TODO move this to a function that generates issuedOrders ?
-    const issuedOrderManager = getIssuedOrderManager(participantManager, true);
-    participantManager.issuedOrderManager = issuedOrderManager;
-    if (products.length <=0)
-        return callback("Products has zero length.");
-    if (wholesalers.length <=0)
-        return callback("Wholesalers has zero length.");
-    
-    const wholesaler0 = wholesalers[0];
+const setupStock = function(participantManager, stocks, callback){
+    if (!callback){
+        callback = stocks;
+        stocks = undefined;
+    }
 
-    let issuedOrders = [];
-    let receivedShipments = [];
-    
-    // 20 orders on first wholesaler
-    _createManyIssuedOrders(2, issuedOrderManager, products, wholesaler0, issuedOrders, receivedShipments, (err) => {
-        callback(err, issuedOrders, receivedShipments);
+    getStockManager(participantManager, true, (err, stockManager) => {
+        if (err)
+            return callback(err);
+        participantManager.stockManager = stockManager;
+        participantManager.issuedOrderManager = getIssuedOrderManager(participantManager, true); // will handle incoming messages. just to keep the reference and ensure its instantiated and listening
+        participantManager.receivedShipmentManager = getReceivedShipmentManager(participantManager, true);
+        stocks = stocks || require('./stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj(20);
+
+        const stockIterator = function(stocksCopy){
+            const stock = stocksCopy.shift();
+            if (!stock){
+                console.log(`${stocks.length} stock created`);
+                return callback(undefined, stocks);
+            }
+            stockManager.create(stock, (err, keySSI, path) => {
+                if (err)
+                    return callback(err);
+                stockIterator(stocksCopy, callback);
+            });
+        }
+
+        stockIterator(stocks.slice(), (err, stocksObj) => {
+            if (err)
+                return callback(err);
+            const output = [];
+            Object.keys(stocksObj).forEach(gtin => {
+                output.push(`The following batches per gtin have been created:\nGtin: ${gtin}\nBatches: ${stocksObj[gtin].join(', ')}`);
+            });
+            console.log(output.join('\n'));
+            callback(undefined, stocksObj);
+        })
+    });
+}
+
+const setup = function (participantManager, products, wholesalers, stocks, callback) {
+    setupStock(participantManager, stocks, (err, stocksObj) => {
+        if (err)
+            return callback(err);
+        // TODO move this to a function that generates issuedOrders ?
+        const issuedOrderManager = getIssuedOrderManager(participantManager, true);
+        participantManager.issuedOrderManager = issuedOrderManager;
+        if (products.length <=0)
+            return callback("Products has zero length.");
+        if (wholesalers.length <=0)
+            return callback("Wholesalers has zero length.");
+
+        const wholesaler0 = wholesalers[0];
+
+        let issuedOrders = [];
+        let receivedShipments = [];
+
+        // 20 orders on first wholesaler
+        _createManyIssuedOrders(2, issuedOrderManager, products, wholesaler0, issuedOrders, receivedShipments, (err) => {
+            callback(err, issuedOrders, receivedShipments, stocksObj);
+        });
     });
 };
 

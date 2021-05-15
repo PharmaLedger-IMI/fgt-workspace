@@ -3,13 +3,17 @@ import {Component, Host, h, Element, Prop, State, Watch, Method, Event, EventEmi
 import {WebResolver, WebManagerService} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
-import {EVENT_SEND_ERROR} from "../../constants/events";
 
 const Order = wizard.Model.Order;
 
+const ORDER_TYPE = {
+  ISSUED: "issued",
+  RECEIVED: 'received'
+}
+
 @Component({
-  tag: 'managed-received-order-list-item',
-  styleUrl: 'managed-received-order-list-item.css',
+  tag: 'managed-order-list-item',
+  styleUrl: 'managed-order-list-item.css',
   shadow: false,
 })
 export class ManagedOrderListItem {
@@ -22,7 +26,7 @@ export class ManagedOrderListItem {
    * Through this event errors are passed
    */
   @Event({
-    eventName: EVENT_SEND_ERROR,
+    eventName: 'ssapp-send-error',
     bubbles: true,
     composed: true,
     cancelable: true,
@@ -59,6 +63,8 @@ export class ManagedOrderListItem {
 
   @Prop({attribute: 'orderline-count'}) orderlineCount?: number = 4;
 
+  @Prop({attribute: 'type'}) type?: string = ORDER_TYPE.ISSUED;
+
   private receivedOrderManager: WebResolver = undefined;
 
   @State() order: typeof Order = undefined;
@@ -66,7 +72,8 @@ export class ManagedOrderListItem {
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
-    this.receivedOrderManager = await WebManagerService.getWebManager("ReceivedOrderManager");
+    const prefix = this.type.charAt(0).toUpperCase() + this.type.slice(1).toLowerCase();
+    this.receivedOrderManager = await WebManagerService.getWebManager(`${prefix}OrderManager`);
     return await this.loadOrders();
   }
 

@@ -1,4 +1,4 @@
-import {LocalizedController, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
+import {LocalizedController, EVENT_REFRESH, BUTTON_ROLES} from "../../assets/pdm-web-components/index.esm.js";
 
 const {ShipmentStatus, Shipment} = require('wizard').Model;
 
@@ -40,10 +40,33 @@ export default class OrderController extends LocalizedController {
         self.on(ShipmentStatus.REJECTED, self._createShipment.bind(self), {capture: true});
     }
 
+    async _showConfirm(){
+        return this.showAlert(this.translate('creation.confirm.message'),
+            {
+                buttons: [
+                    {
+                        text: this.translate('creation.confirm.buttons.cancel'),
+                        role: 'cancel'
+                    },
+                    {
+                        text: this.translate('creation.confirm.buttons.ok'),
+                        role: 'confirm'
+                    }
+                ]
+            })
+    }
+
     async _createShipment(evt){
         evt.preventDefault();
         evt.stopImmediatePropagation();
         const self = this;
+
+        const alert = await self._showConfirm();
+
+        const {role} = await alert.onDidDismiss();
+
+        if (BUTTON_ROLES.CONFIRM !== role)
+            return console.log(`Shipment creation canceled by clicking ${role}`);
 
         const loader = self._getLoader(self.translate('creation.loading'));
         await loader.present()

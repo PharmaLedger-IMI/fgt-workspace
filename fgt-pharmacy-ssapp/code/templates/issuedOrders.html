@@ -1,49 +1,15 @@
 <webc-container controller="IssuedOrdersController">
-    <ion-header>
-        <ion-toolbar>
-            <ion-item>
-                <ion-label>{{ @title }}</ion-label>
-            </ion-item>
-            <ion-buttons slot="primary">
-                <ion-button name="button-new-issued-order" type="submit" color="primary" data-tag="new-issued-order">{{ @new }}</ion-button>
-            </ion-buttons>
-        </ion-toolbar>
-    </ion-header>
-    <div data-if="@hasOrders">
-        <div slot="true">
-            <ion-grid class="ion-padding">
-                <ion-row class="ion-align-self-center ion-text-uppercase">
-                    <ion-col size="4">
-                        <ion-label>{{ @numberHeader }}</ion-label>
-                    </ion-col>
-                    <ion-col size="4">
-                        <ion-label>{{ @orderingPartnerHeader }}</ion-label>
-                    </ion-col>
-                    <ion-col size="4">
-                        <ion-label>{{ @supplyingPartnerHeader }}</ion-label>
-                    </ion-col>
-                </ion-row>
-                <ion-row class="ion-align-self-center" data-for="@orders">
-                    <ion-col size="4">
-                        <ion-item>
-                            <ion-label>{{ @orderId }}</ion-label>
-                        </ion-item>
-                    </ion-col>
-                    <ion-col size="4">
-                        <ion-label>{{ @requesterId }}</ion-label>
-                    </ion-col>
-                    <ion-col size="4">
-                        <ion-label>{{ @senderId }}</ion-label>
-                    </ion-col>
-                </ion-row>
-            </ion-grid>
-        </div>
-        <div slot="false">
-            <ion-item>
-                <ion-label>{{ @none }}</ion-label>
-            </ion-item>
-        </div>
-    </div>
+    <pdm-ion-table
+            title="@title"
+            item-reference="order-id"
+            paginated="true"
+            manager="IssuedOrderManager"
+            buttons="@buttons"
+            icon-name="stats-chart-outline"
+            item-type="managed-order-list-item"
+            item-props="type:issued"
+            items-per-page="10">
+    </pdm-ion-table>
 </webc-container>
 
 

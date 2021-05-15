@@ -10,12 +10,24 @@ export const EVENT_ROUTING_GET = 'webcardinal:routing:get';
 export const EVENT_TAGS_GET = 'webcardinal:tags:get';
 export const EVENT_TRANSLATION_MODEL_GET = 'webcardinal:translationModel:get';
 
-export const EVENT_SEND_ERROR = 'send-error-event';
-export const EVENT_SEND_MESSAGE = 'send-message-event';
+export const EVENT_SEND_ERROR = 'ssapp-send-error';
+export const EVENT_SEND_MESSAGE = 'ssapp-send-message';
 export const EVENT_SSAPP_HAS_LOADED = 'ssapp-has-loaded';
 export const EVENT_SSAPP_STATUS_UPDATE = 'ssapp-update-status';
 export const EVENT_REFRESH = 'ssapp-refresh'
 export const EVENT_NAVIGATE_TAB = 'ssapp-navigate-tab'
 export const EVENT_SHOW_MORE = 'ssapp-show-more'
 export const EVENT_ACTION = 'ssapp-action'
+
+
+export const CSS = {
+  ALERT: 'ssapp-alert',
+  TOAST: 'ssapp-toast',
+  SPINNER: 'ssapp-spinner'
+}
+
+export const BUTTON_ROLES = {
+  CONFIRM: 'confirm',
+  CANCEL: 'cancel'
+}
 

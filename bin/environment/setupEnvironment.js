@@ -39,10 +39,12 @@ const mapper = function(type, arr){
     return arr[type].map(a => ({"type": type, credentials: a}));
 }
 
+let conf = undefined;
+
 const setupFullEnvironment = function(actors, callback){
     if (!callback){
         callback = actors
-        actors = SINGLE
+        actors = getSingle();
     }
 
     const createIterator = function(participants, callback){
@@ -72,7 +74,7 @@ const setupFullEnvironment = function(actors, callback){
             return callback();
         console.log(`now setting up Wholesaler with key ${wholesaler.ssi}`);
         setup(APPS.WHOLESALER, wholesaler,
-            wholesaler.credentials.stock || getStockFromProductsAndBatchesObj(products, batches), (err) => err
+            wholesaler.credentials.stock || getStockFromProductsAndBatchesObj(80, conf.trueStock, products, batches), (err) => err
                 ? callback(err)
                 : setupWholesalerIterator(wholesalersCopy, products, batches, callback));
     }
@@ -83,7 +85,7 @@ const setupFullEnvironment = function(actors, callback){
             return callback();
         console.log(`now setting up Pharmacy with key ${pharmacy.ssi}`);
         setup(APPS.PHARMACY, pharmacy, products,
-            wholesalers, pharmacy.credentials.stock || getStockFromProductsAndBatchesObj(products, batches), (err) => err
+            wholesalers, pharmacy.credentials.stock || getStockFromProductsAndBatchesObj(20, conf.trueStock, products, batches), (err) => err
                 ? callback(err)
                 : setupPharmacyIterator(pharmaciesCopy, products, batches, wholesalers, callback));
     }
@@ -170,7 +172,15 @@ const setup = function(type, result, ...args){
     }
 }
 
-const create = function(app, credentials, callback){
+const create = function(config, credentials, callback){
+    let app;
+    if (typeof config === 'string'){
+        app = config;
+    } else {
+        app = config.app;
+        conf = config;
+    }
+
     let shouldSetup = false;
     if (!callback){
         callback = credentials;

@@ -7,18 +7,19 @@
 
 ## Properties
 
-| Property         | Attribute         | Description | Type     | Default     |
-| ---------------- | ----------------- | ----------- | -------- | ----------- |
-| `orderId`        | `order-id`        |             | `string` | `undefined` |
-| `orderlineCount` | `orderline-count` |             | `number` | `4`         |
+| Property         | Attribute         | Description | Type     | Default             |
+| ---------------- | ----------------- | ----------- | -------- | ------------------- |
+| `orderId`        | `order-id`        |             | `string` | `undefined`         |
+| `orderlineCount` | `orderline-count` |             | `number` | `4`                 |
+| `type`           | `type`            |             | `string` | `ORDER_TYPE.ISSUED` |
 
 
 ## Events
 
 | Event                | Description                                             | Type               |
 | -------------------- | ------------------------------------------------------- | ------------------ |
-| `sendErrorEvent`     | Through this event errors are passed                    | `CustomEvent<any>` |
 | `ssapp-navigate-tab` | Through this event navigation requests to tabs are made | `CustomEvent<any>` |
+| `ssapp-send-error`   | Through this event errors are passed                    | `CustomEvent<any>` |
 
 
 ## Methods
@@ -44,9 +45,9 @@ Type: `Promise<void>`
 ### Graph
 ```mermaid
 graph TD;
-  managed-received-order-list-item --> managed-orderline-stock-chip
-  managed-received-order-list-item --> more-chip
-  style managed-received-order-list-item fill:#f9f,stroke:#333,stroke-width:4px
+  managed-order-list-item --> managed-orderline-stock-chip
+  managed-order-list-item --> more-chip
+  style managed-order-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

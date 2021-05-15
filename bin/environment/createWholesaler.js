@@ -16,26 +16,26 @@ const defaultOps = {
 }
 
 let conf = argParser(defaultOps, process.argv);
-
-/*
- * jpsl: To discuss wit Tiago.
- * Process all pending ReceivedOrders and ReceivedShipments messages.
- * NO NEED TO CALL if setup was called first, and setup has an
- * receivedOrderManager/receivedShippmentManager listening for messages.
- * 
- * @param {ParticipantManager} participantManager 
- * @param {function(err)} callback
- */
-const processOrders = function (participantManager, callback) {
-
-    // NOT NEEDED. If a receivedOrderManager is already instantiated, itlistening to events.
-    /*
-    const receivedOrderManager = getReceivedOrderManager(participantManager, true); // force a new instance
-    receivedOrderManager.processMessages(callback);
-    */
-    // Just give some time for it to process messages.
-    setTimeout(() => { callback(); }, 1000);
-}
+//
+// /*
+//  * jpsl: To discuss wit Tiago.
+//  * Process all pending ReceivedOrders and ReceivedShipments messages.
+//  * NO NEED TO CALL if setup was called first, and setup has an
+//  * receivedOrderManager/receivedShippmentManager listening for messages.
+//  *
+//  * @param {ParticipantManager} participantManager
+//  * @param {function(err)} callback
+//  */
+// const processOrders = function (participantManager, callback) {
+//
+//     // NOT NEEDED. If a receivedOrderManager is already instantiated, itlistening to events.
+//     /*
+//     const receivedOrderManager = getReceivedOrderManager(participantManager, true); // force a new instance
+//     receivedOrderManager.processMessages(callback);
+//     */
+//     // Just give some time for it to process messages.
+//     setTimeout(() => { callback(); }, 1000);
+// }
 
 const setup = function(participantManager, stocks, callback){
     if (!callback){
@@ -49,7 +49,7 @@ const setup = function(participantManager, stocks, callback){
         participantManager.stockManager = stockManager;
         participantManager.receivedOrderManager = getReceivedOrderManager(participantManager, true); // will handle incoming messages. just to keep the reference and ensure its instantiated and listening
 
-        stocks = stocks || require('./stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj();
+        stocks = stocks || require('./stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj(80);
 
         const stockIterator = function(stocksCopy){
             const stock = stocksCopy.shift();
@@ -97,8 +97,7 @@ const create = function(credentials, callback){
 
 module.exports = {
     create,
-    setup,
-    processOrders
+    setup
 };
 
 

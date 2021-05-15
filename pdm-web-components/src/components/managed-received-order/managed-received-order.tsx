@@ -2,7 +2,6 @@ import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State,
 import {WebManager, WebManagerService} from "../../services/WebManagerService";
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 import {HostElement} from "../../decorators";
-import {EVENT_SEND_ERROR, EVENT_NAVIGATE_TAB} from "../../constants/events";
 
 const ItemClasses = {
   selected: "selected",
@@ -28,7 +27,7 @@ export class ManagedReceivedOrder {
    * Through this event errors are passed
    */
   @Event({
-    eventName: EVENT_SEND_ERROR,
+    eventName: 'ssapp-send-error',
     bubbles: true,
     composed: true,
     cancelable: true,
@@ -39,7 +38,7 @@ export class ManagedReceivedOrder {
    * Through this event navigation requests to tabs are made
    */
   @Event({
-    eventName: EVENT_NAVIGATE_TAB,
+    eventName: 'ssapp-navigate-tab',
     bubbles: true,
     composed: true,
     cancelable: true,

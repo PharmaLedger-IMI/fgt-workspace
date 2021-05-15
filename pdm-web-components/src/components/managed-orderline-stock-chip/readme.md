@@ -30,16 +30,16 @@
 ### Used by
 
  - [managed-issued-shipment](../managed-issued-shipment)
+ - [managed-order-list-item](../managed-order-list-item)
  - [managed-received-order](../managed-received-order)
- - [managed-received-order-list-item](../managed-received-order-list-item)
  - [managed-shipment-list-item](../managed-shipment-list-item)
 
 ### Graph
 ```mermaid
 graph TD;
   managed-issued-shipment --> managed-orderline-stock-chip
+  managed-order-list-item --> managed-orderline-stock-chip
   managed-received-order --> managed-orderline-stock-chip
-  managed-received-order-list-item --> managed-orderline-stock-chip
   managed-shipment-list-item --> managed-orderline-stock-chip
   style managed-orderline-stock-chip fill:#f9f,stroke:#333,stroke-width:4px
 ```

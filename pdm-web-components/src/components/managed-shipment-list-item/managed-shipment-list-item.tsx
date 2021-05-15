@@ -2,7 +2,6 @@ import {Component, Host, h, Prop, State, Watch, Method, Element, Event, EventEmi
 import {WebResolver, WebManagerService} from '../../services/WebManagerService';
 import wizard from '../../services/WizardService';
 import {HostElement} from "../../decorators";
-import {EVENT_NAVIGATE_TAB, EVENT_SEND_ERROR} from "../../constants/events";
 
 const Shipment = wizard.Model.Shipment;
 
@@ -26,7 +25,7 @@ export class ManagedShipmentListItem{
    * Through this event errors are passed
    */
   @Event({
-    eventName: EVENT_SEND_ERROR,
+    eventName: 'ssapp-send-error',
     bubbles: true,
     composed: true,
     cancelable: true,
@@ -37,7 +36,7 @@ export class ManagedShipmentListItem{
    * Through this event navigation requests to tabs are made
    */
   @Event({
-    eventName: EVENT_NAVIGATE_TAB,
+    eventName: 'ssapp-navigate-tab',
     bubbles: true,
     composed: true,
     cancelable: true,

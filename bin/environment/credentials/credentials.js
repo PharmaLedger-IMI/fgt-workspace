@@ -160,9 +160,9 @@ const getMerck = function(){
     MERCK.products = require('../products/productsRandom')();
     MERCK.batches = {};
     MERCK.products.forEach(p => {
-        MERCK.batches[p.gtin] = require('../batches/batchesRandom')(p.gtin);
+        MERCK.batches[p.gtin] = require('../batches/batchesRandom')();
     });
-    MERCK.stocks = require('../stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj(MERCK.products, MERCK.batches);
+    MERCK.stocks = require('../stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj(80, false, MERCK.products, MERCK.batches);
     return MERCK;
 }
 

@@ -3,7 +3,6 @@ import {Component, Host, h, Element, Prop, State, Watch, Method, Event, EventEmi
 import {WebManager, WebManagerService} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
-import {EVENT_SEND_ERROR} from "../../constants/events";
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 
 const Product = wizard.Model.Product;
@@ -23,7 +22,7 @@ export class ManagedProductListItem {
    * Through this event errors are passed
    */
   @Event({
-    eventName: EVENT_SEND_ERROR,
+    eventName: 'ssapp-send-error',
     bubbles: true,
     composed: true,
     cancelable: true,
