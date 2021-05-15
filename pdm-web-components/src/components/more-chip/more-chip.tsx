@@ -1,6 +1,5 @@
 import {Component, h, Prop, Element, Event, EventEmitter} from '@stencil/core';
 import {HostElement} from "../../decorators";
-import {EVENT_SHOW_MORE} from "../../constants/events";
 
 @Component({
   tag: 'more-chip',
@@ -17,7 +16,7 @@ export class BatchChip {
    * Through this event errors are passed
    */
   @Event({
-    eventName: EVENT_SHOW_MORE,
+    eventName: 'ssapp-show-more',
     bubbles: true,
     composed: true,
     cancelable: true,

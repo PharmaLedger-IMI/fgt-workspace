@@ -12,7 +12,10 @@ const { APPS } = require('./credentials/credentials');
 const defaultOps = {
     app: "fgt-mah-wallet",
     pathToApps: "../../",
-    id: undefined
+    id: undefined,
+    batchCount: 11,
+    serialQuantity: 100,
+    expiryOffset: 100
 }
 
 let conf = argParser(defaultOps, process.argv);
@@ -45,7 +48,9 @@ const setupBatches = function(participantManager, products, batches,  callback){
             return callback(err);
         participantManager.batchManager = batchManager;
         const getBatches = !batches
-            ? require('./batches/batchesRandom')
+            ? function(gtin){
+                return require('./batches/batchesRandom')(conf.batchCount, conf.serialQuantity, conf.expiryOffset);
+            }
             : function(gtin){
                 return batches[gtin + ''].slice();
             }
@@ -119,6 +124,7 @@ const setup = function(participantManager, products, batches, callback){
 }
 
 const create = function(credentials,  callback) {
+
     instantiateSSApp(APPS.MAH, conf.pathToApps, dt, credentials, (err, walletSSI, walletDSU, credentials) => {
         if (err)
             throw err;

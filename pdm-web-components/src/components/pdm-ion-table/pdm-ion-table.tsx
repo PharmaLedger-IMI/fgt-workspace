@@ -13,15 +13,8 @@ import {
 } from '@stencil/core';
 
 import {WebManager, WebManagerService} from '../../services/WebManagerService';
-import {extractChain, promisifyEventEmit} from "../../utils";
 import {HostElement} from '../../decorators'
-import {EVENT_SEND_ERROR, EVENT_MODEL_GET} from "../../constants/events";
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
-
-const ION_TABLE_MODES = {
-  BY_MODEL: "bymodel",
-  BY_REF: "byref"
-}
 
 @Component({
   tag: 'pdm-ion-table',
@@ -34,21 +27,10 @@ export class PdmIonTable implements ComponentInterface {
   @Element() element;
 
   /**
-   * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
-   */
-  @Event({
-    eventName: EVENT_MODEL_GET,
-    bubbles: true,
-    composed: true,
-    cancelable: true,
-  })
-  getModelEvent: EventEmitter;
-
-  /**
    * Through this event errors are passed
    */
   @Event({
-    eventName: EVENT_SEND_ERROR,
+    eventName: 'ssapp-send-error',
     bubbles: true,
     composed: true,
     cancelable: true,
@@ -81,13 +63,6 @@ export class PdmIonTable implements ComponentInterface {
    */
 
   /**
-   * can be any of {@link ION_TABLE_MODES}
-   * Decides if the tables works by:
-   *  - {@link ION_TABLE_MODES.BY_MODEL}: uses the WebCardinal model api
-   */
-  @Prop() mode: string = ION_TABLE_MODES.BY_REF;
-
-  /**
    * Shows the search bar or not. (not working)
    */
   @Prop({attribute: 'can-query'}) canQuery?: boolean = false;
@@ -111,12 +86,9 @@ export class PdmIonTable implements ComponentInterface {
 
 
   /**
-   * if the {@link PdmIonTable} is set to mode:
-   *  - {@link ION_TABLE_MODES.BY_REF}: must be the querying attribute name so the items can query their own value
-   *  - {@link ION_TABLE_MODES.BY_MODEL}: must be the model chain for content list
+   * the querying attribute name so the items can query their own value
    */
   @Prop({attribute: 'item-reference'}) itemReference: string;
-
 
   /**
    * Querying/paginating Params - only available when mode is set by ref
@@ -132,24 +104,11 @@ export class PdmIonTable implements ComponentInterface {
 
   @State() model = undefined;
 
-  private chain: string = '';
-
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
     console.log(`connected`)
-    if (this.mode === ION_TABLE_MODES.BY_MODEL)
-      await this.refresh();
-  }
-
-  async _getModel(){
-    this.chain = extractChain(this.host);
-    this.chain = this.chain || '@';
-    try {
-      this.model = await promisifyEventEmit(this.getModelEvent);
-    } catch (error) {
-      this.sendError(`Error getting model`, error);
-    }
+    await this.refresh();
   }
 
   async loadContents(pageNumber?: number){
@@ -194,13 +153,7 @@ export class PdmIonTable implements ComponentInterface {
 
   @Method()
   async refresh(){
-    switch(this.mode){
-      case ION_TABLE_MODES.BY_REF:
-        await this.loadContents();
-        break;
-      case ION_TABLE_MODES.BY_MODEL:
-        await this._getModel();
-    }
+    await this.loadContents();
   }
 
   private async changePage(offset: number){
@@ -311,14 +264,7 @@ export class PdmIonTable implements ComponentInterface {
   getItem(reference){
     const Tag = this.itemType;
     let props = {};
-    switch(this.mode){
-      case ION_TABLE_MODES.BY_REF:
-        props[this.itemReference] = reference;
-        break;
-      case ION_TABLE_MODES.BY_MODEL:
-        props['model'] = reference;
-        break;
-    }
+    props[this.itemReference] = reference;
 
     if (!!this.itemProps){
       this.itemProps.split(';').forEach(ip => {
@@ -334,22 +280,13 @@ export class PdmIonTable implements ComponentInterface {
     if (!this.model)
       return this.getLoadingContent();
     const content = [];
-    switch (this.mode){
-      case ION_TABLE_MODES.BY_MODEL:
-        if (!this.model[this.itemReference].length)
-          return this.getEmptyContent();
-        this.model[this.itemReference].forEach(item => {
-          content.push(this.getItem(item));
-        });
-        break;
-      case ION_TABLE_MODES.BY_REF:
-        if (!this.model.length)
-          return this.getEmptyContent();
-        this.model.forEach(reference => {
-          content.push(this.getItem(reference));
-        });
-        break;
-    }
+
+    if (!this.model.length)
+      return this.getEmptyContent();
+    this.model.forEach(reference => {
+      content.push(this.getItem(reference));
+    });
+
     return content;
   }
 

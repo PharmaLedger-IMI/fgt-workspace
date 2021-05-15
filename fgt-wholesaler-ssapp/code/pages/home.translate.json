@@ -49,6 +49,13 @@
     "unavailable": "Unavailable:",
     "selectProduct": "Please select a product",
     "creation": {
+      "confirm": {
+        "message": "Please confirm Shipment creation",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
       "loading": "Creating Shipment. Please wait...",
       "success": "Shipment Successfully created",
       "error": {

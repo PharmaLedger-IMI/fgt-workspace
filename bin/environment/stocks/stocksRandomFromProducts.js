@@ -1,11 +1,20 @@
 const Stock = require('../../../fgt-dsu-wizard/model/Stock');
 
-function getRandom(arr, n) {
+function getRandom(trueStock, arr, n) {
+
+    if (trueStock){
+        var trueResult = [];
+        for (let i = 0; i < Math.min(arr.length, n); i++)
+            trueResult.push(arr.splice(Math.floor(arr.length * Math.random()), 1));
+        return trueResult;
+    }
+
     var result = new Array(n),
         len = arr.length,
         taken = new Array(len);
     if (n > len)
-        throw new RangeError("getRandom: more elements taken than available");
+        return getRandom(trueStock, arr, Math.floor(n * 0.8));
+        //throw new RangeError("getRandom: more elements taken than available");
     while (n--) {
         var x = Math.floor(Math.random() * len);
         result[n] = arr[x in taken ? taken[x] : x];
@@ -15,14 +24,14 @@ function getRandom(arr, n) {
 }
 
 
-const getStockFromProductsAndBatchesObj = function(products, batchesObj, omitSerials){
+const getStockFromProductsAndBatchesObj = function(quantity, trueStock, products, batchesObj, omitSerials){
 
     const getProducts = () => products
-        ? products.slice()
+        ? trueStock ? products : products.slice()
         : require('../products/productsRandom')();
 
     const getBatches = (gtin) => batchesObj
-        ? batchesObj[gtin + ''].slice()
+        ? trueStock ? batchesObj[gtin + ''] : batchesObj[gtin + ''].slice()
         : require('../batches/batchesRandom')();
 
     const prods = getProducts();
@@ -31,15 +40,11 @@ const getStockFromProductsAndBatchesObj = function(products, batchesObj, omitSer
         const stock = new Stock(product);
         const batchesForProd = getBatches(stock.gtin);
         const numberOfBatches = Math.floor(Math.random() * (batchesForProd.length / 2) + batchesForProd.length / 2) || Math.floor(batchesForProd.length / 2) || 1;
-        stock.batches = getRandom(batchesForProd, numberOfBatches).map(b => {
-            if (!b.quantity){
-                const quantity = Math.floor(Math.random() * (b.serialNumbers.length / 2) + b.serialNumbers.length / 2) || Math.floor(b.serialNumbers.length / 2) || 1;
-                const serials = getRandom(b.serialNumbers, quantity);
-                b.quantity = quantity
-                b.serialNumbers = omitSerials ? undefined : serials;
-            } else {
-                b.serialNumbers = omitSerials ? undefined : b.serialNumbers;
-            }
+        stock.batches = getRandom(false, batchesForProd, numberOfBatches).map(b => {
+            const prodQuantity = Math.floor(Math.random() * quantity) || 1;
+            const serials = getRandom(trueStock, b.serialNumbers, prodQuantity);
+            b.serialNumbers = omitSerials ? undefined : serials;
+            b.quantity = b.serialNumbers.length;
             return b;
         });
         stocks.push(stock);

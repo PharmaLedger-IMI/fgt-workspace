@@ -87,9 +87,7 @@ class IssuedOrderManager extends OrderManager {
      * @param {function(err, Order[])} callback
      */
     getAll(readDSU, options, callback) {
-        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
-            query: ['orderId like /.*/g']
-        });
+        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS);
 
         if (!callback) {
             if (!options) {

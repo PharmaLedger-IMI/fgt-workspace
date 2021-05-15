@@ -2,7 +2,7 @@
  * @module controllers
  */
 
-import {EVENT_SEND_ERROR, EVENT_SEND_MESSAGE, EVENT_REFRESH, EVENT_NAVIGATE_TAB} from "../constants/events";
+import {EVENT_SEND_ERROR, EVENT_SEND_MESSAGE, EVENT_REFRESH, EVENT_NAVIGATE_TAB, CSS, BUTTON_ROLES} from "../constants/events";
 
 /**
  *
@@ -26,9 +26,13 @@ const {WebcController} = WebCardinal.controllers;
  * @class LocalizedController
  */
 export default class LocalizedController extends WebcController {
-  initializeModel = () => {
-    throw new Error("Child classes must implement this");
-  }
+
+  /**
+   * Should return the initialized model for the controller when needed.
+   * <strong>MUST</strong> be called on the constructor for locale binding
+   * @return {{}}
+   */
+  initializeModel = () => ({});
 
   /**
    * Shows an Ionic model
@@ -107,12 +111,12 @@ export default class LocalizedController extends WebcController {
     toast.position = 'bottom';
     toast.duration = 2000;
     if (cssClass)
-      toast.cssClass = cssClass;
+      toast.cssClass = cssClass || CSS.TOAST;
     if (button)
       toast.buttons = [
         {
           text: button,
-          role: 'cancel',
+          role: BUTTON_ROLES.CANCEL,
           handler: buttonHandler ? buttonHandler : () => {
             console.log('Cancel clicked');
           }
@@ -120,6 +124,83 @@ export default class LocalizedController extends WebcController {
       ];
 
     return toast.present();
+  }
+
+  /**
+   * Shows an alert with the specified message.
+   *
+   * Standard Usage:
+   * <pre>
+   *   const alert = await controller.showAlert('this is an <strong>alert</strong> message');
+   *   const { role } = await alert.onDidDismiss();
+   *   console.log('onDidDismiss resolved with role', role);
+   *   if (role === 'confirm') ...
+   *   if (role === 'cancel') ...
+   * </pre>
+   *
+   * @param {string} message
+   * @param {object} options object with additional configuration options:
+   * <pre>
+   *   {
+   *     cssClass: '...' css class to be used. defaults to 'ssapp-alert'
+   *     header: '...' Title text (optional)
+   *     subHeader: '...' subTitle text (optional)
+   *     buttons: [
+   *       {
+   *         text: '...' button text,
+   *         role: '...' sets a role to be caught by the handler method
+   *         cssClass: '...' additional styling
+   *         handler: (e) => {      (optional and not recommended)
+   *            console.log(e);
+   *         }
+   *       }
+   *     ]
+   *   }
+   * </pre>
+   *
+   * defaults to:
+   * <pre>
+   *   {
+   *    buttons: [
+   *      {
+   *        text: 'Ok',
+   *        role: 'confirm'
+   *      },
+   *      {
+   *        text: 'Cancel',
+   *        role: 'cancel'
+   *      }
+   *    ]
+   *   }
+   * </pre>
+   * @return {HTMLElement}
+   */
+  async showAlert(message, options){
+    options = Object.assign( {
+      buttons: [
+        {
+          text: 'Cancel',
+          role: BUTTON_ROLES.CANCEL
+        },    
+        {
+          text: 'Ok',
+          role: BUTTON_ROLES.CONFIRM
+        }
+      ]
+    }, options || {});
+
+    const alert = document.createElement('ion-alert');
+    alert.cssClass = options.cssClass || CSS.ALERT;
+    alert.header = options.header;
+    alert.subHeader = options.subHeader;
+    alert.message = message;
+    alert.animated = options.animated !== false;
+    alert.backDropDismiss = options.backDropDismiss !== false;
+    alert.buttons = options.buttons;
+
+    document.body.appendChild(alert);
+    await alert.present();
+    return alert;
   }
 
 
@@ -149,7 +230,7 @@ export default class LocalizedController extends WebcController {
     options = options || {};
     let {duration, cssClass, translucent} = options;
     duration = duration || 0;
-    cssClass = cssClass || 'ion-loading';
+    cssClass = cssClass || CSS.SPINNER;
     translucent = translucent !== false;
     const loading = document.createElement('ion-loading');
     loading.cssClass = cssClass;

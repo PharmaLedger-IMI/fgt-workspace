@@ -53,6 +53,12 @@ export namespace Components {
         "titleString": string;
         "unavailableString": string;
     }
+    interface ManagedOrderListItem {
+        "orderId": string;
+        "orderlineCount"?: number;
+        "refresh": () => Promise<void>;
+        "type"?: string;
+    }
     interface ManagedOrderlineListItem {
         "orderLine": string;
         "refresh": () => Promise<void>;
@@ -87,11 +93,6 @@ export namespace Components {
         "stockString": string;
         "titleString": string;
         "unavailableString": string;
-    }
-    interface ManagedReceivedOrderListItem {
-        "orderId": string;
-        "orderlineCount"?: number;
-        "refresh": () => Promise<void>;
     }
     interface ManagedShipmentListItem {
         "refresh": () => Promise<void>;
@@ -133,7 +134,7 @@ export namespace Components {
          */
         "itemProps"?: string;
         /**
-          * if the {@link PdmIonTable} is set to mode:  - {@link ION_TABLE_MODES.BY_REF}: must be the querying attribute name so the items can query their own value  - {@link ION_TABLE_MODES.BY_MODEL}: must be the model chain for content list
+          * the querying attribute name so the items can query their own value
          */
         "itemReference": string;
         /**
@@ -146,10 +147,6 @@ export namespace Components {
           * sets the name of the manager to use Only required if mode if {@link PdmIonTable#mode} is set to {@link ION_TABLE_MODES.BY_REF}
          */
         "manager"?: string;
-        /**
-          * can be any of {@link ION_TABLE_MODES} Decides if the tables works by:  - {@link ION_TABLE_MODES.BY_MODEL}: uses the WebCardinal model api
-         */
-        "mode": string;
         "noContentMessage": string;
         "pageCount"?: number;
         "paginated"?: boolean;
@@ -196,6 +193,12 @@ declare global {
         prototype: HTMLManagedIssuedShipmentElement;
         new (): HTMLManagedIssuedShipmentElement;
     };
+    interface HTMLManagedOrderListItemElement extends Components.ManagedOrderListItem, HTMLStencilElement {
+    }
+    var HTMLManagedOrderListItemElement: {
+        prototype: HTMLManagedOrderListItemElement;
+        new (): HTMLManagedOrderListItemElement;
+    };
     interface HTMLManagedOrderlineListItemElement extends Components.ManagedOrderlineListItem, HTMLStencilElement {
     }
     var HTMLManagedOrderlineListItemElement: {
@@ -219,12 +222,6 @@ declare global {
     var HTMLManagedReceivedOrderElement: {
         prototype: HTMLManagedReceivedOrderElement;
         new (): HTMLManagedReceivedOrderElement;
-    };
-    interface HTMLManagedReceivedOrderListItemElement extends Components.ManagedReceivedOrderListItem, HTMLStencilElement {
-    }
-    var HTMLManagedReceivedOrderListItemElement: {
-        prototype: HTMLManagedReceivedOrderListItemElement;
-        new (): HTMLManagedReceivedOrderListItemElement;
     };
     interface HTMLManagedShipmentListItemElement extends Components.ManagedShipmentListItem, HTMLStencilElement {
     }
@@ -273,11 +270,11 @@ declare global {
         "batch-chip": HTMLBatchChipElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-issued-shipment": HTMLManagedIssuedShipmentElement;
+        "managed-order-list-item": HTMLManagedOrderListItemElement;
         "managed-orderline-list-item": HTMLManagedOrderlineListItemElement;
         "managed-orderline-stock-chip": HTMLManagedOrderlineStockChipElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
         "managed-received-order": HTMLManagedReceivedOrderElement;
-        "managed-received-order-list-item": HTMLManagedReceivedOrderListItemElement;
         "managed-shipment-list-item": HTMLManagedShipmentListItemElement;
         "managed-stock-list-item": HTMLManagedStockListItemElement;
         "menu-tab-button": HTMLMenuTabButtonElement;
@@ -317,7 +314,7 @@ declare namespace LocalJSX {
         /**
           * Through this event errors are passed
          */
-        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
     }
     interface ManagedIssuedShipment {
         "availableString"?: string;
@@ -334,13 +331,13 @@ declare namespace LocalJSX {
          */
         "onRejected"?: (event: CustomEvent<any>) => void;
         /**
-          * Through this event errors are passed
-         */
-        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
-        /**
           * Through this event navigation requests to tabs are made
          */
-        "onSendNavigateTab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "proceedString"?: string;
         "productsString"?: string;
         "rejectString"?: string;
@@ -351,15 +348,28 @@ declare namespace LocalJSX {
         "titleString"?: string;
         "unavailableString"?: string;
     }
-    interface ManagedOrderlineListItem {
-        /**
-          * Through this event errors are passed
-         */
-        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+    interface ManagedOrderListItem {
         /**
           * Through this event navigation requests to tabs are made
          */
         "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "orderId"?: string;
+        "orderlineCount"?: number;
+        "type"?: string;
+    }
+    interface ManagedOrderlineListItem {
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "orderLine"?: string;
     }
     interface ManagedOrderlineStockChip {
@@ -378,13 +388,13 @@ declare namespace LocalJSX {
     interface ManagedProductListItem {
         "gtin"?: string;
         /**
-          * Through this event errors are passed
-         */
-        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
-        /**
           * Through this event navigation requests to tabs are made
          */
         "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
     }
     interface ManagedReceivedOrder {
         "availableString"?: string;
@@ -401,13 +411,13 @@ declare namespace LocalJSX {
          */
         "onRejected"?: (event: CustomEvent<any>) => void;
         /**
-          * Through this event errors are passed
-         */
-        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
-        /**
           * Through this event navigation requests to tabs are made
          */
-        "onSendNavigateTab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "orderId"?: string;
         "proceedString"?: string;
         "productsString"?: string;
@@ -418,27 +428,15 @@ declare namespace LocalJSX {
         "titleString"?: string;
         "unavailableString"?: string;
     }
-    interface ManagedReceivedOrderListItem {
-        /**
-          * Through this event errors are passed
-         */
-        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+    interface ManagedShipmentListItem {
         /**
           * Through this event navigation requests to tabs are made
          */
         "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
-        "orderId"?: string;
-        "orderlineCount"?: number;
-    }
-    interface ManagedShipmentListItem {
         /**
           * Through this event errors are passed
          */
-        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event navigation requests to tabs are made
-         */
-        "onSendNavigateTab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "shipmentId"?: string;
         "shipmentLineCount"?: number;
         "type"?: string;
@@ -446,13 +444,13 @@ declare namespace LocalJSX {
     interface ManagedStockListItem {
         "gtin"?: string;
         /**
-          * Through this event errors are passed
-         */
-        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
-        /**
           * Through this event navigation requests to tabs are made
          */
         "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
     }
     interface MenuTabButton {
         "badge"?: number;
@@ -472,7 +470,7 @@ declare namespace LocalJSX {
         /**
           * Through this event errors are passed
          */
-        "onShowMoreEvent"?: (event: CustomEvent<any>) => void;
+        "onSsapp-show-more"?: (event: CustomEvent<any>) => void;
         "outline"?: boolean;
         "text"?: string;
     }
@@ -492,7 +490,7 @@ declare namespace LocalJSX {
          */
         "itemProps"?: string;
         /**
-          * if the {@link PdmIonTable} is set to mode:  - {@link ION_TABLE_MODES.BY_REF}: must be the querying attribute name so the items can query their own value  - {@link ION_TABLE_MODES.BY_MODEL}: must be the model chain for content list
+          * the querying attribute name so the items can query their own value
          */
         "itemReference"?: string;
         /**
@@ -505,19 +503,11 @@ declare namespace LocalJSX {
           * sets the name of the manager to use Only required if mode if {@link PdmIonTable#mode} is set to {@link ION_TABLE_MODES.BY_REF}
          */
         "manager"?: string;
-        /**
-          * can be any of {@link ION_TABLE_MODES} Decides if the tables works by:  - {@link ION_TABLE_MODES.BY_MODEL}: uses the WebCardinal model api
-         */
-        "mode"?: string;
         "noContentMessage"?: string;
-        /**
-          * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
-         */
-        "onGetModelEvent"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSendErrorEvent"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "pageCount"?: number;
         "paginated"?: boolean;
         /**
@@ -539,11 +529,11 @@ declare namespace LocalJSX {
         "batch-chip": BatchChip;
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-issued-shipment": ManagedIssuedShipment;
+        "managed-order-list-item": ManagedOrderListItem;
         "managed-orderline-list-item": ManagedOrderlineListItem;
         "managed-orderline-stock-chip": ManagedOrderlineStockChip;
         "managed-product-list-item": ManagedProductListItem;
         "managed-received-order": ManagedReceivedOrder;
-        "managed-received-order-list-item": ManagedReceivedOrderListItem;
         "managed-shipment-list-item": ManagedShipmentListItem;
         "managed-stock-list-item": ManagedStockListItem;
         "menu-tab-button": MenuTabButton;
@@ -561,11 +551,11 @@ declare module "@stencil/core" {
             "batch-chip": LocalJSX.BatchChip & JSXBase.HTMLAttributes<HTMLBatchChipElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-issued-shipment": LocalJSX.ManagedIssuedShipment & JSXBase.HTMLAttributes<HTMLManagedIssuedShipmentElement>;
+            "managed-order-list-item": LocalJSX.ManagedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedOrderListItemElement>;
             "managed-orderline-list-item": LocalJSX.ManagedOrderlineListItem & JSXBase.HTMLAttributes<HTMLManagedOrderlineListItemElement>;
             "managed-orderline-stock-chip": LocalJSX.ManagedOrderlineStockChip & JSXBase.HTMLAttributes<HTMLManagedOrderlineStockChipElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
             "managed-received-order": LocalJSX.ManagedReceivedOrder & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderElement>;
-            "managed-received-order-list-item": LocalJSX.ManagedReceivedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderListItemElement>;
             "managed-shipment-list-item": LocalJSX.ManagedShipmentListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentListItemElement>;
             "managed-stock-list-item": LocalJSX.ManagedStockListItem & JSXBase.HTMLAttributes<HTMLManagedStockListItemElement>;
             "menu-tab-button": LocalJSX.MenuTabButton & JSXBase.HTMLAttributes<HTMLMenuTabButtonElement>;

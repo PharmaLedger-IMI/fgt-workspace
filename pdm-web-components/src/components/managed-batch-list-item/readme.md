@@ -14,9 +14,9 @@
 
 ## Events
 
-| Event            | Description                          | Type               |
-| ---------------- | ------------------------------------ | ------------------ |
-| `sendErrorEvent` | Through this event errors are passed | `CustomEvent<any>` |
+| Event              | Description                          | Type               |
+| ------------------ | ------------------------------------ | ------------------ |
+| `ssapp-send-error` | Through this event errors are passed | `CustomEvent<any>` |
 
 
 ## Methods

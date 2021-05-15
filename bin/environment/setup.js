@@ -6,9 +6,13 @@ const { argParser } = require('./utils');
 const {create} = require('./setupEnvironment');
 
 const defaultOps = {
-    app: APPS.MAH,
-    credentials: undefined,
-    products: './products/productsRandom.js'
+    app: APPS.MAH,                              // defines the mode of the setup
+    credentials: undefined,                     // allows for the setup of predefined credentials
+    products: './products/productsRandom.js',   // allows for pre-generated product data
+    batchCount: 11,
+    serialQuantity: 100,
+    expiryOffset: 100,
+    trueStock: false                            // makes stock managers actually remove products from available for others down the line
 }
 
 const processPendingMessages = function (callback) {
@@ -56,7 +60,7 @@ const printResults = function (results, callback) {
 
 const conf = argParser(defaultOps, process.argv);
 
-create(conf.app, (err, results) => {
+create(conf, (err, results) => {
     if (err)
         throw err;
     // jpsl: TODO discuss with Tiago the processing of pending messages.
