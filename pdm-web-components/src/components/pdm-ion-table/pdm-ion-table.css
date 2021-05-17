@@ -14,6 +14,7 @@
 }
 
 pdm-ion-table {
+  --ion-margin: 16px;
   --header-background: #062733;
   --table-background: var(--ion-background-color);
   --table-alt-background: #043648;
@@ -28,7 +29,7 @@ pdm-ion-table ion-searchbar{
 }
 
 pdm-ion-table ion-list{
-  --ion-margin: inherit;
+  --ion-margin: 16px;
   --table-alt-background: inherit;
   --table-background: inherit;
 }

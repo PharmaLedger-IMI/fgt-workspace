@@ -323,10 +323,10 @@ export class PdmIonTable implements ComponentInterface {
   render() {
     return (
       <Host>
-        <ion-list slot="fixed" class="ion-margin ion-no-padding pdm-list-header">
+        <ion-list slot="fixed" class="ion-no-padding pdm-list-header">
           {this.getTableHead()}
         </ion-list>
-        <ion-list class="ion-margin pdm-list-content">
+        <ion-list class="ion-no-padding pdm-list-content">
           {this.getContent()}
         </ion-list>
       </Host>
