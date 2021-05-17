@@ -33,6 +33,8 @@ pdm-ion-table ion-searchbar{
 }
 
 pdm-ion-table ion-list{
+  --table-background: var(--ion-background-color);
+  --table-alt-background: #043648;
   background: var(--table-background);
 }
 
@@ -78,11 +80,7 @@ pdm-ion-table ion-list.pdm-list-content{
 
 pdm-ion-table ion-list.pdm-list-content:nth-child(odd){
   --table-alt-background: #043648;
-  background: var(--table-alt-background);
-}
-
-pdm-ion-table ion-list.pdm-list-content ion-item{
-  background: transparent;
+  --background: var(--table-alt-background);
 }
 
 

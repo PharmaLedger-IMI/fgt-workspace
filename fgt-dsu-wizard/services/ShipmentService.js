@@ -42,7 +42,7 @@ function ShipmentService(domain, strategy) {
     /**
      * Resolves the DSU and loads the Order object with all its properties, mutable or not
      * @param {KeySSI} keySSI
-     * @param {function(err, Order)} callback
+     * @param {function(err, Shipment)} callback
      */
     this.get = function(keySSI, callback){
         utils.getResolver().loadDSU(keySSI, (err, dsu) => {
@@ -52,13 +52,13 @@ function ShipmentService(domain, strategy) {
                 if (err)
                     return callback(err);
                 try{
-                    const order = JSON.parse(data);
+                    const shipment = JSON.parse(data);
                     dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
                         if (err)
                             return callback(`could not retrieve orderLine status`);
                         try{
-                            order.status = JSON.parse(status);
-                            callback(undefined, order);
+                            shipment.status = JSON.parse(status);
+                            callback(undefined, shipment);
                         } catch (e) {
                             callback(`unable to parse Order status: ${data.toString()}`);
                         }

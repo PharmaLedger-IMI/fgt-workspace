@@ -24,6 +24,7 @@ module.exports = {
     getReceivedOrderManager: require('./ReceivedOrderManager'),
     getStockManager: require('./StockManager'),
     getOrderLineManager: require('./OrderLineManager'),
+    getShipmentLineManager: require('./ShipmentLineManager'),
     getIssuedShipmentManager: require('./IssuedShipmentManager'),
     getReceivedShipmentManager: require('./ReceivedShipmentManager')
 }

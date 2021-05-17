@@ -109,6 +109,18 @@ export namespace Components {
         "shipmentLineCount"?: number;
         "type"?: string;
     }
+    interface ManagedShipmentlineListItem {
+        "batchLabel"?: string;
+        "createdOnLabel"?: string;
+        "gtinLabel"?: string;
+        "nameLabel"?: string;
+        "quantityLabel"?: string;
+        "refresh": () => Promise<void>;
+        "requesterLabel"?: string;
+        "senderLabel"?: string;
+        "shipmentLine": string;
+        "statusLabel"?: string;
+    }
     interface ManagedStockListItem {
         "gtin": string;
         "refresh": () => Promise<void>;
@@ -239,6 +251,12 @@ declare global {
         prototype: HTMLManagedShipmentListItemElement;
         new (): HTMLManagedShipmentListItemElement;
     };
+    interface HTMLManagedShipmentlineListItemElement extends Components.ManagedShipmentlineListItem, HTMLStencilElement {
+    }
+    var HTMLManagedShipmentlineListItemElement: {
+        prototype: HTMLManagedShipmentlineListItemElement;
+        new (): HTMLManagedShipmentlineListItemElement;
+    };
     interface HTMLManagedStockListItemElement extends Components.ManagedStockListItem, HTMLStencilElement {
     }
     var HTMLManagedStockListItemElement: {
@@ -286,6 +304,7 @@ declare global {
         "managed-product-list-item": HTMLManagedProductListItemElement;
         "managed-received-order": HTMLManagedReceivedOrderElement;
         "managed-shipment-list-item": HTMLManagedShipmentListItemElement;
+        "managed-shipmentline-list-item": HTMLManagedShipmentlineListItemElement;
         "managed-stock-list-item": HTMLManagedStockListItemElement;
         "menu-tab-button": HTMLMenuTabButtonElement;
         "more-chip": HTMLMoreChipElement;
@@ -460,6 +479,25 @@ declare namespace LocalJSX {
         "shipmentLineCount"?: number;
         "type"?: string;
     }
+    interface ManagedShipmentlineListItem {
+        "batchLabel"?: string;
+        "createdOnLabel"?: string;
+        "gtinLabel"?: string;
+        "nameLabel"?: string;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "quantityLabel"?: string;
+        "requesterLabel"?: string;
+        "senderLabel"?: string;
+        "shipmentLine"?: string;
+        "statusLabel"?: string;
+    }
     interface ManagedStockListItem {
         "gtin"?: string;
         /**
@@ -555,6 +593,7 @@ declare namespace LocalJSX {
         "managed-product-list-item": ManagedProductListItem;
         "managed-received-order": ManagedReceivedOrder;
         "managed-shipment-list-item": ManagedShipmentListItem;
+        "managed-shipmentline-list-item": ManagedShipmentlineListItem;
         "managed-stock-list-item": ManagedStockListItem;
         "menu-tab-button": MenuTabButton;
         "more-chip": MoreChip;
@@ -577,6 +616,7 @@ declare module "@stencil/core" {
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
             "managed-received-order": LocalJSX.ManagedReceivedOrder & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderElement>;
             "managed-shipment-list-item": LocalJSX.ManagedShipmentListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentListItemElement>;
+            "managed-shipmentline-list-item": LocalJSX.ManagedShipmentlineListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentlineListItemElement>;
             "managed-stock-list-item": LocalJSX.ManagedStockListItem & JSXBase.HTMLAttributes<HTMLManagedStockListItemElement>;
             "menu-tab-button": LocalJSX.MenuTabButton & JSXBase.HTMLAttributes<HTMLMenuTabButtonElement>;
             "more-chip": LocalJSX.MoreChip & JSXBase.HTMLAttributes<HTMLMoreChipElement>;
