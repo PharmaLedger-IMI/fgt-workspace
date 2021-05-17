@@ -60,8 +60,15 @@ export namespace Components {
         "type"?: string;
     }
     interface ManagedOrderlineListItem {
+        "createdOnLabel"?: string;
+        "gtinLabel"?: string;
+        "nameLabel"?: string;
         "orderLine": string;
+        "quantityLabel"?: string;
         "refresh": () => Promise<void>;
+        "requesterLabel"?: string;
+        "senderLabel"?: string;
+        "statusLabel"?: string;
     }
     interface ManagedOrderlineStockChip {
         "available"?: number;
@@ -78,6 +85,7 @@ export namespace Components {
     }
     interface ManagedReceivedOrder {
         "availableString": string;
+        "confirmAllString": string;
         "confirmedString": string;
         "delayString": string;
         "detailsString": string;
@@ -88,6 +96,7 @@ export namespace Components {
         "refresh": () => Promise<void>;
         "rejectString": string;
         "remainingString": string;
+        "resetAllString": string;
         "selectOrderLine": (gtin: any) => Promise<void>;
         "selectProductString": string;
         "stockString": string;
@@ -130,9 +139,9 @@ export namespace Components {
         "currentPage"?: number;
         "iconName"?: string;
         /**
-          * Option props to be passed to child elements in 'key1:attr1;key2:attr2' format
+          * Option props to be passed to child elements in from a JSON object in value key format only format
          */
-        "itemProps"?: string;
+        "itemProps"?: any;
         /**
           * the querying attribute name so the items can query their own value
          */
@@ -142,12 +151,12 @@ export namespace Components {
          */
         "itemType": string;
         "itemsPerPage"?: number;
-        "loadingMessage": string;
+        "loadingMessage"?: string;
         /**
-          * sets the name of the manager to use Only required if mode if {@link PdmIonTable#mode} is set to {@link ION_TABLE_MODES.BY_REF}
+          * sets the name of the manager to use
          */
         "manager"?: string;
-        "noContentMessage": string;
+        "noContentMessage"?: string;
         "pageCount"?: number;
         "paginated"?: boolean;
         /**
@@ -155,6 +164,7 @@ export namespace Components {
          */
         "query"?: string;
         "refresh": () => Promise<void>;
+        "searchBarPlaceholder"?: string;
         "sort"?: string;
         /**
           * Graphical Params
@@ -362,6 +372,9 @@ declare namespace LocalJSX {
         "type"?: string;
     }
     interface ManagedOrderlineListItem {
+        "createdOnLabel"?: string;
+        "gtinLabel"?: string;
+        "nameLabel"?: string;
         /**
           * Through this event navigation requests to tabs are made
          */
@@ -371,6 +384,10 @@ declare namespace LocalJSX {
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "orderLine"?: string;
+        "quantityLabel"?: string;
+        "requesterLabel"?: string;
+        "senderLabel"?: string;
+        "statusLabel"?: string;
     }
     interface ManagedOrderlineStockChip {
         "available"?: number;
@@ -398,6 +415,7 @@ declare namespace LocalJSX {
     }
     interface ManagedReceivedOrder {
         "availableString"?: string;
+        "confirmAllString"?: string;
         "confirmedString"?: string;
         "delayString"?: string;
         "detailsString"?: string;
@@ -423,6 +441,7 @@ declare namespace LocalJSX {
         "productsString"?: string;
         "rejectString"?: string;
         "remainingString"?: string;
+        "resetAllString"?: string;
         "selectProductString"?: string;
         "stockString"?: string;
         "titleString"?: string;
@@ -486,9 +505,9 @@ declare namespace LocalJSX {
         "currentPage"?: number;
         "iconName"?: string;
         /**
-          * Option props to be passed to child elements in 'key1:attr1;key2:attr2' format
+          * Option props to be passed to child elements in from a JSON object in value key format only format
          */
-        "itemProps"?: string;
+        "itemProps"?: any;
         /**
           * the querying attribute name so the items can query their own value
          */
@@ -500,7 +519,7 @@ declare namespace LocalJSX {
         "itemsPerPage"?: number;
         "loadingMessage"?: string;
         /**
-          * sets the name of the manager to use Only required if mode if {@link PdmIonTable#mode} is set to {@link ION_TABLE_MODES.BY_REF}
+          * sets the name of the manager to use
          */
         "manager"?: string;
         "noContentMessage"?: string;
@@ -514,6 +533,7 @@ declare namespace LocalJSX {
           * Querying/paginating Params - only available when mode is set by ref
          */
         "query"?: string;
+        "searchBarPlaceholder"?: string;
         "sort"?: string;
         /**
           * Graphical Params

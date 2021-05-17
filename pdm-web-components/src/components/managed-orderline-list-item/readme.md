@@ -7,9 +7,16 @@
 
 ## Properties
 
-| Property    | Attribute    | Description | Type     | Default     |
-| ----------- | ------------ | ----------- | -------- | ----------- |
-| `orderLine` | `order-line` |             | `string` | `undefined` |
+| Property         | Attribute          | Description | Type     | Default         |
+| ---------------- | ------------------ | ----------- | -------- | --------------- |
+| `createdOnLabel` | `created-on-label` |             | `string` | `"Created on:"` |
+| `gtinLabel`      | `gtin-label`       |             | `string` | `"Gtin:"`       |
+| `nameLabel`      | `name-label`       |             | `string` | `"Name:"`       |
+| `orderLine`      | `order-line`       |             | `string` | `undefined`     |
+| `quantityLabel`  | `quantity-label`   |             | `string` | `"Quantity:"`   |
+| `requesterLabel` | `requester-label`  |             | `string` | `"Requester:"`  |
+| `senderLabel`    | `sender-label`     |             | `string` | `"Sender:"`     |
+| `statusLabel`    | `status-label`     |             | `string` | `"Status:"`     |
 
 
 ## Events

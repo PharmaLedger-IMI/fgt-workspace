@@ -1,13 +1,12 @@
-<ion-content class="tab-content" overflow-scroll="true">
-    <webc-container controller="ProductsController">
-        <pdm-ion-table title="@title"
-                       item-reference="gtin"
-                       paginated="true"
-                       manager="ProductManager"
-                       buttons="@buttons"
-                       icon-name="stats-chart-outline"
-                       item-type="managed-product-list-item"
-                       items-per-page="10"></pdm-ion-table>
-    </webc-container>
-</ion-content>
+<webc-container controller="ProductsController">
+    <pdm-ion-table title="@title"
+                   item-reference="gtin"
+                   paginated="true"
+                   manager="ProductManager"
+                   buttons="@buttons"
+                   icon-name="stats-chart-outline"
+                   item-type="managed-product-list-item"
+                   items-per-page="10"></pdm-ion-table>
+</webc-container>
+
 

@@ -1,7 +1,6 @@
 import {Component, h, Prop, Element, Event, EventEmitter, Listen, State} from '@stencil/core';
 import {HostElement} from "../../decorators";
 
-
 const BUTTON_TYPE = {
   MENU_BUTTON: "menu",
   TAB_BAR: "bar"
@@ -79,7 +78,7 @@ export class MenuTabButton {
   }
 
   _getMenuMode(){
-    const props = !!this.selected ? {color: "primary"} : {};
+    const props = !!this.selected ? {class: "tab-selected"} : {};
     return (
         <ion-item button={true} onClick={() => this.navigateToTab(this.tab)} {...props}>
           {this._getIcon()}

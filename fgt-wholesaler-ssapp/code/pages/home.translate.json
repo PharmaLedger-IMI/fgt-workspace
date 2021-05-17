@@ -48,6 +48,9 @@
     "available": "Available:",
     "unavailable": "Unavailable:",
     "selectProduct": "Please select a product",
+    "confirm": "Confirmed:",
+    "confirmAll": "Confirm All",
+    "resetAll": "Reset All",
     "creation": {
       "confirm": {
         "message": "Please confirm Shipment creation",

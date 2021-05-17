@@ -126,6 +126,8 @@ export class ManagedReceivedOrder {
 
   @Prop({attribute: 'confirmed-string'}) confirmedString: string = 'Confirmed:';
 
+  @Prop({attribute: 'confirm-all-string'}) confirmAllString: string = 'Confirm All';
+
   @Prop({attribute: 'stock-string'}) stockString: string = 'Stock:';
 
   @Prop({attribute: 'no-stock-string'}) noStockString: string = 'Empty';
@@ -135,6 +137,8 @@ export class ManagedReceivedOrder {
   @Prop({attribute: 'remaining-string'}) remainingString: string = 'Remaining:';
 
   @Prop({attribute: 'reject-string'}) rejectString: string = 'Reject';
+
+  @Prop({attribute: 'reset-all-string'}) resetAllString: string = 'Reset All';
 
   @Prop({attribute: 'proceed-string'}) proceedString: string = 'Continue:';
 
@@ -519,7 +523,8 @@ export class ManagedReceivedOrder {
           <ion-item-divider>
             {self.availableString}
             <ion-button color="success" slot="end" fill="clear" size="small" class="ion-float-end" onClick={() => self.markAllAsConfirmed()}>
-              <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+              {self.confirmAllString}
+              <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
             </ion-button>
           </ion-item-divider>
         )
@@ -538,7 +543,8 @@ export class ManagedReceivedOrder {
           <ion-item-divider>
             {self.confirmedString}
             <ion-button color="danger" slot="end" fill="clear" size="small" class="ion-float-end" onClick={() => self.markAllAsConfirmed(false)}>
-              <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
+              {self.resetAllString}
+              <ion-icon slot="end" name="close-circle-outline"></ion-icon>
             </ion-button>
           </ion-item-divider>
         )

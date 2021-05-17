@@ -1,14 +1,13 @@
-<ion-content class="tab-content" overflow-scroll="true">
-    <webc-container controller="BatchesController">
-        <pdm-ion-table title="@title"
-                       item-reference="gtin-batch"
-                       paginated="true"
-                       manager="BatchManager"
-                       buttons="@buttons"
-                       query="@query"
-                       icon-name="stats-chart-outline"
-                       item-type="managed-batch-list-item"
-                       items-per-page="10"></pdm-ion-table>
-    </webc-container>
-</ion-content>
+<webc-container controller="BatchesController">
+    <pdm-ion-table title="@title"
+                   item-reference="gtin-batch"
+                   paginated="true"
+                   manager="BatchManager"
+                   buttons="@buttons"
+                   query="@query"
+                   icon-name="stats-chart-outline"
+                   item-type="managed-batch-list-item"
+                   items-per-page="10"></pdm-ion-table>
+</webc-container>
+
 
