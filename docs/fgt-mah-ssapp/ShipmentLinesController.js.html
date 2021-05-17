@@ -7,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pharmaledger's Finished Goods Traceability DSU Wizard Documentation model/OrderStatus.js</title>
+  <title>Pharmaledger's Finished Goods Traceability Marketing Authorization Holder SSApp ShipmentLinesController.js</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -44,7 +44,7 @@
             
              
                 <a href="index.html">
-                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability DSU Wizard Documentation</h1>
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability Marketing Authorization Holder SSApp</h1>
                 </a>
             
         </div>
@@ -62,16 +62,16 @@
                     
                         <a
                             class="link user-link "
-                            href="https://github.com/PharmaLedger-IMI/epi-workspace/fgt-dsu-wizard.git"
+                            href="https://github.com/PharmaLedger-IMI/fgt-workspace/fgt-mah-ssapp.git"
                         >
                             Github
                         </a>
                     
                         <a
                             class="link user-link "
-                            href="https://fgt.pharmaledger.pdmfc.com"
+                            href="https://fgt.pharmaledger.pdmfc.com/fgt-mah-wallet/loader"
                         >
-                            Example Application - Finished Goods Traceability
+                            Application
                         </a>
                     
                 
@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-dsu-wizard.module_commands.html">commands</a></li><li><a href="fgt-dsu-wizard.module.managers.html">managers</a></li><li><a href="fgt-dsu-wizard.module_model.html">model</a></li><li><a href="fgt-dsu-wizard.module_services.html">services</a></li><li><a href="fgt-mah-ssapp.module_managers.html">managers</a></li><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Classes</h3><ul><li><a href="BatchManager.html">BatchManager</a></li><li><a href="BatchResolver.html">BatchResolver</a></li><li><a href="fgt-dsu-wizard.module_model-Batch.html">Batch</a></li><li><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html">ParticipantManager</a></li><li><a href="IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="IssuedShipmentManager.html">IssuedShipmentManager</a></li><li><a href="OrderLineManager.html">OrderLineManager</a></li><li><a href="OrderManager.html">OrderManager</a></li><li><a href="ProductManager.html">ProductManager</a></li><li><a href="ReceivedOrderManager.html">ReceivedOrderManager</a></li><li><a href="ReceivedShipmentManager.html">ReceivedShipmentManager</a></li><li><a href="ShipmentLineManager.html">ShipmentLineManager</a></li><li><a href="ShipmentManager.html">ShipmentManager</a></li><li><a href="Stock.html">Stock</a></li><li><a href="StockManager.html">StockManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getBatchManager">getBatchManager</a></li><li><a href="global.html#getBatchResolver">getBatchResolver</a></li><li><a href="global.html#getIssuedOrderManager">getIssuedOrderManager</a></li><li><a href="global.html#getIssuedShipmentManager">getIssuedShipmentManager</a></li><li><a href="global.html#getOrderLineManager">getOrderLineManager</a></li><li><a href="global.html#getProductManager">getProductManager</a></li><li><a href="global.html#getReceivedOrderManager">getReceivedOrderManager</a></li><li><a href="global.html#getReceivedShipmentManager">getReceivedShipmentManager</a></li><li><a href="global.html#getShipmentLineManager">getShipmentLineManager</a></li><li><a href="global.html#getStockManager">getStockManager</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul></div>
                 
             </nav>
         </div>
@@ -100,7 +100,7 @@
             <div class="content">
                 <header class="page-title">
                     <p>Source</p>
-                    <h1>model/OrderStatus.js</h1>
+                    <h1>ShipmentLinesController.js</h1>
                 </header>
                 
 
@@ -109,22 +109,40 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @module fgt-dsu-wizard.model
- */
-const OrderStatus = {
-    CREATED: "created",
-    REJECTED: 'rejected',
-    ON_HOLD: "hold",
-    ACKNOWLEDGED: "acknowledged",
-    PICKUP: "pickup",
-    TRANSIT: "transit",
-    DELIVERED: "delivered",
-    RECEIVED: "received",
-    CONFIRMED: "confirmed"
-}
+            <pre class="prettyprint source linenums"><code>import { LocalizedController, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
 
-module.exports = OrderStatus;</code></pre>
+/**
+ * Controls Application Flow
+ * Makes the bridge between the UI and the ShipmentLineManager
+ *
+ * Handles listing and querying of Order(line)s
+ * @class ShipmentLinesController
+ * @module controllers
+ */
+export default class ShipmentLinesController extends LocalizedController {
+
+    initializeModel = () => ({});
+
+    constructor(element, history) {
+        super(element, history, false);
+        const wizard = require('wizard');
+        super.bindLocale(this, "shipmentLines");
+        this.model = this.initializeModel();
+
+        this.participantManager = wizard.Managers.getParticipantManager();
+        this.shipmentLineManager = wizard.Managers.getShipmentLineManager(this.participantManager);
+        this.shipmentLineManager.bindController(this);
+
+        this.table = this.element.querySelector('pdm-ion-table');
+
+        let self = this;
+        self.on(EVENT_REFRESH, (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            self.table.refresh();
+        }, {capture: true});
+    }
+}</code></pre>
         </article>
     </section>
 
