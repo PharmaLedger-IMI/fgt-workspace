@@ -7,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pharmaledger's Finished Goods Traceability DSU Wizard Documentation managers/BatchManager.js</title>
+  <title>Pharmaledger's Finished Goods Traceability DSU Wizard Documentation managers/ShipmentLineManager.js</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -100,7 +100,7 @@
             <div class="content">
                 <header class="page-title">
                     <p>Source</p>
-                    <h1>managers/BatchManager.js</h1>
+                    <h1>managers/ShipmentLineManager.js</h1>
                 </header>
                 
 
@@ -109,48 +109,43 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const {INFO_PATH, ANCHORING_DOMAIN, DB, DEFAULT_QUERY_OPTIONS} = require('../constants');
+            <pre class="prettyprint source linenums"><code>const { DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN } = require('../constants');
+const OrderLine = require('../model').OrderLine;
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
-const Batch = require('../model').Batch;
-
 /**
- * Batch Manager Class
- *
- * Manager Classes in this context should do the bridge between the controllers
- * and the services exposing only the necessary api to the controllers while encapsulating &lt;strong>all&lt;/strong> business logic.
- *
- * All Manager Classes should be singletons.
- *
- * This complete separation of concerts is very beneficial for 2 reasons:
- * &lt;ul>
- *     &lt;li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'&lt;/li>
- *     &lt;li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)&lt;/li>
- * &lt;/ul>
- *
- * @param {ParticipantManager} participantManager
- * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
- * @class BatchManager
+ * Issued OrderLine Manager Class.
+ * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
  */
-class BatchManager extends Manager{
+class ShipmentLineManager extends Manager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.batches, ['gtin', 'batchNumber'], callback);
-        this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
-        this.batchService = new (require('../services/BatchService'))(ANCHORING_DOMAIN);
+        super(participantManager, DB.shipmentLines, ['gtin', 'date', 'batch', 'requesterId', 'senderId'], callback);
+        const self = this;
+        this.shipmentLineService = new (require('../services/ShipmentLineService'))(ANCHORING_DOMAIN);
+        this.registerMessageListener((message) => {
+            self.processMessageRecord(message, (err) => {
+                if (err)
+                    console.log(`Error processing message: ${message}`);
+                if (self.controller)
+                    self.controller.refresh();
+            });
+        });
     }
 
     /**
-     * generates the db's key for the batch
+     * generates the db's key for the ShipmentLine
+     * @param {string|number} requesterId
+     * @param {string|number} senderId
      * @param {string|number} gtin
-     * @param {string|number} batchNumber
+     * @param {string|number} date
      * @return {string}
-     * @private
+     * @protected
      */
-    _genCompostKey(gtin, batchNumber){
-        return `${gtin}-${batchNumber}`;
+    _genCompostKey(requesterId, senderId, gtin, date){
+        return `${requesterId}-${senderId}-${gtin}-${date}`;
     }
 
     /**
-     * Must wrap the entry in an object like:
+     * Must wrap the DB entry in an object like:
      * &lt;pre>
      *     {
      *         index1: ...
@@ -160,103 +155,22 @@ class BatchManager extends Manager{
      * &lt;/pre>
      * so the DB can be queried by each of the indexes and still allow for lazy loading
      * @param {string} key
-     * @param {Batch} item
+     * @param {ShipmentLine} item
      * @param {string|object} record
      * @return {object} the indexed object to be stored in the db
      * @protected
      * @override
      */
-    _indexItem(key, item, record){
+    _indexItem(key, item, record) {
         return {
-            gtin: key,
-            batchNumber: item.batchNumber,
-            expiry: item.expiry,
+            gtin: item.gtin,
+            date: Date.now(),
+            batch: item.batch,
+            requesterId: item.requesterId,
+            senderId: item.senderId,
             value: record
         }
     };
-
-    /**
-     * Creates a {@link Batch} dsu
-     * @param {string|number} gtin
-     * @param {Batch} batch
-     * @param {function(err, keySSI, string)} callback first keySSI if for the batch, the second for its' product dsu
-     * @override
-     */
-    create(gtin, batch, callback) {
-        let self = this;
-        self.batchService.create(gtin, batch, (err, keySSI) => {
-            if (err)
-                return callback(err);
-            const record = keySSI.getIdentifier();
-            const dbKey = self._genCompostKey(gtin, batch.batchNumber);
-            self.insertRecord(dbKey, self._indexItem(gtin, batch, record), (err) => {
-                if (err)
-                    return self._err(`Could not inset record with gtin ${gtin} and batch ${batch.batchNumber} on table ${self.tableName}`, err, callback);
-                const path =`${self.tableName}/${dbKey}`;
-                console.log(`batch ${batch.batchNumber} created stored at '${path}'`);
-                callback(undefined, keySSI, path);
-            });
-        });
-    }
-
-    /**
-     * reads the specific Batch information from a given gtin (if exists and is registered to the mah)
-     *
-     * @param {string|number} gtin
-     * @param {string|number} batchNumber
-     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
-     * @param {function(err, Batch|KeySSI, Archive)} callback returns the batch if readDSU, the keySSI otherwise
-     * @override
-     */
-    getOne(gtin, batchNumber, readDSU, callback){
-        let key;
-        if (!callback){
-            if (typeof batchNumber === 'boolean'){
-                key = gtin;
-                callback = readDSU;
-                readDSU = batchNumber;
-            } else {
-                callback = readDSU;
-                readDSU = true;
-                key = this._genCompostKey(gtin, batchNumber)
-            }
-        } else {
-            key = this._genCompostKey(gtin, batchNumber);
-        }
-        super.getOne(key, readDSU, callback);
-    }
-
-    /**
-     * Removes a product from the list (does not delete/invalidate DSU, simply 'forgets' the reference)
-     * @param {string|number} gtin
-     * @param {string|number} batchNumber
-     * @param {function(err)} callback
-     * @override
-     */
-    remove(gtin, batchNumber, callback) {
-        super.remove(this._genCompostKey(gtin, batchNumber), callback);
-    }
-
-    /**
-     *
-     * @param model
-     * @returns {Batch}
-     * @override
-     */
-    fromModel(model){
-        return new Batch(super.fromModel(model));
-    }
-
-    /**
-     * updates a Batch from the list
-     * @param {string|number} gtin
-     * @param {Batch} newBatch
-     * @param {function(err, Batch, Archive)} callback
-     * @override
-     */
-    update(gtin, newBatch, callback){
-        super.update(this._genCompostKey(gtin, newBatch.batchNumber), newBatch, callback);
-    }
 
     /**
      * Converts the text typed in a general text box into the query for the db
@@ -265,31 +179,140 @@ class BatchManager extends Manager{
      * @return {string[]} query
      * @protected
      */
-    _keywordToQuery(keyword){
+    _keywordToQuery(keyword) {
         keyword = keyword || '.*';
         return [`gtin like /${keyword}/g`];
     }
+
+    /**
+     * reads ssi for that OrderLine in the db. loads is and reads the info at '/info' and the status at '/status/info
+     * @param {string} key
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
+     * @param {function(err, object|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
+     */
+    getOne(key, readDSU,  callback) {
+        if (!callback){
+            callback = readDSU;
+            readDSU = true;
+        }
+        let self = this;
+        self.getRecord(key, (err, itemSSI) => {
+            if (err)
+                return self._err(`Could not load record with key ${key} on table ${self._getTableName()}`, err, callback);
+            if (!readDSU)
+                return callback(undefined, itemSSI);
+            self.shipmentLineService.get(itemSSI.value || itemSSI, callback);
+        });
+    }
+
+    /**
+     * Lists all received orders.
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
+     * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
+     * @param {function(err, Order[])} callback
+     */
+    getAll(readDSU, options, callback) {
+        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
+            query: ['date > 0'],
+            sort: 'dsc'
+        });
+
+        if (!callback) {
+            if (!options) {
+                callback = readDSU;
+                options = defaultOptions();
+                readDSU = true;
+            }
+            if (typeof readDSU === 'boolean') {
+                callback = options;
+                options = defaultOptions();
+            }
+            if (typeof readDSU === 'object') {
+                callback = options;
+                options = readDSU;
+                readDSU = true;
+            }
+        }
+
+        options = options || defaultOptions();
+
+        let self = this;
+        self.query(options.query, options.sort, options.limit, (err, records) => {
+            if (err)
+                return self._err(`Could not perform query`, err, callback);
+            if (!readDSU)
+                return callback(undefined, records.map(r => r.pk));
+            self._iterator(records.map(r => r.value), self.shipmentLineService.get, (err, result) => {
+                if (err)
+                    return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
+                console.log(`Parsed ${result.length} ${self._getTableName()}s`);
+                callback(undefined, result);
+            });
+        });
+    }
+
+    _processMessageRecord(message, callback) {
+        let self = this;
+        if (!message || typeof message !== "string")
+            return callback(`Message ${message} does not have  non-empty string with keySSI. Skipping record.`);
+
+        let shipmentLines;
+        try {
+            shipmentLines = JSON.parse(message);
+        } catch (e) {
+            shipmentLines = [message];
+        }
+
+        const lines = [];
+
+        const shipmentLineIterator = function(linesCopy, callback){
+            const lineSSI = linesCopy.shift();
+            if (!lineSSI)
+                return callback(undefined, lines);
+            self._getDSUInfo(lineSSI, (err, shipmentLine, shipmentLineDsu) => {
+                if (err) {
+                    console.log(`Could not read DSU from message keySSI in record ${message}. Skipping record.`);
+                    return callback();
+                }
+                console.log(`Received ShipmentLine`, shipmentLine);
+                const indexedItem = self._indexItem(undefined, shipmentLine, lineSSI);
+                const compostKey = self._genCompostKey(shipmentLine.requesterId, shipmentLine.senderId, shipmentLine.gtin, indexedItem.date);
+                self.insertRecord(compostKey, indexedItem, (err) => {
+                    if (err)
+                        return self._err(`Could not insert record for ShipmentLine ${compostKey}`, err, callback);
+                    shipmentLineIterator(linesCopy, callback);
+                });
+            });
+        }
+
+        shipmentLineIterator(shipmentLines.slice(), (err, newLines) => {
+            if (err)
+                return self._err(`Could not register all shipmentlines`, err, callback);
+            console.log(`ShipmentLines successfully registered: ${JSON.stringify(newLines)}`);
+            callback(undefined, lines);
+        });
+    };
 }
 
-let batchManager;
+let shipmentLineManager;
 /**
- * @param {BaseManager} [participantManager] only required the first time, if not forced
+ * @param {ParticipantManager} participantManager
  * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
  * Makes BaseManager required again!
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
- * @returns {BatchManager}
+ * @returns {ShipmentLineManager}
  */
-const getBatchManager = function (participantManager, force, callback) {
+const getShipmentLineManager = function (participantManager, force, callback) {
     if (typeof force === 'function'){
         callback = force;
         force = false;
     }
-    if (!batchManager || force)
-        batchManager = new BatchManager(participantManager, callback);
-    return batchManager;
+    if (!shipmentLineManager || force)
+        shipmentLineManager = new ShipmentLineManager(participantManager, callback);
+    return shipmentLineManager;
 }
 
-module.exports = getBatchManager;
+module.exports = getShipmentLineManager;
 </code></pre>
         </article>
     </section>

@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-pharmacy-ssapp.module_LOCALE.html">LOCALE</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_handleTryCancel">_handleTryCancel</a></li><li><a href="global.html#_handleTryOk">_handleTryOk</a></li><li><a href="global.html#getAll">getAll</a></li><li><a href="global.html#getStockAsync">getStockAsync</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateStock">updateStock</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-pharmacy-ssapp.module_LOCALE.html">LOCALE</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_handleTryCancel">_handleTryCancel</a></li><li><a href="global.html#_handleTryOk">_handleTryOk</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,7 +109,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
+            <pre class="prettyprint source linenums"><code>import { LocalizedController, EVENT_REFRESH } from "../../assets/pdm-web-components/index.esm.js";
 
 /**
  * List all the orders, and allows the creation of new orders.
@@ -117,30 +117,25 @@
 export default class IssuedOrdersController extends LocalizedController {
     initializeModel = () => ({
         pharmacy: undefined,
-        orders: []
     }); // uninitialized blank model
 
     constructor(element, history) {
         super(element, history);
         super.bindLocale(this, "issuedOrders");
+        this.model = this.initializeModel();
         const wizard = require('wizard');
 
-        this.participantManager = wizard.Managers.getParticipantManager();
-        this.issuedOrderManager = wizard.Managers.getIssuedOrderManager(this.participantManager);
-
-        this.model = this.initializeModel();
-
-        this.model.addExpression('hasOrders', () => {
-            return this.model.orders &amp;&amp; this.model.orders.length > 0;
-        }, 'orders');
+        const participantManager = wizard.Managers.getParticipantManager();
+        this.issuedOrderManager = wizard.Managers.getIssuedOrderManager(participantManager);
+        this.table = this.element.querySelector('pdm-ion-table');
 
         let self = this;
         // the HomeController takes care of sending refresh events for each tab.
-        self.on('refresh', (evt) => {
+        self.on(EVENT_REFRESH, (evt) => {
             console.log(evt);
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            self.getAll();
+            self.table.refresh();
         }, {capture: true});
 
         // pressing "NEW" to create a new Issued Order
@@ -160,7 +155,7 @@ export default class IssuedOrdersController extends LocalizedController {
             event.preventDefault();
             event.stopImmediatePropagation();
             self.hideModal();
-            self.send("refresh"); // force refresh of the listing
+            self.refresh();
         }, true);
     }
 
@@ -178,28 +173,6 @@ export default class IssuedOrdersController extends LocalizedController {
             disableCancelButton: true,
             expanded: false,
             centered: true
-        });
-    }
-
-    /**
-     * Updates the issued orders model
-     * @param {object[]} orders.
-     */
-    update(orders) {
-        this.model['orders'] = orders;
-    }
-
-    /**
-     * Retrieves the issued orders from the DSU and updates the model
-     * by calling {@link IssuedOrdersController#updateIssued} after retrieval
-     */
-     getAll() {
-        let self = this;
-        self.issuedOrderManager.getAll(true, (err, orders) => {
-            console.log("getAll got orders ", orders);
-            if (err)
-                return self.showError(err);
-            self.update(orders);
         });
     }
 }

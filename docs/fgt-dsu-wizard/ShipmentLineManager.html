@@ -5,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pharmaledger's Finished Goods Traceability DSU Wizard Documentation StockManager</title>
+  <title>Pharmaledger's Finished Goods Traceability DSU Wizard Documentation ShipmentLineManager</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -98,7 +98,7 @@
             <div class="content">
                 <header class="page-title">
                     <p>Class</p>
-                    <h1>StockManager</h1>
+                    <h1>ShipmentLineManager</h1>
                 </header>
                 
 
@@ -109,7 +109,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>StockManager<span class="signature">(storage, baseManager, callback<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>ShipmentLineManager<span class="signature">(participantManager)</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description"><p>Issued OrderLine Manager Class.</p></div>
         
     
 </header>
@@ -128,32 +130,18 @@
 
 
     
-    <h4 class="name" id="StockManager">
-        <a class="href-link" href="#StockManager">#</a>
+    <h4 class="name" id="ShipmentLineManager">
+        <a class="href-link" href="#ShipmentLineManager">#</a>
         
         <span class="code-name">
             
-                new StockManager<span class="signature">(storage, baseManager, callback<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+                new ShipmentLineManager<span class="signature">(participantManager)</span><span class="type-signature"></span>
             
         </span>
     </h4>
     
 
     
-    <p class="summary"><p>Manager Classes in this context should do the bridge between the controllers
-and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.</p></p>
-    
-    
-    <div class="description">
-        <p>Manager Classes in this context should do the bridge between the controllers
-and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.</p>
-<p>All Manager Classes should be singletons.</p>
-<p>This complete separation of concerns is very beneficial for 2 reasons:</p>
-<ul>
-    <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
-    <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
-</ul>
-    </div>
     
 
 
@@ -177,8 +165,6 @@ and the services exposing only the necessary api to the controllers while encaps
             <th>Type</th>
 
             
-            <th>Attributes</th>
-            
 
             
 
@@ -192,99 +178,23 @@ and the services exposing only the necessary api to the controllers while encaps
             
 <tr class="deep-level-0">
   
-      <td class="name"><code>storage</code></td>
+      <td class="name"><code>participantManager</code></td>
   
 
   <td class="type">
   
       
-<span class="param-type">Database</span>
+<span class="param-type">ParticipantManager</span>
 
 
   
   </td>
 
   
-      <td class="attributes">
-      
-
-      
-
-      
-      </td>
-  
 
   
 
-  <td class="description last"><p>the DSU where the storage should happen or more commonly the Database Object</p></td>
-</tr>
-
-
-        
-
-            
-<tr class="deep-level-0">
-  
-      <td class="name"><code>baseManager</code></td>
-  
-
-  <td class="type">
-  
-      
-<span class="param-type">BaseManager</span>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-
-      
-
-      
-      </td>
-  
-
-  
-
-  <td class="description last"><p>the base manager to have access to the identity api</p></td>
-</tr>
-
-
-        
-
-            
-<tr class="deep-level-0">
-  
-      <td class="name"><code>callback</code></td>
-  
-
-  <td class="type">
-  
-      
-<span class="param-type">function</span>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-          &lt;optional><br>
-      
-
-      
-
-      
-      </td>
-  
-
-  
-
-  <td class="description last"><p>optional callback for when the assurance that the table has already been indexed is required.</p></td>
+  <td class="description last"><p>the top-level manager for this participant, which knows other managers.</p></td>
 </tr>
 
 
@@ -330,9 +240,9 @@ and the services exposing only the necessary api to the controllers while encaps
 
     
         <p class="tag-source">
-            <a href="managers_StockManager.js.html" class="button">View Source</a>
+            <a href="managers_ShipmentLineManager.js.html" class="button">View Source</a>
             <span>
-                <a href="managers_StockManager.js.html">managers/StockManager.js</a>, <a href="managers_StockManager.js.html#line7">line 7</a>
+                <a href="managers_ShipmentLineManager.js.html">managers/ShipmentLineManager.js</a>, <a href="managers_ShipmentLineManager.js.html#line8">line 8</a>
             </span>
         </p>
     
@@ -389,23 +299,27 @@ and the services exposing only the necessary api to the controllers while encaps
 
 
     
-    <h4 class="name" id="create">
-        <a class="href-link" href="#create">#</a>
+    <h4 class="name" id="_genCompostKey">
+        <a class="href-link" href="#_genCompostKey">#</a>
+        
+            
+                <span class='tag'>protected</span>
+            
         
         <span class="code-name">
             
-                create<span class="signature">(gtin<span class="signature-attributes">opt</span>, stock, callback)</span><span class="type-signature"></span>
+                _genCompostKey<span class="signature">(requesterId, senderId, gtin, date)</span><span class="type-signature"> &rarr; {string}</span>
             
         </span>
     </h4>
     
 
     
-    <p class="summary"><p>Creates a Product dsu</p>.</p>
+    <p class="summary"><p>generates the db's key for the ShipmentLine</p>.</p>
     
     
     <div class="description">
-        <p>Creates a Product dsu</p>
+        <p>generates the db's key for the ShipmentLine</p>
     </div>
     
 
@@ -430,8 +344,6 @@ and the services exposing only the necessary api to the controllers while encaps
             <th>Type</th>
 
             
-            <th>Attributes</th>
-            
 
             
 
@@ -440,6 +352,62 @@ and the services exposing only the necessary api to the controllers while encaps
         </thead>
 
         <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>requesterId</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+|
+
+<span class="param-type">number</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>senderId</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+|
+
+<span class="param-type">number</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
         
 
             
@@ -461,49 +429,6 @@ and the services exposing only the necessary api to the controllers while encaps
   </td>
 
   
-      <td class="attributes">
-      
-          &lt;optional><br>
-      
-
-      
-
-      
-      </td>
-  
-
-  
-
-  <td class="description last"><p>the table key</p></td>
-</tr>
-
-
-        
-
-            
-<tr class="deep-level-0">
-  
-      <td class="name"><code>stock</code></td>
-  
-
-  <td class="type">
-  
-      
-<span class="param-type"><a href="Stock.html">Stock</a></span>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-
-      
-
-      
-      </td>
-  
 
   
 
@@ -516,31 +441,26 @@ and the services exposing only the necessary api to the controllers while encaps
             
 <tr class="deep-level-0">
   
-      <td class="name"><code>callback</code></td>
+      <td class="name"><code>date</code></td>
   
 
   <td class="type">
   
       
-<span class="param-type">function</span>
+<span class="param-type">string</span>
+|
+
+<span class="param-type">number</span>
 
 
   
   </td>
 
   
-      <td class="attributes">
-      
-
-      
-
-      
-      </td>
-  
 
   
 
-  <td class="description last"><p>where the string is the mount path relative to the main DSU</p></td>
+  <td class="description last"></td>
 </tr>
 
 
@@ -586,9 +506,9 @@ and the services exposing only the necessary api to the controllers while encaps
 
     
         <p class="tag-source">
-            <a href="managers_StockManager.js.html" class="button">View Source</a>
+            <a href="managers_ShipmentLineManager.js.html" class="button">View Source</a>
             <span>
-                <a href="managers_StockManager.js.html">managers/StockManager.js</a>, <a href="managers_StockManager.js.html#line37">line 37</a>
+                <a href="managers_ShipmentLineManager.js.html">managers/ShipmentLineManager.js</a>, <a href="managers_ShipmentLineManager.js.html#line32">line 32</a>
             </span>
         </p>
     
@@ -611,6 +531,453 @@ and the services exposing only the necessary api to the controllers while encaps
 
 
 
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">string</span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="_indexItem">
+        <a class="href-link" href="#_indexItem">#</a>
+        
+            
+                <span class='tag'>protected</span>
+            
+        
+        <span class="code-name">
+            
+                _indexItem<span class="signature">(key, item, record)</span><span class="type-signature"> &rarr; {object}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Must wrap the DB entry in an object like:</p>
+<pre>
+    {
+        index1: ...</pre></p>
+    
+    
+    <div class="description">
+        <p>Must wrap the DB entry in an object like:</p>
+<pre>
+    {
+        index1: ...
+        index2: ...
+        value: item
+    }
+</pre>
+<p>so the DB can be queried by each of the indexes and still allow for lazy loading</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>key</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>item</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">ShipmentLine</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>record</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+|
+
+<span class="param-type">object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="managers_ShipmentLineManager.js.html" class="button">View Source</a>
+            <span>
+                <a href="managers_ShipmentLineManager.js.html">managers/ShipmentLineManager.js</a>, <a href="managers_ShipmentLineManager.js.html#line53">line 53</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>the indexed object to be stored in the db</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">object</span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="_keywordToQuery">
+        <a class="href-link" href="#_keywordToQuery">#</a>
+        
+            
+                <span class='tag'>protected</span>
+            
+        
+        <span class="code-name">
+            
+                _keywordToQuery<span class="signature">(keyword)</span><span class="type-signature"> &rarr; {Array.&lt;string>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Converts the text typed in a general text box into the query for the db
+Subclasses should override this</p>.</p>
+    
+    
+    <div class="description">
+        <p>Converts the text typed in a general text box into the query for the db
+Subclasses should override this</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>keyword</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="managers_ShipmentLineManager.js.html" class="button">View Source</a>
+            <span>
+                <a href="managers_ShipmentLineManager.js.html">managers/ShipmentLineManager.js</a>, <a href="managers_ShipmentLineManager.js.html#line71">line 71</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>query</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Array.&lt;string></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
 
 
 
@@ -632,11 +999,11 @@ and the services exposing only the necessary api to the controllers while encaps
     
 
     
-    <p class="summary"><p>Lists all registered items according to query options provided</p>.</p>
+    <p class="summary">Lists all received orders.</p>
     
     
     <div class="description">
-        <p>Lists all registered items according to query options provided</p>
+        <p>Lists all received orders.</p>
     </div>
     
 
@@ -816,9 +1183,9 @@ and the services exposing only the necessary api to the controllers while encaps
 
     
         <p class="tag-source">
-            <a href="managers_StockManager.js.html" class="button">View Source</a>
+            <a href="managers_ShipmentLineManager.js.html" class="button">View Source</a>
             <span>
-                <a href="managers_StockManager.js.html">managers/StockManager.js</a>, <a href="managers_StockManager.js.html#line102">line 102</a>
+                <a href="managers_ShipmentLineManager.js.html">managers/ShipmentLineManager.js</a>, <a href="managers_ShipmentLineManager.js.html#line103">line 103</a>
             </span>
         </p>
     
@@ -855,18 +1222,18 @@ and the services exposing only the necessary api to the controllers while encaps
         
         <span class="code-name">
             
-                getOne<span class="signature">(gtin, readDSU<span class="signature-attributes">opt</span>, callback)</span><span class="type-signature"></span>
+                getOne<span class="signature">(key, readDSU<span class="signature-attributes">opt</span>, callback)</span><span class="type-signature"></span>
             
         </span>
     </h4>
     
 
     
-    <p class="summary">reads ssi for that gtin in the db.</p>
+    <p class="summary">reads ssi for that OrderLine in the db.</p>
     
     
     <div class="description">
-        <p>reads ssi for that gtin in the db. loads is and reads the info at '/info'</p>
+        <p>reads ssi for that OrderLine in the db. loads is and reads the info at '/info' and the status at '/status/info</p>
     </div>
     
 
@@ -906,7 +1273,7 @@ and the services exposing only the necessary api to the controllers while encaps
             
 <tr class="deep-level-0">
   
-      <td class="name"><code>gtin</code></td>
+      <td class="name"><code>key</code></td>
   
 
   <td class="type">
@@ -1044,240 +1411,9 @@ and the services exposing only the necessary api to the controllers while encaps
 
     
         <p class="tag-source">
-            <a href="managers_StockManager.js.html" class="button">View Source</a>
+            <a href="managers_ShipmentLineManager.js.html" class="button">View Source</a>
             <span>
-                <a href="managers_StockManager.js.html">managers/StockManager.js</a>, <a href="managers_StockManager.js.html#line82">line 82</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-            
-                <div class="member">
-
-
-    
-    <h4 class="name" id="update">
-        <a class="href-link" href="#update">#</a>
-        
-        <span class="code-name">
-            
-                update<span class="signature">(gtin<span class="signature-attributes">opt</span>, newStock, callback)</span><span class="type-signature"></span>
-            
-        </span>
-    </h4>
-    
-
-    
-    <p class="summary"><p>updates a product from the list</p>.</p>
-    
-    
-    <div class="description">
-        <p>updates a product from the list</p>
-    </div>
-    
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-<div class="table-container">
-    <table class="params table">
-        <thead>
-        <tr>
-            
-            <th>Name</th>
-            
-
-            <th>Type</th>
-
-            
-            <th>Attributes</th>
-            
-
-            
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        
-
-            
-<tr class="deep-level-0">
-  
-      <td class="name"><code>gtin</code></td>
-  
-
-  <td class="type">
-  
-      
-<span class="param-type">string</span>
-|
-
-<span class="param-type">number</span>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-          &lt;optional><br>
-      
-
-      
-
-      
-      </td>
-  
-
-  
-
-  <td class="description last"><p>the table key</p></td>
-</tr>
-
-
-        
-
-            
-<tr class="deep-level-0">
-  
-      <td class="name"><code>newStock</code></td>
-  
-
-  <td class="type">
-  
-      
-<span class="param-type"><a href="Stock.html">Stock</a></span>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-
-      
-
-      
-      </td>
-  
-
-  
-
-  <td class="description last"></td>
-</tr>
-
-
-        
-
-            
-<tr class="deep-level-0">
-  
-      <td class="name"><code>callback</code></td>
-  
-
-  <td class="type">
-  
-      
-<span class="param-type">function</span>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-
-      
-
-      
-      </td>
-  
-
-  
-
-  <td class="description last"></td>
-</tr>
-
-
-        
-        </tbody>
-    </table>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="managers_StockManager.js.html" class="button">View Source</a>
-            <span>
-                <a href="managers_StockManager.js.html">managers/StockManager.js</a>, <a href="managers_StockManager.js.html#line60">line 60</a>
+                <a href="managers_ShipmentLineManager.js.html">managers/ShipmentLineManager.js</a>, <a href="managers_ShipmentLineManager.js.html#line82">line 82</a>
             </span>
         </p>
     
