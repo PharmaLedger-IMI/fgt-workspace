@@ -40,7 +40,7 @@ class ReceivedShipmentManager extends ShipmentManager {
      * </pre>
      * so the DB can be queried by each of the indexes and still allow for lazy loading
      * @param {string} key
-     * @param {Order} item
+     * @param {Shipment} item
      * @param {string|object} record
      * @return {object} the indexed object to be stored in the db
      * @protected

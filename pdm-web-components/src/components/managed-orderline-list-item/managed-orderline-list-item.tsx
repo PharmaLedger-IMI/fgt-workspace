@@ -1,11 +1,11 @@
-import {Component, Host, h, Element, Prop, State, Watch, Method, Event, EventEmitter} from '@stencil/core';
+import {Component, h, Element, Prop, State, Watch, Method, Event, EventEmitter} from '@stencil/core';
 
 import {WebManagerService, WebResolver} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 
-const OrderLine = wizard.Model.OrderLine;
+const {OrderLine, Product, OrderStatus} = wizard.Model;
 
 @Component({
   tag: 'managed-orderline-list-item',
@@ -57,18 +57,37 @@ export class ManagedOrderlineListItem {
 
   @Prop({attribute: 'order-line', mutable: true}) orderLine: string;
 
+  @Prop({attribute: 'gtin-label', mutable: true}) gtinLabel?: string = "Gtin:";
+
+  @Prop({attribute: 'name-label', mutable: true}) nameLabel?: string = "Name:";
+
+  @Prop({attribute: 'requester-label', mutable: true}) requesterLabel?: string = "Requester:";
+
+  @Prop({attribute: 'sender-label', mutable: true}) senderLabel?: string = "Sender:";
+
+  @Prop({attribute: 'created-on-label', mutable: true}) createdOnLabel?: string = "Created on:";
+
+  @Prop({attribute: 'status-label', mutable: true}) statusLabel?: string = "Status:";
+
+  @Prop({attribute: 'quantity-label', mutable: true}) quantityLabel?: string = "Quantity:";
+
   private orderLineManager: WebResolver = undefined;
 
+  private productManager: WebResolver = undefined;
+
   @State() line: typeof OrderLine = undefined;
+
+  @State() product: typeof Product = undefined;
 
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
     this.orderLineManager = await WebManagerService.getWebManager("OrderLineManager");
+    this.productManager = await WebManagerService.getWebManager("ProductManager");
     return await this.loadOrderLine();
   }
 
-  async loadOrderLine(){
+  private async loadOrderLine(){
     let self = this;
     if (!self.orderLineManager)
       return;
@@ -77,7 +96,15 @@ export class ManagedOrderlineListItem {
         self.sendError(`Could not get OrderLine with reference ${self.orderLine}`, err);
         return;
       }
-      this.line = line;
+      self.line = line;
+
+      self.productManager.getOne(self.line.gtin, true, (err, product: typeof Product) => {
+        if (err){
+          self.sendError(`Could not get Product data from ${self.line.gtin}`, err);
+          return;
+        }
+        self.product = product;
+      });
     });
   }
 
@@ -87,7 +114,7 @@ export class ManagedOrderlineListItem {
     await this.loadOrderLine();
   }
 
-  addBarCode(){
+  private addBarCode(){
     const self = this;
 
     const getBarCode = function(){
@@ -97,7 +124,7 @@ export class ManagedOrderlineListItem {
     }
 
     return(
-      <ion-thumbnail class="ion-align-self-center" slot="start">
+      <ion-thumbnail class="ion-align-self-center bar-code" slot="start">
         {getBarCode()}
       </ion-thumbnail>
     )
@@ -114,54 +141,134 @@ export class ManagedOrderlineListItem {
     }
   }
 
-  addLabel(){
+  private addProductColumn(props){
     const self = this;
-
+    const getNameLabel = function(){
+      if (!self.product || !self.product.name)
+        return (<h4><ion-skeleton-text animated class="label-name"></ion-skeleton-text></h4>)
+      return (<h4>{self.product.name}</h4>)
+    }
     const getGtinLabel = function(){
       if (!props || !props.gtin)
-        return (<h3><ion-skeleton-text animated></ion-skeleton-text> </h3>);
+        return (<h3><ion-skeleton-text animated class="label-gtin"></ion-skeleton-text></h3>);
       return (<h3>{props.gtin}</h3>)
     }
 
+    return [
+      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.gtinLabel}</p></ion-label>,
+      <ion-label class="ion-padding ion-align-self-center">
+        {getGtinLabel()}
+      </ion-label>,
+      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.requesterLabel}</p></ion-label>,
+      <ion-label class="ion-padding ion-align-self-center">
+        {getNameLabel()}
+      </ion-label>
+    ];
+  }
+
+  private addRequesterColumn(props){
+    const self = this;
+
     const getRequesterLabel = function(){
       if (!props || !props.requesterId)
-        return (<h5><ion-skeleton-text animated></ion-skeleton-text> </h5>)
-      return (<h5>{props.requesterId}</h5>)
+        return (<h4><ion-skeleton-text animated class="label-requester"></ion-skeleton-text></h4>)
+      return (<h4>{props.requesterId}</h4>)
     }
 
     const getDateLabel = function(){
       if (!props || !props.date)
-        return (<p><ion-skeleton-text animated></ion-skeleton-text> </p>)
-      return (<p>{props.date}</p>)
+        return (<h4><ion-skeleton-text animated class="label-date"></ion-skeleton-text></h4>)
+      return (<h4>{props.date}</h4>)
     }
-    const props = self.getPropsFromKey();
 
-    return(
-      <ion-label class="ion-padding-horizontal ion-align-self-center">
-        {getGtinLabel()}
+    return [
+      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.requesterLabel}</p></ion-label>,
+      <ion-label class="ion-padding ion-align-self-center">
         {getRequesterLabel()}
+      </ion-label>,
+      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.createdOnLabel}</p></ion-label>,
+      <ion-label class="ion-padding ion-align-self-center">
         {getDateLabel()}
-      </ion-label>)
+      </ion-label>
+    ];
   }
 
-  addDetails(){
-    if (!this.line)
-      return (<multi-loader type={SUPPORTED_LOADERS.bubblingSmall}></multi-loader>)
-    return(
-      <ion-grid class="ion-padding-horizontal">
-        <ion-row>
-          <ion-col size="3">
-            <ion-chip outline class="ion-padding-horizontal" color="primary">{this.line.quantity}</ion-chip>
-          </ion-col>
-          <ion-col size="3">
-            <ion-chip outline class="ion-padding-horizontal" color="primary">{this.line.status}</ion-chip>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    )
+  addSenderColumn(props){
+    const self = this;
+
+    const getSenderLabel = function(){
+      if (!self.line || !self.line.senderId)
+        return (<h4><ion-skeleton-text animated class="label-sender"></ion-skeleton-text></h4>);
+      return (<h4>{self.line.senderId}</h4>)
+    }
+
+    const getDateLabel = function(){
+      if (!props || !props.date)
+        return (<h4><ion-skeleton-text animated class="label-date"></ion-skeleton-text></h4>)
+      return (<h4>{props.date}</h4>)
+    }
+
+    return [
+      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.senderLabel}</p></ion-label>,
+      <ion-label class="ion-padding ion-align-self-center">
+        {getSenderLabel()}
+      </ion-label>,
+      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.createdOnLabel}</p></ion-label>,
+      <ion-label class="ion-padding ion-align-self-center">
+        {getDateLabel()}
+      </ion-label>,
+    ];
   }
 
-  addButtons(){
+  addDetailsColumn(){
+    const self = this;
+
+    const getStatusBadge = function(){
+      if (!self.line || !self.line.status)
+        return (<multi-loader class="ion-float-start" type={SUPPORTED_LOADERS.bubblingSmall}></multi-loader>)
+
+      const getColorByStatus = function(){
+        switch (self.line.status){
+          case OrderStatus.REJECTED:
+            return 'danger';
+          case OrderStatus.On_HOLD:
+            return 'warning';
+          case OrderStatus.CONFIRMED:
+            return 'success';
+          case OrderStatus.CREATED:
+            return 'medium';
+          case OrderStatus.ACKNOWLEDGED:
+          case OrderStatus.TRANSIT:
+          case OrderStatus.RECEIVED:
+            return 'secondary';
+          default:
+            return 'primary'
+        }
+      }
+
+      return (<ion-badge color={getColorByStatus()} class="ion-text-uppercase">{self.line.status}</ion-badge>)
+    }
+
+    const getQuantityBadge = function() {
+      if (!self.line || !self.line.quantity)
+        return (<multi-loader type={SUPPORTED_LOADERS.bubblingSmall}></multi-loader>)
+
+      return (<ion-badge color="primary" class="ion-text-uppercase">{self.line.quantity}</ion-badge>)
+    }
+
+    return [
+      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.statusLabel}</p></ion-label>,
+      <ion-label class="ion-padding ion-align-self-center">
+        {getStatusBadge()}
+      </ion-label>,
+      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.quantityLabel}</p></ion-label>,
+      <ion-label class="ion-padding ion-align-self-center">
+        {getQuantityBadge()}
+      </ion-label>
+    ];
+  }
+
+  private addButtons(){
     let self = this;
     const getButtons = function(){
       if (!self.line)
@@ -181,15 +288,28 @@ export class ManagedOrderlineListItem {
   }
 
   render() {
+    const props = this.getPropsFromKey();
     return (
-      <Host>
         <ion-item class="ion-align-self-center main-item">
           {this.addBarCode()}
-          {this.addLabel()}
-          {this.addDetails()}
+          <ion-grid>
+            <ion-row>
+              <ion-col size="4">
+                {...this.addProductColumn(props)}
+              </ion-col>
+              <ion-col size="3">
+                {...this.addRequesterColumn(props)}
+              </ion-col>
+              <ion-col size="3">
+                {...this.addSenderColumn(props)}
+              </ion-col>
+              <ion-col size="2">
+                {...this.addDetailsColumn()}
+              </ion-col>
+            </ion-row>
+          </ion-grid>
           {this.addButtons()}
         </ion-item>
-      </Host>
     );
   }
 }

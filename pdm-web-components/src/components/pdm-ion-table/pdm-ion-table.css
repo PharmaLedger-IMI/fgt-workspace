@@ -1,7 +1,87 @@
 :host {
   display: block;
+  --ion-color-primary: var(--ion-color-primary);
+  --ion-color-secondary: var(--ion-color-secondary);
+  --ion-color-tertiary: var(--ion-color-tertiary);
+  --ion-color-success: var(--ion-color-success);
+  --ion-color-warning: var(--ion-color-warning);
+  --ion-color-danger: var(--ion-color-danger);
+  --ion-color-dark: var(--ion-color-dark);
+  --ion-color-medium: var(--ion-color-medium);
+  --ion-color-light: var(--ion-color-light);
+  --ion-margin: var(--ion-margin);
+  --ion-background-color: var(--ion-background-color);
 }
 
-ion-list-header{
-  position: sticky;
+pdm-ion-table {
+  --header-background: #062733;
+  --table-background: var(--ion-background-color);
+  --table-alt-background: #043648;
+}
+
+pdm-ion-table ion-searchbar{
+  --ion-color-contrast: inherit;
+  background: var(--ion-color-contrast);
+  --toolbar-width: calc(50%);
+  width: 0;
+  opacity: 0;
+}
+
+pdm-ion-table ion-list{
+  --ion-margin: inherit;
+  --table-alt-background: inherit;
+  --table-background: inherit;
+}
+
+pdm-ion-table ion-searchbar.open {
+  width: 50%;
+  opacity: 100%;
+  animation: slide-in 500ms ease-in-out;
+}
+
+pdm-ion-table ion-searchbar.closed {
+  animation: slide-in 500ms ease-in-out reverse;
+}
+
+pdm-ion-table ion-list-header ion-toolbar{
+  color: var(--ion-color-primary);
+  background: var(--header-background);
+}
+
+pdm-ion-table ion-list.pdm-list-content > ion-item{
+  color: var(--ion-color-primary);
+}
+
+pdm-ion-table ion-list.pdm-list-header{
+  margin-top: var(--ion-margin);
+  margin-left: var(--ion-margin);
+  margin-right: var(--ion-margin);
+}
+
+pdm-ion-table ion-list.pdm-list-content{
+  background: var(--ion-background-color);
+  margin-bottom: var(--ion-margin);
+  margin-left: var(--ion-margin);
+  margin-right: var(--ion-margin);
+}
+
+pdm-ion-table ion-list.pdm-list-content:nth-child(odd){
+  --table-alt-background: #043648;
+  background: var(--table-alt-background);
+}
+
+pdm-ion-table ion-list.pdm-list-content ion-item{
+  background: transparent;
+}
+
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(var(--toolbar-width));
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0px);
+    opacity: 1;
+  }
 }

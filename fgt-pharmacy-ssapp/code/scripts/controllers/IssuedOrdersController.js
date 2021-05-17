@@ -44,7 +44,7 @@ export default class IssuedOrdersController extends LocalizedController {
             event.preventDefault();
             event.stopImmediatePropagation();
             self.hideModal();
-            self.send(EVENT_REFRESH); // force refresh of the listing
+            self.refresh();
         }, true);
     }
 

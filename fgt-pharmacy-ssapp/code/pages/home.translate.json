@@ -58,11 +58,13 @@
   },
   "issuedOrders": {
     "title": "Issued Orders",
-    "new": "New",
     "numberHeader": "ID",
     "orderingPartnerHeader": "Issued By",
     "supplyingPartnerHeader": "Issued To",
-    "none": "No orders issued..."
+    "none": "No orders issued...",
+    "buttons": {
+      "new-issued-order": "New"
+    }
   },
   "receivedShipments": {
     "title": "Incoming Shipments",

@@ -10,6 +10,7 @@
 | Property              | Attribute            | Description | Type     | Default                        |
 | --------------------- | -------------------- | ----------- | -------- | ------------------------------ |
 | `availableString`     | `available-string`   |             | `string` | `'Available:'`                 |
+| `confirmAllString`    | `confirm-all-string` |             | `string` | `'Confirm All'`                |
 | `confirmedString`     | `confirmed-string`   |             | `string` | `'Confirmed:'`                 |
 | `delayString`         | `delay-string`       |             | `string` | `'Delay:'`                     |
 | `detailsString`       | `details-string`     |             | `string` | `'Details:'`                   |
@@ -19,6 +20,7 @@
 | `productsString`      | `products-string`    |             | `string` | `'Products:'`                  |
 | `rejectString`        | `reject-string`      |             | `string` | `'Reject'`                     |
 | `remainingString`     | `remaining-string`   |             | `string` | `'Remaining:'`                 |
+| `resetAllString`      | `reset-all-string`   |             | `string` | `'Reset All'`                  |
 | `selectProductString` | `select-product`     |             | `string` | `'Please Select a Product...'` |
 | `stockString`         | `stock-string`       |             | `string` | `'Stock:'`                     |
 | `titleString`         | `title-string`       |             | `string` | `'Process Order'`              |

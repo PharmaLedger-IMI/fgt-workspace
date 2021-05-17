@@ -21,7 +21,7 @@
         </div>
 
         <ion-tabs id="main-content">
-            <ion-header>
+            <ion-header slot="top">
                 <ion-toolbar>
                     <ion-buttons slot="start">
                         <ion-menu-button auto-hide="true"></ion-menu-button>
@@ -31,21 +31,28 @@
                 </ion-toolbar>
             </ion-header>
 
-            <ion-content class="main-content">
-                <div class="with-gradient"></div>
-                <ion-tab tab="tab-dashboard">
+            <div class="with-gradient"></div>
+            <ion-tab tab="tab-dashboard">
+                <ion-content class="tab-content" overflow-scroll="true">
                     <webc-template template="dashboard" disable-container></webc-template>
-                </ion-tab>
-                <ion-tab tab="tab-products">
+                </ion-content>
+            </ion-tab>
+            <ion-tab tab="tab-products">
+                <ion-content class="tab-content" overflow-scroll="true">
                     <webc-template template="products" disable-container></webc-template>
-                </ion-tab>
-                <ion-tab tab="tab-batches">
+                </ion-content>
+            </ion-tab>
+            <ion-tab tab="tab-batches">
+                <ion-content class="tab-content" overflow-scroll="true">
                     <webc-template template="batches" disable-container></webc-template>
-                </ion-tab>
-                <ion-tab tab="tab-orderLines">
+                </ion-content>
+            </ion-tab>
+            <ion-tab tab="tab-orderLines">
+                <ion-content class="tab-content" overflow-scroll="true">
                     <webc-template template="orderLines" disable-container></webc-template>
-                </ion-tab>
-            </ion-content>
+                </ion-content>
+            </ion-tab>
+
 
             <ion-tab-bar slot="bottom">
                 <menu-tab-button icon-name="analytics-outline" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>

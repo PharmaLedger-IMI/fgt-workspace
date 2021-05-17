@@ -15,7 +15,8 @@ export default class ReceivedShipmentsController extends LocalizedController {
         const wizard = require('wizard');
 
         const participantManager = wizard.Managers.getParticipantManager();
-        this.receivedShipmentManager = wizard.getReceivedShipmentManager(participantManager);
+        this.receivedShipmentManager = wizard.Managers.getReceivedShipmentManager(participantManager);
+        this.receivedShipmentManager.bindController(this);
         this.table = this.element.querySelector('pdm-ion-table');
 
         let self = this;

@@ -16,6 +16,12 @@ import {WebManager, WebManagerService} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 
+// @ts-ignore
+const SEARCH_BAR_STATE = {
+  OPEN: 'open',
+  CLOSED: 'closed'
+}
+
 @Component({
   tag: 'pdm-ion-table',
   styleUrl: 'pdm-ion-table.css',
@@ -52,9 +58,11 @@ export class PdmIonTable implements ComponentInterface {
 
   @Prop({attribute: 'icon-name'}) iconName?: string = undefined;
 
-  @Prop({attribute: 'no-content-message'}) noContentMessage: string = "No Content";
+  @Prop({attribute: 'no-content-message', mutable: true}) noContentMessage?: string = "No Content";
 
-  @Prop({attribute: 'loading-message'}) loadingMessage: string = "Loading...";
+  @Prop({attribute: 'loading-message', mutable: true}) loadingMessage?: string = "Loading...";
+
+  @Prop({attribute: 'query-placeholder', mutable: true}) searchBarPlaceholder?: string =  "enter search terms...";
 
   @Prop({attribute: 'buttons', mutable: true}) buttons?: string[] = [];
 
@@ -69,7 +77,6 @@ export class PdmIonTable implements ComponentInterface {
 
   /**
    * sets the name of the manager to use
-   * Only required if mode if {@link PdmIonTable#mode} is set to {@link ION_TABLE_MODES.BY_REF}
    */
   @Prop() manager?: string;
 
@@ -80,9 +87,9 @@ export class PdmIonTable implements ComponentInterface {
   @Prop({attribute: 'item-type'}) itemType: string;
 
   /**
-   * Option props to be passed to child elements in 'key1:attr1;key2:attr2' format
+   * Option props to be passed to child elements in from a JSON object in value key format only format
    */
-  @Prop({attribute: 'item-props', mutable:true}) itemProps?: string = undefined;
+  @Prop({attribute: 'item-props', mutable:true}) itemProps?: any = undefined;
 
 
   /**
@@ -104,15 +111,15 @@ export class PdmIonTable implements ComponentInterface {
 
   @State() model = undefined;
 
+  // Graphical states
+  @State() searchBarVisible: boolean = undefined;
+
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
-    console.log(`connected`)
-    await this.refresh();
   }
 
   async loadContents(pageNumber?: number){
-    // @ts-ignore
     this.webManager = this.webManager || await WebManagerService.getWebManager(this.manager);
     if (!this.webManager)
       return;
@@ -172,9 +179,32 @@ export class PdmIonTable implements ComponentInterface {
     }
 
     const getSearchBar = function(){
-      if (self.canQuery)
-        return (<ion-searchbar animated debounce={1000} placeholder="search..." search-icon="search-outline"
-                             show-clear-button="always"></ion-searchbar>);
+      if (!self.canQuery)
+        return;
+
+      const getButton = function() {
+        return (
+          <ion-button slot="end" onClick={() => self.searchBarVisible = !self.searchBarVisible}>
+            <ion-icon slot="icon-only" name={self.searchBarVisible ? "search-circle-outline" :"search-circle"}></ion-icon>
+          </ion-button>
+        )
+      }
+
+      const getSearch = function(){
+        const props = {};
+        if (self.searchBarVisible !== undefined)
+          props['class'] = self.searchBarVisible ? SEARCH_BAR_STATE.OPEN : SEARCH_BAR_STATE.CLOSED;
+        return (
+          <ion-searchbar slot="secondary" debounce={1000} placeholder={self.searchBarPlaceholder}
+                         search-icon="search-outline" {...props}></ion-searchbar>)
+      }
+
+      const elements = [];
+      if (self.searchBarVisible)
+        elements.push(getSearch());
+      elements.push(getButton());
+
+      return elements;
     }
 
     const getPagination = function(){
@@ -293,8 +323,10 @@ export class PdmIonTable implements ComponentInterface {
   render() {
     return (
       <Host>
-        <ion-list class="ion-margin ion-no-padding">
+        <ion-list slot="fixed" class="ion-margin ion-no-padding pdm-list-header">
           {this.getTableHead()}
+        </ion-list>
+        <ion-list class="ion-margin pdm-list-content">
           {this.getContent()}
         </ion-list>
       </Host>

@@ -126,9 +126,15 @@
     }
   },
   "orderLines": {
-    "title": "Manage Orders",
+    "title": "Orders",
+    "gtinLabel": "Product Gtin:",
+    "nameLabel": "Product Name:",
+    "requesterLabel": "Ordered by:",
+    "senderLabel": "Ordered from:",
+    "createdOnLabel": "Registered on:",
+    "statusLabel": "Order status:",
+    "quantityLabel": "Order quantity:",
     "buttons": {
-      "add-product": "Add Order?"
     },
     "errors": {
       "list-error": "Could not list orders"
