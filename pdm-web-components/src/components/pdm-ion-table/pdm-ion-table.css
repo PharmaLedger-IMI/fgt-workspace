@@ -11,42 +11,52 @@
   --ion-color-light: var(--ion-color-light);
   --ion-margin: var(--ion-margin);
   --ion-background-color: var(--ion-background-color);
+  --ion-color-contrast: var(--ion-color-contrast);
 }
 
 pdm-ion-table {
-  --ion-margin: 16px;
-  --header-background: #062733;
+  --pdm-table-margin: 16px;
+  --table-searchbar-background: var(--ion-color-dark);
+  --table-header-background: #062733;
   --table-background: var(--ion-background-color);
   --table-alt-background: #043648;
 }
 
 pdm-ion-table ion-searchbar{
-  --ion-color-contrast: inherit;
-  background: var(--ion-color-contrast);
+  --background: var(--table-searchbar-background);
+  --icon-color: var(--ion-color-primary);
+  --placeholder-color: var(--ion-color-primary);
+  --cancel-button-color: var(--ion-color-tertiary);
   --toolbar-width: calc(50%);
   width: 0;
   opacity: 0;
 }
 
 pdm-ion-table ion-list{
-  --ion-margin: 16px;
-  --table-alt-background: inherit;
-  --table-background: inherit;
+  background: var(--table-background);
 }
 
 pdm-ion-table ion-searchbar.open {
+  --background: var(--table-searchbar-background);
+  --icon-color: var(--ion-color-primary);
+  --placeholder-color: var(--ion-color-primary);
+  --cancel-button-color: var(--ion-color-tertiary);
   width: 50%;
   opacity: 100%;
   animation: slide-in 500ms ease-in-out;
 }
 
 pdm-ion-table ion-searchbar.closed {
+  --background: var(--table-searchbar-background);
+  --icon-color: var(--ion-color-primary);
+  --placeholder-color: var(--ion-color-primary);
+  --cancel-button-color: var(--ion-color-tertiary);
   animation: slide-in 500ms ease-in-out reverse;
 }
 
 pdm-ion-table ion-list-header ion-toolbar{
   color: var(--ion-color-primary);
-  background: var(--header-background);
+  background: var(--table-header-background);
 }
 
 pdm-ion-table ion-list.pdm-list-content > ion-item{
@@ -54,16 +64,16 @@ pdm-ion-table ion-list.pdm-list-content > ion-item{
 }
 
 pdm-ion-table ion-list.pdm-list-header{
-  margin-top: var(--ion-margin);
-  margin-left: var(--ion-margin);
-  margin-right: var(--ion-margin);
+  margin-top: var(--pdm-table-margin);
+  margin-left: var(--pdm-table-margin);
+  margin-right: var(--pdm-table-margin);
 }
 
 pdm-ion-table ion-list.pdm-list-content{
-  background: var(--ion-background-color);
-  margin-bottom: var(--ion-margin);
-  margin-left: var(--ion-margin);
-  margin-right: var(--ion-margin);
+  background: var(--table-background);
+  margin-bottom: var(--pdm-table-margin);
+  margin-left: var(--pdm-table-margin);
+  margin-right: var(--pdm-table-margin);
 }
 
 pdm-ion-table ion-list.pdm-list-content:nth-child(odd){
