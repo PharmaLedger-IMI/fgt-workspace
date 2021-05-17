@@ -150,7 +150,7 @@ export class ManagedShipmentListItem{
   }
 
   private getRelevantParticipantId(){
-    return this.shipment[this.type === SHIPMENT_TYPE.ISSUED ? 'requesterId' : 'senderId'];
+    return this.shipment[this.type === SHIPMENT_TYPE.ISSUED ? 'senderId' : 'requesterId'];
   }
 
   private addButtons(){

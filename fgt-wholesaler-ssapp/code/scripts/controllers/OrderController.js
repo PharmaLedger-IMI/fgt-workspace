@@ -90,7 +90,11 @@ export default class OrderController extends LocalizedController {
                     return sendError(`${self.translate('creation.error.error')}${err}`);
                 self.showToast(self.translate('creation.success'));
                 await loader.dismiss();
-                super.navigateToTab('tab-shipment', newShipment);
+                const props = {
+                    shipmentId: newShipment.shipmentId,
+                    participantId: newShipment.requesterId
+                }
+                super.navigateToTab('tab-shipment', props);
             });
         });
     }

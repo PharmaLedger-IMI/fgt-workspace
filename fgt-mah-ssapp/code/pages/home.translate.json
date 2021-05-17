@@ -22,7 +22,8 @@
     "dashboard": "Dashboard",
     "products": "Products",
     "batches": "Batches",
-    "orderLines": "Orders"
+    "orderLines": "Orders",
+    "shipmentLines": "Shipments"
   },
   "dashboard": {
     "welcome": "This is a Dashboard"
@@ -128,6 +129,22 @@
   "orderLines": {
     "title": "Orders",
     "gtinLabel": "Product Gtin:",
+    "nameLabel": "Product Name:",
+    "requesterLabel": "Ordered by:",
+    "senderLabel": "Ordered from:",
+    "createdOnLabel": "Registered on:",
+    "statusLabel": "Order status:",
+    "quantityLabel": "Order quantity:",
+    "buttons": {
+    },
+    "errors": {
+      "list-error": "Could not list orders"
+    }
+  },
+  "shipmentLines": {
+    "title": "Shipments",
+    "gtinLabel": "Product Gtin:",
+    "batchLabel": "Product Batch",
     "nameLabel": "Product Name:",
     "requesterLabel": "Ordered by:",
     "senderLabel": "Ordered from:",

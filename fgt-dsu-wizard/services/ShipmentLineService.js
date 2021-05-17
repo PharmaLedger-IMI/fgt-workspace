@@ -33,16 +33,16 @@ function ShipmentLineService(domain, strategy){
                     const orderLine = JSON.parse(data);
                     dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
                         if (err)
-                            return callback(`could not retrieve orderLine status`);
+                            return callback(`could not retrieve shipmentLine status`);
                         try{
                             orderLine.status = JSON.parse(status);
                             callback(undefined, orderLine);
                         } catch (e) {
-                            callback(`unable to parse OrderLine status: ${data.toString()}`);
+                            callback(`unable to parse ShipmentLine status: ${data.toString()}`);
                         }
                     });
                 } catch (e){
-                    callback(`Could not parse orderLine in DSU ${keySSI.getIdentifier()}`);
+                    callback(`Could not parse ShipmentLine in DSU ${keySSI.getIdentifier()}`);
                 }
             })
         });

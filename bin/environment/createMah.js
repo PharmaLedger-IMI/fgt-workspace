@@ -4,7 +4,7 @@ const path = require('path');
 
 require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
 const dt = require('./../../pdm-dsu-toolkit/services/dt');
-const { getParticipantManager, getProductManager, getBatchManager, getOrderLineManager } = require('../../fgt-dsu-wizard/managers');
+const { getParticipantManager, getProductManager, getBatchManager, getOrderLineManager, getShipmentLineManager } = require('../../fgt-dsu-wizard/managers');
 const { impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 
 const { APPS } = require('./credentials/credentials');
@@ -107,6 +107,15 @@ const setupOrderLines = function (participantManager, callback){
     });
 }
 
+const setupShipmentLines = function (participantManager, callback){
+    getShipmentLineManager(participantManager, true, (err, shipmentLineManager) => {
+        if (err)
+            return callback(err);
+        participantManager.shipmentLineManager = shipmentLineManager; // just to keep the reference and keep it instantiated so it can receive messages
+        callback();
+    });
+}
+
 const setup = function(participantManager, products, batches, callback){
     setupProducts(participantManager, products, batches, (err, productsObj) => {
         if (err)
@@ -117,7 +126,11 @@ const setup = function(participantManager, products, batches, callback){
             setupOrderLines(participantManager, (err) => {
                 if (err)
                     return callback(err);
-                callback(undefined, productsObj, batchesObj);
+                setupShipmentLines(participantManager, (err) => {
+                    if (err)
+                        return callback(err);
+                    callback(undefined, productsObj, batchesObj);
+                });
             });
         });
     });

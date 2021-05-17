@@ -5,31 +5,32 @@ const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
  * Issued OrderLine Manager Class.
  * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
  */
-class OrderLineManager extends Manager {
+class ShipmentLineManager extends Manager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.orderLines, ['gtin', 'date', 'requesterId', 'senderId'], callback);
+        super(participantManager, DB.shipmentLines, ['gtin', 'date', 'batch', 'requesterId', 'senderId'], callback);
         const self = this;
-        this.orderLineService = new (require('../services/OrderLineService'))(ANCHORING_DOMAIN);
+        this.shipmentLineService = new (require('../services/ShipmentLineService'))(ANCHORING_DOMAIN);
         this.registerMessageListener((message) => {
             self.processMessageRecord(message, (err) => {
                 if (err)
                     console.log(`Error processing message: ${message}`);
                 if (self.controller)
                     self.controller.refresh();
-                });
             });
+        });
     }
 
     /**
-     * generates the db's key for the OrderLine
+     * generates the db's key for the ShipmentLine
      * @param {string|number} requesterId
+     * @param {string|number} senderId
      * @param {string|number} gtin
      * @param {string|number} date
      * @return {string}
      * @protected
      */
-    _genCompostKey(requesterId, gtin, date){
-        return `${requesterId}-${gtin}-${date}`;
+    _genCompostKey(requesterId, senderId, gtin, date){
+        return `${requesterId}-${senderId}-${gtin}-${date}`;
     }
 
     /**
@@ -43,7 +44,7 @@ class OrderLineManager extends Manager {
      * </pre>
      * so the DB can be queried by each of the indexes and still allow for lazy loading
      * @param {string} key
-     * @param {OrderLine} item
+     * @param {ShipmentLine} item
      * @param {string|object} record
      * @return {object} the indexed object to be stored in the db
      * @protected
@@ -53,6 +54,7 @@ class OrderLineManager extends Manager {
         return {
             gtin: item.gtin,
             date: Date.now(),
+            batch: item.batch,
             requesterId: item.requesterId,
             senderId: item.senderId,
             value: record
@@ -88,7 +90,7 @@ class OrderLineManager extends Manager {
                 return self._err(`Could not load record with key ${key} on table ${self._getTableName()}`, err, callback);
             if (!readDSU)
                 return callback(undefined, itemSSI);
-            self.orderLineService.get(itemSSI.value || itemSSI, callback);
+            self.shipmentLineService.get(itemSSI.value || itemSSI, callback);
         });
     }
 
@@ -129,7 +131,7 @@ class OrderLineManager extends Manager {
                 return self._err(`Could not perform query`, err, callback);
             if (!readDSU)
                 return callback(undefined, records.map(r => r.pk));
-            self._iterator(records.map(r => r.value), self.orderLineService.get, (err, result) => {
+            self._iterator(records.map(r => r.value), self.shipmentLineService.get, (err, result) => {
                 if (err)
                     return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
                 console.log(`Parsed ${result.length} ${self._getTableName()}s`);
@@ -143,35 +145,60 @@ class OrderLineManager extends Manager {
         if (!message || typeof message !== "string")
             return callback(`Message ${message} does not have  non-empty string with keySSI. Skipping record.`);
 
-        const orderLineSSI = message;
-        self._getDSUInfo(orderLineSSI, (err, orderLine, orderDsu) => {
-            if (err) {
-                console.log(`Could not read DSU from message keySSI in record ${message}. Skipping record.`);
-                return callback();
-            }
-            console.log(`Received OrderLine`, orderLine);
-            const indexedItem = self._indexItem(undefined, orderLine, orderLineSSI);
-            self.insertRecord(self._genCompostKey(orderLine.requesterId, orderLine.gtin, indexedItem.date), indexedItem, callback);
+        let shipmentLines;
+        try {
+            shipmentLines = JSON.parse(message);
+        } catch (e) {
+            shipmentLines = [message];
+        }
+
+        const lines = [];
+
+        const shipmentLineIterator = function(linesCopy, callback){
+            const lineSSI = linesCopy.shift();
+            if (!lineSSI)
+                return callback(undefined, lines);
+            self._getDSUInfo(lineSSI, (err, shipmentLine, shipmentLineDsu) => {
+                if (err) {
+                    console.log(`Could not read DSU from message keySSI in record ${message}. Skipping record.`);
+                    return callback();
+                }
+                console.log(`Received ShipmentLine`, shipmentLine);
+                const indexedItem = self._indexItem(undefined, shipmentLine, lineSSI);
+                const compostKey = self._genCompostKey(shipmentLine.requesterId, shipmentLine.senderId, shipmentLine.gtin, indexedItem.date);
+                self.insertRecord(compostKey, indexedItem, (err) => {
+                    if (err)
+                        return self._err(`Could not insert record for ShipmentLine ${compostKey}`, err, callback);
+                    shipmentLineIterator(linesCopy, callback);
+                });
+            });
+        }
+
+        shipmentLineIterator(shipmentLines.slice(), (err, newLines) => {
+            if (err)
+                return self._err(`Could not register all shipmentlines`, err, callback);
+            console.log(`ShipmentLines successfully registered: ${JSON.stringify(newLines)}`);
+            callback(undefined, lines);
         });
     };
 }
 
-let orderLineManager;
+let shipmentLineManager;
 /**
  * @param {ParticipantManager} participantManager
  * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
  * Makes BaseManager required again!
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
- * @returns {OrderLineManager}
+ * @returns {ShipmentLineManager}
  */
-const getOrderLineManager = function (participantManager, force, callback) {
+const getShipmentLineManager = function (participantManager, force, callback) {
     if (typeof force === 'function'){
         callback = force;
         force = false;
     }
-    if (!orderLineManager || force)
-        orderLineManager = new OrderLineManager(participantManager, callback);
-    return orderLineManager;
+    if (!shipmentLineManager || force)
+        shipmentLineManager = new ShipmentLineManager(participantManager, callback);
+    return shipmentLineManager;
 }
 
-module.exports = getOrderLineManager;
+module.exports = getShipmentLineManager;

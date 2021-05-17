@@ -5,11 +5,11 @@ import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 
-const {OrderLine, Product, OrderStatus} = wizard.Model;
+const {ShipmentLine, Product, Batch, ShipmentStatus} = wizard.Model;
 
 @Component({
-  tag: 'managed-orderline-list-item',
-  styleUrl: 'managed-orderline-list-item.css',
+  tag: 'managed-shipmentline-list-item',
+  styleUrl: 'managed-shipmentline-list-item.css',
   shadow: false,
 })
 export class ManagedOrderlineListItem {
@@ -55,9 +55,11 @@ export class ManagedOrderlineListItem {
       console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
 
-  @Prop({attribute: 'order-line', mutable: true}) orderLine: string;
+  @Prop({attribute: 'shipment-line', mutable: true}) shipmentLine: string;
 
   @Prop({attribute: 'gtin-label', mutable: true}) gtinLabel?: string = "Gtin:";
+
+  @Prop({attribute: 'bach-label', mutable: true}) batchLabel?: string = "Batch:";
 
   @Prop({attribute: 'name-label', mutable: true}) nameLabel?: string = "Name:";
 
@@ -71,29 +73,34 @@ export class ManagedOrderlineListItem {
 
   @Prop({attribute: 'quantity-label', mutable: true}) quantityLabel?: string = "Quantity:";
 
-  private orderLineManager: WebResolver = undefined;
+  private shipmentLineManager: WebResolver = undefined;
 
   private productManager: WebResolver = undefined;
 
-  @State() line: typeof OrderLine = undefined;
+  private batchManager: WebResolver = undefined;
+
+  @State() line: typeof ShipmentLine = undefined;
 
   @State() product: typeof Product = undefined;
+
+  @State() batch: typeof Batch = undefined;
 
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
-    this.orderLineManager = await WebManagerService.getWebManager("OrderLineManager");
+    this.shipmentLineManager = await WebManagerService.getWebManager("ShipmentLineManager");
     this.productManager = await WebManagerService.getWebManager("ProductManager");
+    this.batchManager = await WebManagerService.getWebManager("BatchManager");
     return await this.loadOrderLine();
   }
 
   private async loadOrderLine(){
     let self = this;
-    if (!self.orderLineManager)
+    if (!self.shipmentLineManager)
       return;
-    self.orderLineManager.getOne(self.orderLine, true, (err, line) => {
+    self.shipmentLineManager.getOne(self.shipmentLine, true, (err, line) => {
       if (err){
-        self.sendError(`Could not get OrderLine with reference ${self.orderLine}`, err);
+        self.sendError(`Could not get ShipmentLine with reference ${self.shipmentLine}`, err);
         return;
       }
       self.line = line;
@@ -104,6 +111,14 @@ export class ManagedOrderlineListItem {
           return;
         }
         self.product = product;
+
+        self.batchManager.getOne(`${self.line.gtin}-${self.line.batch}`, true, (err, batch) => {
+          if (err){
+            self.sendError(`Could not get batch data from ${self.line.gtin}'s ${self.line.batch}`, err);
+            return;
+          }
+          self.batch = batch;
+        });
       });
     });
   }
@@ -131,13 +146,14 @@ export class ManagedOrderlineListItem {
   }
 
   private getPropsFromKey(){
-    if (!this.orderLine)
+    if (!this.shipmentLine)
       return undefined;
-    const props = this.orderLine.split('-');
+    const props = this.shipmentLine.split('-');
     return {
       requesterId: props[0],
-      gtin: props[1],
-      date: (new Date(parseInt(props[2]) * 1000)).toLocaleDateString("en-US")
+      senderId: props[1],
+      gtin: props[2],
+      date: (new Date(parseInt(props[3]) * 1000)).toLocaleDateString("en-US")
     }
   }
 
@@ -159,7 +175,7 @@ export class ManagedOrderlineListItem {
       <ion-label class="ion-padding ion-align-self-center">
         {getGtinLabel()}
       </ion-label>,
-      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.requesterLabel}</p></ion-label>,
+      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.nameLabel}</p></ion-label>,
       <ion-label class="ion-padding ion-align-self-center">
         {getNameLabel()}
       </ion-label>
@@ -197,9 +213,9 @@ export class ManagedOrderlineListItem {
     const self = this;
 
     const getSenderLabel = function(){
-      if (!self.line || !self.line.senderId)
+      if (!props || !props.senderId)
         return (<h4><ion-skeleton-text animated class="label-sender"></ion-skeleton-text></h4>);
-      return (<h4>{self.line.senderId}</h4>)
+      return (<h4>{props.senderId}</h4>)
     }
 
     const getDateLabel = function(){
@@ -229,17 +245,17 @@ export class ManagedOrderlineListItem {
 
       const getColorByStatus = function(){
         switch (self.line.status){
-          case OrderStatus.REJECTED:
+          case ShipmentStatus.REJECTED:
             return 'danger';
-          case OrderStatus.On_HOLD:
+          case ShipmentStatus.On_HOLD:
             return 'warning';
-          case OrderStatus.CONFIRMED:
+          case ShipmentStatus.CONFIRMED:
             return 'success';
-          case OrderStatus.CREATED:
+          case ShipmentStatus.CREATED:
             return 'medium';
-          case OrderStatus.ACKNOWLEDGED:
-          case OrderStatus.TRANSIT:
-          case OrderStatus.RECEIVED:
+          case ShipmentStatus.ACKNOWLEDGED:
+          case ShipmentStatus.TRANSIT:
+          case ShipmentStatus.RECEIVED:
             return 'secondary';
           default:
             return 'primary'
@@ -274,7 +290,7 @@ export class ManagedOrderlineListItem {
       if (!self.line)
         return (<ion-skeleton-text animated></ion-skeleton-text>)
       return (
-        <ion-button slot="primary" onClick={() => self.navigateToTab('tab-batches', {orderLine: self.orderLine})}>
+        <ion-button slot="primary" onClick={() => self.navigateToTab('tab-batches', {shipmentLine: self.shipmentLine})}>
           <ion-icon name="file-tray-stacked-outline"></ion-icon>
         </ion-button>
       )
@@ -290,26 +306,26 @@ export class ManagedOrderlineListItem {
   render() {
     const props = this.getPropsFromKey();
     return (
-        <ion-item class="ion-align-self-center main-item">
-          {this.addBarCode()}
-          <ion-grid>
-            <ion-row>
-              <ion-col size="4">
-                {...this.addProductColumn(props)}
-              </ion-col>
-              <ion-col size="3">
-                {...this.addRequesterColumn(props)}
-              </ion-col>
-              <ion-col size="3">
-                {...this.addSenderColumn(props)}
-              </ion-col>
-              <ion-col size="2">
-                {...this.addDetailsColumn()}
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-          {this.addButtons()}
-        </ion-item>
+      <ion-item class="ion-align-self-center main-item">
+        {this.addBarCode()}
+        <ion-grid>
+          <ion-row>
+            <ion-col size="4">
+              {...this.addProductColumn(props)}
+            </ion-col>
+            <ion-col size="3">
+              {...this.addRequesterColumn(props)}
+            </ion-col>
+            <ion-col size="3">
+              {...this.addSenderColumn(props)}
+            </ion-col>
+            <ion-col size="2">
+              {...this.addDetailsColumn()}
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        {this.addButtons()}
+      </ion-item>
     );
   }
 }
