@@ -87,11 +87,6 @@ webc-app-root{
     --mode: none;
 }
 
-
-ion-title.modal-class {
-
-}
-
 ion-item{
     --background: transparent;
 }
@@ -123,7 +118,7 @@ ion-img.main-logo{
     margin: 5px 15px 5px 15px;
 }
 
-canvas{
+canvas {
     background: white;
 }
 
@@ -148,4 +143,11 @@ div.with-gradient{
     right: 0;
     bottom: 0;
     z-index: -1;
+}
+
+.selectable-text {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
 }
