@@ -1,0 +1,13 @@
+{
+  "appId": "com.pdmfc.pharmaledger.fgt.mah",
+  "appName": "fgt-mah-ssapp",
+  "bundledWebRuntime": true,
+  "npmClient": "npm",
+  "webDir": "code",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}

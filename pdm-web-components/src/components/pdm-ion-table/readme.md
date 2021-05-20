@@ -25,7 +25,7 @@
 | `query`                | `query`              | Querying/paginating Params - only available when mode is set by ref                               | `string`   | `undefined`               |
 | `searchBarPlaceholder` | `query-placeholder`  |                                                                                                   | `string`   | `"enter search terms..."` |
 | `sort`                 | `sort`               |                                                                                                   | `string`   | `undefined`               |
-| `title`                | `title`              | Graphical Params                                                                                  | `string`   | `'PDM Ionic Table'`       |
+| `tableTitle`           | `table-title`        | Graphical Params                                                                                  | `string`   | `'PDM Ionic Table'`       |
 
 
 ## Events

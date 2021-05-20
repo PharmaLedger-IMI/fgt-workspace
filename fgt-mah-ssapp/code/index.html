@@ -16,15 +16,24 @@
 
     <link href="webcardinal/webcardinal.css" rel="stylesheet" type="text/css">
 
+    <!-- Ion PWA Elements dist -->
+    <script type='module' src="assets/ionic-core/pwa-elements/ionicpwaelements.esm.js"></script>
+
+    <!-- Ion capacitor plugin for pwa elements dist -->
+    <script type='module' src="capacitor.js"></script>
+
+<!--    <script type='module' src="assets/capacitor/barcode/esm/index.js"></script>-->
+<!--    <script type='module' src="assets/capacitor/camera/esm/index.js"></script>-->
+
     <!-- Ionic dist -->
     <link rel="stylesheet" href="assets/ionic-core/css/ionic.bundle.css">
     <script type="module" src="assets/ionic-core/ionic.esm.js"></script>
 
+    <!-- Ionic Native dist -->
+<!--    <script src="assets/ionic-native/bundle.js"></script>-->
+
     <!-- Ionicons dist -->
     <script type="module" src="assets/ionic-core/ionicons/ionicons.esm.js"></script>
-
-    <!-- Ion PWA Elements dist -->
-    <script type='module' src="assets/ionic-core/pwa-elements/ionicpwaelements.esm.js"></script>
 
     <!-- Ion Web Cardinal dist -->
     <script type="module" src="webcardinal/webcardinal.js"></script>
@@ -55,5 +64,9 @@
         <webc-app-router></webc-app-router>
     </webc-app-container>
 </webc-app-root>
+<!--<script type="application/javascript">-->
+<!--    import { defineCustomElements } from "assets/ionic-core/pwa-elements/ionicpwaelements.esm.js";-->
+<!--    defineCustomElements(window);-->
+<!--</script>-->
 </body>
 </html>

@@ -181,7 +181,7 @@ export namespace Components {
         /**
           * Graphical Params
          */
-        "title": string;
+        "tableTitle": string;
     }
     interface PdmSsappLoader {
         "loader"?: string;
@@ -576,7 +576,7 @@ declare namespace LocalJSX {
         /**
           * Graphical Params
          */
-        "title"?: string;
+        "tableTitle"?: string;
     }
     interface PdmSsappLoader {
         "loader"?: string;

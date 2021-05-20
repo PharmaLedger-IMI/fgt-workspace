@@ -8,7 +8,7 @@
 		  "actions": [
 			  {
 				  "type": "execute",
-				  "cmd": "npm install -g workbox-cli@5.1.4"
+				  "cmd": "npm install -g workbox-cli@6.1.5"
 			  }
 		  ]
 	  }
@@ -121,6 +121,44 @@
 				  "options": {
 					  "overwrite": true
 				  }
+			  }
+		  ]
+	  },
+	  {
+		  "name": "Handle Capacitor",
+		  "src": "",
+		  "actions": [
+			  {
+				  "type": "copy",
+				  "src": "./node_modules/@ionic-native/core/bundle.js",
+				  "target": "./code/assets/ionic-native/bundle.js",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "./node_modules/@ionic-native/barcode-scanner/index.js",
+				  "target": "./code/assets/ionic-native/barcodescanner/index.js",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "copy",
+				  "src": "./node_modules/phonegap-plugin-barcodescanner/www/barcodescanner.js",
+				  "target": "./code/assets/barcodescanner/barcodescanner.js",
+				  "options": {
+					  "overwrite": true
+				  }
+			  },
+			  {
+				  "type": "execute",
+				  "cmd": "npx cap sync web"
+			  },
+			  {
+				  "type": "execute",
+				  "cmd": "npx cap copy web"
 			  }
 		  ]
 	  }

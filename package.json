@@ -49,10 +49,10 @@
     "octopus": "git+https://github.com/PrivateSky/octopus.git"
   },
   "devDependencies": {
-    "form-data": "v3.0.0",
-    "fs-extra": "^9.1.0",
+    "form-data": "^4.0.0",
+    "fs-extra": "^10.0.0",
     "git-describe": "^4.0.4",
-    "jsdoc": "^3.6.6",
+    "jsdoc": "^3.6.7",
     "markdown-include": "^0.4.3"
   }
 }

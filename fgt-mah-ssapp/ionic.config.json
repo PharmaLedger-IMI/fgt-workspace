@@ -1,0 +1,7 @@
+{
+  "name": "fgt-mah-ssapp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}
