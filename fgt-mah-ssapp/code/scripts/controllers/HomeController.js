@@ -1,5 +1,4 @@
 import { HomeController as BaseHomeController, EVENT_SSAPP_HAS_LOADED } from "../../assets/pdm-web-components/index.esm.js";
-
 /**
  * Central Controller
  *

@@ -54,7 +54,7 @@ export class PdmIonTable implements ComponentInterface {
    * Graphical Params
    */
 
-  @Prop() title = 'PDM Ionic Table';
+  @Prop({attribute: 'table-title'}) tableTitle = 'PDM Ionic Table';
 
   @Prop({attribute: 'icon-name'}) iconName?: string = undefined;
 
@@ -252,7 +252,7 @@ export class PdmIonTable implements ComponentInterface {
       <ion-list-header lines="inset">
         <ion-toolbar>
           {getIcon()}
-          <ion-title>{self.title}</ion-title>
+          <ion-title>{self.tableTitle}</ion-title>
           {getSearchBar()}
           {getButtons()}
           {getPagination()}

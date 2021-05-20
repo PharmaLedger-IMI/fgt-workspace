@@ -59,7 +59,7 @@ export class ManagedBatchListItem {
         self.sendError(`Could not get Batch with code ${self.gtinBatch}`, err);
         return;
       }
-      this.batch = batch;
+      this.batch = new Batch(batch);
       this.serialNumbers = batch.serialNumbers;
     });
   }
@@ -84,7 +84,7 @@ export class ManagedBatchListItem {
     const getBarCode = function(){
       if (!self.batch || !self.batch.batchNumber)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
-      return (<barcode-generator class="ion-align-self-center" type="gs1datamatrix" size="16" scale="3" data={self.batch.batchNumber}></barcode-generator>);
+      return (<barcode-generator class="ion-align-self-center" type="gs1datamatrix" size="16" scale="3" data={self.batch.generate2DMatrixCode(self.getGtinAndBatchNumber().gtin)}></barcode-generator>);
     }
 
     return(

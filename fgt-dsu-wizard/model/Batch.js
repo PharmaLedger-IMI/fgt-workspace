@@ -13,6 +13,7 @@ class Batch {
     batchNumber;
     expiry = "";
     serialNumbers = ["430239925150"];
+    batchStatus
 
     constructor(batch) {
         if (typeof batch !== undefined)
@@ -36,6 +37,24 @@ class Batch {
             return  'Expiration date is a mandatory field.';
         }
         return undefined;
+    }
+
+    /**
+     * Generates the 2D Data Matrix code for a batch or a serial
+     * @param gtin
+     * @param [serialNumber]
+     * @return {string}
+     */
+    generate2DMatrixCode(gtin, serialNumber){
+        const formattedExpiry = new Date(this.expiry).toLocaleDateString("en-US", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit"
+        }).split('/').reverse().join('');
+
+        if (!serialNumber)
+            return `(01)${gtin}(10)${this.batchNumber}(17)${formattedExpiry}`;
+        return `(01)${gtin}(21)${serialNumber}(10)${this.batchNumber}(17)${formattedExpiry}`;
     }
 
     addSerialNumbers(serials){

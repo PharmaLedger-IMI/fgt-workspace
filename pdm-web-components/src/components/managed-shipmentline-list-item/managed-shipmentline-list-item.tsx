@@ -123,7 +123,7 @@ export class ManagedOrderlineListItem {
     });
   }
 
-  @Watch('orderLine')
+  @Watch('shipmentLine')
   @Method()
   async refresh(){
     await this.loadOrderLine();
