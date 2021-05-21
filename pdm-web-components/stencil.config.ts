@@ -2,7 +2,7 @@ import { Config } from '@stencil/core';
 
 export const config: Config = {
   namespace: 'pdm-web-components',
-  globalStyle: 'node_modules/@ionic/core/css/ionic.bundle.css',
+  globalStyle: 'css/globalStyles.css',
   outputTargets: [
     {
       type: 'dist',

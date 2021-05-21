@@ -130,8 +130,8 @@
 		  "actions": [
 			  {
 				  "type": "copy",
-				  "src": "./node_modules/@ionic-native/core/bundle.js",
-				  "target": "./code/assets/ionic-native/bundle.js",
+				  "src": "./node_modules/@ionic-native/core/",
+				  "target": "./code/assets/ionic-native/core",
 				  "options": {
 					  "overwrite": true
 				  }
@@ -151,6 +151,10 @@
 				  "options": {
 					  "overwrite": true
 				  }
+			  },
+			  {
+				  "type": "execute",
+				  "cmd": "npx cap update"
 			  },
 			  {
 				  "type": "execute",

@@ -1,0 +1,6 @@
+{
+  "appId": "com.",
+  "appName": "pdm-web-components",
+  "webDir": "www",
+  "bundledWebRuntime": true
+}

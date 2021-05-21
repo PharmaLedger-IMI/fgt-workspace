@@ -1,0 +1,45 @@
+:host {
+  display: block;
+  --ion-background-color: var(--ion-background-color);
+}
+
+pdm-barcode-scanner div.barcodeWrapper {
+  display: grid;
+  grid-template-rows: 1fr;
+  width: 100%;
+  height: 100%;
+}
+
+pdm-barcode-scanner div.videoWrapper {
+  position: relative;
+  display: grid;
+  grid-template-rows: 1fr;
+  overflow: hidden;
+  min-height: 350px;
+  padding: 0;
+  margin: 0;
+}
+
+pdm-barcode-scanner video {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+pdm-barcode-scanner input {
+  display: none;
+}
+
+pdm-barcode-scanner button {
+  position: absolute;
+  z-index: 1;
+  padding: 0.3em 0.6em;
+  bottom: 1em;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #FFFFFF;
+  background: transparent;
+  border-radius: 2px;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  font-size: 15px;
+}

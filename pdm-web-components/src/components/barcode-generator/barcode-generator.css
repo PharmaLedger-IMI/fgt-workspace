@@ -7,3 +7,7 @@ canvas {
   width: 100%;
 }
 
+canvas.bar-code{
+  background: white;
+}
+

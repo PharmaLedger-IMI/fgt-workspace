@@ -157,5 +157,9 @@
       "list-error": "Could not list orders"
     }
   },
+  "scan": {
+    "title": "Please Scan your pack",
+    "changeCamera": "Change camera"
+  },
   "none": "You are not identified as a Marketing Authorization holder. This application was not correctly built"
 }

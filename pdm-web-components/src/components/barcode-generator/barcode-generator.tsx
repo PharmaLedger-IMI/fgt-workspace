@@ -1,6 +1,6 @@
 import {Component, h, Prop, Element, State, Watch} from '@stencil/core';
 import {stringToBoolean} from "../../utils/utilFunctions";
-import bwipjs from "../../../../cardinal/src/libs/bwip.js";
+import bwipjs from "bwip-js";
 import {HostElement} from "../../decorators";
 const TWO_D_BARCODES = ["datamatrix","gs1datamatrix","qrcode"];
 
@@ -25,11 +25,11 @@ export class BarcodeGenerator {
   @Prop() type:string="qrcode";
 
   /**
-   * description: `A title that will be used for the current component instance.`,
+   * description: `A barcodeTitle that will be used for the current component instance.`,
    * isMandatory: false,
    * propertyType: `string`
    */
-  @Prop() title: string = "";
+  @Prop({attribute: 'barcode-title'}) barcodeTitle: string = "";
 
   /**
    * description: `The size of the barcode in mm. Default is set to 32 mm.`,
@@ -102,7 +102,7 @@ export class BarcodeGenerator {
 
   render() {
     return (
-      <canvas></canvas>
+      <canvas class="bar-code"></canvas>
     );
   }
 }
