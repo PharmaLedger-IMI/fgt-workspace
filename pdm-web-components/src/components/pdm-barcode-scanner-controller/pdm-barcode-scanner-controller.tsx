@@ -41,7 +41,12 @@ export class PdmBarcodeScannerController {
   }
 
   @Method()
-  async present(props?){
+  async present(props?, callback?){
+    if (!callback && typeof props === 'function'){
+      callback = props;
+      props= undefined;
+    }
+
     const scanner = document.createElement('ion-modal');
     scanner.id = `bar-code-scanner`;
     scanner.component = CONTENT_COMPONENT_NAME;
@@ -54,12 +59,13 @@ export class PdmBarcodeScannerController {
     this.scanner = scanner;
     this.element.appendChild(this.scanner);
     await this.scanner.present();
+    if (callback)
+      return this.holdForScan(callback);
+    return this;
   }
 
   @Method()
   async holdForScan(callback){
-    if (!this.scanner)
-      return callback(`No scanner presented`);
     const {data} = await this.scanner.onWillDismiss();
     callback(undefined, data);
   }
@@ -112,7 +118,7 @@ export class PdmBarcodeScannerController {
   render() {
     return (
       <Host>
-        <div></div>
+        <div id="barcode-scanner-controller"></div>
       </Host>
     );
   }

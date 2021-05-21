@@ -2,7 +2,6 @@ import {LocalizedController, EVENT_REFRESH} from "../../assets/pdm-web-component
 
 /**
  * Controls Application Flow
- * Makes the bridge between the UI and the BatchManager
  *
  * Handles data input and validation for the manipulation of Batches
  * @class ScanController
@@ -21,8 +20,7 @@ export default class ScanController extends LocalizedController {
         self.on(EVENT_REFRESH, async (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            await self.scannerController.present(evt.detail);
-            self.scannerController.holdForScan(self._parseScan.bind(self));
+            await self.scannerController.present(evt.detail, self._parseScan.bind(self));
         },{capture: true});
     }
 
