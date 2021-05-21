@@ -181,7 +181,7 @@ export default class LocalizedController extends WebcController {
         {
           text: 'Cancel',
           role: BUTTON_ROLES.CANCEL
-        },    
+        },
         {
           text: 'Ok',
           role: BUTTON_ROLES.CONFIRM

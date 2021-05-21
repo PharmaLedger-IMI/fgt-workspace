@@ -1,0 +1,7 @@
+{
+  "name": "pdm-web-components",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}

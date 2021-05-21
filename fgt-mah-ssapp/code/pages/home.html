@@ -58,12 +58,19 @@
                 </ion-content>
             </ion-tab>
 
+            <ion-tab tab="tab-scan">
+                <ion-content class="tab-content" overflow-scroll="false">
+                    <webc-template template="scan" disable-container></webc-template>
+                </ion-content>
+            </ion-tab>
+
 
             <ion-tab-bar slot="bottom">
                 <menu-tab-button icon-name="analytics-outline" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>
                 <menu-tab-button icon-name="reader-outline" label="@menu.products" tab="tab-products" mode="bar"></menu-tab-button>
                 <menu-tab-button icon-name="reader-outline" label="@menu.orderLines" tab="tab-orderLines" mode="bar"></menu-tab-button>
                 <menu-tab-button icon-name="reader-outline" label="@menu.shipmentLines" tab="tab-shipmentLines" mode="bar"></menu-tab-button>
+                <menu-tab-button icon-name="reader-outline" label="Scan" tab="tab-scan" mode="bar"></menu-tab-button>
             </ion-tab-bar>
         </ion-tabs>
     </ion-app>

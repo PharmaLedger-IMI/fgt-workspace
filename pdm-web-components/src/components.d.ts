@@ -8,6 +8,10 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { OverlayEventDetail } from "@ionic/core";
 export namespace Components {
     interface BarcodeGenerator {
+        /**
+          * description: `A barcodeTitle that will be used for the current component instance.`, isMandatory: false, propertyType: `string`
+         */
+        "barcodeTitle": string;
         "data": any;
         "includeText"?: boolean;
         "scale"?: any;
@@ -15,10 +19,6 @@ export namespace Components {
           * description: `The size of the barcode in mm. Default is set to 32 mm.`, isMandatory: false, propertyType: `integer`
          */
         "size"?: any;
-        /**
-          * description: `A title that will be used for the current component instance.`, isMandatory: false, propertyType: `string`
-         */
-        "title": string;
         /**
           * description: `The barcode type. Accepted values are 'gs1datamatrix','datamatrix','qrcode', 'code128','code11','isbn'.`, isMandatory: true, propertyType: `string`
          */
@@ -141,6 +141,18 @@ export namespace Components {
     }
     interface MultiSpinner {
         "type"?: string;
+    }
+    interface PdmBarcodeScanner {
+        "data": any;
+        "loaderType"?: string;
+        "switchCamera": () => Promise<void>;
+    }
+    interface PdmBarcodeScannerController {
+        "barcodeTitle"?: string;
+        "changeCamera": () => Promise<void>;
+        "dismiss": (result?: any) => Promise<void>;
+        "holdForScan": (callback: any) => Promise<any>;
+        "present": (props?: any) => Promise<void>;
     }
     interface PdmIonTable {
         "buttons"?: string[];
@@ -281,6 +293,18 @@ declare global {
         prototype: HTMLMultiSpinnerElement;
         new (): HTMLMultiSpinnerElement;
     };
+    interface HTMLPdmBarcodeScannerElement extends Components.PdmBarcodeScanner, HTMLStencilElement {
+    }
+    var HTMLPdmBarcodeScannerElement: {
+        prototype: HTMLPdmBarcodeScannerElement;
+        new (): HTMLPdmBarcodeScannerElement;
+    };
+    interface HTMLPdmBarcodeScannerControllerElement extends Components.PdmBarcodeScannerController, HTMLStencilElement {
+    }
+    var HTMLPdmBarcodeScannerControllerElement: {
+        prototype: HTMLPdmBarcodeScannerControllerElement;
+        new (): HTMLPdmBarcodeScannerControllerElement;
+    };
     interface HTMLPdmIonTableElement extends Components.PdmIonTable, HTMLStencilElement {
     }
     var HTMLPdmIonTableElement: {
@@ -309,12 +333,18 @@ declare global {
         "menu-tab-button": HTMLMenuTabButtonElement;
         "more-chip": HTMLMoreChipElement;
         "multi-spinner": HTMLMultiSpinnerElement;
+        "pdm-barcode-scanner": HTMLPdmBarcodeScannerElement;
+        "pdm-barcode-scanner-controller": HTMLPdmBarcodeScannerControllerElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
     }
 }
 declare namespace LocalJSX {
     interface BarcodeGenerator {
+        /**
+          * description: `A barcodeTitle that will be used for the current component instance.`, isMandatory: false, propertyType: `string`
+         */
+        "barcodeTitle"?: string;
         "data"?: any;
         "includeText"?: boolean;
         "scale"?: any;
@@ -322,10 +352,6 @@ declare namespace LocalJSX {
           * description: `The size of the barcode in mm. Default is set to 32 mm.`, isMandatory: false, propertyType: `integer`
          */
         "size"?: any;
-        /**
-          * description: `A title that will be used for the current component instance.`, isMandatory: false, propertyType: `string`
-         */
-        "title"?: string;
         /**
           * description: `The barcode type. Accepted values are 'gs1datamatrix','datamatrix','qrcode', 'code128','code11','isbn'.`, isMandatory: true, propertyType: `string`
          */
@@ -534,6 +560,21 @@ declare namespace LocalJSX {
     interface MultiSpinner {
         "type"?: string;
     }
+    interface PdmBarcodeScanner {
+        "data"?: any;
+        "loaderType"?: string;
+        /**
+          * Through this event data is passed
+         */
+        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+    }
+    interface PdmBarcodeScannerController {
+        "barcodeTitle"?: string;
+    }
     interface PdmIonTable {
         "buttons"?: string[];
         /**
@@ -598,6 +639,8 @@ declare namespace LocalJSX {
         "menu-tab-button": MenuTabButton;
         "more-chip": MoreChip;
         "multi-spinner": MultiSpinner;
+        "pdm-barcode-scanner": PdmBarcodeScanner;
+        "pdm-barcode-scanner-controller": PdmBarcodeScannerController;
         "pdm-ion-table": PdmIonTable;
         "pdm-ssapp-loader": PdmSsappLoader;
     }
@@ -621,6 +664,8 @@ declare module "@stencil/core" {
             "menu-tab-button": LocalJSX.MenuTabButton & JSXBase.HTMLAttributes<HTMLMenuTabButtonElement>;
             "more-chip": LocalJSX.MoreChip & JSXBase.HTMLAttributes<HTMLMoreChipElement>;
             "multi-spinner": LocalJSX.MultiSpinner & JSXBase.HTMLAttributes<HTMLMultiSpinnerElement>;
+            "pdm-barcode-scanner": LocalJSX.PdmBarcodeScanner & JSXBase.HTMLAttributes<HTMLPdmBarcodeScannerElement>;
+            "pdm-barcode-scanner-controller": LocalJSX.PdmBarcodeScannerController & JSXBase.HTMLAttributes<HTMLPdmBarcodeScannerControllerElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;
         }

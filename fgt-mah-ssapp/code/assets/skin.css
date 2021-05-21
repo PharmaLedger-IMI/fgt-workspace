@@ -91,11 +91,6 @@ ion-item{
     --background: transparent;
 }
 
-ion-modal{
-    --ion-background-color: #ffffff;
-    --backdrop-opacity: 0.5;
-}
-
 ion-toolbar.menu{
     --align-content: center;
 }
@@ -116,10 +111,6 @@ ion-img.main-logo{
     height: 5%;
     width: 5%;
     margin: 5px 15px 5px 15px;
-}
-
-canvas {
-    background: white;
 }
 
 ion-img.menu-logo{
