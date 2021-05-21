@@ -1,4 +1,4 @@
-import {Component, Host, h, Element, Prop, Method, Listen} from '@stencil/core';
+import {Component, Host, h, Element, Prop, Method} from '@stencil/core';
 import {HostElement} from "../../decorators";
 
 const CONTENT_COMPONENT_NAME = 'barcode-reader-modal-content';
@@ -21,16 +21,6 @@ export class PdmBarcodeScannerController {
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
-    this.defineModalContent();
-  }
-
-  @Listen('ssapp-action')
-  async processResult(evt){
-    evt.preventDefault();
-    evt.stopImmediatePropagation();
-    await this.dismiss({
-      result: evt.detail
-    });
   }
 
   @Method()
@@ -42,6 +32,7 @@ export class PdmBarcodeScannerController {
 
   @Method()
   async present(props?, callback?){
+    this.defineModalContent();
     if (!callback && typeof props === 'function'){
       callback = props;
       props= undefined;
