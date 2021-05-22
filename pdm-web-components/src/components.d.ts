@@ -143,16 +143,19 @@ export namespace Components {
         "type"?: string;
     }
     interface PdmBarcodeScanner {
+        "compatibilityMode"?: string;
         "data": any;
         "loaderType"?: string;
         "switchCamera": () => Promise<void>;
+        "timeout"?: number;
     }
     interface PdmBarcodeScannerController {
         "barcodeTitle"?: string;
         "changeCamera": () => Promise<void>;
         "dismiss": (result?: any) => Promise<void>;
         "holdForScan": (callback: any) => Promise<any>;
-        "present": (props?: any) => Promise<void>;
+        "present": (props?: any, callback?: any) => Promise<any>;
+        "scannerMode"?: string;
     }
     interface PdmIonTable {
         "buttons"?: string[];
@@ -561,6 +564,7 @@ declare namespace LocalJSX {
         "type"?: string;
     }
     interface PdmBarcodeScanner {
+        "compatibilityMode"?: string;
         "data"?: any;
         "loaderType"?: string;
         /**
@@ -571,9 +575,11 @@ declare namespace LocalJSX {
           * Through this event errors are passed
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "timeout"?: number;
     }
     interface PdmBarcodeScannerController {
         "barcodeTitle"?: string;
+        "scannerMode"?: string;
     }
     interface PdmIonTable {
         "buttons"?: string[];

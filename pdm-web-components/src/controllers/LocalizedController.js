@@ -93,6 +93,28 @@ export default class LocalizedController extends WebcController {
   }
 
   /**
+   * Integrates with {@link PdmBarcodeScannerController}. that mean that element needs to be somewhere,
+   * typically inside ion-tabs
+   * @param {{}} [props] props to pass to scanner:
+   *  - title: the modal title. falls back to its barcode-title prop
+   * @param {function(err, result)} callback
+   */
+  showBarcodeScanner(props, callback){
+    if (!callback && typeof props === 'function'){
+      callback = props;
+      props= undefined;
+    }
+    const getScannerByHost = function(host){
+      return host.querySelector('pdm-barcode-scanner-controller');
+    }
+
+    let scannerEl = getScannerByHost(this.element) || getScannerByHost(document.body);
+    if (!scannerEl)
+      return callback(`Could not find the mandatory 'pdm-barcode-scanner-controller' element`);
+    scannerEl.present(props, callback);
+  }
+
+  /**
    * Shows Toast Alert
    *
    * @param {string} message

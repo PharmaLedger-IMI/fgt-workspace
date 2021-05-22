@@ -13,7 +13,7 @@ export class MultiSpinner implements ComponentInterface {
 
   @Element() element;
 
-  @Prop() type?: string = SUPPORTED_LOADERS.simple;
+  @Prop({attribute: 'type', mutable: true}) type?: string = SUPPORTED_LOADERS.simple;
 
   async componentWillLoad() {
     if (!this.host.isConnected)
