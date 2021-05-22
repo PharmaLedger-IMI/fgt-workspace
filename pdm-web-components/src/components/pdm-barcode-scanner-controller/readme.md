@@ -10,6 +10,7 @@
 | Property       | Attribute       | Description | Type     | Default            |
 | -------------- | --------------- | ----------- | -------- | ------------------ |
 | `barcodeTitle` | `barcode-title` |             | `string` | `"Barcode Reader"` |
+| `scannerMode`  | `scanner-mode`  |             | `string` | `SCANNER_MODE.WEB` |
 
 
 ## Methods
@@ -44,13 +45,13 @@ Type: `Promise<any>`
 
 
 
-### `present(props?: any) => Promise<void>`
+### `present(props?: any, callback?: any) => Promise<any>`
 
 
 
 #### Returns
 
-Type: `Promise<void>`
+Type: `Promise<any>`
 
 
 
