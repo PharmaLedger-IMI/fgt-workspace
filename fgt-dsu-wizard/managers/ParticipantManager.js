@@ -28,6 +28,7 @@ const BaseManager = require('../../pdm-dsu-toolkit/managers/BaseManager');
 class ParticipantManager extends BaseManager{
     constructor(dsuStorage, force, callback) {
         super(dsuStorage, force, callback);
+        this.directoryManager = require('./DirectoryManager')(this, force);
     };
 
     /**

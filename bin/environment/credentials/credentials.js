@@ -118,6 +118,7 @@ const APPS = {
     PHARMACY: 'fgt-pharmacy-wallet',        // instantiates a Pharmacy with random content
     MULTIPLE: 'multiple',                   // instantiates a Multiple connected Actors
     SINGLE: 'single',                       // instantiates a One of each actors, connected
+    SIMPLE_TRACEABILITY: 'traceability',    // instantiates a Single Env where an extra WHOLESALER (prefix FAC) will have all stock from all products/batches for each MAH, so we can simulate que consecutive shipments, orders, etc
     PROD: 'prod'                            // instantiates a the Production Env
 }
 

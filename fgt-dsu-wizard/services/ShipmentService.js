@@ -2,7 +2,7 @@
  * @module fgt-dsu-wizard.services
  */
 const utils = require('../../pdm-dsu-toolkit/services/utils');
-const {STATUS_MOUNT_PATH, INFO_PATH, LINES_PATH} = require('../constants');
+const {STATUS_MOUNT_PATH, INFO_PATH, LINES_PATH, ORDER_MOUNT_PATH} = require('../constants');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
@@ -51,14 +51,14 @@ function ShipmentService(domain, strategy) {
             dsu.readFile(INFO_PATH, (err, data) => {
                 if (err)
                     return callback(err);
+                let shipment;
                 try{
-                    const shipment = JSON.parse(data);
+                    shipment = JSON.parse(data);
                     dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
                         if (err)
                             return callback(`could not retrieve orderLine status`);
                         try{
                             shipment.status = JSON.parse(status);
-                            callback(undefined, shipment);
                         } catch (e) {
                             callback(`unable to parse Order status: ${data.toString()}`);
                         }
@@ -66,6 +66,16 @@ function ShipmentService(domain, strategy) {
                 } catch (e){
                     callback(`Could not parse order in DSU ${keySSI.getIdentifier()}`);
                 }
+
+                dsu.listMountedDSUs('/', (err, mounts) => {
+                    if (err || !mounts)
+                        return callback(`Could not list mounted dsu's: ${err}`);
+                    mounts = mounts.filter(m => m.path === ORDER_MOUNT_PATH);
+                    if (mounts.length !== 1)
+                        return callback(`invalid mounts found`);
+                    shipment.orderSSI = mounts[0].identifier;
+                    callback(undefined, shipment);
+                });
             })
         });
     }
@@ -73,9 +83,14 @@ function ShipmentService(domain, strategy) {
     /**
      * Creates an shipment
      * @param {Shipment} shipment
+     * @param {string} orderSSI (the readSSI to the order)
      * @param {function(err, keySSI)} callback
      */
-    this.create = function (shipment, callback) {
+    this.create = function (shipment, orderSSI, callback) {
+        if (!callback){
+            callback = orderSSI;
+            orderSSI = undefined;
+        }
         // if product is invalid, abort immediatly.
         if (typeof shipment === 'object') {
             let err = shipment.validate();
@@ -84,9 +99,9 @@ function ShipmentService(domain, strategy) {
         }
 
         if (isSimple) {
-            createSimple(shipment, callback);
+            createSimple(shipment, orderSSI, callback);
         } else {
-            createAuthorized(shipment, callback);
+            createAuthorized(shipment, orderSSI, callback);
         }
     }
 
@@ -108,7 +123,7 @@ function ShipmentService(domain, strategy) {
         });
     }
 
-    let createSimple = function (shipment, callback) {
+    let createSimple = function (shipment, orderSSI, callback) {
         let keyGenFunction = require('../commands/setShipmentSSI').createShipmentSSI;
         let templateKeySSI = keyGenFunction({senderId: shipment.senderId, shipmentId: shipment.shipmentId}, domain);
         utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
@@ -126,20 +141,32 @@ function ShipmentService(domain, strategy) {
                         if (err)
                             return callback(err);
                         console.log(`OrderStatus DSU (${statusSSI.getIdentifier(true)}) mounted at '/status'`);
-                        createShipmentLines(shipment, statusSSI, (err, shipmentLines) => {
-                            if (err)
-                                return callback(err);
-                            const lines = JSON.stringify(shipmentLines.map(o => o.getIdentifier(true)));
-                            dsu.writeFile(LINES_PATH, lines, (err) => {
+
+                        const finalize = function(callback){
+                            createShipmentLines(shipment, statusSSI, (err, shipmentLines) => {
                                 if (err)
                                     return callback(err);
-                                dsu.getKeySSIAsObject((err, keySSI) => {
+                                const lines = JSON.stringify(shipmentLines.map(o => o.getIdentifier(true)));
+                                dsu.writeFile(LINES_PATH, lines, (err) => {
                                     if (err)
                                         return callback(err);
-                                    console.log("Finished creating Shipment " + keySSI.getIdentifier(true));
-                                    callback(undefined, keySSI, shipmentLines);
+                                    dsu.getKeySSIAsObject((err, keySSI) => {
+                                        if (err)
+                                            return callback(err);
+                                        console.log("Finished creating Shipment " + keySSI.getIdentifier(true));
+                                        callback(undefined, keySSI, shipmentLines);
+                                    });
                                 });
                             });
+                        };
+
+                        if (!orderSSI)
+                            return finalize(callback);
+
+                        dsu.mount(ORDER_MOUNT_PATH, orderSSI, (err) => {
+                            if (err)
+                                return callback(err);
+                           finalize(callback);
                         });
                     });
                 });
@@ -147,7 +174,7 @@ function ShipmentService(domain, strategy) {
         });
     }
 
-    let createAuthorized = function (shipment, callback) {
+    let createAuthorized = function (shipment, orderSSI, callback) {
         let getEndpointData = function (shipment) {
             return {
                 endpoint: endpoint,
@@ -168,14 +195,26 @@ function ShipmentService(domain, strategy) {
                     builder.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(), (err) => {
                         if (err)
                             return cb(err);
-                        createShipmentLines(shipment, statusSSI, (err, orderLines) => {
+
+                        const finalize = function(callback){
+                            createShipmentLines(shipment, statusSSI, (err, orderLines) => {
+                                if (err)
+                                    return ccallback(err);
+                                builder.addFileDataToDossier(LINES_PATH, JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
+                                    if (err)
+                                        return ccallback(err);
+                                    callback();
+                                });
+                            });
+                        }
+
+                        if (!orderSSI)
+                            return finalize(cb);
+
+                        builder.mount(ORDER_MOUNT_PATH, orderSSI, (err) => {
                             if (err)
                                 return cb(err);
-                            builder.addFileDataToDossier(LINES_PATH, JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
-                                if (err)
-                                    return cb(err);
-                                cb();
-                            })
+                            finalize(cb);
                         });
                     });
                 });

@@ -71,20 +71,16 @@ class IssuedShipmentManager extends ShipmentManager {
 
     /**
      * Creates a {@link Shipment} dsu
+     * @param {string} orderSSI the readSSI to the order that generates the shipment
      * @param {string|number} [shipmentId] the table key
      * @param {Shipment} shipment
      * @param {function(err, sReadSSI, dbPath)} callback where the dbPath follows a "tableName/shipmentId" template.
      * @override
      */
-    create(shipmentId, shipment, callback) {
-        if (!callback){
-            callback = shipment;
-            shipment = shipmentId;
-            shipmentId = shipment.shipmentId;
-        }
+    create(orderSSI, shipment, callback) {
         let self = this;
 
-        self.shipmentService.create(shipment, (err, keySSI, shipmentLinesSSIs) => {
+        self.shipmentService.create(shipment, orderSSI, (err, keySSI, shipmentLinesSSIs) => {
             if (err)
                 return self._err(`Could not create product DSU for ${shipment}`, err, callback);
             const record = keySSI.getIdentifier();
@@ -93,7 +89,7 @@ class IssuedShipmentManager extends ShipmentManager {
                 if (err)
                     return self._err(`Could not insert record with shipmentId ${shipment.shipmentId} on table ${self.tableName}`, err, callback);
                 const path = `${self.tableName}/${shipment.shipmentId}`;
-                console.log(`Shipment ${shipmentId} created stored at DB '${path}'`);
+                console.log(`Shipment ${shipment.shipmentId} created stored at DB '${path}'`);
                 const aKey = keySSI.getIdentifier();
                 self.sendMessage(shipment.requesterId, DB.receivedShipments, aKey, (err) =>
                     self._messageCallback(err ? `Could not sent message to ${shipment.shipmentId} with ${DB.receivedShipments}: ${err}` : err,
@@ -164,6 +160,10 @@ let issuedShipmentManager;
  * @returns {IssuedShipmentManager}
  */
 const getIssuedShipmentManager = function (participantManager, force, callback) {
+    if (typeof force === 'function'){
+        callback = force;
+        force = false;
+    }
     if (!issuedShipmentManager || force)
         issuedShipmentManager = new IssuedShipmentManager(participantManager, callback);
     return issuedShipmentManager;

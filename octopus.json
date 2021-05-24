@@ -457,10 +457,6 @@
                     "options": {
                         "overwrite": true
                     }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/fgt-mah-wallet/apps-patch/fgt-mah-ssapp/readme"
                 }
             ]
         },
@@ -479,10 +475,6 @@
                     "options": {
                         "overwrite": true
                     }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/fgt-pharmacy-wallet/apps-patch/fgt-pharmacy-ssapp/readme"
                 }
             ]
         },
@@ -501,10 +493,6 @@
                     "options": {
                         "overwrite": true
                     }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/fgt-wholesaler-wallet/apps-patch/fgt-wholesaler-ssapp/readme"
                 }
             ]
         },
@@ -627,10 +615,6 @@
                     "options": {
                         "overwrite": true
                     }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/readme"
                 }
             ]
         },

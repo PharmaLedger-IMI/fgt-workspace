@@ -18,6 +18,7 @@ const STOCK_PATH = '/stock';
 const LINES_PATH = '/lines';
 
 const STATUS_MOUNT_PATH = '/status';
+const ORDER_MOUNT_PATH = '/order';
 
 // these constants depend on the previous constants
 const INBOX_PATHS_AND_PROPS = [
@@ -36,7 +37,8 @@ const DB = {
     receivedShipments: 'receivedShipments',
     stock: 'stock',
     orderLines: 'orderLines',
-    shipmentLines: 'shipmentLines'
+    shipmentLines: 'shipmentLines',
+    directory: 'directory'
 }
 
 const DEFAULT_QUERY_OPTIONS = require('../pdm-dsu-toolkit/constants').DEFAULT_QUERY_OPTIONS;
@@ -63,5 +65,6 @@ module.exports = {
     INBOX_RECEIVED_SHIPMENTS_PATH,
     INBOX_SHIPMENT_LINES_PATH,
     STOCK_PATH,
-    LINES_PATH
+    LINES_PATH,
+    ORDER_MOUNT_PATH
 }
