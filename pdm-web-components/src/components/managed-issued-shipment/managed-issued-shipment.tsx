@@ -64,12 +64,23 @@ export class ManagedIssuedShipment {
    * Through this event shipment creation requests are made
    */
   @Event({
-    eventName: 'created',
+    eventName: 'acknowledged',
     bubbles: true,
     composed: true,
     cancelable: true,
   })
-  sendCreateEvent: EventEmitter;
+  sendAcknowledgeEvent: EventEmitter;
+
+  /**
+   * Through this event shipment creation requests are made
+   */
+  @Event({
+    eventName: 'pickup',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  sendPickUpEvent: EventEmitter;
 
   /**
    * Through this event shipment rejection requests are made
@@ -88,8 +99,11 @@ export class ManagedIssuedShipment {
       case ShipmentStatus.REJECTED:
         handler = this.sendRejectEvent;
         break;
-      case ShipmentStatus.CREATED:
-        handler = this.sendCreateEvent;
+      case ShipmentStatus.ACKNOWLEDGED:
+        handler = this.sendAcknowledgeEvent;
+        break;
+      case ShipmentStatus.PICKUP:
+        handler = this.sendPickUpEvent;
         break;
       default:
         return console.log(`invalid action`);
@@ -177,7 +191,8 @@ export class ManagedIssuedShipment {
 
     self.issuedShipmentManager.getOne(this.shipmentId, true, async (err, shipment) => {
       if (err)
-        return this.sendError(`Could not retrieve order ${self.shipmentId}`);
+        return this.sendError(`Could not retrieve shipment ${self.shipmentId}`);
+
       self.shipment = shipment;
       self.loadShipmentLines((err, lines) => {
         if (err)

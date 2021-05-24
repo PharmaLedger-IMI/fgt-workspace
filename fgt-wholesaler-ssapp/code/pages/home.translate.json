@@ -94,6 +94,10 @@
     "confirmed": "Confirmed:",
     "confirmAll": "Confirm All",
     "resetAll": "Reset All",
+    "buttons": {
+      "approve": "Approve",
+      "deny": "Deny"
+    },
     "creation": {
       "confirm": {
         "message": "Please confirm Shipment creation",
