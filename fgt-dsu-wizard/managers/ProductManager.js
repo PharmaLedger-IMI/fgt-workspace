@@ -24,7 +24,6 @@ const Product = require('../model/Product');
 class ProductManager extends Manager {
     constructor(participantManager, callback) {
         super(participantManager, DB.products, ['gtin'], callback);
-        this.directoryManager = participantManager.directoryManager;
         this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
         this.batchManager = require('./BatchManager')(participantManager, participantManager.force);
     }

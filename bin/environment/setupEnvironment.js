@@ -3,7 +3,7 @@ process.env.NO_LOGS = true;
 const { APPS, getCredentials } = require('./credentials/credentials');
 
 const getProducts = require('./products/productsRandom');
-const { getStockFromProductsAndBatchesObj } = require('./stocks/stocksRandomFromProducts');
+const { getStockFromProductsAndBatchesObj, getFullStockFromProductsAndBatchesObj } = require('./stocks/stocksRandomFromProducts');
 const { getDummyWholesalers } = require('./credentials/credentials');
 
 const results = {};
@@ -130,7 +130,7 @@ const setupFullEnvironment = function(actors, callback){
     });
 }
 
-const setupSimpleTraceability = function(actors, callback){
+const setupSingleTraceability = function(actors, callback){
     if (!callback){
         callback = actors
         actors = getSingle();
@@ -163,7 +163,7 @@ const setupSimpleTraceability = function(actors, callback){
             return callback();
         console.log(`now setting up Wholesaler with key ${wholesaler.ssi}`);
         setup(APPS.WHOLESALER, wholesaler,
-            wholesaler.credentials.stock || getStockFromProductsAndBatchesObj(80, conf.trueStock, products, batches), (err) => err
+            [], (err) => err
                 ? callback(err)
                 : setupWholesalerIterator(wholesalersCopy, products, batches, callback));
     }
@@ -174,12 +174,60 @@ const setupSimpleTraceability = function(actors, callback){
             return callback();
         console.log(`now setting up Pharmacy with key ${pharmacy.ssi}`);
         setup(APPS.PHARMACY, pharmacy, products,
-            wholesalers, pharmacy.credentials.stock || getStockFromProductsAndBatchesObj(20, conf.trueStock, products, batches), (err) => err
+            wholesalers, [], (err) => err
                 ? callback(err)
                 : setupPharmacyIterator(pharmaciesCopy, products, batches, wholesalers, callback));
     }
 
+
+    const setupFactoryIterator = function(factoriesCopy, products, batches, callback){
+        const factory = factoriesCopy.shift();
+        if (!factory)
+            return callback();
+        console.log(`Setting up factory with key ${factory.ssi}`);
+
+        const manufId = 'MAH' + factory.credentials.id.secret.slice(3, factory.credentials.id.secret.length);
+
+        const indexesToRemove = [];
+        for (let i = 0; i < products.length; i++){
+            const prod = products[i];
+            if (prod.manufName === manufId)
+                indexesToRemove.push(i);
+        }
+
+        const productsByMah = indexesToRemove.reverse().map(i => products.splice(i, 1)[0]);
+
+        const productBatches = {};
+
+        productsByMah.forEach(p => {
+            if (p.gtin in batches){
+                productBatches[p.gtin] = batches[p.gtin];
+                delete(batches[p.gtin]);
+            }
+        });
+
+        const stock = getFullStockFromProductsAndBatchesObj(productsByMah, productBatches);
+
+        setup(APPS.FACTORY, factory, stock, err => err
+            ? callback(err)
+            : setupFactoryIterator(factoriesCopy, products, batches, callback));
+    }
+
+    const mahToFactory = function(){
+        const mahs = mapper(APPS.MAH, actors);
+        const result = {};
+        result[APPS.FACTORY] = mahs.map(c => {
+            const facId = 'FAC' + c.credentials.id.secret.slice(3, c.credentials.id.secret.length);
+            c.credentials = getCredentials(APPS.WHOLESALER);
+            c.credentials.id.secret = facId;
+            c.type = APPS.FACTORY;
+            return c;
+        });
+        return result[APPS.FACTORY];
+    }
+
     const actorsCopy = [...mapper(APPS.MAH, actors),
+        ...mahToFactory(),
         ...mapper(APPS.WHOLESALER, actors),
         ...mapper(APPS.PHARMACY, actors)];
 
@@ -196,6 +244,8 @@ const setupSimpleTraceability = function(actors, callback){
                 return acc;
             }, []);
 
+            const allProductsBackup = allProducts.slice();
+
             // and all existing batches
             const allBatchesObj = results[APPS.MAH].reduce((acc, mah) => {
                 Object.keys(mah.results[1]).forEach(key => {
@@ -206,13 +256,17 @@ const setupSimpleTraceability = function(actors, callback){
                 return acc;
             }, {});
 
-            setupWholesalerIterator(results[APPS.WHOLESALER].slice(), allProducts, allBatchesObj, (err) => {
+            setupFactoryIterator(results[APPS.FACTORY].slice(), allProducts, allBatchesObj, (err) => {
                 if (err)
-                    return callback (err);
-                setupPharmacyIterator(results[APPS.PHARMACY].slice(), allProducts, allBatchesObj, results[APPS.WHOLESALER].map(w => w.credentials), (err) => {
+                    return callback(err);
+                setupWholesalerIterator(results[APPS.WHOLESALER].slice(), allProducts, allBatchesObj, (err) => {
                     if (err)
-                        return callback(err);
-                    returnResults(callback);
+                        return callback (err);
+                    setupPharmacyIterator(results[APPS.PHARMACY].slice(), allProductsBackup, allBatchesObj, results[APPS.WHOLESALER].map(w => w.credentials), (err) => {
+                        if (err)
+                            return callback(err);
+                        returnResults(callback);
+                    });
                 });
             });
         });
@@ -242,6 +296,15 @@ const setup = function(type, result, ...args){
             products = args.shift() || getProducts();
             batches = args.shift();
             return require('./createMah').setup(result.manager, products, batches, cb(result.ssi, APPS.MAH));
+        case APPS.FACTORY:
+            if (args.length === 1){
+                stocks = args.shift();
+            } else {
+                products = args.shift() || getProducts();
+                batches = args.shift();
+                stocks = getStockFromProductsAndBatchesObj(products, batches);
+            }
+            return require('./createWholesaler').setup(result.manager, stocks , cb(result.ssi, APPS.FACTORY));
         case APPS.WHOLESALER:
             if (args.length === 1){
                 stocks = args.shift();
@@ -286,6 +349,7 @@ const create = function(config, credentials, callback){
                 ssi: ssi,
                 manager: manager
             };
+            results[type] = result[type] || [];
             results[type].push(result);
             return shouldSetup ? setup(type, result, callback) : callback();
         }
@@ -294,6 +358,8 @@ const create = function(config, credentials, callback){
     switch(app){
         case APPS.MAH:
             return require('./createMah').create(credentials, cb(APPS.MAH));
+        case APPS.FACTORY:
+            return require('./createWholesaler').create(credentials, cb(APPS.FACTORY));
         case APPS.WHOLESALER:
             return require('./createWholesaler').create(credentials, cb(APPS.WHOLESALER));
         case APPS.PHARMACY:
@@ -302,6 +368,8 @@ const create = function(config, credentials, callback){
             return setupFullEnvironment(getSingle(), callback);
         case APPS.MULTIPLE:
             return setupFullEnvironment(getMultiple(), callback);
+        case APPS.SIMPLE_TRACEABILITY:
+            return setupSingleTraceability(getSingle(), callback);
         case APPS.PROD:
             return setupFullEnvironment(getProd(), callback);
         default:
