@@ -15,6 +15,14 @@ export const EVENT_SEND_MESSAGE = 'ssapp-send-message';
 export const EVENT_SSAPP_HAS_LOADED = 'ssapp-has-loaded';
 export const EVENT_SSAPP_STATUS_UPDATE = 'ssapp-update-status';
 export const EVENT_REFRESH = 'ssapp-refresh'
+
+/**
+ * Expects an object like
+ * {
+ *   tab: 'tab name',
+ *   props: 'optional properties that will appear on controller.getState() when catching the refresh event'
+ * }
+ */
 export const EVENT_NAVIGATE_TAB = 'ssapp-navigate-tab'
 export const EVENT_SHOW_MORE = 'ssapp-show-more'
 export const EVENT_ACTION = 'ssapp-action'

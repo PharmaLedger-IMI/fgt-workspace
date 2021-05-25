@@ -8,6 +8,7 @@ const ROLE = {
     MAH: 'mah',
     WHS: 'whs',
     PHA: 'pha',
+    FAC: 'fac',
     PRODUCT: 'product'
 }
 
