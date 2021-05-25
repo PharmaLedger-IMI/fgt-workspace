@@ -64,9 +64,9 @@ class DirectoryManager extends Manager {
             }
         }
 
-        self.getOne(key, (err, entry) => {
-            if (!err && !!entry){
-                if (matchEntries(entry))
+        self.getOne(key, (err, existing) => {
+            if (!err && !!existing){
+                if (matchEntries(existing))
                     return console.log(`Entry already exists in directory. skipping`);
                 else
                     return callback(`Provided directory entry does not match existing.`);

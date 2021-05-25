@@ -6,6 +6,8 @@ const getProducts = require('./products/productsRandom');
 const { getStockFromProductsAndBatchesObj, getFullStockFromProductsAndBatchesObj } = require('./stocks/stocksRandomFromProducts');
 const { getDummyWholesalers } = require('./credentials/credentials');
 
+const { ROLE } = require('../../fgt-dsu-wizard/model/DirectoryEntry');
+
 const results = {};
 results[APPS.MAH] = [];
 results[APPS.WHOLESALER] = [];
@@ -37,6 +39,19 @@ const getProd = () => {
 
 const mapper = function(type, arr){
     return arr[type].map(a => ({"type": type, credentials: a}));
+}
+
+const mahToFactory = function(actors){
+    const mahs = mapper(APPS.MAH, actors);
+    const result = {};
+    result[APPS.FACTORY] = mahs.map(c => {
+        const facId = 'FAC' + c.credentials.id.secret.slice(3, c.credentials.id.secret.length);
+        c.credentials = getCredentials(APPS.WHOLESALER);
+        c.credentials.id.secret = facId;
+        c.type = APPS.FACTORY;
+        return c;
+    });
+    return result[APPS.FACTORY];
 }
 
 let conf = undefined;
@@ -213,25 +228,12 @@ const setupSingleTraceability = function(actors, callback){
             : setupFactoryIterator(factoriesCopy, products, batches, callback));
     }
 
-    const mahToFactory = function(){
-        const mahs = mapper(APPS.MAH, actors);
-        const result = {};
-        result[APPS.FACTORY] = mahs.map(c => {
-            const facId = 'FAC' + c.credentials.id.secret.slice(3, c.credentials.id.secret.length);
-            c.credentials = getCredentials(APPS.WHOLESALER);
-            c.credentials.id.secret = facId;
-            c.type = APPS.FACTORY;
-            return c;
-        });
-        return result[APPS.FACTORY];
-    }
-
     const actorsCopy = [...mapper(APPS.MAH, actors),
-        ...mahToFactory(),
+        ...mahToFactory(actors),
         ...mapper(APPS.WHOLESALER, actors),
         ...mapper(APPS.PHARMACY, actors)];
 
-    createIterator(actorsCopy, (err, actors) => {
+    createIterator(actorsCopy, (err) => {
         if (err)
             return callback(err);
         setupMAHIterator(results[APPS.MAH].slice(), (err) => {
@@ -265,12 +267,148 @@ const setupSingleTraceability = function(actors, callback){
                     setupPharmacyIterator(results[APPS.PHARMACY].slice(), allProductsBackup, allBatchesObj, results[APPS.WHOLESALER].map(w => w.credentials), (err) => {
                         if (err)
                             return callback(err);
-                        returnResults(callback);
+                        setupDirectories(actors, allProductsBackup, (err) => {
+                            if (err)
+                                return callback(err);
+                            returnResults(callback);
+                        })
                     });
                 });
             });
         });
     });
+}
+
+
+const setupDirectories = function(actors, allProducts, callback){
+
+    const getRole = function(app){
+        switch(app){
+            case APPS.WHOLESALER:
+                return ROLE.WHS;
+            case APPS.MAH:
+                return ROLE.MAH;
+            case APPS.PHARMACY:
+                return ROLE.PHA;
+            case APPS.FACTORY:
+                return ROLE.FAC;
+            default:
+                throw new Error(`Invalid Role`);
+        }
+    }
+
+    const actorIterator = function(actorsCopy, ...others){
+        const callback = others.pop();
+        const actor = actorsCopy.shift();
+        if (!actor)
+            return callback();
+
+        console.log(`Storing actor directory entries for ${actor.credentials.id.secret}`)
+
+        const otherIterator = function(othersCopy, callback){
+            const other = othersCopy.shift();
+            if (other)
+                return callback();
+            const role = getRole(other.type)
+            actor.manager.directoryManager.saveEntry(role, other.credentials.id.secret, (err) => {
+                if (err)
+                    return callback(err);
+                console.log(`Directory entry for ${other.credentials.id.secret} as a ${role} stored`)
+                otherIterator(othersCopy, callback);
+            });
+        }
+
+        otherIterator(others.slice(), (err) => err
+            ? callback(err)
+            : actorIterator(actorsCopy, callback));
+    }
+
+    const doActors = function(callback){
+        let othersCopy =[...mahToFactory(actors),
+            ...mapper(APPS.WHOLESALER, actors),
+            ...mapper(APPS.PHARMACY, actors)];
+
+        actorIterator(results[APPS.MAH].slice(), ...othersCopy, (err) => {
+            if (err)
+                return callback(err);
+
+            othersCopy = [...mapper(APPS.MAH, actors),
+                ...mahToFactory(actors),
+                ...mapper(APPS.PHARMACY, actors)];
+
+            actorIterator(results[APPS.WHOLESALER].slice(), ...othersCopy, (err) => {
+                if (err)
+                    return callback(err);
+
+                othersCopy = [...mapper(APPS.MAH, actors),
+                    ...mapper(APPS.WHOLESALER, actors)];
+
+                actorIterator(results[APPS.PHARMACY].slice(), ...othersCopy, (err) => {
+                    if (err)
+                        return callback(err);
+
+                    othersCopy = [...mapper(APPS.MAH, actors),
+                        ...mapper(APPS.WHOLESALER, actors)];
+
+                    actorIterator(results[APPS.FACTORY].slice(), ...othersCopy, (err) => {
+                        if (err)
+                            return callback(err);
+                        callback();
+                    });
+                });
+            });
+        });
+    }
+
+    const doProducts = function(products, callback){
+
+        const actorIterator = function(actorsCopy, ...products){
+            const callback = products.pop();
+            const actor = actorsCopy.shift();
+            if (!actor)
+                return callback();
+
+            console.log(`Storing Product directory entries for ${actor.credentials.id.secret}`)
+
+            const productIterator = function(productsCopy, callback){
+                const product = productsCopy.shift();
+                if (!product)
+                    return callback();
+                actor.manager.directoryManager.saveEntry(ROLE.PRODUCT, product.gtin, (err) => {
+                    if (err)
+                        return callback(err);
+                    console.log(`Directory entry for ${product.gtin} as a ${ROLE.PRODUCT} stored`);
+                    productIterator(productsCopy, callback);
+                });
+            }
+
+            productIterator(products.slice(), (err) => err
+                ? callback(err)
+                : actorIterator(actorsCopy, callback));
+        }
+
+        actorIterator(results[APPS.WHOLESALER].slice(), ...products, (err) => {
+            if (err)
+                return callback(err);
+            actorIterator(results[APPS.PHARMACY].slice(), ...products, (err) => {
+                if (err)
+                    return callback(err);
+                callback();
+            });
+        });
+
+    }
+
+    doActors((err) => {
+        if (err)
+            return callback(err);
+        doProducts(allProducts,(err) => {
+            if (err)
+                return callback(err);
+            callback();
+        })
+    });
+
 }
 
 const returnResults = function(callback){
