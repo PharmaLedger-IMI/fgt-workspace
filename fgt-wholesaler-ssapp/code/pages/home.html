@@ -9,9 +9,9 @@
             <ion-content>
                 <ion-list>
                     <menu-tab-button icon-name="analytics-outline" label="@menu.dashboard" tab="tab-dashboard"></menu-tab-button>
-                    <menu-tab-button icon-name="reader-outline" label="@menu.receivedOrders" tab="tab-received-orders"></menu-tab-button>
-                    <menu-tab-button icon-name="map-outline" label="@menu.shipments" tab="tab-issued-shipments"></menu-tab-button>
-                    <menu-tab-button icon-name="stats-chart-outline" label="@menu.stock" tab="tab-stock"></menu-tab-button>
+                    <menu-tab-button icon-name="reader-outline" label="@menu.orders.label" tab="@menu.orders.options"></menu-tab-button>
+                    <menu-tab-button icon-name="map-outline" label="@menu.shipments.label" tab="@menu.shipments.options"></menu-tab-button>
+                    <menu-tab-button icon-name="podium-outline" label="@menu.stock" tab="tab-stock"></menu-tab-button>
                 </ion-list>
             </ion-content>
         </ion-menu>
@@ -34,16 +34,30 @@
                     <webc-template template="dashboard" disable-container></webc-template>
                 </ion-content>
             </ion-tab>
+
             <ion-tab tab="tab-received-orders">
                 <ion-content class="tab-content" overflow-scroll="true">
                     <webc-template template="receivedOrders" disable-container></webc-template>
                 </ion-content>
             </ion-tab>
+
+            <ion-tab tab="tab-issued-orders">
+                <ion-content class="tab-content" overflow-scroll="true">
+                    <webc-template template="issuedOrders" disable-container></webc-template>
+                </ion-content>
+            </ion-tab>
+
             <ion-tab tab="tab-issued-shipments">
                 <ion-content class="tab-content" overflow-scroll="true">
                     <webc-template template="issuedShipments" disable-container></webc-template>
                 </ion-content>
             </ion-tab>
+            <ion-tab tab="tab-received-shipments">
+                <ion-content class="tab-content" overflow-scroll="true">
+                    <webc-template template="receivedShipments" disable-container></webc-template>
+                </ion-content>
+            </ion-tab>
+
             <ion-tab tab="tab-stock">
                 <ion-content class="tab-content" overflow-scroll="true">
                     <webc-template template="stock" disable-container></webc-template>
@@ -57,6 +71,12 @@
                 </ion-content>
             </ion-tab>
 
+            <ion-tab tab="tab-issued-order">
+                <ion-content class="tab-content" overflow-scroll="true">
+                    <webc-template template="issuedOrder" disable-container></webc-template>
+                </ion-content>
+            </ion-tab>
+
             <ion-tab tab="tab-shipment">
                 <ion-content class="tab-content" overflow-scroll="true">
                     <webc-template template="shipment" disable-container></webc-template>
@@ -65,9 +85,9 @@
 
             <ion-tab-bar slot="bottom">
                 <menu-tab-button icon-name="analytics-outline" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>
-                <menu-tab-button icon-name="reader-outline" label="@menu.receivedOrders" tab="tab-received-orders" mode="bar"></menu-tab-button>
-                <menu-tab-button icon-name="map-outline" label="@menu.shipments" tab="tab-issued-shipments" mode="bar"></menu-tab-button>
-                <menu-tab-button icon-name="stats-chart-outline" label="@menu.stock" tab="tab-stock" mode="bar"></menu-tab-button>
+                <menu-tab-button icon-name="reader-outline" label="@menu.orders.label" tab="@menu.orders.options" mode="bar"></menu-tab-button>
+                <menu-tab-button icon-name="map-outline" label="@menu.shipments.label" tab="@menu.shipments.options" mode="bar"></menu-tab-button>
+                <menu-tab-button icon-name="podium-outline" label="@menu.stock" tab="tab-stock" mode="bar"></menu-tab-button>
             </ion-tab-bar>
 
         </ion-tabs>

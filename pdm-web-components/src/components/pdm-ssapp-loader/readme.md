@@ -15,7 +15,7 @@
 
 ## Methods
 
-### `markAsLoaded(evt: any) => Promise<void>`
+### `markAsLoaded() => Promise<void>`
 
 
 

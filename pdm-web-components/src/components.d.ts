@@ -35,6 +35,18 @@ export namespace Components {
         "gtinBatch": string;
         "refresh": () => Promise<void>;
     }
+    interface ManagedIssuedOrder {
+        "detailsString": string;
+        "directoryString": string;
+        "fromPlaceholderString": string;
+        "fromString": string;
+        "orderLines": any;
+        "proceedString": string;
+        "productsString": string;
+        "requester": any;
+        "titleString": string;
+        "updateDirectory": () => Promise<void>;
+    }
     interface ManagedIssuedShipment {
         "availableString": string;
         "confirmedString": string;
@@ -91,6 +103,7 @@ export namespace Components {
         "detailsString": string;
         "noStockString": string;
         "orderId": string;
+        "orderString": string;
         "proceedString": string;
         "productsString": string;
         "refresh": () => Promise<void>;
@@ -130,7 +143,10 @@ export namespace Components {
         "iconName"?: string;
         "label"?: string;
         "mode"?: string;
-        "tab": string;
+        /**
+          * the tab name or a list of options like: [  {    label: '...',    tab: 'tab name'  } ]
+         */
+        "tab": string | any;
     }
     interface MoreChip {
         "color"?: string;
@@ -200,9 +216,13 @@ export namespace Components {
     }
     interface PdmSsappLoader {
         "loader"?: string;
-        "markAsLoaded": (evt: any) => Promise<void>;
+        "markAsLoaded": () => Promise<void>;
         "timeout"?: number;
         "updateStatus": (evt: any) => Promise<void>;
+    }
+    interface SimpleManagedProductItem {
+        "gtin": string;
+        "refresh": () => Promise<void>;
     }
 }
 declare global {
@@ -223,6 +243,12 @@ declare global {
     var HTMLManagedBatchListItemElement: {
         prototype: HTMLManagedBatchListItemElement;
         new (): HTMLManagedBatchListItemElement;
+    };
+    interface HTMLManagedIssuedOrderElement extends Components.ManagedIssuedOrder, HTMLStencilElement {
+    }
+    var HTMLManagedIssuedOrderElement: {
+        prototype: HTMLManagedIssuedOrderElement;
+        new (): HTMLManagedIssuedOrderElement;
     };
     interface HTMLManagedIssuedShipmentElement extends Components.ManagedIssuedShipment, HTMLStencilElement {
     }
@@ -320,10 +346,17 @@ declare global {
         prototype: HTMLPdmSsappLoaderElement;
         new (): HTMLPdmSsappLoaderElement;
     };
+    interface HTMLSimpleManagedProductItemElement extends Components.SimpleManagedProductItem, HTMLStencilElement {
+    }
+    var HTMLSimpleManagedProductItemElement: {
+        prototype: HTMLSimpleManagedProductItemElement;
+        new (): HTMLSimpleManagedProductItemElement;
+    };
     interface HTMLElementTagNameMap {
         "barcode-generator": HTMLBarcodeGeneratorElement;
         "batch-chip": HTMLBatchChipElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
+        "managed-issued-order": HTMLManagedIssuedOrderElement;
         "managed-issued-shipment": HTMLManagedIssuedShipmentElement;
         "managed-order-list-item": HTMLManagedOrderListItemElement;
         "managed-orderline-list-item": HTMLManagedOrderlineListItemElement;
@@ -340,6 +373,7 @@ declare global {
         "pdm-barcode-scanner-controller": HTMLPdmBarcodeScannerControllerElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
+        "simple-managed-product-item": HTMLSimpleManagedProductItemElement;
     }
 }
 declare namespace LocalJSX {
@@ -374,6 +408,29 @@ declare namespace LocalJSX {
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
     }
+    interface ManagedIssuedOrder {
+        "detailsString"?: string;
+        "directoryString"?: string;
+        "fromPlaceholderString"?: string;
+        "fromString"?: string;
+        /**
+          * Through this event order creation requests are made
+         */
+        "onCreated"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "orderLines"?: any;
+        "proceedString"?: string;
+        "productsString"?: string;
+        "requester"?: any;
+        "titleString"?: string;
+    }
     interface ManagedIssuedShipment {
         "availableString"?: string;
         "confirmedString"?: string;
@@ -383,7 +440,11 @@ declare namespace LocalJSX {
         /**
           * Through this event shipment creation requests are made
          */
-        "onCreated"?: (event: CustomEvent<any>) => void;
+        "onAcknowledged"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event shipment creation requests are made
+         */
+        "onPickup"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event shipment rejection requests are made
          */
@@ -485,6 +546,7 @@ declare namespace LocalJSX {
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "orderId"?: string;
+        "orderString"?: string;
         "proceedString"?: string;
         "productsString"?: string;
         "rejectString"?: string;
@@ -547,7 +609,10 @@ declare namespace LocalJSX {
           * Through this event navigation requests to tabs are made
          */
         "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
-        "tab"?: string;
+        /**
+          * the tab name or a list of options like: [  {    label: '...',    tab: 'tab name'  } ]
+         */
+        "tab"?: string | any;
     }
     interface MoreChip {
         "color"?: string;
@@ -629,10 +694,22 @@ declare namespace LocalJSX {
         "loader"?: string;
         "timeout"?: number;
     }
+    interface SimpleManagedProductItem {
+        "gtin"?: string;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+    }
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;
         "batch-chip": BatchChip;
         "managed-batch-list-item": ManagedBatchListItem;
+        "managed-issued-order": ManagedIssuedOrder;
         "managed-issued-shipment": ManagedIssuedShipment;
         "managed-order-list-item": ManagedOrderListItem;
         "managed-orderline-list-item": ManagedOrderlineListItem;
@@ -649,6 +726,7 @@ declare namespace LocalJSX {
         "pdm-barcode-scanner-controller": PdmBarcodeScannerController;
         "pdm-ion-table": PdmIonTable;
         "pdm-ssapp-loader": PdmSsappLoader;
+        "simple-managed-product-item": SimpleManagedProductItem;
     }
 }
 export { LocalJSX as JSX };
@@ -658,6 +736,7 @@ declare module "@stencil/core" {
             "barcode-generator": LocalJSX.BarcodeGenerator & JSXBase.HTMLAttributes<HTMLBarcodeGeneratorElement>;
             "batch-chip": LocalJSX.BatchChip & JSXBase.HTMLAttributes<HTMLBatchChipElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
+            "managed-issued-order": LocalJSX.ManagedIssuedOrder & JSXBase.HTMLAttributes<HTMLManagedIssuedOrderElement>;
             "managed-issued-shipment": LocalJSX.ManagedIssuedShipment & JSXBase.HTMLAttributes<HTMLManagedIssuedShipmentElement>;
             "managed-order-list-item": LocalJSX.ManagedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedOrderListItemElement>;
             "managed-orderline-list-item": LocalJSX.ManagedOrderlineListItem & JSXBase.HTMLAttributes<HTMLManagedOrderlineListItemElement>;
@@ -674,6 +753,7 @@ declare module "@stencil/core" {
             "pdm-barcode-scanner-controller": LocalJSX.PdmBarcodeScannerController & JSXBase.HTMLAttributes<HTMLPdmBarcodeScannerControllerElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;
+            "simple-managed-product-item": LocalJSX.SimpleManagedProductItem & JSXBase.HTMLAttributes<HTMLSimpleManagedProductItemElement>;
         }
     }
 }

@@ -21,8 +21,37 @@
   "welcome": "Welcome back",
   "menu": {
     "dashboard": "Dashboard",
-    "receivedOrders": "Received Orders",
-    "shipments": "Shipments",
+    "orders": {
+      "label": "Orders",
+      "options": [
+        {
+          "label": "Issued",
+          "tab": "tab-issued-orders",
+          "icon": "exit-outline"
+        },
+        {
+          "label": "Received",
+          "tab": "tab-received-orders",
+          "icon": "enter-outline"
+        }
+      ]
+
+    },
+    "shipments": {
+      "label": "Shipments",
+      "options": [
+        {
+          "label": "Outgoing",
+          "tab": "tab-issued-shipments",
+          "icon": "exit-outline"
+        },
+        {
+          "label": "Incoming",
+          "tab": "tab-received-shipments",
+          "icon": "enter-outline"
+        }
+      ]
+    },
     "stock": "Stock"
   },
   "errors": {
@@ -82,6 +111,15 @@
     "buttons": {
     }
   },
+  "receivedShipments": {
+    "title": "Incoming Shipments",
+    "numberHeader": "ID",
+    "orderingPartnerHeader": "Issued By",
+    "supplyingPartnerHeader": "Issued To",
+    "none": "No shipments...",
+    "buttons": {
+    }
+  },
   "processShipment": {
     "title": "Process Shipment",
     "details": "Details:",
@@ -113,6 +151,27 @@
         "invalid": "Invalid Shipment: ",
         "error": "Could not create new Shipment: "
       }
+    }
+  },
+  "issuedOrder": {
+    "title": "New Issued Order",
+    "details": "Details:",
+    "from": "Order from:",
+    "fromPlaceholder": "Select a supplier...",
+    "products": "Products:",
+    "directory": "Directory:",
+    "buttons": {
+      "create": "Issue Order"
+    }
+  },
+  "issuedOrders": {
+    "title": "Issued Orders",
+    "numberHeader": "ID",
+    "orderingPartnerHeader": "Issued By",
+    "supplyingPartnerHeader": "Issued To",
+    "none": "No orders issued...",
+    "buttons": {
+      "new-issued-order": "New"
     }
   },
   "stock": {
