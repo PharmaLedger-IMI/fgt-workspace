@@ -143,7 +143,7 @@ class DirectoryManager extends Manager {
             if (err)
                 return self._err(`Could not perform query`, err, callback);
             if (!readDSU)
-                return callback(undefined, records.map(r => r.pk));
+                return callback(undefined, records.map(r => r.id));
             callback(undefined, records);
         });
     }

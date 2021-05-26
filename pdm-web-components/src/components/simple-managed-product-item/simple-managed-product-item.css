@@ -1,0 +1,18 @@
+:host {
+  display: block;
+  --background: inherit;
+}
+
+ion-item.simple-item{
+  animation: 750ms linear fadein;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

@@ -307,7 +307,7 @@ const setupDirectories = function(actors, allProducts, callback){
 
         const otherIterator = function(othersCopy, callback){
             const other = othersCopy.shift();
-            if (other)
+            if (!other)
                 return callback();
             const role = getRole(other.type)
             actor.manager.directoryManager.saveEntry(role, other.credentials.id.secret, (err) => {
@@ -332,8 +332,7 @@ const setupDirectories = function(actors, allProducts, callback){
             if (err)
                 return callback(err);
 
-            othersCopy = [...mapper(APPS.MAH, actors),
-                ...mahToFactory(actors),
+            othersCopy = [...mahToFactory(actors),
                 ...mapper(APPS.PHARMACY, actors)];
 
             actorIterator(results[APPS.WHOLESALER].slice(), ...othersCopy, (err) => {

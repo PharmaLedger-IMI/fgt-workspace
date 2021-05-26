@@ -25,6 +25,28 @@ function ProductService(domain, strategy){
     }
 
     /**
+     * Resolves the DSU and loads the Product object with all its properties, mutable or not
+     * @param {KeySSI} keySSI
+     * @param {function(err, Order)} callback
+     */
+    this.get = function(keySSI, callback){
+        utils.getResolver().loadDSU(keySSI, (err, dsu) => {
+            if (err)
+                return callback(err);
+            dsu.readFile(INFO_PATH, (err, data) => {
+                if (err)
+                    return callback(err);
+                try{
+                    const product = JSON.parse(data);
+                    callback(undefined, product);
+                } catch (e) {
+                    callback(`unable to parse Batch: ${data.toString()}`);
+                }
+            });
+        });
+    }
+
+    /**
      * Creates a {@link Product} DSU
      * @param {Product|string} product
      * @param {function(err, keySSI)} callback
