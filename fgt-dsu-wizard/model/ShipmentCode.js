@@ -1,4 +1,8 @@
 /**
+ * This is a particular Model class, where all its properties represent
+ * the mount parts in the dsu where the property value
+ * (the keySSI) will be mounted
+ *
  * @class ShipmentCode
  * @module fgt-dsu-wizard.model
  */
@@ -8,22 +12,18 @@ class ShipmentCode{
      * @type {string}
      */
     status;
+
     /**
-     * The content
-     * @type {{codes: string[] | undefined, lines: string[] | undefined}}
+     * The reference (KeySSI) to the other {@link ShipmentCode}s inside
+     * @type string[] | undefined
      */
-    content = {
-        /**
-         * The reference (KeySSI) to the other {@link ShipmentCode}s inside
-         * @type string[] | undefined
-         */
-        codes: [],
-        /**
-         * The reference (KeySSI) to the other {@link ShipmentLine}s inside
-         * @type string[] | undefined
-         */
-        lines: []
-    }
+    codes;
+    /**
+     * The reference (KeySSI) to the other {@link ShipmentLine}s inside
+     * @type string[] | undefined
+     */
+    lines;
+
     /**
      * The reference (KeySSI) to the previous {@link ShipmentCode}
      * @type string | undefined

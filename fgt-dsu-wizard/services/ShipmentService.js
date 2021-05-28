@@ -138,7 +138,7 @@ function ShipmentService(domain, strategy) {
 
     let createSimple = function (shipment, orderSSI, callback) {
         let keyGenFunction = require('../commands/setShipmentSSI').createShipmentSSI;
-        let templateKeySSI = keyGenFunction({senderId: shipment.senderId, shipmentId: shipment.shipmentId}, domain);
+        let templateKeySSI = keyGenFunction({data: shipment.senderId + shipment.shipmentId}, domain);
         utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);
@@ -192,8 +192,7 @@ function ShipmentService(domain, strategy) {
             return {
                 endpoint: endpoint,
                 data: {
-                    senderId: shipment.senderId,
-                    shipmentId: shipment.shipmentId
+                    data: shipment.senderId + shipment.shipmentId
                 }
             }
         }

@@ -6,9 +6,7 @@
  * Defines how to create the keyssi for a {@link ShipmentLine} dsu
  * @param {object} data necessary properties:
  * <ul>
- *     <li>gtin - the gtin of the {@link Product}</li>
- *     <li>shipmentId - the id of the {@link Shipment}</li>
- *     <li>senderId - the senderId</li>
+ *     <li>data</li> the specific string
  *     <li>(optional) {@link openDSU#constants#BRICKS_DOMAIN_KEY} - the subDomain to store the bricks in. Will be concatenated like 'domain.subDomain'</li>
  * </ul>
  * @param {string} domain the anchoring domain
@@ -23,7 +21,7 @@ function createShipmentLineSSI(data, domain) {
         hint = {};
         hint[openDSU.constants.BRICKS_DOMAIN_KEY] = [domain, data[openDSU.constants.BRICKS_DOMAIN_KEY]].join('.');
     }
-    return keyssiSpace.createArraySSI(domain, [data.senderId, data.shipmentId, data.gtin, data.batch], 'v0', hint ? JSON.stringify(hint) : undefined);
+    return keyssiSpace.createArraySSI(domain, data.data, 'v0', hint ? JSON.stringify(hint) : undefined);
 }
 
 /**

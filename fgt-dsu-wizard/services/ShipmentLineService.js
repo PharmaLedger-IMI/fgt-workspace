@@ -61,10 +61,7 @@ function ShipmentLineService(domain, strategy){
         let data = typeof shipmentLine == 'object' ? JSON.stringify(shipmentLine) : shipmentLine;
 
         let keyGenData = {
-            gtin: shipmentLine.gtin,
-            senderId: shipmentLine.senderId,
-            shipmentId: shipmentId,
-            batch: shipmentLine.batch
+            data: shipmentLine.gtin + shipmentLine.senderId + shipmentId + shipmentLine.batch
         }
 
         if (isSimple){
@@ -92,9 +89,7 @@ function ShipmentLineService(domain, strategy){
                 return {
                     endpoint: endpoint,
                     data: {
-                        gtin: shipmentLine.gtin,
-                        senderId: senderId,
-                        shipmentId: shipmentId
+                        data: shipmentLine.gtin + shipmentLine.senderId + shipmentId + shipmentLine.batch
                     }
                 }
             }

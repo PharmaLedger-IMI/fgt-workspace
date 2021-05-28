@@ -111,7 +111,7 @@ function OrderService(domain, strategy) {
 
     let createSimple = function (order, callback) {
         let keyGenFunction = require('../commands/setOrderSSI').createOrderSSI;
-        let templateKeySSI = keyGenFunction(order, domain);
+        let templateKeySSI = keyGenFunction({data: order.orderId + order.requesterId}, domain);
         utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);
@@ -153,8 +153,7 @@ function OrderService(domain, strategy) {
             return {
                 endpoint: endpoint,
                 data: {
-                    orderId: order.orderId,
-                    requesterId: order.requesterId
+                    data: order.orderId + order.requesterId
                 }
             }
         }

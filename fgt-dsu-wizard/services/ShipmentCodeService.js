@@ -60,7 +60,7 @@ function ShipmentCodeService(domain, strategy){
         let data = typeof shipmentCode == 'object' ? JSON.stringify(shipmentCode) : shipmentCode;
         
         if (isSimple){
-            let keyGenFunction = require('../commands/setShipmentLineSSI').createShipmentCodeSSI;
+            let keyGenFunction = require('../commands/setShipmentCodeSSI').createShipmentCodeSSI;
             let keySSI = keyGenFunction('shipmentcode', domain);
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
@@ -103,6 +103,9 @@ function ShipmentCodeService(domain, strategy){
             callback = dsu;
             dsu = undefined;
         }
+
+        if (!dsu)
+            return this.create(shipment.status, statusSSI)
     }
 }
 

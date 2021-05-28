@@ -61,9 +61,7 @@ function OrderLineService(domain, strategy){
         let data = typeof orderLine == 'object' ? JSON.stringify(orderLine) : orderLine;
 
         let keyGenData = {
-            gtin: orderLine.gtin,
-            requesterId: orderLine.requesterId,
-            orderId: orderId
+            data: orderLine.gtin + orderLine.requesterId + orderId
         }
 
         if (isSimple){
@@ -91,9 +89,7 @@ function OrderLineService(domain, strategy){
                 return {
                     endpoint: endpoint,
                     data: {
-                        orderId: orderId,
-                        gtin: orderLine.gtin,
-                        requesterId: orderLine.requesterId
+                        data: orderLine.gtin + orderLine.requesterId + orderId
                     }
                 }
             }
