@@ -56,6 +56,19 @@ Type: `Promise<any>`
 
 
 
+## Dependencies
+
+### Used by
+
+ - [managed-issued-order](../managed-issued-order)
+
+### Graph
+```mermaid
+graph TD;
+  managed-issued-order --> pdm-barcode-scanner-controller
+  style pdm-barcode-scanner-controller fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

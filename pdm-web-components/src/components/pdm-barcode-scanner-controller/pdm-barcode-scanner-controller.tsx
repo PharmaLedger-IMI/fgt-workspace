@@ -125,7 +125,7 @@ export class PdmBarcodeScannerController {
       connectedCallback(){
 
         const modalElement: any = document.querySelector('ion-modal.barcode-scanner');
-        const title = modalElement.componentProps.title || self.barcodeTitle;
+        const title = modalElement.componentProps && modalElement.componentProps.title ? modalElement.componentProps.title : self.barcodeTitle;
         this.innerHTML = `
 <ion-header>
   <ion-toolbar>

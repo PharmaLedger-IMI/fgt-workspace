@@ -158,8 +158,14 @@
     "details": "Details:",
     "from": "Order from:",
     "fromPlaceholder": "Select a supplier...",
-    "products": "Products:",
+    "fromAt": "Ship to Address:",
+    "toAt": "Ship from Address:",
+    "products": "Add Product to Order:",
     "directory": "Directory:",
+    "orderLines": "Orderlines:",
+    "productCode": "Product Code:",
+    "quantity": "Quantity:",
+    "scan": "Scan Product",
     "buttons": {
       "create": "Issue Order"
     }

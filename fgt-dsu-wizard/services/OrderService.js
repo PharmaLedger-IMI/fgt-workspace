@@ -92,15 +92,16 @@ function OrderService(domain, strategy) {
 
     /**
      * Creates the original OrderStatus DSU
+     * @param {string} id
      * @param {OrderStatus} [status]: defaults to OrderStatus.CREATED
      * @param {function(err, keySSI, orderLinesSSI)} callback
      */
-    let createOrderStatus = function (status, callback) {
+    let createOrderStatus = function (id, status, callback) {
         if (typeof status === 'function') {
             callback = status;
             status = OrderStatus.CREATED;
         }
-        statusService.create(status, (err, keySSI) => {
+        statusService.create(status, id, (err, keySSI) => {
             if (err)
                 return callback(err);
             console.log(`OrderStatus DSU created with SSI ${keySSI.getIdentifier(true)}`);
@@ -118,7 +119,7 @@ function OrderService(domain, strategy) {
                 if (err)
                     return callback(err);
                 console.log("Order /info ", JSON.stringify(order));
-                createOrderStatus((err, statusSSI) => {
+                createOrderStatus(order.requesterId, (err, statusSSI) => {
                     if (err)
                         return callback(err);
                     // Mount must take string version of keyssi
@@ -162,7 +163,7 @@ function OrderService(domain, strategy) {
             builder.addFileDataToDossier(INFO_PATH, JSON.stringify(order), (err) => {
                 if (err)
                     return cb(err);
-                createOrderStatus((err, statusSSI) => {
+                createOrderStatus(order.requesterId, (err, statusSSI) => {
                     if (err)
                         return cb(err);
                     builder.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(), (err) => {

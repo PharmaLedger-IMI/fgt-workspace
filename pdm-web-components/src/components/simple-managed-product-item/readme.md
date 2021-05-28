@@ -35,10 +35,6 @@ Type: `Promise<void>`
 
 ## Dependencies
 
-### Used by
-
- - [managed-issued-order](../managed-issued-order)
-
 ### Depends on
 
 - [multi-spinner](../multi-spinner)
@@ -49,7 +45,6 @@ Type: `Promise<void>`
 graph TD;
   simple-managed-product-item --> multi-spinner
   simple-managed-product-item --> barcode-generator
-  managed-issued-order --> simple-managed-product-item
   style simple-managed-product-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

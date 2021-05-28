@@ -38,13 +38,18 @@ export namespace Components {
     interface ManagedIssuedOrder {
         "detailsString": string;
         "directoryString": string;
+        "fromAtString": string;
         "fromPlaceholderString": string;
         "fromString": string;
         "orderLines": any;
+        "orderLinesString": string;
         "proceedString": string;
+        "productsCodeString": string;
         "productsString": string;
+        "quantityString": string;
         "requester": any;
         "titleString": string;
+        "toAtString": string;
         "updateDirectory": () => Promise<void>;
     }
     interface ManagedIssuedShipment {
@@ -411,6 +416,7 @@ declare namespace LocalJSX {
     interface ManagedIssuedOrder {
         "detailsString"?: string;
         "directoryString"?: string;
+        "fromAtString"?: string;
         "fromPlaceholderString"?: string;
         "fromString"?: string;
         /**
@@ -426,10 +432,14 @@ declare namespace LocalJSX {
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "orderLines"?: any;
+        "orderLinesString"?: string;
         "proceedString"?: string;
+        "productsCodeString"?: string;
         "productsString"?: string;
+        "quantityString"?: string;
         "requester"?: any;
         "titleString"?: string;
+        "toAtString"?: string;
     }
     interface ManagedIssuedShipment {
         "availableString"?: string;
