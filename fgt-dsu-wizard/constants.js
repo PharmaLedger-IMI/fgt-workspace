@@ -6,6 +6,7 @@ const INBOX_SHIPMENT_LINES_PROP = 'shipmentLines';
 const INBOX_RECEIVED_ORDERS_PROP = 'receivedOrders';
 const INBOX_RECEIVED_SHIPMENTS_PROP = 'receivedShipments';
 const INFO_PATH = require('../pdm-dsu-toolkit/constants').INFO_PATH;
+const LOG_PATH = '/log';
 const ISSUED_ORDERS_MOUNT_PATH = "/issuedOrders";
 const INBOX_ORDER_LINES_PATH = '/orderLines';
 const PARTICIPANT_MOUNT_PATH = require('../pdm-dsu-toolkit/constants').PARTICIPANT_MOUNT_PATH;
@@ -56,6 +57,7 @@ module.exports = {
     INBOX_RECEIVED_SHIPMENTS_PROP,
     INBOX_SHIPMENT_LINES_PROP,
     INFO_PATH,
+    LOG_PATH,
     ISSUED_ORDERS_MOUNT_PATH,
     INBOX_ORDER_LINES_PATH,
     PARTICIPANT_MOUNT_PATH,

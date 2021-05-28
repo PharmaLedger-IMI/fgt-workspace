@@ -194,42 +194,7 @@ const setupSingleTraceability = function(actors, callback){
                 : setupPharmacyIterator(pharmaciesCopy, products, batches, wholesalers, callback));
     }
 
-
-    const setupFactoryIterator = function(factoriesCopy, products, batches, callback){
-        const factory = factoriesCopy.shift();
-        if (!factory)
-            return callback();
-        console.log(`Setting up factory with key ${factory.ssi}`);
-
-        const manufId = 'MAH' + factory.credentials.id.secret.slice(3, factory.credentials.id.secret.length);
-
-        const indexesToRemove = [];
-        for (let i = 0; i < products.length; i++){
-            const prod = products[i];
-            if (prod.manufName === manufId)
-                indexesToRemove.push(i);
-        }
-
-        const productsByMah = indexesToRemove.reverse().map(i => products.splice(i, 1)[0]);
-
-        const productBatches = {};
-
-        productsByMah.forEach(p => {
-            if (p.gtin in batches){
-                productBatches[p.gtin] = batches[p.gtin];
-                delete(batches[p.gtin]);
-            }
-        });
-
-        const stock = getFullStockFromProductsAndBatchesObj(productsByMah, productBatches);
-
-        setup(APPS.FACTORY, factory, stock, err => err
-            ? callback(err)
-            : setupFactoryIterator(factoriesCopy, products, batches, callback));
-    }
-
     const actorsCopy = [...mapper(APPS.MAH, actors),
-        ...mahToFactory(actors),
         ...mapper(APPS.WHOLESALER, actors),
         ...mapper(APPS.PHARMACY, actors)];
 
@@ -258,21 +223,18 @@ const setupSingleTraceability = function(actors, callback){
                 return acc;
             }, {});
 
-            setupFactoryIterator(results[APPS.FACTORY].slice(), allProducts, allBatchesObj, (err) => {
+
+            setupWholesalerIterator(results[APPS.WHOLESALER].slice(), allProducts, allBatchesObj, (err) => {
                 if (err)
-                    return callback(err);
-                setupWholesalerIterator(results[APPS.WHOLESALER].slice(), allProducts, allBatchesObj, (err) => {
+                    return callback (err);
+                setupPharmacyIterator(results[APPS.PHARMACY].slice(), allProductsBackup, allBatchesObj, results[APPS.WHOLESALER].map(w => w.credentials), (err) => {
                     if (err)
-                        return callback (err);
-                    setupPharmacyIterator(results[APPS.PHARMACY].slice(), allProductsBackup, allBatchesObj, results[APPS.WHOLESALER].map(w => w.credentials), (err) => {
+                        return callback(err);
+                    setupDirectories(actors, allProductsBackup, (err) => {
                         if (err)
                             return callback(err);
-                        setupDirectories(actors, allProductsBackup, (err) => {
-                            if (err)
-                                return callback(err);
-                            returnResults(callback);
-                        })
-                    });
+                        returnResults(callback);
+                    })
                 });
             });
         });
@@ -324,15 +286,14 @@ const setupDirectories = function(actors, allProducts, callback){
     }
 
     const doActors = function(callback){
-        let othersCopy =[...mahToFactory(actors),
-            ...mapper(APPS.WHOLESALER, actors),
+        let othersCopy =[...mapper(APPS.WHOLESALER, actors),
             ...mapper(APPS.PHARMACY, actors)];
 
         actorIterator(results[APPS.MAH].slice(), ...othersCopy, (err) => {
             if (err)
                 return callback(err);
 
-            othersCopy = [...mahToFactory(actors),
+            othersCopy = [...mapper(APPS.MAH, actors),
                 ...mapper(APPS.PHARMACY, actors)];
 
             actorIterator(results[APPS.WHOLESALER].slice(), ...othersCopy, (err) => {
@@ -346,14 +307,7 @@ const setupDirectories = function(actors, allProducts, callback){
                     if (err)
                         return callback(err);
 
-                    othersCopy = [...mapper(APPS.MAH, actors),
-                        ...mapper(APPS.WHOLESALER, actors)];
-
-                    actorIterator(results[APPS.FACTORY].slice(), ...othersCopy, (err) => {
-                        if (err)
-                            return callback(err);
-                        callback();
-                    });
+                    callback();
                 });
             });
         });

@@ -11,13 +11,18 @@
 | ----------------------- | ------------------------- | ----------- | -------- | ------------------------ |
 | `detailsString`         | `details-string`          |             | `string` | `'Details:'`             |
 | `directoryString`       | `directory-string`        |             | `string` | `'Directory:'`           |
+| `fromAtString`          | `from-at-string`          |             | `string` | `'At:'`                  |
 | `fromPlaceholderString` | `from-placeholder-string` |             | `string` | `'Select a supplier...'` |
 | `fromString`            | `from-string`             |             | `string` | `'Order from:'`          |
 | `orderLines`            | `order-lines`             |             | `any`    | `undefined`              |
+| `orderLinesString`      | `order-lines-string`      |             | `string` | `'OrderLines:'`          |
 | `proceedString`         | `proceed-string`          |             | `string` | `'Issue Order'`          |
+| `productsCodeString`    | `products-code-string`    |             | `string` | `'Product Code:'`        |
 | `productsString`        | `products-string`         |             | `string` | `'Products:'`            |
+| `quantityString`        | `quantity-string`         |             | `string` | `'Quantity:'`            |
 | `requester`             | `requester`               |             | `any`    | `undefined`              |
 | `titleString`           | `title-string`            |             | `string` | `'Create Order'`         |
+| `toAtString`            | `to-at-string`            |             | `string` | `'from:'`                |
 
 
 ## Events
@@ -46,16 +51,14 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [simple-managed-product-item](../simple-managed-product-item)
 - [managed-orderline-stock-chip](../managed-orderline-stock-chip)
+- [pdm-barcode-scanner-controller](../pdm-barcode-scanner-controller)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-issued-order --> simple-managed-product-item
   managed-issued-order --> managed-orderline-stock-chip
-  simple-managed-product-item --> multi-spinner
-  simple-managed-product-item --> barcode-generator
+  managed-issued-order --> pdm-barcode-scanner-controller
   style managed-issued-order fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

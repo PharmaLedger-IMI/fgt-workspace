@@ -12,6 +12,36 @@ managed-received-order{
   --color: var(--ion-color-primary-contrast)
 }
 
+:host ion-grid{
+  width: 100%;
+}
+
+
+/*
+ * "product-select" needs to be passed in through
+ * the cssClass of the interface options for this to work
+ */
+.product-select .select-interface-option {
+  color: var(--ion-color-secondary);
+}
+
+
+/* Set the placeholder color and opacity */
+ion-select.supplier-select::part(placeholder) {
+  color: var(--ion-color-secondary);
+
+}
+
+/* Set the text color */
+ion-select.supplier-select::part(text) {
+  color: var(--ion-color-primary);
+}
+
+/* Set the icon color and opacity */
+ion-select.supplier-select::part(icon) {
+  color: var(--ion-color-primary);
+}
+
 ion-card-title{
   color: var(--ion-color-primary)
 }
