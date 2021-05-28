@@ -5,7 +5,6 @@ module.exports = {
     setSSI: require('../../pdm-dsu-toolkit/commands/setSSI'),
     createParticipantSSI: require("./setParticipantSSI").createParticipantSSI,
     createParticipantConstSSI: require("./setParticipantConstSSI").createParticipantConstSSI,
-    createInboxSSI: require("./setInboxSSI").createInboxSSI,
     createOrderingPartnerSSI: require("./setOrderingPartnerSSI").createOrderingPartnerSSI,
     createOrderLineSSI: require("./setOrderLineSSI").createOrderLineSSI,
     createOrderLinesSSI: require("./setOrderLinesSSI").createOrderLinesSSI,

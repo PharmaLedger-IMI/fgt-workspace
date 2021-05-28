@@ -11,7 +11,7 @@ const {STATUS_MOUNT_PATH, INFO_PATH} = require('../constants');
  */
 function ShipmentCodeService(domain, strategy){
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");
-    const {ShipmentLine} = require('../model');
+    const {Shipment, ShipmentLine} = require('../model');
     const endpoint = 'shipmencode';
 
     domain = domain || "default";
@@ -96,6 +96,14 @@ function ShipmentCodeService(domain, strategy){
             }, callback);
         }
     };
+
+
+    this.fromShipment = function(shipment, statusSSI, dsu, callback){
+        if (!callback &&  typeof dsu === 'function'){
+            callback = dsu;
+            dsu = undefined;
+        }
+    }
 }
 
 module.exports = ShipmentCodeService;

@@ -4,7 +4,8 @@
  */
 class ShipmentCode{
     /**
-     * The {@link ShipmentStatus}
+     * The reference (keySSI) to the {@link ShipmentStatus} DSU
+     * @type {string}
      */
     status;
     /**
