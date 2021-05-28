@@ -8,8 +8,9 @@
  */
 class ShipmentCode{
     /**
-     * The reference (keySSI) to the {@link ShipmentStatus} DSU
-     * @type {string}
+     * the {@link ShipmentStatus}
+     * Only the outer ShipmentCode has Status
+     * @type {string | undefined}
      */
     status;
 
@@ -50,9 +51,6 @@ class ShipmentCode{
         const errors = [];
         if (!this.content || ((!this.content.codes || !this.content.code.length) && (!this.content.lines || !this.content.lines.length)))
             errors.push('no content provided');
-
-        if (!this.status)
-            errors.push('status is required.');
 
         return errors.length === 0 ? undefined : errors;
     }

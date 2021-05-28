@@ -41,18 +41,6 @@ const mapper = function(type, arr){
     return arr[type].map(a => ({"type": type, credentials: a}));
 }
 
-const mahToFactory = function(actors){
-    const mahs = mapper(APPS.MAH, actors);
-    const result = {};
-    result[APPS.FACTORY] = mahs.map(c => {
-        const facId = 'FAC' + c.credentials.id.secret.slice(3, c.credentials.id.secret.length);
-        c.credentials = getCredentials(APPS.WHOLESALER);
-        c.credentials.id.secret = facId;
-        c.type = APPS.FACTORY;
-        return c;
-    });
-    return result[APPS.FACTORY];
-}
 
 let conf = undefined;
 
