@@ -13,9 +13,10 @@ const defaultOps = {
     app: "fgt-mah-wallet",
     pathToApps: "../../",
     id: undefined,
-    batchCount: 11,
-    serialQuantity: 100,
-    expiryOffset: 100
+    batchCount: 10,
+    serialQuantity: 1000,
+    expiryOffset: 100,
+    randomize: true
 }
 
 let conf = argParser(defaultOps, process.argv);
@@ -49,7 +50,7 @@ const setupBatches = function(participantManager, products, batches,  callback){
         participantManager.batchManager = batchManager;
         const getBatches = !batches
             ? function(gtin){
-                return require('./batches/batchesRandom')(conf.batchCount, conf.serialQuantity, conf.expiryOffset);
+                return require('./batches/batchesRandom')(conf.batchCount, conf.serialQuantity, conf.expiryOffset, conf.randomize);
             }
             : function(gtin){
                 return batches[gtin + ''].slice();

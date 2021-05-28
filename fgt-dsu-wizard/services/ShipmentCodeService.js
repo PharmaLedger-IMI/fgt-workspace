@@ -5,6 +5,8 @@ const utils = require('../../pdm-dsu-toolkit/services/utils');
 
 const {STATUS_MOUNT_PATH, INFO_PATH} = require('../constants');
 
+const GRANULARITY = [10000, 1000, 100, 10, 1]; // amounts to 10000 packs per biggest container
+
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
@@ -16,6 +18,8 @@ function ShipmentCodeService(domain, strategy){
 
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
+
+    this.getContainerGranularity = () => GRANULARITY.slice();
 
     /**
      * Resolves the DSU and loads the OrderLine object with all its properties, mutable or not
@@ -99,14 +103,51 @@ function ShipmentCodeService(domain, strategy){
 
 
     this.fromShipment = function(shipment, statusSSI, dsu, callback){
+        const self = this;
         if (!callback &&  typeof dsu === 'function'){
             callback = dsu;
             dsu = undefined;
         }
 
+        const fallbackCreate = function(){
+            self.create(shipment.status, statusSSI, (err, shipmentCodeDSU) => err
+                ? callback(err)
+                : self.fromShipment(shipment, statusSSI, shipmentCodeDSU, callback));
+        }
+
+        const storeStatusInOuterCode = function (dsu, statusSSI, callback){
+            dsu.mount(STATUS_MOUNT_PATH, statusSSI, callback);
+        }
+
+        const createShipmentCodesRecursively = function(){
+            const lines = [];
+            const orderLineIterator = function(orderLinesCopy, callback){
+                const orderLine = orderLinesCopy.shift();
+                if (!orderLine)
+                    return callback();
+
+            }
+        }
+
         if (!dsu)
-            return this.create(shipment.status, statusSSI)
+            return fallbackCreate();
+
+        if (!statusSSI)
+            return createShipmentCodesRecursively();
+
+        storeStatusInOuterCode(dsu, statusSSI, (err) => err
+            ? callback(err)
+            : createShipmentCodesRecursively())
     }
+}
+
+function splitIntoContainers(shipmentLine){
+
+
+    const {gtin, batch, quantity} = shipmentLine;
+
+
+
 }
 
 module.exports = ShipmentCodeService;
