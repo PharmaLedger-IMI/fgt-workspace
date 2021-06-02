@@ -31,6 +31,8 @@ export namespace Components {
         "mode"?: string;
         "quantity"?: number;
     }
+    interface CopiableIonLabel {
+    }
     interface ManagedBatchListItem {
         "gtinBatch": string;
         "refresh": () => Promise<void>;
@@ -97,6 +99,7 @@ export namespace Components {
         "threshold"?: number;
     }
     interface ManagedProductListItem {
+        "batchDisplayCount": number;
         "gtin": string;
         "refresh": () => Promise<void>;
     }
@@ -154,11 +157,8 @@ export namespace Components {
         "tab": string | any;
     }
     interface MoreChip {
-        "color"?: string;
-        "float"?: string;
-        "iconName"?: string;
-        "outline"?: boolean;
-        "text"?: string;
+        "color": string;
+        "iconName": string;
     }
     interface MultiSpinner {
         "type"?: string;
@@ -219,6 +219,32 @@ export namespace Components {
          */
         "tableTitle": string;
     }
+    interface PdmItemOrganizer {
+        /**
+          * The Handler on the click in each item when expanded
+         */
+        "clickHandler": (any) => void;
+        /**
+          * the Tag for the component to be rendered
+         */
+        "componentName": string;
+        /**
+          * the list of props that will be passed to the HTML Element {@link componentName}
+         */
+        "componentProps": string;
+        /**
+          * The number of items to display (minimum is 1), defaults to 3
+         */
+        "displayCount": number;
+        /**
+          * The identifying prop to be return upon click (must exist in the supplied {@link componentProps}
+         */
+        "idProp": string;
+        /**
+          * If the component does not generate an ion-item (so it can be handled by an ion-list) this must be set to false
+         */
+        "isItem": boolean;
+    }
     interface PdmSsappLoader {
         "loader"?: string;
         "markAsLoaded": () => Promise<void>;
@@ -242,6 +268,12 @@ declare global {
     var HTMLBatchChipElement: {
         prototype: HTMLBatchChipElement;
         new (): HTMLBatchChipElement;
+    };
+    interface HTMLCopiableIonLabelElement extends Components.CopiableIonLabel, HTMLStencilElement {
+    }
+    var HTMLCopiableIonLabelElement: {
+        prototype: HTMLCopiableIonLabelElement;
+        new (): HTMLCopiableIonLabelElement;
     };
     interface HTMLManagedBatchListItemElement extends Components.ManagedBatchListItem, HTMLStencilElement {
     }
@@ -345,6 +377,12 @@ declare global {
         prototype: HTMLPdmIonTableElement;
         new (): HTMLPdmIonTableElement;
     };
+    interface HTMLPdmItemOrganizerElement extends Components.PdmItemOrganizer, HTMLStencilElement {
+    }
+    var HTMLPdmItemOrganizerElement: {
+        prototype: HTMLPdmItemOrganizerElement;
+        new (): HTMLPdmItemOrganizerElement;
+    };
     interface HTMLPdmSsappLoaderElement extends Components.PdmSsappLoader, HTMLStencilElement {
     }
     var HTMLPdmSsappLoaderElement: {
@@ -360,6 +398,7 @@ declare global {
     interface HTMLElementTagNameMap {
         "barcode-generator": HTMLBarcodeGeneratorElement;
         "batch-chip": HTMLBatchChipElement;
+        "copiable-ion-label": HTMLCopiableIonLabelElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-issued-order": HTMLManagedIssuedOrderElement;
         "managed-issued-shipment": HTMLManagedIssuedShipmentElement;
@@ -377,6 +416,7 @@ declare global {
         "pdm-barcode-scanner": HTMLPdmBarcodeScannerElement;
         "pdm-barcode-scanner-controller": HTMLPdmBarcodeScannerControllerElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
+        "pdm-item-organizer": HTMLPdmItemOrganizerElement;
         "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
         "simple-managed-product-item": HTMLSimpleManagedProductItemElement;
     }
@@ -405,6 +445,8 @@ declare namespace LocalJSX {
         "loaderType"?: string;
         "mode"?: string;
         "quantity"?: number;
+    }
+    interface CopiableIonLabel {
     }
     interface ManagedBatchListItem {
         "gtinBatch"?: string;
@@ -522,6 +564,7 @@ declare namespace LocalJSX {
         "threshold"?: number;
     }
     interface ManagedProductListItem {
+        "batchDisplayCount"?: number;
         "gtin"?: string;
         /**
           * Through this event navigation requests to tabs are made
@@ -626,14 +669,11 @@ declare namespace LocalJSX {
     }
     interface MoreChip {
         "color"?: string;
-        "float"?: string;
         "iconName"?: string;
         /**
-          * Through this event errors are passed
+          * Through this event the clickEvent is passed
          */
         "onSsapp-show-more"?: (event: CustomEvent<any>) => void;
-        "outline"?: boolean;
-        "text"?: string;
     }
     interface MultiSpinner {
         "type"?: string;
@@ -700,6 +740,32 @@ declare namespace LocalJSX {
          */
         "tableTitle"?: string;
     }
+    interface PdmItemOrganizer {
+        /**
+          * The Handler on the click in each item when expanded
+         */
+        "clickHandler"?: (any) => void;
+        /**
+          * the Tag for the component to be rendered
+         */
+        "componentName"?: string;
+        /**
+          * the list of props that will be passed to the HTML Element {@link componentName}
+         */
+        "componentProps"?: string;
+        /**
+          * The number of items to display (minimum is 1), defaults to 3
+         */
+        "displayCount"?: number;
+        /**
+          * The identifying prop to be return upon click (must exist in the supplied {@link componentProps}
+         */
+        "idProp"?: string;
+        /**
+          * If the component does not generate an ion-item (so it can be handled by an ion-list) this must be set to false
+         */
+        "isItem"?: boolean;
+    }
     interface PdmSsappLoader {
         "loader"?: string;
         "timeout"?: number;
@@ -718,6 +784,7 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;
         "batch-chip": BatchChip;
+        "copiable-ion-label": CopiableIonLabel;
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-issued-order": ManagedIssuedOrder;
         "managed-issued-shipment": ManagedIssuedShipment;
@@ -735,6 +802,7 @@ declare namespace LocalJSX {
         "pdm-barcode-scanner": PdmBarcodeScanner;
         "pdm-barcode-scanner-controller": PdmBarcodeScannerController;
         "pdm-ion-table": PdmIonTable;
+        "pdm-item-organizer": PdmItemOrganizer;
         "pdm-ssapp-loader": PdmSsappLoader;
         "simple-managed-product-item": SimpleManagedProductItem;
     }
@@ -745,6 +813,7 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "barcode-generator": LocalJSX.BarcodeGenerator & JSXBase.HTMLAttributes<HTMLBarcodeGeneratorElement>;
             "batch-chip": LocalJSX.BatchChip & JSXBase.HTMLAttributes<HTMLBatchChipElement>;
+            "copiable-ion-label": LocalJSX.CopiableIonLabel & JSXBase.HTMLAttributes<HTMLCopiableIonLabelElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-issued-order": LocalJSX.ManagedIssuedOrder & JSXBase.HTMLAttributes<HTMLManagedIssuedOrderElement>;
             "managed-issued-shipment": LocalJSX.ManagedIssuedShipment & JSXBase.HTMLAttributes<HTMLManagedIssuedShipmentElement>;
@@ -762,6 +831,7 @@ declare module "@stencil/core" {
             "pdm-barcode-scanner": LocalJSX.PdmBarcodeScanner & JSXBase.HTMLAttributes<HTMLPdmBarcodeScannerElement>;
             "pdm-barcode-scanner-controller": LocalJSX.PdmBarcodeScannerController & JSXBase.HTMLAttributes<HTMLPdmBarcodeScannerControllerElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
+            "pdm-item-organizer": LocalJSX.PdmItemOrganizer & JSXBase.HTMLAttributes<HTMLPdmItemOrganizerElement>;
             "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;
             "simple-managed-product-item": LocalJSX.SimpleManagedProductItem & JSXBase.HTMLAttributes<HTMLSimpleManagedProductItemElement>;
         }

@@ -130,7 +130,7 @@ export class ManagedOrderListItem {
       if (this.order.orderLines.length > this.orderlineCount) {
         orderLines = [...this.order.orderLines].slice(0, this.orderlineCount).map(ol => this.addOrderLine(ol));
         orderLines.push((
-          <more-chip color="secondary" text="..."></more-chip>
+          <more-chip color="secondary"></more-chip>
         ));
       } else {
         orderLines = this.order.orderLines.map(ol => this.addOrderLine(ol));

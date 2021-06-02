@@ -132,7 +132,7 @@ export class ManagedShipmentListItem{
       if (this.shipment.shipmentLines.length > this.shipmentLineCount) {
         shipmentLines = [...this.shipment.shipmentLines].slice(0, this.shipmentLineCount).map(ol => this.addShipmentLine(ol));
         shipmentLines.push((
-          <more-chip class="ion-float-end" color="secondary" text="..."></more-chip>
+          <more-chip class="ion-float-end" color="secondary"></more-chip>
         ));
       } else {
         shipmentLines = this.shipment.shipmentLines.map(ol => this.addShipmentLine(ol));

@@ -1,5 +1,5 @@
 import {Component, Host, h, Element, Prop, State, Watch, Method, Event, EventEmitter} from '@stencil/core';
-
+import {getBarCodePopOver} from '../../utils/popOverUtils';
 import {WebManager, WebManagerService} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
@@ -55,7 +55,8 @@ export class ManagedProductListItem {
       console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
 
-  @Prop() gtin: string;
+  @Prop({attribute: "gtin", mutable: true}) gtin: string;
+  @Prop({attribute: "batch-display-count", mutable: true}) batchDisplayCount: number = 3;
 
   private productManager: WebManager = undefined;
   private batchManager: WebManager = undefined;
@@ -143,11 +144,17 @@ export class ManagedProductListItem {
   }
 
   addBatches(){
-    const batches = !!this.product && !!this.batches ? this.batches.filter((b,i) => !!b && i <= 2).map(b => this.addBatch(b)) : (<ion-skeleton-text animated></ion-skeleton-text>);
+    if (!this.product || !this.batches)
+      return (<ion-skeleton-text animated></ion-skeleton-text>);
     return(
-      <div class="ion-padding-horizontal flex ion-justify-content-between ion-align-items-center">
-        {batches}
-      </div>
+      <pdm-item-organizer component-name="batch-chip"
+                          component-props={JSON.stringify(this.batches.map(gtinBatch => ({
+                            "gtin-batch": gtinBatch,
+                            "mode": "detail",
+                            "loader-type": SUPPORTED_LOADERS.bubblingSmall
+                          })))}
+                          id-prop="gtin-batch"
+                          is-ion-item="false"></pdm-item-organizer>
     )
   }
 
@@ -165,7 +172,12 @@ export class ManagedProductListItem {
     }
 
     return [
-        getButton("end", "medium", "barcode", () => console.log(`This should show a bar code`)),
+        getButton("end", "medium", "barcode", (evt) => getBarCodePopOver({
+          type: "code128",
+          size: "32",
+          scale: "6",
+          data: self.gtin
+        }, evt)),
         getButton("end", "medium", "eye", () => self.navigateToTab('tab-batches', {gtin: self.gtin}))
    ]
   }
