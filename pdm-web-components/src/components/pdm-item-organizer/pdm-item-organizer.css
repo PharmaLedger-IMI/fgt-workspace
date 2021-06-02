@@ -1,0 +1,7 @@
+:host {
+  display: block;
+}
+
+ion-popover.organizer-popover{
+  --width: auto;
+}

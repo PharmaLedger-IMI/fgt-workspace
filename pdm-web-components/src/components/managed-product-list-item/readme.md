@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type     | Default     |
-| -------- | --------- | ----------- | -------- | ----------- |
-| `gtin`   | `gtin`    |             | `string` | `undefined` |
+| Property            | Attribute             | Description | Type     | Default     |
+| ------------------- | --------------------- | ----------- | -------- | ----------- |
+| `batchDisplayCount` | `batch-display-count` |             | `number` | `3`         |
+| `gtin`              | `gtin`                |             | `string` | `undefined` |
 
 
 ## Events
@@ -39,13 +40,16 @@ Type: `Promise<void>`
 
 - [barcode-generator](../barcode-generator)
 - [batch-chip](../batch-chip)
+- [pdm-item-organizer](../pdm-item-organizer)
 
 ### Graph
 ```mermaid
 graph TD;
   managed-product-list-item --> barcode-generator
   managed-product-list-item --> batch-chip
+  managed-product-list-item --> pdm-item-organizer
   batch-chip --> multi-spinner
+  pdm-item-organizer --> more-chip
   style managed-product-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

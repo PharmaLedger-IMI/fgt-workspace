@@ -6,14 +6,14 @@ import {HostElement} from "../../decorators";
   styleUrl: 'more-chip.css',
   shadow: false,
 })
-export class BatchChip {
+export class MoreChip {
 
   @HostElement() host: HTMLElement;
 
   @Element() element;
 
   /**
-   * Through this event errors are passed
+   * Through this event the clickEvent is passed
    */
   @Event({
     eventName: 'ssapp-show-more',
@@ -23,61 +23,26 @@ export class BatchChip {
   })
   showMoreEvent: EventEmitter;
 
-  @Prop() text?: string = undefined;
+  @Prop({attribute: 'icon-name'}) iconName: string = "ellipsis-horizontal";
 
-  @Prop({attribute: 'icon-name'}) iconName?: string = undefined;
-
-  @Prop() color?: string = 'primary';
-
-  @Prop() outline?: boolean = true;
-
-  @Prop() float?: string = undefined;
+  @Prop() color: string = 'medium';
 
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
   }
 
-  private getIcon(){
-    if (!this.iconName)
-      return;
-    const props = {
-      color: this.color,
-      name: this.iconName
-    }
-    return (
-      <ion-icon {...props}></ion-icon>
-    )
-  }
-
-  private getText(){
-    if (!this.text)
-      return;
-    return (
-      <ion-label color={this.color}>{this.text}</ion-label>
-    )
-  }
-
-  private sendShowMoreEvent(){
-    this.showMoreEvent.emit();
+  private sendShowMoreEvent(evt){
+    this.showMoreEvent.emit(evt);
   }
 
   render() {
     if (!this.host.isConnected)
       return;
-    const props = {
-      outline: this.outline,
-      color: this.color
-    }
-    if (this.float)
-      { // @ts-ignore
-        props.class = `ion-float-${this.float}`;
-      }
     return (
-      <ion-chip class="ion-padding-horizontal" {...props} onClick={() => this.sendShowMoreEvent()}>
-        {this.getIcon()}
-        {this.getText()}
-      </ion-chip>
+      <ion-button fill="clear" size="small" color={this.color} onClick={(evt) => this.sendShowMoreEvent(evt)}>
+        <ion-icon slot="icon-only" name={this.iconName}></ion-icon>
+      </ion-button>
     )
   }
 }
