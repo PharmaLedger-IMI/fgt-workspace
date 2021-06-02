@@ -22,13 +22,14 @@ export default class OrderController extends LocalizedController {
         this.model = this.initializeModel();
         const wizard = require('wizard');
         const participantManager = wizard.Managers.getParticipantManager();
+        this.receivedOrderManager = wizard.Managers.getReceivedOrderManager(participantManager);
         this.issuedShipmentManager = wizard.Managers.getIssuedShipmentManager(participantManager);
         let self = this;
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
             const state = self.getState();
-            if (state && state.orderId&& state.requesterId){
+            if (state && state.orderId && state.requesterId){
                 self.setState(undefined);
                 self.model.orderReference = `${state.requesterId}-${state.orderId}`
             } else {
@@ -79,22 +80,26 @@ export default class OrderController extends LocalizedController {
         const {shipmentId, requesterId, senderId, shipToAddress, status, shipmentLines} = evt.detail;
         const shipment = new Shipment(shipmentId, requesterId, senderId, shipToAddress, status, shipmentLines);
 
-        self.issuedShipmentManager._bindParticipant(shipment, (err, newShipment) => {
+        self.receivedOrderManager.getOne(self.model.orderReference, false, (err, orderSSI) => {
             if (err)
-                return sendError(self.translate('creation.error.bind'));
-            const errors = newShipment.validate();
-            if (!!errors)
-                return sendError(self.translate('creation.error.invalid') + errors.join(', '));
-            self.issuedShipmentManager.create(newShipment, async (err, keySSI, shipmentLinesSSIs) => {
+                return callback(err);
+            self.issuedShipmentManager._bindParticipant(shipment, (err, newShipment) => {
                 if (err)
-                    return sendError(`${self.translate('creation.error.error')}${err}`);
-                self.showToast(self.translate('creation.success'));
-                await loader.dismiss();
-                const props = {
-                    shipmentId: newShipment.shipmentId,
-                    participantId: newShipment.requesterId
-                }
-                super.navigateToTab('tab-shipment', props);
+                    return sendError(self.translate('creation.error.bind'));
+                const errors = newShipment.validate();
+                if (!!errors)
+                    return sendError(self.translate('creation.error.invalid') + errors.join(', '));
+                self.issuedShipmentManager.create(orderSSI, newShipment, async (err, keySSI, shipmentLinesSSIs) => {
+                    if (err)
+                        return sendError(`${self.translate('creation.error.error')}${err}`);
+                    self.showToast(self.translate('creation.success'));
+                    await loader.dismiss();
+                    const props = {
+                        shipmentId: newShipment.shipmentId,
+                        participantId: newShipment.requesterId
+                    }
+                    super.navigateToTab('tab-shipment', props);
+                });
             });
         });
     }

@@ -17,5 +17,9 @@ module.exports = {
     Validations: require('../../pdm-dsu-toolkit/model/Validations'),
     Utils: require('../../pdm-dsu-toolkit/model/Utils'),
     Stock: require('./Stock'),
-    StockStatus: require('./StockStatus')
+    StockStatus: require('./StockStatus'),
+    DirectoryEntry: require('./DirectoryEntry').DirectoryEntry,
+    ROLE: require('./DirectoryEntry').ROLE,
+    ShipmentCode: require('./ShipmentCode'),
+    TrackingCode: require('./TrackingCode')
 }

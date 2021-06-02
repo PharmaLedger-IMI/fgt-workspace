@@ -29,6 +29,7 @@
 
 ### Used by
 
+ - [managed-issued-order](../managed-issued-order)
  - [managed-issued-shipment](../managed-issued-shipment)
  - [managed-order-list-item](../managed-order-list-item)
  - [managed-received-order](../managed-received-order)
@@ -37,6 +38,7 @@
 ### Graph
 ```mermaid
 graph TD;
+  managed-issued-order --> managed-orderline-stock-chip
   managed-issued-shipment --> managed-orderline-stock-chip
   managed-order-list-item --> managed-orderline-stock-chip
   managed-received-order --> managed-orderline-stock-chip

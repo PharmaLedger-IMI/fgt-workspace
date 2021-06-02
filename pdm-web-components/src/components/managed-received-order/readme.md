@@ -16,6 +16,7 @@
 | `detailsString`       | `details-string`     |             | `string` | `'Details:'`                   |
 | `noStockString`       | `no-stock-string`    |             | `string` | `'Empty'`                      |
 | `orderId`             | `order-id`           |             | `string` | `undefined`                    |
+| `orderString`         | `order-string`       |             | `string` | `'Order'`                      |
 | `proceedString`       | `proceed-string`     |             | `string` | `'Continue:'`                  |
 | `productsString`      | `products-string`    |             | `string` | `'Products:'`                  |
 | `rejectString`        | `reject-string`      |             | `string` | `'Reject'`                     |

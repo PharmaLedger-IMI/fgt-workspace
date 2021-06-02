@@ -12,6 +12,7 @@
                         <ion-list>
                             <menu-tab-button icon-name="analytics-outline" label="@menu.dashboard" tab="tab-dashboard"></menu-tab-button>
                             <menu-tab-button icon-name="reader-outline" label="@menu.products" tab="tab-products"></menu-tab-button>
+                            <menu-tab-button icon-name="map-outline" label="@menu.issuedShipments" tab="tab-issued-shipments"></menu-tab-button>
                             <menu-tab-button icon-name="reader-outline" label="@menu.orderLines" tab="tab-orderLines"></menu-tab-button>
                             <menu-tab-button icon-name="reader-outline" label="@menu.shipmentLines" tab="tab-shipmentLines"></menu-tab-button>
                         </ion-list>
@@ -32,6 +33,8 @@
             </ion-header>
 
             <div class="with-gradient"></div>
+            <pdm-barcode-scanner-controller barcode-title="Please scan your pack"></pdm-barcode-scanner-controller>
+
             <ion-tab tab="tab-dashboard">
                 <ion-content class="tab-content" overflow-scroll="true">
                     <webc-template template="dashboard" disable-container></webc-template>
@@ -47,6 +50,13 @@
                     <webc-template template="batches" disable-container></webc-template>
                 </ion-content>
             </ion-tab>
+            <ion-tab tab="tab-issued-shipments">
+                <ion-content class="tab-content" overflow-scroll="true">
+                    <webc-template template="issuedShipments" disable-container></webc-template>
+                </ion-content>
+            </ion-tab>
+
+
             <ion-tab tab="tab-orderLines">
                 <ion-content class="tab-content" overflow-scroll="true">
                     <webc-template template="orderLines" disable-container></webc-template>
@@ -68,6 +78,7 @@
             <ion-tab-bar slot="bottom">
                 <menu-tab-button icon-name="analytics-outline" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>
                 <menu-tab-button icon-name="reader-outline" label="@menu.products" tab="tab-products" mode="bar"></menu-tab-button>
+                <menu-tab-button icon-name="map-outline" label="@menu.issuedShipments" tab="tab-issued-shipments" mode="bar"></menu-tab-button>
                 <menu-tab-button icon-name="reader-outline" label="@menu.orderLines" tab="tab-orderLines" mode="bar"></menu-tab-button>
                 <menu-tab-button icon-name="reader-outline" label="@menu.shipmentLines" tab="tab-shipmentLines" mode="bar"></menu-tab-button>
                 <menu-tab-button icon-name="reader-outline" label="Scan" tab="tab-scan" mode="bar"></menu-tab-button>

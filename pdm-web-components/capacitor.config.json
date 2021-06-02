@@ -1,6 +1,14 @@
 {
-  "appId": "com.",
+  "appId": "com.pdmfc.com.pharmaledger",
   "appName": "pdm-web-components",
+  "bundledWebRuntime": true,
+  "npmClient": "npm",
   "webDir": "www",
-  "bundledWebRuntime": true
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    },
+    "BarcodeScanner": {}
+  },
+  "cordova": {}
 }

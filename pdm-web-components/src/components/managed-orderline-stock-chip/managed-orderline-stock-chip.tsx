@@ -6,7 +6,7 @@ import {getSteppedColor, FALLBACK_COLOR} from "../../utils/colorUtils";
 import {OverlayEventDetail} from "@ionic/core";
 
 // @ts-ignore
-const Stock = require('wizard').Model.Stock;
+const {Stock, Product}  = require('wizard').Model;
 
 const CHIP_TYPE = {
   SIMPLE: "simple",
@@ -61,6 +61,7 @@ export class ManagedOrderlineStockChip {
   @Prop({attribute: "button", mutable: true}) button?: string = undefined;
 
   private stockManager: WebResolver = undefined;
+  private productManager: WebResolver = undefined;
 
   @State() stock: typeof Stock = undefined;
 
@@ -72,6 +73,7 @@ export class ManagedOrderlineStockChip {
     if (this.mode !== CHIP_TYPE.DETAIL || !!this.available)
       return;
     this.stockManager = await WebManagerService.getWebManager("StockManager");
+    this.productManager = await WebManagerService.getWebManager("ProductManager");
     return await this.loadBatch();
   }
 
@@ -80,8 +82,18 @@ export class ManagedOrderlineStockChip {
       return;
     const self = this;
     self.stockManager.getOne(this.gtin, true, (err, stock: typeof Stock) => {
-      if (err)
-        return console.log(`Could nor read batch information for ${self.gtin}`);
+      if (err) {
+        console.log(`Could nor read batch information for ${self.gtin}. presuming empty. Getting product info...`);
+        return self.productManager.getOne(this.gtin, true, (err, product) => {
+          if (err){
+            console.log(`Could not resolver product. does it exist?`);
+            self.stock = new Stock(product);
+          } else {
+            self.stock = new Stock(product);
+          }
+        });
+      }
+
       self.stock = new Stock(stock);
     });
   }
@@ -119,13 +131,15 @@ export class ManagedOrderlineStockChip {
       case AVAILABLE_BUTTONS.CONFIRM:
         props = {
           color: "success",
-          iconName: "checkmark-circle-outline"
+          iconName: "checkmark-circle-outline",
+          disabled: this.available && this.available > 0
         };
         break;
       case AVAILABLE_BUTTONS.CANCEL:
         props = {
           color: "danger",
-          iconName: "close-circle-outline"
+          iconName: "close-circle-outline",
+          disabled: false
         };
         break;
       default:
@@ -133,7 +147,7 @@ export class ManagedOrderlineStockChip {
     }
 
     return (
-      <ion-button fill="clear" size="small" color={props.color} onClick={() => this.sendActionEvent()}>
+      <ion-button fill="clear" size="small" color={props.color} onClick={() => this.sendActionEvent()} disabled={props.disabled}>
         <ion-icon slot="icon-only" name={props.iconName}></ion-icon>
       </ion-button>
     )
