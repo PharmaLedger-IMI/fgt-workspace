@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" class="md">
+<head>
+    <meta charset="UTF-8">
+    <title>Pharma Ledger</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css"/>
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.js"></script>
+
+    <link rel="stylesheet" href="./src/assets/css/styles.css"/>
+</head>
+<body>
+<ion-app>
+
+    <ion-content>
+        <ion-grid>
+            <ion-row class="ion-align-items-center">
+                <ion-col size="4">
+                    <ion-img src="./src/assets/images/login-bg.png" alt="" class="login-image"></ion-img>
+                </ion-col>
+                <ion-col>
+                    <div class="ion-padding ion-align-items-center login-form">
+                        <ion-card class="ion-margin ion-padding-horizontal">
+                            <div class="ion-text-center ion-padding-vertical">
+                                <img src="./src/assets/images/logo.svg" alt="" class="ion-margin-top">
+                                <div class="ion-text-center ion-padding-top flex flex-col">
+                                    <span>Please enter your credentials as a</span>
+                                    <span>Marketing Authorization Holder</span>
+                                </div>
+                            </div>
+                            <ion-card-content class="">
+                                <ion-item class="ion-margin-bottom">
+                                    <ion-label position="floating">Name</ion-label>
+                                    <ion-input></ion-input>
+                                </ion-item>
+
+                                <ion-item class="ion-margin-bottom">
+                                    <ion-label position="floating">Registered MAH Id</ion-label>
+                                    <ion-input></ion-input>
+                                </ion-item>
+
+                                <ion-item class="ion-margin-bottom">
+                                    <ion-label position="floating">Registered Email</ion-label>
+                                    <ion-input type="email"></ion-input>
+                                </ion-item>
+
+                                <ion-item class="ion-margin-bottom">
+                                    <ion-label position="floating">Registered TIN (Tax Identification Number)
+                                    </ion-label>
+                                    <ion-input></ion-input>
+                                </ion-item>
+
+                                <ion-item class="ion-margin-bottom">
+                                    <ion-label position="floating">Registered Address</ion-label>
+                                    <ion-input></ion-input>
+                                </ion-item>
+
+                                <ion-item class="ion-margin-bottom">
+                                    <ion-label position="floating">Password</ion-label>
+                                    <ion-input type="password"></ion-input>
+                                </ion-item>
+
+                                <ion-item>
+                                    <ion-label position="floating">Confirm Password</ion-label>
+                                    <ion-input type="password"></ion-input>
+                                </ion-item>
+
+                                <div class="ion-text-end ion-padding-vertical ion-margin-top">
+                                    <ion-button color="medium" class="ion-margin-start">
+                                        Login
+                                        <ion-icon slot="end" name="log-in" class="ion-margin-start"></ion-icon>
+                                    </ion-button>
+                                    <ion-button color="secondary" class="ion-margin-start">
+                                        Register
+                                        <ion-icon slot="end" name="person-add" class="ion-margin-start"></ion-icon>
+                                    </ion-button>
+                                </div>
+
+                            </ion-card-content>
+                        </ion-card>
+                    </div>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ion-content>
+
+</ion-app>
+</body>
+</html>
