@@ -13,7 +13,7 @@
  * @returns {ArraySSI}
  */
 function createOrderLineSSI(data, domain) {
-    console.log("New ORDERLINE_SSI in domain ", domain, [data.requesterId, data.orderId, data.gtin]);
+    console.log("New ORDERLINE_SSI in domain ", domain);
     const openDSU = require('opendsu');
     const keyssiSpace = openDSU.loadApi("keyssi");
     let hint;

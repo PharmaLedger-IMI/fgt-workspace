@@ -6,14 +6,14 @@ const utils = require('../../pdm-dsu-toolkit/services/utils');
 const {STATUS_MOUNT_PATH, INFO_PATH} = require('../constants');
 
 const GRANULARITY = [10000, 1000, 100, 10, 1]; // amounts to 10000 packs per biggest container
-
+const {Shipment, ShipmentLine, ShipmentCode, TrackingCode} = require('../model');
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
  */
 function ShipmentCodeService(domain, strategy){
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");
-    const {Shipment, ShipmentLine} = require('../model');
+
     const endpoint = 'shipmencode';
 
     domain = domain || "default";
@@ -141,13 +141,43 @@ function ShipmentCodeService(domain, strategy){
     }
 }
 
-function splitIntoContainers(shipmentLine){
-
+function getTrackingData(shipmentLine, granularity){
 
     const {gtin, batch, quantity} = shipmentLine;
 
+    function splitIntoTrackingCodes(quantity, granularity){
+
+        function getFirstGranularity(granularity, quantity){
+            return granularity.find(g => g <= quantity);
+        }
+
+        function decrementQuantity(quantity, decrement){
+            return quantity - decrement;
+        }
+
+        function joinAsTrackingCode(code1, code2){
+
+        }
+
+        const g = getFirstGranularity(granularity, quantity);
+        const remainder = quantity % g;
+        if (remainder === 0)
+            return {
+                code: new TrackingCode(splitIntoTrackingCodes(shipmentLine, granularity.slice(1))),
+                remainder: undefined
+            };
+        const mainDecremented = decrementQuantity(shipmentLine, remainder);
+        return {
+            code: new TrackingCode(splitIntoTrackingCodes(mainDecremented, granularity.slice(1))),
+            remainder: undefined
+        };
 
 
+    }
+
+    return result;
 }
+
+
 
 module.exports = ShipmentCodeService;

@@ -15,8 +15,6 @@ managed-received-order{
 :host ion-grid{
   width: 100%;
 }
-
-
 /*
  * "product-select" needs to be passed in through
  * the cssClass of the interface options for this to work
