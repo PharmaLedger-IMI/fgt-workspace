@@ -52,6 +52,31 @@ const getStockFromProductsAndBatchesObj = function(quantity, trueStock, products
     return stocks;
 }
 
+const getFullStockFromProductsAndBatchesObj = function(products, batchesObj){
+
+    const getProducts = () => products
+        ? products
+        : require('../products/productsRandom')();
+
+    const getBatches = (gtin) => batchesObj
+        ? batchesObj[gtin + '']
+        : require('../batches/batchesRandom')();
+
+    const prods = getProducts();
+    const stocks = [];
+    prods.forEach(product => {
+        const stock = new Stock(product);
+        const batchesForProd = getBatches(stock.gtin);
+        stock.batches = batchesForProd.map(b => {
+            b.quantity = b.serialNumbers.length;
+            return b;
+        });
+        stocks.push(stock);
+    });
+    return stocks;
+}
+
 module.exports = {
-    getStockFromProductsAndBatchesObj
+    getStockFromProductsAndBatchesObj,
+    getFullStockFromProductsAndBatchesObj
 }

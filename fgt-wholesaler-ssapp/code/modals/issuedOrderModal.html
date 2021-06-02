@@ -1,0 +1,36 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title align="center">{{ @title }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-item>
+    <ion-label>{{ @orderId.label }}</ion-label>
+    <ion-input name="input-orderId" data-view-model="@orderId"></ion-input>
+</ion-item>
+<ion-item>
+    <ion-label>{{ @requesterId.label }}</ion-label>
+    <ion-input name="input-requesterId" data-view-model="@requesterId"></ion-input>
+</ion-item>
+<ion-item>
+    <ion-label>{{ @senderId.label }}</ion-label>
+    <ion-input name="input-senderId" data-view-model="@senderId"></ion-input>
+</ion-item>
+<ion-item>
+    <ion-label>{{ @shipToAddress.label }}</ion-label>
+    <ion-input name="input-shipToAddress" data-view-model="@shipToAddress"></ion-input>
+</ion-item>
+<ion-item>
+    <ion-label>{{ @orderLines.label }}</ion-label>
+    <ion-input name="input-orderLines" data-view-model="@orderLines"></ion-input>
+</ion-item>
+<psk-text-input view-model="orderLines" required></psk-text-input>
+<ion-footer>
+    <ion-toolbar>
+        <ion-buttons slot="primary">
+            <ion-button name="button-ok" type="submit" color="primary" data-tag="tryOk">{{ @ok }}</ion-button>
+        </ion-buttons>
+        <ion-buttons slot="secondary">
+            <ion-button name="button-cancel" color="secondary" data-tag="tryCancel">{{ @cancel }}</ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-footer>

@@ -7,10 +7,12 @@
 
 ## Properties
 
-| Property     | Attribute     | Description | Type     | Default                      |
-| ------------ | ------------- | ----------- | -------- | ---------------------------- |
-| `data`       | `data`        |             | `any`    | `undefined`                  |
-| `loaderType` | `loader-type` |             | `string` | `SUPPORTED_LOADERS.bubbling` |
+| Property            | Attribute            | Description | Type     | Default                      |
+| ------------------- | -------------------- | ----------- | -------- | ---------------------------- |
+| `compatibilityMode` | `compatibility-mode` |             | `string` | `COMPATIBILITY.STANDARD`     |
+| `data`              | `data`               |             | `any`    | `undefined`                  |
+| `loaderType`        | `loader-type`        |             | `string` | `SUPPORTED_LOADERS.bubbling` |
+| `timeout`           | `timeout`            |             | `number` | `500`                        |
 
 
 ## Events

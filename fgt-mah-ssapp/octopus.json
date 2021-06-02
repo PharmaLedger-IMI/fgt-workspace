@@ -123,48 +123,6 @@
 				  }
 			  }
 		  ]
-	  },
-	  {
-		  "name": "Handle Capacitor",
-		  "src": "",
-		  "actions": [
-			  {
-				  "type": "copy",
-				  "src": "./node_modules/@ionic-native/core/",
-				  "target": "./code/assets/ionic-native/core",
-				  "options": {
-					  "overwrite": true
-				  }
-			  },
-			  {
-				  "type": "copy",
-				  "src": "./node_modules/@ionic-native/barcode-scanner/index.js",
-				  "target": "./code/assets/ionic-native/barcodescanner/index.js",
-				  "options": {
-					  "overwrite": true
-				  }
-			  },
-			  {
-				  "type": "copy",
-				  "src": "./node_modules/phonegap-plugin-barcodescanner/www/barcodescanner.js",
-				  "target": "./code/assets/barcodescanner/barcodescanner.js",
-				  "options": {
-					  "overwrite": true
-				  }
-			  },
-			  {
-				  "type": "execute",
-				  "cmd": "npx cap update"
-			  },
-			  {
-				  "type": "execute",
-				  "cmd": "npx cap sync web"
-			  },
-			  {
-				  "type": "execute",
-				  "cmd": "npx cap copy web"
-			  }
-		  ]
 	  }
   ],
 	"docs": [

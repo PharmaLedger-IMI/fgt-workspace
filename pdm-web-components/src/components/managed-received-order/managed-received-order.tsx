@@ -51,6 +51,15 @@ export class ManagedReceivedOrder {
       console.log(`Product Component: ${message}`, err);
   }
 
+  private navigateToTab(tab: string,  props: any){
+    const event = this.sendNavigateTab.emit({
+      tab: tab,
+      props: props
+    });
+    if (!event.defaultPrevented)
+      console.log(`Tab Navigation request seems to have been ignored byt all components...`);
+  }
+
   /**
    * Through this event shipment creation requests are made
    */
@@ -127,6 +136,8 @@ export class ManagedReceivedOrder {
   @Prop({attribute: 'confirmed-string'}) confirmedString: string = 'Confirmed:';
 
   @Prop({attribute: 'confirm-all-string'}) confirmAllString: string = 'Confirm All';
+
+  @Prop({attribute: 'order-string'}) orderString: string = 'Order';
 
   @Prop({attribute: 'stock-string'}) stockString: string = 'Stock:';
 
@@ -266,11 +277,11 @@ export class ManagedReceivedOrder {
     if (productStock.length !== 1)
       return self.sendError(`More than one stock reference received. should be impossible`);
 
-    const result = productStock[0].stock.batches.sort((b1, b2) => {
+    const result = productStock[0].stock ? productStock[0].stock.batches.sort((b1, b2) => {
       const date1 = new Date(b1.expiry).getTime();
       const date2 = new Date(b2.expiry).getTime();
       return date1 - date2;
-    });
+    }) : [];
 
     self.shipmentLines[gtin] = self.splitStockByQuantity(result, gtin);
     return self.shipmentLines[gtin];
@@ -449,7 +460,7 @@ export class ManagedReceivedOrder {
 
   private markAllAsConfirmed(confirm = true){
     if (confirm){
-      const available = this.result.filter(r => r.orderLine.quantity <= r.stock.getQuantity() && !r.orderLine.confirmed);
+      const available = this.result.filter(r => r.stock && r.orderLine.quantity <= r.stock.getQuantity() && !r.orderLine.confirmed);
       if (!available.length)
         return;
       available.forEach(a => {
@@ -501,21 +512,28 @@ export class ManagedReceivedOrder {
     }
 
     function getUnavailable(){
-      const unavailable = self.result.filter(r => r.orderLine.quantity > r.stock.getQuantity() && !r.orderLine.confirmed);
+      const unavailable = self.result.filter(r => (!r.stock || r.orderLine.quantity > r.stock.getQuantity()) && !r.orderLine.confirmed);
       if (!unavailable.length)
         return [];
       const getHeader = function(){
         return (
-          <ion-item-divider>{self.unavailableString}</ion-item-divider>
+          <ion-item-divider>
+            {self.unavailableString}
+            <ion-button color="primary" slot="end" fill="clear" size="small" class="ion-float-end"
+                        onClick={() => self.navigateToTab('tab-issued-order', unavailable.map(u => u.orderLine))}>
+              {self.orderString}
+              <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
+            </ion-button>
+          </ion-item-divider>
         )
       }
       const output = [getHeader()];
-      unavailable.forEach(u => output.push(genOrderLine(u.orderLine, u.stock.getQuantity())));
+      unavailable.forEach(u => output.push(genOrderLine(u.orderLine, u.stock ? u.stock.getQuantity() : 0)));
       return output;
     }
 
     function getAvailable(){
-      const available = self.result.filter(r => r.orderLine.quantity <= r.stock.getQuantity() && !r.orderLine.confirmed);
+      const available = self.result.filter(r => r.stock && r.orderLine.quantity <= r.stock.getQuantity() && !r.orderLine.confirmed);
       if (!available.length)
         return [];
       const getHeader = function(){
@@ -530,7 +548,7 @@ export class ManagedReceivedOrder {
         )
       }
       const output = [getHeader()];
-      available.forEach(u => output.push(genOrderLine(u.orderLine, u.stock.getQuantity())));
+      available.forEach(u => output.push(genOrderLine(u.orderLine, u.stock ? u.stock.getQuantity() : 0)));
       return output;
     }
 
@@ -550,7 +568,7 @@ export class ManagedReceivedOrder {
         )
       }
       const output = [getHeader()];
-      confirmed.forEach(u => output.push(genOrderLine(u.orderLine, u.stock.getQuantity())));
+      confirmed.forEach(u => output.push(genOrderLine(u.orderLine, u.stock ? u.stock.getQuantity() : 0)));
       return output;
     }
 

@@ -2,7 +2,7 @@
  * @module controllers
  */
 
-import {EVENT_SEND_ERROR, EVENT_SEND_MESSAGE, EVENT_REFRESH, EVENT_NAVIGATE_TAB, CSS, BUTTON_ROLES} from "../constants/events";
+import {EVENT_SSAPP_HAS_LOADED, EVENT_SEND_ERROR, EVENT_SEND_MESSAGE, EVENT_REFRESH, EVENT_NAVIGATE_TAB, CSS, BUTTON_ROLES} from "../constants/events";
 
 /**
  *
@@ -90,6 +90,28 @@ export default class LocalizedController extends WebcController {
     if (this.useEvents)
       return this.send(EVENT_SEND_ERROR, message, {capture: true});
     return this.showToast(message + (err ? `\n$err` : ''), 'Error', 'danger', 'Close');
+  }
+
+  /**
+   * Integrates with {@link PdmBarcodeScannerController}. that mean that element needs to be somewhere,
+   * typically inside ion-tabs
+   * @param {{}} [props] props to pass to scanner:
+   *  - title: the modal title. falls back to its barcode-title prop
+   * @param {function(err, result)} callback
+   */
+  showBarcodeScanner(props, callback){
+    if (!callback && typeof props === 'function'){
+      callback = props;
+      props= undefined;
+    }
+    const getScannerByHost = function(host){
+      return host.querySelector('pdm-barcode-scanner-controller');
+    }
+
+    let scannerEl = getScannerByHost(this.element) || getScannerByHost(document.body);
+    if (!scannerEl)
+      return callback(`Could not find the mandatory 'pdm-barcode-scanner-controller' element`);
+    scannerEl.present(props, callback);
   }
 
   /**
@@ -279,15 +301,36 @@ export default class LocalizedController extends WebcController {
     }, {capture: true});
   }
 
+  /**
+   * Calls Refresh on the controller
+   */
   refresh(){
     this.send(EVENT_REFRESH, {}, {capture: true});
   }
 
+  /**
+   *
+   * @param tabName
+   * @param props
+   */
   navigateToTab(tabName, props){
     this.send(EVENT_NAVIGATE_TAB, {
       tab: tabName,
       props: props
     });
+  }
+
+  /**
+   * Override just for the special case of {@link EVENT_SSAPP_HAS_LOADED} to set it on document body and not the element it self because its raised on the body level
+   * @param eventName
+   * @param handler
+   * @param options
+   * @override
+   */
+  on(eventName, handler, options){
+    if (eventName === EVENT_SSAPP_HAS_LOADED && document && document.body)
+      return document.body.addEventListener(eventName, handler, options);
+    super.on(eventName, handler, options);
   }
 
   /**

@@ -29,7 +29,8 @@
 
 | Event                | Description                                             | Type               |
 | -------------------- | ------------------------------------------------------- | ------------------ |
-| `created`            | Through this event shipment creation requests are made  | `CustomEvent<any>` |
+| `acknowledged`       | Through this event shipment creation requests are made  | `CustomEvent<any>` |
+| `pickup`             | Through this event shipment creation requests are made  | `CustomEvent<any>` |
 | `rejected`           | Through this event shipment rejection requests are made | `CustomEvent<any>` |
 | `ssapp-navigate-tab` | Through this event navigation requests to tabs are made | `CustomEvent<any>` |
 | `ssapp-send-error`   | Through this event errors are passed                    | `CustomEvent<any>` |

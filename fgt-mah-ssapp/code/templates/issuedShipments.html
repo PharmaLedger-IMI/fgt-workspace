@@ -1,0 +1,15 @@
+<webc-container controller="IssuedShipmentsController">
+    <pdm-ion-table
+            table-title="@title"
+            paginated="true"
+            manager="IssuedShipmentManager"
+            buttons="@buttons"
+            icon-name="stats-chart-outline"
+            items-per-page="10"
+            item-type="managed-shipment-list-item"
+            item-reference="shipment-id"
+            item-props="type:issued">
+    </pdm-ion-table>
+</webc-container>
+
+

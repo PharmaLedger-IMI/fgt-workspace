@@ -6,16 +6,14 @@
  * Defines how to create the keyssi for an orderLine dsu
  * @param {object} data necessary properties:
  * <ul>
- *     <li>gtin - the gtin of the product</li>
- *     <li>orderId - the id of the Order</li>
- *     <li>requesterId - the requesterId</li>
+ *     <li>data</li> the specific string to be used as input
  *     <li>(optional) {@link openDSU#constants#BRICKS_DOMAIN_KEY} - the subDomain to store the bricks in. Will be concatenated like 'domain.subDomain'</li>
  * </ul>
  * @param {string} domain the anchoring domain
  * @returns {ArraySSI}
  */
 function createOrderLineSSI(data, domain) {
-    console.log("New ORDERLINE_SSI in domain ", domain, [data.requesterId, data.orderId, data.gtin]);
+    console.log("New ORDERLINE_SSI in domain ", domain);
     const openDSU = require('opendsu');
     const keyssiSpace = openDSU.loadApi("keyssi");
     let hint;
@@ -23,7 +21,7 @@ function createOrderLineSSI(data, domain) {
         hint = {};
         hint[openDSU.constants.BRICKS_DOMAIN_KEY] = [domain, data[openDSU.constants.BRICKS_DOMAIN_KEY]].join('.');
     }
-    return keyssiSpace.createArraySSI(domain, [data.requesterId, data.orderId, data.gtin], 'v0', hint ? JSON.stringify(hint) : undefined);
+    return keyssiSpace.createTemplateSeedSSI(domain, data.data, 'v0', hint ? JSON.stringify(hint) : undefined);
 }
 
 /**

@@ -34,7 +34,16 @@ export class MenuTabButton {
 
   @Prop({attribute: 'badge', mutable: true}) badge?: number = undefined;
 
-  @Prop({attribute: 'tab'}) tab: string;
+  /**
+   * the tab name or a list of options like:
+   * [
+   *  {
+   *    label: '...',
+   *    tab: 'tab name'
+   *  }
+   * ]
+   */
+  @Prop({attribute: 'tab'}) tab: string | any;
 
   @Prop({attribute: 'mode'}) mode?: string = BUTTON_TYPE.MENU_BUTTON;
 
@@ -60,6 +69,10 @@ export class MenuTabButton {
     )
   }
 
+  private getName(){
+    return (this.label.replace(/\s/g, '') + '-popover-element').toLowerCase();
+  }
+
   private navigateToTab(tab: string){
     const event = this.sendNavigateTab.emit({
       tab: tab
@@ -77,10 +90,64 @@ export class MenuTabButton {
     )
   }
 
+  private async getPopOver(evt, options){
+    this.definePopOverContent(options);
+    const popover = Object.assign(document.createElement('ion-popover'), {
+      component: this.getName(),
+      cssClass: 'menu-tab-button-popover',
+      translucent: true,
+      event: evt,
+      showBackdrop: true,
+      animated: true,
+      backdropDismiss: true,
+    });
+    document.body.appendChild(popover);
+    await popover.present();
+
+    const {role} = await popover.onWillDismiss();
+    if (role && role !== 'backdrop')
+      this.navigateToTab(role);
+  }
+
+  private definePopOverContent(options: [any]){
+    const self = this;
+
+    if (!!customElements.get(self.getName()))
+      return;
+
+    customElements.define(self.getName(), class extends HTMLElement{
+      connectedCallback(){
+        const contentEl = this;
+        const getContent = function(){
+          return options.map(o => `
+<ion-item class="pop-over-item" tab="${o.tab}" button>
+    <ion-icon slot="start" name="${o.icon}"></ion-icon>
+    <ion-label class="ion-padding-horizontal">${o.label}</ion-label>
+</ion-item>`).join('\n');
+        }
+
+        this.innerHTML = `
+<ion-content>
+  <ion-list>
+    ${getContent()}
+  </ion-list>
+</ion-content>`;
+
+        this.querySelectorAll('ion-item').forEach(item => {
+          item.addEventListener('click', () => {
+            contentEl.closest('ion-popover').dismiss(undefined, item.getAttribute('tab'));
+          });
+        });
+      }
+    });
+  }
+
   _getMenuMode(){
     const props = !!this.selected ? {class: "tab-selected"} : {};
+    const hasOptions = typeof this.tab !== 'string'
+    const tabName = !hasOptions ? this.tab : this.tab.label;
     return (
-        <ion-item button={true} onClick={() => this.navigateToTab(this.tab)} {...props}>
+        <ion-item button={true} onClick={(evt) => !hasOptions ? this.navigateToTab(tabName) : this.getPopOver(evt, this.tab)} {...props}>
           {this._getIcon()}
           <ion-label class="ion-padding-horizontal">{this.label}</ion-label>
           {this.getBadge("end")}
@@ -89,8 +156,19 @@ export class MenuTabButton {
   }
 
   _getTabBarMode(){
+    const hasOptions = typeof this.tab !== 'string'
+    const tabName = !hasOptions ? this.tab : this.tab.label;
+
+    const props = {};
+    if (hasOptions){
+      props['href'] = '#';        // this makes the ion-tab-button not 'navigate'
+      props['onClick'] = (evt) => this.getPopOver(evt, this.tab)
+    }
+
+    props['tab'] = tabName;
+
     return (
-        <ion-tab-button tab={this.tab}>
+        <ion-tab-button {...props}>
           <ion-icon name={this.iconName}></ion-icon>
           <ion-label>{this.label}</ion-label>
           {this.getBadge()}
@@ -98,8 +176,15 @@ export class MenuTabButton {
     );
   }
 
+  private testTab(){
+    return !(typeof this.tab === 'string' && this.tab.startsWith('@'));
+
+  }
+
   render() {
     if (!this.host.isConnected)
+      return;
+    if (!this.testTab())
       return;
     switch(this.mode){
       case BUTTON_TYPE.MENU_BUTTON:

@@ -32,11 +32,7 @@ export class PdmSsappLoader implements ComponentInterface {
     target: "body"
   })
   @Method()
-  async markAsLoaded(evt){
-    if (evt){
-      evt.preventDefault();
-      evt.stopImmediatePropagation();
-    }
+  async markAsLoaded(){
     setTimeout(() => {
       this.isLoading = false;
     }, this.timeout)
@@ -47,12 +43,7 @@ export class PdmSsappLoader implements ComponentInterface {
     capture: true
   })
   @Method()
-  // @ts-ignore
   async updateStatus(evt){
-    if (evt.preventDefault)
-      evt.preventDefault();
-    if (evt.stopImmediatePropagation)
-      evt.stopImmediatePropagation();
     this.status = evt.detail.status;
     this.progress = evt.detail.progress;
   }

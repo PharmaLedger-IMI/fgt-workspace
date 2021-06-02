@@ -67,6 +67,28 @@ class ShipmentManager extends Manager {
     }
 
     /**
+     * reads ssi for that gtin in the db. loads is and reads the info at '/info'
+     * @param {string} key
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
+     * @param {function(err, object
+     * |KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
+     */
+    getOne(key, readDSU,  callback) {
+        if (!callback){
+            callback = readDSU;
+            readDSU = true;
+        }
+        let self = this;
+        self.getRecord(key, (err, record) => {
+            if (err)
+                return self._err(`Could not load record with key ${key} on table ${self._getTableName()}`, err, callback);
+            if (!readDSU)
+                return callback(undefined, record.value || record);
+            self.shipmentService.get(record.value || record, callback);
+        });
+    }
+
+    /**
      * messages to all MAHs.
      * the shipment is the same for the orderlines and their ssis because of the way the code is written
      * @param shipmentLines

@@ -12,6 +12,7 @@ class Shipment {
     shipFromAddress;
     status;
     shipmentLines;
+    code;
 
     constructor(shipmentId, requesterId, senderId, shipToAddress, status, shipmentLines){
         this.shipmentId = shipmentId;
@@ -43,7 +44,7 @@ class Shipment {
         if (!this.status) {
             errors.push('status is required.');
         }
-        if (!this.shipmentLines || this.shipmentLines.length == 0) {
+        if (!this.shipmentLines || !this.shipmentLines.length) {
             errors.push('shipmentLines is required.');
         } else {
             this.shipmentLines.forEach((shipmentLine, index) => {

@@ -16,11 +16,14 @@ export default class ScanController extends LocalizedController {
         let self = this;
         super.bindLocale(this, "scan");
         this.model = self.initializeModel();
-        this.scannerController = self.element.querySelector('pdm-barcode-scanner-controller');
+
         self.on(EVENT_REFRESH, async (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            await self.scannerController.present(evt.detail, self._parseScan.bind(self));
+            await self.showBarcodeScanner({
+                title: self.translate('title'),
+                data: evt.detail
+            }, self._parseScan.bind(self));
         },{capture: true});
     }
 

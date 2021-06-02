@@ -23,7 +23,8 @@
     "products": "Products",
     "batches": "Batches",
     "orderLines": "Orders",
-    "shipmentLines": "Shipments"
+    "shipmentLines": "Shipment Lines",
+    "issuedShipments": "Shipments"
   },
   "dashboard": {
     "welcome": "This is a Dashboard"
@@ -124,6 +125,15 @@
     "buttons": {
       "create-batch": "Create",
       "cancel": "Cancel"
+    }
+  },
+  "issuedShipments": {
+    "title": "IssuedShipments",
+    "numberHeader": "ID",
+    "orderingPartnerHeader": "Issued By",
+    "supplyingPartnerHeader": "Issued To",
+    "none": "No shipments issued...",
+    "buttons": {
     }
   },
   "orderLines": {

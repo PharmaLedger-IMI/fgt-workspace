@@ -122,6 +122,7 @@ class Manager{
         this.controller = controller;
     }
 
+
     /**
      * Should be called by child classes if then need to index the table.
      * (Can't be called during the constructor of the Manager class due to the need of virtual method
@@ -484,7 +485,8 @@ class Manager{
      * reads ssi for that gtin in the db. loads is and reads the info at '/info'
      * @param {string} key
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
-     * @param {function(err, object|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
+     * @param {function(err, object
+     * |KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
      */
     getOne(key, readDSU,  callback) {
         if (!callback){
@@ -492,12 +494,12 @@ class Manager{
             readDSU = true;
         }
         let self = this;
-        self.getRecord(key, (err, itemSSI) => {
+        self.getRecord(key, (err, record) => {
             if (err)
                 return self._err(`Could not load record with key ${key} on table ${self._getTableName()}`, err, callback);
             if (!readDSU)
-                return callback(undefined, itemSSI);
-            self._getDSUInfo(itemSSI.value || itemSSI, callback);
+                return callback(undefined, record.value || record);
+            self._getDSUInfo(record.value || record, callback);
         });
     }
 
