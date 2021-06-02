@@ -237,7 +237,7 @@ export class PdmIonTable implements ComponentInterface {
       if (self.searchBarVisible !== undefined)
         props['class'] = self.searchBarVisible ? SEARCH_BAR_STATE.OPEN : SEARCH_BAR_STATE.CLOSED;
       return (
-        <div>
+        <div class="ion-margin-end">
           <ion-searchbar debounce={1000} placeholder={self.searchBarPlaceholder}
                          search-icon="search-outline" {...props}></ion-searchbar>
         </div>
@@ -245,22 +245,33 @@ export class PdmIonTable implements ComponentInterface {
     }
 
     const getActionButtons = function(){
-      if (!self.buttons || !self.buttons.length)
+      if (!self.buttons || !Object.keys(self.buttons).length)
         return;
 
-      const getButton = function(name, text){
+      const getButton = function(name, props, index){
+        const hasIcon = typeof props !== 'string';
+        const buttonLabel =  hasIcon ? props.label : props;
+        const buttonIcon = hasIcon ? props.icon : undefined;
+
+        const getIcon = function(){
+          if (!buttonIcon)
+            return;
+          return (<ion-icon class="ion-margin-start" slot="end" name={buttonIcon}></ion-icon>)
+        }
+
         return (
-          <ion-button class="ion-margin-start" data-tag={name}>
-            {text}
+          <ion-button fill="solid" class="ion-margin-start" color={index === 0 ? "secondary" : "tertiary"} data-tag={name}>
+            {buttonLabel}
+            {getIcon()}
           </ion-button>
         )
       }
 
-      return self.buttons.map(name => getButton(name, self.buttons[name]));
+      return Object.keys(self.buttons).map((name, i) => getButton(name, self.buttons[name], i));
     }
 
     return (
-      <div class="ion-margin-bottom ion-padding-horizontal">
+      <div class="ion-margin-top ion-padding-horizontal">
         <ion-row class="ion-align-items-center ion-justify-content-between">
           <div class="flex ion-align-items-center">
             <ion-icon color="medium" name={self.iconName}></ion-icon>
@@ -268,8 +279,12 @@ export class PdmIonTable implements ComponentInterface {
               {self.tableTitle}
             </span>
           </div>
-          {getSearch()}
-          {getActionButtons()}
+          <ion-row class="ion-align-items-center">
+            {getSearch()}
+            <ion-buttons>
+              {...getActionButtons()}
+            </ion-buttons>
+          </ion-row>
         </ion-row>
       </div>
     )

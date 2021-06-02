@@ -159,17 +159,15 @@ export class ManagedProductListItem {
         return (<ion-skeleton-text animated></ion-skeleton-text>);
       return (
         <ion-button slot={slot} color={color} fill="clear" onClick={handler}>
-          <ion-icon slot="icon-only" name={icon}></ion-icon>
+          <ion-icon size="large" slot="icon-only" name={icon}></ion-icon>
         </ion-button>
       )
     }
 
-    return(
-      <ion-buttons slot="end">
-        {getButton("secondary", "medium", "barcode", () => console.log(`This should show a bar code`))}
-        {getButton("secondary", "medium", "eye", () => self.navigateToTab('tab-batches', {gtin: self.gtin}))}
-      </ion-buttons>
-    )
+    return [
+        getButton("end", "medium", "barcode", () => console.log(`This should show a bar code`)),
+        getButton("end", "medium", "eye", () => self.navigateToTab('tab-batches', {gtin: self.gtin}))
+   ]
   }
 
   render() {

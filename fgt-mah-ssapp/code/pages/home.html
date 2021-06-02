@@ -1,8 +1,7 @@
 <webc-container controller="HomeController" translations="true">
     <ion-app>
-
         <ion-tabs id="main-content">
-            <ion-header slot="top">
+            <ion-header slot="top" class="ion-no-border ion-padding">
                 <ion-grid>
                     <ion-row>
                         <ion-col size="1" class="ion-text-center">
@@ -46,7 +45,6 @@
                     <webc-template template="issuedShipments" disable-container></webc-template>
                 </ion-content>
             </ion-tab>
-
 
             <ion-tab tab="tab-orderLines">
                 <ion-content class="tab-content" overflow-scroll="true">
