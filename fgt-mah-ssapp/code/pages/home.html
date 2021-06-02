@@ -1,38 +1,29 @@
 <webc-container controller="HomeController" translations="true">
     <ion-app>
-        <div data-if="@identified">
-            <div slot="true">
-                <ion-menu side="start" content-id="main-content">
-                    <ion-header>
-                        <ion-toolbar translucent>
-                            <ion-img class="ion-align-self-center menu-logo" src="../assets/images/logo.svg"></ion-img>
-                        </ion-toolbar>
-                    </ion-header>
-                    <ion-content>
-                        <ion-list>
-                            <menu-tab-button icon-name="analytics-outline" label="@menu.dashboard" tab="tab-dashboard"></menu-tab-button>
-                            <menu-tab-button icon-name="reader-outline" label="@menu.products" tab="tab-products"></menu-tab-button>
-                            <menu-tab-button icon-name="map-outline" label="@menu.issuedShipments" tab="tab-issued-shipments"></menu-tab-button>
-                            <menu-tab-button icon-name="reader-outline" label="@menu.orderLines" tab="tab-orderLines"></menu-tab-button>
-                            <menu-tab-button icon-name="reader-outline" label="@menu.shipmentLines" tab="tab-shipmentLines"></menu-tab-button>
-                        </ion-list>
-                    </ion-content>
-                </ion-menu>
-            </div>
-        </div>
 
         <ion-tabs id="main-content">
             <ion-header slot="top">
-                <ion-toolbar>
-                    <ion-buttons slot="start">
-                        <ion-menu-button auto-hide="true"></ion-menu-button>
-                    </ion-buttons>
-                    <ion-img align="center" class="main-logo" slot="start" src="../assets/images/logo.svg"></ion-img>
-                    <ion-label>{{ @title }}</ion-label>
-                </ion-toolbar>
+                <ion-grid>
+                    <ion-row>
+                        <ion-col size="1" class="ion-text-center">
+                            <img src="../assets/images/logo.svg" alt="">
+                        </ion-col>
+                        <ion-col>
+                            <ion-row class="ion-justify-content-between">
+                                <div class="flex flex-col ion-padding-start top-bar-text">
+                                    {{ @title }}
+                                    <span>{{ @participant.id }}</span>
+                                </div>
+                                <ion-button fill="clear" color="secondary">
+                                    {{ @logout }}
+                                    <ion-icon slot="end" name="log-out" class="ion-margin-start"></ion-icon>
+                                </ion-button>
+                            </ion-row>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
             </ion-header>
 
-            <div class="with-gradient"></div>
             <pdm-barcode-scanner-controller barcode-title="Please scan your pack"></pdm-barcode-scanner-controller>
 
             <ion-tab tab="tab-dashboard">
@@ -73,7 +64,6 @@
                     <webc-template template="scan" disable-container></webc-template>
                 </ion-content>
             </ion-tab>
-
 
             <ion-tab-bar slot="bottom">
                 <menu-tab-button icon-name="analytics-outline" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>

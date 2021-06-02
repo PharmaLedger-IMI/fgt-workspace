@@ -24,3 +24,14 @@ menu-tab-button ion-item.tab-selected{
 ion-item.pop-over-item ion-icon{
   color: var(--ion-text-color);
 }
+
+
+ion-icon.menu-icon {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.menu-text{
+  display: inline-block;
+  vertical-align: middle;
+}

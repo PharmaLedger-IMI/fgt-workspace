@@ -170,98 +170,7 @@ export class PdmIonTable implements ComponentInterface {
     }
   }
 
-  getTableHead(){
-    let self = this;
-    const getIcon = function(){
-      if (!self.iconName)
-        return;
-      return (<ion-icon slot="start" class="ion-padding" name={self.iconName}></ion-icon>)
-    }
-
-    const getSearchBar = function(){
-      if (!self.canQuery)
-        return;
-
-      const getButton = function() {
-        return (
-          <ion-button slot="end" onClick={() => self.searchBarVisible = !self.searchBarVisible}>
-            <ion-icon slot="icon-only" name={self.searchBarVisible ? "search-circle-outline" :"search-circle"}></ion-icon>
-          </ion-button>
-        )
-      }
-
-      const getSearch = function(){
-        const props = {};
-        if (self.searchBarVisible !== undefined)
-          props['class'] = self.searchBarVisible ? SEARCH_BAR_STATE.OPEN : SEARCH_BAR_STATE.CLOSED;
-        return (
-          <ion-searchbar slot="secondary" debounce={1000} placeholder={self.searchBarPlaceholder}
-                         search-icon="search-outline" {...props}></ion-searchbar>)
-      }
-
-      const elements = [];
-      if (self.searchBarVisible)
-        elements.push(getSearch());
-      elements.push(getButton());
-
-      return elements;
-    }
-
-    const getPagination = function(){
-      if (!self.paginated)
-        return;
-      // @ts-ignore
-      return (
-        <ion-buttons slot="end">
-          <ion-button size="small" onClick={() => self.changePage(-1)} disabled={self.currentPage <= 1}>
-            <ion-icon slot="icon-only" name="chevron-back-circle-outline"></ion-icon>
-          </ion-button>
-          <ion-label>{self.currentPage}/{self.pageCount}</ion-label>
-          <ion-button size="small" onClick={() => self.changePage(1)} disabled={!(self.currentPage < self.pageCount)}>
-            <ion-icon slot="icon-only" name="chevron-forward-circle-outline"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      )
-    };
-
-    const getButtons = function(){
-      if (!self.buttons)
-        return;
-      const accum = [];
-
-      const getButton = function(name, text){
-        return (
-          <ion-button data-tag={name}>
-            {text}
-          </ion-button>
-        )
-      }
-
-      Object.keys(self.buttons).forEach(name => {
-        accum.push(getButton(name, self.buttons[name]));
-      });
-
-      return (
-        <ion-buttons slot="end">
-          {... accum}
-        </ion-buttons>
-      )
-    }
-
-    return (
-      <ion-list-header lines="inset">
-        <ion-toolbar>
-          {getIcon()}
-          <ion-title>{self.tableTitle}</ion-title>
-          {getSearchBar()}
-          {getButtons()}
-          {getPagination()}
-        </ion-toolbar>
-      </ion-list-header>
-    );
-  }
-
-  getEmptyContent(){
+  private getEmptyContent(){
     // @ts-ignore
     return (
       <ion-grid>
@@ -279,7 +188,7 @@ export class PdmIonTable implements ComponentInterface {
     )
   }
 
-  getLoadingContent(){
+  private getLoadingContent(){
     return (
       <ion-grid>
         <ion-row class="ion-justify-content-center">
@@ -291,7 +200,7 @@ export class PdmIonTable implements ComponentInterface {
     )
   }
 
-  getItem(reference){
+  private getItem(reference){
     const Tag = this.itemType;
     let props = {};
     props[this.itemReference] = reference;
@@ -306,7 +215,7 @@ export class PdmIonTable implements ComponentInterface {
     return (<Tag {...props}></Tag>);
   }
 
-  getContent(){
+  private getContent(){
     if (!this.model)
       return this.getLoadingContent();
     const content = [];
@@ -320,15 +229,78 @@ export class PdmIonTable implements ComponentInterface {
     return content;
   }
 
+  private getTableHeader(){
+    const self = this;
+
+    const getSearch = function(){
+      const props = {};
+      if (self.searchBarVisible !== undefined)
+        props['class'] = self.searchBarVisible ? SEARCH_BAR_STATE.OPEN : SEARCH_BAR_STATE.CLOSED;
+      return (
+        <div>
+          <ion-searchbar debounce={1000} placeholder={self.searchBarPlaceholder}
+                         search-icon="search-outline" {...props}></ion-searchbar>
+        </div>
+      )
+    }
+
+    const getActionButtons = function(){
+      if (!self.buttons || !self.buttons.length)
+        return;
+
+      const getButton = function(name, text){
+        return (
+          <ion-button class="ion-margin-start" data-tag={name}>
+            {text}
+          </ion-button>
+        )
+      }
+
+      return self.buttons.map(name => getButton(name, self.buttons[name]));
+    }
+
+    return (
+      <div class="ion-margin-bottom ion-padding-horizontal">
+        <ion-row class="ion-align-items-center ion-justify-content-between">
+          <div class="flex ion-align-items-center">
+            <ion-icon color="medium" name={self.iconName}></ion-icon>
+            <span class="ion-text-uppercase ion-padding-start ion-color-secondary">
+              {self.tableTitle}
+            </span>
+          </div>
+          {getSearch()}
+          {getActionButtons()}
+        </ion-row>
+      </div>
+    )
+  }
+
+  getPagination(){
+    if (!this.paginated)
+      return;
+    return (
+      <ion-row class="ion-justify-content-center ion-align-items-center">
+        <ion-buttons>
+          <ion-button fill="clear" size="small" color="medium" onClick={() => this.changePage(-1)} disabled={this.currentPage <= 1}>
+            <ion-icon slot="icon-only" name="chevron-back-circle-outline"></ion-icon>
+          </ion-button>
+          <ion-label color="medium" >{this.currentPage}/{this.pageCount}</ion-label>
+          <ion-button fill="clear" size="small" color="medium"  onClick={() => this.changePage(1)} disabled={!(this.currentPage < this.pageCount)}>
+            <ion-icon slot="icon-only" name="chevron-forward-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-row>
+    )
+  };
+
   render() {
     return (
       <Host>
-        <ion-list slot="fixed" class="ion-no-padding pdm-list-header">
-          {this.getTableHead()}
-        </ion-list>
-        <ion-list class="ion-no-padding pdm-list-content">
+        {this.getTableHeader()}
+        <div class="ion-padding">
           {this.getContent()}
-        </ion-list>
+        </div>
+        {this.getPagination()}
       </Host>
     );
   }
