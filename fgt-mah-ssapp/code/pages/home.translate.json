@@ -33,7 +33,10 @@
   "products": {
     "title": "Manage Products",
     "buttons": {
-      "add-product": "Add Product"
+      "add-product": {
+        "label": "Add Product",
+        "icon": "add-circle"
+      }
     },
     "errors": {
       "list-error": "Could not list products"
@@ -84,7 +87,10 @@
   "batches": {
     "title": "Manage Batches",
     "buttons": {
-      "add-batch": "Add Batch"
+      "add-batch": {
+        "label": "Add Batch",
+        "icon": "add-circle"
+      }
     },
     "errors": {
       "list-error": "Could not list batches"
