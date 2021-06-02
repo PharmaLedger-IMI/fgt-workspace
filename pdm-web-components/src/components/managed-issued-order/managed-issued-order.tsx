@@ -147,7 +147,7 @@ export class ManagedIssuedOrder {
       return [];
 
     const options = {
-      query: [`role like /${ROLE.FAC}|${ROLE.WHS}/g`]
+      query: [`role like /${ROLE.MAH}|${ROLE.WHS}/g`]
     }
 
     self.directoryManager.getAll(false, options, (err, records) => {
@@ -177,7 +177,7 @@ export class ManagedIssuedOrder {
           const getProductElement = function (gtin) {
             return `<simple-managed-product-item gtin=${gtin}></simple-managed-product-item>`
           }
-          return self.products.map(gtin => getProductElement(gtin));
+          return self.products.map(gtin => getProductElement(gtin)).join(`\n`);
         }
         this.innerHTML = `
 <ion-content>
@@ -211,7 +211,7 @@ export class ManagedIssuedOrder {
 
     const {role} = await popover.onWillDismiss();
     if (role && role !== 'backdrop')
-      console.log(role);
+      this.currentGtin = role;
   }
 
   private getOrderLines(){
@@ -241,7 +241,7 @@ export class ManagedIssuedOrder {
     }
     return (
       <ion-buttons class="ion-float-end ion-justify-content-end">
-        {getButton("success", self.proceedString, this.order && !this.order.validate())}
+        {getButton("success", self.proceedString, !!this.order && !this.order.validate())}
       </ion-buttons>
     )
   }
@@ -277,7 +277,7 @@ export class ManagedIssuedOrder {
       return (<ion-input disabled={true} value={self.requester.address}></ion-input>);
     }
     return (
-      <ion-item class="ion-no-padding">
+      <ion-item lines="none" class="ion-no-padding">
         <ion-label position="stacked">{self.fromAtString}</ion-label>
         {getAddress()}
       </ion-item>
@@ -322,7 +322,7 @@ export class ManagedIssuedOrder {
     }
 
     return (
-      <ion-item class="ion-no-padding" disabled={false}>
+      <ion-item lines="none" class="ion-no-padding" disabled={false}>
         <ion-label position="stacked">{this.fromString}</ion-label>
         {...getFrom()}
       </ion-item>
@@ -359,7 +359,7 @@ export class ManagedIssuedOrder {
       if (err)
         return self.sendError(`Could not scan`, err);
       console.log(scanData);
-      self.currentGtin = scanData ? scanData.gtin || scanData.productCode : undefined;
+      self.currentGtin = scanData ? scanData.gtin || scanData.productCode || scanData.result: undefined;
     });
   }
 
@@ -375,25 +375,38 @@ export class ManagedIssuedOrder {
 
   }
 
+  private addOrderLine(gtin, quantity){
+    const ol = new OrderLine({
+      gtin: gtin,
+      quantity: quantity
+    });
+    const updated = [];
+    if (Array.isArray(this.orderLines))
+      updated.push(...this.orderLines);
+    this.orderLines = [...updated, ol];
+    this.currentGtin = undefined;
+    this.currentQuantity = 0;
+  }
+
   private getProductInput(){
     return (
       <ion-grid>
-        <ion-row>
+        <ion-row class="ion-align-items-end">
           <ion-col size="6">
             <ion-item class="ion-no-padding" >
               <ion-label position="stacked">{this.productsCodeString}</ion-label>
-              <ion-input type="number" value={this.currentGtin}></ion-input>
-              <ion-buttons class="ion-padding-horizontal" slot="end">
+              <ion-input name="input-gtin" type="number" value={this.currentGtin}></ion-input>
+              <ion-buttons slot="end">
                 <ion-button onClick={() => this.scan()}>
-                  <ion-icon slot="icon-only" name="scan-circle-outline"></ion-icon>
+                  <ion-icon color="tertiary" slot="icon-only" name="scan-circle-outline"></ion-icon>
                 </ion-button>
                 <ion-button onClick={(evt) => this.getProductPopOver(evt)}>
-                  <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+                  <ion-icon color="secondary" slot="icon-only" name="add-circle-outline"></ion-icon>
                 </ion-button>
               </ion-buttons>
             </ion-item>
           </ion-col>
-          <ion-col  size="2">
+          <ion-col size="1">
             <ion-item>
               <ion-label position="stacked">{this.quantityString}</ion-label>
               <ion-input name="input-quantity" type="number" value={this.currentQuantity || 0}></ion-input>
@@ -401,15 +414,22 @@ export class ManagedIssuedOrder {
           </ion-col>
           <ion-col size="4">
             <ion-item>
-              <ion-range name="input-quantity" style={{width: '70%'}} min={0} max={Math.max(this.currentQuantity || 0, 100)} pin={true} value={this.currentQuantity || 0} color="secondary">
-                <ion-button class="ion-padding" slot="start" size="small" fill="clear" onClick={() => this.currentQuantity --}>
+              <ion-range name="input-quantity" style={{width: '70%'}} min={0} max={Math.max(this.currentQuantity || 0, 100)} pin={false} value={this.currentQuantity || 0} color="secondary">
+                <ion-button class="ion-padding-horizontal" slot="start" size="small" fill="clear" onClick={() => this.currentQuantity --}>
                   <ion-icon color="secondary" slot="icon-only" size="small" name="remove-circle"></ion-icon>
                 </ion-button>
-                <ion-button class="ion-padding" slot="end" size="small" fill="clear" onClick={() => this.currentQuantity ++}>
+                <ion-button class="ion-padding-horizontal" slot="end" size="small" fill="clear" onClick={() => this.currentQuantity ++}>
                   <ion-icon color="secondary" slot="icon-only" size="small" name="add-circle"></ion-icon>
                 </ion-button>
               </ion-range>
             </ion-item>
+          </ion-col>
+          <ion-col size="1">
+            <ion-buttons>
+              <ion-button color="success" disabled={!this.currentGtin || !this.currentQuantity} onClick={() => this.addOrderLine(this.currentGtin, this.currentQuantity)}>
+                <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+              </ion-button>
+            </ion-buttons>
           </ion-col>
         </ion-row>
       </ion-grid>

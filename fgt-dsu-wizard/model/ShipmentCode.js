@@ -6,7 +6,9 @@
  * @class ShipmentCode
  * @module fgt-dsu-wizard.model
  */
-class ShipmentCode{
+const TrackingCode = require("./TrackingCode");
+
+class ShipmentCode extends TrackingCode {
     /**
      * the {@link ShipmentStatus}
      * Only the outer ShipmentCode has Status
@@ -14,33 +16,12 @@ class ShipmentCode{
      */
     status;
 
-    /**
-     * The reference (KeySSI) to the other {@link ShipmentCode}s inside
-     * @type string[] | undefined
-     */
-    codes;
-    /**
-     * The reference (KeySSI) to the other {@link ShipmentLine}s inside
-     * @type string[] | undefined
-     */
-    lines;
-
-    /**
-     * The reference (KeySSI) to the previous {@link ShipmentCode}
-     * @type string | undefined
-     */
-    previous;
-    /**
-     * The reference (KeySSI) to the next {@link ShipmentCode}
-     * @type string | undefined
-     */
-    next;
-
-    constructor(line) {
-        if (typeof line !== undefined)
-            for (let prop in line)
-                if (line.hasOwnProperty(prop))
-                    this[prop] = line[prop];
+    constructor(shipmentCode) {
+        super(shipmentCode);
+        if (typeof shipmentCode !== undefined)
+            for (let prop in shipmentCode)
+                if (shipmentCode.hasOwnProperty(prop))
+                    this[prop] = shipmentCode[prop];
     }
 
     /**
@@ -48,9 +29,9 @@ class ShipmentCode{
      * @returns undefined if all ok. An array of errors if not all ok.
      */
     validate() {
-        const errors = [];
-        if (!this.content || ((!this.content.codes || !this.content.code.length) && (!this.content.lines || !this.content.lines.length)))
-            errors.push('no content provided');
+        const errors = super.validate() || [];
+        if (!this.status)
+            errors.push('no status provided');
 
         return errors.length === 0 ? undefined : errors;
     }
