@@ -65,7 +65,7 @@ export class MenuTabButton {
     if (!this.iconName)
       return;
     return (
-      <ion-icon class="menu-tab-button" name={this.iconName} slot="start"></ion-icon>
+      <ion-icon class="menu-icon" name={this.iconName}></ion-icon>
     )
   }
 
@@ -149,8 +149,10 @@ export class MenuTabButton {
     return (
         <ion-item button={true} onClick={(evt) => !hasOptions ? this.navigateToTab(tabName) : this.getPopOver(evt, this.tab)} {...props}>
           {this._getIcon()}
-          <ion-label class="ion-padding-horizontal">{this.label}</ion-label>
-          {this.getBadge("end")}
+          <span class="menu-text">
+            <ion-label>{this.label}</ion-label>
+          </span>
+          {this.getBadge()}
         </ion-item>
     );
   }

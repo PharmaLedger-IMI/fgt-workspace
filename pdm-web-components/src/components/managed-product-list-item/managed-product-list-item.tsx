@@ -118,27 +118,21 @@ export class ManagedProductListItem {
 
     const getGtinLabel = function(){
       if (!self.product || !self.product.gtin)
-        return (<h3><ion-skeleton-text animated></ion-skeleton-text> </h3>)
-      return (<h3>{self.product.gtin}</h3>)
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
+      return self.product.gtin
     }
 
     const getNameLabel = function(){
       if (!self.product || !self.product.name)
-        return (<h5><ion-skeleton-text animated></ion-skeleton-text> </h5>)
-      return (<h5>{self.product.name}</h5>)
-    }
-
-    const getDescriptionLabel = function(){
-      if (!self.product || !self.product.description)
-        return (<p><ion-skeleton-text animated></ion-skeleton-text> </p>)
-      return (<p>{self.product.description}</p>)
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
+      return self.product.name;
     }
 
     return(
-      <ion-label class="ion-padding-horizontal ion-align-self-center">
+      <ion-label color="secondary">
         {getGtinLabel()}
+        <span class="ion-padding-start">{getNameLabel()}</span>
         {getNameLabel()}
-        {getDescriptionLabel()}
       </ion-label>)
   }
 
@@ -149,33 +143,31 @@ export class ManagedProductListItem {
   }
 
   addBatches(){
-    const batches = !!this.product && !!this.batches ? this.batches.map(b => this.addBatch(b)) : (<ion-skeleton-text animated></ion-skeleton-text>);
+    const batches = !!this.product && !!this.batches ? this.batches.filter((b,i) => !!b && i <= 2).map(b => this.addBatch(b)) : (<ion-skeleton-text animated></ion-skeleton-text>);
     return(
-      <ion-grid class="ion-padding-horizontal">
-        <ion-row>
-          <ion-col size="12">
-            {batches}
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <div class="ion-padding-horizontal flex ion-justify-content-between ion-align-items-center">
+        {batches}
+      </div>
     )
   }
 
   addButtons(){
     let self = this;
-    const getButtons = function(){
+
+    const getButton = function(slot, color, icon, handler){
       if (!self.product)
-        return (<ion-skeleton-text animated></ion-skeleton-text>)
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
       return (
-        <ion-button slot="primary" onClick={() => self.navigateToTab('tab-batches', {gtin: self.gtin})}>
-          <ion-icon name="file-tray-stacked-outline"></ion-icon>
+        <ion-button slot={slot} color={color} fill="clear" onClick={handler}>
+          <ion-icon slot="icon-only" name={icon}></ion-icon>
         </ion-button>
       )
     }
 
     return(
-      <ion-buttons class="ion-align-self-center ion-padding" slot="end">
-        {getButtons()}
+      <ion-buttons slot="end">
+        {getButton("secondary", "medium", "barcode", () => console.log(`This should show a bar code`))}
+        {getButton("secondary", "medium", "eye", () => self.navigateToTab('tab-batches', {gtin: self.gtin}))}
       </ion-buttons>
     )
   }
@@ -183,10 +175,12 @@ export class ManagedProductListItem {
   render() {
     return (
       <Host>
-        <ion-item class="ion-align-self-center main-item">
-          {this.addBarCode()}
+        <ion-item class="ion-margin-bottom" lines="none" color="light">
+          {/*{this.addBarCode()}*/}
           {this.addLabel()}
-          {this.addBatches()}
+          <div class="ion-padding flex">
+            {this.addBatches()}
+          </div>
           {this.addButtons()}
         </ion-item>
       </Host>

@@ -76,7 +76,7 @@ export class BatchChip {
       return `${daysLeft}d`;
     }
     return (
-      <ion-badge class="ion-margin ion-padding-horizontal" style={{
+      <ion-badge class="ion-margin-start" style={{
         "--color-step": `var(${getSteppedColor(this.expiryThreshold, this.batch.expiry, new Date())})`
       }}>{getDaysTillExpiryString()}</ion-badge>
     )
@@ -85,8 +85,8 @@ export class BatchChip {
   private renderSimple(){
     return (
       <Host>
-        <ion-chip outline>
-          <ion-label class="ion-padding-horizontal">{this.getBatchNumber()}</ion-label>
+        <ion-chip class="ion-padding-start ion-margin-start" outline={true} color="secondary">
+          <ion-label>{this.getBatchNumber()}</ion-label>
           {this.renderQuantity()}
         </ion-chip>
       </Host>
@@ -97,15 +97,15 @@ export class BatchChip {
     if (!this.quantity && this.quantity !== 0)
       return;
     return (
-      <ion-badge class="ion-margin ion-padding-horizontal" color="success">{this.quantity}</ion-badge>
+      <ion-badge class="ion-margin-start" color="tertiary">{this.quantity}</ion-badge>
     )
   }
 
   private renderDetail(){
     return (
       <Host>
-        <ion-chip outline color="primary">
-          <ion-label class="ion-padding-start">{this.getBatchNumber()}</ion-label>
+        <ion-chip class="ion-padding-start ion-margin-start" outline={true} color="secondary">
+          <ion-label>{this.getBatchNumber()}</ion-label>
           {this.renderExpiryInfo()}
           {this.renderQuantity()}
         </ion-chip>

@@ -216,7 +216,7 @@ export class ManagedIssuedOrder {
 
   private getOrderLines(){
     const self = this;
-    if (!self.orderLines || (typeof self.orderLines === 'string'))
+    if (!self.orderLines || !self.orderLines.length || typeof self.orderLines === 'string')
       return [];
 
     const genOrderLine = function(o){
