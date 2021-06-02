@@ -64,18 +64,43 @@
 
     --ion-background-color: #F9FBFC;
     --ion-font-family: "Open Sans", "Roboto", sans-serif;
+
+    --white: #ffffff;
+    --gray: #8099AD;
+    --gray-light: #B3C2CE;
 }
 
+/*Ionic overrides*/
+ion-card {
+    --background: var(--white);
+    box-shadow: none;
+    border-radius: 8px;
+}
+
+ion-badge {
+    padding: 4px 8px;
+    border-radius: 30px;
+    margin-right: 5px;
+}
+
+ion-item {
+    border-radius: 8px;
+    --background: transparent;
+}
+
+ion-button {
+    --box-shadow: 0;
+    --border-radius: 8px;
+}
+
+ion-input {
+    --background: transparent;
+}
+
+/*Custom styles*/
 * {
     margin: 0;
     padding: 0;
-}
-
-
-ion-card {
-    --background: #fff;
-    box-shadow: none;
-    border-radius: 8px;
 }
 
 .login-image {
@@ -83,6 +108,7 @@ ion-card {
     height: 100vh;
     object-fit: cover;
 }
+
 .flex {
     display: flex;
 }
@@ -98,18 +124,7 @@ ion-card {
 }
 
 .top-bar-text {
-    color: #B7C2CD;
-}
-
-ion-badge {
-    padding: 4px 8px;
-    border-radius: 30px;
-    margin-right: 5px;
-}
-
-ion-item {
-    border-radius: 8px;
-    --background: transparent;
+    color: var(--gray-light);
 }
 
 .sc-ion-searchbar-md-h {
@@ -120,11 +135,16 @@ ion-item {
     --icon-color: var(--ion-color-medium);
 }
 
-ion-button {
-    --box-shadow: 0;
-    --border-radius: 8px;
+.text-gray {
+    color: var(--gray);
 }
 
-ion-input {
-    --background: transparent;
+.padding-x {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.margin-x {
+    margin-left: 8px;
+    margin-right: 8px;
 }
