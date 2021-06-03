@@ -129,7 +129,7 @@ export class PdmBarcodeScannerController {
         this.innerHTML = `
 <ion-header>
   <ion-toolbar>
-    <ion-icon slot="start" class="ion-padding-horizontal" name="qr-code-outline"></ion-icon>
+    <ion-icon slot="start" class="ion-padding-horizontal" name="qr-code"></ion-icon>
     <ion-title>${title}</ion-title>
     <ion-buttons slot="end">
     ${videoDevicesCount > 1 ?

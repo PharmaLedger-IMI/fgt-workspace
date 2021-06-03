@@ -5,24 +5,47 @@
   --ion-icon-color: var(--ion-icon-color);
   flex: inherit;
   flex-direction: inherit;
-  background: var(--background);
-  color: var(--color)
 }
 
 menu-tab-button{
-  display: inherit;
-}
-
-ion-icon.menu-tab-button{
-  color: var(--ion-text-color);
-}
-
-menu-tab-button ion-item.tab-selected{
-  color: var(--ion-color-primary);
+  --menu-color: var(--ion-color-medium);
+  --menu-color-selected: var(--ion-color-secondary);
 }
 
 ion-item.pop-over-item ion-icon{
-  color: var(--ion-text-color);
+  color: var(--menu-color);
+}
+
+ion-item.nav-menu-item{
+  --ripple-color: var(--menu-color);
+}
+
+ion-item.nav-menu-item.tab-selected{
+  --ripple-color: var(--menu-color-selected);
+}
+
+ion-item.nav-menu-item ion-icon{
+  color: var(--menu-color);
+}
+
+ion-item.nav-menu-item:hover ion-icon{
+  color: var(--menu-color-selected);
+}
+
+ion-item.nav-menu-item.tab-selected ion-icon{
+  color: var(--menu-color-selected);
+}
+
+ion-item.nav-menu-item ion-note.menu-text{
+  --color: var(--menu-color);
+}
+
+ion-item.nav-menu-item.tab-selected ion-note.menu-text{
+  --color: var(--menu-color-selected);
+}
+
+ion-item.nav-menu-item:hover ion-note.menu-text{
+  --color: var(--menu-color-selected);
 }
 
 
@@ -34,4 +57,5 @@ ion-icon.menu-icon {
 .menu-text{
   display: inline-block;
   vertical-align: middle;
+  overflow-wrap: break-word;
 }

@@ -1,5 +1,5 @@
 import LocalizedController from "./LocalizedController";
-import {EVENT_SSAPP_HAS_LOADED, EVENT_SSAPP_STATUS_UPDATE, EVENT_REFRESH, EVENT_NAVIGATE_TAB} from '../constants/events'
+import {EVENT_SSAPP_HAS_LOADED, EVENT_SSAPP_STATUS_UPDATE, EVENT_REFRESH, EVENT_NAVIGATE_TAB, SIDE_MENU_CLASS_SELECTOR, EVENT_ION_TABS_WILL_CHANGE, EVENT_SELECT} from '../constants/events'
 
 export default class HomeController extends LocalizedController {
     initializeModel = () => ({
@@ -16,11 +16,21 @@ export default class HomeController extends LocalizedController {
         const self = this;
         self._updateLoading(this.model.loading.loading.status, this.model.loading.loading.progress)
 
-        this.on('ionTabsWillChange', (evt) => {
+        this.on(EVENT_ION_TABS_WILL_CHANGE, (evt) => {
             const el = self.element.querySelector(`ion-tab[tab="${evt.detail.tab}"] webc-container`)
               || self.querySelector(`ion-tab[tab="${evt.detail.tab}"] ion-content`);
             if (el)
                 el.dispatchEvent(new Event(EVENT_REFRESH));
+            // For side Menu Integration we forward the ionTabsWillChange event if it exists
+            const menuEl = self.element.querySelectorAll(SIDE_MENU_CLASS_SELECTOR);
+            if (menuEl && menuEl.length){
+              menuEl.forEach(el => {
+                const event = new Event(EVENT_SELECT);
+                event.detail = evt.detail;
+                el.dispatchEvent(event)
+              });
+            }
+
         }, {capture: true});
 
         this.on(EVENT_NAVIGATE_TAB, (evt) => {

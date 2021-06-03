@@ -54,18 +54,18 @@ export class MenuTabButton {
       return;
   }
 
-  @Listen('ionTabsWillChange', {capture: true})
-  async getTabNavigationEvent(evt){
+  @Listen("ssapp-select", {capture: true})
+  async select(evt){
     if (this.mode !== BUTTON_TYPE.MENU_BUTTON)
       return;
-    this.selected = this.tab === evt.detail;
+    this.selected = this.tab === evt.detail.tab;
   }
 
   _getIcon(){
     if (!this.iconName)
       return;
     return (
-      <ion-icon class="menu-icon" name={this.iconName}></ion-icon>
+      <ion-icon size="large" class="menu-icon" name={this.iconName}></ion-icon>
     )
   }
 
@@ -97,7 +97,7 @@ export class MenuTabButton {
       cssClass: 'menu-tab-button-popover',
       translucent: true,
       event: evt,
-      showBackdrop: true,
+      showBackdrop: false,
       animated: true,
       backdropDismiss: true,
     });
@@ -143,15 +143,21 @@ export class MenuTabButton {
   }
 
   _getMenuMode(){
-    const props = !!this.selected ? {class: "tab-selected"} : {};
     const hasOptions = typeof this.tab !== 'string'
     const tabName = !hasOptions ? this.tab : this.tab.label;
+
     return (
-        <ion-item button={true} onClick={(evt) => !hasOptions ? this.navigateToTab(tabName) : this.getPopOver(evt, this.tab)} {...props}>
-          {this._getIcon()}
-          <span class="menu-text">
-            <ion-label>{this.label}</ion-label>
-          </span>
+        <ion-item lines="none" class={`nav-menu-item${!!this.selected ? " tab-selected" : ''}`} button={true} onClick={(evt) => !hasOptions ? this.navigateToTab(tabName) : this.getPopOver(evt, this.tab)}>
+          <ion-grid>
+            <ion-row class="ion-align-items-center ion-justify-content-center">
+              {this._getIcon()}
+            </ion-row>
+            <ion-row class="ion-align-items-center ion-justify-content-center">
+              <span class="menu-text">
+                <ion-note class="menu-text ion-text-center ion-text-wrap">{this.label}</ion-note>
+              </span>
+            </ion-row>
+          </ion-grid>
           {this.getBadge()}
         </ion-item>
     );

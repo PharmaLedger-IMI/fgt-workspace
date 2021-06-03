@@ -274,10 +274,8 @@ export class PdmIonTable implements ComponentInterface {
       <div class="ion-margin-top ion-padding-horizontal">
         <ion-row class="ion-align-items-center ion-justify-content-between">
           <div class="flex ion-align-items-center">
-            <ion-icon color="medium" name={self.iconName}></ion-icon>
-            <span class="ion-text-uppercase ion-padding-start ion-color-secondary">
-              {self.tableTitle}
-            </span>
+            <ion-icon size="large" color="medium" name={self.iconName}></ion-icon>
+            <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">{self.tableTitle}</ion-label>
           </div>
           <ion-row class="ion-align-items-center">
             {getSearch()}

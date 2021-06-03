@@ -12,7 +12,7 @@ const Utils = require("../../pdm-dsu-toolkit/model/Utils");
 class Batch {
     batchNumber;
     expiry = "";
-    serialNumbers = ["430239925150"];
+    serialNumbers = ["430239925150"]; // add quantity exxplicitly
     batchStatus
 
     constructor(batch) {

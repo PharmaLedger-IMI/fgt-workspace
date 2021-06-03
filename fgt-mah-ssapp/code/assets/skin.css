@@ -155,3 +155,11 @@ ion-input {
     -ms-user-select: text;
     user-select: text;
 }
+
+ion-row.main-content-row {
+    height: 100%
+}
+
+ion-tab-bar{
+    --color-selected: var(--ion-color-secondary);
+}

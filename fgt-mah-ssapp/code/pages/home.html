@@ -1,76 +1,90 @@
 <webc-container controller="HomeController" translations="true">
     <ion-app>
-        <ion-tabs id="main-content">
-            <ion-header slot="top" class="ion-no-border ion-padding">
-                <ion-grid>
-                    <ion-row>
-                        <ion-col size="1" class="ion-text-center">
-                            <img src="../assets/images/logo.svg" alt="">
-                        </ion-col>
-                        <ion-col>
-                            <ion-row class="ion-justify-content-between">
-                                <div class="flex flex-col ion-padding-start top-bar-text">
-                                    {{ @title }}
-                                    <span>{{ @participant.id }}</span>
-                                </div>
-                                <ion-button fill="clear" color="secondary">
-                                    {{ @logout }}
-                                    <ion-icon slot="end" name="log-out" class="ion-margin-start"></ion-icon>
-                                </ion-button>
-                            </ion-row>
-                        </ion-col>
-                    </ion-row>
-                </ion-grid>
-            </ion-header>
+        <ion-header class="ion-no-border ion-padding">
+            <ion-grid>
+                <ion-row>
+                    <ion-col size="1" class="ion-text-center">
+                        <img src="../assets/images/logo.svg" alt="">
+                    </ion-col>
+                    <ion-col>
+                        <ion-row class="ion-justify-content-between">
+                            <div class="flex flex-col ion-padding-start top-bar-text">
+                                {{ @title }}
+                                <span>{{ @participant.id }}</span>
+                            </div>
+                            <ion-button fill="clear" color="secondary">
+                                {{ @logout }}
+                                <ion-icon slot="end" name="log-out" class="ion-margin-start"></ion-icon>
+                            </ion-button>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-header>
+        <ion-grid>
+            <ion-row class="main-content-row">
+                <ion-col size="1" class="ion-hide-lg-down">
+                    <ion-list class="side-menu">
+                        <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard"></menu-tab-button>
+                        <menu-tab-button icon-name="reader" label="@menu.products" tab="tab-products"></menu-tab-button>
+                        <menu-tab-button icon-name="map" label="@menu.issuedShipments" tab="tab-issued-shipments"></menu-tab-button>
+                        <menu-tab-button icon-name="reader" label="@menu.orderLines" tab="tab-orderLines"></menu-tab-button>
+                        <menu-tab-button icon-name="reader" label="@menu.shipmentLines" tab="tab-shipmentLines"></menu-tab-button>
+                        <menu-tab-button icon-name="scan-circle" label="Scan" tab="tab-scan"></menu-tab-button>
+                    </ion-list>
+                </ion-col>
+                <ion-col>
+                    <ion-tabs id="main-content">
+                        <ion-tab tab="tab-dashboard">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <webc-template template="dashboard" disable-container></webc-template>
+                            </ion-content>
+                        </ion-tab>
+                        <ion-tab tab="tab-products">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <webc-template template="products" disable-container></webc-template>
+                            </ion-content>
+                        </ion-tab>
+                        <ion-tab tab="tab-batches">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <webc-template template="batches" disable-container></webc-template>
+                            </ion-content>
+                        </ion-tab>
+                        <ion-tab tab="tab-issued-shipments">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <webc-template template="issuedShipments" disable-container></webc-template>
+                            </ion-content>
+                        </ion-tab>
 
-            <pdm-barcode-scanner-controller barcode-title="Please scan your pack"></pdm-barcode-scanner-controller>
+                        <ion-tab tab="tab-orderLines">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <webc-template template="orderLines" disable-container></webc-template>
+                            </ion-content>
+                        </ion-tab>
+                        <ion-tab tab="tab-shipmentLines">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <webc-template template="shipmentLines" disable-container></webc-template>
+                            </ion-content>
+                        </ion-tab>
 
-            <ion-tab tab="tab-dashboard">
-                <ion-content class="tab-content" overflow-scroll="true">
-                    <webc-template template="dashboard" disable-container></webc-template>
-                </ion-content>
-            </ion-tab>
-            <ion-tab tab="tab-products">
-                <ion-content class="tab-content" overflow-scroll="true">
-                    <webc-template template="products" disable-container></webc-template>
-                </ion-content>
-            </ion-tab>
-            <ion-tab tab="tab-batches">
-                <ion-content class="tab-content" overflow-scroll="true">
-                    <webc-template template="batches" disable-container></webc-template>
-                </ion-content>
-            </ion-tab>
-            <ion-tab tab="tab-issued-shipments">
-                <ion-content class="tab-content" overflow-scroll="true">
-                    <webc-template template="issuedShipments" disable-container></webc-template>
-                </ion-content>
-            </ion-tab>
+                        <ion-tab tab="tab-scan">
+                            <ion-content class="tab-content" overflow-scroll="false">
+                                <webc-template template="scan" disable-container></webc-template>
+                            </ion-content>
+                        </ion-tab>
 
-            <ion-tab tab="tab-orderLines">
-                <ion-content class="tab-content" overflow-scroll="true">
-                    <webc-template template="orderLines" disable-container></webc-template>
-                </ion-content>
-            </ion-tab>
-            <ion-tab tab="tab-shipmentLines">
-                <ion-content class="tab-content" overflow-scroll="true">
-                    <webc-template template="shipmentLines" disable-container></webc-template>
-                </ion-content>
-            </ion-tab>
-
-            <ion-tab tab="tab-scan">
-                <ion-content class="tab-content" overflow-scroll="false">
-                    <webc-template template="scan" disable-container></webc-template>
-                </ion-content>
-            </ion-tab>
-
-            <ion-tab-bar slot="bottom">
-                <menu-tab-button icon-name="analytics-outline" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>
-                <menu-tab-button icon-name="reader-outline" label="@menu.products" tab="tab-products" mode="bar"></menu-tab-button>
-                <menu-tab-button icon-name="map-outline" label="@menu.issuedShipments" tab="tab-issued-shipments" mode="bar"></menu-tab-button>
-                <menu-tab-button icon-name="reader-outline" label="@menu.orderLines" tab="tab-orderLines" mode="bar"></menu-tab-button>
-                <menu-tab-button icon-name="reader-outline" label="@menu.shipmentLines" tab="tab-shipmentLines" mode="bar"></menu-tab-button>
-                <menu-tab-button icon-name="reader-outline" label="Scan" tab="tab-scan" mode="bar"></menu-tab-button>
-            </ion-tab-bar>
-        </ion-tabs>
+                        <ion-tab-bar slot="bottom" class="ion-hide-lg-up">
+                            <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>
+                            <menu-tab-button icon-name="reader" label="@menu.products" tab="tab-products" mode="bar"></menu-tab-button>
+                            <menu-tab-button icon-name="map" label="@menu.issuedShipments" tab="tab-issued-shipments" mode="bar"></menu-tab-button>
+                            <menu-tab-button icon-name="reader" label="@menu.orderLines" tab="tab-orderLines" mode="bar"></menu-tab-button>
+                            <menu-tab-button icon-name="reader" label="@menu.shipmentLines" tab="tab-shipmentLines" mode="bar"></menu-tab-button>
+                            <menu-tab-button icon-name="scan-circle" label="Scan" tab="tab-scan" mode="bar"></menu-tab-button>
+                        </ion-tab-bar>
+                    </ion-tabs>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+        <pdm-barcode-scanner-controller barcode-title="Please scan your pack"></pdm-barcode-scanner-controller>
     </ion-app>
 </webc-container>
