@@ -186,7 +186,6 @@ export class ManagedProductListItem {
     return (
       <Host>
         <ion-item class="ion-margin-bottom" lines="none" color="light">
-          {/*{this.addBarCode()}*/}
           {this.addLabel()}
           <div class="ion-padding flex">
             {this.addBatches()}

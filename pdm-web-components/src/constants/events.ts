@@ -15,6 +15,7 @@ export const EVENT_SEND_MESSAGE = 'ssapp-send-message';
 export const EVENT_SSAPP_HAS_LOADED = 'ssapp-has-loaded';
 export const EVENT_SSAPP_STATUS_UPDATE = 'ssapp-update-status';
 export const EVENT_REFRESH = 'ssapp-refresh'
+export const EVENT_SELECT = 'ssapp-select'
 
 /**
  * Expects an object like
@@ -27,6 +28,8 @@ export const EVENT_NAVIGATE_TAB = 'ssapp-navigate-tab'
 export const EVENT_SHOW_MORE = 'ssapp-show-more'
 export const EVENT_ACTION = 'ssapp-action'
 
+export const EVENT_ION_TABS_WILL_CHANGE = "ionTabsWillChange";
+
 
 export const CSS = {
   ALERT: 'ssapp-alert',
@@ -38,4 +41,6 @@ export const BUTTON_ROLES = {
   CONFIRM: 'confirm',
   CANCEL: 'cancel'
 }
+
+export const SIDE_MENU_CLASS_SELECTOR = ".side-menu menu-tab-button";
 
