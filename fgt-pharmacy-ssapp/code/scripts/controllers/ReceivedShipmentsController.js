@@ -8,8 +8,8 @@ export default class ReceivedShipmentsController extends LocalizedController {
         pharmacy: undefined
     }); // uninitialized blank model
 
-    constructor(element, history) {
-        super(element, history);
+    constructor(...args) {
+        super(false, ...args);
         super.bindLocale(this, "receivedShipments");
         this.model = this.initializeModel();
         const wizard = require('wizard');

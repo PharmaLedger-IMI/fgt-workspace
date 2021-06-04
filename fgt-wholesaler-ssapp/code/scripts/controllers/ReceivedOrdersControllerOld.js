@@ -9,8 +9,8 @@ export default class ReceivedOrdersController extends LocalizedController {
         orders: []
     }); // uninitialized blank model
 
-    constructor(element, history) {
-        super(element, history);
+    constructor(...args) {
+        super(false, ...args);
         super.bindLocale(this, "receivedOrders");
         const wizard = require('wizard');
 

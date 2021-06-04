@@ -7,8 +7,8 @@ export default class DashboardController extends LocalizedController {
         none: "There are no pending orders"
     });
 
-    constructor(element, history) {
-        super(element, history);
+    constructor(...args) {
+        super(false, ...args);
         this.model = this.initializeModel();
         //const LocaleService = require('wizard').Services.LocaleService;
         //LocaleService.bindToLocale(this, LocaleService.supported.en_US, "dashboard");

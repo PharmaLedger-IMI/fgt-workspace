@@ -6,8 +6,8 @@ export default class HomeController extends LocalizedController {
         participant: undefined
     });
 
-    constructor(element, history) {
-        super(element, history, true);
+    constructor(...args) {
+        super(true, ...args);
         super.bindLocale(this, "");
         this.model = this.initializeModel();
         this.model.addExpression('identified', () => {

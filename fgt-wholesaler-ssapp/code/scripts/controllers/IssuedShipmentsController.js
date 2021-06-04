@@ -6,8 +6,8 @@ import { LocalizedController, EVENT_REFRESH } from "../../assets/pdm-web-compone
 export default class IssuedShipmentsController extends LocalizedController {
     initializeModel = () => ({}); // creates a new uninitialized blank model
 
-    constructor(element, history) {
-        super(element, history);
+    constructor(...args) {
+        super(false, ...args);
         super.bindLocale(this, "issuedShipments");
         this.model = this.initializeModel();
         const wizard = require('wizard');

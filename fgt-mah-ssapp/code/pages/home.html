@@ -3,7 +3,7 @@
         <ion-header class="ion-no-border ion-padding">
             <ion-grid>
                 <ion-row>
-                    <ion-col size="1" class="ion-text-center">
+                    <ion-col size-md="1" size-sm="1" class="ion-text-center">
                         <img src="../assets/images/logo.svg" alt="">
                     </ion-col>
                     <ion-col>
@@ -70,6 +70,12 @@
                         <ion-tab tab="tab-scan">
                             <ion-content class="tab-content" overflow-scroll="false">
                                 <webc-template template="scan" disable-container></webc-template>
+                            </ion-content>
+                        </ion-tab>
+
+                        <ion-tab tab="tab-product">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <webc-template template="product" disable-container></webc-template>
                             </ion-content>
                         </ion-tab>
 

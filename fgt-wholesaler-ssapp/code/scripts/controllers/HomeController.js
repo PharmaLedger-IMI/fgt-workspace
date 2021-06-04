@@ -1,7 +1,7 @@
 import { HomeController as BaseHomeController, EVENT_SSAPP_HAS_LOADED } from "../../assets/pdm-web-components/index.esm.js";
 export default class HomeController extends BaseHomeController{
-    constructor(element, history) {
-        super(element, history);
+    constructor(...args) {
+        super(...args);
         let self = this;
         self.on(EVENT_SSAPP_HAS_LOADED, (evt) => {
             if (self.model.participant)

@@ -335,12 +335,11 @@ export default class LocalizedController extends WebcController {
 
   /**
    *
-   * @param {HTMLElement} element
-   * @param {*} history
    * @param {boolean} [bindMessageHandlers] defaults to false. binds (or not) the error handler to the controller
+   * @param args the args for {@link WebcController}
    */
-  constructor(element, history, bindMessageHandlers) {
-    super(element, history);
+  constructor(bindMessageHandlers, ...args) {
+    super(...args);
     if (typeof bindMessageHandlers === 'undefined'){
       this.useEvents = false;
     } else if(typeof bindMessageHandlers === 'boolean'){

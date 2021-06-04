@@ -3,8 +3,8 @@ export default class IssuedOrderController extends LocalizedController {
 
     initializeModel = () => ({}); // initial empty model
 
-    constructor(element, history) {
-        super(element, history);
+    constructor(...args) {
+        super(false, ...args);
         let self = this;
         super.bindLocale(self, `issuedOrder`, true);
         const wizard = require('wizard');

@@ -43,7 +43,6 @@ export class PdmIonTable implements ComponentInterface {
   })
   sendErrorEvent: EventEmitter;
 
-
   private sendError(message: string, err?: object){
     const event = this.sendErrorEvent.emit(message);
     if (!event.defaultPrevented || err)
@@ -55,16 +54,11 @@ export class PdmIonTable implements ComponentInterface {
    */
 
   @Prop({attribute: 'table-title'}) tableTitle = 'PDM Ionic Table';
-
   @Prop({attribute: 'icon-name'}) iconName?: string = undefined;
-
   @Prop({attribute: 'no-content-message', mutable: true}) noContentMessage?: string = "No Content";
-
   @Prop({attribute: 'loading-message', mutable: true}) loadingMessage?: string = "Loading...";
-
   @Prop({attribute: 'query-placeholder', mutable: true}) searchBarPlaceholder?: string =  "enter search terms...";
-
-  @Prop({attribute: 'buttons', mutable: true}) buttons?: string[] = [];
+  @Prop({attribute: 'buttons', mutable: true}) buttons?: string[] | {} = [];
 
   /**
    * Component Setup Params
@@ -73,29 +67,28 @@ export class PdmIonTable implements ComponentInterface {
   /**
    * Shows the search bar or not. (not working)
    */
-  @Prop({attribute: 'can-query'}) canQuery?: boolean = false;
-
+  @Prop({attribute: 'can-query'}) canQuery?: boolean = true;
   /**
    * sets the name of the manager to use
    */
   @Prop() manager?: string;
-
-
   /**
    * The tag for the item type that the table should use eg: 'li' would create list items
    */
   @Prop({attribute: 'item-type'}) itemType: string;
-
   /**
    * Option props to be passed to child elements in from a JSON object in value key format only format
    */
   @Prop({attribute: 'item-props', mutable:true}) itemProps?: any = undefined;
 
-
   /**
    * the querying attribute name so the items can query their own value
    */
   @Prop({attribute: 'item-reference'}) itemReference: string;
+  /**
+   * the querying attribute name so the items can query their own value
+   */
+  @Prop({attribute: 'auto-load'}) autoLoad: boolean = false;
 
   /**
    * Querying/paginating Params - only available when mode is set by ref
@@ -117,6 +110,8 @@ export class PdmIonTable implements ComponentInterface {
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
+    if (this.autoLoad)
+      await this.loadContents();
   }
 
   async loadContents(pageNumber?: number){
@@ -177,9 +172,9 @@ export class PdmIonTable implements ComponentInterface {
         <ion-row class="ion-justify-content-center">
           <ion-col size="4" class="ion-justify-content-center">
               <ion-button slot="start" fill="clear" onClick={() => this.refresh()}>
-                <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+                <ion-icon slot="icon-only" name="refresh"></ion-icon>
               </ion-button>
-              <ion-label class="ion-text-center">
+              <ion-label class="text-align-center">
                 {this.noContentMessage}
               </ion-label>
           </ion-col>
@@ -233,6 +228,8 @@ export class PdmIonTable implements ComponentInterface {
     const self = this;
 
     const getSearch = function(){
+      if (!self.canQuery)
+        return;
       const props = {};
       if (self.searchBarVisible !== undefined)
         props['class'] = self.searchBarVisible ? SEARCH_BAR_STATE.OPEN : SEARCH_BAR_STATE.CLOSED;

@@ -43,7 +43,9 @@
     }
   },
   "product": {
-    "title": "Create a Product",
+    "create-title": "Create a Product",
+    "manage-title": "Manage product",
+    "back": "Back to Products",
     "name": {
       "label": "Product Name:",
       "placeholder": "Insert product name...",
@@ -80,8 +82,20 @@
       "minlength": 10
     },
     "buttons": {
-      "create-product": "Create",
+      "create-product": "Add Product",
       "cancel": "Cancel"
+    },
+    "batches": {
+      "title": "Manage Batches",
+      "buttons": {
+        "add-batch": {
+          "label": "Add Batch",
+          "icon": "add-circle"
+        }
+      },
+      "errors": {
+        "list-error": "Could not list batches"
+      }
     }
   },
   "batches": {

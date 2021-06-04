@@ -16,8 +16,8 @@ export default class OrderController extends LocalizedController {
         orderReference: ''
     });
 
-    constructor(element, history) {
-        super(element, history, false);
+    constructor(...args) {
+        super(false, ...args);
         super.bindLocale(this, 'createShipment');
         this.model = this.initializeModel();
         const wizard = require('wizard');

@@ -14,9 +14,10 @@
 
 ## Events
 
-| Event              | Description                          | Type               |
-| ------------------ | ------------------------------------ | ------------------ |
-| `ssapp-send-error` | Through this event errors are passed | `CustomEvent<any>` |
+| Event                | Description                                             | Type               |
+| -------------------- | ------------------------------------------------------- | ------------------ |
+| `ssapp-navigate-tab` | Through this event navigation requests to tabs are made | `CustomEvent<any>` |
+| `ssapp-send-error`   | Through this event errors are passed                    | `CustomEvent<any>` |
 
 
 ## Methods
@@ -36,12 +37,15 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [barcode-generator](../barcode-generator)
+- [multi-spinner](../multi-spinner)
+- [pdm-item-organizer](../pdm-item-organizer)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-batch-list-item --> barcode-generator
+  managed-batch-list-item --> multi-spinner
+  managed-batch-list-item --> pdm-item-organizer
+  pdm-item-organizer --> more-chip
   style managed-batch-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

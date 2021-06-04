@@ -31,7 +31,9 @@ export namespace Components {
         "mode"?: string;
         "quantity"?: number;
     }
-    interface CopiableIonLabel {
+    interface GenericChip {
+        "chipLabel": string;
+        "mode"?: string;
     }
     interface ManagedBatchListItem {
         "gtinBatch": string;
@@ -97,6 +99,23 @@ export namespace Components {
         "mode"?: string;
         "quantity"?: number;
         "threshold"?: number;
+    }
+    interface ManagedProduct {
+        "addProductString": string;
+        "backString": string;
+        "batchesAddButton": string;
+        "batchesTitle": string;
+        "cancelString": string;
+        "descriptionPlaceholderString": string;
+        "descriptionString": string;
+        "gtin"?: string;
+        "gtinString": string;
+        "manageString": string;
+        "manufName"?: string;
+        "manufString": string;
+        "nameString": string;
+        "refresh": () => Promise<void>;
+        "titleString": string;
     }
     interface ManagedProductListItem {
         "batchDisplayCount": number;
@@ -179,7 +198,11 @@ export namespace Components {
         "scannerMode"?: string;
     }
     interface PdmIonTable {
-        "buttons"?: string[];
+        /**
+          * the querying attribute name so the items can query their own value
+         */
+        "autoLoad": boolean;
+        "buttons"?: string[] | {};
         /**
           * Shows the search bar or not. (not working)
          */
@@ -269,11 +292,11 @@ declare global {
         prototype: HTMLBatchChipElement;
         new (): HTMLBatchChipElement;
     };
-    interface HTMLCopiableIonLabelElement extends Components.CopiableIonLabel, HTMLStencilElement {
+    interface HTMLGenericChipElement extends Components.GenericChip, HTMLStencilElement {
     }
-    var HTMLCopiableIonLabelElement: {
-        prototype: HTMLCopiableIonLabelElement;
-        new (): HTMLCopiableIonLabelElement;
+    var HTMLGenericChipElement: {
+        prototype: HTMLGenericChipElement;
+        new (): HTMLGenericChipElement;
     };
     interface HTMLManagedBatchListItemElement extends Components.ManagedBatchListItem, HTMLStencilElement {
     }
@@ -310,6 +333,12 @@ declare global {
     var HTMLManagedOrderlineStockChipElement: {
         prototype: HTMLManagedOrderlineStockChipElement;
         new (): HTMLManagedOrderlineStockChipElement;
+    };
+    interface HTMLManagedProductElement extends Components.ManagedProduct, HTMLStencilElement {
+    }
+    var HTMLManagedProductElement: {
+        prototype: HTMLManagedProductElement;
+        new (): HTMLManagedProductElement;
     };
     interface HTMLManagedProductListItemElement extends Components.ManagedProductListItem, HTMLStencilElement {
     }
@@ -398,13 +427,14 @@ declare global {
     interface HTMLElementTagNameMap {
         "barcode-generator": HTMLBarcodeGeneratorElement;
         "batch-chip": HTMLBatchChipElement;
-        "copiable-ion-label": HTMLCopiableIonLabelElement;
+        "generic-chip": HTMLGenericChipElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-issued-order": HTMLManagedIssuedOrderElement;
         "managed-issued-shipment": HTMLManagedIssuedShipmentElement;
         "managed-order-list-item": HTMLManagedOrderListItemElement;
         "managed-orderline-list-item": HTMLManagedOrderlineListItemElement;
         "managed-orderline-stock-chip": HTMLManagedOrderlineStockChipElement;
+        "managed-product": HTMLManagedProductElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
         "managed-received-order": HTMLManagedReceivedOrderElement;
         "managed-shipment-list-item": HTMLManagedShipmentListItemElement;
@@ -446,10 +476,16 @@ declare namespace LocalJSX {
         "mode"?: string;
         "quantity"?: number;
     }
-    interface CopiableIonLabel {
+    interface GenericChip {
+        "chipLabel"?: string;
+        "mode"?: string;
     }
     interface ManagedBatchListItem {
         "gtinBatch"?: string;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
@@ -562,6 +598,34 @@ declare namespace LocalJSX {
         "onSendAction"?: (event: CustomEvent<OverlayEventDetail>) => void;
         "quantity"?: number;
         "threshold"?: number;
+    }
+    interface ManagedProduct {
+        "addProductString"?: string;
+        "backString"?: string;
+        "batchesAddButton"?: string;
+        "batchesTitle"?: string;
+        "cancelString"?: string;
+        "descriptionPlaceholderString"?: string;
+        "descriptionString"?: string;
+        "gtin"?: string;
+        "gtinString"?: string;
+        "manageString"?: string;
+        "manufName"?: string;
+        "manufString"?: string;
+        "nameString"?: string;
+        /**
+          * Through this event action requests are made
+         */
+        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "titleString"?: string;
     }
     interface ManagedProductListItem {
         "batchDisplayCount"?: number;
@@ -697,7 +761,11 @@ declare namespace LocalJSX {
         "scannerMode"?: string;
     }
     interface PdmIonTable {
-        "buttons"?: string[];
+        /**
+          * the querying attribute name so the items can query their own value
+         */
+        "autoLoad"?: boolean;
+        "buttons"?: string[] | {};
         /**
           * Shows the search bar or not. (not working)
          */
@@ -784,13 +852,14 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;
         "batch-chip": BatchChip;
-        "copiable-ion-label": CopiableIonLabel;
+        "generic-chip": GenericChip;
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-issued-order": ManagedIssuedOrder;
         "managed-issued-shipment": ManagedIssuedShipment;
         "managed-order-list-item": ManagedOrderListItem;
         "managed-orderline-list-item": ManagedOrderlineListItem;
         "managed-orderline-stock-chip": ManagedOrderlineStockChip;
+        "managed-product": ManagedProduct;
         "managed-product-list-item": ManagedProductListItem;
         "managed-received-order": ManagedReceivedOrder;
         "managed-shipment-list-item": ManagedShipmentListItem;
@@ -813,13 +882,14 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "barcode-generator": LocalJSX.BarcodeGenerator & JSXBase.HTMLAttributes<HTMLBarcodeGeneratorElement>;
             "batch-chip": LocalJSX.BatchChip & JSXBase.HTMLAttributes<HTMLBatchChipElement>;
-            "copiable-ion-label": LocalJSX.CopiableIonLabel & JSXBase.HTMLAttributes<HTMLCopiableIonLabelElement>;
+            "generic-chip": LocalJSX.GenericChip & JSXBase.HTMLAttributes<HTMLGenericChipElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-issued-order": LocalJSX.ManagedIssuedOrder & JSXBase.HTMLAttributes<HTMLManagedIssuedOrderElement>;
             "managed-issued-shipment": LocalJSX.ManagedIssuedShipment & JSXBase.HTMLAttributes<HTMLManagedIssuedShipmentElement>;
             "managed-order-list-item": LocalJSX.ManagedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedOrderListItemElement>;
             "managed-orderline-list-item": LocalJSX.ManagedOrderlineListItem & JSXBase.HTMLAttributes<HTMLManagedOrderlineListItemElement>;
             "managed-orderline-stock-chip": LocalJSX.ManagedOrderlineStockChip & JSXBase.HTMLAttributes<HTMLManagedOrderlineStockChipElement>;
+            "managed-product": LocalJSX.ManagedProduct & JSXBase.HTMLAttributes<HTMLManagedProductElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
             "managed-received-order": LocalJSX.ManagedReceivedOrder & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderElement>;
             "managed-shipment-list-item": LocalJSX.ManagedShipmentListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentListItemElement>;

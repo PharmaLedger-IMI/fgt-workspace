@@ -12,8 +12,8 @@ export default class OrderLinesController extends LocalizedController {
 
     initializeModel = () => ({});
 
-    constructor(element, history) {
-        super(element, history, false);
+    constructor(...args) {
+        super(false, ...args)
         const wizard = require('wizard');
         super.bindLocale(this, "orderLines");
         this.participantManager = wizard.Managers.getParticipantManager();

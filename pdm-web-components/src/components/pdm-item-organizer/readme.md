@@ -21,6 +21,7 @@
 
 ### Used by
 
+ - [managed-batch-list-item](../managed-batch-list-item)
  - [managed-product-list-item](../managed-product-list-item)
 
 ### Depends on
@@ -31,6 +32,7 @@
 ```mermaid
 graph TD;
   pdm-item-organizer --> more-chip
+  managed-batch-list-item --> pdm-item-organizer
   managed-product-list-item --> pdm-item-organizer
   style pdm-item-organizer fill:#f9f,stroke:#333,stroke-width:4px
 ```

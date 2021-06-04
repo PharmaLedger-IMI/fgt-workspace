@@ -6,8 +6,8 @@ export default class ShipmentController extends LocalizedController{
         shipmentReference: ''
     });
 
-    constructor(element, history) {
-        super(element, history);
+    constructor(...args) {
+        super(false, ...args);
         super.bindLocale(this, 'processShipment');
         this.model = this.initializeModel();
         const wizard = require('wizard');

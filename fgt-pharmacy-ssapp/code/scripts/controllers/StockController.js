@@ -1,11 +1,10 @@
 import { LocalizedController, EVENT_REFRESH } from "../../assets/pdm-web-components/index.esm.js";
-const Product = require('wizard').Model.Product;
 
 export default class StockController extends LocalizedController{
     initializeModel = () => ({});
 
-    constructor(element, history) {
-        super(element, history);
+    constructor(...args) {
+        super(false, ...args);
         super.bindLocale(this, "stock");
         this.model = this.initializeModel();
 

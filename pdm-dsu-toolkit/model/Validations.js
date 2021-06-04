@@ -491,5 +491,6 @@ module.exports = {
     emailHasErrors,
     tinHasErrors,
     textHasErrors,
-    numberHasErrors
+    numberHasErrors,
+    hasIonErrors
 };

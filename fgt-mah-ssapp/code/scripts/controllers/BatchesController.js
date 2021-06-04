@@ -15,8 +15,8 @@ export default class BatchesController extends LocalizedController {
         query: ''
     });
 
-    constructor(element, history) {
-        super(element, history, false);
+    constructor(...args) {
+        super(false, ...args);
         super.bindLocale(this, "batches");
         const wizard = require('wizard');
         this.model = this.initializeModel();
