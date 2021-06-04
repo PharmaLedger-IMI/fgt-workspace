@@ -6,6 +6,7 @@ const INBOX_SHIPMENT_LINES_PROP = 'shipmentLines';
 const INBOX_RECEIVED_ORDERS_PROP = 'receivedOrders';
 const INBOX_RECEIVED_SHIPMENTS_PROP = 'receivedShipments';
 const INFO_PATH = require('../pdm-dsu-toolkit/constants').INFO_PATH;
+const INPUT_FIELD_PREFIX = require('../pdm-dsu-toolkit/constants').INPUT_FIELD_PREFIX;
 const LOG_PATH = '/log';
 const ISSUED_ORDERS_MOUNT_PATH = "/issuedOrders";
 const INBOX_ORDER_LINES_PATH = '/orderLines';
@@ -68,5 +69,6 @@ module.exports = {
     INBOX_SHIPMENT_LINES_PATH,
     STOCK_PATH,
     LINES_PATH,
-    ORDER_MOUNT_PATH
+    ORDER_MOUNT_PATH,
+    INPUT_FIELD_PREFIX
 }

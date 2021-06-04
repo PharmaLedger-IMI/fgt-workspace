@@ -6,8 +6,8 @@ export default class IssuedOrderController extends LocalizedController {
         requester: undefined
     });
 
-    constructor(element, history) {
-        super(element, history);
+    constructor(...args) {
+        super(false, ...args);
         let self = this;
         super.bindLocale(self, `issuedOrder`);
         self.model = self.initializeModel();

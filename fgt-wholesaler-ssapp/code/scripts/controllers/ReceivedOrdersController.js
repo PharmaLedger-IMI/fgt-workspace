@@ -7,8 +7,8 @@ const {ShipmentStatus, Shipment} = require('wizard').Model;
 export default class ReceivedOrdersController extends LocalizedController {
     initializeModel = () => ({}); // creates a new uninitialized blank model
 
-    constructor(element, history) {
-        super(element, history);
+    constructor(...args) {
+        super(false, ...args);
         super.bindLocale(this, "receivedOrders");
         this.model = this.initializeModel();
         const wizard = require('wizard');

@@ -98,22 +98,6 @@ export class ManagedProductListItem {
     await this.loadProduct();
   }
 
-  addBarCode(){
-    const self = this;
-
-    const getBarCode = function(){
-      if (!self.product || !self.product.gtin)
-        return (<ion-skeleton-text animated></ion-skeleton-text>);
-      return (<barcode-generator class="ion-align-self-center" type="code128" size="32" scale="6" data={self.product.gtin}></barcode-generator>);
-    }
-
-    return(
-      <ion-thumbnail class="ion-align-self-center" slot="start">
-        {getBarCode()}
-      </ion-thumbnail>
-    )
-  }
-
   addLabel(){
     const self = this;
 
@@ -133,7 +117,6 @@ export class ManagedProductListItem {
       <ion-label color="secondary">
         {getGtinLabel()}
         <span class="ion-padding-start">{getNameLabel()}</span>
-        {getNameLabel()}
       </ion-label>)
   }
 

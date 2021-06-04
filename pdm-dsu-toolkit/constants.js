@@ -35,6 +35,8 @@ const DEFAULT_QUERY_OPTIONS = {
     limit: undefined
 }
 
+const INPUT_FIELD_PREFIX = 'input-'
+
 module.exports = {
     INFO_PATH,
     PARTICIPANT_MOUNT_PATH,
@@ -43,5 +45,6 @@ module.exports = {
     DID_METHOD,
     MESSAGE_REFRESH_RATE,
     MESSAGE_TABLE,
-    DEFAULT_QUERY_OPTIONS
+    DEFAULT_QUERY_OPTIONS,
+    INPUT_FIELD_PREFIX
 }

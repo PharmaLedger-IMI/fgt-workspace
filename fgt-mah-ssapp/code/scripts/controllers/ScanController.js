@@ -11,8 +11,8 @@ export default class ScanController extends LocalizedController {
 
     initializeModel = () => ({});
 
-    constructor(element, history) {
-        super(element, history, false);
+    constructor(...args) {
+        super(false, ...args)
         let self = this;
         super.bindLocale(this, "scan");
         this.model = self.initializeModel();

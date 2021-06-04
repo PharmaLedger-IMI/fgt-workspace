@@ -4,8 +4,8 @@ const Product = require('wizard').Model.Product;
 export default class StockController extends LocalizedController{
     initializeModel = () => ({});
 
-    constructor(element, history) {
-        super(element, history);
+    constructor(...args) {
+        super(false, ...args);
         super.bindLocale(this, "stock");
         const wizard = require('wizard');
 

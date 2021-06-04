@@ -1,6 +1,9 @@
 /**
  * @module fgt-dsu-wizard.model
  */
+
+const {generateProductName, generateGtin, validateGtin, calculateGtinCheckSum, generateBatchNumber, generateRandomInt, genDate} = require('../../bin/environment/utils');
+
 module.exports = {
     Order: require('./Order'),
     OrderStatus: require('./OrderStatus'),
@@ -21,5 +24,14 @@ module.exports = {
     DirectoryEntry: require('./DirectoryEntry').DirectoryEntry,
     ROLE: require('./DirectoryEntry').ROLE,
     ShipmentCode: require('./ShipmentCode'),
-    TrackingCode: require('./TrackingCode')
+    TrackingCode: require('./TrackingCode'),
+    utils: {
+        generateProductName,
+        generateGtin,
+        validateGtin,
+        calculateGtinCheckSum,
+        generateBatchNumber,
+        generateRandomInt,
+        genDate,
+    }
 }
