@@ -299,7 +299,7 @@ export class ManagedProduct {
           <ion-col size="12" size-lg="4" size-xl="3">
             {...getFields()}
           </ion-col>
-          <ion-col>
+          <ion-col size="12" size-lg="8" size-xl="9">
             <pdm-ion-table table-title={this.batchesTitle + ` ${self.gtin}`}
                            item-reference="gtin-batch"
                            query={this.gtin}
