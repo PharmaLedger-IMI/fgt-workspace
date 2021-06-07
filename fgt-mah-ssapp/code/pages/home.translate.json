@@ -111,7 +111,9 @@
     }
   },
   "batch": {
-    "title": "Create a Batch",
+    "create-title": "Create a Batch",
+    "manage-title": "Manage Batch",
+    "back": "Back to Product",
     "batchNumber": {
       "label": "BatchNumber:",
       "placeholder": "Insert batch number...",

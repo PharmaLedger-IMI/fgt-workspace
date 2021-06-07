@@ -142,7 +142,7 @@ export class PdmItemOrganizer {
       return this.parsedProps.map(props => this.getComponentJSX(props));
     const toDisplay = Math.max(this.displayCount - 1, 1);
     const result = this.parsedProps .filter((props,i) => !!props && i <= toDisplay).map(props => this.getComponentJSX(props));
-    result.push(<more-chip></more-chip>);
+    result.unshift(<more-chip></more-chip>);
     return result;
   }
 

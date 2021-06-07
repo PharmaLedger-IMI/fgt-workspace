@@ -24,18 +24,37 @@ export default class ProductController extends LocalizedController {
         const wizard = require('wizard');
         const participantManager = wizard.Managers.getParticipantManager();
         this.productManager = wizard.Managers.getProductManager(participantManager);
+        this.productEl = this.element.querySelector('managed-product');
 
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
             self.model.manufId = self.productManager.getIdentity().id;
-            self.model.gtinRef = evt.detail ? evt.detail : undefined;
+
+            const state = self.getState();
+            if (state && state.gtin){
+                self.setState(undefined);
+                if (state.gtin === self.model.gtinRef)
+                    return self.productEl.refresh();
+                self.model.gtinRef = state.gtin;
+            }
+            else
+                self.model.gtinRef = '';
         });
 
         self.on(EVENT_ACTION, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
             self._handleCreateProduct.call(self, evt.detail);
+        });
+
+        self.on('add-batch',  (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            self.navigateToTab('tab-batch', {
+                gtin: this.model.gtinRef,
+                batchNumber: undefined
+            });
         });
 
         console.log("ProductController initialized");

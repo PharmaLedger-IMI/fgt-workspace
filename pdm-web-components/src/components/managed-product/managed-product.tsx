@@ -67,7 +67,7 @@ export class ManagedProduct {
       console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
 
-  @Prop({attribute: "gtin", mutable: true}) gtin?: string = undefined;
+  @Prop({attribute: "gtin", mutable: true, reflect: true}) gtin?: string = undefined;
   @Prop({attribute: "manuf-name", mutable: true}) manufName?: string = undefined;
 
   // strings
@@ -104,8 +104,10 @@ export class ManagedProduct {
     if (!self.productManager)
       return;
 
-    if (this.isCreate())
-      return;
+    if (this.isCreate()){
+      this.product = undefined;
+      return this.clearInputFields();
+    }
 
     self.productManager.getOne(self.gtin, true, (err, product) => {
       if (err){
@@ -113,12 +115,21 @@ export class ManagedProduct {
         return;
       }
       this.product = product;
+      self.refreshTable();
     });
   }
 
+  private refreshTable(){
+    const table = this.element.querySelector('pdm-ion-table');
+    if (table)
+      table.refresh();
+  }
+
+
   @Watch('gtin')
   @Method()
-  async refresh(){
+  // @ts-ignore
+  async refresh(newGtin, oldGtin){
     await this.loadProduct();
   }
 
@@ -126,12 +137,27 @@ export class ManagedProduct {
     this.navigateToTab('tab-products', {});
   }
 
+  private getAllInputs(){
+    return this.element.querySelectorAll(`input[name^="input-"], textarea[name^="input-"]`);
+  }
+
+  private clearInputFields(){
+    Array.prototype.filter.call(this.getAllInputs(), el => el.name !== 'input-manufName')
+      .forEach(input => {
+        if (input.name === 'input-description'){
+          input.closest('ion-textarea').value = '';
+          return;
+        }
+        input.closest('ion-input').value = '';
+      })
+  }
+
   private createProduct(){
     const trimInputToProp = function(el){
       return el.name.substring('input-'.length);
     }
     const product = new Product();
-    const inputFields = this.element.querySelectorAll(`input[name^="input-"], textarea[name^="input-"]`);
+    const inputFields = this.getAllInputs();
     for (let prop in product)
       if (product.hasOwnProperty(prop)){
         const input = Array.prototype.filter.call(inputFields, el => prop === trimInputToProp(el));
@@ -150,7 +176,7 @@ export class ManagedProduct {
       <div class="flex ion-align-items-center">
         <ion-icon name="layers" size="large" color="medium"></ion-icon>
         <div class="ion-text-uppercase ion-padding-start ion-color-secondary">
-          {this.titleString}
+          {this.isCreate() ? this.titleString : this.manageString}
         </div>
       </div>,
       <ion-row class="ion-align-items-center">
@@ -167,7 +193,7 @@ export class ManagedProduct {
       <ion-button color="medium" fill="clear" class="ion-margin-start" onClick={() => this.navigateBack()}>
         {this.cancelString}
       </ion-button>,
-      <ion-button color="secondary" class="ion-margin-start" onClick={() => this.createProduct()}>
+      <ion-button type="submit" color="secondary" class="ion-margin-start" onClick={() => this.createProduct()}>
         {this.addProductString}
         <ion-icon slot="end" name="add-circle" class="ion-margin-start"></ion-icon>
       </ion-button>
@@ -243,6 +269,7 @@ export class ManagedProduct {
       return [
         <ion-item class="ion-margin-vertical">
           <ion-label position="floating">{self.nameString}</ion-label>
+
           <ion-input name="input-name" required={true} maxlength={30} disabled={!isCreate} value={isCreate ? '' : (self.product ? self.product.name : '')}></ion-input>
           {getRandomNameButton()}
         </ion-item>,
@@ -288,7 +315,8 @@ export class ManagedProduct {
                            icon-name="stats-chart"
                            item-type="managed-batch-list-item"
                            items-per-page="5"
-                           auto-load={true}></pdm-ion-table>
+                           auto-load={true}
+                           send-real-events={true}></pdm-ion-table>
           </ion-col>
         </ion-row>
       </ion-grid>

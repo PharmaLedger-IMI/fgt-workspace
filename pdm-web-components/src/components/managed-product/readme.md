@@ -36,7 +36,7 @@
 
 ## Methods
 
-### `refresh() => Promise<void>`
+### `refresh(newGtin: any, oldGtin: any) => Promise<void>`
 
 
 

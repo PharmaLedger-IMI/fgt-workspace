@@ -161,7 +161,7 @@ export class ManagedProductListItem {
           scale: "6",
           data: self.gtin
         }, evt)),
-        getButton("end", "medium", "eye", () => self.navigateToTab('tab-batches', {gtin: self.gtin}))
+        getButton("end", "medium", "eye", () => self.navigateToTab('tab-product', {gtin: self.gtin}))
    ]
   }
 

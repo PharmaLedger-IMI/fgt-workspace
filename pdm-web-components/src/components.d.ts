@@ -33,7 +33,21 @@ export namespace Components {
     }
     interface GenericChip {
         "chipLabel": string;
-        "mode"?: string;
+        "color"?: string;
+        "outline"?: boolean;
+    }
+    interface ManagedBatch {
+        "addBatchString": string;
+        "backString": string;
+        "batchNumberString": string;
+        "cancelString": string;
+        "expiryString": string;
+        "gtinRef"?: string;
+        "manageString": string;
+        "refresh": (newGtinRef: any, oldGtinRef: any) => Promise<void>;
+        "serialsPlaceholderString": string;
+        "serialsString": string;
+        "titleString": string;
     }
     interface ManagedBatchListItem {
         "gtinBatch": string;
@@ -114,7 +128,7 @@ export namespace Components {
         "manufName"?: string;
         "manufString": string;
         "nameString": string;
-        "refresh": () => Promise<void>;
+        "refresh": (newGtin: any, oldGtin: any) => Promise<void>;
         "titleString": string;
     }
     interface ManagedProductListItem {
@@ -236,6 +250,7 @@ export namespace Components {
         "query"?: string;
         "refresh": () => Promise<void>;
         "searchBarPlaceholder"?: string;
+        "sendRealEvents": boolean;
         "sort"?: string;
         /**
           * Graphical Params
@@ -297,6 +312,12 @@ declare global {
     var HTMLGenericChipElement: {
         prototype: HTMLGenericChipElement;
         new (): HTMLGenericChipElement;
+    };
+    interface HTMLManagedBatchElement extends Components.ManagedBatch, HTMLStencilElement {
+    }
+    var HTMLManagedBatchElement: {
+        prototype: HTMLManagedBatchElement;
+        new (): HTMLManagedBatchElement;
     };
     interface HTMLManagedBatchListItemElement extends Components.ManagedBatchListItem, HTMLStencilElement {
     }
@@ -428,6 +449,7 @@ declare global {
         "barcode-generator": HTMLBarcodeGeneratorElement;
         "batch-chip": HTMLBatchChipElement;
         "generic-chip": HTMLGenericChipElement;
+        "managed-batch": HTMLManagedBatchElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-issued-order": HTMLManagedIssuedOrderElement;
         "managed-issued-shipment": HTMLManagedIssuedShipmentElement;
@@ -478,7 +500,32 @@ declare namespace LocalJSX {
     }
     interface GenericChip {
         "chipLabel"?: string;
-        "mode"?: string;
+        "color"?: string;
+        "outline"?: boolean;
+    }
+    interface ManagedBatch {
+        "addBatchString"?: string;
+        "backString"?: string;
+        "batchNumberString"?: string;
+        "cancelString"?: string;
+        "expiryString"?: string;
+        "gtinRef"?: string;
+        "manageString"?: string;
+        /**
+          * Through this event action requests are made
+         */
+        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "serialsPlaceholderString"?: string;
+        "serialsString"?: string;
+        "titleString"?: string;
     }
     interface ManagedBatchListItem {
         "gtinBatch"?: string;
@@ -802,6 +849,7 @@ declare namespace LocalJSX {
          */
         "query"?: string;
         "searchBarPlaceholder"?: string;
+        "sendRealEvents"?: boolean;
         "sort"?: string;
         /**
           * Graphical Params
@@ -853,6 +901,7 @@ declare namespace LocalJSX {
         "barcode-generator": BarcodeGenerator;
         "batch-chip": BatchChip;
         "generic-chip": GenericChip;
+        "managed-batch": ManagedBatch;
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-issued-order": ManagedIssuedOrder;
         "managed-issued-shipment": ManagedIssuedShipment;
@@ -883,6 +932,7 @@ declare module "@stencil/core" {
             "barcode-generator": LocalJSX.BarcodeGenerator & JSXBase.HTMLAttributes<HTMLBarcodeGeneratorElement>;
             "batch-chip": LocalJSX.BatchChip & JSXBase.HTMLAttributes<HTMLBatchChipElement>;
             "generic-chip": LocalJSX.GenericChip & JSXBase.HTMLAttributes<HTMLGenericChipElement>;
+            "managed-batch": LocalJSX.ManagedBatch & JSXBase.HTMLAttributes<HTMLManagedBatchElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-issued-order": LocalJSX.ManagedIssuedOrder & JSXBase.HTMLAttributes<HTMLManagedIssuedOrderElement>;
             "managed-issued-shipment": LocalJSX.ManagedIssuedShipment & JSXBase.HTMLAttributes<HTMLManagedIssuedShipmentElement>;

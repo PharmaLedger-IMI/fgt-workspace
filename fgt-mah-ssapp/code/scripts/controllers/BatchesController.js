@@ -26,11 +26,7 @@ export default class BatchesController extends LocalizedController {
         let self = this;
 
         self.onTagEvent('add-batch', 'click', () => {
-            self._showBatchModal(this.model.query);
-        });
-
-        self.onTagEvent('cancel-create-batch', 'click', () => {
-            self.hideModal();
+            self.navigateToTab("tab-batch", {gtinBatch: this.model.query});
         });
 
         self.on('create-batch',  (evt) => {
@@ -53,22 +49,6 @@ export default class BatchesController extends LocalizedController {
                     self.element.querySelector('pdm-ion-table').refresh();
             }
         }, {capture: true});
-    }
-
-    _showBatchModal(gtin){
-        this.createWebcModal({
-            template: "batchModal",
-            controller: "BatchController",
-            state: {gtin: gtin},
-            disableBackdropClosing: false,
-            disableFooter: true,
-            disableHeader: true,
-            disableExpanding: true,
-            disableClosing: true,
-            disableCancelButton: true,
-            expanded: false,
-            centered: true
-        });
     }
 
     /**
