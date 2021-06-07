@@ -113,6 +113,7 @@ export class ManagedBatch {
 
     if (this.isCreate()){
       this.batch = undefined;
+      this.serialsNumbers = undefined;
       return this.clearInputFields();
     }
 
@@ -295,11 +296,13 @@ export class ManagedBatch {
       return self.serialsNumbers.map(s => <generic-chip chip-label={s}></generic-chip>)
     }
 
-    const props = {};
+    const props = {}, props2 = {};
 
     if (!isCreate){
       props['size-lg'] = "6";
+      props2['size-lg'] = "6";
       props['size-xl'] = "5";
+      props2['size-xl'] = "7";
     }
 
     return [
@@ -308,7 +311,7 @@ export class ManagedBatch {
           <ion-col size="12" {...props}>
             {...getFields()}
           </ion-col>
-          <ion-col>
+          <ion-col size="12" {...props2}>
             {getSerials()}
           </ion-col>
         </ion-row>

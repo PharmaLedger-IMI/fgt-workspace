@@ -128,6 +128,26 @@ export class ManagedIssuedOrder {
     this.getSuppliersAsync();
   }
 
+  async cancelOrderLine(data){
+    if (data.gtin){
+      const {gtin} = data;
+
+      if (!this.orderLines)
+        return;
+      let index;
+      this.orderLines.every((ol, i) => {
+        if (ol.gtin !== gtin)
+          return true;
+        index = i;
+        return false;
+      });
+      if (!index)
+        return;
+      this.orderLines.splice(index,1);
+      this.orderLines = [... this.orderLines];
+    }
+  }
+
   private getDirectoryProductsAsync(){
     const self = this;
     const options = {
@@ -220,7 +240,7 @@ export class ManagedIssuedOrder {
       return [];
 
     const genOrderLine = function(o){
-      return (<managed-orderline-stock-chip gtin={o.gtin} quantity={o.quantity} available={10 * o.quantity} mode="detail" button="cancel"></managed-orderline-stock-chip>)
+      return (<managed-orderline-stock-chip onSendAction={(evt) => self.cancelOrderLine(evt)} gtin={o.gtin} quantity={o.quantity} available={10 * o.quantity} mode="detail" button="cancel"></managed-orderline-stock-chip>)
     }
 
     return self.orderLines.map(o => genOrderLine(o));
@@ -241,7 +261,7 @@ export class ManagedIssuedOrder {
     }
     return (
       <ion-buttons class="ion-float-end ion-justify-content-end">
-        {getButton("success", self.proceedString, !!this.order && !this.order.validate())}
+        {getButton("success", self.proceedString, !!this.orderLines && !!this.orderLines.length && !!this.senderId)}
       </ion-buttons>
     )
   }
@@ -287,9 +307,7 @@ export class ManagedIssuedOrder {
   private getSenderLocale(){
     const self = this;
     const getAddress = function(){
-      if (!self.senderAddress)
-        return (<ion-skeleton-text animated></ion-skeleton-text>)
-      return (<ion-input disabled={true} value={self.senderAddress}></ion-input>);
+      return (<ion-input disabled={true} value={self.senderAddress ? self.senderAddress : '-'}></ion-input>);
     }
     return (
       <ion-item class="ion-no-padding">
@@ -372,18 +390,21 @@ export class ManagedIssuedOrder {
     console.log(evt, target, name, value);
     if (name === 'input-quantity')
       this.currentQuantity = value;
-
   }
 
   private addOrderLine(gtin, quantity){
-    const ol = new OrderLine({
-      gtin: gtin,
-      quantity: quantity
-    });
     const updated = [];
     if (Array.isArray(this.orderLines))
       updated.push(...this.orderLines);
-    this.orderLines = [...updated, ol];
+    const existing = updated.filter(u => u.gtin === gtin);
+    if (existing.length){
+      existing[0].quantity += quantity;
+      this.orderLines = [...updated];
+    } else {
+      const ol = new OrderLine(gtin, quantity, undefined, this.senderId);
+      this.orderLines = [...updated, ol];
+    }
+
     this.currentGtin = undefined;
     this.currentQuantity = 0;
   }
@@ -398,10 +419,10 @@ export class ManagedIssuedOrder {
               <ion-input name="input-gtin" type="number" value={this.currentGtin}></ion-input>
               <ion-buttons slot="end">
                 <ion-button onClick={() => this.scan()}>
-                  <ion-icon color="tertiary" slot="icon-only" name="scan-circle-outline"></ion-icon>
+                  <ion-icon color="tertiary" slot="icon-only" name="scan-circle"></ion-icon>
                 </ion-button>
                 <ion-button onClick={(evt) => this.getProductPopOver(evt)}>
-                  <ion-icon color="secondary" slot="icon-only" name="add-circle-outline"></ion-icon>
+                  <ion-icon color="secondary" slot="icon-only" name="add-circle"></ion-icon>
                 </ion-button>
               </ion-buttons>
             </ion-item>
@@ -427,7 +448,7 @@ export class ManagedIssuedOrder {
           <ion-col size="1">
             <ion-buttons>
               <ion-button color="success" disabled={!this.currentGtin || !this.currentQuantity} onClick={() => this.addOrderLine(this.currentGtin, this.currentQuantity)}>
-                <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+                <ion-icon slot="icon-only" name="add-circle"></ion-icon>
               </ion-button>
             </ion-buttons>
           </ion-col>

@@ -1,71 +1,72 @@
 <webc-container controller="HomeController" enable-translations="true">
     <ion-app>
-        <div data-if="@identified">
-            <div slot="true">
-                <ion-menu side="start" content-id="main-content">
-                    <ion-header>
-                        <ion-toolbar translucent>
-                            <ion-img class="ion-align-self-center menu-logo" src="../assets/images/logo.svg"></ion-img>
-                        </ion-toolbar>
-                    </ion-header>
-                    <ion-content>
-                        <ion-list>
-                            <menu-tab-button icon-name="analytics-outline" label="@menu.dashboard" tab="tab-dashboard"></menu-tab-button>
-                            <menu-tab-button icon-name="reader-outline" label="@menu.issuedOrders" tab="tab-issuedOrders"></menu-tab-button>
-                            <menu-tab-button icon-name="map-outline" label="@menu.receivedShipments" tab="tab-receivedShipments"></menu-tab-button>
-                            <menu-tab-button icon-name="stats-chart-outline" label="@menu.stock" tab="tab-stock"></menu-tab-button>
-                        </ion-list>
-                    </ion-content>
+        <ion-header class="ion-no-border ion-padding">
+            <ion-grid>
+                <ion-row>
+                    <ion-col size-md="1" size-sm="2" class="ion-text-center">
+                        <img src="../assets/images/logo.svg" alt="">
+                    </ion-col>
+                    <ion-col>
+                        <ion-row class="ion-justify-content-between">
+                            <div class="flex flex-col ion-padding-start top-bar-text">
+                                {{ @title }}
+                                <span>{{ @participant.id }}</span>
+                            </div>
+                            <ion-button fill="clear" color="secondary">
+                                {{ @logout }}
+                                <ion-icon slot="end" name="log-out" class="ion-margin-start"></ion-icon>
+                            </ion-button>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-header>
+        <ion-grid>
+            <ion-row class="main-content-row">
+                <ion-col size="1" class="ion-hide-lg-down">
+                    <ion-list class="side-menu">
+                        <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard"></menu-tab-button>
+                        <menu-tab-button icon-name="reader" label="@menu.issuedOrders" tab="tab-issuedOrders"></menu-tab-button>
+                        <menu-tab-button icon-name="map" label="@menu.receivedShipments" tab="tab-receivedShipments"></menu-tab-button>
+                        <menu-tab-button icon-name="stats-chart" label="@menu.stock" tab="tab-stock"></menu-tab-button>
+                    </ion-list>
+                </ion-col>
+                <ion-col>
+                    <ion-tabs id="main-content">
+                        <ion-tab tab="tab-dashboard">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <webc-template template="dashboard" disable-container></webc-template>
+                            </ion-content>
+                        </ion-tab>
 
-                </ion-menu>
-            </div>
-            <div slot="false">
-            </div>
-        </div>
+                        <ion-tab tab="tab-issuedOrders">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <webc-template template="issuedOrders" disable-container></webc-template>
+                            </ion-content>
+                        </ion-tab>
 
-        <ion-tabs id="main-content">
-            <ion-header slot="top">
-                <ion-toolbar>
-                    <ion-buttons slot="start">
-                        <ion-menu-button auto-hide="true"></ion-menu-button>
-                    </ion-buttons>
-                    <ion-img align="center" class="main-logo" slot="start" src="../assets/images/logo.svg"></ion-img>
-                </ion-toolbar>
-            </ion-header>
+                        <ion-tab tab="tab-receivedShipments">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <webc-template template="receivedShipments" disable-container></webc-template>
+                            </ion-content>
+                        </ion-tab>
 
+                        <ion-tab tab="tab-stock">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <webc-template template="stock" disable-container></webc-template>
+                            </ion-content>
+                        </ion-tab>
 
-            <div class="with-gradient"></div>
-
-            <ion-tab tab="tab-dashboard">
-                <ion-content class="tab-content" overflow-scroll="true">
-                    <webc-template template="dashboard" disable-container></webc-template>
-                </ion-content>
-            </ion-tab>
-
-            <ion-tab tab="tab-issuedOrders">
-                <ion-content class="tab-content" overflow-scroll="true">
-                    <webc-template template="issuedOrders" disable-container></webc-template>
-                </ion-content>
-            </ion-tab>
-
-            <ion-tab tab="tab-receivedShipments">
-                <ion-content class="tab-content" overflow-scroll="true">
-                    <webc-template template="receivedShipments" disable-container></webc-template>
-                </ion-content>
-            </ion-tab>
-
-            <ion-tab tab="tab-stock">
-                <ion-content class="tab-content" overflow-scroll="true">
-                    <webc-template template="stock" disable-container></webc-template>
-                </ion-content>
-            </ion-tab>
-
-            <ion-tab-bar slot="bottom">
-                <menu-tab-button icon-name="analytics-outline" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>
-                <menu-tab-button icon-name="reader-outline" label="@menu.issuedOrders" tab="tab-issuedOrders" mode="bar"></menu-tab-button>
-                <menu-tab-button icon-name="map-outline" label="@menu.receivedShipments" tab="tab-receivedShipments" mode="bar"></menu-tab-button>
-                <menu-tab-button icon-name="stats-chart-outline" label="@menu.stock" tab="tab-stock" mode="bar"></menu-tab-button>
-            </ion-tab-bar>
-        </ion-tabs>
+                        <ion-tab-bar slot="bottom" class="ion-hide-lg-up">
+                            <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>
+                            <menu-tab-button icon-name="reader" label="@menu.issuedOrders" tab="tab-issuedOrders" mode="bar"></menu-tab-button>
+                            <menu-tab-button icon-name="map" label="@menu.receivedShipments" tab="tab-receivedShipments" mode="bar"></menu-tab-button>
+                            <menu-tab-button icon-name="stats-chart" label="@menu.stock" tab="tab-stock" mode="bar"></menu-tab-button>
+                        </ion-tab-bar>
+                    </ion-tabs>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+        <pdm-barcode-scanner-controller barcode-title="Please scan your pack"></pdm-barcode-scanner-controller>
     </ion-app>
 </webc-container>
