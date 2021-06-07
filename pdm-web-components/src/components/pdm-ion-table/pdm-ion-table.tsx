@@ -1,20 +1,9 @@
-import {
-  Component,
-  ComponentInterface,
-  Element,
-  Event,
-  EventEmitter,
-  h,
-  Host,
-  Method,
-  Prop,
-  State,
-  Watch
-} from '@stencil/core';
+
 
 import {WebManager, WebManagerService} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
+import {Component, ComponentInterface, EventEmitter, h, Host, Prop, Element, Event, State, Watch, Method} from "@stencil/core";
 
 // @ts-ignore
 const SEARCH_BAR_STATE = {
@@ -25,7 +14,7 @@ const SEARCH_BAR_STATE = {
 @Component({
   tag: 'pdm-ion-table',
   styleUrl: 'pdm-ion-table.css',
-  shadow: false,
+  shadow: false
 })
 export class PdmIonTable implements ComponentInterface {
   @HostElement() host: HTMLElement;
@@ -59,6 +48,7 @@ export class PdmIonTable implements ComponentInterface {
   @Prop({attribute: 'loading-message', mutable: true}) loadingMessage?: string = "Loading...";
   @Prop({attribute: 'query-placeholder', mutable: true}) searchBarPlaceholder?: string =  "enter search terms...";
   @Prop({attribute: 'buttons', mutable: true}) buttons?: string[] | {} = [];
+  @Prop({attribute: 'send-real-events', mutable: true}) sendRealEvents: boolean = false;
 
   /**
    * Component Setup Params
@@ -256,8 +246,19 @@ export class PdmIonTable implements ComponentInterface {
           return (<ion-icon class="ion-margin-start" slot="end" name={buttonIcon}></ion-icon>)
         }
 
+        const buttonProps = {};
+        if (!self.sendRealEvents)
+          buttonProps['data-tag'] = name;
+        else
+          { // @ts-ignore
+            buttonProps['onClick'] = () => self.element.dispatchEvent(new CustomEvent(name, {
+              bubbles: true,
+              cancelable: true
+            }));
+          }
+
         return (
-          <ion-button fill="solid" class="ion-margin-start" color={index === 0 ? "secondary" : "tertiary"} data-tag={name}>
+          <ion-button fill="solid" class="ion-margin-start" color={index === 0 ? "secondary" : "tertiary"} {...buttonProps}>
             {buttonLabel}
             {getIcon()}
           </ion-button>
