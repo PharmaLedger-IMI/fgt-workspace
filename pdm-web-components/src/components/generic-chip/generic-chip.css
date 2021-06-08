@@ -1,14 +1,8 @@
 :host {
   display: inherit;
-  --ion-color-primary: var(--ion-color-primary);
-  --ion-border-color: var(--ion-border-color);
-  --ion-text-color: var(--ion-text-color);
 }
 
-batch-chip{
-  --ion-color-primary: inherit;
-  --ion-border-color: inherit;
-  --ion-text-color: inherit;
+generic-chip{
   --color-step: var(--ion-color-primary);
   --color-step-rgba: rgba(var(--color-step), 0.10);
 
@@ -36,14 +30,20 @@ batch-chip{
 }
 
 ion-badge{
-  --ion-color-primary: inherit;
-  --ion-text-color: inherit;
-  --color-step: inherit;
   background-color: var(--color-step);
 }
 
 ion-chip {
   animation: 0.5s linear fadein;
+}
+
+generic-chip ion-button{
+  display: none;
+}
+
+generic-chip:hover ion-button{
+  display: block;
+  animation: 0.3s linear fadein;
 }
 
 @keyframes fadein {

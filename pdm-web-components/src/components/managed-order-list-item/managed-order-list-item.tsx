@@ -129,7 +129,8 @@ export class ManagedOrderListItem {
                           })))}
                           id-prop="gtin"
                           is-ion-item="false"
-                          display-count="3"></pdm-item-organizer>
+                          display-count="3"
+                          onSelectAction={gtin => console.log(`selected ${gtin}`)}></pdm-item-organizer>
     );
   }
 

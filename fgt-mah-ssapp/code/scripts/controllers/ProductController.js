@@ -48,15 +48,6 @@ export default class ProductController extends LocalizedController {
             self._handleCreateProduct.call(self, evt.detail);
         });
 
-        self.on('add-batch',  (evt) => {
-            evt.preventDefault();
-            evt.stopImmediatePropagation();
-            self.navigateToTab('tab-batch', {
-                gtin: this.model.gtinRef,
-                batchNumber: undefined
-            });
-        });
-
         console.log("ProductController initialized");
     }
 

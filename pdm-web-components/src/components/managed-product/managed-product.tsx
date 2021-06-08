@@ -306,17 +306,18 @@ export class ManagedProduct {
                            canQuery={false}
                            paginated={true}
                            manager="BatchManager"
-                           buttons={{
-                             "add-batch" : {
-                               "label": this.batchesAddButton,
-                               "icon": "add-circle"
-                             }
-                           }}
                            icon-name="stats-chart"
                            item-type="managed-batch-list-item"
                            items-per-page="5"
-                           auto-load={true}
-                           send-real-events={true}></pdm-ion-table>
+                           auto-load={true}>
+              <ion-button slot="buttons" color="secondary" onClick={() => self.navigateToTab('tab-batch', {
+                gtin: self.gtin,
+                batchNumber: undefined
+              })}>
+                {this.batchesAddButton}
+                <ion-icon slot="end" name="add-circle"></ion-icon>
+              </ion-button>
+            </pdm-ion-table>
           </ion-col>
         </ion-row>
       </ion-grid>

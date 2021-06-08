@@ -157,18 +157,14 @@
     "numberHeader": "ID",
     "orderingPartnerHeader": "Issued By",
     "supplyingPartnerHeader": "Issued To",
-    "none": "No orders issued...",
-    "buttons": {
-    }
+    "none": "No orders issued..."
   },
   "issuedShipments": {
     "title": "IssuedShipments",
     "numberHeader": "ID",
     "orderingPartnerHeader": "Issued By",
     "supplyingPartnerHeader": "Issued To",
-    "none": "No shipments issued...",
-    "buttons": {
-    }
+    "none": "No shipments issued..."
   },
   "orderLines": {
     "title": "Orders",
@@ -179,8 +175,6 @@
     "createdOnLabel": "Registered on:",
     "statusLabel": "Order status:",
     "quantityLabel": "Order quantity:",
-    "buttons": {
-    },
     "errors": {
       "list-error": "Could not list orders"
     }
@@ -195,8 +189,6 @@
     "createdOnLabel": "Registered on:",
     "statusLabel": "Order status:",
     "quantityLabel": "Order quantity:",
-    "buttons": {
-    },
     "errors": {
       "list-error": "Could not list orders"
     }

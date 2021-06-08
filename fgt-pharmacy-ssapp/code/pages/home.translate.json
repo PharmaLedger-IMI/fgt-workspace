@@ -71,9 +71,7 @@
     "numberHeader": "ID",
     "orderingPartnerHeader": "Issued By",
     "supplyingPartnerHeader": "Issued To",
-    "none": "No shipments...",
-    "buttons": {
-    }
+    "none": "No shipments..."
   },
   "stock": {
     "title": "Stock Manager",
