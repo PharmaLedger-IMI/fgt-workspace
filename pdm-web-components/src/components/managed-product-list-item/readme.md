@@ -38,15 +38,12 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [batch-chip](../batch-chip)
 - [pdm-item-organizer](../pdm-item-organizer)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-product-list-item --> batch-chip
   managed-product-list-item --> pdm-item-organizer
-  batch-chip --> multi-spinner
   pdm-item-organizer --> more-chip
   style managed-product-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```

@@ -522,7 +522,7 @@ export class ManagedReceivedOrder {
             <ion-button color="primary" slot="end" fill="clear" size="small" class="ion-float-end"
                         onClick={() => self.navigateToTab('tab-issued-order', unavailable.map(u => u.orderLine))}>
               {self.orderString}
-              <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
+              <ion-icon slot="end" name="checkmark-circle"></ion-icon>
             </ion-button>
           </ion-item-divider>
         )
@@ -542,7 +542,7 @@ export class ManagedReceivedOrder {
             {self.availableString}
             <ion-button color="success" slot="end" fill="clear" size="small" class="ion-float-end" onClick={() => self.markAllAsConfirmed()}>
               {self.confirmAllString}
-              <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
+              <ion-icon slot="end" name="checkmark-circle"></ion-icon>
             </ion-button>
           </ion-item-divider>
         )
@@ -562,7 +562,7 @@ export class ManagedReceivedOrder {
             {self.confirmedString}
             <ion-button color="danger" slot="end" fill="clear" size="small" class="ion-float-end" onClick={() => self.markAllAsConfirmed(false)}>
               {self.resetAllString}
-              <ion-icon slot="end" name="close-circle-outline"></ion-icon>
+              <ion-icon slot="end" name="close-circle"></ion-icon>
             </ion-button>
           </ion-item-divider>
         )

@@ -4,14 +4,8 @@ import {WebManager, WebManagerService} from "../../services/WebManagerService";
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 import {HostElement} from "../../decorators";
 
-// const ItemClasses = {
-//   selected: "selected",
-//   unnecessary: 'unnecessary',
-//   normal: 'normal',
-//   finished: 'finished'
-// }
 // @ts-ignore
-const {Order, OrderLine, Product, OrderStatus, ROLE} = require('wizard').Model;
+const {Order, OrderLine, ROLE} = require('wizard').Model;
 
 const MANAGED_ISSUED_ORDER_CUSTOM_EL_NAME = "managed-issued-order-popover";
 
@@ -51,7 +45,7 @@ export class ManagedIssuedOrder {
   private sendError(message: string, err?: object){
     const event = this.sendErrorEvent.emit(message);
     if (!event.defaultPrevented || err)
-      console.log(`Product Component: ${message}`, err);
+      console.log(`Issued Order Component Component: ${message}`, err);
   }
 
   private sendAction(message){
@@ -101,8 +95,6 @@ export class ManagedIssuedOrder {
 
   private directoryManager: WebManager = undefined;
 
-  private order: typeof Order = undefined;
-
   @State() senderId?: string = undefined;
 
   @State() senderAddress?: string = undefined;
@@ -128,7 +120,11 @@ export class ManagedIssuedOrder {
     this.getSuppliersAsync();
   }
 
-  async cancelOrderLine(data){
+  async cancelOrderLine(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    const {data} = evt.detail;
+
     if (data.gtin){
       const {gtin} = data;
 
@@ -141,7 +137,7 @@ export class ManagedIssuedOrder {
         index = i;
         return false;
       });
-      if (!index)
+      if (index === undefined)
         return;
       this.orderLines.splice(index,1);
       this.orderLines = [... this.orderLines];
@@ -254,7 +250,7 @@ export class ManagedIssuedOrder {
                     color={color} size="small"
                     fill="outline"
                     disabled={!enabled}
-                    onClick={() => self.sendAction(self.order)}>
+                    onClick={() => self.sendAction(new Order(undefined, self.requester.id, self.senderId, self.requester.address, undefined, self.orderLines))}>
           <ion-label>{text}</ion-label>
         </ion-button>
       )
@@ -328,7 +324,7 @@ export class ManagedIssuedOrder {
       const result = [];
       if (self.suppliers){
         result.push(
-          <ion-select interface="popover" interfaceOptions={options} class="supplier-select" placeholder={self.fromPlaceholderString}>
+          <ion-select name="input-senderId" interface="popover" interfaceOptions={options} class="supplier-select" placeholder={self.fromPlaceholderString}>
             {...self.suppliers.map(s => (<ion-select-option value={s}>{s}</ion-select-option>))}
           </ion-select>
         )
@@ -390,6 +386,8 @@ export class ManagedIssuedOrder {
     console.log(evt, target, name, value);
     if (name === 'input-quantity')
       this.currentQuantity = value;
+    if (name === 'input-senderId')
+      this.senderId = value;
   }
 
   private addOrderLine(gtin, quantity){
@@ -401,7 +399,7 @@ export class ManagedIssuedOrder {
       existing[0].quantity += quantity;
       this.orderLines = [...updated];
     } else {
-      const ol = new OrderLine(gtin, quantity, undefined, this.senderId);
+      const ol = new OrderLine(gtin, quantity, this.requester.id, this.senderId);
       this.orderLines = [...updated, ol];
     }
 

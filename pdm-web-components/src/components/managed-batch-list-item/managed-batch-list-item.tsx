@@ -163,14 +163,17 @@ export class ManagedBatchListItem {
         scale: "6",
         data: self.batch.generate2DMatrixCode(self.getGtinAndBatchNumber().gtin)
       }, evt)),
-      getButton("end", "medium", "eye", () => self.navigateToTab('tab-batch', {gtinBatch: self.gtinBatch}))
+      getButton("end", "medium", "eye", () => self.navigateToTab('tab-batch', {
+        gtin: self.getGtinAndBatchNumber().gtin,
+        batchNumber: self.getGtinAndBatchNumber().batchNumber
+      }))
     ]
   }
 
   render() {
     return (
       <Host>
-        <ion-item class="ion-margin-bottom" lines="none" color="light">
+        <ion-item class="main-item ion-margin-bottom" lines="none" color="light">
           {this.addLabel()}
           <div class="ion-padding flex">
             {this.addSerialsNumbers()}
