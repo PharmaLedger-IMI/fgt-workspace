@@ -1,5 +1,6 @@
-import {Component, Host, h, Element, Prop, Listen, Watch, State} from '@stencil/core';
+import {Component, Host, h, Element, Prop, Listen, Watch, State, EventEmitter, Event} from '@stencil/core';
 import {HostElement} from "../../decorators";
+import {OverlayEventDetail} from "@ionic/core";
 
 const ORGANIZER_CUSTOM_EL_NAME = "organizer-item-popover";
 
@@ -13,6 +14,9 @@ export class PdmItemOrganizer {
   @HostElement() host: HTMLElement;
 
   @Element() element;
+
+  @Event()
+  selectAction: EventEmitter<OverlayEventDetail>
 
   /**
    * The number of items to display (minimum is 1), defaults to 3
@@ -71,16 +75,18 @@ export class PdmItemOrganizer {
     customElements.define(ORGANIZER_CUSTOM_EL_NAME, class extends HTMLElement{
       connectedCallback(){
         const contentEl = this;
+        const popOverElement: any = document.querySelector('ion-popover');
+        const {displayCount, parsedProps, componentName} = popOverElement.componentProps;
         const listTag = self.isItem ? 'ion-list' : 'ul';
         this.innerHTML = `
 <ion-content>
   <${listTag}>
-    ${self.parsedProps.filter((props, i) => !!props && i >= self.displayCount)
+    ${parsedProps.filter((props, i) => !!props && i >= displayCount)
           .map(props => self.getComponentLiteral(props)).join('')}
   </${listTag}>
 </ion-content>`;
 
-        this.querySelectorAll(self.componentName).forEach(item => {
+        this.querySelectorAll(componentName).forEach(item => {
           item.addEventListener('click', () => {
             contentEl.closest('ion-popover').dismiss(undefined, item.getAttribute(self.idProp));
           });

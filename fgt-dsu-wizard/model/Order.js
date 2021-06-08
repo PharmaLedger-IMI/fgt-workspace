@@ -12,7 +12,7 @@ class Order{
     orderLines;
 
     constructor(orderId, requesterId, senderId, shipToAddress, status, orderLines) {
-        this.orderId = orderId;
+        this.orderId = orderId || (new Date()).getTime();
         this.requesterId = requesterId;
         this.senderId = senderId;
         this.shipToAddress = shipToAddress;

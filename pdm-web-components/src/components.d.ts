@@ -90,7 +90,6 @@ export namespace Components {
     }
     interface ManagedOrderListItem {
         "orderId": string;
-        "orderlineCount"?: number;
         "refresh": () => Promise<void>;
         "type"?: string;
     }
@@ -612,7 +611,6 @@ declare namespace LocalJSX {
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "orderId"?: string;
-        "orderlineCount"?: number;
         "type"?: string;
     }
     interface ManagedOrderlineListItem {

@@ -104,7 +104,7 @@ export class ManagedProductListItem {
     const getGtinLabel = function(){
       if (!self.product || !self.product.gtin)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
-      return self.product.gtin
+      return self.product.gtin;
     }
 
     const getNameLabel = function(){
@@ -118,12 +118,6 @@ export class ManagedProductListItem {
         {getGtinLabel()}
         <span class="ion-padding-start">{getNameLabel()}</span>
       </ion-label>)
-  }
-
-  addBatch(gtinBatch){
-    return(
-      <batch-chip gtin-batch={gtinBatch} loader-type={SUPPORTED_LOADERS.bubblingSmall} mode="detail"></batch-chip>
-    )
   }
 
   addBatches(){
@@ -143,10 +137,10 @@ export class ManagedProductListItem {
 
   addButtons(){
     let self = this;
+    if (!self.product)
+      return (<ion-skeleton-text animated></ion-skeleton-text>);
 
     const getButton = function(slot, color, icon, handler){
-      if (!self.product)
-        return (<ion-skeleton-text animated></ion-skeleton-text>);
       return (
         <ion-button slot={slot} color={color} fill="clear" onClick={handler}>
           <ion-icon size="large" slot="icon-only" name={icon}></ion-icon>
@@ -168,7 +162,7 @@ export class ManagedProductListItem {
   render() {
     return (
       <Host>
-        <ion-item class="ion-margin-bottom" lines="none" color="light">
+        <ion-item class="main-item ion-margin-bottom" lines="none" color="light">
           {this.addLabel()}
           <div class="ion-padding flex">
             {this.addBatches()}

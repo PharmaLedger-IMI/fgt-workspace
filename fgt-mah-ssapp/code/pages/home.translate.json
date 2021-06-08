@@ -23,9 +23,11 @@
     "dashboard": "Dashboard",
     "products": "Products",
     "batches": "Batches",
-    "orderLines": "Orders",
+    "orderLines": "Order Lines",
     "shipmentLines": "Shipment Lines",
-    "issuedShipments": "Shipments"
+    "issuedShipments": "Shipments",
+    "receivedOrders": "Orders",
+    "stock": "Stock"
   },
   "dashboard": {
     "welcome": "This is a Dashboard"
@@ -150,6 +152,15 @@
       "cancel": "Cancel"
     }
   },
+  "receivedOrders": {
+    "title": "Received Orders",
+    "numberHeader": "ID",
+    "orderingPartnerHeader": "Issued By",
+    "supplyingPartnerHeader": "Issued To",
+    "none": "No orders issued...",
+    "buttons": {
+    }
+  },
   "issuedShipments": {
     "title": "IssuedShipments",
     "numberHeader": "ID",
@@ -189,6 +200,14 @@
     "errors": {
       "list-error": "Could not list orders"
     }
+  },
+  "stock": {
+    "title": "Stocks",
+    "gtinHeader": "Gtin",
+    "nameHeader": "Name",
+    "batchesHeader": "Batches",
+    "quantityHeader": "Quantity",
+    "none": "No products in stock..."
   },
   "scan": {
     "title": "Please Scan your pack",

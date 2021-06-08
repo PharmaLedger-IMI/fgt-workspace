@@ -4,8 +4,9 @@ import {WebManagerService, WebManager} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
+import {getBarCodePopOver} from "../../utils/popOverUtils";
 
-const Stock = wizard.Model.Stock;
+const {Stock, Batch} = wizard.Model;
 
 @Component({
   tag: 'managed-stock-list-item',
@@ -60,7 +61,7 @@ export class ManagedProductListItem {
   private stockManager: WebManager = undefined;
 
   @State() stock: typeof Stock = undefined;
-  @State() batches: string[] = undefined;
+  @State() batches: typeof Batch[] = undefined;
   @State() quantity: number = undefined;
 
   async componentWillLoad() {
@@ -91,96 +92,83 @@ export class ManagedProductListItem {
     await this.loadStock();
   }
 
-  addBarCode(){
-    const self = this;
-
-    const getBarCode = function(){
-      if (!self.stock || !self.stock.gtin)
-        return (<ion-skeleton-text animated></ion-skeleton-text>);
-      return (<barcode-generator class="ion-align-self-center" type="code128" size="32" scale="6" data={self.stock.gtin}></barcode-generator>);
-    }
-
-    return(
-      <ion-thumbnail class="ion-align-self-center" slot="start">
-        {getBarCode()}
-      </ion-thumbnail>
-    )
-  }
-
   addLabel(){
     const self = this;
 
+    const getQuantityLabel = function(){
+      if (!self.stock || !self.stock.description)
+        return (<ion-skeleton-text animated></ion-skeleton-text>)
+      return self.stock.quantity;
+    }
+
     const getGtinLabel = function(){
       if (!self.stock || !self.stock.gtin)
-        return (<h3><ion-skeleton-text animated></ion-skeleton-text> </h3>)
-      return (<h3>{self.stock.gtin}</h3>)
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
+      return self.stock.gtin;
     }
 
     const getNameLabel = function(){
       if (!self.stock || !self.stock.name)
-        return (<h5><ion-skeleton-text animated></ion-skeleton-text> </h5>)
-      return (<h5>{self.stock.name}</h5>)
-    }
-
-    const getQuantityLabel = function(){
-      if (!self.stock || !self.stock.description)
-        return (<p><ion-skeleton-text animated></ion-skeleton-text> </p>)
-      return (<p>{self.stock.quantity}</p>)
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
+      return self.stock.name;
     }
 
     return(
-      <ion-label class="ion-padding-horizontal ion-align-self-center">
+      <ion-label color="secondary">
         {getGtinLabel()}
-        {getNameLabel()}
-        {getQuantityLabel()}
+        <span class="ion-padding-start">{getNameLabel()}</span>
+        <span class="ion-padding-start">{getQuantityLabel()}</span>
       </ion-label>)
   }
 
-  addBatch(batch){
-    return(
-      <batch-chip gtin-batch={this.stock.gtin + '-' + batch.batchNumber} loader-type={SUPPORTED_LOADERS.bubblingSmall} mode="detail" quantity={this.quantity}></batch-chip>
-    )
-  }
-
   addBatches(){
-    const batches = !!this.stock && !!this.batches ? this.batches.map(b => this.addBatch(b)) : (<ion-skeleton-text animated></ion-skeleton-text>);
+    if (!this.stock || !this.batches)
+      return (<ion-skeleton-text animated></ion-skeleton-text>);
     return(
-      <ion-grid class="ion-padding-horizontal">
-        <ion-row>
-          <ion-col size="12">
-            {batches}
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <pdm-item-organizer component-name="batch-chip"
+                          component-props={JSON.stringify(this.batches.map(batch => ({
+                            "gtin-batch": this.stock.gtin + '-' + batch.batchNumber,
+                            "quantity": batch.quantity,
+                            "mode": "detail",
+                            "loader-type": SUPPORTED_LOADERS.bubblingSmall
+                          })))}
+                          id-prop="gtin-batch"
+                          is-ion-item="false"></pdm-item-organizer>
     )
   }
 
   addButtons(){
     let self = this;
-    const getButtons = function(){
-      if (!self.stock)
-        return (<ion-skeleton-text animated></ion-skeleton-text>)
+    if (!self.stock)
+      return (<ion-skeleton-text animated></ion-skeleton-text>);
+
+    const getButton = function(slot, color, icon, handler){
       return (
-        <ion-button slot="primary" onClick={() => self.navigateToTab('tab-batches', {gtin: self.gtin})}>
-          <ion-icon name="file-tray-stacked-outline"></ion-icon>
+        <ion-button slot={slot} color={color} fill="clear" onClick={handler}>
+          <ion-icon size="large" slot="icon-only" name={icon}></ion-icon>
         </ion-button>
       )
     }
 
-    return(
-      <ion-buttons class="ion-align-self-center ion-padding" slot="end">
-        {getButtons()}
-      </ion-buttons>
-    )
+    return [
+      getButton("end", "medium", "barcode", (evt) => getBarCodePopOver({
+        type: "code128",
+        size: "32",
+        scale: "6",
+        data: self.gtin
+      }, evt)),
+      getButton("end", "medium", "eye", () => self.navigateToTab('tab-batches', {gtin: self.gtin}))
+    ]
   }
 
   render() {
     return (
       <Host>
-        <ion-item class="ion-align-self-center main-item">
-          {this.addBarCode()}
+        <ion-item class="main-item ion-margin-bottom" lines="none" color="light">
           {this.addLabel()}
-          {this.addBatches()}
+          <div class="ion-padding flex">
+            {this.addBatches()}
+          </div>
           {this.addButtons()}
         </ion-item>
       </Host>

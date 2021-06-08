@@ -23,7 +23,6 @@
 
  - [managed-orderline-list-item](../managed-orderline-list-item)
  - [managed-shipmentline-list-item](../managed-shipmentline-list-item)
- - [managed-stock-list-item](../managed-stock-list-item)
  - [simple-managed-product-item](../simple-managed-product-item)
 
 ### Graph
@@ -31,7 +30,6 @@
 graph TD;
   managed-orderline-list-item --> barcode-generator
   managed-shipmentline-list-item --> barcode-generator
-  managed-stock-list-item --> barcode-generator
   simple-managed-product-item --> barcode-generator
   style barcode-generator fill:#f9f,stroke:#333,stroke-width:4px
 ```

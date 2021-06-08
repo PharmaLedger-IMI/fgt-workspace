@@ -1,0 +1,13 @@
+<webc-container controller="ReceivedOrdersController">
+    <pdm-ion-table
+            table-title="@title"
+            paginated="true"
+            manager="ReceivedOrderManager"
+            buttons="@buttons"
+            icon-name="stats-chart"
+            items-per-page="10"
+            item-reference="order-id"
+            item-type="managed-order-list-item"
+            item-props="type:received">
+    </pdm-ion-table>
+</webc-container>

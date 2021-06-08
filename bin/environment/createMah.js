@@ -4,7 +4,7 @@ const path = require('path');
 
 require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
 const dt = require('./../../pdm-dsu-toolkit/services/dt');
-const { getParticipantManager, getProductManager, getBatchManager, getOrderLineManager, getShipmentLineManager } = require('../../fgt-dsu-wizard/managers');
+const { getParticipantManager, getProductManager, getBatchManager, getOrderLineManager, getShipmentLineManager, getStockManager, getReceivedOrderManager } = require('../../fgt-dsu-wizard/managers');
 const { impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 
 const { APPS } = require('./credentials/credentials');
@@ -117,6 +117,46 @@ const setupShipmentLines = function (participantManager, callback){
     });
 }
 
+const setupStocks = function(participantManager, products, batchesObj, callback){
+    if (!callback){
+        callback = stocks;
+        stocks = undefined;
+    }
+
+    getStockManager(participantManager, true, (err, stockManager) => {
+        if (err)
+            return callback(err);
+        participantManager.stockManager = stockManager;
+        participantManager.receivedOrderManager = getReceivedOrderManager(participantManager, true); // will handle incoming messages. just to keep the reference and ensure its instantiated and listening
+
+        const stocks = require('./stocks/stocksRandomFromProducts').getFullStockFromProductsAndBatchesObj(products, batchesObj);
+
+        const stockIterator = function(stocksCopy){
+            const stock = stocksCopy.shift();
+            if (!stock){
+                console.log(`${stocks.length} stock created`);
+                return callback(undefined, stocks);
+            }
+            stockManager.create(stock, (err, keySSI, path) => {
+                if (err)
+                    return callback(err);
+                stockIterator(stocksCopy, callback);
+            });
+        }
+
+        stockIterator(stocks.slice(), (err, stocksObj) => {
+            if (err)
+                return callback(err);
+            const output = [];
+            Object.keys(stocksObj).forEach(gtin => {
+                output.push(`The following batches per gtin have been created:\nGtin: ${gtin}\nBatches: ${stocksObj[gtin].join(', ')}`);
+            });
+            console.log(output.join('\n'));
+            callback(undefined, stocksObj);
+        })
+    });
+}
+
 const setup = function(participantManager, products, batches, callback){
     setupProducts(participantManager, products, batches, (err, productsObj) => {
         if (err)
@@ -130,7 +170,11 @@ const setup = function(participantManager, products, batches, callback){
                 setupShipmentLines(participantManager, (err) => {
                     if (err)
                         return callback(err);
-                    callback(undefined, productsObj, batchesObj);
+                    setupStocks(participantManager, products, batchesObj, (err) => {
+                        if (err)
+                            return callback(err);
+                        callback(undefined, productsObj, batchesObj);
+                    });
                 });
             });
         });
