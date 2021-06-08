@@ -32,8 +32,11 @@ export namespace Components {
         "quantity"?: number;
     }
     interface GenericChip {
+        "badges": any;
+        "buttons": any;
         "chipLabel": string;
         "color"?: string;
+        "cssClass"?: string;
         "outline"?: boolean;
     }
     interface ManagedBatch {
@@ -215,9 +218,8 @@ export namespace Components {
           * the querying attribute name so the items can query their own value
          */
         "autoLoad": boolean;
-        "buttons"?: string[] | {};
         /**
-          * Shows the search bar or not. (not working)
+          * Shows the search bar or not.
          */
         "canQuery"?: boolean;
         "currentPage"?: number;
@@ -249,7 +251,6 @@ export namespace Components {
         "query"?: string;
         "refresh": () => Promise<void>;
         "searchBarPlaceholder"?: string;
-        "sendRealEvents": boolean;
         "sort"?: string;
         /**
           * Graphical Params
@@ -257,10 +258,6 @@ export namespace Components {
         "tableTitle": string;
     }
     interface PdmItemOrganizer {
-        /**
-          * The Handler on the click in each item when expanded
-         */
-        "clickHandler": (any) => void;
         /**
           * the Tag for the component to be rendered
          */
@@ -495,11 +492,16 @@ declare namespace LocalJSX {
         "gtinBatch"?: string;
         "loaderType"?: string;
         "mode"?: string;
+        "onSelectEvent"?: (event: CustomEvent<string>) => void;
         "quantity"?: number;
     }
     interface GenericChip {
+        "badges"?: any;
+        "buttons"?: any;
         "chipLabel"?: string;
         "color"?: string;
+        "cssClass"?: string;
+        "onSelectEvent"?: (event: CustomEvent<string>) => void;
         "outline"?: boolean;
     }
     interface ManagedBatch {
@@ -810,9 +812,8 @@ declare namespace LocalJSX {
           * the querying attribute name so the items can query their own value
          */
         "autoLoad"?: boolean;
-        "buttons"?: string[] | {};
         /**
-          * Shows the search bar or not. (not working)
+          * Shows the search bar or not.
          */
         "canQuery"?: boolean;
         "currentPage"?: number;
@@ -847,7 +848,6 @@ declare namespace LocalJSX {
          */
         "query"?: string;
         "searchBarPlaceholder"?: string;
-        "sendRealEvents"?: boolean;
         "sort"?: string;
         /**
           * Graphical Params
@@ -855,10 +855,6 @@ declare namespace LocalJSX {
         "tableTitle"?: string;
     }
     interface PdmItemOrganizer {
-        /**
-          * The Handler on the click in each item when expanded
-         */
-        "clickHandler"?: (any) => void;
         /**
           * the Tag for the component to be rendered
          */
@@ -879,6 +875,7 @@ declare namespace LocalJSX {
           * If the component does not generate an ion-item (so it can be handled by an ion-list) this must be set to false
          */
         "isItem"?: boolean;
+        "onSelectAction"?: (event: CustomEvent<OverlayEventDetail>) => void;
     }
     interface PdmSsappLoader {
         "loader"?: string;

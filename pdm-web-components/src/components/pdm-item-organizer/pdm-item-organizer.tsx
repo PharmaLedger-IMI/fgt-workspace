@@ -34,10 +34,7 @@ export class PdmItemOrganizer {
    * The identifying prop to be return upon click (must exist in the supplied {@link componentProps}
    */
   @Prop({attribute: "id-prop"}) idProp: string = undefined;
-  /**
-   * The Handler on the click in each item when expanded
-   */
-  @Prop({attribute: "click-handler"}) clickHandler: (any) => void = undefined;
+
   /**
    * If the component does not generate an ion-item (so it can be handled by an ion-list)
    * this must be set to false
@@ -76,13 +73,13 @@ export class PdmItemOrganizer {
       connectedCallback(){
         const contentEl = this;
         const popOverElement: any = document.querySelector('ion-popover');
-        const {displayCount, parsedProps, componentName} = popOverElement.componentProps;
-        const listTag = self.isItem ? 'ion-list' : 'ul';
+        const {displayCount, parsedProps, componentName, isItem} = popOverElement.componentProps;
+        const listTag = isItem ? 'ion-list' : 'ul';
         this.innerHTML = `
 <ion-content>
   <${listTag}>
     ${parsedProps.filter((props, i) => !!props && i >= displayCount)
-          .map(props => self.getComponentLiteral(props)).join('')}
+          .map(props => self.getComponentLiteral(isItem, componentName, props)).join('')}
   </${listTag}>
 </ion-content>`;
 
@@ -95,6 +92,17 @@ export class PdmItemOrganizer {
     });
   }
 
+  private getComponentLiteral(isItem, componentName, props){
+    const getNotIonItemListItem = function(isClose?){
+      if (isItem)
+        return '';
+      return `<${isClose ? '/' : ''}li>`
+    }
+    return `${getNotIonItemListItem()}<${componentName}${Object.keys(props).reduce((accum, prop) => {
+      return accum + ` ${prop}="${props[prop]}"`
+    }, '')}></${componentName}>${getNotIonItemListItem(true)}`;
+  }
+
   private async getItemPopOver(evt){
     this.definePopOverContent();
     const popover = Object.assign(document.createElement('ion-popover'), {
@@ -105,16 +113,20 @@ export class PdmItemOrganizer {
       showBackdrop: false,
       animated: true,
       backdropDismiss: true,
+      componentProps: {
+        displayCount: this.displayCount,
+        parsedProps: this.parsedProps,
+        componentName: this.componentName,
+        isItem: this.isItem
+      }
     });
     document.body.appendChild(popover);
     await popover.present();
 
     const {role} = await popover.onWillDismiss();
-    if (role && role !== 'backdrop')
-      if (this.clickHandler)
-        this.clickHandler(role);
-      else
-        console.log(role);
+    if (role && role !== 'backdrop'){
+      this.triggerSelect(role);
+    }
   }
 
   @Listen('ssapp-show-more')
@@ -124,21 +136,15 @@ export class PdmItemOrganizer {
     await this.getItemPopOver(evt.detail);
   }
 
-  private getComponentJSX(props){
-    const Tag = this.componentName;
-    return (<Tag {...props}></Tag>)
+  private triggerSelect(reference){
+    this.selectAction.emit(reference)
   }
 
-  private getComponentLiteral(props){
+  private getComponentJSX(props){
     const self = this;
-    const getNotIonItemListItem = function(isClose?){
-      if (self.isItem)
-        return '';
-      return `<${isClose ? '/' : ''}li>`
-    }
-    return `${getNotIonItemListItem()}<${this.componentName}${Object.keys(props).reduce((accum, prop) => {
-      return accum + ` ${prop}="${props[prop]}"`
-    }, '')}></${this.componentName}>${getNotIonItemListItem(true)}`;
+    const Tag = this.componentName;
+    const data = props[self.idProp];
+    return (<Tag {...props} onClick={() => self.triggerSelect(data)}></Tag>)
   }
 
   private getFilteredComponents(){
@@ -163,5 +169,4 @@ export class PdmItemOrganizer {
       </Host>
     );
   }
-
 }

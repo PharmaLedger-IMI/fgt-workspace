@@ -74,6 +74,7 @@ graph TD;
   managed-received-order --> batch-chip
   managed-received-order --> managed-orderline-stock-chip
   batch-chip --> multi-spinner
+  batch-chip --> generic-chip
   style managed-received-order fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

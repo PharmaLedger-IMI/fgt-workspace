@@ -64,9 +64,7 @@
     "numberHeader": "ID",
     "orderingPartnerHeader": "Issued By",
     "supplyingPartnerHeader": "Issued To",
-    "none": "No orders issued...",
-    "buttons": {
-    }
+    "none": "No orders issued..."
   },
   "createShipment": {
     "title": "Create Shipment",
@@ -107,18 +105,14 @@
     "numberHeader": "ID",
     "orderingPartnerHeader": "Issued By",
     "supplyingPartnerHeader": "Issued To",
-    "none": "No shipments issued...",
-    "buttons": {
-    }
+    "none": "No shipments issued..."
   },
   "receivedShipments": {
     "title": "Incoming Shipments",
     "numberHeader": "ID",
     "orderingPartnerHeader": "Issued By",
     "supplyingPartnerHeader": "Issued To",
-    "none": "No shipments...",
-    "buttons": {
-    }
+    "none": "No shipments..."
   },
   "processShipment": {
     "title": "Process Shipment",

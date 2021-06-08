@@ -4,11 +4,14 @@
             item-reference="order-id"
             paginated="true"
             manager="IssuedOrderManager"
-            buttons="@buttons"
             icon-name="stats-chart-outline"
             item-type="managed-order-list-item"
             item-props="type:issued"
             items-per-page="10">
+        <ion-button slot="buttons" color="secondary" data-tag="new-issued-order">
+            {{ @buttons.new-issued-order.label }}
+            <ion-icon slot="end" name="add-circle"></ion-icon>
+        </ion-button>
     </pdm-ion-table>
 </webc-container>
 

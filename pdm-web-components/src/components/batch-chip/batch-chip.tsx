@@ -1,4 +1,4 @@
-import {Component, Host, h, Prop, Element, State, Watch} from '@stencil/core';
+import {Component, Host, h, Prop, Element, State, Watch, Event, EventEmitter} from '@stencil/core';
 import {HostElement} from "../../decorators";
 import {WebManagerService, WebResolver} from "../../services/WebManagerService";
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
@@ -22,6 +22,9 @@ export class BatchChip {
   @HostElement() host: HTMLElement;
 
   @Element() element;
+
+  @Event()
+  selectEvent: EventEmitter<string>
 
   @Prop({attribute: "gtin-batch", mutable: true}) gtinBatch: string = undefined;
 
@@ -83,12 +86,13 @@ export class BatchChip {
   }
 
   private renderSimple(){
+    const self=this;
     return (
       <Host>
-        <ion-chip class="ion-padding-start ion-margin-start" outline={true} color="secondary">
-          <ion-label>{this.getBatchNumber()}</ion-label>
-          {this.renderQuantity()}
-        </ion-chip>
+        <generic-chip class="ion-margin-start" chip-label={this.getBatchNumber()} outline={true}
+                      color="secondary" onSelectEvent={self.triggerSelect.bind(self)}
+                      badges={() => [self.renderQuantity()]}>
+        </generic-chip>
       </Host>
     )
   }
@@ -101,14 +105,18 @@ export class BatchChip {
     )
   }
 
+  private triggerSelect(){
+    this.selectEvent.emit(this.gtinBatch)
+  }
+
   private renderDetail(){
+    const self = this;
     return (
       <Host>
-        <ion-chip class="ion-padding-start ion-margin-start" outline={true} color="secondary">
-          <ion-label>{this.getBatchNumber()}</ion-label>
-          {this.renderExpiryInfo()}
-          {this.renderQuantity()}
-        </ion-chip>
+        <generic-chip class="ion-margin-start" chip-label={this.getBatchNumber()} outline={true} color="secondary"
+                      onSelectEvent={self.triggerSelect.bind(self)}
+                      badges={() => [self.renderExpiryInfo(), self.renderQuantity()]}>
+        </generic-chip>
       </Host>
     )
   }
