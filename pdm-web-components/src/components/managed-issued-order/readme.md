@@ -59,6 +59,7 @@ Type: `Promise<void>`
 graph TD;
   managed-issued-order --> managed-orderline-stock-chip
   managed-issued-order --> pdm-barcode-scanner-controller
+  managed-orderline-stock-chip --> generic-chip
   style managed-issued-order fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

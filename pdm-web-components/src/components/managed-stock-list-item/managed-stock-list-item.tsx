@@ -96,9 +96,9 @@ export class ManagedProductListItem {
     const self = this;
 
     const getQuantityLabel = function(){
-      if (!self.stock || !self.stock.description)
+      if (!self.stock || !self.stock.batches)
         return (<ion-skeleton-text animated></ion-skeleton-text>)
-      return self.stock.quantity;
+      return self.stock.getQuantity();
     }
 
     const getGtinLabel = function(){
@@ -133,7 +133,8 @@ export class ManagedProductListItem {
                             "loader-type": SUPPORTED_LOADERS.bubblingSmall
                           })))}
                           id-prop="gtin-batch"
-                          is-ion-item="false"></pdm-item-organizer>
+                          is-ion-item="false"
+                          display-count="2"></pdm-item-organizer>
     )
   }
 

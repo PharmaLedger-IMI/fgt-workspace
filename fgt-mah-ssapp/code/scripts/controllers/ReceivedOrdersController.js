@@ -1,5 +1,4 @@
 import { LocalizedController, EVENT_REFRESH } from "../../assets/pdm-web-components/index.esm.js";
-const {ShipmentStatus, Shipment} = require('wizard').Model;
 
 /**
  * List all the received orders, and allows refresh from inbox.
@@ -19,7 +18,6 @@ export default class ReceivedOrdersController extends LocalizedController {
 
         let self = this;
         self.on(EVENT_REFRESH, (evt) => {
-            console.log(evt);
             evt.preventDefault();
             evt.stopImmediatePropagation();
             self.table.refresh()

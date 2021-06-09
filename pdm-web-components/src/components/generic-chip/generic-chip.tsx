@@ -18,13 +18,13 @@ export class GenericChip {
 
   @Prop({attribute: "color"}) color?: string = "secondary";
 
-  @Prop({attribute:'class'}) cssClass?: string = '';
-
   @Prop({attribute: 'badges'}) badges = undefined
 
   @Prop({attribute: 'buttons'}) buttons = undefined;
 
-  @Event()
+  @Event({
+    bubbles: false
+  })
   selectEvent: EventEmitter<string>
 
   async componentWillLoad() {
@@ -45,14 +45,13 @@ export class GenericChip {
   }
 
   private triggerSelect(){
-    console.log(`triggering select for ${this.chipLabel}`);
     this.selectEvent.emit(this.chipLabel);
   }
 
   render() {
     return (
       <Host>
-        <ion-chip class={`ion-padding-horizontal${this.cssClass ? ` ${this.cssClass}` : ''}`} outline={this.outline} color={this.color} onClick={() => this.triggerSelect()}>
+        <ion-chip class="ion-padding-start" outline={this.outline} color={this.color} onClick={() => this.triggerSelect()}>
           <ion-label>{this.chipLabel}</ion-label>
           {...this.getBadges()}
           {...this.getButtons()}

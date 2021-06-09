@@ -519,7 +519,7 @@ export class ManagedReceivedOrder {
         return (
           <ion-item-divider>
             {self.unavailableString}
-            <ion-button color="primary" slot="end" fill="clear" size="small" class="ion-float-end"
+            <ion-button color="primary" slot="end" fill="solid" size="small" class="ion-float-end"
                         onClick={() => self.navigateToTab('tab-issued-order', unavailable.map(u => u.orderLine))}>
               {self.orderString}
               <ion-icon slot="end" name="checkmark-circle"></ion-icon>

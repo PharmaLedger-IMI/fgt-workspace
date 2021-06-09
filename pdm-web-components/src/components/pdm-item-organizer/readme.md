@@ -18,9 +18,9 @@
 
 ## Events
 
-| Event          | Description | Type                                   |
-| -------------- | ----------- | -------------------------------------- |
-| `selectAction` |             | `CustomEvent<OverlayEventDetail<any>>` |
+| Event         | Description | Type                  |
+| ------------- | ----------- | --------------------- |
+| `selectEvent` |             | `CustomEvent<string>` |
 
 
 ## Dependencies

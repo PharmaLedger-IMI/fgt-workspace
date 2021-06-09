@@ -195,10 +195,6 @@
   },
   "stock": {
     "title": "Stocks",
-    "gtinHeader": "Gtin",
-    "nameHeader": "Name",
-    "batchesHeader": "Batches",
-    "quantityHeader": "Quantity",
     "none": "No products in stock..."
   },
   "scan": {

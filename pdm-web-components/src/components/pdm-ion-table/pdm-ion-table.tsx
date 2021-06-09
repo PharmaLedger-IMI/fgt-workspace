@@ -218,43 +218,6 @@ export class PdmIonTable implements ComponentInterface {
       )
     }
 
-    // const getActionButtons = function(){
-    //   if (!self.buttons || !Object.keys(self.buttons).length)
-    //     return;
-    //
-    //   const getButton = function(name, props, index){
-    //     const hasIcon = typeof props !== 'string';
-    //     const buttonLabel =  hasIcon ? props.label : props;
-    //     const buttonIcon = hasIcon ? props.icon : undefined;
-    //
-    //     const getIcon = function(){
-    //       if (!buttonIcon)
-    //         return;
-    //       return (<ion-icon class="ion-margin-start" slot="end" name={buttonIcon}></ion-icon>)
-    //     }
-    //
-    //     const buttonProps = {};
-    //     if (!self.sendRealEvents)
-    //       buttonProps['data-tag'] = name;
-    //     else
-    //       { // @ts-ignore
-    //         buttonProps['onClick'] = () => self.element.dispatchEvent(new CustomEvent(name, {
-    //           bubbles: true,
-    //           cancelable: true
-    //         }));
-    //       }
-    //
-    //     return (
-    //       <ion-button fill="solid" class="ion-margin-start" color={index === 0 ? "secondary" : "tertiary"} {...buttonProps}>
-    //         {buttonLabel}
-    //         {getIcon()}
-    //       </ion-button>
-    //     )
-    //   }
-    //
-    //   return Object.keys(self.buttons).map((name, i) => getButton(name, self.buttons[name], i));
-    // }
-
     return (
       <div class="ion-margin-top ion-padding-horizontal">
         <ion-row class="ion-align-items-center ion-justify-content-between">

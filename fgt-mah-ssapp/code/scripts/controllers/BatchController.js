@@ -39,9 +39,8 @@ export default class BatchController extends LocalizedController {
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            const state = self.getState();
+            const state = evt.detail;
             if (state && state.gtin){
-                self.setState(undefined);
                 const gtinRef = state.gtin + (state.batchNumber ? `-${state.batchNumber}` : '');
                 if (self.model.gtinBatch === gtinRef)
                     return self.batchEl.refresh();

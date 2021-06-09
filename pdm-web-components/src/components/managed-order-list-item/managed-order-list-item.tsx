@@ -130,7 +130,7 @@ export class ManagedOrderListItem {
                           id-prop="gtin"
                           is-ion-item="false"
                           display-count="3"
-                          onSelectAction={gtin => console.log(`selected ${gtin}`)}></pdm-item-organizer>
+                          onSelectEvent={gtin => console.log(`selected ${gtin}`)}></pdm-item-organizer>
     );
   }
 
@@ -154,7 +154,7 @@ export class ManagedOrderListItem {
         scale: "6",
         data: self.order.orderId
       }, evt)),
-      getButton("end", "medium", "eye", () => self.navigateToTab('tab-order', {orderRef: self.order.orderId}))
+      getButton("end", "medium", "cog", () => self.navigateToTab('tab-order', {orderId: self.order.orderId, requesterId: self.order.requesterId}))
     ]
   }
 

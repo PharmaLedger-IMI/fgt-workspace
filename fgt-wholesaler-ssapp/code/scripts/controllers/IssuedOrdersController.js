@@ -31,38 +31,6 @@ export default class IssuedOrdersController extends LocalizedController {
         self.onTagClick("new-issued-order", () => {
             self.navigateToTab('tab-issued-order');
         });
-
-        // pressed "CANCEL" while creating a new Issued Order
-        self.on("cancel-new-issued-order", (event) => {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            self.hideModal();
-        }, true);
-
-        // created a new Issued Order with success
-        self.on("created-issued-order", (event) => {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            self.hideModal();
-            self.refresh();
-        }, true);
-    }
-
-    _showCreateModal() {
-        let self = this;
-
-        self.createWebcModal({
-            template: "issuedOrderModal",
-            controller: "IssuedOrderController",
-            disableBackdropClosing: true,
-            disableFooter: true,
-            disableHeader: true,
-            disableExpanding: true,
-            disableClosing: true,
-            disableCancelButton: true,
-            expanded: false,
-            centered: true
-        });
     }
 }
 

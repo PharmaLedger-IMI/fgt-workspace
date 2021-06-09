@@ -31,9 +31,8 @@ export default class ProductController extends LocalizedController {
             evt.stopImmediatePropagation();
             self.model.manufId = self.productManager.getIdentity().id;
 
-            const state = self.getState();
+            const state = evt.detail;
             if (state && state.gtin){
-                self.setState(undefined);
                 if (state.gtin === self.model.gtinRef)
                     return self.productEl.refresh();
                 self.model.gtinRef = state.gtin;

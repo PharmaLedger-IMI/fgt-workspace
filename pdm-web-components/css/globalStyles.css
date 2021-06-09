@@ -1,5 +1,3 @@
-@import '../node_modules/@ionic/core/css/ionic.bundle.css';
-
 :root {
   --ion-color-primary: #008798;
   --ion-color-primary-rgb: 0, 135, 152;
@@ -156,4 +154,12 @@ ion-input {
   -moz-user-select: text;
   -ms-user-select: text;
   user-select: text;
+}
+
+ion-row.main-content-row {
+  height: 100%
+}
+
+ion-tab-bar{
+  --color-selected: var(--ion-color-secondary);
 }
