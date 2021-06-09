@@ -171,9 +171,9 @@ export class ManagedBatch {
     return [
       <div class="flex ion-align-items-center">
         <ion-icon name="layers" size="large" color="medium"></ion-icon>
-        <div class="ion-text-uppercase ion-padding-start ion-color-secondary">
+        <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">
           {(this.isCreate() ? this.titleString : this.manageString) + (this.getGtinBatch() ? ` for ${this.getGtinBatch().gtin}` : '')}
-        </div>
+        </ion-label>
       </div>,
       <ion-row class="ion-align-items-center">
         <ion-button color="secondary" fill="clear" class="ion-margin-start" onClick={() => this.navigateBack()}>
@@ -237,7 +237,7 @@ export class ManagedBatch {
         if (!isCreate)
           return;
         return (
-          <ion-button slot="end" onClick={() => self.setRandomBatchNumber.call(self)}>
+          <ion-button size="large" fill="clear" slot="end" onClick={() => self.setRandomBatchNumber.call(self)}>
             <ion-icon slot="icon-only" name="shuffle"></ion-icon>
           </ion-button>
         )
@@ -247,7 +247,7 @@ export class ManagedBatch {
         if (isCreate)
           return;
         return (
-          <ion-button color="medium" fill="clear" slot="end" onClick={(evt) => getBarCodePopOver({
+          <ion-button size="large" color="medium" fill="clear" slot="end" onClick={(evt) => getBarCodePopOver({
             type: "code128",
             size: "32",
             scale: "6",
@@ -265,7 +265,7 @@ export class ManagedBatch {
             <ion-input name="input-serials" required={true}
                           placeholder={self.serialsPlaceholderString}
                           ></ion-input>
-            <ion-button slot="end" onClick={() => self.parseSerialNumbers()}>
+            <ion-button size="large" fill="clear" slot="end" onClick={() => self.parseSerialNumbers()}>
               <ion-icon slot="icon-only" name="add-circle"></ion-icon>
             </ion-button>
           </ion-item>

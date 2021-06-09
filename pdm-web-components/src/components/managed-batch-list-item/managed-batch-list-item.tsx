@@ -99,6 +99,12 @@ export class ManagedBatchListItem {
     }
   }
 
+  private triggerSelect(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    console.log(`Selected ${evt.detail}`);
+  }
+
   addLabel(){
     const self = this;
 
@@ -122,24 +128,18 @@ export class ManagedBatchListItem {
       </ion-label>)
   }
 
-  addSerialNumber(serial){
-    return(
-      <ion-chip outline color="primary">
-        <ion-label class="ion-padding-horizontal">{serial}</ion-label>
-      </ion-chip>
-    )
-  }
-
   addSerialsNumbers(){
     if (!this.serialNumbers || !this.batch)
       return (<multi-spinner type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
     return(
       <pdm-item-organizer component-name="generic-chip"
                           component-props={JSON.stringify(this.batch.serialNumbers.map(serial => ({
-                            "chip-label": serial
+                            "chip-label": serial,
+                            "class": "ion-margin-start"
                           })))}
                           id-prop="chip-label"
-                          is-ion-item="false"></pdm-item-organizer>
+                          is-ion-item="false"
+                          onSelectEvent={this.triggerSelect.bind(this)}></pdm-item-organizer>
     )
   }
 

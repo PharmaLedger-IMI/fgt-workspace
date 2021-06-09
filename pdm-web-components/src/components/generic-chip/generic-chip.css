@@ -5,7 +5,6 @@
 generic-chip{
   --color-step: var(--ion-color-primary);
   --color-step-rgba: rgba(var(--color-step), 0.10);
-
   --color-step-0: #c70000;
   --color-step-5: #c0070d;
   --color-step-10: #ba0e1a;

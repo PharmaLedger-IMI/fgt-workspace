@@ -131,7 +131,12 @@ export class ManagedProductListItem {
                             "loader-type": SUPPORTED_LOADERS.bubblingSmall
                           })))}
                           id-prop="gtin-batch"
-                          is-ion-item="false"></pdm-item-organizer>
+                          is-ion-item="false"
+                          onSelectEvent={(evt) => {
+                            evt.preventDefault();
+                            evt.stopImmediatePropagation();
+                            console.log(`Selected ${evt.detail}`);
+                          }}></pdm-item-organizer>
     )
   }
 

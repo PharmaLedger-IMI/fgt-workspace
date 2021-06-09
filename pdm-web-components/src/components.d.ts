@@ -31,12 +31,20 @@ export namespace Components {
         "mode"?: string;
         "quantity"?: number;
     }
+    interface CreateManageViewLayout {
+        "backString": string;
+        "clearString": string;
+        "createString": string;
+        "createTitleString": string;
+        "iconName"?: string;
+        "isCreate": boolean;
+        "manageTitleString": string;
+    }
     interface GenericChip {
         "badges": any;
         "buttons": any;
         "chipLabel": string;
         "color"?: string;
-        "cssClass"?: string;
         "outline"?: boolean;
     }
     interface ManagedBatch {
@@ -117,6 +125,23 @@ export namespace Components {
         "threshold"?: number;
     }
     interface ManagedProduct {
+        "addProductString": string;
+        "backString": string;
+        "batchesAddButton": string;
+        "batchesTitle": string;
+        "cancelString": string;
+        "descriptionPlaceholderString": string;
+        "descriptionString": string;
+        "gtin"?: string;
+        "gtinString": string;
+        "manageString": string;
+        "manufName"?: string;
+        "manufString": string;
+        "nameString": string;
+        "refresh": (newGtin: any, oldGtin: any) => Promise<void>;
+        "titleString": string;
+    }
+    interface ManagedProduct2 {
         "addProductString": string;
         "backString": string;
         "batchesAddButton": string;
@@ -303,6 +328,12 @@ declare global {
         prototype: HTMLBatchChipElement;
         new (): HTMLBatchChipElement;
     };
+    interface HTMLCreateManageViewLayoutElement extends Components.CreateManageViewLayout, HTMLStencilElement {
+    }
+    var HTMLCreateManageViewLayoutElement: {
+        prototype: HTMLCreateManageViewLayoutElement;
+        new (): HTMLCreateManageViewLayoutElement;
+    };
     interface HTMLGenericChipElement extends Components.GenericChip, HTMLStencilElement {
     }
     var HTMLGenericChipElement: {
@@ -356,6 +387,12 @@ declare global {
     var HTMLManagedProductElement: {
         prototype: HTMLManagedProductElement;
         new (): HTMLManagedProductElement;
+    };
+    interface HTMLManagedProduct2Element extends Components.ManagedProduct2, HTMLStencilElement {
+    }
+    var HTMLManagedProduct2Element: {
+        prototype: HTMLManagedProduct2Element;
+        new (): HTMLManagedProduct2Element;
     };
     interface HTMLManagedProductListItemElement extends Components.ManagedProductListItem, HTMLStencilElement {
     }
@@ -444,6 +481,7 @@ declare global {
     interface HTMLElementTagNameMap {
         "barcode-generator": HTMLBarcodeGeneratorElement;
         "batch-chip": HTMLBatchChipElement;
+        "create-manage-view-layout": HTMLCreateManageViewLayoutElement;
         "generic-chip": HTMLGenericChipElement;
         "managed-batch": HTMLManagedBatchElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
@@ -453,6 +491,7 @@ declare global {
         "managed-orderline-list-item": HTMLManagedOrderlineListItemElement;
         "managed-orderline-stock-chip": HTMLManagedOrderlineStockChipElement;
         "managed-product": HTMLManagedProductElement;
+        "managed-product-2": HTMLManagedProduct2Element;
         "managed-product-list-item": HTMLManagedProductListItemElement;
         "managed-received-order": HTMLManagedReceivedOrderElement;
         "managed-shipment-list-item": HTMLManagedShipmentListItemElement;
@@ -495,12 +534,22 @@ declare namespace LocalJSX {
         "onSelectEvent"?: (event: CustomEvent<string>) => void;
         "quantity"?: number;
     }
+    interface CreateManageViewLayout {
+        "backString"?: string;
+        "clearString"?: string;
+        "createString"?: string;
+        "createTitleString"?: string;
+        "iconName"?: string;
+        "isCreate"?: boolean;
+        "manageTitleString"?: string;
+        "onCreateEvent"?: (event: CustomEvent<{}>) => void;
+        "onGoBackEvent"?: (event: CustomEvent<any>) => void;
+    }
     interface GenericChip {
         "badges"?: any;
         "buttons"?: any;
         "chipLabel"?: string;
         "color"?: string;
-        "cssClass"?: string;
         "onSelectEvent"?: (event: CustomEvent<string>) => void;
         "outline"?: boolean;
     }
@@ -647,6 +696,34 @@ declare namespace LocalJSX {
         "threshold"?: number;
     }
     interface ManagedProduct {
+        "addProductString"?: string;
+        "backString"?: string;
+        "batchesAddButton"?: string;
+        "batchesTitle"?: string;
+        "cancelString"?: string;
+        "descriptionPlaceholderString"?: string;
+        "descriptionString"?: string;
+        "gtin"?: string;
+        "gtinString"?: string;
+        "manageString"?: string;
+        "manufName"?: string;
+        "manufString"?: string;
+        "nameString"?: string;
+        /**
+          * Through this event action requests are made
+         */
+        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "titleString"?: string;
+    }
+    interface ManagedProduct2 {
         "addProductString"?: string;
         "backString"?: string;
         "batchesAddButton"?: string;
@@ -875,7 +952,7 @@ declare namespace LocalJSX {
           * If the component does not generate an ion-item (so it can be handled by an ion-list) this must be set to false
          */
         "isItem"?: boolean;
-        "onSelectAction"?: (event: CustomEvent<OverlayEventDetail>) => void;
+        "onSelectEvent"?: (event: CustomEvent<string>) => void;
     }
     interface PdmSsappLoader {
         "loader"?: string;
@@ -895,6 +972,7 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;
         "batch-chip": BatchChip;
+        "create-manage-view-layout": CreateManageViewLayout;
         "generic-chip": GenericChip;
         "managed-batch": ManagedBatch;
         "managed-batch-list-item": ManagedBatchListItem;
@@ -904,6 +982,7 @@ declare namespace LocalJSX {
         "managed-orderline-list-item": ManagedOrderlineListItem;
         "managed-orderline-stock-chip": ManagedOrderlineStockChip;
         "managed-product": ManagedProduct;
+        "managed-product-2": ManagedProduct2;
         "managed-product-list-item": ManagedProductListItem;
         "managed-received-order": ManagedReceivedOrder;
         "managed-shipment-list-item": ManagedShipmentListItem;
@@ -926,6 +1005,7 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "barcode-generator": LocalJSX.BarcodeGenerator & JSXBase.HTMLAttributes<HTMLBarcodeGeneratorElement>;
             "batch-chip": LocalJSX.BatchChip & JSXBase.HTMLAttributes<HTMLBatchChipElement>;
+            "create-manage-view-layout": LocalJSX.CreateManageViewLayout & JSXBase.HTMLAttributes<HTMLCreateManageViewLayoutElement>;
             "generic-chip": LocalJSX.GenericChip & JSXBase.HTMLAttributes<HTMLGenericChipElement>;
             "managed-batch": LocalJSX.ManagedBatch & JSXBase.HTMLAttributes<HTMLManagedBatchElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
@@ -935,6 +1015,7 @@ declare module "@stencil/core" {
             "managed-orderline-list-item": LocalJSX.ManagedOrderlineListItem & JSXBase.HTMLAttributes<HTMLManagedOrderlineListItemElement>;
             "managed-orderline-stock-chip": LocalJSX.ManagedOrderlineStockChip & JSXBase.HTMLAttributes<HTMLManagedOrderlineStockChipElement>;
             "managed-product": LocalJSX.ManagedProduct & JSXBase.HTMLAttributes<HTMLManagedProductElement>;
+            "managed-product-2": LocalJSX.ManagedProduct2 & JSXBase.HTMLAttributes<HTMLManagedProduct2Element>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
             "managed-received-order": LocalJSX.ManagedReceivedOrder & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderElement>;
             "managed-shipment-list-item": LocalJSX.ManagedShipmentListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentListItemElement>;

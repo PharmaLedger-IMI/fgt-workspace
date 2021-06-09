@@ -156,8 +156,11 @@ class MessageManager extends Manager{
         let self = this;
         console.log("_startMessageListener", did.getIdentifier());
         did.readMessage((err, message) => {
-            if (err)
-                return console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
+            if (err){
+                console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
+                return self._startMessageListener(did);
+            }
+
             console.log("did.readMessage did", did.getIdentifier(), "message", message);
             // jpsl: did.readMessage appears to return a string, but db.insertRecord requires a record object.
             // ... So JSON.parse the message into an object.

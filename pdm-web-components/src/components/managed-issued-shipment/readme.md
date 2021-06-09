@@ -73,6 +73,7 @@ graph TD;
   managed-issued-shipment --> managed-orderline-stock-chip
   batch-chip --> multi-spinner
   batch-chip --> generic-chip
+  managed-orderline-stock-chip --> generic-chip
   style managed-issued-shipment fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

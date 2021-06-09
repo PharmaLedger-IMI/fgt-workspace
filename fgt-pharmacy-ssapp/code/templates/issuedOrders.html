@@ -4,12 +4,12 @@
             item-reference="order-id"
             paginated="true"
             manager="IssuedOrderManager"
-            icon-name="stats-chart-outline"
+            icon-name="stats-chart"
             item-type="managed-order-list-item"
             item-props="type:issued"
             items-per-page="10">
-        <ion-button slot="buttons" color="secondary" data-tag="new-issued-order">
-            {{ @buttons.new-issued-order.label }}
+        <ion-button slot="buttons" fill="solid" color="secondary" data-tag="new-issued-order">
+            {{ @buttons.new-issued-order }}
             <ion-icon slot="end" name="add-circle"></ion-icon>
         </ion-button>
     </pdm-ion-table>

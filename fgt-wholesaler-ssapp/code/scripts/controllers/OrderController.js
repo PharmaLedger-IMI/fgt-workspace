@@ -28,9 +28,8 @@ export default class OrderController extends LocalizedController {
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            const state = self.getState();
+            const state = evt.detail;
             if (state && state.orderId && state.requesterId){
-                self.setState(undefined);
                 self.model.orderReference = `${state.requesterId}-${state.orderId}`
             } else {
                 self.showErrorToast(`No Order Received`);

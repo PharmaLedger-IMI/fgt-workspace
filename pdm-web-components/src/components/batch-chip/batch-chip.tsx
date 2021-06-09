@@ -105,7 +105,9 @@ export class BatchChip {
     )
   }
 
-  private triggerSelect(){
+  private triggerSelect(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
     this.selectEvent.emit(this.gtinBatch)
   }
 

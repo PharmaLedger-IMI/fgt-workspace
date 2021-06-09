@@ -19,8 +19,12 @@ export default class HomeController extends LocalizedController {
         this.on(EVENT_ION_TABS_WILL_CHANGE, (evt) => {
             const el = self.element.querySelector(`ion-tab[tab="${evt.detail.tab}"] webc-container`)
               || self.querySelector(`ion-tab[tab="${evt.detail.tab}"] ion-content`);
-            if (el)
-                el.dispatchEvent(new Event(EVENT_REFRESH));
+            if (el){
+              const detail = self.getState();
+              const evt = new Event(EVENT_REFRESH);
+              evt.detail = detail;
+              el.dispatchEvent(evt);
+            }
             // For side Menu Integration we forward the ionTabsWillChange event if it exists
             const menuEl = self.element.querySelectorAll(SIDE_MENU_CLASS_SELECTOR);
             if (menuEl && menuEl.length){

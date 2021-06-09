@@ -19,9 +19,8 @@ export default class ShipmentController extends LocalizedController{
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            const state = self.getState();
+            const state = self.detail();
             if (state && state.shipmentId && state.participantId){
-                self.setState(undefined);
                 self.model.shipmentReference = `${state.participantId}-${state.shipmentId}`;
             } else {
                 self.showErrorToast(`No Shipment Received`);

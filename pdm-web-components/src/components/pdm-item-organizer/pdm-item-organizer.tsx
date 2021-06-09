@@ -1,6 +1,5 @@
 import {Component, Host, h, Element, Prop, Listen, Watch, State, EventEmitter, Event} from '@stencil/core';
 import {HostElement} from "../../decorators";
-import {OverlayEventDetail} from "@ionic/core";
 
 const ORGANIZER_CUSTOM_EL_NAME = "organizer-item-popover";
 
@@ -16,7 +15,7 @@ export class PdmItemOrganizer {
   @Element() element;
 
   @Event()
-  selectAction: EventEmitter<OverlayEventDetail>
+  selectEvent: EventEmitter<string>
 
   /**
    * The number of items to display (minimum is 1), defaults to 3
@@ -125,7 +124,7 @@ export class PdmItemOrganizer {
 
     const {role} = await popover.onWillDismiss();
     if (role && role !== 'backdrop'){
-      this.triggerSelect(role);
+      this.selectEvent.emit(role);
     }
   }
 
@@ -136,15 +135,16 @@ export class PdmItemOrganizer {
     await this.getItemPopOver(evt.detail);
   }
 
-  private triggerSelect(reference){
-    this.selectAction.emit(reference)
+  private triggerSelect(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    this.selectEvent.emit(evt.detail);
   }
 
   private getComponentJSX(props){
     const self = this;
     const Tag = this.componentName;
-    const data = props[self.idProp];
-    return (<Tag {...props} onClick={() => self.triggerSelect(data)}></Tag>)
+    return (<Tag {...props} onSelectEvent={self.triggerSelect.bind(self)}></Tag>)
   }
 
   private getFilteredComponents(){
