@@ -101,7 +101,9 @@ export class ManagedOrderlineStockChip {
   private renderSimple(){
     return (
       <Host>
-        <generic-chip chip-label={this.gtin} outline={true} badges={() => this.renderQuantity()}></generic-chip>
+        <generic-chip chip-label={this.gtin} outline={true}>
+          {this.renderQuantity()}
+        </generic-chip>
       </Host>
     )
   }
@@ -110,7 +112,7 @@ export class ManagedOrderlineStockChip {
     if (!this.quantity && this.quantity !== 0)
       return;
     return (
-      <ion-badge class="ion-margin-start">{this.quantity}</ion-badge>
+      <ion-badge slot="badges">{this.quantity}</ion-badge>
     )
   }
 
@@ -144,7 +146,7 @@ export class ManagedOrderlineStockChip {
     }
 
     return (
-      <ion-button fill="clear" size="small" color={props.color} onClick={() => this.sendActionEvent()} disabled={props.disabled}>
+      <ion-button slot="buttons" fill="clear" size="small" color={props.color} onClick={() => this.sendActionEvent()} disabled={props.disabled}>
         <ion-icon slot="icon-only" name={props.iconName}></ion-icon>
       </ion-button>
     )
@@ -155,7 +157,10 @@ export class ManagedOrderlineStockChip {
       <Host>
         <generic-chip style={{
           "--color-step": this.getColor()
-        }} chip-label={this.gtin} outline={true} badges={() => [this.renderQuantity()]} buttons={() => [this.renderButton()]}></generic-chip>
+        }} chip-label={this.gtin} outline={true}>
+          {this.renderQuantity()}
+          {this.renderButton()}
+        </generic-chip>
       </Host>
     )
   }

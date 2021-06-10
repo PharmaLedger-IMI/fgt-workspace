@@ -26,6 +26,29 @@
 | `goBackEvent` |             | `CustomEvent<any>` |
 
 
+## Methods
+
+### `clear() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `getInput(name: string) => Promise<any>`
+
+
+
+#### Returns
+
+Type: `Promise<any>`
+
+
+
+
 ## Dependencies
 
 ### Used by

@@ -18,10 +18,6 @@ export class GenericChip {
 
   @Prop({attribute: "color"}) color?: string = "secondary";
 
-  @Prop({attribute: 'badges'}) badges = undefined
-
-  @Prop({attribute: 'buttons'}) buttons = undefined;
-
   @Event({
     bubbles: false
   })
@@ -30,18 +26,6 @@ export class GenericChip {
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
-  }
-
-  private getBadges(){
-    if (!this.badges)
-      return [];
-    return [...this.badges()];
-  }
-
-  private getButtons(){
-    if (!this.buttons)
-      return [];
-    return [...this.buttons()];
   }
 
   private triggerSelect(){
@@ -53,8 +37,12 @@ export class GenericChip {
       <Host>
         <ion-chip class="ion-padding-start" outline={this.outline} color={this.color} onClick={() => this.triggerSelect()}>
           <ion-label>{this.chipLabel}</ion-label>
-          {...this.getBadges()}
-          {...this.getButtons()}
+          <div class="badges-div ion-align-items-center ion-justify-content-between">
+            <slot name="badges"></slot>
+          </div>
+          <div class="button-div ion-align-items-center ion-justify-content-between">
+            <slot name="buttons"></slot>
+          </div>
         </ion-chip>
       </Host>
     )

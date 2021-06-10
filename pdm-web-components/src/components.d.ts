@@ -33,16 +33,16 @@ export namespace Components {
     }
     interface CreateManageViewLayout {
         "backString": string;
+        "clear": () => Promise<void>;
         "clearString": string;
         "createString": string;
         "createTitleString": string;
+        "getInput": (name: string) => Promise<any>;
         "iconName"?: string;
         "isCreate": boolean;
         "manageTitleString": string;
     }
     interface GenericChip {
-        "badges": any;
-        "buttons": any;
         "chipLabel": string;
         "color"?: string;
         "outline"?: boolean;
@@ -546,8 +546,6 @@ declare namespace LocalJSX {
         "onGoBackEvent"?: (event: CustomEvent<any>) => void;
     }
     interface GenericChip {
-        "badges"?: any;
-        "buttons"?: any;
         "chipLabel"?: string;
         "color"?: string;
         "onSelectEvent"?: (event: CustomEvent<string>) => void;

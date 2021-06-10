@@ -79,7 +79,7 @@ export class BatchChip {
       return `${daysLeft}d`;
     }
     return (
-      <ion-badge class="ion-margin-start" style={{
+      <ion-badge slot="badges" style={{
         "--color-step": `var(${getSteppedColor(this.expiryThreshold, this.batch.expiry, new Date())})`
       }}>{getDaysTillExpiryString()}</ion-badge>
     )
@@ -89,9 +89,9 @@ export class BatchChip {
     const self=this;
     return (
       <Host>
-        <generic-chip class="ion-margin-start" chip-label={this.getBatchNumber()} outline={true}
-                      color="secondary" onSelectEvent={self.triggerSelect.bind(self)}
-                      badges={() => [self.renderQuantity()]}>
+        <generic-chip chip-label={this.getBatchNumber()} outline={true}
+                      color="secondary" onSelectEvent={self.triggerSelect.bind(self)}>
+          {self.renderQuantity()}
         </generic-chip>
       </Host>
     )
@@ -101,7 +101,7 @@ export class BatchChip {
     if (!this.quantity && this.quantity !== 0)
       return;
     return (
-      <ion-badge class="ion-margin-start" color="tertiary">{this.quantity}</ion-badge>
+      <ion-badge slot="badges" color="tertiary">{this.quantity}</ion-badge>
     )
   }
 
@@ -115,9 +115,10 @@ export class BatchChip {
     const self = this;
     return (
       <Host>
-        <generic-chip class="ion-margin-start" chip-label={this.getBatchNumber()} outline={true} color="secondary"
-                      onSelectEvent={self.triggerSelect.bind(self)}
-                      badges={() => [self.renderExpiryInfo(), self.renderQuantity()]}>
+        <generic-chip chip-label={this.getBatchNumber()} outline={true} color="secondary"
+                      onSelectEvent={self.triggerSelect.bind(self)}>
+          {self.renderExpiryInfo()}
+          {self.renderQuantity()}
         </generic-chip>
       </Host>
     )

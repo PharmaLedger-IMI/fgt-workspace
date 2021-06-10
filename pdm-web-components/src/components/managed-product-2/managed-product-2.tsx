@@ -91,11 +91,17 @@ export class ManagedProduct2 {
 
   @State() product: typeof Product = undefined;
 
+  private layoutComponent = undefined;
+
   async componentWillLoad(){
     if (!this.host.isConnected)
       return;
     this.productManager = await WebManagerService.getWebManager("ProductManager");
     await this.loadProduct();
+  }
+
+  async componentDidRender(){
+    this.layoutComponent = this.layoutComponent || this.element.querySelector(`create-manage-view-layout`);
   }
 
   async loadProduct(){
@@ -179,14 +185,14 @@ export class ManagedProduct2 {
     this.sendCreateAction.emit(product);
   }
 
-  private setRandomGtin(){
-    const el = this.element.querySelector(`input[name="input-gtin"]`).closest('ion-input');
+  private async setRandomGtin(){
+    const el = await this.layoutComponent.getInput("gtin");
     el.setFocus();
     el.value = generateGtin();
   }
 
-  private setRandomName(){
-    const el = this.element.querySelector(`input[name="input-name"]`).closest('ion-input');
+  private async setRandomName(){
+    const el = await this.layoutComponent.getInput("name");
     el.setFocus();
     el.value = generateProductName();
   }
@@ -272,6 +278,9 @@ export class ManagedProduct2 {
                                    onGoBackEvent={(evt) => this.navigateBack(evt)}
                                    onCreateEvent={(evt) => this.createProduct(evt)}>
           <div slot="create">
+            {...this.getFields()}
+          </div>
+          <div slot="post-create">
             {...this.getFields()}
           </div>
           <div slot="manage">
