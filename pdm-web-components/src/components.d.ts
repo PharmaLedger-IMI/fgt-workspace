@@ -41,6 +41,7 @@ export namespace Components {
         "iconName"?: string;
         "isCreate": boolean;
         "manageTitleString": string;
+        "modelExtractor"?: ([]) => {};
     }
     interface GenericChip {
         "chipLabel": string;
@@ -155,7 +156,7 @@ export namespace Components {
         "manufName"?: string;
         "manufString": string;
         "nameString": string;
-        "refresh": (newGtin: any, oldGtin: any) => Promise<void>;
+        "refresh": () => Promise<void>;
         "titleString": string;
     }
     interface ManagedProductListItem {
@@ -542,6 +543,7 @@ declare namespace LocalJSX {
         "iconName"?: string;
         "isCreate"?: boolean;
         "manageTitleString"?: string;
+        "modelExtractor"?: ([]) => {};
         "onCreateEvent"?: (event: CustomEvent<{}>) => void;
         "onGoBackEvent"?: (event: CustomEvent<any>) => void;
     }

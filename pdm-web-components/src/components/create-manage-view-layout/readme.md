@@ -7,15 +7,16 @@
 
 ## Properties
 
-| Property            | Attribute             | Description | Type      | Default           |
-| ------------------- | --------------------- | ----------- | --------- | ----------------- |
-| `backString`        | `back-string`         |             | `string`  | `"Back"`          |
-| `clearString`       | `clear-string`        |             | `string`  | `"Clear"`         |
-| `createString`      | `create-string`       |             | `string`  | `"Create"`        |
-| `createTitleString` | `create-title-string` |             | `string`  | `"Create String"` |
-| `iconName`          | `icon-name`           |             | `string`  | `"grid"`          |
-| `isCreate`          | `is-create`           |             | `boolean` | `true`            |
-| `manageTitleString` | `manage-title-string` |             | `string`  | `"Manage String"` |
+| Property            | Attribute             | Description | Type                        | Default                   |
+| ------------------- | --------------------- | ----------- | --------------------------- | ------------------------- |
+| `backString`        | `back-string`         |             | `string`                    | `"Back"`                  |
+| `clearString`       | `clear-string`        |             | `string`                    | `"Clear"`                 |
+| `createString`      | `create-string`       |             | `string`                    | `"Create"`                |
+| `createTitleString` | `create-title-string` |             | `string`                    | `"Create String"`         |
+| `iconName`          | `icon-name`           |             | `string`                    | `"grid"`                  |
+| `isCreate`          | `is-create`           |             | `boolean`                   | `true`                    |
+| `manageTitleString` | `manage-title-string` |             | `string`                    | `"Manage String"`         |
+| `modelExtractor`    | --                    |             | `([]: Iterable<any>) => {}` | `this.extractFormResults` |
 
 
 ## Events
