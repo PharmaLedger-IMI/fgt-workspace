@@ -1,5 +1,7 @@
-import {Component, Host, h, Element, Event, EventEmitter, Prop} from '@stencil/core';
+import {Component, Host, h, Element, Event, EventEmitter, Prop, Method} from '@stencil/core';
 import {HostElement} from "../../decorators";
+import wizard from '../../services/WizardService';
+const {INPUT_FIELD_PREFIX} = wizard.Constants;
 
 @Component({
   tag: 'create-manage-view-layout',
@@ -28,12 +30,21 @@ export class CreateManageViewLayout {
 
   @Prop({attribute: "icon-name"}) iconName?: string = "grid"
 
-  private goBack(){
+  private goBack(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
     this.goBackEvent.emit();
   }
 
-  private create(props?){
-    this.createEvent.emit(props);
+  private create(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    this.createEvent.emit(evt.detail);
+  }
+
+  private reset(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
   }
 
 
@@ -56,10 +67,10 @@ export class CreateManageViewLayout {
 
   private getCreateToolbar(){
     return [
-      <ion-button role="clear" color="medium" fill="clear" class="ion-margin-start" onClick={this.goBack.bind(this)}>
+      <ion-button type="reset" color="medium" fill="clear" class="ion-margin-start">
         {this.clearString}
       </ion-button>,
-      <ion-button type="submit" color="secondary" class="ion-margin-start" onClick={this.create.bind(this)}>
+      <ion-button type="submit" color="secondary" class="ion-margin-start">
         {this.createString}
         <ion-icon slot="end" name="add-circle" class="ion-margin-start"></ion-icon>
       </ion-button>
@@ -77,21 +88,42 @@ export class CreateManageViewLayout {
       ]
     }
     return (
-      <form>
+      <form onSubmit={(e) => this.create(e)} onReset={(e) => this.reset(e)}>
         {...getCreateContent()}
       </form>
     )
   }
 
+  @Method()
+  async getInput(name: string){
+    const inputEl = this.element.querySelector(`form input[name="${INPUT_FIELD_PREFIX}${name}"]`);
+    return inputEl.closest('ion-input');
+  }
+
+  @Method()
+  async clear(){
+    const clearButtonEl = this.element.querySelector(`form ion-button[type="clear"]`);
+    clearButtonEl.click();
+  }
+
   private getManageContent(){
+
+    const getPostCreateContent = function(){
+      return (<slot name="post-create">This is the default post create content</slot>);
+    }
+
+    const getManageContent = function(){
+      return (<div><slot name="manage">This is a default manage content</slot></div>);
+    }
+
     return [
       <ion-grid>
         <ion-row>
           <ion-col size="12" size-lg="4" size-xl="3">
-            <slot name="create">This is the default create content</slot>
+            {getPostCreateContent()}
           </ion-col>
           <ion-col size="12" size-lg="8" size-xl="9">
-            <slot name="manage">This is a default manage content</slot>
+            {getManageContent()}
           </ion-col>
         </ion-row>
       </ion-grid>

@@ -9,8 +9,6 @@
 
 | Property    | Attribute    | Description | Type      | Default       |
 | ----------- | ------------ | ----------- | --------- | ------------- |
-| `badges`    | `badges`     |             | `any`     | `undefined`   |
-| `buttons`   | `buttons`    |             | `any`     | `undefined`   |
 | `chipLabel` | `chip-label` |             | `string`  | `undefined`   |
 | `color`     | `color`      |             | `string`  | `"secondary"` |
 | `outline`   | `outline`    |             | `boolean` | `true`        |
