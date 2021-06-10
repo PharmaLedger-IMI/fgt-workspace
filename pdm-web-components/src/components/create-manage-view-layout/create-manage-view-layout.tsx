@@ -1,4 +1,4 @@
-import {Component, Host, h, Element, Event, EventEmitter, Prop, Method} from '@stencil/core';
+import {Component, Host, h, Element, Event, EventEmitter, Prop, Method, Listen} from '@stencil/core';
 import {HostElement} from "../../decorators";
 import wizard from '../../services/WizardService';
 const {INPUT_FIELD_PREFIX} = wizard.Constants;
@@ -20,6 +20,7 @@ export class CreateManageViewLayout {
   goBackEvent: EventEmitter;
 
   @Prop({attribute: "is-create", mutable:true, reflect: true}) isCreate: boolean = true;
+  @Prop({attribute: "model-extractor"}) modelExtractor?: ([]) => {} = this.extractFormResults;
 
   // strings
   @Prop({attribute: "create-title-string"}) createTitleString: string = "Create String"
@@ -27,8 +28,11 @@ export class CreateManageViewLayout {
   @Prop({attribute: "back-string"}) backString: string = "Back"
   @Prop({attribute: "create-string"}) createString:string = "Create";
   @Prop({attribute: "clear-string"}) clearString: string = "Clear"
-
   @Prop({attribute: "icon-name"}) iconName?: string = "grid"
+
+  async componentDidRender(){
+    this.updateSlotsOnIsCreateChange(this.isCreate);
+  }
 
   private goBack(evt){
     evt.preventDefault();
@@ -39,14 +43,32 @@ export class CreateManageViewLayout {
   private create(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.createEvent.emit(evt.detail);
+    this.createEvent.emit(this.produceFormResult());
   }
 
   private reset(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
+    const formInputs = this.getIonInputs();
+    const notDisabledInputs = Array.prototype.filter.call(formInputs, (e) => !e.disabled);
+    notDisabledInputs.forEach(input => input.value = '');
   }
 
+  private produceFormResult(){
+    const applicableFields = Array.prototype.filter.call(this.getIonInputs(), (input) => input.name.startsWith(INPUT_FIELD_PREFIX));
+    return this.modelExtractor(applicableFields);
+  }
+
+  private extractFormResults(inputs){
+    return Array.prototype.reduce.call(inputs, (accum, input) => {
+      accum[input.name.substring(INPUT_FIELD_PREFIX.length)] = input.value;
+      return accum;
+    }, {});
+  }
+
+  private getIonInputs(){
+    return this.element.querySelector('form').querySelectorAll('ion-input, ion-textarea, ion-range, ion-checkbox, ion-radio, ion-select');
+  }
 
   private getHeader(){
     return [
@@ -89,9 +111,28 @@ export class CreateManageViewLayout {
     }
     return (
       <form onSubmit={(e) => this.create(e)} onReset={(e) => this.reset(e)}>
-        {...getCreateContent()}
+        <div>
+          {...getCreateContent()}
+        </div>
       </form>
     )
+  }
+
+  @Listen('slotchange')
+  updateSlots(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    const slot = e.target;
+    console.log(slot);
+  }
+
+  updateSlotsOnIsCreateChange(newVal){
+    if (typeof newVal !== 'boolean')
+      return;
+    const selector = newVal ? 'div[slot="create"]' : 'div[slot="postcreate"], div[slot="manage"]';
+    const slots = this.element.querySelectorAll(selector);
+    if (slots)
+      slots.forEach(s => s.hidden = false);
   }
 
   @Method()
@@ -109,21 +150,25 @@ export class CreateManageViewLayout {
   private getManageContent(){
 
     const getPostCreateContent = function(){
-      return (<slot name="post-create">This is the default post create content</slot>);
+      return <slot name="postcreate">This is the default post create content</slot>;
     }
 
     const getManageContent = function(){
-      return (<div><slot name="manage">This is a default manage content</slot></div>);
+      return <slot name="manage">This is a default manage content</slot>;
     }
 
     return [
       <ion-grid>
         <ion-row>
           <ion-col size="12" size-lg="4" size-xl="3">
-            {getPostCreateContent()}
+            <div>
+              {getPostCreateContent()}
+            </div>
           </ion-col>
           <ion-col size="12" size-lg="8" size-xl="9">
-            {getManageContent()}
+            <div>
+              {getManageContent()}
+            </div>
           </ion-col>
         </ion-row>
       </ion-grid>

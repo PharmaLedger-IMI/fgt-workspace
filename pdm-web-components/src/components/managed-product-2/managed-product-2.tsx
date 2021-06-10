@@ -120,21 +120,12 @@ export class ManagedProduct2 {
         return;
       }
       this.product = product;
-      self.refreshTable();
     });
   }
 
-  private refreshTable(){
-    const table = this.element.querySelector('pdm-ion-table');
-    if (table)
-      table.refresh();
-  }
-
-
   @Watch('gtin')
   @Method()
-  // @ts-ignore
-  async refresh(newGtin, oldGtin){
+  async refresh(){
     await this.loadProduct();
   }
 
@@ -161,28 +152,10 @@ export class ManagedProduct2 {
       })
   }
 
-  private createProduct(evt?){
-    if (evt){
-      evt.preventDefault();
-      evt.stopImmediatePropagation();
-    }
-
-    const trimInputToProp = function(el){
-      return el.name.substring('input-'.length);
-    }
-    const product = new Product();
-    const inputFields = this.getAllInputs();
-    for (let prop in product)
-      if (product.hasOwnProperty(prop)){
-        const input = Array.prototype.filter.call(inputFields, el => prop === trimInputToProp(el));
-        if (!input.length){
-          console.log(`Could not find input field for attribute ${prop}`);
-          continue;
-        }
-        product[prop] = input[0].value;
-      }
-
-    this.sendCreateAction.emit(product);
+  private createProduct(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    this.sendCreateAction.emit(new Product(evt.detail));
   }
 
   private async setRandomGtin(){
@@ -280,7 +253,7 @@ export class ManagedProduct2 {
           <div slot="create">
             {...this.getFields()}
           </div>
-          <div slot="post-create">
+          <div slot="postcreate">
             {...this.getFields()}
           </div>
           <div slot="manage">
