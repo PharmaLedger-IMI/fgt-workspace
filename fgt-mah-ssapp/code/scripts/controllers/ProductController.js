@@ -24,7 +24,7 @@ export default class ProductController extends LocalizedController {
         const wizard = require('wizard');
         const participantManager = wizard.Managers.getParticipantManager();
         this.productManager = wizard.Managers.getProductManager(participantManager);
-        this.productEl = this.element.querySelector('managed-product-2');
+        this.productEl = this.element.querySelector('managed-product');
 
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();

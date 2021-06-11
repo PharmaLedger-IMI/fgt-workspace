@@ -23,13 +23,13 @@ class OrderManager extends Manager {
 
     /**
      * generates the db's key for the Order
-     * @param {string|number} requesterId
+     * @param {string|number} otherActorId
      * @param {string|number} orderId
      * @return {string}
      * @protected
      */
-    _genCompostKey(requesterId, orderId){
-        return `${requesterId}-${orderId}`;
+    _genCompostKey(otherActorId, orderId){
+        return `${otherActorId}-${orderId}`;
     }
 
     /**
@@ -77,7 +77,6 @@ class OrderManager extends Manager {
                 if (err)
                     return self._err(`Could not send message to MAH ${mahId} for orderLine ${JSON.stringify(orderLine)} with ssi ${ssi}`, err, callback);
                 console.log(`Orderline ${JSON.stringify(orderLine)} transmitted to MAH ${mahId}`);
-                callback();
             })
         });
 

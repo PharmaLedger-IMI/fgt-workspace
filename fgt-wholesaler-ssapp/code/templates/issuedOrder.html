@@ -1,16 +1,23 @@
 <webc-container controller="IssuedOrderController">
-    <managed-issued-order order-lines="@orderLines"
-                          requester="@requester"
-                          title-string="@title"
-                          proceed-string="@buttons.create"
-                          details-string="@details"
-                          from-string="@from"
-                          from-placeholder-string="@fromPlaceholder"
-                          from-at-string="@fromAt"
-                          to-at-string="@toAt"
-                          products-string="@products"
-                          quantity-string="@quantity"
-                          scan-string="@scan"
-                          directory-string="@directory"
-        ></managed-issued-order>
+    <managed-order order-ref="@orderRef"
+                   order-lines="@orderLines"
+                   requester="@requester"
+
+                   order-type="issued"
+
+                   create-title-string="@create.title"
+                   manage-title-string="@manage.title"
+                   back-string="@back"
+                   scanner-title-string="@scan"
+
+                   create-string="@create.buttons.create"
+                   clear-string="@create.buttons.clear"
+
+                   from-string="@create.from"
+                   from-placeholder-string="@create.fromPlaceholder"
+                   from-at-string="@create.fromAt"
+                   to-at-string="@create.toAt"
+                   products-string="@create.products"
+                   quantity-string="@create.quantity"
+        ></managed-order>
 </webc-container>

@@ -41,7 +41,7 @@ class Order{
         if (!this.status) {
             errors.push('status is required.');
         }
-        if (!this.orderLines || this.orderLines.length == 0) {
+        if (!this.orderLines || !this.orderLines.length) {
             errors.push('orderLines is required.');
         } else {
             this.orderLines.forEach((orderLine,orderLineIndex) => {
