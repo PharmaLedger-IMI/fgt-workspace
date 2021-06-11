@@ -13,7 +13,7 @@
 | `backString`                   | `back-string`                    |             | `string` | `"Back to Products"`              |
 | `batchesAddButton`             | `batches-add-button-string`      |             | `string` | `"Add Batch"`                     |
 | `batchesTitle`                 | `batches-title-string`           |             | `string` | `"Batches for"`                   |
-| `cancelString`                 | `cancel-string`                  |             | `string` | `"cancel"`                        |
+| `clearString`                  | `clear-string`                   |             | `string` | `"Clear"`                         |
 | `descriptionPlaceholderString` | `description-placeholder-string` |             | `string` | `"Enter any description here..."` |
 | `descriptionString`            | `description-string`             |             | `string` | `"Product Description"`           |
 | `gtin`                         | `gtin`                           |             | `string` | `undefined`                       |
@@ -36,7 +36,7 @@
 
 ## Methods
 
-### `refresh(newGtin: any, oldGtin: any) => Promise<void>`
+### `refresh() => Promise<void>`
 
 
 
@@ -51,11 +51,13 @@ Type: `Promise<void>`
 
 ### Depends on
 
+- [create-manage-view-layout](../create-manage-view-layout)
 - [pdm-ion-table](../pdm-ion-table)
 
 ### Graph
 ```mermaid
 graph TD;
+  managed-product --> create-manage-view-layout
   managed-product --> pdm-ion-table
   pdm-ion-table --> multi-spinner
   style managed-product fill:#f9f,stroke:#333,stroke-width:4px

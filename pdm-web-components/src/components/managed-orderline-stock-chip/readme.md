@@ -31,6 +31,7 @@
 
  - [managed-issued-order](../managed-issued-order)
  - [managed-issued-shipment](../managed-issued-shipment)
+ - [managed-order](../managed-order)
  - [managed-received-order](../managed-received-order)
  - [managed-shipment-list-item](../managed-shipment-list-item)
 
@@ -44,6 +45,7 @@ graph TD;
   managed-orderline-stock-chip --> generic-chip
   managed-issued-order --> managed-orderline-stock-chip
   managed-issued-shipment --> managed-orderline-stock-chip
+  managed-order --> managed-orderline-stock-chip
   managed-received-order --> managed-orderline-stock-chip
   managed-shipment-list-item --> managed-orderline-stock-chip
   style managed-orderline-stock-chip fill:#f9f,stroke:#333,stroke-width:4px

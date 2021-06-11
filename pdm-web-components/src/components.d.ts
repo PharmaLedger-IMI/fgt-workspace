@@ -41,7 +41,6 @@ export namespace Components {
         "iconName"?: string;
         "isCreate": boolean;
         "manageTitleString": string;
-        "modelExtractor"?: ([]) => {};
     }
     interface GenericChip {
         "chipLabel": string;
@@ -52,11 +51,12 @@ export namespace Components {
         "addBatchString": string;
         "backString": string;
         "batchNumberString": string;
-        "cancelString": string;
+        "clearString": string;
+        "expiryPlaceholderString": string;
         "expiryString": string;
         "gtinRef"?: string;
         "manageString": string;
-        "refresh": (newGtinRef: any, oldGtinRef: any) => Promise<void>;
+        "refresh": () => Promise<void>;
         "serialsPlaceholderString": string;
         "serialsString": string;
         "titleString": string;
@@ -100,6 +100,44 @@ export namespace Components {
         "titleString": string;
         "unavailableString": string;
     }
+    interface ManagedOrder {
+        "availableString": string;
+        "backString": string;
+        "clearString": string;
+        "confirmAllString": string;
+        "confirmedString": string;
+        "createString": string;
+        "delayString": string;
+        "detailsString": string;
+        "directoryString": string;
+        "fromAtString": string;
+        "fromPlaceholderString": string;
+        "fromString": string;
+        "manageString": string;
+        "noStockString": string;
+        "orderLines": any;
+        "orderLinesString": string;
+        "orderRef"?: string;
+        "orderString": string;
+        "orderType": string;
+        "proceedString": string;
+        "productsCodeString": string;
+        "productsString": string;
+        "quantityString": string;
+        "refresh": () => Promise<void>;
+        "rejectString": string;
+        "remainingString": string;
+        "requester": any;
+        "resetAllString": string;
+        "scanString": string;
+        "selectOrderLine": (gtin: any) => Promise<void>;
+        "selectProductString": string;
+        "stockString": string;
+        "titleString": string;
+        "toAtString": string;
+        "unavailableString": string;
+        "updateDirectory": () => Promise<void>;
+    }
     interface ManagedOrderListItem {
         "orderId": string;
         "refresh": () => Promise<void>;
@@ -130,24 +168,7 @@ export namespace Components {
         "backString": string;
         "batchesAddButton": string;
         "batchesTitle": string;
-        "cancelString": string;
-        "descriptionPlaceholderString": string;
-        "descriptionString": string;
-        "gtin"?: string;
-        "gtinString": string;
-        "manageString": string;
-        "manufName"?: string;
-        "manufString": string;
-        "nameString": string;
-        "refresh": (newGtin: any, oldGtin: any) => Promise<void>;
-        "titleString": string;
-    }
-    interface ManagedProduct2 {
-        "addProductString": string;
-        "backString": string;
-        "batchesAddButton": string;
-        "batchesTitle": string;
-        "cancelString": string;
+        "clearString": string;
         "descriptionPlaceholderString": string;
         "descriptionString": string;
         "gtin"?: string;
@@ -365,6 +386,12 @@ declare global {
         prototype: HTMLManagedIssuedShipmentElement;
         new (): HTMLManagedIssuedShipmentElement;
     };
+    interface HTMLManagedOrderElement extends Components.ManagedOrder, HTMLStencilElement {
+    }
+    var HTMLManagedOrderElement: {
+        prototype: HTMLManagedOrderElement;
+        new (): HTMLManagedOrderElement;
+    };
     interface HTMLManagedOrderListItemElement extends Components.ManagedOrderListItem, HTMLStencilElement {
     }
     var HTMLManagedOrderListItemElement: {
@@ -388,12 +415,6 @@ declare global {
     var HTMLManagedProductElement: {
         prototype: HTMLManagedProductElement;
         new (): HTMLManagedProductElement;
-    };
-    interface HTMLManagedProduct2Element extends Components.ManagedProduct2, HTMLStencilElement {
-    }
-    var HTMLManagedProduct2Element: {
-        prototype: HTMLManagedProduct2Element;
-        new (): HTMLManagedProduct2Element;
     };
     interface HTMLManagedProductListItemElement extends Components.ManagedProductListItem, HTMLStencilElement {
     }
@@ -488,11 +509,11 @@ declare global {
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-issued-order": HTMLManagedIssuedOrderElement;
         "managed-issued-shipment": HTMLManagedIssuedShipmentElement;
+        "managed-order": HTMLManagedOrderElement;
         "managed-order-list-item": HTMLManagedOrderListItemElement;
         "managed-orderline-list-item": HTMLManagedOrderlineListItemElement;
         "managed-orderline-stock-chip": HTMLManagedOrderlineStockChipElement;
         "managed-product": HTMLManagedProductElement;
-        "managed-product-2": HTMLManagedProduct2Element;
         "managed-product-list-item": HTMLManagedProductListItemElement;
         "managed-received-order": HTMLManagedReceivedOrderElement;
         "managed-shipment-list-item": HTMLManagedShipmentListItemElement;
@@ -543,7 +564,6 @@ declare namespace LocalJSX {
         "iconName"?: string;
         "isCreate"?: boolean;
         "manageTitleString"?: string;
-        "modelExtractor"?: ([]) => {};
         "onCreateEvent"?: (event: CustomEvent<{}>) => void;
         "onGoBackEvent"?: (event: CustomEvent<any>) => void;
     }
@@ -557,7 +577,8 @@ declare namespace LocalJSX {
         "addBatchString"?: string;
         "backString"?: string;
         "batchNumberString"?: string;
-        "cancelString"?: string;
+        "clearString"?: string;
+        "expiryPlaceholderString"?: string;
         "expiryString"?: string;
         "gtinRef"?: string;
         "manageString"?: string;
@@ -652,6 +673,53 @@ declare namespace LocalJSX {
         "titleString"?: string;
         "unavailableString"?: string;
     }
+    interface ManagedOrder {
+        "availableString"?: string;
+        "backString"?: string;
+        "clearString"?: string;
+        "confirmAllString"?: string;
+        "confirmedString"?: string;
+        "createString"?: string;
+        "delayString"?: string;
+        "detailsString"?: string;
+        "directoryString"?: string;
+        "fromAtString"?: string;
+        "fromPlaceholderString"?: string;
+        "fromString"?: string;
+        "manageString"?: string;
+        "noStockString"?: string;
+        /**
+          * Through this event action requests are made
+         */
+        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "orderLines"?: any;
+        "orderLinesString"?: string;
+        "orderRef"?: string;
+        "orderString"?: string;
+        "orderType"?: string;
+        "proceedString"?: string;
+        "productsCodeString"?: string;
+        "productsString"?: string;
+        "quantityString"?: string;
+        "rejectString"?: string;
+        "remainingString"?: string;
+        "requester"?: any;
+        "resetAllString"?: string;
+        "scanString"?: string;
+        "selectProductString"?: string;
+        "stockString"?: string;
+        "titleString"?: string;
+        "toAtString"?: string;
+        "unavailableString"?: string;
+    }
     interface ManagedOrderListItem {
         /**
           * Through this event navigation requests to tabs are made
@@ -700,35 +768,7 @@ declare namespace LocalJSX {
         "backString"?: string;
         "batchesAddButton"?: string;
         "batchesTitle"?: string;
-        "cancelString"?: string;
-        "descriptionPlaceholderString"?: string;
-        "descriptionString"?: string;
-        "gtin"?: string;
-        "gtinString"?: string;
-        "manageString"?: string;
-        "manufName"?: string;
-        "manufString"?: string;
-        "nameString"?: string;
-        /**
-          * Through this event action requests are made
-         */
-        "onSsapp-action"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event navigation requests to tabs are made
-         */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event errors are passed
-         */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
-        "titleString"?: string;
-    }
-    interface ManagedProduct2 {
-        "addProductString"?: string;
-        "backString"?: string;
-        "batchesAddButton"?: string;
-        "batchesTitle"?: string;
-        "cancelString"?: string;
+        "clearString"?: string;
         "descriptionPlaceholderString"?: string;
         "descriptionString"?: string;
         "gtin"?: string;
@@ -978,11 +1018,11 @@ declare namespace LocalJSX {
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-issued-order": ManagedIssuedOrder;
         "managed-issued-shipment": ManagedIssuedShipment;
+        "managed-order": ManagedOrder;
         "managed-order-list-item": ManagedOrderListItem;
         "managed-orderline-list-item": ManagedOrderlineListItem;
         "managed-orderline-stock-chip": ManagedOrderlineStockChip;
         "managed-product": ManagedProduct;
-        "managed-product-2": ManagedProduct2;
         "managed-product-list-item": ManagedProductListItem;
         "managed-received-order": ManagedReceivedOrder;
         "managed-shipment-list-item": ManagedShipmentListItem;
@@ -1011,11 +1051,11 @@ declare module "@stencil/core" {
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-issued-order": LocalJSX.ManagedIssuedOrder & JSXBase.HTMLAttributes<HTMLManagedIssuedOrderElement>;
             "managed-issued-shipment": LocalJSX.ManagedIssuedShipment & JSXBase.HTMLAttributes<HTMLManagedIssuedShipmentElement>;
+            "managed-order": LocalJSX.ManagedOrder & JSXBase.HTMLAttributes<HTMLManagedOrderElement>;
             "managed-order-list-item": LocalJSX.ManagedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedOrderListItemElement>;
             "managed-orderline-list-item": LocalJSX.ManagedOrderlineListItem & JSXBase.HTMLAttributes<HTMLManagedOrderlineListItemElement>;
             "managed-orderline-stock-chip": LocalJSX.ManagedOrderlineStockChip & JSXBase.HTMLAttributes<HTMLManagedOrderlineStockChipElement>;
             "managed-product": LocalJSX.ManagedProduct & JSXBase.HTMLAttributes<HTMLManagedProductElement>;
-            "managed-product-2": LocalJSX.ManagedProduct2 & JSXBase.HTMLAttributes<HTMLManagedProduct2Element>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
             "managed-received-order": LocalJSX.ManagedReceivedOrder & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderElement>;
             "managed-shipment-list-item": LocalJSX.ManagedShipmentListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentListItemElement>;

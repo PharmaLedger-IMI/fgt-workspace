@@ -53,7 +53,6 @@ Type: `Promise<void>`
 ### Used by
 
  - [managed-product](../managed-product)
- - [managed-product-2](../managed-product-2)
 
 ### Depends on
 
@@ -64,7 +63,6 @@ Type: `Promise<void>`
 graph TD;
   pdm-ion-table --> multi-spinner
   managed-product --> pdm-ion-table
-  managed-product-2 --> pdm-ion-table
   style pdm-ion-table fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

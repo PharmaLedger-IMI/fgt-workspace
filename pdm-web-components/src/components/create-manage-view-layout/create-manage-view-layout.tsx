@@ -1,4 +1,4 @@
-import {Component, Host, h, Element, Event, EventEmitter, Prop, Method, Listen} from '@stencil/core';
+import {Component, Host, h, Element, Event, EventEmitter, Prop, Method} from '@stencil/core';
 import {HostElement} from "../../decorators";
 import wizard from '../../services/WizardService';
 const {INPUT_FIELD_PREFIX} = wizard.Constants;
@@ -19,8 +19,7 @@ export class CreateManageViewLayout {
   @Event()
   goBackEvent: EventEmitter;
 
-  @Prop({attribute: "is-create", mutable:true, reflect: true}) isCreate: boolean = true;
-  @Prop({attribute: "model-extractor"}) modelExtractor?: ([]) => {} = this.extractFormResults;
+  @Prop({attribute: "is-create", mutable: true, reflect: true}) isCreate: boolean = true;
 
   // strings
   @Prop({attribute: "create-title-string"}) createTitleString: string = "Create String"
@@ -46,9 +45,11 @@ export class CreateManageViewLayout {
     this.createEvent.emit(this.produceFormResult());
   }
 
-  private reset(evt){
-    evt.preventDefault();
-    evt.stopImmediatePropagation();
+  private reset(evt?){
+    if (evt){
+      evt.preventDefault();
+      evt.stopImmediatePropagation();
+    }
     const formInputs = this.getIonInputs();
     const notDisabledInputs = Array.prototype.filter.call(formInputs, (e) => !e.disabled);
     notDisabledInputs.forEach(input => input.value = '');
@@ -56,7 +57,7 @@ export class CreateManageViewLayout {
 
   private produceFormResult(){
     const applicableFields = Array.prototype.filter.call(this.getIonInputs(), (input) => input.name.startsWith(INPUT_FIELD_PREFIX));
-    return this.modelExtractor(applicableFields);
+    return this.extractFormResults(applicableFields);
   }
 
   private extractFormResults(inputs){
@@ -118,26 +119,20 @@ export class CreateManageViewLayout {
     )
   }
 
-  @Listen('slotchange')
-  updateSlots(e){
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    const slot = e.target;
-    console.log(slot);
-  }
-
-  updateSlotsOnIsCreateChange(newVal){
+  private updateSlotsOnIsCreateChange(newVal){
     if (typeof newVal !== 'boolean')
       return;
     const selector = newVal ? 'div[slot="create"]' : 'div[slot="postcreate"], div[slot="manage"]';
     const slots = this.element.querySelectorAll(selector);
     if (slots)
       slots.forEach(s => s.hidden = false);
+    if (newVal)
+      this.reset()
   }
 
   @Method()
   async getInput(name: string){
-    const inputEl = this.element.querySelector(`form input[name="${INPUT_FIELD_PREFIX}${name}"]`);
+    const inputEl = this.element.querySelector(`form input[name="${INPUT_FIELD_PREFIX}${name}"]`) || this.element.querySelector(`input[name="${INPUT_FIELD_PREFIX}${name}"]`);
     return inputEl.closest('ion-input');
   }
 

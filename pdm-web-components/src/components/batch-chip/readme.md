@@ -28,6 +28,7 @@
 ### Used by
 
  - [managed-issued-shipment](../managed-issued-shipment)
+ - [managed-order](../managed-order)
  - [managed-received-order](../managed-received-order)
 
 ### Depends on
@@ -41,6 +42,7 @@ graph TD;
   batch-chip --> multi-spinner
   batch-chip --> generic-chip
   managed-issued-shipment --> batch-chip
+  managed-order --> batch-chip
   managed-received-order --> batch-chip
   style batch-chip fill:#f9f,stroke:#333,stroke-width:4px
 ```

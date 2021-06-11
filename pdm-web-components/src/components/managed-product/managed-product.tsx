@@ -3,17 +3,17 @@ import {HostElement} from "../../decorators";
 import wizard from '../../services/WizardService';
 import {WebManager, WebManagerService} from "../../services/WebManagerService";
 import {getBarCodePopOver} from "../../utils/popOverUtils";
+import CreateManageView from "../create-manage-view-layout/CreateManageView";
 
 const {generateGtin, generateProductName} = wizard.Model.utils;
 const Product = wizard.Model.Product;
-// const {hasIonErrors} = wizard.Model.Validations;
 
 @Component({
   tag: 'managed-product',
   styleUrl: 'managed-product.css',
   shadow: false,
 })
-export class ManagedProduct {
+export class ManagedProduct implements CreateManageView{
 
   @HostElement() host: HTMLElement;
 
@@ -81,32 +81,36 @@ export class ManagedProduct {
   @Prop({attribute: "description-placeholder-string"}) descriptionPlaceholderString: string = "Enter any description here..."
 
   @Prop({attribute: "add-product-string"}) addProductString:string = "Add Product";
-  @Prop({attribute: "cancel-string"}) cancelString: string = "cancel"
+  @Prop({attribute: "clear-string"}) clearString: string = "Clear"
 
   @Prop({attribute: 'batches-title-string', mutable: true}) batchesTitle: string = "Batches for";
   @Prop({attribute: 'batches-add-button-string', mutable: true}) batchesAddButton: string = "Add Batch";
 
   private productManager: WebManager = undefined;
 
-  @State() errors: any = {}
-
   @State() product: typeof Product = undefined;
+
+  private layoutComponent = undefined;
 
   async componentWillLoad(){
     if (!this.host.isConnected)
       return;
     this.productManager = await WebManagerService.getWebManager("ProductManager");
-    await this.loadProduct();
+    await this.load();
   }
 
-  async loadProduct(){
+  async componentDidRender(){
+    this.layoutComponent = this.layoutComponent || this.element.querySelector(`create-manage-view-layout`);
+  }
+
+  async load(){
     let self = this;
     if (!self.productManager)
       return;
 
     if (this.isCreate()){
       this.product = undefined;
-      return this.clearInputFields();
+      return;
     }
 
     self.productManager.getOne(self.gtin, true, (err, product) => {
@@ -115,221 +119,103 @@ export class ManagedProduct {
         return;
       }
       this.product = product;
-      self.refreshTable();
     });
   }
 
-  private refreshTable(){
-    const table = this.element.querySelector('pdm-ion-table');
-    if (table)
-      table.refresh();
-  }
-
-
   @Watch('gtin')
   @Method()
-  // @ts-ignore
-  async refresh(newGtin, oldGtin){
-    await this.loadProduct();
+  async refresh(){
+    await this.load();
   }
 
-  private navigateBack(){
+  navigateBack(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
     this.navigateToTab('tab-products', {});
   }
 
-  private getAllInputs(){
-    return this.element.querySelectorAll(`input[name^="input-"], textarea[name^="input-"]`);
+  create(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    this.sendCreateAction.emit(new Product(evt.detail));
   }
 
-  private clearInputFields(){
-    Array.prototype.filter.call(this.getAllInputs(), el => el.name !== 'input-manufName')
-      .forEach(input => {
-        if (input.name === 'input-description'){
-          input.closest('ion-textarea').value = '';
-          return;
-        }
-        input.closest('ion-input').value = '';
-      })
-  }
-
-  private createProduct(){
-    const trimInputToProp = function(el){
-      return el.name.substring('input-'.length);
-    }
-    const product = new Product();
-    const inputFields = this.getAllInputs();
-    for (let prop in product)
-      if (product.hasOwnProperty(prop)){
-        const input = Array.prototype.filter.call(inputFields, el => prop === trimInputToProp(el));
-        if (!input.length){
-          console.log(`Could not find input field for attribute ${prop}`);
-          continue;
-        }
-        product[prop] = input[0].value;
-      }
-
-    this.sendCreateAction.emit(product);
-  }
-
-  private getHeader(){
-    return [
-      <div class="flex ion-align-items-center">
-        <ion-icon name="layers" size="large" color="medium"></ion-icon>
-        <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">
-          {this.isCreate() ? this.titleString : this.manageString}
-        </ion-label>
-      </div>,
-      <ion-row class="ion-align-items-center">
-        <ion-button color="secondary" fill="clear" class="ion-margin-start" onClick={() => this.navigateBack()}>
-          <ion-icon slot="start" name="return-up-back" class="ion-margin-end"></ion-icon>
-          {this.backString}
-        </ion-button>
-      </ion-row>
-    ]
-  }
-
-  private getCreateButtons(){
-    return [
-      <ion-button color="medium" fill="clear" class="ion-margin-start" onClick={() => this.navigateBack()}>
-        {this.cancelString}
-      </ion-button>,
-      <ion-button type="submit" color="secondary" class="ion-margin-start" onClick={() => this.createProduct()}>
-        {this.addProductString}
-        <ion-icon slot="end" name="add-circle" class="ion-margin-start"></ion-icon>
-      </ion-button>
-    ]
-  }
-
-  private getToolbar(){
-    if (this.isCreate())
-      return (
-        <div class="ion-text-end ion-padding-vertical ion-margin-top">
-          {this.getCreateButtons()}
-        </div>
-      )
-  }
-
-  private setRandomGtin(){
-    const el = this.element.querySelector(`input[name="input-gtin"]`).closest('ion-input');
+  private async setRandomGtin(){
+    const el = await this.layoutComponent.getInput("gtin");
     el.setFocus();
     el.value = generateGtin();
   }
 
-  private setRandomName(){
-    const el = this.element.querySelector(`input[name="input-name"]`).closest('ion-input');
+  private async setRandomName(){
+    const el = await this.layoutComponent.getInput("name");
     el.setFocus();
     el.value = generateProductName();
   }
 
-  private isCreate(){
+  isCreate(){
     return !this.gtin || this.gtin.startsWith('@');
   }
 
-  private getProductDetails(){
+  getCreate(){
     const self = this;
-    const isCreate = this.isCreate();
+    const isCreate = self.isCreate();
 
-    const getFields = function(){
-
-      const getRandomNameButton = function(){
-        if (!isCreate)
-          return;
-        return (
-          <ion-button size="large" fill="clear" slot="end" onClick={() => self.setRandomName.call(self)}>
-            <ion-icon slot="icon-only" name="shuffle"></ion-icon>
-          </ion-button>
-        )
-      }
-
-      const getRandomGtinButton = function(){
-        if (!isCreate)
-          return;
-        return (
-          <ion-button size="large" fill="clear" slot="end" onClick={() => self.setRandomGtin()}>
-            <ion-icon slot="icon-only" name="shuffle"></ion-icon>
-          </ion-button>
-        )
-      }
-
-      const getBarCodeButton = function(){
-        if (isCreate)
-          return;
-        return (
-          <ion-button size="large" color="medium" fill="clear" slot="end" onClick={(evt) => getBarCodePopOver({
-            type: "code128",
-            size: "32",
-            scale: "6",
-            data: self.gtin
-          }, evt)}>
-            <ion-icon slot="icon-only" name="barcode"></ion-icon>
-          </ion-button>
-        )
-      }
-
-      return [
-        <ion-item class="ion-margin-vertical">
-          <ion-label position="floating">{self.nameString}</ion-label>
-          <ion-input name="input-name" required={true} maxlength={30} disabled={!isCreate} value={isCreate ? '' : (self.product ? self.product.name : '')}></ion-input>
-          {getRandomNameButton()}
-        </ion-item>,
-        <ion-item class="ion-margin-bottom">
-          <ion-label position="floating">{self.gtinString}</ion-label>
-          <ion-input name="input-gtin" type="number" required={true} maxlength={14} minlength={14} disabled={!isCreate} value={isCreate ? '' : (self.product ? self.product.gtin : '')}></ion-input>
-          {isCreate ? getRandomGtinButton() : getBarCodeButton()}
-        </ion-item>,
-        <ion-item class="ion-margin-bottom">
-          <ion-label position="floating">{self.manufString}</ion-label>
-          <ion-input name="input-manufName" required={true} disabled={true} value={self.manufName}></ion-input>
-        </ion-item>,
-        <ion-item class="ion-margin-bottom">
-          <ion-label position="floating">{self.descriptionString}</ion-label>
-          <ion-textarea name="input-description" required={true} rows={6} cols={20} placeholder={self.descriptionPlaceholderString}
-                        maxlength={500} spellcheck={true} disabled={!isCreate} value={isCreate ? '' : (self.product ? self.product.description : '')}></ion-textarea>
-        </ion-item>
-      ]
+    const getRandomNameButton = function(){
+      if (!isCreate)
+        return;
+      return (
+        <ion-button size="large" fill="clear" slot="end" onClick={() => self.setRandomName.call(self)}>
+          <ion-icon slot="icon-only" name="shuffle"></ion-icon>
+        </ion-button>
+      )
     }
 
-    if (isCreate)
-      return getFields();
+    const getRandomGtinButton = function(){
+      if (!isCreate)
+        return;
+      return (
+        <ion-button size="large" fill="clear" slot="end" onClick={() => self.setRandomGtin()}>
+          <ion-icon slot="icon-only" name="shuffle"></ion-icon>
+        </ion-button>
+      )
+    }
+
+    const getBarCodeButton = function(){
+      if (isCreate)
+        return;
+      return (
+        <ion-button size="large" color="medium" fill="clear" slot="end" onClick={(evt) => getBarCodePopOver({
+          type: "code128",
+          size: "32",
+          scale: "6",
+          data: self.gtin
+        }, evt)}>
+          <ion-icon slot="icon-only" name="barcode"></ion-icon>
+        </ion-button>
+      )
+    }
 
     return [
-      <ion-grid>
-        <ion-row>
-          <ion-col size="12" size-lg="4" size-xl="3">
-            {...getFields()}
-          </ion-col>
-          <ion-col size="12" size-lg="8" size-xl="9">
-            <pdm-ion-table table-title={this.batchesTitle + ` ${self.gtin}`}
-                           item-reference="gtin-batch"
-                           query={this.gtin}
-                           canQuery={false}
-                           paginated={true}
-                           manager="BatchManager"
-                           icon-name="stats-chart"
-                           item-type="managed-batch-list-item"
-                           items-per-page="5"
-                           auto-load={true}>
-              <ion-button slot="buttons" color="secondary" fill="solid" onClick={() => self.navigateToTab('tab-batch', {
-                gtin: self.gtin,
-                batchNumber: undefined
-              })}>
-                {this.batchesAddButton}
-                <ion-icon slot="end" name="add-circle"></ion-icon>
-              </ion-button>
-            </pdm-ion-table>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <ion-item class="ion-margin-vertical">
+        <ion-label position="floating">{self.nameString}</ion-label>
+        <ion-input name="input-name" required={true} maxlength={30} disabled={!self.isCreate()} value={self.isCreate() ? '' : (self.product ? self.product.name : '')}></ion-input>
+        {getRandomNameButton()}
+      </ion-item>,
+      <ion-item class="ion-margin-bottom">
+        <ion-label position="floating">{self.gtinString}</ion-label>
+        <ion-input name="input-gtin" type="number" required={true} maxlength={14} minlength={14} disabled={!self.isCreate()} value={self.isCreate() ? '' : (self.product ? self.product.gtin : '')}></ion-input>
+        {isCreate ? getRandomGtinButton() : getBarCodeButton()}
+      </ion-item>,
+      <ion-item class="ion-margin-bottom">
+        <ion-label position="floating">{self.manufString}</ion-label>
+        <ion-input name="input-manufName" required={true} disabled={true} value={self.manufName}></ion-input>
+      </ion-item>,
+      <ion-item class="ion-margin-bottom">
+        <ion-label position="floating">{self.descriptionString}</ion-label>
+        <ion-textarea name="input-description" required={true} rows={6} cols={20} placeholder={self.descriptionPlaceholderString}
+                      maxlength={500} spellcheck={true} disabled={!self.isCreate()} value={self.isCreate() ? '' : (self.product ? self.product.description : '')}></ion-textarea>
+      </ion-item>
     ]
-  }
-
-  private getContent(){
-    return (
-      <ion-card class="ion-padding">
-        {...this.getProductDetails()}
-        {this.getToolbar()}
-      </ion-card>
-    )
   }
 
   render() {
@@ -337,13 +223,56 @@ export class ManagedProduct {
       return;
     return (
       <Host>
-        <div class="ion-margin-bottom ion-padding-horizontal">
-          <ion-row class="ion-align-items-center ion-justify-content-between">
-            {...this.getHeader()}
-          </ion-row>
-        </div>
-        {this.getContent()}
+        <create-manage-view-layout create-title-string={this.titleString}
+                                   manage-title-string={this.manageString}
+                                   back-string={this.backString}
+                                   create-string={this.addProductString}
+                                   clear-string={this.clearString}
+                                   icon-name="layers"
+                                   is-create={this.isCreate()}
+                                   onGoBackEvent={(evt) => this.navigateBack(evt)}
+                                   onCreateEvent={(evt) => this.create(evt)}>
+          <div slot="create">
+            {...this.getCreate()}
+          </div>
+          <div slot="postcreate">
+            {...this.getPostCreate()}
+          </div>
+          <div slot="manage">
+            {this.getManage()}
+          </div>
+          <div slot="view"></div>
+        </create-manage-view-layout>
       </Host>
     );
+  }
+
+  getManage() {
+    return (
+      <pdm-ion-table table-title={this.batchesTitle + ` ${this.gtin}`}
+                     item-reference="gtin-batch"
+                     query={this.gtin}
+                     canQuery={false}
+                     paginated={true}
+                     manager="BatchManager"
+                     icon-name="stats-chart"
+                     item-type="managed-batch-list-item"
+                     items-per-page="5">
+        <ion-button slot="buttons" color="secondary" fill="solid" onClick={() => this.navigateToTab('tab-batch', {
+          gtin: this.gtin,
+          batchNumber: undefined
+        })}>
+          {this.batchesAddButton}
+          <ion-icon slot="end" name="add-circle"></ion-icon>
+        </ion-button>
+      </pdm-ion-table>
+    )
+  }
+
+  getPostCreate(){
+    return this.getCreate()
+  }
+
+  getView(){
   }
 }

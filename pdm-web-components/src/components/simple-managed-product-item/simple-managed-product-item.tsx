@@ -126,7 +126,7 @@ export class SimpleManagedProductItem {
   render() {
     return (
       <Host>
-        <ion-item button={true} onClick={() => this.sendAction(this.gtin)} class="ion-align-self-center simple-item">
+        <ion-item lines="none" button={true} onClick={() => this.sendAction(this.gtin)} class="ion-align-self-center simple-item">
           {this.addBarCode()}
           {this.addLabel()}
         </ion-item>
