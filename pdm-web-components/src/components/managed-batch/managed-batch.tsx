@@ -3,17 +3,17 @@ import {HostElement} from "../../decorators";
 import wizard from '../../services/WizardService';
 import {WebManager, WebManagerService} from "../../services/WebManagerService";
 import {getBarCodePopOver} from "../../utils/popOverUtils";
+import CreateManageView from "../create-manage-view-layout/CreateManageView";
 
 const {generateBatchNumber} = wizard.Model.utils;
 const Batch = wizard.Model.Batch;
-// const {hasIonErrors} = wizard.Model.Validations;
 
 @Component({
   tag: 'managed-batch',
   styleUrl: 'managed-batch.css',
   shadow: false
 })
-export class ManagedBatch {
+export class ManagedBatch implements CreateManageView{
 
   @HostElement() host: HTMLElement;
 
@@ -75,25 +75,26 @@ export class ManagedBatch {
   @Prop({attribute: "back-string"}) backString: string = "Back to Product"
   @Prop({attribute: "batch-number-string"}) batchNumberString: string = "Batch Number:"
   @Prop({attribute: "expiry-string"}) expiryString: string = "Expiry:"
+  @Prop({attribute: "expiry-placeholder-string"}) expiryPlaceholderString: string = "Please define an expiry date..."
   @Prop({attribute: "serials-string"}) serialsString: string = "Serial Numbers:"
   @Prop({attribute: "serials-placeholder-string"}) serialsPlaceholderString: string = "Please insert comma separated serial numbers..."
 
   @Prop({attribute: "add-batch-string"}) addBatchString:string = "Add Batch";
-  @Prop({attribute: "cancel-string"}) cancelString: string = "cancel"
+  @Prop({attribute: "clear-string"}) clearString: string = "Clear"
 
   private batchManager: WebManager = undefined;
-
-  @State() errors: any = {}
 
   @State() batch: typeof Batch = undefined;
 
   @State() serialsNumbers: string[] = undefined;
 
+  private layoutComponent = undefined;
+
   async componentWillLoad(){
     if (!this.host.isConnected)
       return;
     this.batchManager = await WebManagerService.getWebManager("BatchManager");
-    await this.loadBatch();
+    await this.load();
   }
 
   private getGtinBatch(){
@@ -106,7 +107,7 @@ export class ManagedBatch {
     }
   }
 
-  async loadBatch(){
+  async load(){
     let self = this;
     if (!self.batchManager)
       return;
@@ -114,7 +115,7 @@ export class ManagedBatch {
     if (this.isCreate()){
       this.batch = undefined;
       this.serialsNumbers = undefined;
-      return this.clearInputFields();
+      return;
     }
 
     self.batchManager.getOne(self.gtinRef, true, (err, batch) => {
@@ -127,205 +128,114 @@ export class ManagedBatch {
     });
   }
 
-  @Watch('gtinRef')
-  @Method()
-  // @ts-ignore
-  async refresh(newGtinRef, oldGtinRef){
-    await this.loadBatch();
+  async componentDidRender(){
+    this.layoutComponent = this.layoutComponent || this.element.querySelector(`create-manage-view-layout`);
   }
 
-  private navigateBack(){
+  @Watch('gtinRef')
+  @Method()
+  async refresh(){
+    await this.load();
+  }
+
+  navigateBack(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
     this.navigateToTab('tab-product', {gtin: this.getGtinBatch().gtin});
   }
 
-  private getAllInputs(){
-    return this.element.querySelectorAll(`input[name^="input-"]`);
-  }
-
-  private clearInputFields(){
-    this.getAllInputs().forEach(input => {
-      const ionEl = input.closest('ion-input') || input.closest('ion-datetime');
-      if (ionEl)
-        ionEl.value = '';
-    });
-  }
-
-  private createBatch(){
-    const trimInputToProp = function(el){
-      return el.name.substring('input-'.length);
-    }
-    const batch = new Batch();
-    const inputFields = this.getAllInputs();
-    for (let prop in batch)
-      if (batch.hasOwnProperty(prop)){
-        const input = Array.prototype.filter.call(inputFields, el => prop === trimInputToProp(el));
-        if (!input.length)
-          continue;
-        batch[prop] = input[0].value;
-      }
-    batch.serialNumbers = this.serialsNumbers;
+  create(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    const batch = new Batch(evt.detail);
+    batch.serialNumbers = batch.serialNumbers.split(',');
     this.sendCreateAction.emit(batch);
   }
 
-  private getHeader(){
-    return [
-      <div class="flex ion-align-items-center">
-        <ion-icon name="layers" size="large" color="medium"></ion-icon>
-        <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">
-          {(this.isCreate() ? this.titleString : this.manageString) + (this.getGtinBatch() ? ` for ${this.getGtinBatch().gtin}` : '')}
-        </ion-label>
-      </div>,
-      <ion-row class="ion-align-items-center">
-        <ion-button color="secondary" fill="clear" class="ion-margin-start" onClick={() => this.navigateBack()}>
-          <ion-icon slot="start" name="return-up-back" class="ion-margin-end"></ion-icon>
-          {this.backString}
-        </ion-button>
-      </ion-row>
-    ]
-  }
-
-  private getCreateButtons(){
-    return [
-      <ion-button color="medium" fill="clear" class="ion-margin-start" onClick={() => this.navigateBack()}>
-        {this.cancelString}
-      </ion-button>,
-      <ion-button color="secondary" class="ion-margin-start" onClick={() => this.createBatch()}>
-        {this.addBatchString}
-        <ion-icon slot="end" name="add-circle" class="ion-margin-start"></ion-icon>
-      </ion-button>
-    ]
-  }
-
-  private getToolbar(){
-    if (this.isCreate())
-      return (
-        <div class="ion-text-end ion-padding-vertical ion-margin-top">
-          {this.getCreateButtons()}
-        </div>
-      )
-  }
-
-  private setRandomBatchNumber(){
-    const el = this.element.querySelector(`input[name="input-batchNumber"]`).closest('ion-input');
+  private async setRandomBatchNumber(){
+    const el = await this.layoutComponent.getInput("batchNumber");
     el.setFocus();
     el.value = generateBatchNumber();
   }
 
-  private isCreate(){
+  isCreate(){
     return !this.getGtinBatch() || !this.getGtinBatch().batchNumber;
   }
 
-  private parseSerialNumbers(){
-    const serialsEl = this.element.querySelector('input[name="input-serials"]').closest('ion-input');
-    const value = serialsEl.value;
-    if (!value.match(/[\d,]+/g))
-      return console.log(`invalid/empty serials`)
-    const serials = serialsEl.value.split(',');
+  private getSerials(){
     if (!this.serialsNumbers)
-      this.serialsNumbers = [];
-    this.serialsNumbers = [...serials, ...this.serialsNumbers];
-    serialsEl.value = '';
+      return;
+    return this.serialsNumbers.map(s => <generic-chip chip-label={s}></generic-chip>)
   }
 
-  private getBatchDetails(){
+  private addSerialNumbers(){
+    const newSerials = this.layoutComponent.getInput('serialNumbers').value.split(',');
+    this.serialsNumbers = [...this.serialsNumbers, ...newSerials];
+  }
+
+  getCreate(){
     const self = this;
-    const isCreate = this.isCreate();
+    const isCreate = self.isCreate();
 
-    const getFields = function(){
-
-      const getRandomBatchNumberButton = function(){
-        if (!isCreate)
-          return;
-        return (
-          <ion-button size="large" fill="clear" slot="end" onClick={() => self.setRandomBatchNumber.call(self)}>
-            <ion-icon slot="icon-only" name="shuffle"></ion-icon>
-          </ion-button>
-        )
-      }
-
-      const getBarCodeButton = function(){
-        if (isCreate)
-          return;
-        return (
-          <ion-button size="large" color="medium" fill="clear" slot="end" onClick={(evt) => getBarCodePopOver({
-            type: "code128",
-            size: "32",
-            scale: "6",
-            data: self.getGtinBatch().batchNumber
-          }, evt)}>
-            <ion-icon slot="icon-only" name="barcode"></ion-icon>
-          </ion-button>
-        )
-      }
-
-      const getSerialsInput = function(){
-        return (
-          <ion-item class="ion-margin-bottom">
-            <ion-label position="floating">{self.serialsString}</ion-label>
-            <ion-input name="input-serials" required={true}
-                          placeholder={self.serialsPlaceholderString}
-                          ></ion-input>
-            <ion-button size="large" fill="clear" slot="end" onClick={() => self.parseSerialNumbers()}>
-              <ion-icon slot="icon-only" name="add-circle"></ion-icon>
-            </ion-button>
-          </ion-item>
-        )
-      }
-
-      const formatDate = function(d){
-        return d.getFullYear() + '-' + ("0"+(d.getMonth()+1)).slice(-2) + '-' + ("0" + d.getDate()).slice(-2);
-      }
-
-      return [
-        <ion-item class="ion-margin-vertical">
-          <ion-label position="floating">{self.batchNumberString}</ion-label>
-          <ion-input name="input-batchNumber" required={true} maxlength={30} disabled={!isCreate} value={isCreate ? '' : (self.batch ? self.batch.batchNumber : '')}></ion-input>
-          {isCreate ? getRandomBatchNumberButton() : getBarCodeButton()}
-        </ion-item>,
-        <ion-item>
-          <ion-label position="floating">{self.expiryString}</ion-label>
-          <ion-datetime name="input-expiry" display-format="MM/DD/YYYY" min={formatDate(new Date())} disabled={!isCreate}></ion-datetime>
-        </ion-item>,
-        getSerialsInput()
-      ]
-    }
-
-    const getSerials = function(){
-      if (!self.serialsNumbers)
+    const getRandomBatchNumberButton = function(){
+      if (!isCreate)
         return;
-      return self.serialsNumbers.map(s => <generic-chip chip-label={s}></generic-chip>)
+      return (
+        <ion-button size="large" fill="clear" slot="end" onClick={() => self.setRandomBatchNumber.call(self)}>
+          <ion-icon slot="icon-only" name="shuffle"></ion-icon>
+        </ion-button>
+      )
     }
 
-    const props = {}, props2 = {};
+    const getBarCodeButton = function(){
+      if (isCreate)
+        return;
+      return (
+        <ion-button size="large" color="medium" fill="clear" slot="end" onClick={(evt) => getBarCodePopOver({
+          type: "code128",
+          size: "32",
+          scale: "6",
+          data: self.getGtinBatch().batchNumber
+        }, evt)}>
+          <ion-icon slot="icon-only" name="barcode"></ion-icon>
+        </ion-button>
+      )
+    }
 
-    if (!isCreate){
-      props['size-lg'] = "6";
-      props2['size-lg'] = "6";
-      props['size-xl'] = "5";
-      props2['size-xl'] = "7";
+    const formatDate = function(d){
+      return d.getFullYear() + '-' + ("0"+(d.getMonth()+1)).slice(-2) + '-' + ("0" + d.getDate()).slice(-2);
+    }
+
+    const getAddSerialsButton = function(){
+      if (self.isCreate())
+        return;
+      return (
+        <ion-button size="large" fill="clear" slot="end" onClick={() => self.addSerialNumbers()}>
+          <ion-icon slot="icon-only" name="add-circle"></ion-icon>
+        </ion-button>
+      )
     }
 
     return [
-      <ion-grid>
-        <ion-row>
-          <ion-col size="12" {...props}>
-            {...getFields()}
-          </ion-col>
-          <ion-col size="12" {...props2}>
-            {getSerials()}
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <ion-item class="ion-margin-top">
+        <ion-label position="floating">{self.batchNumberString}</ion-label>
+        <ion-input name="input-batchNumber" required={true} maxlength={30} disabled={!isCreate} value={isCreate ? '' : (self.batch ? self.batch.batchNumber : '')}></ion-input>
+        {isCreate ? getRandomBatchNumberButton() : getBarCodeButton()}
+      </ion-item>,
+      <ion-item>
+        <ion-label position="floating">{self.expiryString}</ion-label>
+        <ion-input type="date" name="input-expiry" min={formatDate(new Date())} required={true}
+                   disabled={!isCreate} placeholder={self.expiryPlaceholderString}
+                   value={isCreate ? '' : (self.batch ? self.batch.expiry : '')}></ion-input>
+      </ion-item>,
+      <ion-item>
+        <ion-label position="floating">{self.serialsString}</ion-label>
+        <ion-input name="input-serialNumbers" required={true} pattern="^[\d,]+$"
+                   placeholder={self.serialsPlaceholderString}
+        ></ion-input>
+        {getAddSerialsButton()}
+      </ion-item>
     ]
-  }
-
-  private getContent(){
-    return (
-      <ion-card class="ion-padding">
-        {...this.getBatchDetails()}
-        {this.getToolbar()}
-      </ion-card>
-    )
   }
 
   render() {
@@ -333,13 +243,38 @@ export class ManagedBatch {
       return;
     return (
       <Host>
-        <div class="ion-margin-bottom ion-padding-horizontal">
-          <ion-row class="ion-align-items-center ion-justify-content-between">
-            {...this.getHeader()}
-          </ion-row>
-        </div>
-        {this.getContent()}
+        <create-manage-view-layout create-title-string={this.titleString}
+                                   manage-title-string={this.manageString}
+                                   back-string={this.backString}
+                                   create-string={this.addBatchString}
+                                   clear-string={this.clearString}
+                                   icon-name="layers"
+                                   is-create={this.isCreate()}
+                                   onGoBackEvent={(evt) => this.navigateBack(evt)}
+                                   onCreateEvent={(evt) => this.create(evt)}>
+          <div slot="create">
+            {...this.getCreate()}
+          </div>
+          <div slot="postcreate">
+            {...this.getPostCreate()}
+          </div>
+          <div slot="manage">
+            {...this.getManage()}
+          </div>
+          <div slot="view"></div>
+        </create-manage-view-layout>
       </Host>
     );
+  }
+
+  getManage() {
+    return this.getSerials();
+  }
+
+  getPostCreate() {
+    return this.getCreate();
+  }
+
+  getView() {
   }
 }

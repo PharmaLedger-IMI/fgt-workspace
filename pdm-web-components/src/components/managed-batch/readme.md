@@ -12,7 +12,8 @@
 | `addBatchString`           | `add-batch-string`           |             | `string` | `"Add Batch"`                                       |
 | `backString`               | `back-string`                |             | `string` | `"Back to Product"`                                 |
 | `batchNumberString`        | `batch-number-string`        |             | `string` | `"Batch Number:"`                                   |
-| `cancelString`             | `cancel-string`              |             | `string` | `"cancel"`                                          |
+| `clearString`              | `clear-string`               |             | `string` | `"Clear"`                                           |
+| `expiryPlaceholderString`  | `expiry-placeholder-string`  |             | `string` | `"Please define an expiry date..."`                 |
 | `expiryString`             | `expiry-string`              |             | `string` | `"Expiry:"`                                         |
 | `gtinRef`                  | `gtin-ref`                   |             | `string` | `undefined`                                         |
 | `manageString`             | `manage-title-string`        |             | `string` | `"Manage Batch"`                                    |
@@ -32,7 +33,7 @@
 
 ## Methods
 
-### `refresh(newGtinRef: any, oldGtinRef: any) => Promise<void>`
+### `refresh() => Promise<void>`
 
 
 
@@ -48,11 +49,13 @@ Type: `Promise<void>`
 ### Depends on
 
 - [generic-chip](../generic-chip)
+- [create-manage-view-layout](../create-manage-view-layout)
 
 ### Graph
 ```mermaid
 graph TD;
   managed-batch --> generic-chip
+  managed-batch --> create-manage-view-layout
   style managed-batch fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

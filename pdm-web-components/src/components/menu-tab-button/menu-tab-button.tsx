@@ -120,7 +120,7 @@ export class MenuTabButton {
         const contentEl = this;
         const getContent = function(){
           return options.map(o => `
-<ion-item class="pop-over-item" tab="${o.tab}" button>
+<ion-item lines="none" class="pop-over-item" tab="${o.tab}" button>
     <ion-icon slot="start" name="${o.icon}"></ion-icon>
     <ion-label class="ion-padding-horizontal">${o.label}</ion-label>
 </ion-item>`).join('\n');

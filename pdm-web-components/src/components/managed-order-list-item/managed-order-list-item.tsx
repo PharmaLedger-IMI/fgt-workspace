@@ -147,6 +147,12 @@ export class ManagedOrderListItem {
       )
     }
 
+    const props = {
+      orderId: self.order.orderId,
+      requesterId: self.order.requesterId,
+      mode: self.type
+    };
+
     return [
       getButton("end", "medium", "barcode", (evt) => getBarCodePopOver({
         type: "code128",
@@ -154,7 +160,7 @@ export class ManagedOrderListItem {
         scale: "6",
         data: self.order.orderId
       }, evt)),
-      getButton("end", "medium", "cog", () => self.navigateToTab('tab-order', {orderId: self.order.orderId, requesterId: self.order.requesterId}))
+      getButton("end", "medium", "eye", () => self.navigateToTab('tab-order', props)),
     ]
   }
 
