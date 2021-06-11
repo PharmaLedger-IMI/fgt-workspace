@@ -17,24 +17,13 @@ export default class BatchController extends LocalizedController {
     constructor(...args) {
         super(false, ...args)
         let self = this;
-        console.log('Batch COntroller before model')
         super.bindLocale(self, `batch`, false);
         self.model = self.initializeModel();
-        console.log('batch controller after model')
 
         const wizard = require('wizard');
         const participantManager = wizard.Managers.getParticipantManager();
         this.batchManager = wizard.Managers.getBatchManager(participantManager);
-        console.log(this.batchManager)
         this.batchEl = this.element.querySelector('managed-batch');
-        console.log(this.batchEl),
-
-        self.on(EVENT_REFRESH, (evt) => {
-            evt.preventDefault();
-            evt.stopImmediatePropagation();
-            self.model.gtinBatch = evt.detail && evt.details.gtinBatch ? evt.detail.gtinBatch : undefined;
-            self.batchEl.refresh();
-        });
 
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
@@ -55,12 +44,6 @@ export default class BatchController extends LocalizedController {
             evt.preventDefault();
             evt.stopImmediatePropagation();
             self._handleCreateBatch.call(self, evt.detail);
-        });
-
-        self.on('add-serials',  (evt) => {
-            evt.preventDefault();
-            evt.stopImmediatePropagation();
-            console.log(`Serials ${evt.detail}`)
         });
 
         console.log("BatchController initialized");
