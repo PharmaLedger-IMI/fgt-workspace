@@ -29,7 +29,7 @@ export default class IssuedOrdersController extends LocalizedController {
 
         // pressing "NEW" to create a new Issued Order
         self.onTagClick("new-issued-order", () => {
-            self.navigateToTab('tab-issued-order');
+            self.navigateToTab('tab-order');
         });
     }
 }

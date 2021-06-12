@@ -1,23 +1,27 @@
-import {Component, Host, h, Element, Event, EventEmitter, Prop, State, Watch, Method, Listen} from '@stencil/core';
+import {Component, Host, h, Element, Event, EventEmitter, Prop, State, Watch, Method} from '@stencil/core';
 import {HostElement} from "../../decorators";
 import wizard from '../../services/WizardService';
 import {WebManager, WebManagerService} from "../../services/WebManagerService";
 import CreateManageView from "../create-manage-view-layout/CreateManageView";
-import {getProductPopOver, getDirectoryProducts, getDirectorySuppliers} from "../../utils/popOverUtils";
+import {
+  getProductPopOver,
+  getDirectoryProducts,
+  getDirectoryRequesters,
+} from "../../utils/popOverUtils";
 
-const ORDER_TYPE = {
+const SHIPMENT_TYPE = {
   ISSUED: "issued",
   RECEIVED: 'received'
 }
 
-const {Order, OrderLine, ROLE} = wizard.Model;
+const {ROLE, OrderLine, Shipment} = wizard.Model;
 
 @Component({
-  tag: 'managed-order',
-  styleUrl: 'managed-order.css',
+  tag: 'managed-shipment',
+  styleUrl: 'managed-shipment.css',
   shadow: false,
 })
-export class ManagedOrder implements CreateManageView{
+export class ManagedShipment implements CreateManageView{
 
   @HostElement() host: HTMLElement;
 
@@ -68,34 +72,37 @@ export class ManagedOrder implements CreateManageView{
       props: props
     });
     if (!event.defaultPrevented)
-      console.log(`Tab Navigation request seems to have been ignored by all components...`);
+      console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
 
-  @Prop({attribute: "order-ref", mutable: true}) orderRef?: string;
-  @Prop({attribute: 'order-lines', mutable: true}) orderLines;
+  // Functional Props
+  @Prop({attribute: "shipment-ref", mutable: true}) shipmentRef?: string;
+  @Prop({attribute: "order", mutable: true}) order = undefined;
   @Prop({attribute: 'identity', mutable: true}) identity;
-
-  @Prop({attribute: 'order-type', mutable: true}) orderType: string = ORDER_TYPE.ISSUED;
+  @Prop({attribute: 'shipment-type', mutable: true}) shipmentType: string = SHIPMENT_TYPE.ISSUED;
 
   // strings
+
+  // General
   @Prop({attribute: "create-title-string"}) titleString: string = "Title String"
   @Prop({attribute: "manage-title-string"}) manageString: string = "Manage String"
-  @Prop({attribute: "back-string"}) backString: string = "Back to Products"
+  @Prop({attribute: "back-string"}) backString: string = "Back"
   @Prop({attribute: "scanner-title-string"}) scanString: string = "Please Scan your Product"
 
-  @Prop({attribute: "create-string"}) createString:string = "Issue Order";
+  // Form Buttons
+  @Prop({attribute: "create-string"}) createString:string = "Issue Shipment";
   @Prop({attribute: "clear-string"}) clearString: string = "Clear"
 
-  @Prop({attribute: 'details-string', mutable: true}) detailsString: string = 'Details:';
-  @Prop({attribute: 'from-string', mutable: true}) fromString: string = 'Order from:';
-  @Prop({attribute: 'from-placeholder-string', mutable: true}) fromPlaceholderString: string = 'Select a supplier...';
+  // Input Strings
+  @Prop({attribute: 'order-id-string', mutable: true}) orderIdString: string = 'Order Id:';
+  @Prop({attribute: 'from-string', mutable: true}) fromString: string = 'Shipment from:';
+  @Prop({attribute: 'to-string', mutable: true}) to_String: string = 'Shipment to:';
+  @Prop({attribute: 'to-placeholder-string', mutable: true}) toPlaceholderString: string = 'Select a requester...';
   @Prop({attribute: 'from-at-string', mutable: true}) fromAtString: string = 'At:';
   @Prop({attribute: 'to-at-string', mutable: true}) toAtString: string = 'from:';
   @Prop({attribute: 'products-string', mutable: true}) productsString: string = 'Products:';
   @Prop({attribute: 'products-code-string', mutable: true}) productsCodeString: string = 'Product Code:';
   @Prop({attribute: 'quantity-string', mutable: true}) quantityString: string = 'Quantity:';
-  @Prop({attribute: 'order-lines-string', mutable: true}) orderLinesString: string = 'OrderLines:';
-  @Prop({attribute: 'directory-string', mutable: true}) directoryString: string = 'Directory:';
 
   // Displays
   @Prop({attribute: 'status-string', mutable: true}) statusString: string = 'Shipment Status:';
@@ -112,61 +119,61 @@ export class ManagedOrder implements CreateManageView{
   @Prop({attribute: 'remaining-string'}) remainingString: string = 'Remaining:';
   @Prop({attribute: 'order-missing-string'}) orderMissingString: string = 'Order Missing';
 
+
+  // @Prop({attribute: 'reject-string'}) rejectString: string = 'Reject';
+  //
+  //
+  // @Prop({attribute: 'proceed-string'}) proceedString: string = 'Continue:';
+  // @Prop({attribute: 'delay-string'}) delayString: string = 'Delay:';
+  //
+
+
+
   // Directory Variables
   private directoryManager: WebManager = undefined;
-  @State() suppliers?: string[] = undefined;
   @State() products?: string[] = undefined;
+  @State() requesters?: string[] = undefined;
 
-  private issuedOrderManager: WebManager = undefined;
-  private receivedOrderManager: WebManager = undefined;
-
-  // for new Orders
-  @State() participantId?: string = undefined;
-  @State() senderAddress?: string = undefined;
-
-  @State() currentGtin?: string = undefined;
-  @State() currentQuantity: number = 0;
-
-  // for existing ones
-  @Prop({attribute: 'reject-string'}) rejectString: string = 'Reject';
-
-  @Prop({attribute: 'proceed-string'}) proceedString: string = 'Continue:';
-  @Prop({attribute: 'delay-string'}) delayString: string = 'Delay:';
-
-  @State() order?: typeof Order = undefined;
-  @State() stockForProduct = undefined;
-  @State() selectedProduct: number = undefined;
+  private issuedShipmentManager: WebManager = undefined;
+  private receivedShipmentManager: WebManager = undefined;
 
   private layoutComponent = undefined;
+
+  // for new Shipments
+  @State() participantId?: string = undefined;
+  @State() shipment: typeof Shipment = undefined;
+
+  @State() orderLines;
+  @State() currentGtin?: string = undefined;
+  @State() currentQuantity: number = 0;
 
   async componentWillLoad(){
     if (!this.host.isConnected)
       return;
     this.directoryManager = await WebManagerService.getWebManager('DirectoryManager');
-    this.issuedOrderManager = await WebManagerService.getWebManager(`IssuedOrderManager`);
-    this.receivedOrderManager = await WebManagerService.getWebManager(`ReceivedOrderManager`);
+    this.issuedShipmentManager = await WebManagerService.getWebManager(`IssuedShipmentManager`);
+    this.receivedShipmentManager = await WebManagerService.getWebManager(`ReceivedShipmentManager`);
     return await this.load();
   }
 
   private getManager(){
-    return this.isCreate() || this.getType() === ORDER_TYPE.ISSUED ? this.issuedOrderManager : this.receivedOrderManager;
+    return this.isCreate() || this.getType() === SHIPMENT_TYPE.ISSUED ? this.issuedShipmentManager : this.receivedShipmentManager;
   }
 
   private getType(){
-    return this.orderType && !this.orderType.startsWith('@') ? this.orderType : ORDER_TYPE.ISSUED;
+    return this.shipmentType && !this.shipmentType.startsWith('@') ? this.shipmentType : SHIPMENT_TYPE.ISSUED;
   }
 
   async load(){
     let self = this;
 
     if (this.isCreate())
-      return this.reset()
+      return this.reset();
 
-    await self.getManager().getOne(this.orderRef, true, async (err, order) => {
+    await self.getManager().getOne(this.shipmentRef, true, async (err, shipment) => {
       if (err)
-        return this.sendError(`Could not retrieve order ${self.orderRef}`);
-      self.order = order;
-      self.orderLines = [...order.orderLines];
+        return this.sendError(`Could not retrieve shipment ${self.shipmentRef}`);
+      self.shipment = shipment;
     });
   }
 
@@ -177,7 +184,7 @@ export class ManagedOrder implements CreateManageView{
   @Method()
   async updateDirectory(){
     this.getDirectoryProductsAsync();
-    this.getDirectorySuppliersAsync();
+    this.getDirectoryRequestersAsync();
   }
 
   private getDirectoryProductsAsync(){
@@ -189,48 +196,36 @@ export class ManagedOrder implements CreateManageView{
     });
   }
 
-  private getDirectorySuppliersAsync(callback?){
+  private getDirectoryRequestersAsync(callback?){
     const self = this;
-    // if (!self.directoryManager)
-    //   return [];
-
-    getDirectorySuppliers(self.directoryManager, (err, records) => {
+    getDirectoryRequesters(self.directoryManager, (err, records) => {
       if (err){
-        self.sendError(`Could not list Suppliers from directory`, err);
+        self.sendError(`Could not list requesters from directory`, err);
         return callback && callback(err);
       }
 
-      self.suppliers = records;
+      self.requesters = records;
       if (callback)
         callback(undefined, records);
     });
   }
 
-  @Listen('ionChange')
-  onInputChange(evt){
-    evt.preventDefault();
-    evt.stopImmediatePropagation();
-    const {target} = evt;
-    const {name, value} = target;
-    if (name === 'input-quantity')
-      this.currentQuantity = value;
-    if (name === 'input-senderId')
-      this.participantId = value;
+  private async showProductPopOver(evt){
+    const popover = await getProductPopOver(evt, this.products);
+    const {role} = await popover.onWillDismiss();
+    if (role && role !== 'backdrop')
+      this.currentGtin = role;
   }
 
-  @Watch('orderRef')
+  @Watch('shipmentRef')
   @Method()
   async refresh(){
     await this.load();
-    // const stockEl = this.getStockManagerEl();
-    // // if (stockEl)
-    // //   stockEl.refresh();
   }
 
   @Method()
   async reset(){
     this.orderLines = [];
-    this.order = undefined;
     const stockEl = this.getStockManagerEl();
     if (stockEl)
       stockEl.reset();
@@ -243,17 +238,17 @@ export class ManagedOrder implements CreateManageView{
   navigateBack(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.navigateToTab(`tab-${this.getType()}-orders`, {});
+    this.navigateToTab(`tab-${this.getType()}-shipments`, {});
   }
 
   create(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.sendCreateAction.emit(new Order(undefined, this.identity.id, evt.detail.senderId, this.identity.address, undefined, this.orderLines.slice()));
+    this.sendCreateAction.emit(new Shipment(undefined, this.identity.id, evt.detail.senderId, this.identity.address, undefined, this.orderLines.slice()));
   }
 
   isCreate(){
-    return !this.orderRef || this.orderRef.startsWith('@');
+    return !this.shipmentRef || this.shipmentRef.startsWith('@');
   }
 
   private scan(){
@@ -270,7 +265,7 @@ export class ManagedOrder implements CreateManageView{
   }
 
   private addOrderLine(gtin, quantity){
-    this.orderLines = [...this.orderLines, new OrderLine(gtin, quantity, this.identity.id, this.participantId)]
+    this.orderLines = [...this.orderLines, new OrderLine(gtin, quantity, this.participantId , this.identity.id)]
     this.currentGtin = undefined;
     this.currentQuantity = 0;
   }
@@ -281,70 +276,130 @@ export class ManagedOrder implements CreateManageView{
     this.currentGtin = evt.detail;
   }
 
-  private async showProductPopOver(evt){
-    const popover = await getProductPopOver(evt, this.products);
-    const {role} = await popover.onWillDismiss();
-    if (role && role !== 'backdrop')
-      this.currentGtin = role;
-  }
-
-  getInputs(){
+  private getInputs(){
     const self = this;
     const isCreate = self.isCreate();
 
-    const getSender = function(){
-      const options = {
-        cssClass: 'product-select'
-      };
+    const options = {
+      cssClass: 'select-popover-select'
+    };
 
-      const getFrom = function(){
-        const result = [];
-        if (self.suppliers){
-          result.push(
-            <ion-select name="input-senderId" interface="popover" interfaceOptions={options}
-                        class="supplier-select" placeholder={self.fromPlaceholderString}
-                        disabled={!isCreate} value={!isCreate ? self.participantId : ''}>
-              {...self.suppliers.map(s => (<ion-select-option value={s}>{s}</ion-select-option>))}
-            </ion-select>
+    const getOrderReference = function(){
+      const getInput = function () {
+        if (self.getType() === SHIPMENT_TYPE.ISSUED && self.order && isCreate) {
+          return (
+            <ion-input name="input-orderId" disabled={true}
+                       value={self.getType() === SHIPMENT_TYPE.ISSUED ? self.order.orderId : 'TODO'}></ion-input>
           )
         } else {
-          result.push(<ion-skeleton-text animated></ion-skeleton-text>);
+          <ion-skeleton-text animated></ion-skeleton-text>;
         }
-
-        return result;
-      }
-
+      };
       return (
         <ion-item lines="none" disabled={false}>
-          <ion-label position="stacked">{self.fromString}</ion-label>
-          {...getFrom()}
+          <ion-label position="stacked">{self.orderIdString}</ion-label>
+          {getInput()}
         </ion-item>
       )
     }
 
+    const getSender = function() {
+      const getFrom = function () {
+        if (self.getType() === SHIPMENT_TYPE.ISSUED && self.requesters && isCreate) {
+
+          return (
+              <ion-select name="input-senderId" interface="popover" interfaceOptions={options}
+                          class="sender-select"
+                          disabled={!isCreate} value={!isCreate ? self.participantId : ''}>
+                {...self.requesters.map(s => (<ion-select-option value={s}>{s}</ion-select-option>))}
+              </ion-select>
+          )
+        } else if (isCreate || self.getType() === SHIPMENT_TYPE.RECEIVED) {
+          return (
+            <ion-input name="input-senderId" disabled={true} value={self.getType() === SHIPMENT_TYPE.RECEIVED ? self.participantId : self.identity.id}></ion-input>
+          )
+        } else {
+          <ion-skeleton-text animated></ion-skeleton-text>;
+        }
+      };
+
+      return (
+        <ion-item lines="none" disabled={false}>
+          <ion-label position="stacked">{self.fromString}</ion-label>
+          {getFrom()}
+        </ion-item>
+      )
+    }
+
+    const getRequester = function(){
+      const getTo = function(){
+        if (self.getType() === SHIPMENT_TYPE.ISSUED && self.requesters && isCreate) {
+          const options = {
+            cssClass: 'product-select'
+          };
+          return (
+            <ion-select name="input-requesterId" interface="popover" interfaceOptions={options}
+                        class="requester-select"
+                        value={!isCreate ? self.participantId : ''}>
+              {...self.requesters.map(s => (<ion-select-option value={s}>{s}</ion-select-option>))}
+            </ion-select>
+          )
+        } else if (self.getType() === SHIPMENT_TYPE.RECEIVED) {
+          return (
+            <ion-input name="input-requesterId" disabled={true} value={self.shipment.requesterId}></ion-input>
+          )
+        } else {
+          return <ion-skeleton-text animated></ion-skeleton-text>;
+        }
+      };
+
+      return (
+          <ion-item lines="none" disabled={false}>
+            <ion-label position="stacked">{self.to_String}</ion-label>
+            {getTo()}
+          </ion-item>
+        )
+    }
+
     const getRequesterLocale = function(){
       const getAddress = function(){
-        if (!self.order)
+        if (!self.shipment && !self.order)
           return (<ion-skeleton-text animated></ion-skeleton-text>)
-        return (<ion-input disabled={true} value={self.order.shipToAddress}></ion-input>);
+        return (<ion-input name="input-requester-address" disabled={true} value={self.order ? self.order.shipToAddress : self.shipment.shipFromAddress}></ion-input>);
       }
       return (
         <ion-item lines="none" >
-          <ion-label position="stacked">{self.getType() === ORDER_TYPE.ISSUED ? self.fromAtString : self.toAtString}</ion-label>
+          <ion-label position="stacked">{self.fromAtString}</ion-label>
+          {getAddress()}
+        </ion-item>
+      )
+    }
+
+    const getSenderLocale = function(){
+      const getAddress = function(){
+        if (!self.shipment && !self.order)
+          return (<ion-skeleton-text animated></ion-skeleton-text>)
+        return (<ion-input name="input-sender-address" disabled={true} value={self.order ? self.order.shipFromAddress : self.shipment.shipToAddress}></ion-input>);
+      }
+      return (
+        <ion-item lines="none" >
+          <ion-label position="stacked">{self.toAtString}</ion-label>
           {getAddress()}
         </ion-item>
       )
     }
 
     const getStatus = function(){
+      if (isCreate)
+        return;
       const getBadge = function(){
-        if (!self.order)
+        if (!self.shipment)
           return (<ion-skeleton-text animated></ion-skeleton-text>)
-        return (<ion-badge class="ion-padding-horizontal">{self.order.status}</ion-badge>)
+        return (<ion-badge class="ion-padding-horizontal">{self.shipment.status}</ion-badge>)
       }
       return (
         <ion-item lines="none">
-          <ion-label position="stacked">{self.fromAtString}</ion-label>
+          <ion-label position="stacked">{self.statusString}</ion-label>
           {getBadge()}
         </ion-item>
       )
@@ -399,32 +454,38 @@ export class ManagedOrder implements CreateManageView{
       )
     }
 
-    if (isCreate)
-      return [
-        getSender(),
-        getProductInput(),
-        getQuantityInput()
-      ]
-
-    return [
-      getSender(),
-      getRequesterLocale(),
-      getStatus()
-    ]
+    switch (self.getType()){
+      case SHIPMENT_TYPE.ISSUED:
+        return [
+          getOrderReference(),
+          getRequester(),
+          getRequesterLocale(),
+          getProductInput(),
+          getQuantityInput(),
+          getStatus()
+        ]
+      case SHIPMENT_TYPE.RECEIVED:
+        return [
+          getOrderReference(),
+          getSender(),
+          getSenderLocale(),
+          getRequesterLocale(),
+          getStatus()
+        ]
+    }
   }
 
   getCreate(){
     if (!this.isCreate())
-      return [];
+      return;
     return [
       ...this.getInputs(),
       <line-stock-manager lines={typeof this.orderLines !== 'string' ? this.orderLines : []}
-                          show-stock={false}
+                          show-stock={this.getType() === SHIPMENT_TYPE.RECEIVED}
                           enable-actions={true}
 
                           onSelectEvent={(evt) => this.selectOrderLine(evt)}
 
-                          lines-string={this.orderLinesString}
                           stock-string={this.stockString}
                           no-stock-string={this.noStockString}
                           select-string={this.selectString}
@@ -436,12 +497,12 @@ export class ManagedOrder implements CreateManageView{
                           confirm-all-string={this.confirmAllString}
                           reset-all-string={this.resetAllString}>
       </line-stock-manager>
-    ]
+    ];
   }
 
   getPostCreate(){
     if (this.isCreate())
-      return [];
+      return;
     return this.getInputs();
   }
 
@@ -450,7 +511,7 @@ export class ManagedOrder implements CreateManageView{
       return;
     return (
       <line-stock-manager lines={typeof this.orderLines !== 'string' ? this.orderLines : []}
-                          show-stock={this.getType() === ORDER_TYPE.RECEIVED}
+                          show-stock={this.getType() === SHIPMENT_TYPE.RECEIVED}
                           stock-string={this.stockString}
                           no-stock-string={this.noStockString}
                           select-string={this.selectString}
@@ -491,9 +552,7 @@ export class ManagedOrder implements CreateManageView{
           <div slot="manage">
             {this.getManage()}
           </div>
-          <div slot="view">
-            {this.getView()}
-          </div>
+          <div slot="view"></div>
         </create-manage-view-layout>
         <pdm-barcode-scanner-controller barcode-title={this.scanString}></pdm-barcode-scanner-controller>
       </Host>

@@ -147,10 +147,19 @@ export class ManagedOrderListItem {
       )
     }
 
+    const getProcessOrderButton = function(){
+      if (self.type === ORDER_TYPE.ISSUED)
+        return;
+      return getButton("end", "medium", "cog",
+        () => self.navigateToTab('tab-shipment', {
+          mode: ORDER_TYPE.ISSUED,
+          order: self.order
+        }));
+    }
+
     const props = {
-      orderId: self.order.orderId,
-      requesterId: self.order.requesterId,
-      mode: self.type
+      mode: self.type,
+      order: self.order
     };
 
     return [
@@ -161,6 +170,7 @@ export class ManagedOrderListItem {
         data: self.order.orderId
       }, evt)),
       getButton("end", "medium", "eye", () => self.navigateToTab('tab-order', props)),
+      getProcessOrderButton()
     ]
   }
 

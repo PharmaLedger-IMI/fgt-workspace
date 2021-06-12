@@ -56,6 +56,7 @@ Type: `Promise<any>`
  - [managed-batch](../managed-batch)
  - [managed-order](../managed-order)
  - [managed-product](../managed-product)
+ - [managed-shipment](../managed-shipment)
 
 ### Graph
 ```mermaid
@@ -63,6 +64,7 @@ graph TD;
   managed-batch --> create-manage-view-layout
   managed-order --> create-manage-view-layout
   managed-product --> create-manage-view-layout
+  managed-shipment --> create-manage-view-layout
   style create-manage-view-layout fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

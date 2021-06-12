@@ -82,9 +82,16 @@
                             </ion-content>
                         </ion-tab>
 
-                        <ion-tab tab="tab-scan">
-                            <ion-content class="tab-content" overflow-scroll="false">
-                                <webc-template template="scan" disable-container></webc-template>
+                        <!-- Invisible tabs -->
+                        <ion-tab tab="tab-order">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <webc-template template="order" disable-container></webc-template>
+                            </ion-content>
+                        </ion-tab>
+
+                        <ion-tab tab="tab-shipment">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <webc-template template="shipment" disable-container></webc-template>
                             </ion-content>
                         </ion-tab>
 

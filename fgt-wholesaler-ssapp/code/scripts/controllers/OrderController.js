@@ -1,74 +1,74 @@
-import {LocalizedController, EVENT_REFRESH, BUTTON_ROLES} from "../../assets/pdm-web-components/index.esm.js";
-
-const {ShipmentStatus, Shipment} = require('wizard').Model;
-
-/**
- * Controls Application Flow
- * Makes the bridge between the UI and the BatchManager
- *
- * Handles listing and querying of Batches
- * @class BatchesController
- * @module controllers
- */
+import { LocalizedController, EVENT_REFRESH, EVENT_ACTION, EVENT_SSAPP_HAS_LOADED, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
 export default class OrderController extends LocalizedController {
 
     initializeModel = () => ({
-        orderReference: ''
+        orderLines: [],
+        identity: undefined,
+        orderRef: undefined,
+        mode: 'issued'
     });
 
     constructor(...args) {
         super(false, ...args);
-        super.bindLocale(this, 'createShipment');
-        this.model = this.initializeModel();
+        let self = this;
+        super.bindLocale(self, `order`);
+        self.model = self.initializeModel();
+
         const wizard = require('wizard');
         const participantManager = wizard.Managers.getParticipantManager();
-        this.receivedOrderManager = wizard.Managers.getReceivedOrderManager(participantManager);
-        this.issuedShipmentManager = wizard.Managers.getIssuedShipmentManager(participantManager);
-        let self = this;
+        self.issuedOrderManager = wizard.Managers.getIssuedOrderManager(participantManager);
+        self.orderEl = self.querySelector('managed-order');
+
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
+            self.model.identity = self.issuedOrderManager.getIdentity();
+
             const state = evt.detail;
-            if (state && state.orderId && state.requesterId){
-                self.model.orderReference = `${state.requesterId}-${state.orderId}`
+            if (state && state.mode) {
+                self.model.mode = state.mode;
+                const newRef = `${state.mode === 'issued' ? state.order.senderId : state.order.requesterId}-${state.order.orderId}`;
+                if (newRef === self.model.orderRef)
+                    return self.orderEl.refresh();
+                self.model.orderRef = newRef;
+                self.model.orderLines = [];
+
             } else {
-                self.showErrorToast(`No Order Received`);
+                self.model.orderRef = undefined;
+                self.mode = 'issued';
+                self.model.orderLines = state && state.orderLines ? [...state.orderLines] : [];
             }
+        });
+
+        self.on(EVENT_SSAPP_HAS_LOADED, async () => {
+            await self.orderEl.updateDirectory();
         }, {capture: true});
 
-        self.on(ShipmentStatus.CREATED, self._createShipment.bind(self), {capture: true});
-        self.on(ShipmentStatus.REJECTED, self._createShipment.bind(self), {capture: true});
+        self.on(EVENT_ACTION, async (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            await self._handleCreateOrder.call(self, evt.detail);
+        });
+
+        console.log("OrderController initialized");
     }
 
-    async _showConfirm(){
-        return this.showAlert(this.translate('creation.confirm.message'),
-            {
-                buttons: [
-                    {
-                        text: this.translate('creation.confirm.buttons.cancel'),
-                        role: 'cancel'
-                    },
-                    {
-                        text: this.translate('creation.confirm.buttons.ok'),
-                        role: 'confirm'
-                    }
-                ]
-            })
-    }
+    /**
+     * Sends an event named create-issued-order to the IssuedOrders controller.
+     */
+     async _handleCreateOrder(order) {
+        let self = this;
+        if (order.validate())
+            return this.showErrorToast(this.translate(`create.error.invalid`));
 
-    async _createShipment(evt){
-        evt.preventDefault();
-        evt.stopImmediatePropagation();
-        const self = this;
-
-        const alert = await self._showConfirm();
+        const alert = await self._showConfirm('create.confirm');
 
         const {role} = await alert.onDidDismiss();
 
         if (BUTTON_ROLES.CONFIRM !== role)
             return console.log(`Shipment creation canceled by clicking ${role}`);
 
-        const loader = self._getLoader(self.translate('creation.loading'));
+        const loader = self._getLoader(self.translate('create.loading'));
         await loader.present()
 
         const sendError = async function(msg){
@@ -76,30 +76,29 @@ export default class OrderController extends LocalizedController {
             self.showErrorToast(msg);
         }
 
-        const {shipmentId, requesterId, senderId, shipToAddress, status, shipmentLines} = evt.detail;
-        const shipment = new Shipment(shipmentId, requesterId, senderId, shipToAddress, status, shipmentLines);
-
-        self.receivedOrderManager.getOne(self.model.orderReference, false, (err, orderSSI) => {
+        self.issuedOrderManager.create(order, async (err, keySSI, dbPath) => {
             if (err)
-                return callback(err);
-            self.issuedShipmentManager._bindParticipant(shipment, (err, newShipment) => {
-                if (err)
-                    return sendError(self.translate('creation.error.bind'));
-                const errors = newShipment.validate();
-                if (!!errors)
-                    return sendError(self.translate('creation.error.invalid') + errors.join(', '));
-                self.issuedShipmentManager.create(orderSSI, newShipment, async (err, keySSI, shipmentLinesSSIs) => {
-                    if (err)
-                        return sendError(`${self.translate('creation.error.error')}${err}`);
-                    self.showToast(self.translate('creation.success'));
-                    await loader.dismiss();
-                    const props = {
-                        shipmentId: newShipment.shipmentId,
-                        participantId: newShipment.requesterId
-                    }
-                    super.navigateToTab('tab-shipment', props);
-                });
-            });
+                return sendError(self.translate('create.error.error'));
+            self.showToast(self.translate('create.success'));
+            self.model.mode = 'issued';
+            self.model.orderRef = `${order.senderId}-${order.orderId}`;
+            await loader.dismiss();
         });
+    }
+
+    async _showConfirm(action = 'create.confirm'){
+        return this.showAlert(this.translate(`${action}.message`),
+            {
+                buttons: [
+                    {
+                        text: this.translate(`${action}.buttons.cancel`),
+                        role: 'cancel'
+                    },
+                    {
+                        text: this.translate(`${action}.buttons.ok`),
+                        role: 'confirm'
+                    }
+                ]
+            })
     }
 }

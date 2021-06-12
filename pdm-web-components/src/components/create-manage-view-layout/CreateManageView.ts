@@ -5,6 +5,7 @@ export default interface CreateManageView {
 
   load(): void;
   create(evt): void;
+  reset(): void;
 
   refresh(newVal?, oldVal?): void;
 

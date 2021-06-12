@@ -47,6 +47,26 @@ export namespace Components {
         "color"?: string;
         "outline"?: boolean;
     }
+    interface LineStockManager {
+        "availableString": string;
+        "cancelLine": (gtin: any) => Promise<void>;
+        "confirmAllString": string;
+        "confirmedString": string;
+        "enableActions": boolean;
+        "getResult": () => Promise<{}>;
+        "lines": any[];
+        "linesString": string;
+        "noStockString": string;
+        "orderMissingString": string;
+        "refresh": () => Promise<void>;
+        "remainingString": string;
+        "reset": () => Promise<void>;
+        "resetAllString": string;
+        "selectString": string;
+        "showStock": boolean;
+        "stockString": string;
+        "unavailableString": string;
+    }
     interface ManagedBatch {
         "addBatchString": string;
         "backString": string;
@@ -57,6 +77,7 @@ export namespace Components {
         "gtinRef"?: string;
         "manageString": string;
         "refresh": () => Promise<void>;
+        "reset": () => Promise<void>;
         "serialsPlaceholderString": string;
         "serialsString": string;
         "titleString": string;
@@ -113,12 +134,13 @@ export namespace Components {
         "fromAtString": string;
         "fromPlaceholderString": string;
         "fromString": string;
+        "identity": any;
         "manageString": string;
         "noStockString": string;
         "orderLines": any;
         "orderLinesString": string;
+        "orderMissingString": string;
         "orderRef"?: string;
-        "orderString": string;
         "orderType": string;
         "proceedString": string;
         "productsCodeString": string;
@@ -127,11 +149,11 @@ export namespace Components {
         "refresh": () => Promise<void>;
         "rejectString": string;
         "remainingString": string;
-        "requester": any;
+        "reset": () => Promise<void>;
         "resetAllString": string;
         "scanString": string;
-        "selectOrderLine": (gtin: any) => Promise<void>;
-        "selectProductString": string;
+        "selectString": string;
+        "statusString": string;
         "stockString": string;
         "titleString": string;
         "toAtString": string;
@@ -178,6 +200,7 @@ export namespace Components {
         "manufString": string;
         "nameString": string;
         "refresh": () => Promise<void>;
+        "reset": () => Promise<void>;
         "titleString": string;
     }
     interface ManagedProductListItem {
@@ -205,6 +228,40 @@ export namespace Components {
         "stockString": string;
         "titleString": string;
         "unavailableString": string;
+    }
+    interface ManagedShipment {
+        "availableString": string;
+        "backString": string;
+        "clearString": string;
+        "confirmAllString": string;
+        "confirmedString": string;
+        "createString": string;
+        "fromAtString": string;
+        "fromString": string;
+        "identity": any;
+        "manageString": string;
+        "noStockString": string;
+        "order": any;
+        "orderMissingString": string;
+        "productsCodeString": string;
+        "productsString": string;
+        "quantityString": string;
+        "refresh": () => Promise<void>;
+        "remainingString": string;
+        "reset": () => Promise<void>;
+        "resetAllString": string;
+        "scanString": string;
+        "selectString": string;
+        "shipmentRef"?: string;
+        "shipmentType": string;
+        "statusString": string;
+        "stockString": string;
+        "titleString": string;
+        "toAtString": string;
+        "toPlaceholderString": string;
+        "to_String": string;
+        "unavailableString": string;
+        "updateDirectory": () => Promise<void>;
     }
     interface ManagedShipmentListItem {
         "refresh": () => Promise<void>;
@@ -362,6 +419,12 @@ declare global {
         prototype: HTMLGenericChipElement;
         new (): HTMLGenericChipElement;
     };
+    interface HTMLLineStockManagerElement extends Components.LineStockManager, HTMLStencilElement {
+    }
+    var HTMLLineStockManagerElement: {
+        prototype: HTMLLineStockManagerElement;
+        new (): HTMLLineStockManagerElement;
+    };
     interface HTMLManagedBatchElement extends Components.ManagedBatch, HTMLStencilElement {
     }
     var HTMLManagedBatchElement: {
@@ -427,6 +490,12 @@ declare global {
     var HTMLManagedReceivedOrderElement: {
         prototype: HTMLManagedReceivedOrderElement;
         new (): HTMLManagedReceivedOrderElement;
+    };
+    interface HTMLManagedShipmentElement extends Components.ManagedShipment, HTMLStencilElement {
+    }
+    var HTMLManagedShipmentElement: {
+        prototype: HTMLManagedShipmentElement;
+        new (): HTMLManagedShipmentElement;
     };
     interface HTMLManagedShipmentListItemElement extends Components.ManagedShipmentListItem, HTMLStencilElement {
     }
@@ -505,6 +574,7 @@ declare global {
         "batch-chip": HTMLBatchChipElement;
         "create-manage-view-layout": HTMLCreateManageViewLayoutElement;
         "generic-chip": HTMLGenericChipElement;
+        "line-stock-manager": HTMLLineStockManagerElement;
         "managed-batch": HTMLManagedBatchElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-issued-order": HTMLManagedIssuedOrderElement;
@@ -516,6 +586,7 @@ declare global {
         "managed-product": HTMLManagedProductElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
         "managed-received-order": HTMLManagedReceivedOrderElement;
+        "managed-shipment": HTMLManagedShipmentElement;
         "managed-shipment-list-item": HTMLManagedShipmentListItemElement;
         "managed-shipmentline-list-item": HTMLManagedShipmentlineListItemElement;
         "managed-stock-list-item": HTMLManagedStockListItemElement;
@@ -572,6 +643,34 @@ declare namespace LocalJSX {
         "color"?: string;
         "onSelectEvent"?: (event: CustomEvent<string>) => void;
         "outline"?: boolean;
+    }
+    interface LineStockManager {
+        "availableString"?: string;
+        "confirmAllString"?: string;
+        "confirmedString"?: string;
+        "enableActions"?: boolean;
+        "lines"?: any[];
+        "linesString"?: string;
+        "noStockString"?: string;
+        /**
+          * Through this select events are sent
+         */
+        "onSelectEvent"?: (event: CustomEvent<string>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "orderMissingString"?: string;
+        "remainingString"?: string;
+        "resetAllString"?: string;
+        "selectString"?: string;
+        "showStock"?: boolean;
+        "stockString"?: string;
+        "unavailableString"?: string;
     }
     interface ManagedBatch {
         "addBatchString"?: string;
@@ -686,6 +785,7 @@ declare namespace LocalJSX {
         "fromAtString"?: string;
         "fromPlaceholderString"?: string;
         "fromString"?: string;
+        "identity"?: any;
         "manageString"?: string;
         "noStockString"?: string;
         /**
@@ -702,8 +802,8 @@ declare namespace LocalJSX {
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "orderLines"?: any;
         "orderLinesString"?: string;
+        "orderMissingString"?: string;
         "orderRef"?: string;
-        "orderString"?: string;
         "orderType"?: string;
         "proceedString"?: string;
         "productsCodeString"?: string;
@@ -711,10 +811,10 @@ declare namespace LocalJSX {
         "quantityString"?: string;
         "rejectString"?: string;
         "remainingString"?: string;
-        "requester"?: any;
         "resetAllString"?: string;
         "scanString"?: string;
-        "selectProductString"?: string;
+        "selectString"?: string;
+        "statusString"?: string;
         "stockString"?: string;
         "titleString"?: string;
         "toAtString"?: string;
@@ -836,6 +936,49 @@ declare namespace LocalJSX {
         "selectProductString"?: string;
         "stockString"?: string;
         "titleString"?: string;
+        "unavailableString"?: string;
+    }
+    interface ManagedShipment {
+        "availableString"?: string;
+        "backString"?: string;
+        "clearString"?: string;
+        "confirmAllString"?: string;
+        "confirmedString"?: string;
+        "createString"?: string;
+        "fromAtString"?: string;
+        "fromString"?: string;
+        "identity"?: any;
+        "manageString"?: string;
+        "noStockString"?: string;
+        /**
+          * Through this event action requests are made
+         */
+        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "order"?: any;
+        "orderMissingString"?: string;
+        "productsCodeString"?: string;
+        "productsString"?: string;
+        "quantityString"?: string;
+        "remainingString"?: string;
+        "resetAllString"?: string;
+        "scanString"?: string;
+        "selectString"?: string;
+        "shipmentRef"?: string;
+        "shipmentType"?: string;
+        "statusString"?: string;
+        "stockString"?: string;
+        "titleString"?: string;
+        "toAtString"?: string;
+        "toPlaceholderString"?: string;
+        "to_String"?: string;
         "unavailableString"?: string;
     }
     interface ManagedShipmentListItem {
@@ -1014,6 +1157,7 @@ declare namespace LocalJSX {
         "batch-chip": BatchChip;
         "create-manage-view-layout": CreateManageViewLayout;
         "generic-chip": GenericChip;
+        "line-stock-manager": LineStockManager;
         "managed-batch": ManagedBatch;
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-issued-order": ManagedIssuedOrder;
@@ -1025,6 +1169,7 @@ declare namespace LocalJSX {
         "managed-product": ManagedProduct;
         "managed-product-list-item": ManagedProductListItem;
         "managed-received-order": ManagedReceivedOrder;
+        "managed-shipment": ManagedShipment;
         "managed-shipment-list-item": ManagedShipmentListItem;
         "managed-shipmentline-list-item": ManagedShipmentlineListItem;
         "managed-stock-list-item": ManagedStockListItem;
@@ -1047,6 +1192,7 @@ declare module "@stencil/core" {
             "batch-chip": LocalJSX.BatchChip & JSXBase.HTMLAttributes<HTMLBatchChipElement>;
             "create-manage-view-layout": LocalJSX.CreateManageViewLayout & JSXBase.HTMLAttributes<HTMLCreateManageViewLayoutElement>;
             "generic-chip": LocalJSX.GenericChip & JSXBase.HTMLAttributes<HTMLGenericChipElement>;
+            "line-stock-manager": LocalJSX.LineStockManager & JSXBase.HTMLAttributes<HTMLLineStockManagerElement>;
             "managed-batch": LocalJSX.ManagedBatch & JSXBase.HTMLAttributes<HTMLManagedBatchElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-issued-order": LocalJSX.ManagedIssuedOrder & JSXBase.HTMLAttributes<HTMLManagedIssuedOrderElement>;
@@ -1058,6 +1204,7 @@ declare module "@stencil/core" {
             "managed-product": LocalJSX.ManagedProduct & JSXBase.HTMLAttributes<HTMLManagedProductElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
             "managed-received-order": LocalJSX.ManagedReceivedOrder & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderElement>;
+            "managed-shipment": LocalJSX.ManagedShipment & JSXBase.HTMLAttributes<HTMLManagedShipmentElement>;
             "managed-shipment-list-item": LocalJSX.ManagedShipmentListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentListItemElement>;
             "managed-shipmentline-list-item": LocalJSX.ManagedShipmentlineListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentlineListItemElement>;
             "managed-stock-list-item": LocalJSX.ManagedStockListItem & JSXBase.HTMLAttributes<HTMLManagedStockListItemElement>;
