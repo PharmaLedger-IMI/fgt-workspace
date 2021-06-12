@@ -64,6 +64,22 @@ function generate(charactersSet, length){
     return result;
 }
 
+
+/**
+ * Util function to provide string format functionality similar to C#'s string.format
+ *
+ * @param {string} string
+ * @param {string} args replacements made by order of appearance (replacement0 wil replace {0} and so on)
+ * @return {string} formatted string
+ */
+function stringFormat(string, ...args){
+    return string.replace(/{(\d+)}/g, function(match, number) {
+        return typeof args[number] != 'undefined'
+            ? args[number]
+            : match;
+    });
+}
+
 module.exports = {
     /**
      * Generates a string of the provided length filled with random characters from 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -96,5 +112,6 @@ module.exports = {
     generateProductName,
     generateBatchNumber,
     generateGtin,
-    generateRandomInt
+    generateRandomInt,
+    stringFormat
 }

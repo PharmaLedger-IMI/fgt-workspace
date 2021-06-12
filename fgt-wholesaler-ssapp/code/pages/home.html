@@ -33,25 +33,21 @@
                 </ion-col>
                 <ion-col>
                     <ion-tabs id="main-content">
-
                         <ion-tab tab="tab-dashboard">
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <webc-template template="dashboard" disable-container></webc-template>
                             </ion-content>
                         </ion-tab>
-
                         <ion-tab tab="tab-received-orders">
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <webc-template template="receivedOrders" disable-container></webc-template>
                             </ion-content>
                         </ion-tab>
-
                         <ion-tab tab="tab-issued-orders">
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <webc-template template="issuedOrders" disable-container></webc-template>
                             </ion-content>
                         </ion-tab>
-
                         <ion-tab tab="tab-issued-shipments">
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <webc-template template="issuedShipments" disable-container></webc-template>
@@ -62,31 +58,23 @@
                                 <webc-template template="receivedShipments" disable-container></webc-template>
                             </ion-content>
                         </ion-tab>
-
                         <ion-tab tab="tab-stock">
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <webc-template template="stock" disable-container></webc-template>
                             </ion-content>
                         </ion-tab>
-
                         <!-- Invisible tabs -->
                         <ion-tab tab="tab-order">
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <webc-template template="order" disable-container></webc-template>
                             </ion-content>
                         </ion-tab>
-
-                        <ion-tab tab="tab-issued-order">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <webc-template template="issuedOrder" disable-container></webc-template>
-                            </ion-content>
-                        </ion-tab>
-
                         <ion-tab tab="tab-shipment">
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <webc-template template="shipment" disable-container></webc-template>
                             </ion-content>
                         </ion-tab>
+
                         <ion-tab-bar slot="bottom" class="ion-hide-lg-up">
                             <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>
                             <menu-tab-button icon-name="reader" label="@menu.orders.label" tab="@menu.orders.options" mode="bar"></menu-tab-button>

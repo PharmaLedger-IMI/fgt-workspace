@@ -138,6 +138,11 @@ export class ManagedBatch implements CreateManageView{
     await this.load();
   }
 
+  @Method()
+  async reset(){
+
+  }
+
   navigateBack(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
@@ -173,7 +178,7 @@ export class ManagedBatch implements CreateManageView{
     this.serialsNumbers = [...this.serialsNumbers, ...newSerials];
   }
 
-  getCreate(){
+  private getInputs(){
     const self = this;
     const isCreate = self.isCreate();
 
@@ -238,6 +243,27 @@ export class ManagedBatch implements CreateManageView{
     ]
   }
 
+  getCreate(){
+    if (!this.isCreate())
+      return
+    return this.getInputs();
+  }
+
+  getManage() {
+    if (this.isCreate())
+      return
+    return this.getSerials();
+  }
+
+  getPostCreate() {
+    if (!this.isCreate())
+      return
+    return this.getInputs();
+  }
+
+  getView() {
+  }
+
   render() {
     if (!this.host.isConnected)
       return;
@@ -265,16 +291,5 @@ export class ManagedBatch implements CreateManageView{
         </create-manage-view-layout>
       </Host>
     );
-  }
-
-  getManage() {
-    return this.getSerials();
-  }
-
-  getPostCreate() {
-    return this.getCreate();
-  }
-
-  getView() {
   }
 }

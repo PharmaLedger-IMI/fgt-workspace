@@ -1,9 +1,9 @@
 import { LocalizedController, EVENT_REFRESH, EVENT_ACTION, EVENT_SSAPP_HAS_LOADED, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
-export default class IssuedOrderController extends LocalizedController {
+export default class OrderController extends LocalizedController {
 
     initializeModel = () => ({
         orderLines: [],
-        requester: undefined,
+        identity: undefined,
         orderRef: undefined,
         mode: 'issued'
     });
@@ -21,7 +21,7 @@ export default class IssuedOrderController extends LocalizedController {
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            self.model.requester = self.issuedOrderManager.getIdentity();
+            self.model.identity = self.issuedOrderManager.getIdentity();
 
             const state = evt.detail;
             if (state && state.order) {

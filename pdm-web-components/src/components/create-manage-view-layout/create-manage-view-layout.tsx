@@ -3,6 +3,8 @@ import {HostElement} from "../../decorators";
 import wizard from '../../services/WizardService';
 const {INPUT_FIELD_PREFIX} = wizard.Constants;
 
+const breakpoints = ['xs','sm','md','lg', 'xl'];
+
 @Component({
   tag: 'create-manage-view-layout',
   styleUrl: 'create-manage-view-layout.css',
@@ -20,6 +22,7 @@ export class CreateManageViewLayout {
   goBackEvent: EventEmitter;
 
   @Prop({attribute: "is-create", mutable: true, reflect: true}) isCreate: boolean = true;
+  @Prop({attribute: "break-point"}) breakpoint: string = "lg-4-3";
 
   // strings
   @Prop({attribute: "create-title-string"}) createTitleString: string = "Create String"
@@ -32,6 +35,36 @@ export class CreateManageViewLayout {
   async componentDidRender(){
     this.updateSlotsOnIsCreateChange(this.isCreate);
   }
+
+  private parseBreakPoint(){
+    let breakpoint = this.breakpoint;
+    if (!breakpoint || !breakpoint.match(`^(?:${breakpoints.join("|")})(?:-(?:[2-9]|1[0-2]?))+$`)){
+      console.log(`Invalid breakpoint definition. reverting to default 'lg-4-3'`);
+      breakpoint = 'lg-4-3'
+    }
+    let splitBreakpoint = breakpoint.split('-');
+    return{
+      break: splitBreakpoint.shift(),
+      sizes: splitBreakpoint.map(b => parseInt(b))
+    }
+  }
+
+  private generateSizeProps(reverse = false){
+    const props = {};
+    const parsedBreakpoint = Object.assign({}, this.parseBreakPoint());
+    let position;
+    breakpoints.every((b,i) => {
+      if (b !== parsedBreakpoint.break && !position)
+        return true;
+      if (!position)
+        position = i;
+      const bp = parsedBreakpoint.sizes.shift();
+      if (!bp)
+        return false;
+      props[`size-${breakpoints[i]}`] = '' + (reverse ? 12 - bp : bp);
+    });
+  }
+
 
   private goBack(evt){
     evt.preventDefault();
@@ -155,12 +188,12 @@ export class CreateManageViewLayout {
     return [
       <ion-grid>
         <ion-row>
-          <ion-col size="12" size-lg="4" size-xl="3">
+          <ion-col size="12" {...this.generateSizeProps()}>
             <div>
               {getPostCreateContent()}
             </div>
           </ion-col>
-          <ion-col size="12" size-lg="8" size-xl="9">
+          <ion-col size="12" {...this.generateSizeProps(true)}>
             <div>
               {getManageContent()}
             </div>

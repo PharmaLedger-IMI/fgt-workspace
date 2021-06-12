@@ -1,7 +1,7 @@
-<webc-container controller="IssuedOrderController">
-    <managed-order order-ref="@orderRef"
+<webc-container controller="ShipmentController">
+    <managed-order shipment-ref="@shipmentRef"
                    order-lines="@orderLines"
-                   requester="@requester"
+                   identity="@identity"
 
                    order-type="issued"
 
@@ -19,5 +19,5 @@
                    to-at-string="@create.toAt"
                    products-string="@create.products"
                    quantity-string="@create.quantity"
-        ></managed-order>
+    ></managed-order>
 </webc-container>

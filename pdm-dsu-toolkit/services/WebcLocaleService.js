@@ -86,6 +86,21 @@ const merge = function(target, source){
 }
 
 /**
+ * Util function to provide string format functionality similar to C#'s string.format
+ *
+ * @param {string} string
+ * @param {string} args replacements made by order of appearance (replacement0 wil replace {0} and so on)
+ * @return {string} formatted string
+ */
+const stringFormat = function(string, ...args){
+    return string.replace(/{(\d+)}/g, function(match, number) {
+        return typeof args[number] != 'undefined'
+            ? args[number]
+            : match;
+    });
+}
+
+/**
  * Binds the translation model to the controller and its setModel method
  */
 const bindToController = function(controller, page){
@@ -103,8 +118,9 @@ const bindToController = function(controller, page){
         };
 
         let translator = controller.translate;
-        controller.translate = (key) => {
-            return translator.call(controller, page && page.length > 0 ? `${page}.${key}` : key);
+        controller.translate = (key, ...args) => {
+            const translation = translator.call(controller, page && page.length > 0 ? `${page}.${key}` : key);
+            return translation && args && args.length ? stringFormat(translation, ...args) : translation;
         }
 
         controller.localized = true;

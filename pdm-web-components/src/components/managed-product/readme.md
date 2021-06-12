@@ -46,19 +46,29 @@ Type: `Promise<void>`
 
 
 
+### `reset() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 
 ## Dependencies
 
 ### Depends on
 
-- [create-manage-view-layout](../create-manage-view-layout)
 - [pdm-ion-table](../pdm-ion-table)
+- [create-manage-view-layout](../create-manage-view-layout)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-product --> create-manage-view-layout
   managed-product --> pdm-ion-table
+  managed-product --> create-manage-view-layout
   pdm-ion-table --> multi-spinner
   style managed-product fill:#f9f,stroke:#333,stroke-width:4px
 ```

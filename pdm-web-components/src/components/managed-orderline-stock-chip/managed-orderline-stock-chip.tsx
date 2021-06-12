@@ -1,12 +1,12 @@
 import {Component, Host, h, Prop, Element, State, Event, EventEmitter} from '@stencil/core';
 import {HostElement} from "../../decorators";
 import {WebManagerService, WebResolver} from "../../services/WebManagerService";
+import wizard from '../../services/WizardService'
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 import {getSteppedColor, FALLBACK_COLOR} from "../../utils/colorUtils";
 import {OverlayEventDetail} from "@ionic/core";
 
-// @ts-ignore
-const {Stock, Product}  = require('wizard').Model;
+const {Stock}  = wizard.Model;
 
 const CHIP_TYPE = {
   SIMPLE: "simple",

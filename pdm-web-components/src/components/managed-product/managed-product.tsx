@@ -128,6 +128,11 @@ export class ManagedProduct implements CreateManageView{
     await this.load();
   }
 
+  @Method()
+  async reset(){
+
+  }
+
   navigateBack(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
@@ -156,7 +161,7 @@ export class ManagedProduct implements CreateManageView{
     return !this.gtin || this.gtin.startsWith('@');
   }
 
-  getCreate(){
+  getInputs(){
     const self = this;
     const isCreate = self.isCreate();
 
@@ -218,6 +223,45 @@ export class ManagedProduct implements CreateManageView{
     ]
   }
 
+  getCreate(){
+    if (!this.isCreate())
+      return [];
+    return this.getInputs();
+  }
+
+  getManage() {
+    if (this.isCreate())
+      return;
+    return (
+      <pdm-ion-table table-title={this.batchesTitle + ` ${this.gtin}`}
+                     item-reference="gtin-batch"
+                     query={this.gtin}
+                     canQuery={false}
+                     paginated={true}
+                     manager="BatchManager"
+                     icon-name="stats-chart"
+                     item-type="managed-batch-list-item"
+                     items-per-page="5">
+        <ion-button slot="buttons" color="secondary" fill="solid" onClick={() => this.navigateToTab('tab-batch', {
+          gtin: this.gtin,
+          batchNumber: undefined
+        })}>
+          {this.batchesAddButton}
+          <ion-icon slot="end" name="add-circle"></ion-icon>
+        </ion-button>
+      </pdm-ion-table>
+    )
+  }
+
+  getPostCreate(){
+    if (this.isCreate())
+      return [];
+    return this.getInputs()
+  }
+
+  getView(){
+  }
+
   render() {
     if (!this.host.isConnected)
       return;
@@ -247,32 +291,5 @@ export class ManagedProduct implements CreateManageView{
     );
   }
 
-  getManage() {
-    return (
-      <pdm-ion-table table-title={this.batchesTitle + ` ${this.gtin}`}
-                     item-reference="gtin-batch"
-                     query={this.gtin}
-                     canQuery={false}
-                     paginated={true}
-                     manager="BatchManager"
-                     icon-name="stats-chart"
-                     item-type="managed-batch-list-item"
-                     items-per-page="5">
-        <ion-button slot="buttons" color="secondary" fill="solid" onClick={() => this.navigateToTab('tab-batch', {
-          gtin: this.gtin,
-          batchNumber: undefined
-        })}>
-          {this.batchesAddButton}
-          <ion-icon slot="end" name="add-circle"></ion-icon>
-        </ion-button>
-      </pdm-ion-table>
-    )
-  }
 
-  getPostCreate(){
-    return this.getCreate()
-  }
-
-  getView(){
-  }
 }
