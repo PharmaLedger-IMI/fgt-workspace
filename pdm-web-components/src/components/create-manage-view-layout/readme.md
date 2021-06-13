@@ -10,6 +10,7 @@
 | Property            | Attribute             | Description | Type      | Default           |
 | ------------------- | --------------------- | ----------- | --------- | ----------------- |
 | `backString`        | `back-string`         |             | `string`  | `"Back"`          |
+| `breakpoint`        | `break-point`         |             | `string`  | `"lg-4-3"`        |
 | `clearString`       | `clear-string`        |             | `string`  | `"Clear"`         |
 | `createString`      | `create-string`       |             | `string`  | `"Create"`        |
 | `createTitleString` | `create-title-string` |             | `string`  | `"Create String"` |

@@ -33,6 +33,7 @@ export namespace Components {
     }
     interface CreateManageViewLayout {
         "backString": string;
+        "breakpoint": string;
         "clear": () => Promise<void>;
         "clearString": string;
         "createString": string;
@@ -58,7 +59,7 @@ export namespace Components {
         "linesString": string;
         "noStockString": string;
         "orderMissingString": string;
-        "refresh": () => Promise<void>;
+        "refresh": (newVal: any) => Promise<void>;
         "remainingString": string;
         "reset": () => Promise<void>;
         "resetAllString": string;
@@ -137,7 +138,7 @@ export namespace Components {
         "identity": any;
         "manageString": string;
         "noStockString": string;
-        "orderLines": any;
+        "orderLines"?: string;
         "orderLinesString": string;
         "orderMissingString": string;
         "orderRef"?: string;
@@ -242,6 +243,7 @@ export namespace Components {
         "manageString": string;
         "noStockString": string;
         "order": any;
+        "orderIdString": string;
         "orderMissingString": string;
         "productsCodeString": string;
         "productsString": string;
@@ -629,6 +631,7 @@ declare namespace LocalJSX {
     }
     interface CreateManageViewLayout {
         "backString"?: string;
+        "breakpoint"?: string;
         "clearString"?: string;
         "createString"?: string;
         "createTitleString"?: string;
@@ -800,7 +803,7 @@ declare namespace LocalJSX {
           * Through this event errors are passed
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
-        "orderLines"?: any;
+        "orderLines"?: string;
         "orderLinesString"?: string;
         "orderMissingString"?: string;
         "orderRef"?: string;
@@ -963,6 +966,7 @@ declare namespace LocalJSX {
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "order"?: any;
+        "orderIdString"?: string;
         "orderMissingString"?: string;
         "productsCodeString"?: string;
         "productsString"?: string;

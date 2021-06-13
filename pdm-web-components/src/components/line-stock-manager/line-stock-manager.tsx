@@ -104,7 +104,7 @@ export class LineStockManager {
   @Method()
   async reset(){
     this.result = [];
-    this.shipmentLines = [];
+    this.shipmentLines = {};
     this.stockForProduct = undefined;
     this.selectedProduct = undefined;
   }
@@ -116,8 +116,9 @@ export class LineStockManager {
 
   @Watch('lines')
   @Method()
-  async refresh(){
-
+  async refresh(newVal){
+    if (typeof newVal !== 'string')
+      await this.loadStockForOrderLines();
   }
 
   @Watch('showStock')
@@ -126,13 +127,22 @@ export class LineStockManager {
       this.stockManager = this.stockManager || await WebManagerService.getWebManager("StockManager");
   }
 
+  @Watch('selectedProduct')
+  async selectProduct(newGtin, oldGtin){
+    if (!newGtin || oldGtin === newGtin)
+      return;
+    if (!!this.result.filter(r => r.orderLine.gtin === newGtin)[0].confirmed)
+      return;
+    this.stockForProduct = {...this.updateStock(newGtin)};
+  }
+
   private loadStockForOrderLines(){
     const self = this;
 
     if (!self.stockManager)
       return;
 
-    if (!self.lines || typeof self.lines === 'string')
+    if (!self.lines || typeof self.lines === 'string' || !self.lines.length)
       return self.reset();
 
     const result = [];
@@ -170,7 +180,6 @@ export class LineStockManager {
           return -1;
         return first.stock.getQuantity() - second.stock.getQuantity();
       });
-      self.lines = self.result.map(r => r.orderLine);
     });
   }
 
@@ -180,6 +189,7 @@ export class LineStockManager {
 
   private selectLine(gtin){
     this.selectEvent.emit(gtin);
+    this.selectedProduct = gtin;
   }
 
   @Method()
@@ -276,12 +286,28 @@ export class LineStockManager {
   private getAvailableStock(){
     const self = this;
 
+    const getStockHeader = function(){
+      return (
+        <ion-item-divider class="ion-margin-bottom">
+          {self.stockString}
+        </ion-item-divider>
+      )
+    }
+
     const getEmpty = function(){
-      return (<ion-item><ion-label>{self.noStockString}</ion-label></ion-item>)
+      return (
+          <ion-label color="medium">
+            {self.noStockString}
+          </ion-label>
+        )
     }
 
     const getSelectProduct = function(){
-      return (<ion-item><ion-label>{self.selectString}</ion-label></ion-item>)
+      return (
+        <ion-label color="medium">
+          {self.selectString}
+        </ion-label>
+      )
     }
 
     const getBatchSeparator = function(){
@@ -313,20 +339,21 @@ export class LineStockManager {
     }
 
     if (!self.selectedProduct)
-      return getSelectProduct();
+      return [getStockHeader(), getSelectProduct()];
     if (!self.stockForProduct)
-      return self.getLoading(SUPPORTED_LOADERS.cube);
+      return [getStockHeader(), self.getLoading(SUPPORTED_LOADERS.bubbling)];
     if (self.stockForProduct.selected.length + self.stockForProduct.remaining.length + (self.stockForProduct.divided ? 1 : 0) === 0)
-      return getEmpty();
+      return [getStockHeader(), getEmpty()];
 
-    return (
+    return [
+      getStockHeader(),
       <ion-reorder-group disabled={false}>
         {...this.stockForProduct.selected.map(s => getBatch(s, ItemClasses.selected))}
         {!!this.stockForProduct.divided || !!this.stockForProduct.remaining.length ? getBatchSeparator() : ''}
         {!!this.stockForProduct.divided ? getBatch(this.stockForProduct.divided, ItemClasses.unnecessary) : ''}
         {...this.stockForProduct.remaining.map(r => getBatch(r, ItemClasses.normal))}
       </ion-reorder-group>
-    )
+    ]
   }
 
   private markProductAsConfirmed(gtin, confirmed = true){
@@ -361,13 +388,13 @@ export class LineStockManager {
     this.lines = this.result.map(r => r.orderLine);
   }
 
-  private genLine(orderLine, available){
+  private genLine(orderLine, available?){
     const self = this;
     const getButton = function(){
       if (!self.enableActions || orderLine.gtin !== self.selectedProduct)
         return undefined;
       return {
-        button: !! orderLine.confirmed ? "cancel" : "confirm"
+        button: !! orderLine.confirmed && available < orderLine.quantity ? "cancel" : "confirm"
       }
     }
 
@@ -386,15 +413,15 @@ export class LineStockManager {
                                     gtin={orderLine.gtin}
                                     quantity={orderLine.quantity}
                                     mode="detail"
-                                    available={available}
+                                    available={available || undefined}
                                     {...getButton()}></managed-orderline-stock-chip>
     )
   }
 
   private getOrderLines(){
     const self = this;
-    if (!self.lines)
-      return [self.getLoading(SUPPORTED_LOADERS.medical)];
+    if (!self.result)
+      return [self.getLoading(SUPPORTED_LOADERS.cube)];
 
     function getUnavailable(){
       const unavailable = self.result.filter(r => (!r.stock || r.orderLine.quantity > r.stock.getQuantity()) && !r.orderLine.confirmed);
@@ -402,12 +429,12 @@ export class LineStockManager {
         return [];
       const getHeader = function(){
         return (
-          <ion-item-divider>
+          <ion-item-divider class="ion-margin-bottom">
             {self.unavailableString}
-            <ion-button color="primary" slot="end" fill="solid" size="small" class="ion-float-end"
-                        onClick={() => self.navigateToTab('tab-shipment', {
+            <ion-button color="primary" slot="end" fill="clear" size="small" class="ion-float-end"
+                        onClick={() => self.navigateToTab('tab-order', {
                           mode: "issued",
-                          orderLines: unavailable.map(u => u.orderLine)
+                          orderLines: unavailable.map(u => JSON.parse(JSON.stringify(u.orderLine)))
                         })}>
               {self.orderMissingString}
               <ion-icon slot="end" name="checkmark-circle"></ion-icon>
@@ -426,7 +453,7 @@ export class LineStockManager {
         return [];
       const getHeader = function(){
         return (
-          <ion-item-divider>
+          <ion-item-divider class="ion-margin-bottom">
             {self.availableString}
             <ion-button color="success" slot="end" fill="clear" size="small" class="ion-float-end" onClick={() => self.markAllAsConfirmed()}>
               {self.confirmAllString}
@@ -446,7 +473,7 @@ export class LineStockManager {
         return [];
       const getHeader = function(){
         return (
-          <ion-item-divider>
+          <ion-item-divider class="ion-margin-bottom">
             {self.confirmedString}
             <ion-button color="danger" slot="end" fill="clear" size="small" class="ion-float-end" onClick={() => self.markAllAsConfirmed(false)}>
               {self.resetAllString}
@@ -464,21 +491,47 @@ export class LineStockManager {
   }
 
   getSimpleOrderLines(){
+    const self  = this;
+    if (!self.lines)
+      return [];
+    return self.lines.map(u => self.genLine(u.orderLine || u));
+  }
 
+  getMainHeader(){
+    return (
+      <ion-item-divider>
+        {this.linesString}
+      </ion-item-divider>
+    )
+  }
+
+  isReady(){
+    return typeof this.lines !== 'string'
+  }
+
+  private getContent(){
+    const content = [<ion-col size={this.showStock ? "6" : "12"}>
+                      {this.showStock ? this.getOrderLines() : this.getSimpleOrderLines()}
+                    </ion-col>];
+    if (this.showStock)
+      content.push(<ion-col size="6">
+                    {...this.getAvailableStock()}
+                  </ion-col>)
+    return content;
   }
 
   render() {
+    if (!this.host.isConnected)
+      return;
     return (
       <Host>
         <ion-grid>
           <ion-row>
-            <ion-col size={this.showStock ? "6" : "12"}>
-              {this.showStock ? this.getOrderLines() : this.getSimpleOrderLines()}
-            </ion-col>
+            {this.getMainHeader()}
+          </ion-row>
+          <ion-row>
             {
-              this.showStock && <ion-col size="6">
-                {this.getAvailableStock()}
-              </ion-col>
+              !this.isReady() ? this.getLoading('circles') : this.getContent()
             }
           </ion-row>
         </ion-grid>

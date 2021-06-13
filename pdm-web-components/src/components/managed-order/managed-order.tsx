@@ -72,7 +72,7 @@ export class ManagedOrder implements CreateManageView{
   }
 
   @Prop({attribute: "order-ref", mutable: true}) orderRef?: string;
-  @Prop({attribute: 'order-lines', mutable: true}) orderLines;
+  @Prop({attribute: 'order-lines', mutable: true}) orderLines?: string;
   @Prop({attribute: 'identity', mutable: true}) identity;
 
   @Prop({attribute: 'order-type', mutable: true}) orderType: string = ORDER_TYPE.ISSUED;
@@ -120,6 +120,8 @@ export class ManagedOrder implements CreateManageView{
   private issuedOrderManager: WebManager = undefined;
   private receivedOrderManager: WebManager = undefined;
 
+  @State() lines = undefined;
+
   // for new Orders
   @State() participantId?: string = undefined;
   @State() senderAddress?: string = undefined;
@@ -166,7 +168,7 @@ export class ManagedOrder implements CreateManageView{
       if (err)
         return this.sendError(`Could not retrieve order ${self.orderRef}`);
       self.order = order;
-      self.orderLines = [...order.orderLines];
+      self.lines = [...order.orderLines];
     });
   }
 
@@ -176,34 +178,26 @@ export class ManagedOrder implements CreateManageView{
 
   @Method()
   async updateDirectory(){
-    this.getDirectoryProductsAsync();
-    this.getDirectorySuppliersAsync();
-  }
-
-  private getDirectoryProductsAsync(){
     const self = this;
-    getDirectoryProducts(self.directoryManager, (err, gtins) => {
-      if (err)
-        return self.sendError(`Could not get directory listing for ${ROLE.PRODUCT}`, err);
-      self.products = gtins;
-    });
-  }
 
-  private getDirectorySuppliersAsync(callback?){
-    const self = this;
-    // if (!self.directoryManager)
-    //   return [];
+    const getDirectoryProductsAsync = function(){
+      getDirectoryProducts(self.directoryManager, (err, gtins) => {
+        if (err)
+          return self.sendError(`Could not get directory listing for ${ROLE.PRODUCT}`, err);
+        self.products = gtins;
+      });
+    }
 
-    getDirectorySuppliers(self.directoryManager, (err, records) => {
-      if (err){
-        self.sendError(`Could not list Suppliers from directory`, err);
-        return callback && callback(err);
-      }
+    const getDirectorySuppliersAsync = function(){
+      getDirectorySuppliers(self.directoryManager, (err, records) => {
+        if (err)
+          return self.sendError(`Could not list Suppliers from directory`, err);
+        self.suppliers = records;
+      });
+    }
 
-      self.suppliers = records;
-      if (callback)
-        callback(undefined, records);
-    });
+    getDirectoryProductsAsync();
+    getDirectorySuppliersAsync();
   }
 
   @Listen('ionChange')
@@ -222,18 +216,26 @@ export class ManagedOrder implements CreateManageView{
   @Method()
   async refresh(){
     await this.load();
-    // const stockEl = this.getStockManagerEl();
-    // // if (stockEl)
-    // //   stockEl.refresh();
+  }
+
+  @Watch('orderLines')
+  async updateLines(newVal){
+    if (newVal.startsWith('@'))
+      return;
+    this.lines = JSON.parse(newVal).map(o => new OrderLine(o.gtin, o.quantity, o.requesterId, o.senderId));
   }
 
   @Method()
   async reset(){
-    this.orderLines = [];
-    this.order = undefined;
-    const stockEl = this.getStockManagerEl();
-    if (stockEl)
-      stockEl.reset();
+    if (this.isCreate() && this.lines){
+      this.order = undefined;
+    } else {
+      this.order = undefined;
+      this.lines = [];
+      const stockEl = this.getStockManagerEl();
+      if (stockEl)
+        stockEl.reset();
+    }
   }
 
   private getStockManagerEl(){
@@ -249,7 +251,7 @@ export class ManagedOrder implements CreateManageView{
   create(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.sendCreateAction.emit(new Order(undefined, this.identity.id, evt.detail.senderId, this.identity.address, undefined, this.orderLines.slice()));
+    this.sendCreateAction.emit(new Order(undefined, this.identity.id, evt.detail.senderId, this.identity.address, undefined, this.lines.slice()));
   }
 
   isCreate(){
@@ -270,7 +272,7 @@ export class ManagedOrder implements CreateManageView{
   }
 
   private addOrderLine(gtin, quantity){
-    this.orderLines = [...this.orderLines, new OrderLine(gtin, quantity, this.identity.id, this.participantId)]
+    this.lines = [...this.lines, new OrderLine(gtin, quantity, this.identity.id, this.participantId)]
     this.currentGtin = undefined;
     this.currentQuantity = 0;
   }
@@ -302,7 +304,7 @@ export class ManagedOrder implements CreateManageView{
         if (self.suppliers){
           result.push(
             <ion-select name="input-senderId" interface="popover" interfaceOptions={options}
-                        class="supplier-select" placeholder={self.fromPlaceholderString}
+                        class="supplier-select" placeholder={self.fromPlaceholderString} aria-required="required"
                         disabled={!isCreate} value={!isCreate ? self.participantId : ''}>
               {...self.suppliers.map(s => (<ion-select-option value={s}>{s}</ion-select-option>))}
             </ion-select>
@@ -418,7 +420,7 @@ export class ManagedOrder implements CreateManageView{
       return [];
     return [
       ...this.getInputs(),
-      <line-stock-manager lines={typeof this.orderLines !== 'string' ? this.orderLines : []}
+      <line-stock-manager lines={this.lines}
                           show-stock={false}
                           enable-actions={true}
 
@@ -449,8 +451,10 @@ export class ManagedOrder implements CreateManageView{
     if (this.isCreate())
       return;
     return (
-      <line-stock-manager lines={typeof this.orderLines !== 'string' ? this.orderLines : []}
-                          show-stock={this.getType() === ORDER_TYPE.RECEIVED}
+      <line-stock-manager lines={this.lines}
+                          show-stock={this.isCreate()}
+                          enable-action={this.getType() === ORDER_TYPE.RECEIVED || this.isCreate()}
+
                           stock-string={this.stockString}
                           no-stock-string={this.noStockString}
                           select-string={this.selectString}

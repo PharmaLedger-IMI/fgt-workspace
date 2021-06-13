@@ -21,6 +21,7 @@
 | `manageString`        | `manage-title-string`   |             | `string` | `"Manage String"`            |
 | `noStockString`       | `no-stock-string`       |             | `string` | `'Empty'`                    |
 | `order`               | `order`                 |             | `any`    | `undefined`                  |
+| `orderIdString`       | `order-id-string`       |             | `string` | `'Order Id:'`                |
 | `orderMissingString`  | `order-missing-string`  |             | `string` | `'Order Missing'`            |
 | `productsCodeString`  | `products-code-string`  |             | `string` | `'Product Code:'`            |
 | `productsString`      | `products-string`       |             | `string` | `'Products:'`                |

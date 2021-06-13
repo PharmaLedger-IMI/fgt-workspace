@@ -24,7 +24,7 @@
 | `identity`              | `identity`                |             | `any`    | `undefined`                  |
 | `manageString`          | `manage-title-string`     |             | `string` | `"Manage String"`            |
 | `noStockString`         | `no-stock-string`         |             | `string` | `'Empty'`                    |
-| `orderLines`            | `order-lines`             |             | `any`    | `undefined`                  |
+| `orderLines`            | `order-lines`             |             | `string` | `undefined`                  |
 | `orderLinesString`      | `order-lines-string`      |             | `string` | `'OrderLines:'`              |
 | `orderMissingString`    | `order-missing-string`    |             | `string` | `'Order Missing'`            |
 | `orderRef`              | `order-ref`               |             | `string` | `undefined`                  |
