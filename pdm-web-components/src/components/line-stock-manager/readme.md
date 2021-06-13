@@ -56,7 +56,7 @@ Type: `Promise<{}>`
 
 
 
-### `refresh() => Promise<void>`
+### `refresh(newVal: any) => Promise<void>`
 
 
 

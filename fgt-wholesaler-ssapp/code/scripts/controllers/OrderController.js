@@ -2,7 +2,7 @@ import { LocalizedController, EVENT_REFRESH, EVENT_ACTION, EVENT_SSAPP_HAS_LOADE
 export default class OrderController extends LocalizedController {
 
     initializeModel = () => ({
-        orderLines: [],
+        orderLines: JSON.stringify([]),
         identity: undefined,
         orderRef: undefined,
         mode: 'issued'
@@ -25,18 +25,18 @@ export default class OrderController extends LocalizedController {
             self.model.identity = self.issuedOrderManager.getIdentity();
 
             const state = evt.detail;
-            if (state && state.mode) {
+            if (state && state.mode && state.order) {
                 self.model.mode = state.mode;
                 const newRef = `${state.mode === 'issued' ? state.order.senderId : state.order.requesterId}-${state.order.orderId}`;
                 if (newRef === self.model.orderRef)
                     return self.orderEl.refresh();
                 self.model.orderRef = newRef;
-                self.model.orderLines = [];
+                self.model.orderLines = JSON.stringify([]);
 
             } else {
                 self.model.orderRef = undefined;
                 self.mode = 'issued';
-                self.model.orderLines = state && state.orderLines ? [...state.orderLines] : [];
+                self.model.orderLines = JSON.stringify(state && state.orderLines ? [...state.orderLines] : []);
             }
         });
 

@@ -1,4 +1,4 @@
-import {Component, Host, h, Element, Event, EventEmitter, Prop, State, Watch, Method} from '@stencil/core';
+import {Component, Host, h, Element, Event, EventEmitter, Prop, State, Watch, Method, Listen} from '@stencil/core';
 import {HostElement} from "../../decorators";
 import wizard from '../../services/WizardService';
 import {WebManager, WebManagerService} from "../../services/WebManagerService";
@@ -119,16 +119,6 @@ export class ManagedShipment implements CreateManageView{
   @Prop({attribute: 'remaining-string'}) remainingString: string = 'Remaining:';
   @Prop({attribute: 'order-missing-string'}) orderMissingString: string = 'Order Missing';
 
-
-  // @Prop({attribute: 'reject-string'}) rejectString: string = 'Reject';
-  //
-  //
-  // @Prop({attribute: 'proceed-string'}) proceedString: string = 'Continue:';
-  // @Prop({attribute: 'delay-string'}) delayString: string = 'Delay:';
-  //
-
-
-
   // Directory Variables
   private directoryManager: WebManager = undefined;
   @State() products?: string[] = undefined;
@@ -183,31 +173,23 @@ export class ManagedShipment implements CreateManageView{
 
   @Method()
   async updateDirectory(){
-    this.getDirectoryProductsAsync();
-    this.getDirectoryRequestersAsync();
-  }
-
-  private getDirectoryProductsAsync(){
     const self = this;
-    getDirectoryProducts(self.directoryManager, (err, gtins) => {
-      if (err)
-        return self.sendError(`Could not get directory listing for ${ROLE.PRODUCT}`, err);
-      self.products = gtins;
-    });
-  }
-
-  private getDirectoryRequestersAsync(callback?){
-    const self = this;
-    getDirectoryRequesters(self.directoryManager, (err, records) => {
-      if (err){
-        self.sendError(`Could not list requesters from directory`, err);
-        return callback && callback(err);
-      }
-
-      self.requesters = records;
-      if (callback)
-        callback(undefined, records);
-    });
+    const getDirectoryProductsAsync = function(){
+      getDirectoryProducts(self.directoryManager, (err, gtins) => {
+        if (err)
+          return self.sendError(`Could not get directory listing for ${ROLE.PRODUCT}`, err);
+        self.products = gtins;
+      });
+    }
+    const getDirectoryRequestersAsync = function(){
+      getDirectoryRequesters(self.directoryManager, (err, records) => {
+        if (err)
+          return self.sendError(`Could not list requesters from directory`, err);
+        self.requesters = records;
+      });
+    }
+    getDirectoryProductsAsync();
+    getDirectoryRequestersAsync();
   }
 
   private async showProductPopOver(evt){
@@ -217,18 +199,37 @@ export class ManagedShipment implements CreateManageView{
       this.currentGtin = role;
   }
 
+  @Listen('ionChange')
+  onInputChange(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    const {target} = evt;
+    const {name, value} = target;
+    if (name === 'input-quantity')
+      this.currentQuantity = value;
+    if (this.getType() === SHIPMENT_TYPE.ISSUED && name === 'input-requesterId'
+      || this.getType() === SHIPMENT_TYPE.RECEIVED && name === 'input-senderId')
+      this.participantId = value;
+  }
+
   @Watch('shipmentRef')
+  @Watch('order')
   @Method()
   async refresh(){
     await this.load();
   }
 
   @Method()
-  async reset(){
-    this.orderLines = [];
-    const stockEl = this.getStockManagerEl();
-    if (stockEl)
-      stockEl.reset();
+  async reset() {
+    if (!this.order || typeof this.order === 'string'){ // for webcardinal compatibility
+      this.orderLines = [];
+      const stockEl = this.getStockManagerEl();
+      if (stockEl)
+        stockEl.reset();
+    } else {
+      this.participantId = this.order.requesterId;
+      this.orderLines = [...this.order.orderLines]
+    }
   }
 
   private getStockManagerEl(){
@@ -340,7 +341,7 @@ export class ManagedShipment implements CreateManageView{
           return (
             <ion-select name="input-requesterId" interface="popover" interfaceOptions={options}
                         class="requester-select"
-                        value={!isCreate ? self.participantId : ''}>
+                        value={isCreate ? self.participantId : ''}>
               {...self.requesters.map(s => (<ion-select-option value={s}>{s}</ion-select-option>))}
             </ion-select>
           )
@@ -480,8 +481,8 @@ export class ManagedShipment implements CreateManageView{
       return;
     return [
       ...this.getInputs(),
-      <line-stock-manager lines={typeof this.orderLines !== 'string' ? this.orderLines : []}
-                          show-stock={this.getType() === SHIPMENT_TYPE.RECEIVED}
+      <line-stock-manager lines={this.orderLines}
+                          show-stock={true}
                           enable-actions={true}
 
                           onSelectEvent={(evt) => this.selectOrderLine(evt)}
