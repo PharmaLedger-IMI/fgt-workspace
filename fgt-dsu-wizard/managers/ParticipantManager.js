@@ -21,14 +21,27 @@ const BaseManager = require('../../pdm-dsu-toolkit/managers/BaseManager');
  * Should eventually integrate with the WP3 decisions
  *
  * @param {DSUStorage} dsuStorage the controllers dsu storage
- * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
- * Makes DSU Storage required again!
  * @param {function(err, ParticipantManager)} [callback}
  */
 class ParticipantManager extends BaseManager{
-    constructor(dsuStorage, force, callback) {
-        super(dsuStorage, force, callback);
-        this.directoryManager = require('./DirectoryManager')(this, force);
+    constructor(dsuStorage, callback) {
+        super(dsuStorage, (err, manager) => {
+            if (err)
+                return callback(err);
+            require('./DirectoryManager')(this, (err, directoryManager) => {
+                if (err)
+                    return callback(err);
+                manager.directoryManager = directoryManager;
+                require('./StockManager')(this, true, (err, stockManager) => {
+                    if (err)
+                        return callback(err);
+                    manager.stockManager = stockManager;
+                    callback(undefined, manager);
+                });
+            });
+        });
+        this.directoryManager = undefined;
+        this.stockManager = undefined;
     };
 
     /**
@@ -63,7 +76,7 @@ const getParticipantManager = function (dsuStorage, force, callback) {
     if (!participantManager || force) {
         if (!dsuStorage)
             throw new Error("No DSUStorage provided");
-        participantManager = new ParticipantManager(dsuStorage, force, callback);
+        participantManager = new ParticipantManager(dsuStorage, callback);
     }
     return participantManager;
 }

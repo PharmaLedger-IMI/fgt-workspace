@@ -225,6 +225,22 @@ export default class LocalizedController extends WebcController {
     return alert;
   }
 
+  async showConfirm(message, confirmText, cancelText = "Cancel"){
+    return this.showAlert(message,
+      {
+        buttons: [
+          {
+            text: this.translate(confirmText),
+            role: 'cancel'
+          },
+          {
+            text: this.translate(cancelText),
+            role: 'confirm'
+          }
+        ]
+      });
+  }
+
 
   /**
    * Instantiates a new Spinner

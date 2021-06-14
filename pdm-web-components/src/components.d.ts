@@ -54,7 +54,7 @@ export namespace Components {
         "confirmAllString": string;
         "confirmedString": string;
         "enableActions": boolean;
-        "getResult": () => Promise<{}>;
+        "getResult": () => Promise<any>;
         "lines": any[];
         "linesString": string;
         "noStockString": string;

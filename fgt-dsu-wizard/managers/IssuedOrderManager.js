@@ -9,8 +9,8 @@ const OrderStatus = require('../model').OrderStatus;
  * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
  */
 class IssuedOrderManager extends OrderManager {
-    constructor(participantManager) {
-        super(participantManager, DB.issuedOrders, ['senderId']);
+    constructor(participantManager, callback) {
+        super(participantManager, DB.issuedOrders, ['senderId'], callback);
     }
 
     /**
@@ -199,16 +199,22 @@ class IssuedOrderManager extends OrderManager {
     }
 }
 
-let issuedOrderManager;
 /**
  * @param {ParticipantManager} participantManager
- * @param {boolean} force
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {IssuedOrderManager}
  */
-const getIssuedOrderManager = function (participantManager, force, callback) {
-    if (!issuedOrderManager || force)
-        issuedOrderManager = new IssuedOrderManager(participantManager);
-    return issuedOrderManager;
+const getIssuedOrderManager = function (participantManager, callback) {
+    let manager;
+    try {
+        manager = participantManager.getManager(IssuedOrderManager);
+        if (callback)
+            return callback(undefined, manager);
+    } catch (e){
+        manager = new IssuedOrderManager(participantManager, callback);
+    }
+
+    return manager;
 }
 
 module.exports = getIssuedOrderManager;

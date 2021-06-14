@@ -245,7 +245,10 @@ export class ManagedShipment implements CreateManageView{
   create(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.sendCreateAction.emit(new Shipment(undefined, this.identity.id, evt.detail.senderId, this.identity.address, undefined, this.orderLines.slice()));
+    this.sendCreateAction.emit({
+      shipment: new Shipment(undefined, this.identity.id, evt.detail.senderId, this.identity.address, undefined, this.orderLines.slice()),
+      stock: this.getStockManagerEl().getResult()
+    });
   }
 
   isCreate(){

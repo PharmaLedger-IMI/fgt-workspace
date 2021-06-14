@@ -304,7 +304,7 @@ export class ManagedOrder implements CreateManageView{
         if (self.suppliers){
           result.push(
             <ion-select name="input-senderId" interface="popover" interfaceOptions={options}
-                        class="supplier-select" placeholder={self.fromPlaceholderString} aria-required="required"
+                        class="supplier-select" placeholder={self.fromPlaceholderString}
                         disabled={!isCreate} value={!isCreate ? self.participantId : ''}>
               {...self.suppliers.map(s => (<ion-select-option value={s}>{s}</ion-select-option>))}
             </ion-select>

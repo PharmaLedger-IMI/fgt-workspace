@@ -7,17 +7,20 @@ const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
  */
 class OrderLineManager extends Manager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.orderLines, ['gtin', 'date', 'requesterId', 'senderId'], callback);
-        const self = this;
-        this.orderLineService = new (require('../services/OrderLineService'))(ANCHORING_DOMAIN);
-        this.registerMessageListener((message) => {
-            self.processMessageRecord(message, (err) => {
-                if (err)
-                    console.log(`Error processing message: ${message}`);
-                if (self.controller)
-                    self.controller.refresh();
+        super(participantManager, DB.orderLines, ['gtin', 'date', 'requesterId', 'senderId'], (err, manager) => {
+            if (err)
+                return callback(err);
+            manager.registerMessageListener((message) => {
+                manager.processMessageRecord(message, (err) => {
+                    if (err)
+                        console.log(`Could not process message: ${err}`);
+                    if (manager.controller)
+                        manager.controller.refresh();
                 });
             });
+            callback(undefined, manager);
+        });
+        this.orderLineService = new (require('../services/OrderLineService'))(ANCHORING_DOMAIN);
     }
 
     /**
@@ -156,22 +159,22 @@ class OrderLineManager extends Manager {
     };
 }
 
-let orderLineManager;
 /**
  * @param {ParticipantManager} participantManager
- * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
- * Makes BaseManager required again!
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {OrderLineManager}
  */
-const getOrderLineManager = function (participantManager, force, callback) {
-    if (typeof force === 'function'){
-        callback = force;
-        force = false;
+const getOrderLineManager = function (participantManager, callback) {
+    let manager;
+    try {
+        manager = participantManager.getManager(OrderLineManager);
+        if (callback)
+            return callback(undefined, manager);
+    } catch (e){
+        manager = new OrderLineManager(participantManager, callback);
     }
-    if (!orderLineManager || force)
-        orderLineManager = new OrderLineManager(participantManager, callback);
-    return orderLineManager;
+
+    return manager;
 }
 
 module.exports = getOrderLineManager;

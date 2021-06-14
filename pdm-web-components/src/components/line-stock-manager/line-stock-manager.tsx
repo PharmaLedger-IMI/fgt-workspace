@@ -111,7 +111,7 @@ export class LineStockManager {
 
   @Method()
   async getResult(){
-    return this.shipmentLines;
+    return this.result;
   }
 
   @Watch('lines')

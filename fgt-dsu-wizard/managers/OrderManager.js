@@ -16,8 +16,8 @@ const OrderStatus = require('../model').OrderStatus;
  * @abstract
  */
 class OrderManager extends Manager {
-    constructor(participantManager, tableName, indexes) {
-        super(participantManager, tableName, ['orderId', 'products', ...indexes]);
+    constructor(participantManager, tableName, indexes, callback) {
+        super(participantManager, tableName, ['orderId', 'products', ...indexes], callback);
         this.orderService = new (require('../services').OrderService)(ANCHORING_DOMAIN);
     }
 

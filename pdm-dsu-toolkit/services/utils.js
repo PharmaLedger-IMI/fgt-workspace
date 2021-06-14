@@ -172,6 +172,38 @@ const _err = function(msg, err, callback){
 	return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(msg, err));
 }
 
+const functionCallIterator = function(func, ...args){
+	if (!args || args.length < 1)
+		throw new Error("Needs at least a callback");
+	args.forEach(a => {
+		if (!Array.isArray(a))
+			throw new Error("arguments need to be arrays");
+	})
+	const callback = args.pop();
+
+	const result = []
+
+	const iterator = function(...argz){
+		const callback = argz.pop();
+		const callArgs = argz.map(a => a.shift()).filter(a => !!a);
+
+		if (callArgs.length !== argz.length)
+			callback()
+		callArgs.push((err) => err ? callback(err) : iterator(...argz, callback))
+
+		try{
+			result.push(func(...callArgs));
+		} catch(e){
+			return callback(e);
+		}
+	}
+
+	iterator(...args, (err) => err
+		? callback(err)
+		: callback(undefined, result));
+}
+
+
 module.exports = {
 	getResolver,
 	getKeySSISpace,
@@ -180,5 +212,6 @@ module.exports = {
 	selectMethod,
 	createDSUFolders,
 	getEnv,
-	_err
+	_err,
+	functionCallIterator
 }

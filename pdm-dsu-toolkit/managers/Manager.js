@@ -1,5 +1,7 @@
 const { INFO_PATH , DEFAULT_QUERY_OPTIONS } = require('../constants');
 
+const {functionCallIterator} = require('../services/utils');
+
 class Page {
     itemsPerPage = 10;
     currentPage = 1;
@@ -94,15 +96,17 @@ class Manager{
             }
             return baseManager.sendMessage(did, api, message, callback);
         }
-        this._registerMessageListener = function(listener){
-            return baseManager.registerMessageListener(this.tableName, listener);
-        }
         this._deleteMessage = function(message, callback){
             return baseManager.deleteMessage(message, callback);
         }
         this._getMessages = function(callback){
             return baseManager.getMessages(this.tableName, callback);
         }
+        this._registerMessageListener = function(listener){
+            return baseManager.registerMessageListener(this.tableName, listener);
+        }
+        baseManager.cacheManager(this);
+
         if (this.indexes && callback){
             this._indexTable(...this.indexes, (err) => {
                 if (err)
@@ -110,7 +114,9 @@ class Manager{
                 console.log(`Indexes for table ${self.tableName} updated`);
                 callback(undefined, self);
             });
-        }
+        } else if (callback)
+            callback(undefined, self);
+
     }
 
     /**
@@ -538,6 +544,31 @@ class Manager{
                     callback(undefined, newItem, dsu)
                 });
             });
+        });
+    }
+
+    /**
+     * updates a bunch of items
+     *
+     * @param {string[]} [keys] key is optional so child classes can override them
+     * @param {object[]} newItems
+     * @param {function(err, object[], Archive[])} callback
+     */
+    updateAll(keys, newItems, callback){
+        if (!callback)
+            return callback(`No key Provided...`);
+
+        let self = this;
+        functionCallIterator(this.updateRecord.bind(this), keys, newItems, (err, results) => {
+            if (err)
+                return self._err(`Could not update all records`, err, callback);
+            callback(undefined, ...results.reduce((accum, r) => {
+                accum[0] = accum[0] || [];
+                accum[1] = accum[1] || [];
+                accum[0].push(r[0]);
+                accum[1].push(r[1]);
+                return accum;
+            }, [2]));
         });
     }
 

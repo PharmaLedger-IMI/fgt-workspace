@@ -71,35 +71,69 @@ class IssuedShipmentManager extends ShipmentManager {
 
     /**
      * Creates a {@link Shipment} dsu
-     * @param {string} orderSSI the readSSI to the order that generates the shipment
+     * @param {string} orderId the id to the received order that generates the shipment
      * @param {string|number} [shipmentId] the table key
      * @param {Shipment} shipment
+     * @param {{}} stockInfo
      * @param {function(err, sReadSSI, dbPath)} callback where the dbPath follows a "tableName/shipmentId" template.
      * @override
      */
-    create(orderSSI, shipment, callback) {
+    create(orderId, shipment, stockInfo, callback) {
         let self = this;
 
-        self.shipmentService.create(shipment, orderSSI, (err, keySSI, shipmentLinesSSIs) => {
-            if (err)
-                return self._err(`Could not create product DSU for ${shipment}`, err, callback);
-            const record = keySSI.getIdentifier();
-            console.log("Shipment SSI=" + record);
-            self.insertRecord(super._genCompostKey(shipment.requesterId, shipment.shipmentId), self._indexItem(shipment, record), (err) => {
-                if (err)
-                    return self._err(`Could not insert record with shipmentId ${shipment.shipmentId} on table ${self.tableName}`, err, callback);
-                const path = `${self.tableName}/${shipment.shipmentId}`;
-                console.log(`Shipment ${shipment.shipmentId} created stored at DB '${path}'`);
-                const aKey = keySSI.getIdentifier();
-                self.sendMessage(shipment.requesterId, DB.receivedShipments, aKey, (err) =>
-                    self._messageCallback(err ? `Could not sent message to ${shipment.shipmentId} with ${DB.receivedShipments}: ${err}` : err,
-                        `Message sent to ${shipment.requesterId}, ${DB.receivedShipments}, ${aKey}`));
+        if (!callback){
+            callback = stockInfo;
+            stockInfo = undefined;
+        }
 
-                self.sendShipmentLinesToMAH([...shipment.shipmentLines], [...shipmentLinesSSIs], (err) => err
-                        ? self._err(`Could not transmit shipmentLines to The manufacturers`, err, callback)
-                        : callback(undefined, keySSI, path));
+        const createInner = function(chosenSerials, callback){
+            if (!callback){
+                callback = chosenSerials;
+                chosenSerials = undefined
+            }
+
+            const receivedOrderManager = self.getManager(ReceivedOrderManager);
+                const receivedOrderKey = receivedOrderManager._genCompostKey(shipment.requesterId, orderId);
+
+            receivedOrderManager.getOne(receivedOrderKey, (err, orderSSI) => {
+                if (err)
+                    return self._err(`Could not retrieve received order ${orderId}`, err, callback);
+                self.shipmentService.create(shipment, orderSSI, (err, keySSI, shipmentLinesSSIs) => {
+                    if (err)
+                        return self._err(`Could not create product DSU for ${shipment}`, err, callback);
+                    const record = keySSI.getIdentifier();
+                    console.log("Shipment SSI=" + record);
+                    self.insertRecord(self._genCompostKey(shipment.requesterId, shipment.shipmentId), self._indexItem(shipment, record), (err) => {
+                        if (err)
+                            return self._err(`Could not insert record with shipmentId ${shipment.shipmentId} on table ${self.tableName}`, err, callback);
+                        const path = `${self.tableName}/${shipment.shipmentId}`;
+                        console.log(`Shipment ${shipment.shipmentId} created stored at DB '${path}'`);
+                        const aKey = keySSI.getIdentifier();
+                        self.sendMessagesAsync(shipment, shipmentLinesSSIs, aKey);
+                        callback(undefined, keySSI, path);
+                    });
+                });
             });
+        }
+
+        if (!stockInfo)
+            return createInner(callback);
+
+        self.stockManager.manageAll(stockInfo.map(s => s.stock.available), (err, serials)=> {
+            if (err)
+                return self._err(`Could not update Stock`, err, callback);
+           createInner(serials, callback);
         });
+    }
+
+    sendMessagesAsync(shipment, shipmentLinesSSIs, aKey){
+        const self = this;
+        self.sendMessage(shipment.requesterId, DB.receivedShipments, aKey, (err) =>
+            self._messageCallback(err ? `Could not sent message to ${shipment.shipmentId} with ${DB.receivedShipments}: ${err}` : err,
+                `Message sent to ${shipment.requesterId}, ${DB.receivedShipments}, ${aKey}`));
+
+        self.sendShipmentLinesToMAH([...shipment.shipmentLines], [...shipmentLinesSSIs], (err) =>
+            self._messageCallback( err ? `Could not transmit shipmentLines to The manufacturers` : 'Lines Notice sent to Manufacturers'));
     }
 
     /**
@@ -151,22 +185,22 @@ class IssuedShipmentManager extends ShipmentManager {
     }
 }
 
-let issuedShipmentManager;
 /**
  * @param {ParticipantManager} participantManager
- * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
- * Makes Participant Manager required again!
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {IssuedShipmentManager}
  */
-const getIssuedShipmentManager = function (participantManager, force, callback) {
-    if (typeof force === 'function'){
-        callback = force;
-        force = false;
+const getIssuedShipmentManager = function (participantManager,  callback) {
+    let manager;
+    try {
+        manager = participantManager.getManager(IssuedShipmentManager);
+        if (callback)
+            return callback(undefined, manager);
+    } catch (e){
+        manager = new IssuedShipmentManager(participantManager, callback);
     }
-    if (!issuedShipmentManager || force)
-        issuedShipmentManager = new IssuedShipmentManager(participantManager, callback);
-    return issuedShipmentManager;
+
+    return manager;
 }
 
 module.exports = getIssuedShipmentManager;

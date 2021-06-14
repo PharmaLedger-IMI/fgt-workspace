@@ -1,6 +1,7 @@
-const {INFO_PATH, ANCHORING_DOMAIN, DB, DEFAULT_QUERY_OPTIONS} = require('../constants');
+const {ANCHORING_DOMAIN, DB} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Batch = require('../model').Batch;
+const getStockManager = require('./StockManager');
 
 /**
  * Batch Manager Class
@@ -23,6 +24,7 @@ const Batch = require('../model').Batch;
 class BatchManager extends Manager{
     constructor(participantManager, callback) {
         super(participantManager, DB.batches, ['gtin', 'batchNumber'], callback);
+        this.stockManager = getStockManager(participantManager);
         this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
         this.batchService = new (require('../services/BatchService'))(ANCHORING_DOMAIN);
     }
@@ -66,13 +68,16 @@ class BatchManager extends Manager{
 
     /**
      * Creates a {@link Batch} dsu
-     * @param {string|number} gtin
+     * @param {Product} product
      * @param {Batch} batch
      * @param {function(err, keySSI, string)} callback first keySSI if for the batch, the second for its' product dsu
      * @override
      */
-    create(gtin, batch, callback) {
+    create(product, batch, callback) {
         let self = this;
+
+        const gtin = product.gtin;
+
         self.batchService.create(gtin, batch, (err, keySSI) => {
             if (err)
                 return callback(err);
@@ -83,7 +88,13 @@ class BatchManager extends Manager{
                     return self._err(`Could not inset record with gtin ${gtin} and batch ${batch.batchNumber} on table ${self.tableName}`, err, callback);
                 const path =`${self.tableName}/${dbKey}`;
                 console.log(`batch ${batch.batchNumber} created stored at '${path}'`);
-                callback(undefined, keySSI, path);
+
+                self.stockManager.manage(product, batch, (err) => {
+                    if (err)
+                        return self._err(`Error Updating Stock for ${product.gtin} batch ${batch.batchNumber}`, err, callback);
+                    console.log(`Stock for ${product.gtin} batch ${batch.batchNumber} updated`)
+                    callback(undefined, keySSI, path);
+                })
             });
         });
     }
@@ -160,22 +171,23 @@ class BatchManager extends Manager{
     }
 }
 
-let batchManager;
 /**
  * @param {BaseManager} [participantManager] only required the first time, if not forced
- * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
  * Makes BaseManager required again!
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {BatchManager}
  */
-const getBatchManager = function (participantManager, force, callback) {
-    if (typeof force === 'function'){
-        callback = force;
-        force = false;
+const getBatchManager = function (participantManager, callback) {
+    let manager;
+    try {
+       manager = participantManager.getManager(BatchManager);
+        if (callback)
+            return callback(undefined, manager);
+    } catch (e){
+       manager = new BatchManager(participantManager, callback);
     }
-    if (!batchManager || force)
-        batchManager = new BatchManager(participantManager, callback);
-    return batchManager;
+
+    return manager;
 }
 
 module.exports = getBatchManager;

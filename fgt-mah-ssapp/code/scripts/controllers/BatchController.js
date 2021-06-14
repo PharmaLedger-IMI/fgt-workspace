@@ -1,4 +1,4 @@
-import {LocalizedController, EVENT_REFRESH, EVENT_ACTION} from "../../assets/pdm-web-components/index.esm.js";
+import {LocalizedController, EVENT_REFRESH, EVENT_ACTION, BUTTON_ROLES} from "../../assets/pdm-web-components/index.esm.js";
 
 /**
  * Controls Application Flow
@@ -23,6 +23,7 @@ export default class BatchController extends LocalizedController {
         const wizard = require('wizard');
         const participantManager = wizard.Managers.getParticipantManager();
         this.batchManager = wizard.Managers.getBatchManager(participantManager);
+        this.productmanager = wizard.Managers.getProductManager(participantManager);
         this.batchEl = this.element.querySelector('managed-batch');
 
         self.on(EVENT_REFRESH, (evt) => {
@@ -58,16 +59,44 @@ export default class BatchController extends LocalizedController {
     /**
      * Sends an event named create-issued-order to the IssuedOrders controller.
      */
-    _handleCreateBatch(batch) {
+    async _handleCreateBatch(batch) {
         let self = this;
         if (batch.validate())
-            return this.showErrorToast('Invalid Batch');
+            return this.showErrorToast(this.translate(`create.error.invalid`));
 
-        self.batchManager.create(this._getGtinFromRef(), batch, (err, keySSI, dbPath) => {
+        const alert = await self.showConfirm('create.confirm');
+
+        const {role} = await alert.onDidDismiss();
+
+        if (BUTTON_ROLES.CONFIRM !== role)
+            return console.log(`Order creation canceled by clicking ${role}`);
+
+        const loader = self._getLoader(self.translate('create.loading'));
+        await loader.present()
+
+        const sendError = async function(msg){
+            await loader.dismiss();
+            self.showErrorToast(msg);
+        }
+
+        const gtin = this._getGtinFromRef();
+
+        self.productmanager.getOne(gtin, (err, product) => {
             if (err)
-                return self.showErrorToast(`Could not create Batch ${JSON.stringify(batch, undefined, 2)}`, err);
-            self.showToast(`Batch ${batch.batchNumber} from ${self._getGtinFromRef()} has been created`);
-            self.model.gtinBatch = `${self.model.gtinBatch}-${batch.batchNumber}`;
+                return sendError(this.translate(`create.error.bind`));
+            self.batchManager.create(product, batch, async (err, keySSI, dbPath) => {
+                if (err)
+                    return sendError(self.translate('create.error.error'), err);
+                self.showToast(self.translate('create.success'));
+                self.model.gtinBatch = `${self.model.gtinBatch}-${batch.batchNumber}`;
+                await loader.dismiss();
+            });
         });
+    }
+
+    async showConfirm(action = 'create.confirm'){
+        return super.showConfirm(this.translate(`${action}.message`),
+            this.translate(`${action}.buttons.ok`),
+            this.translate(`${action}.buttons.cancel`));
     }
 }

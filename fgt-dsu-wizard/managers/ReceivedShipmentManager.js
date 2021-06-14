@@ -8,15 +8,18 @@ const {Order, Stock, OrderLine, OrderStatus} = require('../model');
  */
 class ReceivedShipmentManager extends ShipmentManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.receivedShipments, ['requesterId'], callback);
-        const self = this;
-        this.registerMessageListener((message) => {
-            self.processMessageRecord(message, (err) => {
-                if (err)
-                    console.log(`Could not process message: ${err}`);
-                if (self.controller)
-                    self.controller.refresh();
+        super(participantManager, DB.receivedShipments, ['requesterId'], (err, manager) => {
+            if (err)
+                return callback(err);
+            manager.registerMessageListener((message) => {
+                manager.processMessageRecord(message, (err) => {
+                    if (err)
+                        console.log(`Could not process message: ${err}`);
+                    if (manager.controller)
+                        manager.controller.refresh();
+                });
             });
+            callback(undefined, manager);
         });
     }
 
@@ -125,18 +128,23 @@ class ReceivedShipmentManager extends ShipmentManager {
     };
 }
 
-let receivedShipmentManager;
+
 /**
  * @param {ParticipantManager} participantManager
- * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
- * Makes Participant Manager required again!
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {ReceivedShipmentManager}
  */
-const getReceivedShipmentManager = function (participantManager, force, callback) {
-    if (!receivedShipmentManager || force)
-        receivedShipmentManager = new ReceivedShipmentManager(participantManager, callback);
-    return receivedShipmentManager;
+const getReceivedShipmentManager = function (participantManager, callback) {
+    let manager;
+    try {
+        manager = participantManager.getManager(ReceivedShipmentManager);
+        if (callback)
+            return callback(undefined, manager);
+    } catch (e){
+        manager = new ReceivedShipmentManager(participantManager, callback);
+    }
+
+    return manager;
 }
 
 module.exports = getReceivedShipmentManager;
