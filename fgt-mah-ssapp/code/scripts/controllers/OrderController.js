@@ -2,7 +2,7 @@ import { LocalizedController, EVENT_REFRESH, EVENT_ACTION, EVENT_SSAPP_HAS_LOADE
 export default class OrderController extends LocalizedController {
 
     initializeModel = () => ({
-        orderLines: [],
+        orderLines: JSON.stringify([]),
         identity: undefined,
         orderRef: undefined,
         mode: 'issued'
@@ -13,10 +13,11 @@ export default class OrderController extends LocalizedController {
         let self = this;
         super.bindLocale(self, `order`);
         self.model = self.initializeModel();
+
         const wizard = require('wizard');
         const participantManager = wizard.Managers.getParticipantManager();
         self.issuedOrderManager = wizard.Managers.getIssuedOrderManager(participantManager);
-        self.orderEl = self.querySelector('manager-order');
+        self.orderEl = self.querySelector('managed-order');
 
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
@@ -24,22 +25,23 @@ export default class OrderController extends LocalizedController {
             self.model.identity = self.issuedOrderManager.getIdentity();
 
             const state = evt.detail;
-            if (state && state.order) {
+            if (state && state.mode && state.order) {
                 self.model.mode = state.mode;
                 const newRef = `${state.mode === 'issued' ? state.order.senderId : state.order.requesterId}-${state.order.orderId}`;
                 if (newRef === self.model.orderRef)
                     return self.orderEl.refresh();
                 self.model.orderRef = newRef;
+                self.model.orderLines = JSON.stringify([]);
 
             } else {
                 self.model.orderRef = undefined;
                 self.mode = 'issued';
-                self.model.orderLines = state && state.orderLines ? [...state.orderLines] : [];
+                self.model.orderLines = JSON.stringify(state && state.orderLines ? [...state.orderLines] : []);
             }
         });
 
         self.on(EVENT_SSAPP_HAS_LOADED, async () => {
-            await self.element.querySelector('managed-order').updateDirectory();
+            await self.orderEl.updateDirectory();
         }, {capture: true});
 
         self.on(EVENT_ACTION, async (evt) => {

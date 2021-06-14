@@ -68,8 +68,7 @@ const {getMessageManager, Message} = require('./MessageManager');
  * @abstract
  */
 class BaseManager {
-    constructor(dsuStorage, force, callback) {
-        this.force = force;
+    constructor(dsuStorage, callback) {
         this.DSUStorage = dsuStorage;
         this.rootDSU = undefined;
         this.db = undefined;
@@ -77,6 +76,7 @@ class BaseManager {
         this.did = undefined;
         this.messenger = undefined;
         this.identity = undefined;
+        this.managerCache = {};
         this._getResolver = getResolver;
         this._getKeySSISpace = getKeySSISpace;
         this._err = _err;
@@ -91,6 +91,21 @@ class BaseManager {
                 callback(undefined, this);
         });
     };
+
+    cacheManager(manager){
+        const name = manager.constructor.name;
+        if (name in this.managerCache)
+            throw new Error("Duplicate managers " + name);
+
+        this.managerCache[name] = manager;
+    }
+
+    getManager(manager){
+        const name = manager.name;
+        if (!(name in this.managerCache))
+            throw new Error("No manager cached " + name);
+        return this.managerCache[name];
+    }
 
     sendMessage(did, api, message, callback){
         const msg = new Message(api, message)
@@ -177,10 +192,14 @@ class BaseManager {
                 self.participantConstSSI = relevant[self._cleanPath(PARTICIPANT_MOUNT_PATH)];
                 self._getDIDString(identity, self.participantConstSSI, (err, didString) => {
                     if (err)
-                        throw err;
+                        return callback(err);
                     console.log(`DID String is ${didString}`);
-                    self.messenger = getMessageManager(self, didString, self.force);
-                    callback();
+                    getMessageManager(self, didString, (err, messageManager) => {
+                        if (err)
+                            return callback(err);
+                        self.messenger = messageManager;
+                        callback(undefined, self);
+                    });
                 });
             });
         });

@@ -207,17 +207,14 @@ let messageManager;
  * @returns {MessageManager}
  * @module managers
  */
-const getMessageManager = function(baseManager, didString, force, callback) {
-    if (typeof force === 'function'){
-        callback = force;
-        force = false;
+const getMessageManager = function(baseManager, didString, callback) {
+    let manager;
+    try {
+        manager = baseManager.getManager(MessageManager);
+    } catch (e){
+        manager = new MessageManager(baseManager, didString, callback);
     }
-    if (!messageManager || force) {
-        if (!baseManager || !didString)
-            throw new Error("Missing Objects for instantiation");
-        messageManager = new MessageManager(baseManager, didString, callback);
-    }
-    return messageManager;
+    return manager;
 }
 
 module.exports = {

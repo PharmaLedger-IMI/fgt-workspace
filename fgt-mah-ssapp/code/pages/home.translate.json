@@ -87,6 +87,18 @@
       "create-product": "Add Product",
       "cancel": "Cancel"
     },
+    "confirm": {
+      "message": "Please confirm Product creation",
+      "buttons": {
+        "ok": "Confirm",
+        "cancel": "Cancel"
+      }
+    },
+    "error": {
+      "bind": "Could not bind participant to Product",
+      "invalid": "Invalid Product: ",
+      "error": "Could not create new Product: "
+    },
     "batches": {
       "title": "Manage Batches",
       "buttons": {
@@ -150,6 +162,18 @@
     "buttons": {
       "create-batch": "Create",
       "cancel": "Cancel"
+    },
+    "confirm": {
+      "message": "Please confirm Batch creation",
+      "buttons": {
+        "ok": "Confirm",
+        "cancel": "Cancel"
+      }
+    },
+    "error": {
+      "bind": "Could not bind Product to Batch",
+      "invalid": "Invalid Batch: ",
+      "error": "Could not create new Batch: "
     }
   },
   "receivedOrders": {
@@ -169,7 +193,8 @@
   "shipment": {
     "create": {
       "title": "Create Shipment",
-      "from": "Order from:",
+      "from": "Shipment from:",
+      "to": "Shipment to:",
       "fromPlaceholder": "Select a supplier...",
       "fromAt": "Ship to Address:",
       "toAt": "Ship from Address:",
@@ -211,40 +236,22 @@
         "error": "Could not update Shipment: "
       }
     },
-    "back": "Back to Orders",
-    "scan": "Scan Product",
-
-    "title": "Process Shipment",
-    "details": "Details:",
-    "products": "Products:",
-    "stock": "Stock:",
-    "noStock": "No Stock for selected Product",
-    "available": "Available:",
-    "unavailable": "Unavailable:",
-    "selectProduct": "Please select a product",
-    "confirmed": "Confirmed:",
-    "confirmAll": "Confirm All",
-    "resetAll": "Reset All",
-    "buttons": {
-      "approve": "Approve",
-      "deny": "Deny"
+    "stock": {
+      "stock": "Stock:",
+      "no-stock": "No Stock for selected Product",
+      "reset-all": "Reset All",
+      "confirmed": "Confirmed:",
+      "confirm-all": "Confirm All Available",
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "select": "Please select a Product",
+      "remaining": "Remaining:",
+      "order-missing": "Order missing"
     },
-    "creation": {
-      "confirm": {
-        "message": "Please confirm Shipment creation",
-        "buttons": {
-          "ok": "Confirm",
-          "cancel": "Cancel"
-        }
-      },
-      "loading": "Creating Shipment. Please wait...",
-      "success": "Shipment Successfully created",
-      "error": {
-        "bind": "Could not bind participant to shipment",
-        "invalid": "Invalid Shipment: ",
-        "error": "Could not create new Shipment: "
-      }
-    }
+    "back": "Back",
+    "status": "Shipment Status:",
+    "scan": "Scan Product",
+    "scan-code": "Scan Shipment Code"
   },
   "order": {
     "create": {

@@ -1,4 +1,4 @@
-import { LocalizedController, EVENT_REFRESH, EVENT_ACTION } from "../../assets/pdm-web-components/index.esm.js";
+import { LocalizedController, EVENT_REFRESH, EVENT_ACTION, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
 
 /**
  * Controls Application Flow
@@ -53,16 +53,38 @@ export default class ProductController extends LocalizedController {
     /**
      * Sends an event named create-issued-order to the IssuedOrders controller.
      */
-    _handleCreateProduct(product) {
+    async _handleCreateProduct(product) {
         let self = this;
         if (product.validate())
-            return this.showErrorToast('Invalid Product');
+            return this.showErrorToast(this.translate(`create.error.invalid`));
 
-        self.productManager.create(product, (err, keySSI, dbPath) => {
+        const alert = await self.showConfirm('create.confirm');
+
+        const {role} = await alert.onDidDismiss();
+
+        if (BUTTON_ROLES.CONFIRM !== role)
+            return console.log(`Order creation canceled by clicking ${role}`);
+
+        const loader = self._getLoader(self.translate('create.loading'));
+        await loader.present()
+
+        const sendError = async function(msg){
+            await loader.dismiss();
+            self.showErrorToast(msg);
+        }
+
+        self.productManager.create(product, async (err, keySSI, dbPath) => {
             if (err)
-                return self.showErrorToast(`Could not create Product ${JSON.stringify(product, undefined, 2)}`, err);
+                return sendError(`Could not create Product ${JSON.stringify(product, undefined, 2)}`, err);
             self.showToast(`Product ${product.name} with gtin ${product.gtin} has been created`);
             self.model.gtinRef = product.gtin;
+            await loader.dismiss();
         });
+    }
+
+    async showConfirm(action = 'create.confirm'){
+        return super.showConfirm(this.translate(`${action}.message`),
+            this.translate(`${action}.buttons.ok`),
+            this.translate(`${action}.buttons.cancel`));
     }
 }

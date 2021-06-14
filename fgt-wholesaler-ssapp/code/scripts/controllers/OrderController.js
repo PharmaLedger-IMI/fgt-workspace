@@ -3,8 +3,8 @@ export default class OrderController extends LocalizedController {
 
     initializeModel = () => ({
         orderLines: JSON.stringify([]),
-        identity: undefined,
-        orderRef: undefined,
+        identity: {},
+        orderRef: '',
         mode: 'issued'
     });
 
@@ -31,10 +31,9 @@ export default class OrderController extends LocalizedController {
                 if (newRef === self.model.orderRef)
                     return self.orderEl.refresh();
                 self.model.orderRef = newRef;
-                self.model.orderLines = JSON.stringify([]);
 
             } else {
-                self.model.orderRef = undefined;
+                self.model.orderRef = '';
                 self.mode = 'issued';
                 self.model.orderLines = JSON.stringify(state && state.orderLines ? [...state.orderLines] : []);
             }
@@ -61,12 +60,12 @@ export default class OrderController extends LocalizedController {
         if (order.validate())
             return this.showErrorToast(this.translate(`create.error.invalid`));
 
-        const alert = await self._showConfirm('create.confirm');
+        const alert = await self.showConfirm('create.confirm');
 
         const {role} = await alert.onDidDismiss();
 
         if (BUTTON_ROLES.CONFIRM !== role)
-            return console.log(`Shipment creation canceled by clicking ${role}`);
+            return console.log(`Order creation canceled by clicking ${role}`);
 
         const loader = self._getLoader(self.translate('create.loading'));
         await loader.present()
@@ -86,19 +85,9 @@ export default class OrderController extends LocalizedController {
         });
     }
 
-    async _showConfirm(action = 'create.confirm'){
-        return this.showAlert(this.translate(`${action}.message`),
-            {
-                buttons: [
-                    {
-                        text: this.translate(`${action}.buttons.cancel`),
-                        role: 'cancel'
-                    },
-                    {
-                        text: this.translate(`${action}.buttons.ok`),
-                        role: 'confirm'
-                    }
-                ]
-            })
+    async showConfirm(action = 'create.confirm'){
+         return super.showConfirm(this.translate(`${action}.message`),
+             this.translate(`${action}.buttons.ok`),
+             this.translate(`${action}.buttons.cancel`));
     }
 }

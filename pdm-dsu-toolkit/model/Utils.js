@@ -80,6 +80,27 @@ function stringFormat(string, ...args){
     });
 }
 
+/**
+ * Select n elements from array at random (non destructive)
+ * (https://stackoverflow.com/a/19270021)
+ * @param arr
+ * @param n
+ * @return {any[]}
+ */
+function getRandom(arr, n) {
+    var result = new Array(n),
+        len = arr.length,
+        taken = new Array(len);
+    if (n > len)
+        throw new RangeError("getRandom: more elements taken than available");
+    while (n--) {
+        var x = Math.floor(Math.random() * len);
+        result[n] = arr[x in taken ? taken[x] : x];
+        taken[x] = --len in taken ? taken[len] : len;
+    }
+    return result;
+}
+
 module.exports = {
     /**
      * Generates a string of the provided length filled with random characters from 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -113,5 +134,6 @@ module.exports = {
     generateBatchNumber,
     generateGtin,
     generateRandomInt,
-    stringFormat
+    stringFormat,
+    getRandom
 }

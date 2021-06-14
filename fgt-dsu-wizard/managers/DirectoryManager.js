@@ -11,8 +11,8 @@ const {DirectoryEntry, ROLE } = require('../model/DirectoryEntry');
  * @class DirectoryManager
  */
 class DirectoryManager extends Manager {
-    constructor(participantManager) {
-        super(participantManager, DB.directory, ['role', 'id']);
+    constructor(participantManager, callback) {
+        super(participantManager, DB.directory, ['role', 'id'], callback);
     }
 
     _testRoles(role){
@@ -150,22 +150,22 @@ class DirectoryManager extends Manager {
 
 }
 
-let directoryManager;
 /**
  * @param {ParticipantManager} [participantManager] only required the first time, if not forced
- * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
- * Makes Participant Manager required again!
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {DirectoryManager}
  */
-const getDirectoryManager = function (participantManager, force, callback) {
-    if (typeof force === 'function'){
-        callback = force;
-        force = false;
+const getDirectoryManager = function (participantManager, callback) {
+    let manager;
+    try {
+        manager = participantManager.getManager(DirectoryManager);
+        if (callback)
+            return callback(undefined, manager);
+    } catch (e){
+        manager = new DirectoryManager(participantManager, callback);
     }
-    if (!directoryManager || force)
-        directoryManager = new DirectoryManager(participantManager, callback);
-    return directoryManager;
+
+    return manager;
 }
 
 module.exports = getDirectoryManager;
