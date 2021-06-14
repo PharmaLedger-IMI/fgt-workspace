@@ -94,15 +94,15 @@ class StockManager extends Manager{
 
             let serials;
             if (!sb){
-                if (batch.quantity > 0)
+                if (batch.getQuantity() < 0)
                     return callback(`Given a negative amount on a unexisting stock`);
                 stock.batches.push(batch);
                 console.log(`Added batch ${batch.batchNumber} with ${batch.serialNumbers ? batch.serialNumbers.length : batch.getQuantity()} items`);
             } else {
-                const newQuantity = sb.quantity + batch.quantity;
+                const newQuantity = sb.getQuantity()  + batch.getQuantity() ;
                 if (newQuantity < 0)
-                    return callback(`Illegal quantity. Not enough Stock. requested ${batch.quantity} of ${sb.quantity}`);
-                serials = sb.manage(batch.quantity, this.serialization);
+                    return callback(`Illegal quantity. Not enough Stock. requested ${batch.getQuantity() } of ${sb.getQuantity() }`);
+                serials = sb.manage(batch.getQuantity() , this.serialization);
             }
 
             self.update(gtin, stock, (err) => {

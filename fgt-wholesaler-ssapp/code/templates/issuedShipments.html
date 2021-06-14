@@ -1,13 +1,17 @@
 <webc-container controller="IssuedShipmentsController">
     <pdm-ion-table
             table-title="@title"
+            item-reference="shipment-id"
             paginated="true"
             manager="IssuedShipmentManager"
-            icon-name="stats-chart-outline"
-            items-per-page="10"
+            icon-name="stats-chart"
             item-type="managed-shipment-list-item"
-            item-reference="shipment-id"
-            item-props="type:issued">
+            item-props="type:issued"
+            items-per-page="10">
+        <ion-button slot="buttons" fill="solid" color="secondary" data-tag="new-issued-order">
+            {{ @buttons.new-issued-shipment }}
+            <ion-icon slot="end" name="add-circle"></ion-icon>
+        </ion-button>
     </pdm-ion-table>
 </webc-container>
 

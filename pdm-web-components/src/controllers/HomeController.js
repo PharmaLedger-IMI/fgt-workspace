@@ -1,9 +1,10 @@
 import LocalizedController from "./LocalizedController";
 import {EVENT_SSAPP_HAS_LOADED, EVENT_SSAPP_STATUS_UPDATE, EVENT_REFRESH, EVENT_NAVIGATE_TAB, SIDE_MENU_CLASS_SELECTOR, EVENT_ION_TABS_WILL_CHANGE, EVENT_SELECT} from '../constants/events'
+import {WebManagerService} from '../services/WebManagerService'
 
 export default class HomeController extends LocalizedController {
     initializeModel = () => ({
-        participant: undefined
+        participant: {}
     });
 
     constructor(...args) {
@@ -11,7 +12,7 @@ export default class HomeController extends LocalizedController {
         super.bindLocale(this, "");
         this.model = this.initializeModel();
         this.model.addExpression('identified', () => {
-            return this.model.participant !== undefined;
+            return !!this.model.participant.id;
         }, "participant");
         const self = this;
         self._updateLoading(this.model.loading.loading.status, this.model.loading.loading.progress)
@@ -43,14 +44,19 @@ export default class HomeController extends LocalizedController {
           self._navigateToTab.call(self, evt.detail);
         });
 
-        this.participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, false, (err, pManager) => {
+        require('wizard').Managers.getParticipantManager(this.DSUStorage, false, (err, pManager) => {
             if (err)
                 console.log(`Failed Participant Manager Initialization`);
             else
                 console.log(`Participant manager initialized`);
-            self._updateLoading(this.model.loading.loaded.status, this.model.loading.loaded.progress)
-            console.log("Home controller initialized");
-            this._testParticipant();
+            self.participantManager = pManager;
+            self._updateLoading(this.model.loading.loaded.status, this.model.loading.loaded.progress);
+          // Give UI some time to breathe and render stuff (including our animation)
+            setTimeout(() => {
+              WebManagerService.registerRepository(self.participantManager);
+              console.log("Home controller initialized");
+              self._testParticipant();
+            }, Math.floor(Math.random() * 100));
         });
     }
 
@@ -86,13 +92,21 @@ export default class HomeController extends LocalizedController {
 
     _testParticipant(){
         let self = this;
-        self._updateLoading(self.model.loading.booting.status, self.model.loading.booting.progress)
-        this.participantManager.getIdentity((err, identity) => {
+        self._updateLoading(self.model.loading.booting.status, self.model.loading.booting.progress);
+      // Give UI some time to breathe and render stuff (including our animation)
+        setTimeout(() => {
+          this.participantManager.getIdentity((err, identity) => {
             if (err)
-                return self.showErrorToast(`Could not retrieve identity. Build process seems to not have worked properly`);
+              return self.showErrorToast(`Could not retrieve identity. Build process seems to not have worked properly`);
             self._updateLoading(this.model.loading.booted.status, this.model.loading.booted.progress)
-            self.model['participant'] = identity;
-            self._concludeLoading()
-        });
+            self.model.participant = identity;
+
+            // Give UI some time to breathe and render stuff, it needs it this time...
+            setTimeout(() => {
+              self._concludeLoading();
+            }, 500);
+
+          });
+        }, Math.floor(Math.random() * 100));
     }
 }

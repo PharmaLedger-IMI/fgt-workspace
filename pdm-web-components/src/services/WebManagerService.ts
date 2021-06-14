@@ -50,22 +50,31 @@ const bindAsControllerResolver = function(resolver): WebManager{
   }
 }
 
+let webManagerRepository = undefined;
+
+const registerManagerRepository = function(repo){
+  webManagerRepository = {
+    getManager: repo.getManager.bind(repo),
+    cacheManager: repo.cacheManager.bind(repo)
+  };
+}
+
+const changeToResolver = function(name){
+  if (name.indexOf("Manager") === -1)
+    return name;
+  return name.substring(0,name.length - "Manager".length) + "Resolver"
+}
+
 /**
  * Tries to get the Previously Instantiated WebManager by Name.
  * If unable falls back to the matching WebSResolver
  * @param managerName
  */
 const getWebManager = async function(managerName: string): Promise<WebManager> {
-  const changeToResolver = function(name){
-    if (name.indexOf("Manager") === -1)
-      return name;
-    return name.substring(0, managerName.length - "Manager".length) + "Resolver"
-  }
-
   try{
     const getter = `get${managerName}`;
-    if (getter in Managers){
-      const manager: WebManager = Managers[getter]();
+    if (getter in Managers) {
+      const manager: WebManager = Managers[getter](webManagerRepository);
       return bindAsControllerManager(manager);
     } else {
       return getWebResolver(changeToResolver(managerName));
@@ -79,7 +88,7 @@ const getWebResolver = async function(resolverName: string): Promise<WebManager>
   try{
     const getter = `get${resolverName}`;
     if (getter in Managers.Resolvers){
-      const resolver: WebManager = Managers.Resolvers[getter]();
+      const resolver: WebManager = Managers.Resolvers[getter](webManagerRepository);
       return bindAsControllerResolver(resolver);
     } else {
       return null;
@@ -91,5 +100,6 @@ const getWebResolver = async function(resolverName: string): Promise<WebManager>
 }
 
 export const WebManagerService = {
+  registerRepository: registerManagerRepository,
   getWebManager: getWebManager
 };

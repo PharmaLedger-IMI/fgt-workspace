@@ -9,7 +9,7 @@ class ShipmentLineManager extends Manager {
     constructor(participantManager, callback) {
         super(participantManager, DB.shipmentLines, ['gtin', 'date', 'batch', 'requesterId', 'senderId'], (err, manager) => {
             if (err)
-                return callback(err);
+                return callback ? callback(err) : console.log(err);
             manager.registerMessageListener((message) => {
                 manager.processMessageRecord(message, (err) => {
                     if (err)
@@ -18,7 +18,8 @@ class ShipmentLineManager extends Manager {
                         manager.controller.refresh();
                 });
             });
-            callback(undefined, manager);
+            if (callback)
+                callback(undefined, manager);
         });
         this.shipmentLineService = new (require('../services/ShipmentLineService'))(ANCHORING_DOMAIN);
     }

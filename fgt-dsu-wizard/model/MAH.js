@@ -3,6 +3,11 @@
  */
 const Participant = require('./Participant');
 
+/**
+ *
+ * @class MAH
+ * @module fgt-dsu-wizard.model
+ */
 class MAH extends Participant{
 
     constructor(mah) {

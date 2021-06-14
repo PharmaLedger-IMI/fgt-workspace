@@ -9,7 +9,7 @@ class OrderLineManager extends Manager {
     constructor(participantManager, callback) {
         super(participantManager, DB.orderLines, ['gtin', 'date', 'requesterId', 'senderId'], (err, manager) => {
             if (err)
-                return callback(err);
+                return callback ? callback(err) : console.log(err);
             manager.registerMessageListener((message) => {
                 manager.processMessageRecord(message, (err) => {
                     if (err)
@@ -18,7 +18,8 @@ class OrderLineManager extends Manager {
                         manager.controller.refresh();
                 });
             });
-            callback(undefined, manager);
+            if (callback)
+                callback(undefined, manager);
         });
         this.orderLineService = new (require('../services/OrderLineService'))(ANCHORING_DOMAIN);
     }

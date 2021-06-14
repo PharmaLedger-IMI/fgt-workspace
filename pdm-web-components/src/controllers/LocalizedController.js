@@ -225,16 +225,23 @@ export default class LocalizedController extends WebcController {
     return alert;
   }
 
+  /**
+   * Shows a confirmation Popup
+   * @param {string} message the message
+   * @param {string} confirmText the ok button text
+   * @param {string} cancelText the cancel button text
+   * @return {Promise<HTMLElement>}
+   */
   async showConfirm(message, confirmText, cancelText = "Cancel"){
     return this.showAlert(message,
       {
         buttons: [
           {
-            text: this.translate(confirmText),
+            text: cancelText,
             role: 'cancel'
           },
           {
-            text: this.translate(cancelText),
+            text: confirmText,
             role: 'confirm'
           }
         ]

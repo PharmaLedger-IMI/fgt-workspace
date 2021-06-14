@@ -1,5 +1,6 @@
 const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const ShipmentManager = require("./ShipmentManager");
+const getReceivedOrderManager = require("./ReceivedOrderManager");
 const {Shipment, Order, OrderStatus, ShipmentStatus, Wholesaler} = require('../model');
 
 /**
@@ -15,6 +16,7 @@ const {Shipment, Order, OrderStatus, ShipmentStatus, Wholesaler} = require('../m
 class IssuedShipmentManager extends ShipmentManager {
     constructor(participantManager, callback) {
         super(participantManager, DB.issuedShipments, ['requesterId'], callback);
+        this.participantManager = participantManager;
     }
 
     /**
@@ -92,7 +94,7 @@ class IssuedShipmentManager extends ShipmentManager {
                 chosenSerials = undefined
             }
 
-            const receivedOrderManager = self.getManager(ReceivedOrderManager);
+            const receivedOrderManager = getReceivedOrderManager(self.participantManager);
                 const receivedOrderKey = receivedOrderManager._genCompostKey(shipment.requesterId, orderId);
 
             receivedOrderManager.getOne(receivedOrderKey, (err, orderSSI) => {
@@ -119,7 +121,11 @@ class IssuedShipmentManager extends ShipmentManager {
         if (!stockInfo)
             return createInner(callback);
 
-        self.stockManager.manageAll(stockInfo.map(s => s.stock.available), (err, serials)=> {
+        self.stockManager.manageAll(stockInfo.map(s => s.stock.available.map(a => {
+            a.quantity = - a.getQuantity();
+            a.serialNumbers = [];
+            return a;
+        })), (err, serials)=> {
             if (err)
                 return self._err(`Could not update Stock`, err, callback);
            createInner(serials, callback);
