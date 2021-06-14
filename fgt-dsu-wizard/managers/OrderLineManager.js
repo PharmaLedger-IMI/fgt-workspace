@@ -4,6 +4,7 @@ const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 /**
  * Issued OrderLine Manager Class.
  * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
+ * @module Managers
  */
 class OrderLineManager extends Manager {
     constructor(participantManager, callback) {
@@ -164,6 +165,7 @@ class OrderLineManager extends Manager {
  * @param {ParticipantManager} participantManager
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {OrderLineManager}
+ * @module Managers
  */
 const getOrderLineManager = function (participantManager, callback) {
     let manager;

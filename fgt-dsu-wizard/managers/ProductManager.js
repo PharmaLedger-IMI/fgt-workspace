@@ -20,6 +20,7 @@ const Product = require('../model/Product');
  * @param {ParticipantManager} participantManager
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @class ProductManager
+ * @module Managers
  */
 class ProductManager extends Manager {
     constructor(participantManager, callback) {
@@ -207,6 +208,7 @@ class ProductManager extends Manager {
  * @param {ParticipantManager} [participantManager] only required the first time, if not forced
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {ProductManager}
+ * @module Managers
  */
 const getProductManager = function (participantManager, callback) {
     let manager;

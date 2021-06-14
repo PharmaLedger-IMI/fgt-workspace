@@ -1,10 +1,3 @@
-/**
- * @module Commands
- * @memberOf dt
- */
-
-/**
- */
 const Command = require('./Command');
 const { _err, _getResolver, DSU_TYPE, KEY_TYPE } = require('./utils');
 const genKey = require('./genKey');
@@ -12,6 +5,8 @@ const genKey = require('./genKey');
 /**
  * @param {DSU_TYPE} dsuType
  * @return {KEY_TYPE}
+ * @module Commands
+ * @memberOf dt
  */
 const _getKeyType = function(dsuType){
     switch (dsuType){

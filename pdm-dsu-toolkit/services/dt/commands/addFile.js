@@ -1,10 +1,3 @@
-/**
- * @module Commands
- * @memberOf dt
- */
-
-/**
- */
 const Command = require('./Command');
 const { _err } = require('./utils');
 
@@ -16,6 +9,8 @@ const { _err } = require('./utils');
  * Can run iteratively
  *
  * @class AddFileCommand
+ * @module Commands
+ * @memberOf dt
  */
 class AddFileCommand extends Command{
     constructor(varStore, source) {

@@ -2,6 +2,11 @@ const { INFO_PATH , DEFAULT_QUERY_OPTIONS } = require('../constants');
 
 const {functionCallIterator} = require('../services/utils');
 
+/**
+ * Util class to handle pagination
+ * @class Page
+ * @module Managers
+ */
 class Page {
     itemsPerPage = 10;
     currentPage = 1;
@@ -65,11 +70,18 @@ class Page {
  *                  });
  *              }
  * </pre>
- * @module managers
+ * @module Managers
  * @class Manager
  * @abstract
  */
 class Manager{
+    /**
+     * @param {BaseManager} baseManager
+     * @param {string} tableName the name of the table this manager handles
+     * @param {string[]} indexes the indexes to be added to the table
+     * @param {function(err, Manager)} [callback] optional callback for better application flow control
+     * @constructor
+     */
     constructor(baseManager, tableName, indexes, callback){
         let self = this;
         this.storage = baseManager.db;
@@ -203,36 +215,42 @@ class Manager{
      */
     _sendMessage(did, api, message, callback){}
 
+    /**
+     * @see _registerMessageListener
+     */
     registerMessageListener(listener){
         return this._registerMessageListener(listener);
     }
 
+    /**
+     * Proxy call to {@link MessageManager#_registerMessageListener()}.
+     * @see BaseManager
+     */
     _registerMessageListener(listener){}
 
     /**
-     * Proxy call to {@link MessageManager#deleteMessage()}.
-     * 
-     * jpsl: PS to Tiago - I don't agree with proxying calls
-     * (without any explict reason). It would be better to get the messageManager
-     * and call the method there directly.
+     * @see _deleteMessage
      */
     deleteMessage(message, callback) {
         return this._deleteMessage(message, callback);
     }
 
+    /**
+     * Proxy call to {@link MessageManager#deleteMessage()}.
+     * @see BaseManager
+     */
     _deleteMessage(message, callback) {}
 
     /**
-     * Proxy call to {@link MessageManager#getMessages()} using tableName as the api value.
-     * 
-     * jpsl: PS to Tiago - I don't agree with proxying calls
-     * (without any explict reason). It would be better to get the messageManager
-     * and call the method there directly.
+     * @see _getMessages
      */
     getMessages(callback){
         return this._getMessages(callback);
     }
 
+    /**
+     * Proxy call to {@link MessageManager#getMessages()} using tableName as the api value.
+     */
     _getMessages(callback){}
 
     /**
@@ -264,6 +282,7 @@ class Manager{
      * Each child class must implement this behaviour if desired
      * @param {*} message
      * @param {function(err)} callback
+     * @private
      */
     _processMessageRecord(message, callback){
         callback(`Message processing is not implemented for ${this.tableName}`);

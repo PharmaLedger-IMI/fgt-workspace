@@ -1,8 +1,4 @@
 /**
- * @module fgt-dsu-wizard.commands
- */
-
-/**
  * Defines how to create the keyssi for a orderLine dsu
  * @param {OrderStatus|ShipmentStatus} status. if status has the properties:
  * <ul>
@@ -10,6 +6,7 @@
  * </ul>
  * @param {string} domain the anchoring domain
  * @returns {SeedSSI} (template)
+ * @module fgt-dsu-wizard.commands
  */
 function createStatusSSI(status, domain) {
     console.log("New Status_SSI in domain", domain);
@@ -26,6 +23,7 @@ function createStatusSSI(status, domain) {
 /**
  * Registers the endpoint on the api-hub's dsu-wizard.
  * @param {HttpServer} server
+ * @module fgt-dsu-wizard.commands
  */
 function command(server){
     const setSSI = require('../../pdm-dsu-toolkit/commands/setSSI');

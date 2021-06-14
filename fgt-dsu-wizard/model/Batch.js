@@ -7,7 +7,7 @@ const Utils = require("../../pdm-dsu-toolkit/model/Utils");
  * @prop {number} quantity
  * @prop {string} batchStatus
  * @class Batch
- * @module fgt-dsu-wizard.model
+ * @module Model
  */
 class Batch {
     batchNumber;
@@ -16,6 +16,10 @@ class Batch {
     quantity = 0;
     batchStatus
 
+    /**
+     * @param {Batch} batch
+     * @constructor
+     */
     constructor(batch) {
         if (typeof batch !== undefined)
             for (let prop in batch)

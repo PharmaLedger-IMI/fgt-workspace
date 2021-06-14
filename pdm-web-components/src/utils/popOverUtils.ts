@@ -4,6 +4,10 @@ const {ROLE} = wizard.Model;
 
 const BAR_CODE_POPOVER_ELEMENT = 'bar-code-pop-over';
 
+/**
+ * @module Utils
+ * @memberOf pdm-web-components
+ */
 function defineBarcodePopoverContent(){
   if (!!customElements.get(BAR_CODE_POPOVER_ELEMENT))
     return;

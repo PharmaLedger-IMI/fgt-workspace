@@ -1,12 +1,10 @@
-/**
- * @module fgt-dsu-wizard.services
- */
 const utils = require('../../pdm-dsu-toolkit/services/utils');
 const { INFO_PATH } = require('../constants');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
+ * @module Services
  */
 function ProductService(domain, strategy){
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");

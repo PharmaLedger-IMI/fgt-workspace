@@ -1,7 +1,3 @@
-/**
- * @module dt
- */
-
 const {_getByName } = require('./commands');
 const {_getResolver, _getKeySSISpace} = require('./commands/utils');
 
@@ -28,6 +24,7 @@ const {_getResolver, _getKeySSISpace} = require('./commands/utils');
  * </pre>
  * @param {Archive} [sourceDSU] if provided will perform all OPERATIONS from the sourceDSU as source and not the fs
  * @param {VarStore} [varStore]
+ * @module dt
  */
 const DossierBuilder = function(sourceDSU, varStore){
 

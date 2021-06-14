@@ -4,6 +4,8 @@ const Resolver  = require('../../../pdm-dsu-toolkit/managers').Resolver
 /**
  * Resolver classes substitute Managers when they're not available to be resolve a
  * Const DSU and extract the updated Information when required
+ * @module Resolvers
+ * @see Resolver
  */
 class ProductResolver extends Resolver{
     constructor(participantManager){
@@ -13,6 +15,8 @@ class ProductResolver extends Resolver{
 
 /**
  * @returns {ProductResolver} as a singleton
+ * @module Resolvers
+ * @see Resolver
  */
 const getProductResolver = function (participantManager, callback) {
     let resolver;

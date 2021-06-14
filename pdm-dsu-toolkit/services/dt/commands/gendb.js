@@ -1,10 +1,3 @@
-/**
- * @module Commands
- * @memberOf dt
- */
-
-/**
- */
 const Command = require('./Command');
 const { _err, _getKeySSISpace, DB_TYPE } = require('./utils');
 const GenKeyCommand = require('./genKey');
@@ -13,6 +6,8 @@ const GenKeyCommand = require('./genKey');
  * Generates a DB and returns it's SSI after initialization
  *
  * @class GenDBCommand
+ * @module Commands
+ * @memberOf dt
  */
 class GenDBCommand extends Command {
     constructor(varStore) {

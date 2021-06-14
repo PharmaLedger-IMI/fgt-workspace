@@ -38,12 +38,16 @@ Type: `Promise<void>`
 
 ### Depends on
 
+- [multi-spinner](../multi-spinner)
 - [pdm-item-organizer](../pdm-item-organizer)
+- [list-item-layout](../list-item-layout)
 
 ### Graph
 ```mermaid
 graph TD;
+  managed-product-list-item --> multi-spinner
   managed-product-list-item --> pdm-item-organizer
+  managed-product-list-item --> list-item-layout
   pdm-item-organizer --> more-chip
   style managed-product-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```

@@ -195,6 +195,7 @@ class IssuedShipmentManager extends ShipmentManager {
  * @param {ParticipantManager} participantManager
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {IssuedShipmentManager}
+ * @module Managers
  */
 const getIssuedShipmentManager = function (participantManager,  callback) {
     let manager;

@@ -3,7 +3,7 @@
  */
 
 /**
- * @module keyssi
+ * @module Commands
  */
 module.exports = {
     setSSI: require("./setSSI"),

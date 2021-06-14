@@ -1,15 +1,15 @@
-/**
- * @module fgt-dsu-wizard.model
- */
 const Participant = require('./Participant');
 
 /**
  *
  * @class MAH
- * @module fgt-dsu-wizard.model
+ * @module Model
  */
 class MAH extends Participant{
-
+    /**
+     * @param {MAH} mah
+     * @constructor
+     */
     constructor(mah) {
         super(mah);
         if (typeof mah !== undefined)

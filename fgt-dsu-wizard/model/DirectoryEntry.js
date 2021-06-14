@@ -1,12 +1,9 @@
-/**
- * @module fgt-dsu-wizard.model
- */
 
 const Utils = require("../../pdm-dsu-toolkit/model/Utils");
 
 /**
  * Role Enum
- * @module fgt-dsu-wizard.model
+ * @module Model
  */
 const ROLE = {
     MAH: 'mah',
@@ -20,12 +17,16 @@ const ROLE = {
  * @prop {string} batchNumber
  * @prop {Date} expiryDate
  * @class DirectoryEntry
- * @module fgt-dsu-wizard.model
+ * @module Model
  */
 class DirectoryEntry {
     id;
     role;
 
+    /**
+     * @param {DirectoryEntry} entry
+     * @constructor
+     */
     constructor(entry) {
         if (typeof entry !== undefined)
             for (let prop in entry)

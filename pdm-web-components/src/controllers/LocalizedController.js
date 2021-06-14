@@ -1,12 +1,5 @@
-/**
- * @module controllers
- */
-
 import {EVENT_SSAPP_HAS_LOADED, EVENT_SEND_ERROR, EVENT_SEND_MESSAGE, EVENT_REFRESH, EVENT_NAVIGATE_TAB, CSS, BUTTON_ROLES} from "../constants/events";
 
-/**
- *
- */
 const {WebcController} = WebCardinal.controllers;
 
 /**
@@ -22,14 +15,15 @@ const {WebcController} = WebCardinal.controllers;
  *          this.model = this.initializeModel();
  *      }
  * </pre>
- * @module controllers
+ * @module Controllers
  * @class LocalizedController
+ * @extends WebcController
  */
 export default class LocalizedController extends WebcController {
 
   /**
    * Should return the initialized model for the controller when needed.
-   * <strong>MUST</strong> be called on the constructor for locale binding
+   * <strong>MUST</strong> be called on the constructor for locale binding via {@link WebcLocaleService}
    * @return {{}}
    */
   initializeModel = () => ({});

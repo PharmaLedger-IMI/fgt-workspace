@@ -1,17 +1,10 @@
-/**
- * @module utils
- */
-
-/**
- * Provides Util functions and Methods as well as caching for the open DSU resolver and {@Link DSUBuilder}
- */
-
 let resolver, DSUService, keyssi;
 
 /**
  * util function to get the env type.
  * Needs openDSU to be loaded to have access to $$ regardless of environment
  * @return {string} the environment type - nodejs or
+ * @module Services.utils
  */
 function getEnv(){
 	return $$.environmentType;
@@ -20,6 +13,7 @@ function getEnv(){
 /**
  * for singleton use
  * @returns {function} resolver
+ * @module Services.utils
  */
 function getResolver(){
 	if (!resolver)
@@ -30,6 +24,7 @@ function getResolver(){
 /**
  * for singleton use
  * @returns {function} resolver
+ * @module Services.utils
  */
 function getKeySSISpace(){
 	if (!keyssi)
@@ -40,6 +35,7 @@ function getKeySSISpace(){
 /**
  * for singleton use
  * @returns {DSUService}
+ * @module Services.utils
  */
 function getDSUService(){
 	if (!DSUService)
@@ -51,6 +47,7 @@ function getDSUService(){
  * Convenience method to select the appropriate resolver method to use depending on the key
  * @param keySSI
  * @returns {function} the appropriate resolver method for creating dsus {@link resolver#createDSU}/{@link resolver#createDSUForExistingSSI}
+ * @module Services.utils
  */
 function selectMethod(keySSI){
 	if (['array', 'const'].indexOf(keySSI.getTypeName()) > -1)
@@ -64,6 +61,7 @@ function selectMethod(keySSI){
  * @param {Archive} dsu
  * @param {string[]} folders
  * @param {function(err, string[])} callback the folders there where actually created (didn't already exist)
+ * @module Services.utils
  */
 function createDSUFolders(dsu, folders, callback){
 	let created = [];
@@ -96,6 +94,7 @@ const system = require('opendsu').loadApi('system');
  * - refactored for server side use compatibility
  * @param {string} apiname
  * @returns {doPost} postHandler
+ * @module Services.utils
  */
 function getPostHandlerFor(apiname){
 
@@ -167,11 +166,18 @@ function getPostHandlerFor(apiname){
  * @param err
  * @param callback
  * @protected
+ * @module Services.utils
  */
 const _err = function(msg, err, callback){
 	return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(msg, err));
 }
 
+/**
+ * Utll function that calls the fame function iteratively wit the next arguments (destructive)
+ * @param func
+ * @param args
+ * @module Services.utils
+ */
 const functionCallIterator = function(func, ...args){
 	if (!args || args.length < 1)
 		throw new Error("Needs at least a callback");

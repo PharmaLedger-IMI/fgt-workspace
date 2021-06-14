@@ -1,10 +1,4 @@
-/**
- * @module Commands
- * @memberOf dt
- */
 
-/**
- */
 const Command = require('./Command');
 const { _err } = require('./utils');
 
@@ -12,6 +6,8 @@ const { _err } = require('./utils');
  * Returns the identifier for the current source object
  *
  * @class GetIdentifierCommand
+ * @module Commands
+ * @memberOf dt
  */
 class GetIdentifierCommand extends Command{
     constructor(varStore) {

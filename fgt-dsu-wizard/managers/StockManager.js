@@ -215,10 +215,11 @@ class StockManager extends Manager{
 
 
 /**
- * @param {ParticipantManager} [participantManager] only required the first time, if not forced
+ * @param {ParticipantManager} participantManager
  * @param {boolean} [serialization] defaults to true.
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {StockManager}
+ * @module Managers
  */
 const getStockManager = function (participantManager, serialization, callback) {
     if (!callback){

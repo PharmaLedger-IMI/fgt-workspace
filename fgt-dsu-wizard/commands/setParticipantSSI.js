@@ -1,13 +1,10 @@
 /**
- * @module fgt-dsu-wizard.commands
- */
-
-/**
  * Creates a seedSSI meant to contain participant 'participant' data.
  * could be used as an identity
  * @param {Participant} participant
  * @param {string} domain: anchoring domain
  * @returns {SeedSSI} (template)
+ * @module fgt-dsu-wizard.commands
  */
 function createParticipantSSI(participant, domain) {
     console.log("New Participant_SSI in domain", domain);
@@ -19,6 +16,7 @@ function createParticipantSSI(participant, domain) {
 /**
  * Registers the endpoint on the api-hub's dsu-wizard.
  * @param {HttpServer} server
+ * @module fgt-dsu-wizard.commands
  */
 function command(server){
     const setSSI = require('../../pdm-dsu-toolkit/commands/setSSI');

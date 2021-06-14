@@ -9,6 +9,7 @@ const {DirectoryEntry, ROLE } = require('../model/DirectoryEntry');
  * @param {string} tableName the default table name for this manager eg: MessageManager will write to the messages table
  * @module managers
  * @class DirectoryManager
+ * @module Managers
  */
 class DirectoryManager extends Manager {
     constructor(participantManager, callback) {
@@ -102,6 +103,10 @@ class DirectoryManager extends Manager {
         });
     }
 
+    /**
+     * @protected
+     * @override
+     */
     _keywordToQuery(keyword) {
         keyword = keyword || '.*';
         return [`role like /${keyword}/g`];
@@ -151,9 +156,10 @@ class DirectoryManager extends Manager {
 }
 
 /**
- * @param {ParticipantManager} [participantManager] only required the first time, if not forced
+ * @param {ParticipantManager} participantManager
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {DirectoryManager}
+ * @module Managers
  */
 const getDirectoryManager = function (participantManager, callback) {
     let manager;

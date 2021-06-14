@@ -1,10 +1,3 @@
-/**
- * @module Commands
- * @memberOf dt
- */
-
-/**
- */
 const Command = require('./Command');
 const { _err, _getKeySSISpace, KEY_TYPE } = require('./utils');
 
@@ -12,6 +5,8 @@ const { _err, _getKeySSISpace, KEY_TYPE } = require('./utils');
  * Generates a KeySSI
  *
  * @class GenKeyCommand
+ * @module Commands
+ * @memberOf dt
  */
 class GenKeyCommand extends Command {
     constructor(varStore) {

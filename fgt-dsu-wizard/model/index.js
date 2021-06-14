@@ -1,5 +1,5 @@
 /**
- * @module fgt-dsu-wizard.model
+ * @module Model
  */
 
 const {generateProductName, generateGtin, validateGtin, calculateGtinCheckSum, generateBatchNumber, generateRandomInt, genDate} = require('../../bin/environment/utils');

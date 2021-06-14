@@ -1,9 +1,8 @@
 /**
- * @module commands
  * A simple variable store
+ * @module Commands
+ * @memberOf dt
  */
-
-
 const VarStore = function(){
     const _memory = {};
     let _hasVars = false;

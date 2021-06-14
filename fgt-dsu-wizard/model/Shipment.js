@@ -3,7 +3,7 @@ const ShipmentLine = require('./ShipmentLine');
 
 /**
  * @class Shipment
- * @module fgt-dsu-wizard.model
+ * @module Model
  */
 class Shipment {
     shipmentId;
@@ -15,6 +15,16 @@ class Shipment {
     shipmentLines;
     code;
 
+    /**
+     *
+     * @param shipmentId
+     * @param requesterId
+     * @param senderId
+     * @param shipToAddress
+     * @param status
+     * @param shipmentLines
+     * @constructor
+     */
     constructor(shipmentId, requesterId, senderId, shipToAddress, status, shipmentLines){
         this.shipmentId = shipmentId;
         this.requesterId = requesterId;

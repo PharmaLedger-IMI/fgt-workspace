@@ -1,6 +1,6 @@
 /**
  * @class OrderLine
- * @module fgt-dsu-wizard.model
+ * @module Model
  */
 class OrderLine{
     gtin;
@@ -9,6 +9,13 @@ class OrderLine{
     senderId;
     status;
 
+    /**
+     * @param gtin
+     * @param quantity
+     * @param requesterId
+     * @param senderId
+     * @constructor
+     */
     constructor(gtin, quantity, requesterId, senderId){
         this.gtin = gtin;
         this.quantity = quantity;

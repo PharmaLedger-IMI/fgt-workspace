@@ -1,6 +1,6 @@
 /**
  * @class Product
- * @module fgt-dsu-wizard.model
+ * @module Model
  */
 class Product {
     name = "";
@@ -8,6 +8,11 @@ class Product {
     description = "";
     manufName = "";
 
+    /**
+     *
+     * @param product
+     * @constructor
+     */
     constructor(product) {
         if (typeof product !== undefined)
             for (let prop in product)

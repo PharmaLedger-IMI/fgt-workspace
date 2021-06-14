@@ -114,7 +114,7 @@ export class ManagedProductListItem {
     }
 
     return(
-      <ion-label color="secondary">
+      <ion-label slot="label" color="secondary">
         {getGtinLabel()}
         <span class="ion-padding-start">{getNameLabel()}</span>
       </ion-label>)
@@ -122,9 +122,9 @@ export class ManagedProductListItem {
 
   addBatches(){
     if (!this.product || !this.batches)
-      return (<ion-skeleton-text animated></ion-skeleton-text>);
+      return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
     return(
-      <pdm-item-organizer component-name="batch-chip"
+      <pdm-item-organizer slot="content" component-name="batch-chip"
                           component-props={JSON.stringify(this.batches.map(gtinBatch => ({
                             "gtin-batch": gtinBatch,
                             "mode": "detail",
@@ -154,26 +154,24 @@ export class ManagedProductListItem {
     }
 
     return [
-        getButton("end", "medium", "barcode", (evt) => getBarCodePopOver({
+        getButton("buttons", "medium", "barcode", (evt) => getBarCodePopOver({
           type: "code128",
           size: "32",
           scale: "6",
           data: self.gtin
         }, evt)),
-        getButton("end", "medium", "eye", () => self.navigateToTab('tab-product', {gtin: self.gtin}))
+        getButton("buttons", "medium", "eye", () => self.navigateToTab('tab-product', {gtin: self.gtin}))
    ]
   }
 
   render() {
     return (
       <Host>
-        <ion-item class="main-item ion-margin-bottom" lines="none" color="light">
+        <list-item-layout>
           {this.addLabel()}
-          <div class="ion-padding flex">
-            {this.addBatches()}
-          </div>
+          {this.addBatches()}
           {this.addButtons()}
-        </ion-item>
+        </list-item-layout>
       </Host>
     );
   }
