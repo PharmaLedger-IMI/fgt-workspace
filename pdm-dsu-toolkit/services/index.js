@@ -12,5 +12,6 @@ module.exports = {
     WebcLocaleService: require('./WebcLocaleService'),
     WebComponentService: require('./WebComponentService'),
     ParticipantService: require('./ParticipantService'),
-    Strategy: require('./strategy')
+    Strategy: require('./strategy'),
+    Utils: require('./utils')
 }

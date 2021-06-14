@@ -31,59 +31,134 @@
     "try-again": "Try Again?"
   },
   "none": "You are not identified as a Pharmacy. Please register",
-  "issuedOrder": {
-    "title": "New Issued Order",
-    "orderId": {
-      "label": "OrderID",
-      "required": true
-    },
-    "requesterId": {
-      "label": "Requester ID",
-      "required": true
-    },
-    "senderId": {
-      "label": "Sender ID",
-      "required": true
-    },
-    "shipToAddress": {
-      "label": "Shipping Destination Address",
-      "required": true
-    },
-    "orderLines": {
-      "label": "OrderLines:",
-      "placeholder": "gtin1,quant1;gtin2,quant2;gtin3,quant3",
-      "required": true
-    },
-    "ok": "OK",
-    "cancel": "Cancel"
+  "receivedShipments": {
+    "title": "Incoming Shipments",
+    "none": "No shipments..."
   },
   "issuedOrders": {
     "title": "Issued Orders",
-    "numberHeader": "ID",
-    "orderingPartnerHeader": "Issued By",
-    "supplyingPartnerHeader": "Issued To",
     "none": "No orders issued...",
     "buttons": {
       "new-issued-order": "New"
     }
   },
-  "receivedShipments": {
-    "title": "Incoming Shipments",
-    "numberHeader": "ID",
-    "orderingPartnerHeader": "Issued By",
-    "supplyingPartnerHeader": "Issued To",
-    "none": "No shipments..."
+  "shipment": {
+    "create": {
+      "title": "Create Shipment",
+      "from": "Shipment from:",
+      "to": "Shipment to:",
+      "fromPlaceholder": "Select a supplier...",
+      "fromAt": "Ship to Address:",
+      "toAt": "Ship from Address:",
+      "productCode": "Product Code:",
+      "quantity": "Quantity:",
+      "confirm": {
+        "message": "Please confirm Shipment creation",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Creating Shipment. Please wait...",
+      "success": "Shipment Successfully created",
+      "buttons": {
+        "create": "Create",
+        "clear": "Clear"
+      },
+      "error": {
+        "bind": "Could not bind participant to shipment",
+        "invalid": "Invalid Shipment: ",
+        "error": "Could not create new Shipment: "
+      }
+    },
+    "manage": {
+      "title": "Manage Shipment",
+      "confirm": {
+        "message": "Please confirm Shipment update",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Updating Shipment. Please wait...",
+      "success": "Shipment Successfully updated",
+      "error": {
+        "bind": "Could not bind participant to shipment",
+        "invalid": "Invalid Shipment: ",
+        "error": "Could not update Shipment: "
+      }
+    },
+    "stock": {
+      "stock": "Stock:",
+      "no-stock": "No Stock for selected Product",
+      "reset-all": "Reset All",
+      "confirmed": "Confirmed:",
+      "confirm-all": "Confirm All Available",
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "select": "Please select a Product",
+      "remaining": "Remaining:",
+      "order-missing": "Order missing"
+    },
+    "back": "Back",
+    "status": "Shipment Status:",
+    "scan": "Scan Product",
+    "scan-code": "Scan Shipment Code"
+  },
+  "order": {
+    "create": {
+      "title": "Create Order",
+      "from": "Order from:",
+      "fromPlaceholder": "Select a supplier...",
+      "fromAt": "Ship to Address:",
+      "toAt": "Ship from Address:",
+      "productCode": "Product Code:",
+      "quantity": "Quantity:",
+      "confirm": {
+        "message": "Please confirm Order creation",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Issuing Order. Please wait...",
+      "success": "Order successfully issued!",
+      "buttons": {
+        "create": "Issue Order",
+        "clear": "Clear"
+      },
+      "error": {
+        "bind": "Could not bind participant to Order",
+        "invalid": "Invalid Order: ",
+        "error": "Could not create new Order: "
+      }
+    },
+    "manage": {
+      "title": "Manage Order",
+      "confirm": {
+        "message": "Please confirm Order update",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Updating Order. Please wait...",
+      "success": "Order Successfully updated",
+      "error": {
+        "bind": "Could not bind participant to order",
+        "invalid": "Invalid Order: ",
+        "error": "Could not update Order: "
+      }
+    },
+    "back": "Back to Orders",
+    "scan": "Scan Product"
   },
   "stock": {
-    "title": "Stock Manager",
-    "gtinHeader": "Gtin",
-    "nameHeader": "Name",
-    "batchesHeader": "Batches",
-    "quantityHeader": "Quantity",
+    "title": "Stocks",
     "none": "No products in stock..."
   },
   "dashboard": {
     "title": "This is a Dashboard",
-    "none": "There are no pending issued orders"
+    "none": "There are no pending orders"
   }
 }

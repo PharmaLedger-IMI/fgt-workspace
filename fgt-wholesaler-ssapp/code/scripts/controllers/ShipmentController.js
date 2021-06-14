@@ -4,10 +4,9 @@ export default class ShipmentController extends LocalizedController{
 
     initializeModel = () => ({
         shipmentRef: '',
-        orderRef: '',
+        order: JSON.stringify(''),
         identity: {},
-        mode: 'issued',
-        lines: []
+        mode: 'issued'
     });
 
     constructor(...args) {
@@ -31,9 +30,8 @@ export default class ShipmentController extends LocalizedController{
             if (state && state.mode) {
                 self.model.mode = state.mode;
                 if (state.order){
-                    self.model.order = state.order;
+                    self.model.order = JSON.stringify(state.order);
                     self.model.shipmentRef = '';
-                    self.model.lines = [];
                     return;
                 }
 
@@ -41,11 +39,12 @@ export default class ShipmentController extends LocalizedController{
                 if (newRef === self.model.shipmentRef)
                     return self.shipmentEl.refresh();
                 self.model.shipmentRef = newRef;
+                self.model.order = ''
 
             } else {
                 self.model.shipmentRef = '';
                 self.mode = 'issued';
-                self.model.lines = state && state.shipmentLines ? [...state.shipmentLines] : [];
+                self.order = '';
             }
         }, {capture: true});
 
@@ -57,8 +56,8 @@ export default class ShipmentController extends LocalizedController{
             evt.preventDefault();
             evt.stopImmediatePropagation();
             const {shipment, stock, orderId} = evt.detail;
-            self.issuedShipmentManager.create(shipment, stock, orderId);
-        })
+            self._handleCreateShipment.call(self, shipment, stock, orderId);
+        });
     }
 
     /**

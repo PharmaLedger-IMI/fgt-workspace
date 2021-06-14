@@ -3,7 +3,7 @@
         <ion-header class="ion-no-border ion-padding">
             <ion-grid>
                 <ion-row>
-                    <ion-col size-md="1" size-sm="2" class="ion-text-center">
+                    <ion-col size-md="1" size-xs="2" class="ion-text-center">
                         <img src="../assets/images/logo.svg" alt="">
                     </ion-col>
                     <ion-col>
@@ -106,6 +106,8 @@
                 </ion-col>
             </ion-row>
         </ion-grid>
-        <pdm-barcode-scanner-controller barcode-title="Please scan your pack"></pdm-barcode-scanner-controller>
+        <div data-if="@identified">
+            <pdm-barcode-scanner-controller barcode-title="Please scan your pack"></pdm-barcode-scanner-controller>
+        </div>
     </ion-app>
 </webc-container>

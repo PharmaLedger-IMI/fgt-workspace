@@ -72,7 +72,7 @@ export class ManagedOrder implements CreateManageView{
   }
 
   @Prop({attribute: "order-ref", mutable: true}) orderRef?: string;
-  @Prop({attribute: 'order-lines', mutable: true}) orderLines?: string;
+  @Prop({attribute: 'order-lines-json', mutable: true}) orderLines: string;
   @Prop({attribute: 'identity', mutable: true}) identity;
 
   @Prop({attribute: 'order-type', mutable: true}) orderType: string = ORDER_TYPE.ISSUED;
@@ -251,7 +251,9 @@ export class ManagedOrder implements CreateManageView{
   create(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.sendCreateAction.emit(new Order(undefined, this.identity.id, evt.detail.senderId, this.identity.address, undefined, this.lines.slice()));
+    this.sendCreateAction.emit(new Order(undefined, this.identity.id,
+      evt.detail.senderId, this.identity.address, undefined,
+      this.lines.slice()));
   }
 
   isCreate(){

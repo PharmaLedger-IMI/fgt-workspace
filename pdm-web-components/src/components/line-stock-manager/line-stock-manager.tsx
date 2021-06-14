@@ -131,6 +131,8 @@ export class LineStockManager {
   async selectProduct(newGtin, oldGtin){
     if (!newGtin || oldGtin === newGtin)
       return;
+    if (!this.showStock)
+      return;
     if (!!this.result.filter(r => r.orderLine.gtin === newGtin)[0].confirmed)
       return;
     this.stockForProduct = {...this.updateStock(newGtin)};

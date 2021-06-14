@@ -3,6 +3,10 @@
  */
 const Participant = require('./Participant');
 
+/**
+ * @class Wholesaler
+ * @module fgt-dsu-wizard.model
+ */
 class Wholesaler extends Participant{
     originAddress = "";
     deliveryAddress = "";

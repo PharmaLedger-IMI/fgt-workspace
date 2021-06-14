@@ -1,4 +1,5 @@
 /**
+ * @class ShipmentLine
  * @module fgt-dsu-wizard.model
  */
 class ShipmentLine{

@@ -14,7 +14,7 @@ const SHIPMENT_TYPE = {
   RECEIVED: 'received'
 }
 
-const {ROLE, OrderLine, Shipment} = wizard.Model;
+const {ROLE, OrderLine, Shipment, Order} = wizard.Model;
 
 @Component({
   tag: 'managed-shipment',
@@ -77,7 +77,7 @@ export class ManagedShipment implements CreateManageView{
 
   // Functional Props
   @Prop({attribute: "shipment-ref", mutable: true}) shipmentRef?: string;
-  @Prop({attribute: "order", mutable: true}) order = undefined;
+  @Prop({attribute: "order-json", mutable: true}) orderJSON?: string = undefined;
   @Prop({attribute: 'identity', mutable: true}) identity;
   @Prop({attribute: 'shipment-type', mutable: true}) shipmentType: string = SHIPMENT_TYPE.ISSUED;
 
@@ -133,7 +133,8 @@ export class ManagedShipment implements CreateManageView{
   @State() participantId?: string = undefined;
   @State() shipment: typeof Shipment = undefined;
 
-  @State() orderLines;
+  @State() lines = [];
+  @State() order;
   @State() currentGtin?: string = undefined;
   @State() currentQuantity: number = 0;
 
@@ -213,22 +214,39 @@ export class ManagedShipment implements CreateManageView{
   }
 
   @Watch('shipmentRef')
-  @Watch('order')
   @Method()
   async refresh(){
     await this.load();
   }
+  @Watch('orderJSON')
+  async refreshOrder(newVal){
+    if (newVal.startsWith('@'))
+      return;
+    const order = JSON.parse(newVal);
+    if (!order.orderId)
+      this.order = undefined;
+    else {
+      this.order = new Order(order.orderId, order.requesterId,
+        order.senderId, order.shipToAddress, order.status,
+        order.orderLines.map(ol => new OrderLine(ol.gtin, ol.quantity, ol.requesterId, ol.senderId)));
+      this.lines = [...this.order.orderLines];
+    }
+  }
 
   @Method()
   async reset() {
-    if (!this.order || typeof this.order === 'string'){ // for webcardinal compatibility
-      this.orderLines = [];
+    this.shipmentRef = '';
+    if (!this.orderJSON || this.orderJSON.startsWith('@')){ // for webcardinal compatibility
+      this.participantId = '';
       const stockEl = this.getStockManagerEl();
       if (stockEl)
         stockEl.reset();
+      this.lines = [];
+      this.order = undefined;
     } else {
-      this.participantId = this.order.requesterId;
-      this.orderLines = [...this.order.orderLines]
+      this.order = JSON.parse(this.orderJSON);
+      this.participantId = this.order ? this.order.requesterId : '';
+      this.lines = this.order && this.order.orderLines? [...this.order.orderLines] : [];
     }
   }
 
@@ -246,7 +264,7 @@ export class ManagedShipment implements CreateManageView{
     evt.preventDefault();
     evt.stopImmediatePropagation();
     this.sendCreateAction.emit({
-      shipment: new Shipment(undefined, this.identity.id, evt.detail.senderId, this.identity.address, undefined, this.orderLines.slice()),
+      shipment: new Shipment(undefined, this.identity.id, evt.detail.senderId, this.identity.address, undefined, this.lines.slice()),
       stock: this.getStockManagerEl().getResult()
     });
   }
@@ -269,7 +287,7 @@ export class ManagedShipment implements CreateManageView{
   }
 
   private addOrderLine(gtin, quantity){
-    this.orderLines = [...this.orderLines, new OrderLine(gtin, quantity, this.participantId , this.identity.id)]
+    this.lines = [...this.lines, new OrderLine(gtin, quantity, this.participantId , this.identity.id)]
     this.currentGtin = undefined;
     this.currentQuantity = 0;
   }
@@ -484,7 +502,7 @@ export class ManagedShipment implements CreateManageView{
       return;
     return [
       ...this.getInputs(),
-      <line-stock-manager lines={this.orderLines}
+      <line-stock-manager lines={this.lines}
                           show-stock={true}
                           enable-actions={true}
 
@@ -514,7 +532,7 @@ export class ManagedShipment implements CreateManageView{
     if (this.isCreate())
       return;
     return (
-      <line-stock-manager lines={typeof this.orderLines !== 'string' ? this.orderLines : []}
+      <line-stock-manager lines={typeof this.lines !== 'string' ? this.lines : []}
                           show-stock={this.getType() === SHIPMENT_TYPE.RECEIVED}
                           stock-string={this.stockString}
                           no-stock-string={this.noStockString}
