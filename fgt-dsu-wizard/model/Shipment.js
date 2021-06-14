@@ -2,6 +2,7 @@ const ShipmentStatus = require('./ShipmentStatus');
 const ShipmentLine = require('./ShipmentLine');
 
 /**
+ * @class Shipment
  * @module fgt-dsu-wizard.model
  */
 class Shipment {

@@ -86,11 +86,25 @@ class MessageManager extends Manager{
      *
      * @param {string} api - should match one the DB constants with the tableName.
      * @param {function(Message)} onNewApiMsgListener where Message is an object obtained by JSON.parse(message)
+     *
      */
     registerListeners(api, onNewApiMsgListener){
         if (!(api in this._listeners))
             this._listeners[api] = [];
         this._listeners[api].push(onNewApiMsgListener);
+        const self = this;
+        self.getAll(true, {
+            query: [
+                `api like /${api}/g`
+            ]
+        }, (err, messages) => {
+            if (err)
+                return console.log(`Could not list messages from Inbox, api: ${api}`);
+            if (!messages || !messages.length)
+                return console.log(`No Stashed Messages Stored for ${api}...`);
+            console.log(`${messages.length} Stashed Messages found for manager ${api}`);
+            messages.forEach(m => onNewApiMsgListener(m));
+        })
     }
 
     /**

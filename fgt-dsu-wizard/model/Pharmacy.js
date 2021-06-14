@@ -1,8 +1,10 @@
-/**
- * @module fgt-dsu-wizard.model
- */
+
 const Participant = require('./Participant');
 
+/**
+ * @class Pharmacy
+ * @module fgt-dsu-wizard.model
+ */
 class Pharmacy extends Participant{
     deliveryAddress = "";
 

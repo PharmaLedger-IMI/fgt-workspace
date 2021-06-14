@@ -1,4 +1,5 @@
 /**
+ * @class OrderStatus
  * @module fgt-dsu-wizard.model
  */
 const OrderStatus = {

@@ -25,7 +25,7 @@ class Stock extends Product{
     }
 
     getQuantity(){
-        return this.batches.reduce((sum, b) => sum + b.quantity, 0);
+        return this.batches.reduce((sum, b) => sum + b.getQuantity(), 0);
     }
 
     /**

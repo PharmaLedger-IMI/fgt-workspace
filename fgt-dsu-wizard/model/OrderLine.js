@@ -1,4 +1,5 @@
 /**
+ * @class OrderLine
  * @module fgt-dsu-wizard.model
  */
 class OrderLine{

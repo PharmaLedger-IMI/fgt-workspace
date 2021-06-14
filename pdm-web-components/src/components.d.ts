@@ -138,7 +138,7 @@ export namespace Components {
         "identity": any;
         "manageString": string;
         "noStockString": string;
-        "orderLines"?: string;
+        "orderLines": string;
         "orderLinesString": string;
         "orderMissingString": string;
         "orderRef"?: string;
@@ -242,8 +242,8 @@ export namespace Components {
         "identity": any;
         "manageString": string;
         "noStockString": string;
-        "order": any;
         "orderIdString": string;
+        "orderJSON"?: string;
         "orderMissingString": string;
         "productsCodeString": string;
         "productsString": string;
@@ -965,8 +965,8 @@ declare namespace LocalJSX {
           * Through this event errors are passed
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
-        "order"?: any;
         "orderIdString"?: string;
+        "orderJSON"?: string;
         "orderMissingString"?: string;
         "productsCodeString"?: string;
         "productsString"?: string;

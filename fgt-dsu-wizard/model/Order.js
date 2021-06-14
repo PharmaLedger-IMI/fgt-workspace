@@ -2,8 +2,12 @@
  * @module fgt-dsu-wizard.model
  */
 const OrderStatus = require('./OrderStatus');
+const OrderLine = require('./OrderLine');
 
-
+/**
+ * @class Order
+ * @module fgt-dsu-wizard.model
+ */
 class Order{
     orderId;
     requesterId;
@@ -18,7 +22,7 @@ class Order{
         this.senderId = senderId;
         this.shipToAddress = shipToAddress;
         this.status = status || OrderStatus.CREATED;
-        this.orderLines = orderLines || [];
+        this.orderLines = orderLines ? orderLines.map(sl => new OrderLine(sl.gtin, sl.quantity, sl.requesterId, sl.senderId)) : [];
     }
 
     /**

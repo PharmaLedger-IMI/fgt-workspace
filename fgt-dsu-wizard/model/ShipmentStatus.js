@@ -1,6 +1,7 @@
 
 const OrderStatus = require('./OrderStatus');
 /**
+ * ShipmentStatus
  * @module fgt-dsu-wizard.model
  */
 const ShipmentStatus = {

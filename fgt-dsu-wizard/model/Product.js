@@ -1,4 +1,5 @@
 /**
+ * @class Product
  * @module fgt-dsu-wizard.model
  */
 class Product {
