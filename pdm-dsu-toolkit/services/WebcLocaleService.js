@@ -1,5 +1,5 @@
 /**
- * @module locale
+ * @module Services.Locale
  */
 
 /**

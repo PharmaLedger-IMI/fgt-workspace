@@ -3,11 +3,15 @@ const Participant = require('./Participant');
 
 /**
  * @class Pharmacy
- * @module fgt-dsu-wizard.model
+ * @module Model
  */
 class Pharmacy extends Participant{
     deliveryAddress = "";
 
+    /**
+     * @param pharmacy
+     * @constructor
+     */
     constructor(pharmacy) {
         super(pharmacy);
         if (typeof pharmacy !== undefined)

@@ -1,10 +1,3 @@
-/**
- * @module Commands
- * @memberOf dt
- */
-
-/**
- */
 const Command = require('./Command');
 
 /**
@@ -14,6 +7,8 @@ const Command = require('./Command');
  * basically sets whatever the result of the with operation into the source portion until it finds the endwith command
  *
  * @class EndWithCommand
+ * @module Commands
+ * @memberOf dt
  */
 class EndWithCommand extends Command{
     constructor(varStore) {

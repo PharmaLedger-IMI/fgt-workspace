@@ -1,8 +1,4 @@
 /**
- * @module fgt-dsu-wizard.commands
- */
-
-/**
  * Defines how to create the keyssi for a {@link Shipment} dsu
  * @param {object} data necessary properties:
  * <ul>
@@ -11,6 +7,7 @@
  * </ul>
  * @param {string} domain the anchoring domain
  * @returns {ArraySSI}
+ * @module fgt-dsu-wizard.commands
  */
 function createShipmentSSI(data, domain) {
     console.log("New SHIPMENT_SSI in domain", domain);
@@ -27,6 +24,7 @@ function createShipmentSSI(data, domain) {
 /**
  * Registers the endpoint on the api-hub's dsu-wizard.
  * @param {HttpServer} server
+ * @module fgt-dsu-wizard.commands
  */
 function command(server){
     const setSSI = require('../../pdm-dsu-toolkit/commands/setSSI');

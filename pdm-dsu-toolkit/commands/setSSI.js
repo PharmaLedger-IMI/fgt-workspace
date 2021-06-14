@@ -5,7 +5,7 @@
  * @param {function} factoryMethod  the method that receives a data object with the parameters required to generate the keyssi, and is responsible for the creation of the DSU
  * @param {string} methodName   the name of the method to be registered in the DSU Wizard? - Should match the method name that is calling it?
  * @param {string} [domain] domain where to anchor the DSU - defaults to 'default'
- * @module server
+ * @module Commands
  */
 function setSSI(server, endpoint, factoryMethod, methodName, domain){
     domain = domain || "default";

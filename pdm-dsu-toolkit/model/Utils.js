@@ -1,13 +1,15 @@
-/**
- * @module utils
- */
 
+/**
+ * @module Model.utils
+ */
 function genDate(offsetFromToday){
     let date = new Date();
     date.setDate(date.getDate() + offsetFromToday);
     return date;
 }
-
+/**
+ * @module Model.utils
+ */
 function generateGtin(){
     function pad(n, width, padding) {
         padding = padding || '0';
@@ -17,7 +19,9 @@ function generateGtin(){
 
     return pad(Math.floor(Math.random() * 999999999999), 12);
 }
-
+/**
+ * @module Model.utils
+ */
 function generateProductName() {
     const syllables = ["aba", "xo", "ra", "asp", "pe", "cla", "ri", "bru", "be", "nu", "as", "cos", "sen"];
     const suffixes = ['gix', 'don', 'gix', 'fen', 'ron', 'tix'];
@@ -31,7 +35,9 @@ function generateProductName() {
     name.push(suffixes[Math.floor(Math.random() * suffixes.length)]);
     return name.join('');
 }
-
+/**
+ * @module Model.utils
+ */
 function generateBatchNumber(){
     const chars = 'ABCDEFGHIJKLMNOPQRSUVWXYZ';
     const numbers = '1234567890';
@@ -44,7 +50,9 @@ function generateBatchNumber(){
     }
     return batchNumber.join('');
 }
-
+/**
+ * @module Model.utils
+ */
 function generateRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -54,6 +62,7 @@ function generateRandomInt(min, max) {
 /**
  * Generates a string of the provided length filled with random characters from the provided characterSet
  * Clone of PrivateSky Code
+ * @module Model.utils
  */
 function generate(charactersSet, length){
     let result = '';
@@ -71,6 +80,7 @@ function generate(charactersSet, length){
  * @param {string} string
  * @param {string} args replacements made by order of appearance (replacement0 wil replace {0} and so on)
  * @return {string} formatted string
+ * @module Model.utils
  */
 function stringFormat(string, ...args){
     return string.replace(/{(\d+)}/g, function(match, number) {
@@ -86,6 +96,7 @@ function stringFormat(string, ...args){
  * @param arr
  * @param n
  * @return {any[]}
+ * @module Model.utils
  */
 function getRandom(arr, n) {
     var result = new Array(n),
@@ -105,6 +116,7 @@ module.exports = {
     /**
      * Generates a string of the provided length filled with random characters from 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
      * Clone of PrivateSky Code
+     * @module Model.utils
      */
     generateID(length) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -114,6 +126,7 @@ module.exports = {
     /**
      * Generates a string of the provided length filled with random numeric characters
      * Clone of PrivateSky Code
+     * @module Model.utils
      */
     generateNumericID(length) {
         const characters = '0123456789';
@@ -122,6 +135,7 @@ module.exports = {
 
     /**
      * Clone of PrivateSky Code
+     * @module Model.utils
      */
     generateSerialNumber(length){
         let char = generate("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 2);

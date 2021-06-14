@@ -6,6 +6,7 @@ const {Order} = require('../model');
 /**
  * Issued Order Manager Class - concrete OrderManager for issuedOrders.
  * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
+ * @module Managers
  */
 class ReceivedOrderManager extends OrderManager {
     constructor(participantManager, callback) {
@@ -132,6 +133,7 @@ class ReceivedOrderManager extends OrderManager {
  * @param {ParticipantManager} participantManager
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {OrderManager}
+ * @module Managers
  */
 const getReceivedOrderManager = function (participantManager,  callback) {
     let manager;

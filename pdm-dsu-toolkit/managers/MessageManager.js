@@ -36,7 +36,7 @@ class Message{
  * @param {BaseManager} baseManager the base manager to have access to the identity api
  * @param {string} didString
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
- * @module managers
+ * @module mMnagers
  * @class MessageManager
  */
 class MessageManager extends Manager{

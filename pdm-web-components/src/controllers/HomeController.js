@@ -2,6 +2,27 @@ import LocalizedController from "./LocalizedController";
 import {EVENT_SSAPP_HAS_LOADED, EVENT_SSAPP_STATUS_UPDATE, EVENT_REFRESH, EVENT_NAVIGATE_TAB, SIDE_MENU_CLASS_SELECTOR, EVENT_ION_TABS_WILL_CHANGE, EVENT_SELECT} from '../constants/events'
 import {WebManagerService} from '../services/WebManagerService'
 
+/**
+ * Main Controller For the SSApp Architecture. Should be instantiated like so:
+ *
+ * <pre>
+ *   <webc-container controller="HomeController">
+ *     <ion-app>
+ *       <ion-header class="ion-no-border ion-padding">
+ *         (...)
+ * </pre>
+ *
+ * Initializes the {@link BaseManager} providing access to:
+ * Complies with the Architecture described
+ *  - Access to Identity DSU;
+ *  - Access to Database DSU;
+ *  - Access to the Messaging API
+ *
+ * and provides the implementation for navigation and data management in an Ionic Tab Single Page Application Schema
+ * @module Controllers
+ * @class HomeController
+ * @abstract
+ */
 export default class HomeController extends LocalizedController {
     initializeModel = () => ({
         participant: {}
@@ -44,7 +65,7 @@ export default class HomeController extends LocalizedController {
           self._navigateToTab.call(self, evt.detail);
         });
 
-        require('wizard').Managers.getParticipantManager(this.DSUStorage, false, (err, pManager) => {
+        const participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, false, (err, pManager) => {
             if (err)
                 console.log(`Failed Participant Manager Initialization`);
             else
@@ -58,6 +79,8 @@ export default class HomeController extends LocalizedController {
               self._testParticipant();
             }, Math.floor(Math.random() * 100));
         });
+
+        participantManager.setController(this);
     }
 
     _navigateToTab(props){

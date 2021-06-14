@@ -1,14 +1,9 @@
-/**
- * @module services
- */
-
-/**
- *
- */
 const { INFO_PATH } = require('../constants');
 const { _err } = require('./utils');
 /**
  * This service is the bridge between custom webcomponents and PDM's openDSU SSApp Architecture
+ * module Services
+ * @deprecated
  */
 function WebComponentService() {
     const { getResolver, getKeySSISpace } = require('./utils');

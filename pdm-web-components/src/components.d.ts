@@ -68,6 +68,12 @@ export namespace Components {
         "stockString": string;
         "unavailableString": string;
     }
+    interface ListItemLayout {
+        "adjustmentClass": string;
+        "color": string;
+        "cssClass": string;
+        "lines": 'none' | 'inset' | 'full';
+    }
     interface ManagedBatch {
         "addBatchString": string;
         "backString": string;
@@ -373,6 +379,10 @@ export namespace Components {
          */
         "componentProps": string;
         /**
+          * The identifying prop to be return upon click (must exist in the supplied {@link componentProps}
+         */
+        "cssClass": string;
+        /**
           * The number of items to display (minimum is 1), defaults to 3
          */
         "displayCount": number;
@@ -394,6 +404,8 @@ export namespace Components {
     interface SimpleManagedProductItem {
         "gtin": string;
         "refresh": () => Promise<void>;
+    }
+    interface SlideInBoard {
     }
 }
 declare global {
@@ -426,6 +438,12 @@ declare global {
     var HTMLLineStockManagerElement: {
         prototype: HTMLLineStockManagerElement;
         new (): HTMLLineStockManagerElement;
+    };
+    interface HTMLListItemLayoutElement extends Components.ListItemLayout, HTMLStencilElement {
+    }
+    var HTMLListItemLayoutElement: {
+        prototype: HTMLListItemLayoutElement;
+        new (): HTMLListItemLayoutElement;
     };
     interface HTMLManagedBatchElement extends Components.ManagedBatch, HTMLStencilElement {
     }
@@ -571,12 +589,19 @@ declare global {
         prototype: HTMLSimpleManagedProductItemElement;
         new (): HTMLSimpleManagedProductItemElement;
     };
+    interface HTMLSlideInBoardElement extends Components.SlideInBoard, HTMLStencilElement {
+    }
+    var HTMLSlideInBoardElement: {
+        prototype: HTMLSlideInBoardElement;
+        new (): HTMLSlideInBoardElement;
+    };
     interface HTMLElementTagNameMap {
         "barcode-generator": HTMLBarcodeGeneratorElement;
         "batch-chip": HTMLBatchChipElement;
         "create-manage-view-layout": HTMLCreateManageViewLayoutElement;
         "generic-chip": HTMLGenericChipElement;
         "line-stock-manager": HTMLLineStockManagerElement;
+        "list-item-layout": HTMLListItemLayoutElement;
         "managed-batch": HTMLManagedBatchElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-issued-order": HTMLManagedIssuedOrderElement;
@@ -601,6 +626,7 @@ declare global {
         "pdm-item-organizer": HTMLPdmItemOrganizerElement;
         "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
         "simple-managed-product-item": HTMLSimpleManagedProductItemElement;
+        "slide-in-board": HTMLSlideInBoardElement;
     }
 }
 declare namespace LocalJSX {
@@ -674,6 +700,12 @@ declare namespace LocalJSX {
         "showStock"?: boolean;
         "stockString"?: string;
         "unavailableString"?: string;
+    }
+    interface ListItemLayout {
+        "adjustmentClass"?: string;
+        "color"?: string;
+        "cssClass"?: string;
+        "lines"?: 'none' | 'inset' | 'full';
     }
     interface ManagedBatch {
         "addBatchString"?: string;
@@ -1128,6 +1160,10 @@ declare namespace LocalJSX {
          */
         "componentProps"?: string;
         /**
+          * The identifying prop to be return upon click (must exist in the supplied {@link componentProps}
+         */
+        "cssClass"?: string;
+        /**
           * The number of items to display (minimum is 1), defaults to 3
          */
         "displayCount"?: number;
@@ -1156,12 +1192,15 @@ declare namespace LocalJSX {
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
     }
+    interface SlideInBoard {
+    }
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;
         "batch-chip": BatchChip;
         "create-manage-view-layout": CreateManageViewLayout;
         "generic-chip": GenericChip;
         "line-stock-manager": LineStockManager;
+        "list-item-layout": ListItemLayout;
         "managed-batch": ManagedBatch;
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-issued-order": ManagedIssuedOrder;
@@ -1186,6 +1225,7 @@ declare namespace LocalJSX {
         "pdm-item-organizer": PdmItemOrganizer;
         "pdm-ssapp-loader": PdmSsappLoader;
         "simple-managed-product-item": SimpleManagedProductItem;
+        "slide-in-board": SlideInBoard;
     }
 }
 export { LocalJSX as JSX };
@@ -1197,6 +1237,7 @@ declare module "@stencil/core" {
             "create-manage-view-layout": LocalJSX.CreateManageViewLayout & JSXBase.HTMLAttributes<HTMLCreateManageViewLayoutElement>;
             "generic-chip": LocalJSX.GenericChip & JSXBase.HTMLAttributes<HTMLGenericChipElement>;
             "line-stock-manager": LocalJSX.LineStockManager & JSXBase.HTMLAttributes<HTMLLineStockManagerElement>;
+            "list-item-layout": LocalJSX.ListItemLayout & JSXBase.HTMLAttributes<HTMLListItemLayoutElement>;
             "managed-batch": LocalJSX.ManagedBatch & JSXBase.HTMLAttributes<HTMLManagedBatchElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-issued-order": LocalJSX.ManagedIssuedOrder & JSXBase.HTMLAttributes<HTMLManagedIssuedOrderElement>;
@@ -1221,6 +1262,7 @@ declare module "@stencil/core" {
             "pdm-item-organizer": LocalJSX.PdmItemOrganizer & JSXBase.HTMLAttributes<HTMLPdmItemOrganizerElement>;
             "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;
             "simple-managed-product-item": LocalJSX.SimpleManagedProductItem & JSXBase.HTMLAttributes<HTMLSimpleManagedProductItemElement>;
+            "slide-in-board": LocalJSX.SlideInBoard & JSXBase.HTMLAttributes<HTMLSlideInBoardElement>;
         }
     }
 }

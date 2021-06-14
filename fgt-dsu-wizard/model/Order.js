@@ -1,12 +1,9 @@
-/**
- * @module fgt-dsu-wizard.model
- */
 const OrderStatus = require('./OrderStatus');
 const OrderLine = require('./OrderLine');
 
 /**
  * @class Order
- * @module fgt-dsu-wizard.model
+ * @module Model
  */
 class Order{
     orderId;
@@ -16,6 +13,15 @@ class Order{
     status;
     orderLines;
 
+    /**
+     * @param orderId
+     * @param requesterId
+     * @param senderId
+     * @param shipToAddress
+     * @param status
+     * @param orderLines
+     * @constructor
+     */
     constructor(orderId, requesterId, senderId, shipToAddress, status, orderLines) {
         this.orderId = orderId || (new Date()).getTime();
         this.requesterId = requesterId;

@@ -1,6 +1,6 @@
 /**
  * @class OrderStatus
- * @module fgt-dsu-wizard.model
+ * @module Model
  */
 const OrderStatus = {
     CREATED: "created",

@@ -1,5 +1,5 @@
 /**
- * @module fgt-dsu-wizard.model
+ * @module Model
  */
 const StockStatus = {
     RESERVED: "reserved",

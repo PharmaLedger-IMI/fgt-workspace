@@ -1,7 +1,6 @@
 /**
  * Base Util Functionality for Model
- * @module model
- * @memberOf toolkit.model
+ * @module Model
  */
 module.exports = {
     Validations: require('./Validations'),

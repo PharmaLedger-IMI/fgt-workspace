@@ -3,7 +3,7 @@ const { Validatable } = require('../../pdm-dsu-toolkit/model/Validations');
 
 /**
  * @class Participant
- * @module fgt-dsu-wizard.model
+ * @module Model
  */
 class Participant extends Validatable{
     id = "";
@@ -12,6 +12,10 @@ class Participant extends Validatable{
     tin = "";
     address = "";
 
+    /**
+     * @param participant
+     * @constructor
+     */
     constructor(participant){
         super();
         console.log("participant:" + participant);

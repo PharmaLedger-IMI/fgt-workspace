@@ -1,5 +1,5 @@
 /**
- * @module fgt-dsu-wizard.services
+ * @module Services
  */
 module.exports = {
     DSUService: require('../../pdm-dsu-toolkit/services/DSUService'),

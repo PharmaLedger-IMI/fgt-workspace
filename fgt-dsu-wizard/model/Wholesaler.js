@@ -1,16 +1,18 @@
-/**
- * @module fgt-dsu-wizard.model
- */
 const Participant = require('./Participant');
 
 /**
  * @class Wholesaler
- * @module fgt-dsu-wizard.model
+ * @module Model
  */
 class Wholesaler extends Participant{
     originAddress = "";
     deliveryAddress = "";
 
+    /**
+     *
+     * @param wholesaler
+     * @constructor
+     */
     constructor(wholesaler) {
         super(wholesaler);
         if (typeof wholesaler !== undefined)

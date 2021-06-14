@@ -1,7 +1,3 @@
-/**
- * @module fgt-mah-ssapp.managers
- */
-
 const BaseManager = require('../../pdm-dsu-toolkit/managers/BaseManager');
 
 /**
@@ -22,6 +18,7 @@ const BaseManager = require('../../pdm-dsu-toolkit/managers/BaseManager');
  *
  * @param {DSUStorage} dsuStorage the controllers dsu storage
  * @param {function(err, ParticipantManager)} [callback}
+ * @module Managers
  */
 class ParticipantManager extends BaseManager{
     constructor(dsuStorage, callback) {
@@ -65,6 +62,7 @@ let participantManager;
  * Makes DSU Storage required again!
  * @param {function(err, ParticipantManager)} [callback]
  * @returns {ParticipantManager}
+ * @module Managers
  */
 const getParticipantManager = function (dsuStorage, force, callback) {
     if (!callback){

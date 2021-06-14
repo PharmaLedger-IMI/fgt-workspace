@@ -4,7 +4,7 @@
  * (the keySSI) will be mounted
  *
  * @class ShipmentCode
- * @module fgt-dsu-wizard.model
+ * @module Model
  */
 const TrackingCode = require("./TrackingCode");
 
@@ -16,6 +16,11 @@ class ShipmentCode extends TrackingCode {
      */
     status;
 
+    /**
+     *
+     * @param shipmentCode
+     * @constructor
+     */
     constructor(shipmentCode) {
         super(shipmentCode);
         if (typeof shipmentCode !== undefined)

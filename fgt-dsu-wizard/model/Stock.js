@@ -3,13 +3,18 @@ const Batch = require('./Batch');
 const StockStatus = require('./StockStatus');
 
 /**
- * @module fgt-dsu-wizard.model
+ * @module Model
  * @class Stock
  */
 class Stock extends Product{
     batches = [];
     status = undefined;
 
+    /**
+     *
+     * @param stock
+     * @constructor
+     */
     constructor(stock) {
         super(stock)
         if (typeof stock !== undefined)

@@ -163,3 +163,8 @@ ion-row.main-content-row {
 ion-tab-bar{
   --color-selected: var(--ion-color-secondary);
 }
+
+ion-button[color="medium"]{
+  --color-hover: var(--ion-color-secondary);
+  --ripple-color: var(--ion-color-secondary-shade);
+}

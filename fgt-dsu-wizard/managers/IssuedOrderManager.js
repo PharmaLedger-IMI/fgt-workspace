@@ -7,6 +7,8 @@ const OrderStatus = require('../model').OrderStatus;
 /**
  * Issued Order Manager Class - concrete OrderManager for issuedOrders.
  * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
+ * @class IssuedOrderManager
+ * @module Managers
  */
 class IssuedOrderManager extends OrderManager {
     constructor(participantManager, callback) {
@@ -115,35 +117,6 @@ class IssuedOrderManager extends OrderManager {
             console.log(`Parsed ${result.length} orders`);
             callback(undefined, result);
         });
-        /*
-        let orderLine1 = new OrderLine('123', 1, '', '');
-        let orderLine2 = new OrderLine('321', 5, '', '');
-        let order1 = new Order("IOID1", "TPID1", 'WHSID555', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
-        let order2 = new Order("IOID2", "TPID2", 'WHSID432', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
-        return callback(undefined, [
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-        ]);
-        */
-        /*
-        super.listMounts(ISSUED_ORDERS_MOUNT_PATH, (err, mounts) => {
-            if (err)
-                return callback(err);
-            console.log(`Found ${mounts.length} orders at ${ISSUED_ORDERS_MOUNT_PATH}`);
-            mounts = mounts.map(m => {
-                console.log("Listing mounted m", m);
-                m.path = `${ISSUED_ORDERS_MOUNT_PATH}/${m.path}`;
-                return m;
-            });
-            super.readAll(mounts, callback);
-        });
-        */
     }
 
     /**
@@ -153,9 +126,6 @@ class IssuedOrderManager extends OrderManager {
      */
     newBlank(callback) {
         let self = this;
-        //let orderLine1 = new OrderLine('123', 1, '', '');
-        //let orderLine2 = new OrderLine('321', 5, '', '');
-        //return new Order(orderId, orderingTradingPartnerId, '', shippingAddress, OrderStatus.CREATED, [orderLine1, orderLine2]);
         self.getIdentity((err, participant) => {
             if (err) {
                 return callback(err);
@@ -203,6 +173,7 @@ class IssuedOrderManager extends OrderManager {
  * @param {ParticipantManager} participantManager
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {IssuedOrderManager}
+ * @module Managers
  */
 const getIssuedOrderManager = function (participantManager, callback) {
     let manager;

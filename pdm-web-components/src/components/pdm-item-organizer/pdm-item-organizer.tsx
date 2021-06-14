@@ -1,5 +1,6 @@
 import {Component, Host, h, Element, Prop, Listen, Watch, State, EventEmitter, Event} from '@stencil/core';
 import {HostElement} from "../../decorators";
+import {ionBreakpoints, bindIonicBreakpoint} from "../../utils/utilFunctions";
 
 const ORGANIZER_CUSTOM_EL_NAME = "organizer-item-popover";
 
@@ -35,6 +36,11 @@ export class PdmItemOrganizer {
   @Prop({attribute: "id-prop"}) idProp: string = undefined;
 
   /**
+   * The identifying prop to be return upon click (must exist in the supplied {@link componentProps}
+   */
+  @Prop({attribute: "class"}) cssClass: string = "ion-justify-content-end";
+
+  /**
    * If the component does not generate an ion-item (so it can be handled by an ion-list)
    * this must be set to false
    */
@@ -43,10 +49,18 @@ export class PdmItemOrganizer {
   @State()
   private parsedProps: [{}] = undefined;
 
+  @State()
+  private currentBreakpoint = ionBreakpoints.lg + '';
+
   async componentWillLoad(){
     if (!this.host.isConnected)
       return;
     this.updateParsedProps(this.componentProps);
+  }
+
+  async componentDidLoad(){
+    const self = this;
+    this.currentBreakpoint = bindIonicBreakpoint(bp => self.currentBreakpoint = bp);
   }
 
   @Watch("componentProps")
@@ -154,7 +168,20 @@ export class PdmItemOrganizer {
       return this.parsedProps.map(props => this.getComponentJSX(props));
     const toDisplay = Math.max(this.displayCount - 1, 1);
     const result = this.parsedProps .filter((props,i) => !!props && i <= toDisplay).map(props => this.getComponentJSX(props));
-    result.unshift(<more-chip></more-chip>);
+
+    let operation;
+    switch(this.currentBreakpoint + ''){
+      case 'xs':
+      case 'sm':
+      case 'md':
+        operation = result.push.bind(result);
+        break;
+      case 'lg':
+      case 'xl':
+      default:
+        operation = result.unshift.bind(result);
+    }
+    operation((<more-chip></more-chip>));
     return result;
   }
 
@@ -163,7 +190,7 @@ export class PdmItemOrganizer {
       return;
     return (
       <Host>
-        <div class="ion-padding-horizontal flex ion-justify-content-between ion-align-items-center">
+        <div class={`ion-padding-horizontal flex ${this.cssClass} ion-align-items-center`}>
           {...this.getFilteredComponents()}
         </div>
       </Host>

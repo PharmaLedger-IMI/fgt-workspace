@@ -4,7 +4,7 @@
  * (the keySSI) will be mounted
  *
  * @class TrackingCode
- * @module fgt-dsu-wizard.model
+ * @module Model
  */
 class TrackingCode{
     /**
@@ -31,6 +31,11 @@ class TrackingCode{
      */
     next;
 
+    /**
+     *
+     * @param code
+     * @constructor
+     */
     constructor(code) {
         if (typeof code !== undefined)
             for (let prop in code)
