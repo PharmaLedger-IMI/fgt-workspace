@@ -57,7 +57,7 @@ export default class ShipmentController extends LocalizedController{
             evt.preventDefault();
             evt.stopImmediatePropagation();
             const {shipment, stock, orderId} = evt.detail;
-            self.issuedShipmentManager.create(shipment)
+            self.issuedShipmentManager.create(shipment, stock, orderId);
         })
     }
 
@@ -77,16 +77,14 @@ export default class ShipmentController extends LocalizedController{
             return console.log(`Shipment creation canceled by clicking ${role}`);
 
         const loader = self._getLoader(self.translate('create.loading'));
-        await loader.present()
+        await loader.present();
 
         const sendError = async function(msg){
             await loader.dismiss();
             self.showErrorToast(msg);
         }
 
-        self.receivedOrderManager
-
-        self.issuedShipmentManager.create(shipment, async (err, keySSI, dbPath) => {
+        self.issuedShipmentManager.create(orderId, shipment, stockInfo,  async (err, keySSI, dbPath) => {
             if (err)
                 return sendError(self.translate('create.error.error'));
             self.showToast(self.translate('create.success'));

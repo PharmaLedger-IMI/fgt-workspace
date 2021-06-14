@@ -7,8 +7,9 @@
  *  - get(KeySSI): that loads the DSU and loads the Object information
  */
 class Resolver {
-    constructor(service){
+    constructor(baseManager, service){
         this.service = service;
+        baseManager.cacheManager(this);
     }
 
     getOne(key, readDSU, callback){

@@ -11,7 +11,7 @@ class ReceivedOrderManager extends OrderManager {
     constructor(participantManager, callback) {
         super(participantManager, DB.receivedOrders, ['orderId', 'requesterId'], (err, manager) => {
             if (err)
-                return callback(err);
+                return callback ? callback(err) : console.log(err);
             manager.registerMessageListener((message) => {
                 manager.processMessageRecord(message, (err) => {
                     if (err)
@@ -20,7 +20,8 @@ class ReceivedOrderManager extends OrderManager {
                         manager.controller.refresh();
                 });
             });
-            callback(undefined, manager);
+            if (callback)
+                callback(undefined, manager);
         });
         this.stockManager = getStockManager(participantManager);
     }

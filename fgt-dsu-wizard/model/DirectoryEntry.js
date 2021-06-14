@@ -4,6 +4,10 @@
 
 const Utils = require("../../pdm-dsu-toolkit/model/Utils");
 
+/**
+ * Role Enum
+ * @module fgt-dsu-wizard.model
+ */
 const ROLE = {
     MAH: 'mah',
     WHS: 'whs',
@@ -15,6 +19,8 @@ const ROLE = {
 /**
  * @prop {string} batchNumber
  * @prop {Date} expiryDate
+ * @class DirectoryEntry
+ * @module fgt-dsu-wizard.model
  */
 class DirectoryEntry {
     id;

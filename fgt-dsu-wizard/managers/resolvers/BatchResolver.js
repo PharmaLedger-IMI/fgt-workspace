@@ -6,19 +6,27 @@ const Resolver  = require('../../../pdm-dsu-toolkit/managers').Resolver
  * Const DSU and extract the updated Information when required
  */
 class BatchResolver extends Resolver{
-    constructor(){
-        super(new (require('../../services/BatchService'))(ANCHORING_DOMAIN));
+    constructor(participantManager){
+        super(participantManager, new (require('../../services/BatchService'))(ANCHORING_DOMAIN));
     }
 }
 
-let batchResolver;
 /**
  * @returns {BatchResolver} as a singleton
  */
-const getBatchResolver = function () {
-    if (!batchResolver)
-        batchResolver = new BatchResolver();
-    return batchResolver;
+const getBatchResolver = function (participantManager, callback) {
+    let resolver;
+    try {
+        resolver = participantManager.getManager(BatchResolver);
+        if (callback)
+            return callback(undefined, resolver);
+    } catch (e){
+        resolver = new BatchResolver(participantManager);
+    }
+    if (callback)
+        return callback(undefined, resolver);
+
+    return resolver;
 }
 
 module.exports = getBatchResolver;

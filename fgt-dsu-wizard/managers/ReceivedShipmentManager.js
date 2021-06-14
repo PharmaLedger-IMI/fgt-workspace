@@ -10,7 +10,7 @@ class ReceivedShipmentManager extends ShipmentManager {
     constructor(participantManager, callback) {
         super(participantManager, DB.receivedShipments, ['requesterId'], (err, manager) => {
             if (err)
-                return callback(err);
+                return callback ? callback(err) : console.log(err);
             manager.registerMessageListener((message) => {
                 manager.processMessageRecord(message, (err) => {
                     if (err)
@@ -19,7 +19,8 @@ class ReceivedShipmentManager extends ShipmentManager {
                         manager.controller.refresh();
                 });
             });
-            callback(undefined, manager);
+            if (callback)
+                callback(undefined, manager);
         });
     }
 

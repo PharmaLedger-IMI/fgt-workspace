@@ -1,7 +1,3 @@
-/**
- * @module fgt-dsu-wizard.model
- */
-
 const Utils = require("../../pdm-dsu-toolkit/model/Utils");
 
 /**
@@ -9,7 +5,9 @@ const Utils = require("../../pdm-dsu-toolkit/model/Utils");
  * @prop {Date} expiryDate
  * @prop {string[]} serialNumbers
  * @prop {number} quantity
- * @props {string} batchStatus
+ * @prop {string} batchStatus
+ * @class Batch
+ * @module fgt-dsu-wizard.model
  */
 class Batch {
     batchNumber;
