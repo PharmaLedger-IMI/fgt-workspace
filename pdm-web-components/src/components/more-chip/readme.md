@@ -24,13 +24,11 @@
 
 ### Used by
 
- - [managed-shipment-list-item](../managed-shipment-list-item)
  - [pdm-item-organizer](../pdm-item-organizer)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-shipment-list-item --> more-chip
   pdm-item-organizer --> more-chip
   style more-chip fill:#f9f,stroke:#333,stroke-width:4px
 ```

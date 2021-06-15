@@ -1,68 +1,121 @@
 {
-  "title": "PDM Trust Loader",
   "anchoring": "default",
+  "sub-title": "Please enter your credentials",
+  "title": "As an Individual",
   "form": {
-    "title": "Please enter your credentials",
-    "name": {
-      "label": "Name:",
-      "type": "text",
-      "placeholder": "Please enter your name here...",
-      "value": "PDM",
-      "public": true,
-      "required": true
-    },
-    "id": {
-      "label": "Id:",
-      "type": "text",
-      "placeholder": "Please enter your id here...",
-      "value": "#id11",
-      "public": true,
-      "required": true
-    },
-    "email": {
-      "label": "Email:",
-      "type": "email",
-      "placeholder": "Please enter your email here...",
-      "value": "mail@pdmfc.com",
-      "public": true,
-      "required": true
-    },
-    "tin": {
-      "label": "TIN (Tax Identification Number):",
-      "type": "number",
-      "placeholder": "Enter your TIN (Tax Identification Number)...",
-      "value": 500000000,
-      "public": true,
-      "required": true
-    },
-    "address": {
-      "label": "Address:",
-      "type": "text",
-      "placeholder": "Enter your address...",
-      "required": true,
-      "value": "This in an Address"
-    },
-    "pass": {
-      "label": "Password:",
-      "type": "password",
-      "placeholder": "Enter your password...",
-      "required": true,
-      "value": "This1sSuchAS3curePassw0rd"
-    },
-    "passrepeat": {
-      "label": "Password:",
-      "type": "password",
-      "placeholder": "Repeat your password...",
-      "required": true,
-      "value": "This1sSuchAS3curePassw0rd"
-    },
-    "buttons": {
-      "login": "Login",
-      "register": "Register"
-    }
+    "prefix": "input-",
+    "fields": [
+      {
+        "name": "name",
+        "element": "ion-input",
+        "label": "Name:",
+        "public": true,
+        "props": {
+          "type": "text",
+          "placeholder": "Please enter your name here...",
+          "value": "PDM",
+          "required": true
+        }
+      },
+      {
+        "name": "id",
+        "element": "ion-input",
+        "label": "Id:",
+        "public": true,
+        "props": {
+          "type": "text",
+          "placeholder": "Please enter your Id here...",
+          "value": "PDMXV29",
+          "required": true
+        }
+      },
+      {
+        "name": "email",
+        "element": "ion-input",
+        "label": "Email:",
+        "public": true,
+        "props": {
+          "type": "email",
+          "placeholder": "Please enter your email here...",
+          "value": "some@email.com",
+          "required": true
+        }
+      },
+      {
+        "name": "tin",
+        "element": "ion-input",
+        "label": "Tin:",
+        "public": true,
+        "props": {
+          "type": "number",
+          "placeholder": "Please enter your tin here...",
+          "value": "5000000000",
+          "required": true
+        }
+      },
+      {
+        "name": "address",
+        "element": "ion-textarea",
+        "label": "Name:",
+        "public": true,
+        "props": {
+          "placeholder": "Please enter your address here...",
+          "maxlength": "150",
+          "minlength": "10",
+          "cols": 2,
+          "rows": 20,
+          "value": "Avenida da Liberdade, Lisboa, Portugal",
+          "required": true
+        }
+      },
+      {
+        "name": "address",
+        "element": "ion-input",
+        "label": "Name:",
+        "props": {
+          "type": "password",
+          "placeholder": "Please enter your name here...",
+          "value": "PDM",
+          "public": false,
+          "required": true
+        }
+      },
+      {
+        "name": "address",
+        "element": "ion-input",
+        "label": "Name:",
+        "props": {
+          "type": "text",
+          "placeholder": "Please enter your name here...",
+          "value": "PDM",
+          "public": false,
+          "required": true
+        },
+        "validation": {
+          "required": {
+            "error": "This field is mandatory"
+          },
+          "equality": {
+            "field": "pass",
+            "error": "The passwords don't match!"
+          }
+        }
+      }
+    ]
+  },
+  "id-backup": {
+    "label": "Id:",
+    "type": "text",
+    "placeholder": "Please enter your id here...",
+    "value": "#id11",
+    "public": true,
+    "required": true
+  },
+  "loading": {
+    "register": "Creating new Wallet",
+    "login": "Accessing Wallet..."
   },
   "errors": {
-    "title": "Error",
     "register": "Unable to register. Are you sure this account doesn't exist?",
     "login": "Could not Login. Maybe try registering?"
   },

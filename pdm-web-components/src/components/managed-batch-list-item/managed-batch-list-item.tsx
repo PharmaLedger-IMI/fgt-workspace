@@ -122,7 +122,7 @@ export class ManagedBatchListItem {
     }
 
     return(
-      <ion-label color="secondary">
+      <ion-label slot="label" color="secondary">
         {getBatchNumberLabel()}
         <span class="ion-padding-start">{getExpiryLabel()}</span>
       </ion-label>)
@@ -132,7 +132,7 @@ export class ManagedBatchListItem {
     if (!this.serialNumbers || !this.batch)
       return (<multi-spinner type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
     return(
-      <pdm-item-organizer component-name="generic-chip"
+      <pdm-item-organizer slot="content" component-name="generic-chip"
                           component-props={JSON.stringify(this.batch.serialNumbers.map(serial => ({
                             "chip-label": serial,
                             "class": "ion-margin-start"
@@ -157,13 +157,13 @@ export class ManagedBatchListItem {
     }
 
     return [
-      getButton("end", "medium", "barcode", (evt) => getBarCodePopOver({
+      getButton("buttons", "medium", "barcode", (evt) => getBarCodePopOver({
         type: "gs1datamatrix",
         size: "32",
         scale: "6",
         data: self.batch.generate2DMatrixCode(self.getGtinAndBatchNumber().gtin)
       }, evt)),
-      getButton("end", "medium", "eye", () => self.navigateToTab('tab-batch', {
+      getButton("buttons", "medium", "eye", () => self.navigateToTab('tab-batch', {
         gtin: self.getGtinAndBatchNumber().gtin,
         batchNumber: self.getGtinAndBatchNumber().batchNumber
       }))
@@ -173,13 +173,13 @@ export class ManagedBatchListItem {
   render() {
     return (
       <Host>
-        <ion-item class="main-item ion-margin-bottom" lines="none" color="light">
-          {this.addLabel()}
-          <div class="ion-padding flex">
+        <Host>
+          <list-item-layout>
+            {this.addLabel()}
             {this.addSerialsNumbers()}
-          </div>
-          {this.addButtons()}
-        </ion-item>
+            {this.addButtons()}
+          </list-item-layout>
+        </Host>
       </Host>
     );
   }

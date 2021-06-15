@@ -43,6 +43,24 @@ export namespace Components {
         "isCreate": boolean;
         "manageTitleString": string;
     }
+    interface FormInput {
+        "cssClass": string | string[];
+        "input"?: {
+    name: string,
+    element: string,
+    label: string,
+    props: {type?: string, subtype?: string, value?: string, required?: boolean, children?: [], },
+    validation?: {required?:{error: string}, },
+    score: {any}
+  } | undefined;
+        "inputPrefix": string;
+        "labelPosition": "fixed" | "floating" | "stacked" | undefined;
+        "lines": 'none' | 'inset' | 'full' | undefined;
+    }
+    interface FormValidateSubmit {
+        "formJSON": string;
+        "loaderType": string;
+    }
     interface GenericChip {
         "chipLabel": string;
         "color"?: string;
@@ -427,6 +445,18 @@ declare global {
         prototype: HTMLCreateManageViewLayoutElement;
         new (): HTMLCreateManageViewLayoutElement;
     };
+    interface HTMLFormInputElement extends Components.FormInput, HTMLStencilElement {
+    }
+    var HTMLFormInputElement: {
+        prototype: HTMLFormInputElement;
+        new (): HTMLFormInputElement;
+    };
+    interface HTMLFormValidateSubmitElement extends Components.FormValidateSubmit, HTMLStencilElement {
+    }
+    var HTMLFormValidateSubmitElement: {
+        prototype: HTMLFormValidateSubmitElement;
+        new (): HTMLFormValidateSubmitElement;
+    };
     interface HTMLGenericChipElement extends Components.GenericChip, HTMLStencilElement {
     }
     var HTMLGenericChipElement: {
@@ -599,6 +629,8 @@ declare global {
         "barcode-generator": HTMLBarcodeGeneratorElement;
         "batch-chip": HTMLBatchChipElement;
         "create-manage-view-layout": HTMLCreateManageViewLayoutElement;
+        "form-input": HTMLFormInputElement;
+        "form-validate-submit": HTMLFormValidateSubmitElement;
         "generic-chip": HTMLGenericChipElement;
         "line-stock-manager": HTMLLineStockManagerElement;
         "list-item-layout": HTMLListItemLayoutElement;
@@ -666,6 +698,44 @@ declare namespace LocalJSX {
         "manageTitleString"?: string;
         "onCreateEvent"?: (event: CustomEvent<{}>) => void;
         "onGoBackEvent"?: (event: CustomEvent<any>) => void;
+    }
+    interface FormInput {
+        "cssClass"?: string | string[];
+        "input"?: {
+    name: string,
+    element: string,
+    label: string,
+    props: {type?: string, subtype?: string, value?: string, required?: boolean, children?: [], },
+    validation?: {required?:{error: string}, },
+    score: {any}
+  } | undefined;
+        "inputPrefix"?: string;
+        "labelPosition"?: "fixed" | "floating" | "stacked" | undefined;
+        "lines"?: 'none' | 'inset' | 'full' | undefined;
+        /**
+          * Through this event action requests are made
+         */
+        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+    }
+    interface FormValidateSubmit {
+        "formJSON"?: string;
+        "loaderType"?: string;
+        /**
+          * Through this event action requests are made
+         */
+        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
     }
     interface GenericChip {
         "chipLabel"?: string;
@@ -1198,6 +1268,8 @@ declare namespace LocalJSX {
         "barcode-generator": BarcodeGenerator;
         "batch-chip": BatchChip;
         "create-manage-view-layout": CreateManageViewLayout;
+        "form-input": FormInput;
+        "form-validate-submit": FormValidateSubmit;
         "generic-chip": GenericChip;
         "line-stock-manager": LineStockManager;
         "list-item-layout": ListItemLayout;
@@ -1235,6 +1307,8 @@ declare module "@stencil/core" {
             "barcode-generator": LocalJSX.BarcodeGenerator & JSXBase.HTMLAttributes<HTMLBarcodeGeneratorElement>;
             "batch-chip": LocalJSX.BatchChip & JSXBase.HTMLAttributes<HTMLBatchChipElement>;
             "create-manage-view-layout": LocalJSX.CreateManageViewLayout & JSXBase.HTMLAttributes<HTMLCreateManageViewLayoutElement>;
+            "form-input": LocalJSX.FormInput & JSXBase.HTMLAttributes<HTMLFormInputElement>;
+            "form-validate-submit": LocalJSX.FormValidateSubmit & JSXBase.HTMLAttributes<HTMLFormValidateSubmitElement>;
             "generic-chip": LocalJSX.GenericChip & JSXBase.HTMLAttributes<HTMLGenericChipElement>;
             "line-stock-manager": LocalJSX.LineStockManager & JSXBase.HTMLAttributes<HTMLLineStockManagerElement>;
             "list-item-layout": LocalJSX.ListItemLayout & JSXBase.HTMLAttributes<HTMLListItemLayoutElement>;

@@ -132,43 +132,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd pdm-trust-loader && npm run build"
-                },
-                {
-                    "type": "remove",
-                    "target": "./apihub-root/fgt-wholesaler-wallet/loader"
-                },
-                {
-                    "type": "copy",
-                    "src": "./pdm-trust-loader/src",
-                    "target": "./apihub-root/fgt-wholesaler-wallet/loader",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "remove",
-                    "target": "./apihub-root/fgt-pharmacy-wallet/loader"
-                },
-                {
-                    "type": "copy",
-                    "src": "./pdm-trust-loader/src",
-                    "target": "./apihub-root/fgt-pharmacy-wallet/loader",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "remove",
-                    "target": "./apihub-root/fgt-mah-wallet/loader"
-                },
-                {
-                    "type": "copy",
-                    "src": "./pdm-trust-loader/src",
-                    "target": "./apihub-root/fgt-mah-wallet/loader",
-                    "options": {
-                        "overwrite": true
-                    }
+                    "cmd": "cd npm run build-deploy-loader"
                 }
             ]
         },
@@ -337,49 +301,9 @@
             ]
         }
     ],
-    "build-use-case": [
+    "build-deploy-loader": [
         {
-            "name": "pdm-theme-wallet-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd themes/pdm-theme && npm run build-dossier"
-                }
-            ]
-        },
-        {
-            "name": "Bundle_dsu-toolkit",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-dsu-toolkit && npm run prebuild"
-                }
-            ]
-        },
-        {
-            "name": "Bundle_dsu_wizard",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd fgt-dsu-wizard && npm run prebuild"
-                }
-            ]
-        },
-        {
-            "name": "Build Components",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-web-components && npm run build"
-                }
-            ]
-        },
-        {
-            "name": "Build and deploy PDM Trust Loader to WHolesaler & Pharmacy & mah",
+            "name": "Build and deploy PDM Trust Loader to Wholesaler and Pharmacy & mah",
             "src": ".",
             "actions": [
                 {
@@ -421,6 +345,48 @@
                     "options": {
                         "overwrite": true
                     }
+                }
+            ]
+        }
+    ],
+    "build-use-case": [
+        {
+            "name": "pdm-theme-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/pdm-theme && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "Bundle_dsu-toolkit",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-dsu-toolkit && npm run prebuild"
+                }
+            ]
+        },
+        {
+            "name": "Bundle_dsu_wizard",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-dsu-wizard && npm run prebuild"
+                }
+            ]
+        },
+        {
+            "name": "Build Components",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-web-components && npm run build"
                 }
             ]
         },
@@ -493,6 +459,16 @@
                     "options": {
                         "overwrite": true
                     }
+                }
+            ]
+        },
+        {
+            "name": "Build and deploy loader",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "npm run build-deploy-loader"
                 }
             ]
         },
