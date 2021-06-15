@@ -132,7 +132,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd npm run build-deploy-loader"
+                    "cmd": "npm run build-deploy-loader"
                 }
             ]
         },
@@ -353,8 +353,24 @@
             "actions": [
                 {
                     "type": "copy",
-                    "src": "./trust-loader-config",
-                    "target": "./apihub-root",
+                    "src": "./trust-loader-config/fgt-mah-wallet",
+                    "target": "./apihub-root/fgt-mah-wallet",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "./trust-loader-config/fgt-wholesaler-wallet",
+                    "target": "./apihub-root/fgt-wholesaler-wallet",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "./trust-loader-config/fgt-pharmacy-wallet",
+                    "target": "./apihub-root/fgt-pharmacy-wallet",
                     "options": {
                         "overwrite": true
                     }
@@ -371,10 +387,6 @@
                 {
                     "type": "execute",
                     "cmd": "cd apihub-root/fgt-pharmacy-wallet/loader && npx workbox generateSW"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
                 },
                 {
                     "type": "execute",
@@ -503,6 +515,40 @@
                 {
                     "type": "execute",
                     "cmd": "npm run build-deploy-loader"
+                }
+            ]
+        },
+        {
+            "name": "trust-loader-config",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./trust-loader-config",
+                    "target": "./apihub-root",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "generate-service-workers",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npx workbox generateSW"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/fgt-pharmacy-wallet/loader && npx workbox generateSW"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && npx workbox generateSW"
                 }
             ]
         }

@@ -55,14 +55,6 @@
           "type": "copy",
           "src": "./node_modules/ionicons/dist/ionicons",
           "target": "./src/assets/ionic-core/ionicons"
-        },
-        {
-          "type": "copy",
-          "src": "./node_modules/@ionic/pwa-elements/dist/ionicpwaelements",
-          "target": "./src/assets/ionic-core/pwa-elements",
-          "options": {
-            "overwrite": true
-          }
         }
       ]
     },
