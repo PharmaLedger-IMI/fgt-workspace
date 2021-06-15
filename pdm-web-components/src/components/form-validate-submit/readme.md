@@ -7,10 +7,12 @@
 
 ## Properties
 
-| Property     | Attribute     | Description | Type     | Default                     |
-| ------------ | ------------- | ----------- | -------- | --------------------------- |
-| `formJSON`   | `form-json`   |             | `string` | `'{}'`                      |
-| `loaderType` | `loader-type` |             | `string` | `SUPPORTED_LOADERS.circles` |
+| Property        | Attribute        | Description | Type                                 | Default                     |
+| --------------- | ---------------- | ----------- | ------------------------------------ | --------------------------- |
+| `formJSON`      | `form-json`      |             | `string`                             | `'{}'`                      |
+| `labelPosition` | `label-position` |             | `"fixed" \| "floating" \| "stacked"` | `'floating'`                |
+| `lines`         | `lines`          |             | `"full" \| "inset" \| "none"`        | `'inset'`                   |
+| `loaderType`    | `loader-type`    |             | `string`                             | `SUPPORTED_LOADERS.circles` |
 
 
 ## Events
@@ -27,11 +29,13 @@
 ### Depends on
 
 - [multi-spinner](../multi-spinner)
+- [form-input](../form-input)
 
 ### Graph
 ```mermaid
 graph TD;
   form-validate-submit --> multi-spinner
+  form-validate-submit --> form-input
   style form-validate-submit fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

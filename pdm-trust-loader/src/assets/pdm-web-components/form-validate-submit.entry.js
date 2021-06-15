@@ -22,6 +22,8 @@ const FormValidateSubmit = class {
     this.sendCreateAction = createEvent(this, "ssapp-action", 7);
     this.formJSON = '{}';
     this.loaderType = SUPPORTED_LOADERS.circles;
+    this.lines = 'inset';
+    this.labelPosition = 'floating';
     this.form = undefined;
   }
   sendError(message, err) {
@@ -44,8 +46,8 @@ const FormValidateSubmit = class {
     console.log(this.form);
   }
   onReset(evt) {
-    evt.preventDefault();
-    evt.stopImmediatePropagation();
+    // evt.preventDefault();
+    // evt.stopImmediatePropagation();
     console.log(evt);
   }
   onSubmit(evt) {
@@ -64,7 +66,7 @@ const FormValidateSubmit = class {
   getForm() {
     if (!this.form)
       return this.getLoading();
-    return this.form.fields.map(field => h("form-input-field", { input: field, prefix: this.form.prefix, lines: "none", "label-position": "floating" }));
+    return this.form.fields.map(field => h("form-input", { input: field, prefix: this.form.prefix, lines: this.lines, "label-position": this.labelPosition }));
   }
   render() {
     return (h(Host, null, h("ion-card", null, h("ion-card-header", { class: "ion-margin ion-padding-horizontal" }, h("div", null, h("slot", { name: "header" }))), h("ion-card-content", null, h("form", { id: "form-validate-submit", onSubmit: this.onSubmit.bind(this), onReset: this.onReset.bind(this) }, this.getForm(), this.getButtons())))));

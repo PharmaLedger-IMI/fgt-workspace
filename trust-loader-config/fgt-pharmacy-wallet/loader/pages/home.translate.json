@@ -1,5 +1,5 @@
 {
-  "anchoring": "default",
+  "anchoring": "traceability",
   "sub-title": "Please enter your credentials",
   "title": "As a Pharmacy",
   "form": {
@@ -26,44 +26,49 @@
         "props": {
           "type": "text",
           "placeholder": "Please enter your name here...",
-          "value": "PDM",
-          "required": true
+          "value": "PDM the Pharmacy",
+          "required": true,
+          "inputmode": "text"
         }
       },
       {
         "name": "id",
         "element": "ion-input",
-        "label": "Id:",
+        "label": "Registered Pharmacy Id:",
         "public": true,
         "props": {
           "type": "text",
           "placeholder": "Please enter your Id here...",
-          "value": "PDMXV29",
           "required": true
         }
       },
       {
         "name": "email",
         "element": "ion-input",
-        "label": "Email:",
+        "label": "Registered Email:",
         "public": true,
         "props": {
           "type": "email",
           "placeholder": "Please enter your email here...",
-          "value": "some@email.com",
-          "required": true
+          "value": "pharmacy@pdmfc.com",
+          "required": true,
+          "inputmode": "email"
         }
       },
       {
         "name": "tin",
         "element": "ion-input",
-        "label": "Tin:",
+        "label": "Registered TIN (Tax Identification Number):",
         "public": true,
         "props": {
           "type": "number",
-          "placeholder": "Please enter your tin here...",
+          "subtype": "tin",
+          "placeholder": "Enter your TIN (Tax Identification Number)...",
           "value": "5000000000",
-          "required": true
+          "min": "1",
+          "max": "9999999999",
+          "required": true,
+          "inputmode": "numeric"
         }
       },
       {
@@ -75,38 +80,52 @@
           "placeholder": "Please enter your address here...",
           "maxlength": "150",
           "minlength": "10",
-          "cols": 2,
-          "rows": 20,
+          "cols": 20,
+          "rows": 2,
           "value": "Avenida da Liberdade, Lisboa, Portugal",
-          "required": true
+          "required": true,
+          "inputmode": "text"
         }
       },
       {
-        "name": "address",
+        "name": "password",
         "element": "ion-input",
-        "label": "Name:",
+        "label": "Password:",
+        "public": false,
         "props": {
           "type": "password",
-          "placeholder": "Please enter your name here...",
-          "value": "PDM",
-          "public": false,
-          "required": true
-        }
-      },
-      {
-        "name": "address",
-        "element": "ion-input",
-        "label": "Name:",
-        "props": {
-          "type": "text",
-          "placeholder": "Please enter your name here...",
-          "value": "PDM",
-          "public": false,
-          "required": true
+          "placeholder": "Please type in your password",
+          "value": "This1sSuchAS3curePassw0rd",
+          "minlength": 8,
+          "required": true,
+          "inputmode": "text"
         },
         "validation": {
           "required": {
-            "error": "This field is mandatory"
+            "error": "Do you really think you can register without a password?!"
+          },
+          "equality": {
+            "field": "pass",
+            "error": "The passwords don't match!"
+          }
+        }
+      },
+      {
+        "name": "password-repeat",
+        "element": "ion-input",
+        "label": "Repeat your Password:",
+        "public": false,
+        "props": {
+          "type": "password",
+          "placeholder": "Please type in the same password please",
+          "value": "This1sSuchAS3curePassw0rd",
+          "minlength": 8,
+          "required": true,
+          "inputmode": "text"
+        },
+        "validation": {
+          "required": {
+            "error": "It's for your security!\nPlease confirm you password here!"
           },
           "equality": {
             "field": "pass",

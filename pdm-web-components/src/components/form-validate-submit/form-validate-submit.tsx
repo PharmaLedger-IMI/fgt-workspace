@@ -63,6 +63,8 @@ export class FormValidateSubmit {
 
   @Prop({attribute: 'form-json'}) formJSON: string = '{}';
   @Prop({attribute: 'loader-type'}) loaderType: string = SUPPORTED_LOADERS.circles;
+  @Prop({attribute: 'lines'}) lines: 'none' | 'inset' | 'full' | undefined = 'inset';
+  @Prop({attribute: 'label-position'}) labelPosition: "fixed" | "floating" | "stacked" | undefined = 'floating';
 
 
   @State() form: {
@@ -88,8 +90,8 @@ export class FormValidateSubmit {
   }
 
   private onReset(evt){
-    evt.preventDefault();
-    evt.stopImmediatePropagation();
+    // evt.preventDefault();
+    // evt.stopImmediatePropagation();
     console.log(evt);
   }
 
@@ -120,10 +122,10 @@ export class FormValidateSubmit {
   private getForm(){
     if (!this.form)
       return this.getLoading();
-    return this.form.fields.map(field => <form-input-field input={field}
-                                                           prefix={this.form.prefix}
-                                                           lines="none"
-                                                           label-position="floating"></form-input-field>);
+    return this.form.fields.map(field => <form-input input={field}
+                                                     prefix={this.form.prefix}
+                                                     lines={this.lines}
+                                                     label-position={this.labelPosition}></form-input>);
   }
 
   render() {

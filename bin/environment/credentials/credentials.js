@@ -61,7 +61,7 @@ const generatePharmacyCredentials = function(id) {
         "address": {
             "required": true,
             "public": true,
-            "secret": "This in an Address"
+            "secret": "Avenida da Liberdade, Lisboa, Portugal"
         },
         "pass": {
             "required": true,
