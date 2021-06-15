@@ -44,14 +44,7 @@ export class FormInput {
       console.log(`Product Component: ${message}`, err);
   }
 
-  @Prop({attribute: 'input', mutable: true}) input?: {
-    name: string,
-    element: string,
-    label: string,
-    props: {type?: string, subtype?: string, value?: string, required?: boolean, children?: [], },
-    validation?: {required?:{error: string}, },
-    score: {any}
-  } | undefined = undefined;
+  @Prop({attribute: 'input', mutable: true}) input = undefined;
 
   @Prop({attribute: 'input-prefix'}) inputPrefix: string = INPUT_FIELD_PREFIX;
 

@@ -87,5 +87,9 @@ module.exports = {
 	/**
 	 * exposes the Model module
 	 */
-	Model: require("./model")
+	Model: require("./model"),
+	/**
+	 * exposes the Model module
+	 */
+	Constants: require("./constants")
 };

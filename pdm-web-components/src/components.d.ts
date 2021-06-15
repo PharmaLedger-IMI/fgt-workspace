@@ -45,20 +45,15 @@ export namespace Components {
     }
     interface FormInput {
         "cssClass": string | string[];
-        "input"?: {
-    name: string,
-    element: string,
-    label: string,
-    props: {type?: string, subtype?: string, value?: string, required?: boolean, children?: [], },
-    validation?: {required?:{error: string}, },
-    score: {any}
-  } | undefined;
+        "input": any;
         "inputPrefix": string;
         "labelPosition": "fixed" | "floating" | "stacked" | undefined;
         "lines": 'none' | 'inset' | 'full' | undefined;
     }
     interface FormValidateSubmit {
         "formJSON": string;
+        "labelPosition": "fixed" | "floating" | "stacked" | undefined;
+        "lines": 'none' | 'inset' | 'full' | undefined;
         "loaderType": string;
     }
     interface GenericChip {
@@ -701,14 +696,7 @@ declare namespace LocalJSX {
     }
     interface FormInput {
         "cssClass"?: string | string[];
-        "input"?: {
-    name: string,
-    element: string,
-    label: string,
-    props: {type?: string, subtype?: string, value?: string, required?: boolean, children?: [], },
-    validation?: {required?:{error: string}, },
-    score: {any}
-  } | undefined;
+        "input"?: any;
         "inputPrefix"?: string;
         "labelPosition"?: "fixed" | "floating" | "stacked" | undefined;
         "lines"?: 'none' | 'inset' | 'full' | undefined;
@@ -723,6 +711,8 @@ declare namespace LocalJSX {
     }
     interface FormValidateSubmit {
         "formJSON"?: string;
+        "labelPosition"?: "fixed" | "floating" | "stacked" | undefined;
+        "lines"?: 'none' | 'inset' | 'full' | undefined;
         "loaderType"?: string;
         /**
           * Through this event action requests are made

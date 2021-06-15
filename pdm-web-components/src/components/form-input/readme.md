@@ -7,13 +7,13 @@
 
 ## Properties
 
-| Property        | Attribute        | Description | Type                                                                                                                                                                                                                       | Default              |
-| --------------- | ---------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
-| `cssClass`      | `class`          |             | `string \| string[]`                                                                                                                                                                                                       | `''`                 |
-| `input`         | --               |             | `{ name: string; element: string; label: string; props: { type?: string; subtype?: string; value?: string; required?: boolean; children?: []; }; validation?: { required?: { error: string; }; }; score: { any: any; }; }` | `undefined`          |
-| `inputPrefix`   | `input-prefix`   |             | `string`                                                                                                                                                                                                                   | `INPUT_FIELD_PREFIX` |
-| `labelPosition` | `label-position` |             | `"fixed" \| "floating" \| "stacked"`                                                                                                                                                                                       | `'floating'`         |
-| `lines`         | `lines`          |             | `"full" \| "inset" \| "none"`                                                                                                                                                                                              | `'inset'`            |
+| Property        | Attribute        | Description | Type                                 | Default              |
+| --------------- | ---------------- | ----------- | ------------------------------------ | -------------------- |
+| `cssClass`      | `class`          |             | `string \| string[]`                 | `''`                 |
+| `input`         | `input`          |             | `any`                                | `undefined`          |
+| `inputPrefix`   | `input-prefix`   |             | `string`                             | `INPUT_FIELD_PREFIX` |
+| `labelPosition` | `label-position` |             | `"fixed" \| "floating" \| "stacked"` | `'floating'`         |
+| `lines`         | `lines`          |             | `"full" \| "inset" \| "none"`        | `'inset'`            |
 
 
 ## Events
@@ -23,6 +23,19 @@
 | `ssapp-action`     | Through this event action requests are made | `CustomEvent<any>` |
 | `ssapp-send-error` | Through this event errors are passed        | `CustomEvent<any>` |
 
+
+## Dependencies
+
+### Used by
+
+ - [form-validate-submit](../form-validate-submit)
+
+### Graph
+```mermaid
+graph TD;
+  form-validate-submit --> form-input
+  style form-input fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 
