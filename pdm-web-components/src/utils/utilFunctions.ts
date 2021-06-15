@@ -27,7 +27,6 @@ export function stringToBoolean(str){
 
 /**
  * @module Utils
- * @memberOf pdm-web-components
  */
 export const ionBreakpoints = {
   xs: 0,
@@ -42,7 +41,6 @@ export const ionBreakpoints = {
  * @param {function(string)} setter
  * @return {string} the current BreakPoint
  * @module Utils
- * @memberOf pdm-web-components
  */
 export function bindIonicBreakpoint(setter) {
   if (!window)

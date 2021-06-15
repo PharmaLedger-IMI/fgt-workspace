@@ -9,7 +9,7 @@
 
 | Property     | Attribute     | Description | Type     | Default                     |
 | ------------ | ------------- | ----------- | -------- | --------------------------- |
-| `formJSON`   | `form-json`   |             | `string` | `''`                        |
+| `formJSON`   | `form-json`   |             | `string` | `'{}'`                      |
 | `loaderType` | `loader-type` |             | `string` | `SUPPORTED_LOADERS.circles` |
 
 

@@ -118,6 +118,14 @@
           "options": {
             "overwrite": true
           }
+        },
+        {
+          "type": "copy",
+          "src": "../pdm-web-components/css/globalStyles.css",
+          "target": "./src/assets/skin.css",
+          "options": {
+            "overwrite": true
+          }
         }
       ]
     }

@@ -37,6 +37,7 @@ fgt-mah-ssapp/code/assets/ionic-native
 fgt-mah-ssapp/code/assets/barcodescanner
 fgt-mah-ssapp/code/capacitor.js
 fgt-mah-ssapp/code/assets/pdm-web-components
+fgt-mah-ssapp/code/assets/skin.css
 fgt-mah-ssapp/seed
 
 fgt-dsu-wizard/version.js
@@ -47,12 +48,14 @@ fgt-pharmacy-ssapp/code/constitution
 fgt-pharmacy-ssapp/code/scripts/bundles
 fgt-pharmacy-ssapp/code/assets/ionic-core
 fgt-pharmacy-ssapp/code/assets/pdm-web-components
+fgt-pharmacy-ssapp/code/assets/skin.css
 fgt-pharmacy-ssapp/seed
 fgt-pharmacy-ssapp/docs
 fgt-wholesaler-ssapp/code/constitution
 fgt-wholesaler-ssapp/code/scripts/bundles
 fgt-wholesaler-ssapp/code/assets/ionic-core
 fgt-wholesaler-ssapp/code/assets/pdm-web-components
+fgt-wholesaler-ssapp/code/assets/skin.css
 fgt-wholesaler-ssapp/docs
 fgt-wholesaler-ssapp/seed
 
@@ -71,6 +74,8 @@ pdm-trust-loader/src/webcardinal
 pdm-trust-loader/src/bundles
 pdm-trust-loader/src/capacitor.js
 pdm-trust-loader/src/assets/ionic-core
+pdm-trust-loader/src/assets/pdm-web-components
+pdm-trust-loader/src/assets/skin.css
 pdm-trust-loader/src/swPwa*
 pdm-trust-loader/src/swBoot.js
 pdm-trust-loader/src/workbox*

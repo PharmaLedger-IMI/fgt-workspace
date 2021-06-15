@@ -61,7 +61,7 @@ export class FormValidateSubmit {
       console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
 
-  @Prop({attribute: 'form-json'}) formJSON: string = '';
+  @Prop({attribute: 'form-json'}) formJSON: string = '{}';
   @Prop({attribute: 'loader-type'}) loaderType: string = SUPPORTED_LOADERS.circles;
 
 
@@ -84,6 +84,7 @@ export class FormValidateSubmit {
     if (newVal.startsWith('@'))
       return;
     this.form = JSON.parse(newVal);
+    console.log(this.form);
   }
 
   private onReset(evt){
@@ -119,24 +120,24 @@ export class FormValidateSubmit {
   private getForm(){
     if (!this.form)
       return this.getLoading();
-    return this.form.fields.map(field => (<form-input-field input={field}
-                                                            prefix={this.form.prefix}
-                                                            lines="none"
-                                                            label-position="floating"></form-input-field>));
+    return this.form.fields.map(field => <form-input-field input={field}
+                                                           prefix={this.form.prefix}
+                                                           lines="none"
+                                                           label-position="floating"></form-input-field>);
   }
 
   render() {
     return (
       <Host>
         <ion-card>
-          <ion-card-header>
+          <ion-card-header  class="ion-margin ion-padding-horizontal">
             <div>
               <slot name="header"></slot>
             </div>
           </ion-card-header>
           <ion-card-content>
             <form id="form-validate-submit" onSubmit={this.onSubmit.bind(this)} onReset={this.onReset.bind(this)}>
-              {this.getForm()}
+              {...this.getForm()}
               {this.getButtons()}
             </form>
           </ion-card-content>

@@ -168,3 +168,7 @@ ion-button[color="medium"]{
   --color-hover: var(--ion-color-secondary);
   --ripple-color: var(--ion-color-secondary-shade);
 }
+
+.full-height{
+  height: 100%
+}

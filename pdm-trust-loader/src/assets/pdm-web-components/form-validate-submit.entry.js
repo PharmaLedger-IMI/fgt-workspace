@@ -20,7 +20,7 @@ const FormValidateSubmit = class {
     this.sendErrorEvent = createEvent(this, "ssapp-send-error", 7);
     this.sendNavigateTab = createEvent(this, "ssapp-navigate-tab", 7);
     this.sendCreateAction = createEvent(this, "ssapp-action", 7);
-    this.formJSON = '';
+    this.formJSON = '{}';
     this.loaderType = SUPPORTED_LOADERS.circles;
     this.form = undefined;
   }
@@ -41,6 +41,7 @@ const FormValidateSubmit = class {
     if (newVal.startsWith('@'))
       return;
     this.form = JSON.parse(newVal);
+    console.log(this.form);
   }
   onReset(evt) {
     evt.preventDefault();
@@ -63,10 +64,10 @@ const FormValidateSubmit = class {
   getForm() {
     if (!this.form)
       return this.getLoading();
-    return this.form.fields.map(field => (h("form-input-field", { input: field, prefix: this.form.prefix, lines: "none", "label-position": "floating" })));
+    return this.form.fields.map(field => h("form-input-field", { input: field, prefix: this.form.prefix, lines: "none", "label-position": "floating" }));
   }
   render() {
-    return (h(Host, null, h("ion-card", null, h("ion-card-header", null, h("div", null, h("slot", { name: "header" }))), h("ion-card-content", null, h("form", { id: "form-validate-submit", onSubmit: this.onSubmit.bind(this), onReset: this.onReset.bind(this) }, this.getForm(), this.getButtons())))));
+    return (h(Host, null, h("ion-card", null, h("ion-card-header", { class: "ion-margin ion-padding-horizontal" }, h("div", null, h("slot", { name: "header" }))), h("ion-card-content", null, h("form", { id: "form-validate-submit", onSubmit: this.onSubmit.bind(this), onReset: this.onReset.bind(this) }, this.getForm(), this.getButtons())))));
   }
   get element() { return getElement(this); }
   static get watchers() { return {

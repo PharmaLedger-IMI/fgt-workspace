@@ -1,5 +1,5 @@
-import { W as WebManagerService } from './WebManagerService-de8a473f.js';
-import './WizardService-c618738b.js';
+import { w as wizard } from './WizardService-2f7a45ff.js';
+import { W as WebManagerService } from './WebManagerService-65b4b71c.js';
 
 const EVENT_CONFIG_GET_CORE_TYPE = 'webcardinal:config:getCoreType';
 const EVENT_CONFIG_GET_DOCS_SOURCE = 'webcardinal:config:getDocsSource';
@@ -327,9 +327,9 @@ class LocalizedController extends WebcController {
    * @param {boolean} [enableValidations] defaults to false. If provided enabled Ionic Inputs form validations
    */
   bindLocale(controller, pageName, enableValidations) {
-    require('wizard').Services.WebcLocaleService.bindToLocale(controller, pageName);
+    wizard.LocaleService.bindToLocale(controller, pageName);
     if (enableValidations)
-      require('wizard').Model.Validations.bindIonicValidation(controller);
+      wizard.Model.Validations.bindIonicValidation(controller);
   }
 
   /**

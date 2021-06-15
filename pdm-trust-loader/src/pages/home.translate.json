@@ -1,9 +1,22 @@
 {
   "anchoring": "default",
-  "sub-title": "Please enter your credentials",
+  "subtitle": "Please enter your credentials",
   "title": "As an Individual",
   "form": {
     "prefix": "input-",
+    "buttons": {
+      "clear": {
+        "label": "Clear"
+      },
+      "register": {
+        "label": "Register",
+        "icon": "person-add"
+      },
+      "login": {
+        "label": "Login",
+        "icon": "log-in"
+      }
+    },
     "fields": [
       {
         "name": "name",

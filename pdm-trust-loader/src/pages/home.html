@@ -1,28 +1,40 @@
 <webc-container controller="HomeController" translations="true">
     <ion-app>
         <ion-content>
-            <ion-grid>
-                <ion-row>
-                    <ion-col size="4" class="ion-hide-md-down">
-                        <ion-img src="./src/assets/images/login-bg.png" alt="" class="login-image"></ion-img>
+            <ion-grid class="full-height">
+                <ion-row class="full-height ion-align-items-center">
+                    <ion-col size="4" class="ion-hide-lg-down">
+                        <ion-img src="./assets/images/login-bg.png" alt="" class="login-image"></ion-img>
                     </ion-col>
                     <ion-col>
-                        <div class="ion-padding ion-align-items-center login-form">
-                            <ion-card class="ion-margin ion-padding-horizontal">
-                                <div class="ion-text-center ion-padding-vertical">
-                                    <img src="./src/assets/images/logo.svg" alt="" class="ion-margin-top">
-                                    <div class="ion-text-center ion-padding-top flex flex-col">
-                                        <span>{{ @sub-title }}</span>
-                                        <span>{{ @title }}</span>
-                                    </div>
-                                </div>
-                                <ion-card-content class="">
-                                    <form>
-
-                                    </form>
-                                </ion-card-content>
-                            </ion-card>
-                        </div>
+                        <ion-grid>
+                            <ion-row class="ion-padding-vertical ion-align-items-center ion-justify-content-center">
+                                <ion-col size="11" size-sm="10" size-md="9" size-lg="8">
+                                    <form-validate-submit form-json="@formJSON">
+                                        <div slot="header" class="ion-text-center ion-padding-vertical">
+                                            <img src="./assets/images/logo.svg" alt="" class="ion-margin-top">
+                                            <div class="ion-text-center ion-padding-top flex flex-col">
+                                                <span>{{ @sub-title }}</span>
+                                                <span>{{ @title }}</span>
+                                            </div>
+                                        </div>
+                                        <div slot="buttons">
+                                            <ion-button type="reset" color="medium" fill="clear" class="ion-margin-start">
+                                                {{ @form.buttons.clear.label }}
+                                            </ion-button>
+                                            <ion-button type="submit" color="medium" class="ion-margin-start">
+                                                {{ @form.buttons.login.label }}
+                                                <ion-icon slot="end" name="@form.buttons.login.icon" class="ion-margin-start"></ion-icon>
+                                            </ion-button>
+                                            <ion-button type="submit" color="secondary" class="ion-margin-start">
+                                                {{ @form.buttons.register.label }}
+                                                <ion-icon slot="end" name="@form.buttons.register.icon" class="ion-margin-start"></ion-icon>
+                                            </ion-button>
+                                        </div>
+                                    </form-validate-submit>
+                                </ion-col>
+                            </ion-row>
+                        </ion-grid>
                     </ion-col>
                 </ion-row>
             </ion-grid>

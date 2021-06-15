@@ -1,6 +1,6 @@
 import { r as registerInstance, h, f as Host, g as getElement } from './index-21b82b33.js';
 import { H as HostElement } from './index-993dbba1.js';
-import { i as ionBreakpoints, b as bindIonicBreakpoint } from './utilFunctions-9902702e.js';
+import { i as ionBreakpoints, b as bindIonicBreakpoint } from './utilFunctions-a21afb00.js';
 
 const listItemLayoutCss = ":host{display:block}";
 

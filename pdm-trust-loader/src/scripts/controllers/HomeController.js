@@ -1,24 +1,26 @@
-/**
- * @module Controllers
- */
-
-import {LocalizedController, EVENT_ACTION, BUTTON_ROLES} from "../../assets/pdm-web-components/index.esm.js";
+import env from "../../environment.js";
+import {LocalizedController, EVENT_ACTION} from "../../assets/pdm-web-components/index.esm.js";
+import LoaderService from "../services/LoaderService.js";
 
 /**
  * Basic controller with just enough functionality to register and login
  * @class HomeController
  * @namespace Controllers
+ * @module Trust-Loader
  */
 export default class HomeController extends LocalizedController {
     initializeModel = () => ({
-        participant: undefined
+        formJSON: '{}'
     });
 
-    constructor(element, history) {
-        super(element, history);
-        super.bindLocale(this);
+    constructor(...args) {
+        super(undefined, ...args);
+        super.bindLocale(this, '');
         this.model = this.initializeModel();
 
+        this.model.formJSON = JSON.stringify(this.model.form)
+
+        this.loaderService = new LoaderService(env);
         let self = this;
 
         this.on(EVENT_ACTION,async (evt) => {
@@ -26,8 +28,7 @@ export default class HomeController extends LocalizedController {
             evt.stopImmediatePropagation();
 
             const {action, credentials} = evt.detail;
-
-            let method = action === 'login' ? self.login : self.register;
+            const method = action === 'login' ? self.login : self.register;
 
             await method(credentials, (err, result) => {
                 if (err)
@@ -74,7 +75,7 @@ export default class HomeController extends LocalizedController {
                self.showErrorToast(self.translate('errors.loading'));
                return callback(err);
            }
-           self.showToast(self.translate(self.translate('success.login'));
+           self.showToast(self.translate(self.translate('success.login')));
            await loader.dismiss();
            callback(undefined, wallet);
         });
