@@ -1,8 +1,8 @@
 import { r as registerInstance, e as createEvent, h, g as getElement } from './index-21b82b33.js';
-import { W as WebManagerService } from './WebManagerService-de8a473f.js';
+import { W as WebManagerService } from './WebManagerService-65b4b71c.js';
 import { S as SUPPORTED_LOADERS } from './supported-loader-4cd02ac2.js';
 import { H as HostElement } from './index-993dbba1.js';
-import './WizardService-c618738b.js';
+import './WizardService-2f7a45ff.js';
 
 const managedIssuedShipmentCss = ":host{display:block}managed-issued-shipment{--color:var(--ion-color-primary-contrast)}ion-card-title{color:var(--ion-color-primary)}ion-card-subtitle{color:var(--ion-color-secondary)}ion-item.selected{--color:var(--ion-color-success)}ion-item.unnecessary{--color:red}";
 

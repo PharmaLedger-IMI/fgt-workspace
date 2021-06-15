@@ -1,20 +1,27 @@
 
+let wizardCache;
+
 let wizard;
 
-try{
-  // @ts-ignore
-  wizard = require('wizard');
-} catch (e){
-  // @ts-ignore
-  wizard = require('toolkit'); // fallback for the loader
+if (!wizard){
+  try{
+    // @ts-ignore
+    wizardCache = require('wizard');
+  } catch (e){
+    // @ts-ignore
+    wizardCache = require('toolkit'); // fallback for the loader
+  }
+}
+
+wizard = {
+  Constants: wizardCache.Constants,
+    Model: wizardCache.Model,
+    Managers: wizardCache.Managers,
+    LocaleService: wizardCache.Services.WebcLocaleService
 }
 
 /**
- * Gives access the the bundled 'wizard' without only one import
+ * Gives access the the bundled 'wizard/toolkit' without only one import
  * @module Services.Wizard
  */
-export default {
-  Constants: wizard.Constants,
-  Model: wizard.Model,
-  Managers: wizard.Managers
-};
+export default wizard;

@@ -62,6 +62,7 @@ export class FormInput {
   async componentWillLoad(){
     if (!this.host.isConnected)
       return;
+    console.log(this.input);
   }
 
   @Watch("input")

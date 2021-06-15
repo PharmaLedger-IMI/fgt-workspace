@@ -1,9 +1,9 @@
 import { r as registerInstance, e as createEvent, h, f as Host, g as getElement } from './index-21b82b33.js';
 import { H as HostElement } from './index-993dbba1.js';
-import { W as WebManagerService } from './WebManagerService-de8a473f.js';
+import { W as WebManagerService } from './WebManagerService-65b4b71c.js';
 import { S as SUPPORTED_LOADERS } from './supported-loader-4cd02ac2.js';
 import { c as calculateDiffInDays, g as getSteppedColor } from './colorUtils-62f7f6b9.js';
-import './WizardService-c618738b.js';
+import './WizardService-2f7a45ff.js';
 
 const batchChipCss = ":host{display:inherit}batch-chip{--color-step:var(--ion-color-primary)}";
 

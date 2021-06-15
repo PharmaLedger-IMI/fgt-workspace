@@ -1,6 +1,7 @@
 import {EVENT_SSAPP_HAS_LOADED, EVENT_SEND_ERROR, EVENT_SEND_MESSAGE, EVENT_REFRESH, EVENT_NAVIGATE_TAB, CSS, BUTTON_ROLES} from "../constants/events";
 
 const {WebcController} = WebCardinal.controllers;
+import wizard from '../services/WizardService';
 
 /**
  * Master Controller to provide access to the Localization features provided by WebCardinal.
@@ -287,9 +288,9 @@ export default class LocalizedController extends WebcController {
    * @param {boolean} [enableValidations] defaults to false. If provided enabled Ionic Inputs form validations
    */
   bindLocale(controller, pageName, enableValidations) {
-    require('wizard').Services.WebcLocaleService.bindToLocale(controller, pageName);
+    wizard.LocaleService.bindToLocale(controller, pageName);
     if (enableValidations)
-      require('wizard').Model.Validations.bindIonicValidation(controller);
+      wizard.Model.Validations.bindIonicValidation(controller);
   }
 
   /**
