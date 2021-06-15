@@ -106,6 +106,20 @@
           }
         }
       ]
+    },
+    {
+      "name": "Copy pdm-web-components",
+      "src": "",
+      "actions": [
+        {
+          "type": "copy",
+          "src": "../pdm-web-components/dist/pdm-web-components",
+          "target": "./src/assets/pdm-web-components",
+          "options": {
+            "overwrite": true
+          }
+        }
+      ]
     }
   ],
   "docs": [

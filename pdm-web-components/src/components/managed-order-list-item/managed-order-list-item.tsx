@@ -111,7 +111,7 @@ export class ManagedOrderListItem {
     }
 
     return(
-      <ion-label color="secondary">
+      <ion-label slot="label" color="secondary">
         {getOrderIdLabel()}
         <span class="ion-padding-start">{getRequesterIdLabel()}</span>
       </ion-label>)

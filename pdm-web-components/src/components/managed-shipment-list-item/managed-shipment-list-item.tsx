@@ -114,38 +114,26 @@ export class ManagedShipmentListItem{
     }
 
     return(
-      <ion-label class="ion-padding-horizontal ion-align-self-center">
+      <ion-label slot="label" color="secondary">
         {getShipmentId()}
-        {getIdLabel()}
+        <span class="ion-padding-start">{getIdLabel()}</span>
       </ion-label>)
   }
 
-  private addShipmentLine(shipmentLine){
-    return(
-      <managed-orderline-stock-chip gtin={shipmentLine.gtin} quantity={shipmentLine.quantity} mode="detail"></managed-orderline-stock-chip>
-    )
-  }
-
   private addShipmentLines() {
-    let shipmentLines = (<ion-skeleton-text animated></ion-skeleton-text>);
-    if (this.shipment && this.shipment.shipmentLines) {
-      if (this.shipment.shipmentLines.length > this.shipmentLineCount) {
-        shipmentLines = [...this.shipment.shipmentLines].slice(0, this.shipmentLineCount).map(ol => this.addShipmentLine(ol));
-        shipmentLines.push((
-          <more-chip class="ion-float-end" color="secondary"></more-chip>
-        ));
-      } else {
-        shipmentLines = this.shipment.shipmentLines.map(ol => this.addShipmentLine(ol));
-      }
-    }
-    return (
-      <ion-grid class="ion-padding-horizontal">
-        <ion-row>
-          <ion-col size="12">
-            {shipmentLines}
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+    if (!this.shipment || !this.shipment.shipmentLines)
+      return (<ion-skeleton-text animated></ion-skeleton-text>);
+    return(
+      <pdm-item-organizer component-name="managed-orderline-stock-chip"
+                          component-props={JSON.stringify(this.shipment.shipmentLines.map(ol => ({
+                            "gtin": ol.gtin,
+                            "quantity": ol.quantity,
+                            "mode": "detail"
+                          })))}
+                          id-prop="gtin"
+                          is-ion-item="false"
+                          display-count="3"
+                          onSelectEvent={gtin => console.log(`selected ${gtin}`)}></pdm-item-organizer>
     );
   }
 
@@ -155,36 +143,38 @@ export class ManagedShipmentListItem{
 
   private addButtons(){
     let self = this;
+    if (!self.shipment)
+      return (<ion-skeleton-text animated></ion-skeleton-text>);
 
-    const getButtons = function(){
-      if (!self.shipment)
-        return (<ion-skeleton-text animated></ion-skeleton-text>)
-      const props = {
-        shipmentId: self.shipment.shipmentId,
-        participantId: self.getRelevantParticipantId()
-      }
+    const getButton = function(slot, color, icon, handler){
       return (
-        <ion-button slot="primary" onClick={() => self.navigateToTab('tab-shipment', props)}>
-          <ion-icon name="cog-outline"></ion-icon>
+        <ion-button slot={slot} color={color} fill="clear" onClick={handler}>
+          <ion-icon size="large" slot="icon-only" name={icon}></ion-icon>
         </ion-button>
       )
     }
 
-    return(
-      <ion-buttons class="ion-align-self-center ion-padding" slot="end">
-        {getButtons()}
-      </ion-buttons>
-    )
+    return [
+      getButton("buttons", "medium", "eye", () => self.navigateToTab('tab-shipment', {
+        mode: this.type,
+        shipment: this.shipment
+      })),
+      getButton("buttons", "medium", "cog", () => self.navigateToTab('tab-product', {
+        shipmentId: self.shipment.shipmentId,
+        participantId: self.getRelevantParticipantId()
+      }))
+    ]
+
   }
 
   render() {
     return (
       <Host>
-        <ion-item class="ion-align-self-center main-item">
+        <list-item-layout>
           {this.addLabel()}
           {this.addShipmentLines()}
           {this.addButtons()}
-        </ion-item>
+        </list-item-layout>
       </Host>
     );
   }

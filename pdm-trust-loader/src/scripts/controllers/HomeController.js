@@ -1,16 +1,13 @@
 /**
- * @module controllers
+ * @module Controllers
  */
 
-/**
- *
- */
-import env from "../../environment.js"
-import LocalizedController from './LocalizedController.js'
-import LoaderService from "../services/LoaderService.js";
+import {LocalizedController, EVENT_ACTION, BUTTON_ROLES} from "../../assets/pdm-web-components/index.esm.js";
 
 /**
+ * Basic controller with just enough functionality to register and login
  * @class HomeController
+ * @namespace Controllers
  */
 export default class HomeController extends LocalizedController {
     initializeModel = () => ({
@@ -23,47 +20,23 @@ export default class HomeController extends LocalizedController {
         this.model = this.initializeModel();
 
         let self = this;
-        this.on('perform-registration', async (event) => {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            await self.register(event.detail, (err) => {
-                if (err)
-                    self.showErrorToast(err);
-            });
-        }, true)
 
-        this.loaderService = new LoaderService(env);
-        this.on('perform-login', (event) => {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            self.login(event.detail, (err) => {
-                if (err)
-                    self.showErrorToast(err);
-                self.hideModal();
-            });
-        }, true)
+        this.on(EVENT_ACTION,async (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
 
+            const {action, credentials} = evt.detail;
+
+            let method = action === 'login' ? self.login : self.register;
+
+            await method(credentials, (err, result) => {
+                if (err)
+                    return console.log(`${action} action failed`);
+                console.log(`${action} action successful. output: ${result}`)
+            });
+        })
 
         console.log("Home controller initialized");
-        this._showLoginModal();
-    }
-
-    /**
-     * Instantiates a new Spinner
-     * @param {string} message
-     * @param {number} duration
-     * @return {ion-loading} a spinner
-     * @private
-     */
-    _getLoader(message, duration){
-        duration = duration || 0;
-        const loading = document.createElement('ion-loading');
-        loading.cssClass = 'ion-loading';
-        loading.message = message;
-        loading.translucent = true;
-        loading.duration = duration;
-        document.body.appendChild(loading);
-        return loading;
     }
 
     /**
@@ -73,12 +46,12 @@ export default class HomeController extends LocalizedController {
      */
     async register(credentials, callback){
         let self = this;
-        let loader = self._getLoader("Registering...");
+        let loader = self._getLoader(self.translate('loading.register'));
         await loader.present();
 
         self.loaderService.create(credentials, async (err, keySSI) => {
             if (err)
-                self.showErrorToast(err);
+                self.showErrorToast(self.translate('errors.register'));
             else
                 self.showToast(self.translate('success.register'));
             await loader.dismiss();
@@ -93,30 +66,17 @@ export default class HomeController extends LocalizedController {
      */
     async login(credentials, callback){
         let self = this;
-        let loader = this._getLoader("Logging in...");
+        let loader = this._getLoader(self.translate('loading.login'));
+        await loader.present();
+
         this.loaderService.load(credentials, loader, async (err, wallet) => {
            if (err){
-               self.showErrorToast(err);
+               self.showErrorToast(self.translate('errors.loading'));
                return callback(err);
            }
-           self.showToast(self.translate('success.login'));
+           self.showToast(self.translate(self.translate('success.login'));
+           await loader.dismiss();
            callback(undefined, wallet);
-        });
-    }
-
-    _showLoginModal() {
-        // this.showIonicModal("a-generic-configurable-modal", false, {page: "registration"});
-        this.createWebcModal({
-            template: "genericModal",
-            controller: "FormController",
-            disableBackdropClosing: true,
-            disableFooter: true,
-            disableHeader: true,
-            disableExpanding: true,
-            disableClosing: true,
-            disableCancelButton: true,
-            expanded: false,
-            centered: true
         });
     }
 }

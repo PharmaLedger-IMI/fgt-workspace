@@ -24,12 +24,6 @@
     "docs": "node ./node_modules/octopus/scripts/run docs"
   },
   "dependencies": {
-    "@capacitor-community/camera-preview": "^1.2.1",
-    "@capacitor/app": "1.0.0",
-    "@capacitor/camera": "^1.0.0",
-    "@capacitor/core": "3.0.0",
-    "@capacitor/haptics": "1.0.0",
-    "@capacitor/keyboard": "1.0.0",
     "@zxing/library": "^0.18.5",
     "bwip-js": "^3.0.0",
     "stencil": "0.0.5"
