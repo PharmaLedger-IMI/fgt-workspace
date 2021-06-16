@@ -1,10 +1,10 @@
 /**
- * @module Model.Validations
+ * @namespace Validations
  */
 
 /**
  * Supported ion-input element types
- * @module Model.Validations
+ * @module Model
  */
 const ION_TYPES = {
     EMAIL: "email",
@@ -96,11 +96,92 @@ const propToError = function(prop, value){
 }
 
 /**
+ * Does the match between the Browser's Validity state and the validators/type
+ * @type {{tooShort: string, typeMismatch: string, stepMismatch: string, rangeOverFlow: string, badInput: undefined, customError: undefined, tooLong: string, patternMismatch: string, rangeUnderFlow: string, valueMissing: string}}
+ */
+const ValidityStateMatcher = {
+    badInput: undefined,
+    customError: undefined,
+    patternMismatch: "pattern",
+    rangeOverFlow: "max",
+    rangeUnderFlow: "min",
+    stepMismatch: "step",
+    tooLong: "maxlength",
+    tooShort: "minlength",
+    typeMismatch: "email|URL",
+    valueMissing: "required"
+}
+
+/**
+ * Returns
+ * @return {*}
+ * @constructor
+ */
+const ValidatorRegistry = function(...initial){
+    const registry =  new function(){
+        const registry = {};
+        this.register = function(...validator){
+            validator.forEach(v => {
+                const instance = new v();
+                registry[instance.name] = instance;
+            });
+        }
+
+        /**
+         *
+         * @param validityState
+         * @return {*}
+         */
+        this.matchValidityState = function(validityState){
+            if (typeof validityState === 'string'){
+                if (!(validityState in ValidityStateMatcher))
+                    return;
+                return ValidityStateMatcher[validityState];
+            } else {
+                return Object.keys(validityState).reduce((accum, v) => {
+                    
+                    return accum;
+                }, {})
+            }
+        }
+    }()
+    registry.register(...initial);
+    return registry;
+}
+
+/**
+ * Handles validations
+ * @class Validator
+ * @abstract
+ */
+class Validator {
+    /**
+     * @param {string} name validator name. Should match the type -> subtype of the field
+     * @param {string} [errorMessage] should always have a default message
+     * @constructor
+     */
+    constructor(name, errorMessage= "Child classes must implement this"){
+        this.name = name;
+        this.errorMessage = errorMessage;
+    }
+    /**
+     * returns the error message, or nothing if is valid
+     * @param value the value
+     * @param [args] optional others args
+     * @return {string | undefined} errors or nothing
+     */
+    hasErrors(value, ...args){
+        return this.errorMessage;
+    }
+}
+
+/**
  * Validates a pattern
  * @param {string} text
  * @param {pattern} pattern in the '//' notation
  * @returns {string|undefined} undefined if ok, the error otherwise
  * @module Model.Validations
+ * @return {string | undefined}
  */
 const patternHasErrors = function(text, pattern){
     if (!text) return;
@@ -109,13 +190,65 @@ const patternHasErrors = function(text, pattern){
 }
 
 /**
+ * Handles Pattern validations
+ * @class PatternValidator
+ * @extends Validator
+ */
+class PatternValidator extends Validator {
+    /**
+     * @param {string} errorMessage
+     * @constructor
+     */
+    constructor(errorMessage = "Field does not match pattern") {
+        super("pattern", errorMessage);
+    }
+
+    /**
+     * returns the error message, or nothing if is valid
+     * @param value the value
+     * @param pattern the pattern to validate
+     * @return {string | undefined} the errors or nothing
+     */
+    hasErrors(value, pattern){
+        return patternHasErrors(value, pattern);
+    }
+}
+
+const emailPattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+
+/**
  * @param {string} email
  * @returns {string|undefined} undefined if ok, the error otherwise
  * @module Model.Validations
  */
 const emailHasErrors = function(email){
-    if (patternHasErrors(email, /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/))
+    if (patternHasErrors(email, emailPattern))
         return "Invalid email";
+}
+
+/**
+ * Handles email validations
+ * @class EmailValidator
+ * @extends Validator
+ */
+class EmailValidator extends Validator {
+    /**
+     * @param {string} errorMessage
+     * @constructor
+     */
+    constructor(errorMessage = "That is not a valid email") {
+        super("email", emailPattern, errorMessage);
+
+    }
+
+    /**
+     * returns the error message, or nothing if is valid
+     * @param value the value
+     * @return {string | undefined} the errors or nothing
+     */
+    hasErrors(value){
+        return patternHasErrors(value, emailPattern);
+    }
 }
 
 /**
@@ -127,8 +260,32 @@ const emailHasErrors = function(email){
 const tinHasErrors = function(tin){
     if (!tin) return;
     tin = tin + '';
-    if (patternHasErrors(tin,/^\d{9}$/))
+    if (patternHasErrors(tin,))
         return "Not a valid Tin";
+}
+
+/**
+ * Handles email validations
+ * @class TinValidator
+ * @extends PatternValidator
+ */
+class TinValidator extends PatternValidator {
+    /**
+     * @param {string} errorMessage
+     * @constructor
+     */
+    constructor(errorMessage = "That is not a valid Tin") {
+        super("tin", errorMessage);
+    }
+
+    /**
+     * returns the error message, or nothing if is valid
+     * @param value the value
+     * @return {string | undefined} the errors or nothing
+     */
+    hasErrors(value){
+        return patternHasErrors(value, /^\d{9}$/);
+    }
 }
 
 /**
@@ -513,6 +670,16 @@ class Validatable{
 
 module.exports = {
     Validatable,
+    Validators: {
+        Validator: Validator,
+        Validators: {
+            TinValidator: TinValidator,
+            EmailValidator: EmailValidator,
+            PatternValidator: PatternValidator
+        },
+        ValidityStateMatcher: ValidityStateMatcher,
+        Registry: ValidatorRegistry(TinValidator, EmailValidator, PatternValidator)
+    },
     bindIonicValidation,
     emailHasErrors,
     tinHasErrors,
