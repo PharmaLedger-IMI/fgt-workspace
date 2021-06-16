@@ -25,7 +25,7 @@
         "public": true,
         "props": {
           "type": "text",
-          "placeholder": "Please enter your name here...",
+          "placeholder": "Please enter Registered Name here...",
           "value": "PDM the Pharmacy",
           "required": true,
           "inputmode": "text"
@@ -38,7 +38,7 @@
         "public": true,
         "props": {
           "type": "text",
-          "placeholder": "Please enter your Id here...",
+          "placeholder": "Please enter your Registered Id here...",
           "required": true
         }
       },
@@ -69,19 +69,24 @@
           "max": "9999999999",
           "required": true,
           "inputmode": "numeric"
+        },
+        "validation": {
+          "tin": {
+            "error": "That is not a valid TIN"
+          }
         }
       },
       {
         "name": "address",
         "element": "ion-textarea",
-        "label": "Name:",
+        "label": "Address:",
         "public": true,
         "props": {
           "placeholder": "Please enter your address here...",
           "maxlength": "150",
           "minlength": "10",
           "cols": 20,
-          "rows": 2,
+          "rows": 1,
           "value": "Avenida da Liberdade, Lisboa, Portugal",
           "required": true,
           "inputmode": "text"
@@ -105,7 +110,7 @@
             "error": "Do you really think you can register without a password?!"
           },
           "equality": {
-            "field": "pass",
+            "args": ["pass"],
             "error": "The passwords don't match!"
           }
         }

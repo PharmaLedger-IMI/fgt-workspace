@@ -46,21 +46,6 @@ export class FormValidateSubmit {
   })
   sendCreateAction: EventEmitter;
 
-  private sendError(message: string, err?: object){
-    const event = this.sendErrorEvent.emit(message);
-    if (!event.defaultPrevented || err)
-      console.log(`Product Component: ${message}`, err);
-  }
-
-  private navigateToTab(tab: string,  props: any){
-    const event = this.sendNavigateTab.emit({
-      tab: tab,
-      props: props
-    });
-    if (!event.defaultPrevented)
-      console.log(`Tab Navigation request seems to have been ignored byt all components...`);
-  }
-
   @Prop({attribute: 'form-json'}) formJSON: string = '{}';
   @Prop({attribute: 'loader-type'}) loaderType: string = SUPPORTED_LOADERS.circles;
   @Prop({attribute: 'lines'}) lines: 'none' | 'inset' | 'full' | undefined = 'inset';

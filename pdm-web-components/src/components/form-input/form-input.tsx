@@ -1,8 +1,8 @@
-import {Component, Host, h, Element, Event, EventEmitter, Prop, State, Watch} from '@stencil/core';
+import {Component, Host, h, Element, Prop,  Watch, Listen} from '@stencil/core';
 import {HostElement} from "../../decorators";
 import wizard from '../../services/WizardService';
 
-const {Validations} = wizard.Model;
+const {Validators, Registry} = wizard.Model.Validations.Validators;
 const {INPUT_FIELD_PREFIX} = wizard.Constants
 
 @Component({
@@ -16,34 +16,6 @@ export class FormInput {
 
   @Element() element;
 
-  /**
-   * Through this event errors are passed
-   */
-  @Event({
-    eventName: 'ssapp-send-error',
-    bubbles: true,
-    composed: true,
-    cancelable: true,
-  })
-  sendErrorEvent: EventEmitter;
-
-  /**
-   * Through this event action requests are made
-   */
-  @Event({
-    eventName: 'ssapp-action',
-    bubbles: true,
-    composed: true,
-    cancelable: true,
-  })
-  sendCreateAction: EventEmitter;
-
-  private sendError(message: string, err?: object){
-    const event = this.sendErrorEvent.emit(message);
-    if (!event.defaultPrevented || err)
-      console.log(`Product Component: ${message}`, err);
-  }
-
   @Prop({attribute: 'input', mutable: true}) input = undefined;
 
   @Prop({attribute: 'input-prefix'}) inputPrefix: string = INPUT_FIELD_PREFIX;
@@ -52,15 +24,75 @@ export class FormInput {
   @Prop({attribute: 'label-position'}) labelPosition: "fixed" | "floating" | "stacked" | undefined = 'floating';
   @Prop({attribute: 'class'}) cssClass: string | string[] = '';
 
+  private baseEl: HTMLFormInputElement = undefined;
+  private validators: {} = undefined;
+
   async componentWillLoad(){
     if (!this.host.isConnected)
       return;
-    console.log(this.input);
+  }
+
+  async componentDidLoad(){
+    this.baseEl = this.element.querySelector(`input[name="${this.getInputName()}"]`);
+    this.bindInput(this.baseEl);
+  }
+
+
+
+  private bindValidators(){
+    if (!this.input.validators && !this.input['subtype'])
+      return;
+
+    Object.keys(this.input.validators).forEach(key => {
+      if (!(key in Validators) && key !== this.input['subtype'])
+        return;
+      this.validators = this.validators || {};
+      this.validators[key] = new Validators[key](...this.validators[key].args, this.validators[key].error);
+    })
+  }
+
+  private checkMessageTranslations(element){
+    const validity = Object.assign()
+  }
+
+  private bindInput(element){
+    const self = this;
+    let validatorFunc = element.checkValidity;
+
+    element.oninvalid = (e) => {
+      console.log(`invalid event`, e);
+      self.checkMessageTranslations(element);
+    }
+
+    const validator = function(){
+      const isValid = validatorFunc.call(element);
+      const errors = [];
+      if (!isValid)
+        errors.push(element.)
+
+    }
+
+    element.checkValidity = validator;
   }
 
   @Watch("input")
   update(newVal){
     console.log(newVal);
+  }
+
+  @Listen("onIonChange")
+  async onChange(evt){
+    console.log(evt);
+  }
+
+  @Listen("onIonBlur")
+  async onBlur(evt){
+    console.log(evt);
+  }
+
+  @Listen("onIonInput")
+  async onInput(evt){
+    console.log(evt);
   }
 
   private isReady(){
@@ -69,13 +101,6 @@ export class FormInput {
 
   private getInputName(){
     return `${this.inputPrefix}${this.input.name}`;
-  }
-
-  // @ts-ignore
-  private getInput(){
-    if (!this.isReady())
-      return undefined;
-    return this.element.querySelector(`${this.input.element}[name="${this.getInputName()}"]`)
   }
 
   private renderInput(){
@@ -96,7 +121,7 @@ export class FormInput {
         }} animated></ion-skeleton-text>);
       const Tag = self.input.element;
       return (
-        <Tag name={self.input.name} {...self.input.props}></Tag>
+        <Tag name={self.getInputName()} {...self.input.props}></Tag>
       )
     }
 
