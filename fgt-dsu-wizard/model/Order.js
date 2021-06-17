@@ -3,7 +3,7 @@ const OrderLine = require('./OrderLine');
 
 /**
  * @class Order
- * @module Model
+ * @memberOf Model
  */
 class Order{
     orderId;

@@ -1,5 +1,5 @@
-import { r as registerInstance, e as createEvent, h, g as getElement } from './index-21b82b33.js';
-import { H as HostElement } from './index-993dbba1.js';
+import { r as registerInstance, e as createEvent, h, g as getElement } from './index-d0e12a29.js';
+import { H as HostElement } from './index-3dd6e8f7.js';
 
 const menuTabButtonCss = ":host{display:inherit;--ripple-color:var(--color-selected);--background-focused-opacity:1;--ion-icon-color:var(--ion-icon-color);flex:inherit;flex-direction:inherit}menu-tab-button{--menu-color:var(--ion-color-medium);--menu-color-selected:var(--ion-color-secondary);flex:1 1 0%}ion-item.pop-over-item ion-icon{color:var(--menu-color)}ion-item.nav-menu-item{--ripple-color:var(--menu-color)}ion-item.nav-menu-item.tab-selected{--ripple-color:var(--menu-color-selected)}ion-item.nav-menu-item ion-icon{color:var(--menu-color)}ion-item.nav-menu-item:hover ion-icon{color:var(--menu-color-selected)}ion-item.nav-menu-item.tab-selected ion-icon{color:var(--menu-color-selected)}ion-item.nav-menu-item ion-note.menu-text{--color:var(--menu-color)}ion-item.nav-menu-item.tab-selected ion-note.menu-text{--color:var(--menu-color-selected)}ion-item.nav-menu-item:hover ion-note.menu-text{--color:var(--menu-color-selected)}ion-icon.menu-icon{display:inline-block;vertical-align:middle}.menu-text{display:inline-block;vertical-align:middle;overflow-wrap:break-word}";
 

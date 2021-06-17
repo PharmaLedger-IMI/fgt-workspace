@@ -1,8 +1,7 @@
-import { r as registerInstance, e as createEvent, h, f as Host, g as getElement } from './index-21b82b33.js';
-import { H as HostElement } from './index-993dbba1.js';
-import { i as ionBreakpoints, b as bindIonicBreakpoint } from './utilFunctions-a21afb00.js';
+import { r as registerInstance, e as createEvent, h, f as Host, g as getElement } from './index-d0e12a29.js';
+import { H as HostElement } from './index-3dd6e8f7.js';
 
-const pdmItemOrganizerCss = ":host{display:block;--ion-margin:var(--ion-margin, 16px)}ion-popover.organizer-popover{--width:auto}ion-popover.organizer-popover ion-list>*{margin:var(--ion-margin, 16px) 0 var(--ion-margin, 16px) calc(var(--ion-margin, 16px)/2)}ion-popover.organizer-popover ul>*{margin:var(--ion-margin, 16px) 0 var(--ion-margin, 16px) calc(var(--ion-margin, 16px)/2)}pdm-item-organizer>div>*{margin-left:var(--ion-margin, 16px)}";
+const pdmItemOrganizerCss = ":host{display:block}ion-popover.organizer-popover{--pop-over-margin:var(calc(--ion-margin/2), 8px);--width:auto}ion-popover.organizer-popover ion-list>*{margin:calc(var(--pop-over-margin)/2) var(--pop-over-margin)}ion-popover.organizer-popover ul>*{margin:calc(var(--pop-over-margin)/2) var(--pop-over-margin)}pdm-item-organizer{--organizer-item-margin:var(--ion-margin, 16px)}pdm-item-organizer>div.ion-justify-content-end>*{margin-left:var(calc(--organizer-item-margin/2), 8px)}pdm-item-organizer>div.ion-justify-content-start>*{margin-right:var(calc(--organizer-item-margin/2), 8px)}";
 
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
   var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -35,26 +34,18 @@ const PdmItemOrganizer = class {
      * The identifying prop to be return upon click (must exist in the supplied {@link componentProps}
      */
     this.idProp = undefined;
-    /**
-     * The identifying prop to be return upon click (must exist in the supplied {@link componentProps}
-     */
-    this.cssClass = "ion-justify-content-end";
+    this.orientation = "end";
     /**
      * If the component does not generate an ion-item (so it can be handled by an ion-list)
      * this must be set to false
      */
     this.isItem = true;
     this.parsedProps = undefined;
-    this.currentBreakpoint = ionBreakpoints.lg + '';
   }
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
     this.updateParsedProps(this.componentProps);
-  }
-  async componentDidLoad() {
-    const self = this;
-    this.currentBreakpoint = bindIonicBreakpoint(bp => self.currentBreakpoint = bp);
   }
   updateParsedProps(newProps) {
     if (!newProps)
@@ -149,25 +140,14 @@ const PdmItemOrganizer = class {
       return this.parsedProps.map(props => this.getComponentJSX(props));
     const toDisplay = Math.max(this.displayCount - 1, 1);
     const result = this.parsedProps.filter((props, i) => !!props && i <= toDisplay).map(props => this.getComponentJSX(props));
-    let operation;
-    switch (this.currentBreakpoint + '') {
-      case 'xs':
-      case 'sm':
-      case 'md':
-        operation = result.push.bind(result);
-        break;
-      case 'lg':
-      case 'xl':
-      default:
-        operation = result.unshift.bind(result);
-    }
+    const operation = this.orientation === "start" ? result.push.bind(result) : result.unshift.bind(result);
     operation((h("more-chip", null)));
     return result;
   }
   render() {
     if (!this.host.isConnected)
       return;
-    return (h(Host, null, h("div", { class: `ion-padding-horizontal flex ${this.cssClass} ion-align-items-center` }, this.getFilteredComponents())));
+    return (h(Host, null, h("div", { class: `ion-padding-horizontal flex ion-justify-content-${this.orientation} ion-align-items-center` }, this.getFilteredComponents())));
   }
   get element() { return getElement(this); }
   static get watchers() { return {

@@ -7,7 +7,7 @@ const Utils = require("../../pdm-dsu-toolkit/model/Utils");
  * @prop {number} quantity
  * @prop {string} batchStatus
  * @class Batch
- * @module Model
+ * @memberOf Model
  */
 class Batch {
     batchNumber;

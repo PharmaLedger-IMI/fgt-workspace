@@ -1,6 +1,6 @@
 /**
  * @class OrderLine
- * @module Model
+ * @memberOf Model
  */
 class OrderLine{
     gtin;

@@ -20,7 +20,8 @@ const getStockManager = require('./StockManager');
  * @param {ParticipantManager} participantManager
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @class BatchManager
- * @module Managers
+ * @extends Manager
+ * @memberOf Managers
  */
 class BatchManager extends Manager{
     constructor(participantManager, callback) {
@@ -177,7 +178,7 @@ class BatchManager extends Manager{
  * @param {BaseManager} participantManager
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {BatchManager}
- * @module Managers
+ * @memberOf Managers
  */
 const getBatchManager = function (participantManager, callback) {
     let manager;

@@ -1,5 +1,5 @@
-import { r as registerInstance, h, f as Host, g as getElement } from './index-21b82b33.js';
-import { H as HostElement } from './index-993dbba1.js';
+import { r as registerInstance, h, f as Host, g as getElement } from './index-d0e12a29.js';
+import { H as HostElement } from './index-3dd6e8f7.js';
 
 const pdmBarcodeScannerControllerCss = ":host{display:block;--ion-background-color:var(--ion-background-color)}ion-modal.barcode-scanner{--background:var(--ion-background-color);--border-radius:5px}";
 

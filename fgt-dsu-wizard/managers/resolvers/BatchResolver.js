@@ -4,9 +4,9 @@ const Resolver  = require('../../../pdm-dsu-toolkit/managers').Resolver
 /**
  * Resolver classes substitute Managers when they're not available to be resolve a
  * Const DSU and extract the updated Information when required
- * @class Resolver
- * @module Resolvers
- * @see Resolver
+ * @class BatchResolver
+ * @memberOf Resolvers
+ * @extends Resolver
  */
 class BatchResolver extends Resolver{
     constructor(participantManager){
@@ -15,9 +15,8 @@ class BatchResolver extends Resolver{
 }
 
 /**
- * @returns {@link BatchResolver} as a singleton
- * @module Resolvers
- * @see Resolver
+ * @returns {BatchResolver} the batch resolver as a singleton
+ * @memberOf Resolvers
  */
 const getBatchResolver = function (participantManager, callback) {
     let resolver;

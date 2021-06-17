@@ -38,11 +38,10 @@ export const ionBreakpoints = {
 
 /**
  *
- * @param {function(string)} setter
- * @return {string} the current BreakPoint
+ * @return {string} the current Ionic BreakPoint
  * @module Utils
  */
-export function bindIonicBreakpoint(setter) {
+export function calcBreakPoint() {
   if (!window)
     throw new Error("This only works in a browser");
 
@@ -56,10 +55,6 @@ export function bindIonicBreakpoint(setter) {
       return accum;
     }, breakPoints[0]);
   }
-
-  window.addEventListener('resize', (_) => {
-    setter(calcBreakPoint());
-  });
 
   return calcBreakPoint();
 }

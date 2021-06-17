@@ -1,6 +1,6 @@
 /**
  * @class ShipmentLine
- * @module Model
+ * @memberOf Model
  */
 class ShipmentLine{
     gtin;

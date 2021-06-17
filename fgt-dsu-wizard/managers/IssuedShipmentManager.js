@@ -3,15 +3,26 @@ const ShipmentManager = require("./ShipmentManager");
 const getReceivedOrderManager = require("./ReceivedOrderManager");
 const {Shipment, Order, OrderStatus, ShipmentStatus, Wholesaler} = require('../model');
 
+
 /**
- * Issued Shipment Manager Class - concrete OrderManager for issuedShipments.
+ * Issued Shipment Manager Class - concrete ShipmentManager for issuedShipments.
  *
- * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
- * @param {string} tableName the default table name for this manager eg: MessageManager will write to the messages table
- * @param {string[]} indexes the indexes to be applied to the table in the db. cannot be undefined
- * @param {function(err, Manager)} callback
- * @module managers
+ * Manager Classes in this context should do the bridge between the controllers
+ * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
+ *
+ * All Manager Classes should be singletons.
+ *
+ * This complete separation of concerts is very beneficial for 2 reasons:
+ * <ul>
+ *     <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
+ *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
+ * </ul>
+ *
+ * @param {ParticipantManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @class IssuedShipmentManager
+ * @extends Manager
+ * @memberOf Managers
  */
 class IssuedShipmentManager extends ShipmentManager {
     constructor(participantManager, callback) {
@@ -195,7 +206,7 @@ class IssuedShipmentManager extends ShipmentManager {
  * @param {ParticipantManager} participantManager
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {IssuedShipmentManager}
- * @module Managers
+ * @memberOf Managers
  */
 const getIssuedShipmentManager = function (participantManager,  callback) {
     let manager;

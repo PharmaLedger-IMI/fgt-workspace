@@ -6,23 +6,24 @@ const Batch = require('../model/Batch');
 const StockStatus = require('../model/StockStatus');
 
 /**
+ * Stock Manager Class
+ *
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
  *
  * All Manager Classes should be singletons.
  *
- * This complete separation of concerns is very beneficial for 2 reasons:
+ * This complete separation of concerts is very beneficial for 2 reasons:
  * <ul>
  *     <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
  *
- * @param {Database} storage the DSU where the storage should happen or more commonly the Database Object
- * @param {BaseManager} baseManager the base manager to have access to the identity api
+ * @param {ParticipantManager} participantManager
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
-
- * @module managers
  * @class StockManager
+ * @extends Manager
+ * @memberOf Managers
  */
 class StockManager extends Manager{
     constructor(participantManager, serialization, callback) {
@@ -219,7 +220,7 @@ class StockManager extends Manager{
  * @param {boolean} [serialization] defaults to true.
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {StockManager}
- * @module Managers
+ * @memberOf Managers
  */
 const getStockManager = function (participantManager, serialization, callback) {
     if (!callback){

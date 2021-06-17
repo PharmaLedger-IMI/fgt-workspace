@@ -11,8 +11,9 @@ const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
  * @param {string} tableName the default table name for this manager eg: MessageManager will write to the messages table
  * @param {string[]} indexes the indexes to be applied to the table in the db. cannot be undefined
  * @param {function(err, Manager)} callback
- * @module managers
+ * @memberOf Managers
  * @class ShipmentManager
+ * @extends Manager
  * @abstract
  */
 class ShipmentManager extends Manager {

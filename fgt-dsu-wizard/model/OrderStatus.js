@@ -1,6 +1,6 @@
 /**
  * @class OrderStatus
- * @module Model
+ * @memberOf Model
  */
 const OrderStatus = {
     CREATED: "created",

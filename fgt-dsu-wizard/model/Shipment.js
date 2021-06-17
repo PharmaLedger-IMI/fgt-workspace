@@ -3,7 +3,7 @@ const ShipmentLine = require('./ShipmentLine');
 
 /**
  * @class Shipment
- * @module Model
+ * @memberOf Model
  */
 class Shipment {
     shipmentId;

@@ -236,6 +236,7 @@ export class ManagedProduct implements CreateManageView{
       <pdm-ion-table table-title={this.batchesTitle + ` ${this.gtin}`}
                      item-reference="gtin-batch"
                      query={this.gtin}
+                     auto-load={true}
                      canQuery={false}
                      paginated={true}
                      manager="BatchManager"

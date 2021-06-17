@@ -7,12 +7,12 @@
 
 ## Properties
 
-| Property          | Attribute         | Description | Type                          | Default                     |
-| ----------------- | ----------------- | ----------- | ----------------------------- | --------------------------- |
-| `adjustmentClass` | `ajustment-class` |             | `string`                      | `"ion-justify-content-end"` |
-| `color`           | `color`           |             | `string`                      | `"light"`                   |
-| `cssClass`        | `class`           |             | `string`                      | `"ion-margin-bottom"`       |
-| `lines`           | `lines`           |             | `"full" \| "inset" \| "none"` | `"none"`                    |
+| Property      | Attribute     | Description | Type                          | Default               |
+| ------------- | ------------- | ----------- | ----------------------------- | --------------------- |
+| `color`       | `color`       |             | `string`                      | `"light"`             |
+| `cssClass`    | `class`       |             | `string`                      | `"ion-margin-bottom"` |
+| `lines`       | `lines`       |             | `"full" \| "inset" \| "none"` | `"none"`              |
+| `orientation` | `orientation` |             | `"end" \| "start"`            | `"end"`               |
 
 
 ## Dependencies

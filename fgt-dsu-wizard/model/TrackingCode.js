@@ -4,7 +4,7 @@
  * (the keySSI) will be mounted
  *
  * @class TrackingCode
- * @module Model
+ * @memberOf Model
  */
 class TrackingCode{
     /**

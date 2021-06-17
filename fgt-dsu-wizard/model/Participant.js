@@ -2,8 +2,10 @@
 const { Validatable } = require('../../pdm-dsu-toolkit/model/Validations');
 
 /**
+ * Base class for Actors in this use case. Definies the basic necessary public info
+ * for each actor
  * @class Participant
- * @module Model
+ * @memberOf Model
  */
 class Participant extends Validatable{
     id = "";

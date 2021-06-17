@@ -173,13 +173,11 @@ export class ManagedBatchListItem {
   render() {
     return (
       <Host>
-        <Host>
-          <list-item-layout>
-            {this.addLabel()}
-            {this.addSerialsNumbers()}
-            {this.addButtons()}
-          </list-item-layout>
-        </Host>
+        <list-item-layout>
+          {this.addLabel()}
+          {this.addSerialsNumbers()}
+          {this.addButtons()}
+        </list-item-layout>
       </Host>
     );
   }

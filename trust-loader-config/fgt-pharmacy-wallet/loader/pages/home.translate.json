@@ -5,6 +5,9 @@
   "form": {
     "prefix": "input-",
     "buttons": {
+      "clear": {
+        "label": "Clear"
+      },
       "register": {
         "label": "Register",
         "icon": "person-add"

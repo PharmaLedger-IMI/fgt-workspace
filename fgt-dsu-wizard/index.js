@@ -1,4 +1,5 @@
 /**
+ * Extends the functionality and Architecture to the Use Case's specific Business needs
  * @module fgt-dsu-wizard
  */
 

@@ -40,7 +40,7 @@ generic-chip div.badges-div{
   display: flex;
 }
 
-generic-chip div.badges-div > * {
+generic-chip div.badges-div > *:not(:first-child) {
   margin-left: var(--ion-margin, 16px);
 }
 
@@ -48,12 +48,12 @@ generic-chip div.button-div{
   display: flex;
 }
 
-generic-chip div.button-div > * {
+generic-chip div.button-div > *:not(:first-child) {
   display: none;
   margin-left: var(calc(--ion-margin/2), 8px);
 }
 
-generic-chip:hover div.button-div > *{
+generic-chip:hover div.button-div > * {
   display: block;
   animation: 400ms ease-in-out fadein;
 }
