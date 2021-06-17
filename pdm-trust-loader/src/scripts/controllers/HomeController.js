@@ -27,13 +27,22 @@ export default class HomeController extends LocalizedController {
             evt.preventDefault();
             evt.stopImmediatePropagation();
 
-            const {action, credentials} = evt.detail;
-            const method = action === 'login' ? self.login : self.register;
+            const {action, form} = evt.detail;
+            const method = action === 'login' ? self.login: self.register;
 
-            await method(credentials, (err, result) => {
+            const credentials = Object.keys(form).reduce((accum, name) => {
+                const isPublic = self.model.form.fields.find(f => f.name === name).public;
+                accum[name] = {secret: form[name], public: isPublic}
+                return accum;
+            }, {});
+
+            await method.call(self, credentials, async (err, result) => {
                 if (err)
                     return console.log(`${action} action failed`);
                 console.log(`${action} action successful. output: ${result}`)
+
+                if (action === 'login')
+                    await self._getLoader(self.translate("success.loading"), {cssClass: 'long-width-loader'}).present();
             });
         })
 
@@ -75,7 +84,7 @@ export default class HomeController extends LocalizedController {
                self.showErrorToast(self.translate('errors.loading'));
                return callback(err);
            }
-           self.showToast(self.translate(self.translate('success.login')));
+           self.showToast(self.translate('success.login'));
            await loader.dismiss();
            callback(undefined, wallet);
         });

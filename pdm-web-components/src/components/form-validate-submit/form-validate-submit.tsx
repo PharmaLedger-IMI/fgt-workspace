@@ -2,7 +2,7 @@ import {Component, Host, h, Element, Event, EventEmitter, Prop, State, Watch} fr
 import {HostElement} from "../../decorators";
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 
-const INPUT_SELECTOR = "ion-input ion-select ion-text-area ion-range ion-datetime";
+const INPUT_SELECTOR = "'ion-input, ion-textarea, ion-range, ion-checkbox, ion-radio, ion-select, ion-datetime'";
 
 @Component({
   tag: 'form-validate-submit',
@@ -46,7 +46,7 @@ export class FormValidateSubmit {
     composed: true,
     cancelable: true,
   })
-  sendCreateAction: EventEmitter;
+  sendAction: EventEmitter;
 
   @Prop({attribute: 'form-json'}) formJSON: string = '{}';
   @Prop({attribute: 'loader-type'}) loaderType: string = SUPPORTED_LOADERS.circles;
@@ -68,6 +68,23 @@ export class FormValidateSubmit {
     }, ]
   } = undefined;
 
+  private formEl: HTMLFormElement = undefined;
+
+  async componentWillLoad(){
+    if (!this.host.isConnected)
+      return;
+  }
+
+  async componentDidRender(){
+    const self = this;
+    this.formEl = this.element.querySelector('form');
+    this.element.querySelectorAll('div.form-buttons ion-button').forEach(ionEl => {
+      const button = ionEl.shadowRoot.querySelector('button')
+      if (button.type === "submit")
+        button.onclick = (evt) => self.onSubmit(evt, ionEl.getAttribute('name'));
+    });
+  }
+
   @Watch('formJSON')
   async updateForm(newVal){
     if (newVal.startsWith('@'))
@@ -82,25 +99,33 @@ export class FormValidateSubmit {
     this.element.querySelectorAll(INPUT_SELECTOR).forEach(input => input.value = '');
   }
 
-  private onSubmit(evt){
+  private onSubmit(evt, name?: string){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    console.log(evt);
-  }
 
-  private getLoading(){
-    return (
-      <div class="flex ion-padding-horizontal ion-align-items-center ion-justify-content-center">
-        <multi-spinner type={this.loaderType}></multi-spinner>
-      </div>
-    )
+    if (!name)
+      name = this.element.querySelector('ion-button.primary-button').name;
+
+    if (!this.formEl.checkValidity())
+      return this.formEl.reportValidity();
+
+    const output = {};
+    this.form.fields.forEach(field => {
+      output[field.name] = field.props.value;
+    })
+
+    console.log(`Form submitted. Result: `, output);
+    this.sendAction.emit({
+      action: name,
+      form: output
+    })
   }
 
   private getButtons(){
     if (!this.form)
       return;
     return (
-      <div class="ion-text-end ion-padding-vertical ion-margin-top">
+      <div class="form-buttons ion-text-end ion-padding-vertical ion-margin-top">
         <slot name="buttons"></slot>
       </div>
     )

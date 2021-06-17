@@ -29,13 +29,11 @@
 
 ### Depends on
 
-- [multi-spinner](../multi-spinner)
 - [form-input](../form-input)
 
 ### Graph
 ```mermaid
 graph TD;
-  form-validate-submit --> multi-spinner
   form-validate-submit --> form-input
   style form-validate-submit fill:#f9f,stroke:#333,stroke-width:4px
 ```

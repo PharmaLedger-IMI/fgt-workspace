@@ -169,6 +169,10 @@ ion-button[color="medium"]{
   --ripple-color: var(--ion-color-secondary-shade);
 }
 
+ion-loading.long-width-loader{
+  --max-width: 50%;
+}
+
 .full-height{
   height: 100%
 }
