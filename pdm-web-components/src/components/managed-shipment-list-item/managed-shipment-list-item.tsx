@@ -122,9 +122,9 @@ export class ManagedShipmentListItem{
 
   private addShipmentLines() {
     if (!this.shipment || !this.shipment.shipmentLines)
-      return (<ion-skeleton-text animated></ion-skeleton-text>);
+      return (<ion-skeleton-text slot="content" animated></ion-skeleton-text>);
     return(
-      <pdm-item-organizer component-name="managed-orderline-stock-chip"
+      <pdm-item-organizer slot="content"  component-name="managed-orderline-stock-chip"
                           component-props={JSON.stringify(this.shipment.shipmentLines.map(ol => ({
                             "gtin": ol.gtin,
                             "quantity": ol.quantity,
@@ -133,7 +133,12 @@ export class ManagedShipmentListItem{
                           id-prop="gtin"
                           is-ion-item="false"
                           display-count="3"
-                          onSelectEvent={gtin => console.log(`selected ${gtin}`)}></pdm-item-organizer>
+                          orientation={this.element.querySelector('list-item-layout').orientation}
+                          onSelectEvent={(evt) => {
+                            evt.preventDefault();
+                            evt.stopImmediatePropagation();
+                            console.log(`Selected ${evt.detail}`);
+                          }}></pdm-item-organizer>
     );
   }
 

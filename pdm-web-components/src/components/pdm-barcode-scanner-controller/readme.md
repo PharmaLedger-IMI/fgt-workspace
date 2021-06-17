@@ -60,14 +60,12 @@ Type: `Promise<any>`
 
 ### Used by
 
- - [managed-issued-order](../managed-issued-order)
  - [managed-order](../managed-order)
  - [managed-shipment](../managed-shipment)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-issued-order --> pdm-barcode-scanner-controller
   managed-order --> pdm-barcode-scanner-controller
   managed-shipment --> pdm-barcode-scanner-controller
   style pdm-barcode-scanner-controller fill:#f9f,stroke:#333,stroke-width:4px

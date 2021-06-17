@@ -81,12 +81,16 @@ const ManagedOrderListItem = class {
   }
   addOrderLines() {
     if (!this.order || !this.order.orderLines)
-      return (h("ion-skeleton-text", { animated: true }));
-    return (h("pdm-item-organizer", { "component-name": "managed-orderline-stock-chip", "component-props": JSON.stringify(this.order.orderLines.map(ol => ({
+      return (h("ion-skeleton-text", { slot: "content", animated: true }));
+    return (h("pdm-item-organizer", { slot: "content", "component-name": "managed-orderline-stock-chip", "component-props": JSON.stringify(this.order.orderLines.map(ol => ({
         "gtin": ol.gtin,
         "quantity": ol.quantity,
         "mode": "detail"
-      }))), "id-prop": "gtin", "is-ion-item": "false", "display-count": "3", onSelectEvent: gtin => console.log(`selected ${gtin}`) }));
+      }))), "id-prop": "gtin", "is-ion-item": "false", "display-count": "3", orientation: this.element.querySelector('list-item-layout').orientation, onSelectEvent: (evt) => {
+        evt.preventDefault();
+        evt.stopImmediatePropagation();
+        console.log(`Selected ${evt.detail}`);
+      } }));
   }
   addButtons() {
     let self = this;
@@ -98,7 +102,7 @@ const ManagedOrderListItem = class {
     const getProcessOrderButton = function () {
       if (self.type === ORDER_TYPE.ISSUED)
         return;
-      return getButton("end", "medium", "cog", () => self.navigateToTab('tab-shipment', {
+      return getButton("buttons", "medium", "cog", () => self.navigateToTab('tab-shipment', {
         mode: ORDER_TYPE.ISSUED,
         order: self.order
       }));
@@ -108,18 +112,18 @@ const ManagedOrderListItem = class {
       order: self.order
     };
     return [
-      getButton("end", "medium", "barcode", (evt) => getBarCodePopOver({
+      getButton("buttons", "medium", "barcode", (evt) => getBarCodePopOver({
         type: "code128",
         size: "32",
         scale: "6",
         data: self.order.orderId
       }, evt)),
-      getButton("end", "medium", "eye", () => self.navigateToTab('tab-order', props)),
+      getButton("buttons", "medium", "eye", () => self.navigateToTab('tab-order', props)),
       getProcessOrderButton()
     ];
   }
   render() {
-    return (h(Host, null, h("ion-item", { class: "ion-margin-bottom", lines: "none", color: "light" }, this.addLabel(), h("div", { class: "ion-padding flex" }, this.addOrderLines()), this.addButtons())));
+    return (h(Host, null, h("list-item-layout", null, this.addLabel(), this.addOrderLines(), this.addButtons())));
   }
   get element() { return getElement(this); }
   static get watchers() { return {

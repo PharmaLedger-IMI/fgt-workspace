@@ -85,13 +85,17 @@ const ManagedProductListItem = class {
   }
   addBatches() {
     if (!this.stock || !this.batches)
-      return (h("ion-skeleton-text", { animated: true }));
-    return (h("pdm-item-organizer", { "component-name": "batch-chip", "component-props": JSON.stringify(this.batches.map(batch => ({
+      return (h("ion-skeleton-text", { slot: "content", animated: true }));
+    return (h("pdm-item-organizer", { slot: "content", "component-name": "batch-chip", "component-props": JSON.stringify(this.batches.map(batch => ({
         "gtin-batch": this.stock.gtin + '-' + batch.batchNumber,
         "quantity": batch.quantity,
         "mode": "detail",
         "loader-type": SUPPORTED_LOADERS.bubblingSmall
-      }))), "id-prop": "gtin-batch", "is-ion-item": "false", "display-count": "2" }));
+      }))), "id-prop": "gtin-batch", "is-ion-item": "false", "display-count": "2", orientation: this.element.querySelector('list-item-layout').orientation, onSelectEvent: (evt) => {
+        evt.preventDefault();
+        evt.stopImmediatePropagation();
+        console.log(`Selected ${evt.detail}`);
+      } }));
   }
   addButtons() {
     let self = this;
@@ -101,17 +105,17 @@ const ManagedProductListItem = class {
       return (h("ion-button", { slot: slot, color: color, fill: "clear", onClick: handler }, h("ion-icon", { size: "large", slot: "icon-only", name: icon })));
     };
     return [
-      getButton("end", "medium", "barcode", (evt) => getBarCodePopOver({
+      getButton("buttons", "medium", "barcode", (evt) => getBarCodePopOver({
         type: "code128",
         size: "32",
         scale: "6",
         data: self.gtin
       }, evt)),
-      getButton("end", "medium", "eye", () => self.navigateToTab('tab-batches', { gtin: self.gtin }))
+      getButton("buttons", "medium", "eye", () => self.navigateToTab('tab-batches', { gtin: self.gtin }))
     ];
   }
   render() {
-    return (h(Host, null, h("ion-item", { class: "main-item ion-margin-bottom", lines: "none", color: "light" }, this.addLabel(), h("div", { class: "ion-padding flex" }, this.addBatches()), this.addButtons())));
+    return (h(Host, null, h("list-item-layout", null, this.addLabel(), this.addBatches(), this.addButtons())));
   }
   get element() { return getElement(this); }
   static get watchers() { return {

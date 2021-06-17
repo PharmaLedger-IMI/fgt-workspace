@@ -130,7 +130,7 @@ export class ManagedBatchListItem {
 
   addSerialsNumbers(){
     if (!this.serialNumbers || !this.batch)
-      return (<multi-spinner type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
+      return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
     return(
       <pdm-item-organizer slot="content" component-name="generic-chip"
                           component-props={JSON.stringify(this.batch.serialNumbers.map(serial => ({
@@ -139,6 +139,7 @@ export class ManagedBatchListItem {
                           })))}
                           id-prop="chip-label"
                           is-ion-item="false"
+                          orientation={this.element.querySelector('list-item-layout').orientation}
                           onSelectEvent={this.triggerSelect.bind(this)}></pdm-item-organizer>
     )
   }

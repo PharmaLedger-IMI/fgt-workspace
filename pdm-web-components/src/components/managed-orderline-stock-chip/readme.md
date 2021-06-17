@@ -30,8 +30,6 @@
 ### Used by
 
  - [line-stock-manager](../line-stock-manager)
- - [managed-issued-order](../managed-issued-order)
- - [managed-issued-shipment](../managed-issued-shipment)
  - [managed-received-order](../managed-received-order)
 
 ### Depends on
@@ -43,8 +41,6 @@
 graph TD;
   managed-orderline-stock-chip --> generic-chip
   line-stock-manager --> managed-orderline-stock-chip
-  managed-issued-order --> managed-orderline-stock-chip
-  managed-issued-shipment --> managed-orderline-stock-chip
   managed-received-order --> managed-orderline-stock-chip
   style managed-orderline-stock-chip fill:#f9f,stroke:#333,stroke-width:4px
 ```

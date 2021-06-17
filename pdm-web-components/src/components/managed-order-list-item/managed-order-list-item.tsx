@@ -119,9 +119,9 @@ export class ManagedOrderListItem {
 
   addOrderLines() {
     if (!this.order || !this.order.orderLines)
-      return (<ion-skeleton-text animated></ion-skeleton-text>);
+      return (<ion-skeleton-text slot="content" animated></ion-skeleton-text>);
     return(
-      <pdm-item-organizer component-name="managed-orderline-stock-chip"
+      <pdm-item-organizer slot="content" component-name="managed-orderline-stock-chip"
                           component-props={JSON.stringify(this.order.orderLines.map(ol => ({
                             "gtin": ol.gtin,
                             "quantity": ol.quantity,
@@ -130,7 +130,12 @@ export class ManagedOrderListItem {
                           id-prop="gtin"
                           is-ion-item="false"
                           display-count="3"
-                          onSelectEvent={gtin => console.log(`selected ${gtin}`)}></pdm-item-organizer>
+                          orientation={this.element.querySelector('list-item-layout').orientation}
+                          onSelectEvent={(evt) => {
+                            evt.preventDefault();
+                            evt.stopImmediatePropagation();
+                            console.log(`Selected ${evt.detail}`);
+                          }}></pdm-item-organizer>
     );
   }
 
@@ -150,7 +155,7 @@ export class ManagedOrderListItem {
     const getProcessOrderButton = function(){
       if (self.type === ORDER_TYPE.ISSUED)
         return;
-      return getButton("end", "medium", "cog",
+      return getButton("buttons", "medium", "cog",
         () => self.navigateToTab('tab-shipment', {
           mode: ORDER_TYPE.ISSUED,
           order: self.order
@@ -163,13 +168,13 @@ export class ManagedOrderListItem {
     };
 
     return [
-      getButton("end", "medium", "barcode", (evt) => getBarCodePopOver({
+      getButton("buttons", "medium", "barcode", (evt) => getBarCodePopOver({
         type: "code128",
         size: "32",
         scale: "6",
         data: self.order.orderId
       }, evt)),
-      getButton("end", "medium", "eye", () => self.navigateToTab('tab-order', props)),
+      getButton("buttons", "medium", "eye", () => self.navigateToTab('tab-order', props)),
       getProcessOrderButton()
     ]
   }
@@ -177,13 +182,11 @@ export class ManagedOrderListItem {
   render() {
     return (
       <Host>
-        <ion-item class="ion-margin-bottom" lines="none" color="light">
+        <list-item-layout>
           {this.addLabel()}
-          <div class="ion-padding flex">
-            {this.addOrderLines()}
-          </div>
+          {this.addOrderLines()}
           {this.addButtons()}
-        </ion-item>
+        </list-item-layout>
       </Host>
     );
   }

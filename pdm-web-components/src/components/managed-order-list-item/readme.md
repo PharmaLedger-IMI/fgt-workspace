@@ -39,11 +39,13 @@ Type: `Promise<void>`
 ### Depends on
 
 - [pdm-item-organizer](../pdm-item-organizer)
+- [list-item-layout](../list-item-layout)
 
 ### Graph
 ```mermaid
 graph TD;
   managed-order-list-item --> pdm-item-organizer
+  managed-order-list-item --> list-item-layout
   pdm-item-organizer --> more-chip
   style managed-order-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```

@@ -84,12 +84,16 @@ const ManagedShipmentListItem = class {
   }
   addShipmentLines() {
     if (!this.shipment || !this.shipment.shipmentLines)
-      return (h("ion-skeleton-text", { animated: true }));
-    return (h("pdm-item-organizer", { "component-name": "managed-orderline-stock-chip", "component-props": JSON.stringify(this.shipment.shipmentLines.map(ol => ({
+      return (h("ion-skeleton-text", { slot: "content", animated: true }));
+    return (h("pdm-item-organizer", { slot: "content", "component-name": "managed-orderline-stock-chip", "component-props": JSON.stringify(this.shipment.shipmentLines.map(ol => ({
         "gtin": ol.gtin,
         "quantity": ol.quantity,
         "mode": "detail"
-      }))), "id-prop": "gtin", "is-ion-item": "false", "display-count": "3", onSelectEvent: gtin => console.log(`selected ${gtin}`) }));
+      }))), "id-prop": "gtin", "is-ion-item": "false", "display-count": "3", orientation: this.element.querySelector('list-item-layout').orientation, onSelectEvent: (evt) => {
+        evt.preventDefault();
+        evt.stopImmediatePropagation();
+        console.log(`Selected ${evt.detail}`);
+      } }));
   }
   getRelevantParticipantId() {
     return this.shipment[this.type === SHIPMENT_TYPE.ISSUED ? 'senderId' : 'requesterId'];

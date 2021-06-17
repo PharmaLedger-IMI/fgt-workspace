@@ -1,7 +1,7 @@
 import { r as registerInstance, e as createEvent, h, f as Host, g as getElement } from './index-d0e12a29.js';
 import { H as HostElement } from './index-3dd6e8f7.js';
 
-const pdmItemOrganizerCss = ":host{display:block}ion-popover.organizer-popover{--pop-over-margin:var(calc(--ion-margin/2), 8px);--width:auto}ion-popover.organizer-popover ion-list>*{margin:calc(var(--pop-over-margin)/2) var(--pop-over-margin)}ion-popover.organizer-popover ul>*{margin:calc(var(--pop-over-margin)/2) var(--pop-over-margin)}pdm-item-organizer{--organizer-item-margin:var(--ion-margin, 16px)}pdm-item-organizer>div.ion-justify-content-end>*{margin-left:var(calc(--organizer-item-margin/2), 8px)}pdm-item-organizer>div.ion-justify-content-start>*{margin-right:var(calc(--organizer-item-margin/2), 8px)}";
+const pdmItemOrganizerCss = ":host{display:block}ion-popover.organizer-popover{--pop-over-margin:var(calc(var(--ion-margin)/2), 8px);--width:auto}ion-popover.organizer-popover ion-list>*{margin:calc(var(--pop-over-margin)/2) var(--pop-over-margin)}ion-popover.organizer-popover ul>*{margin:calc(var(--pop-over-margin)/2) var(--pop-over-margin)}pdm-item-organizer{--organizer-item-margin:var(--ion-margin, 16px)}pdm-item-organizer>div.ion-justify-content-end>*{margin-left:var(calc(var(--organizer-item-margin)/2), 8px)}pdm-item-organizer>div.ion-justify-content-start>*{margin-right:var(calc(var(--organizer-item-margin)/2), 8px)}";
 
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
   var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;

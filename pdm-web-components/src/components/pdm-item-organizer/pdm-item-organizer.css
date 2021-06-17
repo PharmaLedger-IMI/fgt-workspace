@@ -1,10 +1,9 @@
 :host {
   display: block;
-
 }
 
 ion-popover.organizer-popover{
-  --pop-over-margin: var(calc(--ion-margin/2), 8px);
+  --pop-over-margin: var(calc(var(--ion-margin) /2), 8px);
   --width: auto;
 }
 
@@ -21,9 +20,9 @@ pdm-item-organizer {
 }
 
 pdm-item-organizer> div.ion-justify-content-end  > *{
-  margin-left: var(calc(--organizer-item-margin/2), 8px);
+  margin-left: var(calc(var(--organizer-item-margin)/2), 8px);
 }
 
 pdm-item-organizer > div.ion-justify-content-start > *{
-  margin-right: var(calc(--organizer-item-margin/2), 8px);
+  margin-right: var(calc(var(--organizer-item-margin)/2), 8px);
 }
