@@ -19,11 +19,14 @@
                                             </div>
                                         </div>
                                         <div slot="buttons">
-                                            <ion-button type="submit" color="medium" class="ion-margin-start">
+                                            <ion-button name="clear" type="reset" color="medium" fill="clear" lass="ion-margin-start">
+                                                {{ @form.buttons.clear.label }}
+                                            </ion-button>
+                                            <ion-button name="login" type="submit" color="medium" class="ion-margin-start primary-button">
                                                 {{ @form.buttons.login.label }}
                                                 <ion-icon slot="end" name="@form.buttons.login.icon" class="ion-margin-start"></ion-icon>
                                             </ion-button>
-                                            <ion-button type="submit" color="secondary" class="ion-margin-start">
+                                            <ion-button name="register" type="submit" color="secondary" class="ion-margin-start">
                                                 {{ @form.buttons.register.label }}
                                                 <ion-icon slot="end" name="@form.buttons.register.icon" class="ion-margin-start"></ion-icon>
                                             </ion-button>

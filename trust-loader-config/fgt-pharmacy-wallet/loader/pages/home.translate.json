@@ -177,14 +177,6 @@
       }
     ]
   },
-  "id-backup": {
-    "label": "Id:",
-    "type": "text",
-    "placeholder": "Please enter your id here...",
-    "value": "#id11",
-    "public": true,
-    "required": true
-  },
   "loading": {
     "register": "Creating new Wallet",
     "login": "Accessing Wallet..."
@@ -195,6 +187,7 @@
   },
   "success": {
     "register": "Registration Successful. Please Login",
-    "login": "Login Successful. Please wait"
+    "login": "Login Successful. Please wait While we load your Application",
+    "loading": "Loading Finished Goods Traceability Pharmacy application..."
   }
 }

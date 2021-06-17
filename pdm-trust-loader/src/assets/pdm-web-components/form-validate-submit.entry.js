@@ -14,19 +14,33 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
         r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
   return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-const INPUT_SELECTOR = "ion-input ion-select ion-text-area ion-range ion-datetime";
+const INPUT_SELECTOR = "'ion-input, ion-textarea, ion-range, ion-checkbox, ion-radio, ion-select, ion-datetime'";
 const FormValidateSubmit = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
     this.sendErrorEvent = createEvent(this, "ssapp-send-error", 7);
     this.sendNavigateTab = createEvent(this, "ssapp-navigate-tab", 7);
-    this.sendCreateAction = createEvent(this, "ssapp-action", 7);
+    this.sendAction = createEvent(this, "ssapp-action", 7);
     this.formJSON = '{}';
     this.loaderType = SUPPORTED_LOADERS.circles;
     this.lines = 'inset';
     this.labelPosition = 'floating';
     this.customValidation = false;
     this.form = undefined;
+    this.formEl = undefined;
+  }
+  async componentWillLoad() {
+    if (!this.host.isConnected)
+      return;
+  }
+  async componentDidRender() {
+    const self = this;
+    this.formEl = this.element.querySelector('form');
+    this.element.querySelectorAll('div.form-buttons ion-button').forEach(ionEl => {
+      const button = ionEl.shadowRoot.querySelector('button');
+      if (button.type === "submit")
+        button.onclick = (evt) => self.onSubmit(evt, ionEl.getAttribute('name'));
+    });
   }
   async updateForm(newVal) {
     if (newVal.startsWith('@'))
@@ -39,18 +53,27 @@ const FormValidateSubmit = class {
     evt.stopImmediatePropagation();
     this.element.querySelectorAll(INPUT_SELECTOR).forEach(input => input.value = '');
   }
-  onSubmit(evt) {
+  onSubmit(evt, name) {
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    console.log(evt);
-  }
-  getLoading() {
-    return (h("div", { class: "flex ion-padding-horizontal ion-align-items-center ion-justify-content-center" }, h("multi-spinner", { type: this.loaderType })));
+    if (!name)
+      name = this.element.querySelector('ion-button.primary-button').name;
+    if (!this.formEl.checkValidity())
+      return this.formEl.reportValidity();
+    const output = {};
+    this.form.fields.forEach(field => {
+      output[field.name] = field.props.value;
+    });
+    console.log(`Form submitted. Result: `, output);
+    this.sendAction.emit({
+      action: name,
+      form: output
+    });
   }
   getButtons() {
     if (!this.form)
       return;
-    return (h("div", { class: "ion-text-end ion-padding-vertical ion-margin-top" }, h("slot", { name: "buttons" })));
+    return (h("div", { class: "form-buttons ion-text-end ion-padding-vertical ion-margin-top" }, h("slot", { name: "buttons" })));
   }
   getForm() {
     if (!this.form)
