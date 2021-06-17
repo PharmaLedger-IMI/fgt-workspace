@@ -1,7 +1,7 @@
-import { r as registerInstance, e as createEvent, h, f as Host, g as getElement } from './index-21b82b33.js';
+import { r as registerInstance, e as createEvent, h, f as Host, g as getElement } from './index-d0e12a29.js';
 import { g as getBarCodePopOver } from './popOverUtils-dba969aa.js';
 import { W as WebManagerService } from './WebManagerService-65b4b71c.js';
-import { H as HostElement } from './index-993dbba1.js';
+import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-2f7a45ff.js';
 import { S as SUPPORTED_LOADERS } from './supported-loader-4cd02ac2.js';
 
@@ -92,7 +92,7 @@ const ManagedProductListItem = class {
         "gtin-batch": gtinBatch,
         "mode": "detail",
         "loader-type": SUPPORTED_LOADERS.bubblingSmall
-      }))), "id-prop": "gtin-batch", "is-ion-item": "false", onSelectEvent: (evt) => {
+      }))), "id-prop": "gtin-batch", "is-ion-item": "false", orientation: this.element.querySelector('list-item-layout').orientation, onSelectEvent: (evt) => {
         evt.preventDefault();
         evt.stopImmediatePropagation();
         console.log(`Selected ${evt.detail}`);

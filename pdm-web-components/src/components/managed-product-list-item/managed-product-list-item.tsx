@@ -132,6 +132,7 @@ export class ManagedProductListItem {
                           })))}
                           id-prop="gtin-batch"
                           is-ion-item="false"
+                          orientation={this.element.querySelector('list-item-layout').orientation}
                           onSelectEvent={(evt) => {
                             evt.preventDefault();
                             evt.stopImmediatePropagation();

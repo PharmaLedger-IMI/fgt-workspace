@@ -2,7 +2,7 @@
 const OrderStatus = require('./OrderStatus');
 /**
  * ShipmentStatus
- * @module Model
+ * @memberOf Model
  */
 const ShipmentStatus = {
     CREATED: OrderStatus.CREATED,

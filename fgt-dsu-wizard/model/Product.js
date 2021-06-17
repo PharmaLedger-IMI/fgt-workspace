@@ -1,6 +1,6 @@
 /**
  * @class Product
- * @module Model
+ * @memberOf Model
  */
 class Product {
     name = "";

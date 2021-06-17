@@ -1,7 +1,7 @@
 const BaseManager = require('../../pdm-dsu-toolkit/managers/BaseManager');
 
 /**
- * Participant Manager Class
+ * Participant Manager Class - Extension of Base Manager
  *
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
@@ -14,11 +14,12 @@ const BaseManager = require('../../pdm-dsu-toolkit/managers/BaseManager');
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
  *
- * Should eventually integrate with the WP3 decisions
- *
- * @param {DSUStorage} dsuStorage the controllers dsu storage
- * @param {function(err, ParticipantManager)} [callback}
- * @module Managers
+ * @param {DSUStorage} DSUStorage
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @class ParticipantManager
+ * @extends BaseManager
+ * @memberOf Managers
+ * @see BaseManager
  */
 class ParticipantManager extends BaseManager{
     constructor(dsuStorage, callback) {
@@ -62,7 +63,7 @@ let participantManager;
  * Makes DSU Storage required again!
  * @param {function(err, ParticipantManager)} [callback]
  * @returns {ParticipantManager}
- * @module Managers
+ * @memberOf Managers
  */
 const getParticipantManager = function (dsuStorage, force, callback) {
     if (!callback){

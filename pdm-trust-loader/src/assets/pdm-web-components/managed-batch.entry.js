@@ -1,5 +1,5 @@
-import { r as registerInstance, e as createEvent, h, f as Host, g as getElement } from './index-21b82b33.js';
-import { H as HostElement } from './index-993dbba1.js';
+import { r as registerInstance, e as createEvent, h, f as Host, g as getElement } from './index-d0e12a29.js';
+import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-2f7a45ff.js';
 import { W as WebManagerService } from './WebManagerService-65b4b71c.js';
 import { g as getBarCodePopOver } from './popOverUtils-dba969aa.js';
@@ -118,7 +118,13 @@ const ManagedBatch = class {
   getSerials() {
     if (!this.serialsNumbers)
       return;
-    return this.serialsNumbers.map(s => h("generic-chip", { "chip-label": s }));
+    return (h("pdm-item-organizer", { "component-name": "generic-chip", "component-props": JSON.stringify(this.serialsNumbers.map(s => ({
+        "chip-label": s
+      }))), "id-prop": "chip-label", "is-ion-item": false, "display-count": 25, onSelectEvent: (evt) => {
+        evt.preventDefault();
+        evt.stopImmediatePropagation();
+        console.log(`Selected ${evt.detail}`);
+      } }));
   }
   addSerialNumbers() {
     const newSerials = this.layoutComponent.getInput('serialNumbers').value.split(',');
@@ -167,7 +173,7 @@ const ManagedBatch = class {
     return this.getSerials();
   }
   getPostCreate() {
-    if (!this.isCreate())
+    if (this.isCreate())
       return;
     return this.getInputs();
   }

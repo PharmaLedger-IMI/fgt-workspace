@@ -1,4 +1,4 @@
-import { r as registerInstance, h, f as Host } from './index-21b82b33.js';
+import { r as registerInstance, h, f as Host } from './index-d0e12a29.js';
 
 const slideInBoardCss = ":host{display:block}";
 

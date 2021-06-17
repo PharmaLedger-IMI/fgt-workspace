@@ -1,5 +1,5 @@
 /**
- * @module Model
+ * @memberOf Model
  */
 const StockStatus = {
     RESERVED: "reserved",

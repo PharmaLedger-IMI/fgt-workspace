@@ -2,7 +2,8 @@ const Participant = require('./Participant');
 
 /**
  * @class Wholesaler
- * @module Model
+ * @extends Participant
+ * @memberOf Model
  */
 class Wholesaler extends Participant{
     originAddress = "";

@@ -7,7 +7,7 @@
  * </ul>
  * @param {string} domain the anchoring domain
  * @returns {ArraySSI}
- * @module fgt-dsu-wizard.commands
+ * @memberOf Commands
  */
 function createOrderLineSSI(data, domain) {
     console.log("New ORDERLINE_SSI in domain ", domain);
@@ -24,7 +24,7 @@ function createOrderLineSSI(data, domain) {
 /**
  * Registers the endpoint on the api-hub's dsu-wizard.
  * @param {HttpServer} server
- * @module fgt-dsu-wizard.commands
+ * @memberOf Commands
  */
 function command(server){
     const setSSI = require('../../pdm-dsu-toolkit/commands/setSSI');

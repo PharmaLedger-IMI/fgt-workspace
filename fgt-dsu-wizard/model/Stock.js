@@ -3,8 +3,9 @@ const Batch = require('./Batch');
 const StockStatus = require('./StockStatus');
 
 /**
- * @module Model
  * @class Stock
+ * @extends Product
+ * @memberOf Model
  */
 class Stock extends Product{
     batches = [];

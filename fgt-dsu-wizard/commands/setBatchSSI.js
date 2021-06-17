@@ -9,7 +9,7 @@
  * </ul>
  * @param {string} domain the anchoring domain
  * @returns {ArraySSI}
- * @module fgt-dsu-wizard.commands
+ * @memberOf Commands
  */
 function createBatchSSI(data, domain) {
     console.log("New BATCH_SSI in domain", domain);
@@ -26,7 +26,7 @@ function createBatchSSI(data, domain) {
 /**
  * Registers the endpoint on the api-hub's dsu-wizard.
  * @param {HttpServer} server
- * @module fgt-dsu-wizard.commands
+ * @memberOf Commands
  */
 function command(server){
     const setSSI = require('../../pdm-dsu-toolkit/commands/setSSI');

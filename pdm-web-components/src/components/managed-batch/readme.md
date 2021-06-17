@@ -58,14 +58,15 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [generic-chip](../generic-chip)
+- [pdm-item-organizer](../pdm-item-organizer)
 - [create-manage-view-layout](../create-manage-view-layout)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-batch --> generic-chip
+  managed-batch --> pdm-item-organizer
   managed-batch --> create-manage-view-layout
+  pdm-item-organizer --> more-chip
   style managed-batch fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

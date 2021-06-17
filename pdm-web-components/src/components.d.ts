@@ -84,10 +84,10 @@ export namespace Components {
         "unavailableString": string;
     }
     interface ListItemLayout {
-        "adjustmentClass": string;
         "color": string;
         "cssClass": string;
         "lines": 'none' | 'inset' | 'full';
+        "orientation": "start" | "end";
     }
     interface ManagedBatch {
         "addBatchString": string;
@@ -394,10 +394,6 @@ export namespace Components {
          */
         "componentProps": string;
         /**
-          * The identifying prop to be return upon click (must exist in the supplied {@link componentProps}
-         */
-        "cssClass": string;
-        /**
           * The number of items to display (minimum is 1), defaults to 3
          */
         "displayCount": number;
@@ -409,6 +405,7 @@ export namespace Components {
           * If the component does not generate an ion-item (so it can be handled by an ion-list) this must be set to false
          */
         "isItem": boolean;
+        "orientation": "start" | "end";
     }
     interface PdmSsappLoader {
         "loader"?: string;
@@ -758,10 +755,10 @@ declare namespace LocalJSX {
         "unavailableString"?: string;
     }
     interface ListItemLayout {
-        "adjustmentClass"?: string;
         "color"?: string;
         "cssClass"?: string;
         "lines"?: 'none' | 'inset' | 'full';
+        "orientation"?: "start" | "end";
     }
     interface ManagedBatch {
         "addBatchString"?: string;
@@ -1216,10 +1213,6 @@ declare namespace LocalJSX {
          */
         "componentProps"?: string;
         /**
-          * The identifying prop to be return upon click (must exist in the supplied {@link componentProps}
-         */
-        "cssClass"?: string;
-        /**
           * The number of items to display (minimum is 1), defaults to 3
          */
         "displayCount"?: number;
@@ -1232,6 +1225,7 @@ declare namespace LocalJSX {
          */
         "isItem"?: boolean;
         "onSelectEvent"?: (event: CustomEvent<string>) => void;
+        "orientation"?: "start" | "end";
     }
     interface PdmSsappLoader {
         "loader"?: string;

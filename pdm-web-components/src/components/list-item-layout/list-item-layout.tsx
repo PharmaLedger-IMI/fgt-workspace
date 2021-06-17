@@ -1,6 +1,6 @@
-import {Component, Host, h, Element, Prop, State} from '@stencil/core';
+import {Component, Host, h, Element, Prop, State, Listen} from '@stencil/core';
 import {HostElement} from '../../decorators'
-import {bindIonicBreakpoint, ionBreakpoints} from "../../utils/utilFunctions";
+import {calcBreakPoint, ionBreakpoints} from "../../utils/utilFunctions";
 
 @Component({
   tag: 'list-item-layout',
@@ -15,7 +15,7 @@ export class ListItemLayout {
 
   @Prop({attribute: "class"}) cssClass: string = "ion-margin-bottom";
 
-  @Prop({attribute: "ajustment-class", mutable: true, reflect: true}) adjustmentClass: string = "ion-justify-content-end";
+  @Prop({attribute: "orientation", mutable: true, reflect: true}) orientation: "start" | "end" = "end";
 
   @Prop({attribute: "lines"}) lines: 'none' | 'inset' | 'full' = "none";
 
@@ -29,12 +29,28 @@ export class ListItemLayout {
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
+    this.currentBreakpoint = calcBreakPoint();
   }
 
   async componentDidLoad() {
-    const self = this;
-    this.currentBreakpoint = bindIonicBreakpoint(bp => self.currentBreakpoint = bp) + '';
     this.getSlotted();
+  }
+
+  @Listen('resize', { target: 'window' })
+  async updateOrientation(){
+    this.currentBreakpoint = calcBreakPoint();
+    switch(this.currentBreakpoint + ''){
+      case 'xs':
+      case 'sm':
+      case 'md':
+        this.orientation = "start";
+        break;
+      case 'lg':
+      case 'xl':
+      default:
+        this.orientation = "end";
+        break;
+    }
   }
 
   private getSlotted(){
@@ -43,16 +59,7 @@ export class ListItemLayout {
   }
 
   private getAdjustment(){
-    switch(this.currentBreakpoint + ''){
-      case 'xs':
-      case 'sm':
-      case 'md':
-        return "ion-justify-content-start ion-margin-vertical"
-      case 'lg':
-      case 'xl':
-      default:
-        return "ion-justify-content-end"
-    }
+    return this.orientation === "start" ? "ion-justify-content-start ion-margin-vertical" : "ion-justify-content-end";
   }
 
   render() {

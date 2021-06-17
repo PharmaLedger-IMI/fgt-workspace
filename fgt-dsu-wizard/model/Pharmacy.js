@@ -3,7 +3,8 @@ const Participant = require('./Participant');
 
 /**
  * @class Pharmacy
- * @module Model
+ * @extends Participant
+ * @memberOf Model
  */
 class Pharmacy extends Participant{
     deliveryAddress = "";

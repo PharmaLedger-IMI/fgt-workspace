@@ -1,5 +1,5 @@
-import { r as registerInstance, e as createEvent, h, g as getElement } from './index-21b82b33.js';
-import { H as HostElement } from './index-993dbba1.js';
+import { r as registerInstance, e as createEvent, h, g as getElement } from './index-d0e12a29.js';
+import { H as HostElement } from './index-3dd6e8f7.js';
 
 const moreChipCss = ":host{display:inherit}more-chip{animation:0.5s linear fadein}@keyframes fadein{from{opacity:0}to{opacity:1}}";
 

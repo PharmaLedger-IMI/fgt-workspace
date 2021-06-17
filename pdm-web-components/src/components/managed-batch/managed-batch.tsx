@@ -170,7 +170,20 @@ export class ManagedBatch implements CreateManageView{
   private getSerials(){
     if (!this.serialsNumbers)
       return;
-    return this.serialsNumbers.map(s => <generic-chip chip-label={s}></generic-chip>)
+    return (
+      <pdm-item-organizer component-name="generic-chip"
+                          component-props={JSON.stringify(this.serialsNumbers.map(s => ({
+                            "chip-label": s
+                          })))}
+                          id-prop="chip-label"
+                          is-ion-item={false}
+                          display-count={25}
+                          onSelectEvent={(evt) => {
+                            evt.preventDefault();
+                            evt.stopImmediatePropagation();
+                            console.log(`Selected ${evt.detail}`);
+                          }}></pdm-item-organizer>
+    )
   }
 
   private addSerialNumbers(){
@@ -256,7 +269,7 @@ export class ManagedBatch implements CreateManageView{
   }
 
   getPostCreate() {
-    if (!this.isCreate())
+    if (this.isCreate())
       return
     return this.getInputs();
   }
@@ -285,7 +298,7 @@ export class ManagedBatch implements CreateManageView{
             {...this.getPostCreate()}
           </div>
           <div slot="manage">
-            {...this.getManage()}
+            {this.getManage()}
           </div>
           <div slot="view"></div>
         </create-manage-view-layout>

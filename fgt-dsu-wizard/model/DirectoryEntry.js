@@ -3,7 +3,8 @@ const Utils = require("../../pdm-dsu-toolkit/model/Utils");
 
 /**
  * Role Enum
- * @module Model
+ * Defines tha various roles withing the directory (basically actor types and products)
+ * @memberOf Model
  */
 const ROLE = {
     MAH: 'mah',
@@ -17,7 +18,7 @@ const ROLE = {
  * @prop {string} batchNumber
  * @prop {Date} expiryDate
  * @class DirectoryEntry
- * @module Model
+ * @memberOf Model
  */
 class DirectoryEntry {
     id;

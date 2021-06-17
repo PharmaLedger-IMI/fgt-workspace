@@ -7,14 +7,14 @@
 
 ## Properties
 
-| Property         | Attribute         | Description                                                                                                    | Type      | Default                     |
-| ---------------- | ----------------- | -------------------------------------------------------------------------------------------------------------- | --------- | --------------------------- |
-| `componentName`  | `component-name`  | the Tag for the component to be rendered                                                                       | `string`  | `undefined`                 |
-| `componentProps` | `component-props` | the list of props that will be passed to the HTML Element {@link componentName}                                | `string`  | `undefined`                 |
-| `cssClass`       | `class`           | The identifying prop to be return upon click (must exist in the supplied {@link componentProps}                | `string`  | `"ion-justify-content-end"` |
-| `displayCount`   | `display-count`   | The number of items to display (minimum is 1), defaults to 3                                                   | `number`  | `3`                         |
-| `idProp`         | `id-prop`         | The identifying prop to be return upon click (must exist in the supplied {@link componentProps}                | `string`  | `undefined`                 |
-| `isItem`         | `is-ion-item`     | If the component does not generate an ion-item (so it can be handled by an ion-list) this must be set to false | `boolean` | `true`                      |
+| Property         | Attribute         | Description                                                                                                    | Type               | Default     |
+| ---------------- | ----------------- | -------------------------------------------------------------------------------------------------------------- | ------------------ | ----------- |
+| `componentName`  | `component-name`  | the Tag for the component to be rendered                                                                       | `string`           | `undefined` |
+| `componentProps` | `component-props` | the list of props that will be passed to the HTML Element {@link componentName}                                | `string`           | `undefined` |
+| `displayCount`   | `display-count`   | The number of items to display (minimum is 1), defaults to 3                                                   | `number`           | `3`         |
+| `idProp`         | `id-prop`         | The identifying prop to be return upon click (must exist in the supplied {@link componentProps}                | `string`           | `undefined` |
+| `isItem`         | `is-ion-item`     | If the component does not generate an ion-item (so it can be handled by an ion-list) this must be set to false | `boolean`          | `true`      |
+| `orientation`    | `orientation`     |                                                                                                                | `"end" \| "start"` | `"end"`     |
 
 
 ## Events
@@ -28,6 +28,7 @@
 
 ### Used by
 
+ - [managed-batch](../managed-batch)
  - [managed-batch-list-item](../managed-batch-list-item)
  - [managed-order-list-item](../managed-order-list-item)
  - [managed-product-list-item](../managed-product-list-item)
@@ -42,6 +43,7 @@
 ```mermaid
 graph TD;
   pdm-item-organizer --> more-chip
+  managed-batch --> pdm-item-organizer
   managed-batch-list-item --> pdm-item-organizer
   managed-order-list-item --> pdm-item-organizer
   managed-product-list-item --> pdm-item-organizer

@@ -4,9 +4,24 @@ const getStockManager = require("./StockManager");
 const {Order} = require('../model');
 
 /**
- * Issued Order Manager Class - concrete OrderManager for issuedOrders.
- * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
- * @module Managers
+ * Received Order Manager Class - concrete OrderManager for receivedOrders.
+ *
+ * Manager Classes in this context should do the bridge between the controllers
+ * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
+ *
+ * All Manager Classes should be singletons.
+ *
+ * This complete separation of concerts is very beneficial for 2 reasons:
+ * <ul>
+ *     <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
+ *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
+ * </ul>
+ *
+ * @param {ParticipantManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @class IssuedOrderManager
+ * @extends OrderManager
+ * @memberOf Managers
  */
 class ReceivedOrderManager extends OrderManager {
     constructor(participantManager, callback) {
@@ -133,7 +148,7 @@ class ReceivedOrderManager extends OrderManager {
  * @param {ParticipantManager} participantManager
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {OrderManager}
- * @module Managers
+ * @memberOf Managers
  */
 const getReceivedOrderManager = function (participantManager,  callback) {
     let manager;

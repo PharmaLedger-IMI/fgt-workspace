@@ -164,12 +164,11 @@ ion-tab-bar{
   --color-selected: var(--ion-color-secondary);
 }
 
-ion-button[color="medium"]{
-  --color-hover: var(--ion-color-secondary);
-  --ripple-color: var(--ion-color-secondary-shade);
+ion-button[color="medium"]:hover ion-icon {
+  color: var(--ion-color-secondary-shade);
 }
 
-ion-loading.ion-loading{
+ion-loading.ssapp-spinner{
   --max-width: 75%;
 }
 

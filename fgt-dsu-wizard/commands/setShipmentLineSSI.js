@@ -6,8 +6,7 @@
  *     <li>(optional) {@link openDSU#constants#BRICKS_DOMAIN_KEY} - the subDomain to store the bricks in. Will be concatenated like 'domain.subDomain'</li>
  * </ul>
  * @param {string} domain the anchoring domain
- * @returns {ArraySSI}
- * @module fgt-dsu-wizard.commands
+ * @memberOf Commands
  */
 function createShipmentLineSSI(data, domain) {
     console.log("New SHIPMENTLINE_SSI in domain", domain);
@@ -23,8 +22,7 @@ function createShipmentLineSSI(data, domain) {
 
 /**
  * Registers the endpoint on the api-hub's dsu-wizard.
- * @param {HttpServer} server
- * @module fgt-dsu-wizard.commands
+ * @memberOf Commands
  */
 function command(server){
     const setSSI = require('../../pdm-dsu-toolkit/commands/setSSI');

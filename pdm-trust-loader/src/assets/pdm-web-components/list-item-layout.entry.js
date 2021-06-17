@@ -1,6 +1,6 @@
-import { r as registerInstance, h, f as Host, g as getElement } from './index-21b82b33.js';
-import { H as HostElement } from './index-993dbba1.js';
-import { i as ionBreakpoints, b as bindIonicBreakpoint } from './utilFunctions-a21afb00.js';
+import { r as registerInstance, h, f as Host, g as getElement } from './index-d0e12a29.js';
+import { H as HostElement } from './index-3dd6e8f7.js';
+import { i as ionBreakpoints, c as calcBreakPoint } from './utilFunctions-f6105aef.js';
 
 const listItemLayoutCss = ":host{display:block}";
 
@@ -18,7 +18,7 @@ const ListItemLayout = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
     this.cssClass = "ion-margin-bottom";
-    this.adjustmentClass = "ion-justify-content-end";
+    this.orientation = "end";
     this.lines = "none";
     this.color = "light";
     this.currentBreakpoint = ionBreakpoints.lg + '';
@@ -26,27 +26,32 @@ const ListItemLayout = class {
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
+    this.currentBreakpoint = calcBreakPoint();
   }
   async componentDidLoad() {
-    const self = this;
-    this.currentBreakpoint = bindIonicBreakpoint(bp => self.currentBreakpoint = bp) + '';
     this.getSlotted();
+  }
+  async updateOrientation() {
+    this.currentBreakpoint = calcBreakPoint();
+    switch (this.currentBreakpoint + '') {
+      case 'xs':
+      case 'sm':
+      case 'md':
+        this.orientation = "start";
+        break;
+      case 'lg':
+      case 'xl':
+      default:
+        this.orientation = "end";
+        break;
+    }
   }
   getSlotted() {
     let slotted = this.element.children;
     this.children = { hasChildren: slotted && slotted.length > 0, numberOfChildren: slotted && slotted.length };
   }
   getAdjustment() {
-    switch (this.currentBreakpoint + '') {
-      case 'xs':
-      case 'sm':
-      case 'md':
-        return "ion-justify-content-start ion-margin-vertical";
-      case 'lg':
-      case 'xl':
-      default:
-        return "ion-justify-content-end";
-    }
+    return this.orientation === "start" ? "ion-justify-content-start ion-margin-vertical" : "ion-justify-content-end";
   }
   render() {
     if (!this.host.isConnected)

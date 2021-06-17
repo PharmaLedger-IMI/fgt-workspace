@@ -3,7 +3,8 @@ const Participant = require('./Participant');
 /**
  *
  * @class MAH
- * @module Model
+ * @extends Participant
+ * @memberOf Model
  */
 class MAH extends Participant{
     /**
