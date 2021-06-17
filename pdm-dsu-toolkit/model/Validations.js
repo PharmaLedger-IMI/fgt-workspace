@@ -100,8 +100,6 @@ const propToError = function(prop, value){
  * @type {{tooShort: string, typeMismatch: string, stepMismatch: string, rangeOverFlow: string, badInput: undefined, customError: undefined, tooLong: string, patternMismatch: string, rangeUnderFlow: string, valueMissing: string}}
  */
 const ValidityStateMatcher = {
-    badInput: undefined,
-    customError: undefined,
     patternMismatch: "pattern",
     rangeOverFlow: "max",
     rangeUnderFlow: "min",
@@ -123,25 +121,32 @@ const ValidatorRegistry = function(...initial){
         this.register = function(...validator){
             validator.forEach(v => {
                 const instance = new v();
-                registry[instance.name] = instance;
+                registry[instance.name] = v;
             });
         }
 
+        this.getValidator = function(name){
+            if (!(name in registry))
+                return;
+            return registry[name];
+        }
+
         /**
-         *
-         * @param validityState
+         * does the matching between the fields validity params and the field's properties (type/subtype)
+         * @param [validityState]
          * @return {*}
          */
-        this.matchValidityState = function(validityState){
+        this.matchValidityState = function(validityState = ValidityStateMatcher){
             if (typeof validityState === 'string'){
                 if (!(validityState in ValidityStateMatcher))
                     return;
                 return ValidityStateMatcher[validityState];
             } else {
-                return Object.keys(validityState).reduce((accum, v) => {
-                    
-                    return accum;
-                }, {})
+                const result = {};
+                for(let prop in validityState)
+                    if (prop in ValidityStateMatcher)
+                        result[ValidityStateMatcher[prop]] = validityState[prop];
+                return result;
             }
         }
     }()
@@ -178,7 +183,7 @@ class Validator {
 /**
  * Validates a pattern
  * @param {string} text
- * @param {pattern} pattern in the '//' notation
+ * @param {RegExp} pattern in the '//' notation
  * @returns {string|undefined} undefined if ok, the error otherwise
  * @module Model.Validations
  * @return {string | undefined}
@@ -237,7 +242,7 @@ class EmailValidator extends Validator {
      * @constructor
      */
     constructor(errorMessage = "That is not a valid email") {
-        super("email", emailPattern, errorMessage);
+        super("email", errorMessage);
 
     }
 
@@ -267,9 +272,9 @@ const tinHasErrors = function(tin){
 /**
  * Handles email validations
  * @class TinValidator
- * @extends PatternValidator
+ * @extends Validator
  */
-class TinValidator extends PatternValidator {
+class TinValidator extends Validator {
     /**
      * @param {string} errorMessage
      * @constructor

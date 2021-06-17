@@ -14,6 +14,7 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
         r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
   return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+const INPUT_SELECTOR = "ion-input ion-select ion-text-area ion-range ion-datetime";
 const FormValidateSubmit = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
@@ -24,20 +25,8 @@ const FormValidateSubmit = class {
     this.loaderType = SUPPORTED_LOADERS.circles;
     this.lines = 'inset';
     this.labelPosition = 'floating';
+    this.customValidation = false;
     this.form = undefined;
-  }
-  sendError(message, err) {
-    const event = this.sendErrorEvent.emit(message);
-    if (!event.defaultPrevented || err)
-      console.log(`Product Component: ${message}`, err);
-  }
-  navigateToTab(tab, props) {
-    const event = this.sendNavigateTab.emit({
-      tab: tab,
-      props: props
-    });
-    if (!event.defaultPrevented)
-      console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
   async updateForm(newVal) {
     if (newVal.startsWith('@'))
@@ -46,9 +35,9 @@ const FormValidateSubmit = class {
     console.log(this.form);
   }
   onReset(evt) {
-    // evt.preventDefault();
-    // evt.stopImmediatePropagation();
-    console.log(evt);
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    this.element.querySelectorAll(INPUT_SELECTOR).forEach(input => input.value = '');
   }
   onSubmit(evt) {
     evt.preventDefault();
@@ -65,8 +54,8 @@ const FormValidateSubmit = class {
   }
   getForm() {
     if (!this.form)
-      return this.getLoading();
-    return this.form.fields.map(field => h("form-input", { input: field, prefix: this.form.prefix, lines: this.lines, "label-position": this.labelPosition }));
+      return (h("slot", { name: "fields" }));
+    return this.form.fields.map(field => h("form-input", { input: field, "enable-custom-validation": this.customValidation, prefix: this.form.prefix, lines: this.lines, "label-position": this.labelPosition }));
   }
   render() {
     return (h(Host, null, h("ion-card", null, h("ion-card-header", { class: "ion-margin ion-padding-horizontal" }, h("div", null, h("slot", { name: "header" }))), h("ion-card-content", null, h("form", { id: "form-validate-submit", onSubmit: this.onSubmit.bind(this), onReset: this.onReset.bind(this) }, this.getForm(), this.getButtons())))));

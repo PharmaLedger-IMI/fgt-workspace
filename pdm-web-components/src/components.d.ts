@@ -44,13 +44,15 @@ export namespace Components {
         "manageTitleString": string;
     }
     interface FormInput {
-        "cssClass": string | string[];
+        "cssClassString": string | string[];
+        "customValidation": boolean;
         "input": any;
         "inputPrefix": string;
         "labelPosition": "fixed" | "floating" | "stacked" | undefined;
         "lines": 'none' | 'inset' | 'full' | undefined;
     }
     interface FormValidateSubmit {
+        "customValidation": boolean;
         "formJSON": string;
         "labelPosition": "fixed" | "floating" | "stacked" | undefined;
         "lines": 'none' | 'inset' | 'full' | undefined;
@@ -695,21 +697,15 @@ declare namespace LocalJSX {
         "onGoBackEvent"?: (event: CustomEvent<any>) => void;
     }
     interface FormInput {
-        "cssClass"?: string | string[];
+        "cssClassString"?: string | string[];
+        "customValidation"?: boolean;
         "input"?: any;
         "inputPrefix"?: string;
         "labelPosition"?: "fixed" | "floating" | "stacked" | undefined;
         "lines"?: 'none' | 'inset' | 'full' | undefined;
-        /**
-          * Through this event action requests are made
-         */
-        "onSsapp-action"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event errors are passed
-         */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
     }
     interface FormValidateSubmit {
+        "customValidation"?: boolean;
         "formJSON"?: string;
         "labelPosition"?: "fixed" | "floating" | "stacked" | undefined;
         "lines"?: 'none' | 'inset' | 'full' | undefined;
