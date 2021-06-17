@@ -1,3 +1,12 @@
 :host {
   display: block;
 }
+
+
+ion-item.form-input-invalid {
+  /*--border-color: var(--ion-color-danger-shade)*/
+}
+
+ion-item.form-input-invalid > ion-label{
+  --color: var(--ion-color-danger-shade)
+}

@@ -5,9 +5,6 @@
   "form": {
     "prefix": "input-",
     "buttons": {
-      "clear": {
-        "label": "Clear"
-      },
       "register": {
         "label": "Register",
         "icon": "person-add"
@@ -29,6 +26,11 @@
           "value": "PDM the Pharmacy",
           "required": true,
           "inputmode": "text"
+        },
+        "validation": {
+          "required": {
+            "error": "The Name is mandatory!"
+          }
         }
       },
       {
@@ -40,6 +42,11 @@
           "type": "text",
           "placeholder": "Please enter your Registered Id here...",
           "required": true
+        },
+        "validation": {
+          "required": {
+            "error": "The ID is mandatory!"
+          }
         }
       },
       {
@@ -53,6 +60,15 @@
           "value": "pharmacy@pdmfc.com",
           "required": true,
           "inputmode": "email"
+        },
+        "validation": {
+          "required": {
+            "error": "The Email is mandatory!"
+          },
+          "email": {
+            "args": [],
+            "error": "That is not a valid Email..."
+          }
         }
       },
       {
@@ -71,14 +87,18 @@
           "inputmode": "numeric"
         },
         "validation": {
+          "required": {
+            "error": "Your Tad identification Number is mandatory"
+          },
           "tin": {
+            "args": [],
             "error": "That is not a valid TIN"
           }
         }
       },
       {
         "name": "address",
-        "element": "ion-textarea",
+        "element": "ion-input",
         "label": "Address:",
         "public": true,
         "props": {
@@ -90,6 +110,17 @@
           "value": "Avenida da Liberdade, Lisboa, Portugal",
           "required": true,
           "inputmode": "text"
+        },
+        "validation": {
+          "required": {
+            "error": "The Address is mandatory!"
+          },
+          "maxlength": {
+            "error": "Too long"
+          },
+          "minlength": {
+            "error": "Too short"
+          }
         }
       },
       {
@@ -107,10 +138,13 @@
         },
         "validation": {
           "required": {
-            "error": "Do you really think you can register without a password?!"
+            "error": "The Password is mandatory!"
+          },
+          "minlength": {
+            "error": "The password needs to be at least 8 characters long!"
           },
           "equality": {
-            "args": ["pass"],
+            "args": ["password-repeat"],
             "error": "The passwords don't match!"
           }
         }
@@ -130,10 +164,13 @@
         },
         "validation": {
           "required": {
-            "error": "It's for your security!\nPlease confirm you password here!"
+            "error": "The confirmation of the password is mandatory!"
+          },
+          "minlength": {
+            "error": "The password needs the be at least 8 characters long!"
           },
           "equality": {
-            "field": "pass",
+            "args": ["password"],
             "error": "The passwords don't match!"
           }
         }

@@ -2,6 +2,8 @@ import {Component, Host, h, Element, Event, EventEmitter, Prop, State, Watch} fr
 import {HostElement} from "../../decorators";
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 
+const INPUT_SELECTOR = "ion-input ion-select ion-text-area ion-range ion-datetime";
+
 @Component({
   tag: 'form-validate-submit',
   styleUrl: 'form-validate-submit.css',
@@ -50,7 +52,7 @@ export class FormValidateSubmit {
   @Prop({attribute: 'loader-type'}) loaderType: string = SUPPORTED_LOADERS.circles;
   @Prop({attribute: 'lines'}) lines: 'none' | 'inset' | 'full' | undefined = 'inset';
   @Prop({attribute: 'label-position'}) labelPosition: "fixed" | "floating" | "stacked" | undefined = 'floating';
-
+  @Prop({attribute: 'enable-custom-validation'}) customValidation: boolean = false;
 
   @State() form: {
     prefix?: string,
@@ -75,9 +77,9 @@ export class FormValidateSubmit {
   }
 
   private onReset(evt){
-    // evt.preventDefault();
-    // evt.stopImmediatePropagation();
-    console.log(evt);
+    evt.preventDefault()
+    evt.stopImmediatePropagation();
+    this.element.querySelectorAll(INPUT_SELECTOR).forEach(input => input.value = '');
   }
 
   private onSubmit(evt){
@@ -106,8 +108,8 @@ export class FormValidateSubmit {
 
   private getForm(){
     if (!this.form)
-      return this.getLoading();
-    return this.form.fields.map(field => <form-input input={field}
+      return (<slot name="fields"></slot>);
+    return this.form.fields.map(field => <form-input input={field} enable-custom-validation={this.customValidation}
                                                      prefix={this.form.prefix}
                                                      lines={this.lines}
                                                      label-position={this.labelPosition}></form-input>);
