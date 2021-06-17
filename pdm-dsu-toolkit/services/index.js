@@ -2,11 +2,7 @@
  * Function responsible for handling DSU creation according to it's type, either via direct
  * access to the api, or vie the DSU Fabric
  * @typedef {function} Service
- * @module Services
- */
-
-/**
- * @module Services
+ * @namespace Services
  */
 module.exports = {
     DSUService: require('./DSUService'),

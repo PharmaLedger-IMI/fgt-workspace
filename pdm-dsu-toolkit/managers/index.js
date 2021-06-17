@@ -9,7 +9,7 @@
  *     <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
- * @module Managers
+ * @namespace Managers
  */
 module.exports = {
     Manager: require('./Manager'),

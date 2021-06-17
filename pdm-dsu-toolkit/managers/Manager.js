@@ -5,7 +5,7 @@ const {functionCallIterator} = require('../services/utils');
 /**
  * Util class to handle pagination
  * @class Page
- * @module Managers
+ * @memberOf Managers
  */
 class Page {
     itemsPerPage = 10;
@@ -70,7 +70,7 @@ class Page {
  *                  });
  *              }
  * </pre>
- * @module Managers
+ * @memberOf Managers
  * @class Manager
  * @abstract
  */

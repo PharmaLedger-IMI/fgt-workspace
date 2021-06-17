@@ -2,7 +2,7 @@
  * DSU creation strategies:
  *  - **Simple:** Users the direct OpenDSU API. Only works if the APIHub is not in authorized mode;
  *  - **Authorized:** Uses the DSUFabric and {@link DSUBuilder} to ensure transactions and permissions
- * @module Services
+ * @memberOf Services
  */
 const STRATEGY = {
     AUTHORIZED: "authorized",
