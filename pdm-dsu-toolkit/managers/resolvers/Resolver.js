@@ -1,4 +1,9 @@
 /**
+ * Provides a bridge between the Managers Namespace and the resolving of const DSUs
+ * @namespace Resolvers
+ */
+
+/**
  * Resolver classes substitute Managers when they're not available to be resolve a
  * Const DSU from its key in the DB and extract the updated Information when required
  *
@@ -7,7 +12,7 @@
  *  - get(KeySSI): that loads the DSU and loads the Object information
  *  @class Resolver
  *  @abstract
- *  @module Resolvers
+ *  @memberOf Resolvers
  */
 class Resolver {
     /**

@@ -1,7 +1,7 @@
 const utils = require("./utils.js");
 
 /**
- * @module Services
+ * @memberOf Services
  * @type {doPost}
  */
 const doPost = utils.getPostHandlerFor("dsu-wizard");
@@ -12,7 +12,7 @@ if (utils.getEnv() === 'nodejs')
 /**
  * Class responsible for Authenticated DSU transactions between the client and the API Hub
  * @class DSUService
- * @module Services
+ * @memberOf Services
  */
 class DSUService {
     constructor() {

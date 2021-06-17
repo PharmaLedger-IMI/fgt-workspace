@@ -1,6 +1,6 @@
 /**
  * Base Util Functionality for Model
- * @module Model
+ * @namespace Model
  */
 module.exports = {
     Validations: require('./Validations'),

@@ -56,7 +56,7 @@ const {getMessageManager, Message} = require('./MessageManager');
  * All other Managers in this architecture can inherit from this to get access to the getIdentity && getEnvironment API from the credentials set in the pdm-loader
  *
  *
- * @module Managers
+ * @memberOf Managers
  * @class BaseManager
  * @abstract
  */

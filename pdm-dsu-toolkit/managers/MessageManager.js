@@ -8,6 +8,7 @@ const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE } = require('../constant
 
 /**
  * Class to wrap messages
+ * @memberOf MessageManager
  */
 class Message{
     /**
@@ -36,7 +37,7 @@ class Message{
  * @param {BaseManager} baseManager the base manager to have access to the identity api
  * @param {string} didString
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
- * @module mMnagers
+ * @memberOf Managers
  * @class MessageManager
  */
 class MessageManager extends Manager{

@@ -1,62 +1,34 @@
 /**
- * This Toolkit proposes a Standard Enterprise DSU SSApp Architecture && Provides the underlying API to handle DSUs in that environment
+ * This Toolkit proposes a Standard Enterprise DSU SSApp Architecture && Provides the underlying API to handle DSUs
+ * in that environment in such a way that approximates the expected of a standard enterprise application
  * @namespace pdm-dsu-toolkit
  */
 
 /**
- * Util functionality for model objects
- * @namespace pdm-dsu-toolkit.model
- * @property {module:model} Model
- */
-
-/**
- * Integration with Webcardinal and Ionic Components for 2 way binding and form validation
- * @namespace pdm-dsu-toolkit.model.validations
- * @property {module:validations} Validations
- */
-
-/**
- * Logic layer in a DSU Enterprise SSApp Environment
- * @namespace pdm-dsu-toolkit.managers
- * @property {module:managers} Managers
- */
-
-/**
- * DAO Layer in DSU creation
- * @namespace pdm-dsu-toolkit.services
- * @property {module:services} Services
- */
-
-/**
- * Integration with Webcardinal's translation API to manage localization
- * @namespace pdm-dsu-toolkit.locale
- * @property {module:locale} Locale
- */
-
-/**
- * Integration with OpenDSU's ApiHub
- * @namespace pdm-dsu-toolkit.server
- * @property {module:server} Server
- */
-
-/**
- * Util methods
- * @namespace pdm-dsu-toolkit.utils
- * @property {module:utils} Utils
- */
-
-/**
- * Provides a Environment Independent and Versatile Dossier Building API.
  *
- * Meant to be integrated into OpenDSU
- * @namespace pdm-dsu-toolkit.dt
- * @property {module:dt} dt
+ * @typedef {function} KeySSI
+ */
+
+/**
+ * represents the error object of callback Functions
+ * @typedef {string | {}} err
+ */
+
+/**
+ * Handles interactions with OpenDSU's ApiHub Server
+ * @namespace Server
+ * @memberOf pdm-dsu-toolkit
+ */
+
+/**
+ * Represents OpenDSU's Server object
+ * @typedef {*} HttpServer
  */
 
 /**
  * iterates through all the commands in the command folder and registers them
  * Is called by the apihub via the server.json
- * @module server
+ * @memberOf Server
  */
 function Init(server){
 	const path = require('path');

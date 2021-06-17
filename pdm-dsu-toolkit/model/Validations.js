@@ -1,10 +1,11 @@
 /**
  * @namespace Validations
+ * @memberOf Model
  */
 
 /**
  * Supported ion-input element types
- * @module Model
+ * @memberOf Validations
  */
 const ION_TYPES = {
     EMAIL: "email",
@@ -15,14 +16,14 @@ const ION_TYPES = {
 
 /**
  * Supported ion-input element sub-types (under the {@link ION_CONST.name_key})
- * @module Model.Validations
+ * @memberOf Validations
  */
 const SUB_TYPES = {
     TIN: "tin"
 }
 
 /**
- * @module Model.Validations
+ * @memberOf Validations
  */
 const QUERY_ROOTS = {
     controller: "controller",
@@ -40,7 +41,7 @@ const QUERY_ROOTS = {
  *       the keys will be concatenated with '--' eg: key => element.style.setProperty('--' + key, variables[key].set)
  *
  *       The placeholder ${name} can be used to mark the field's name
- * @module Model.Validations
+ * @memberOf Validations
  */
 const ION_CONST = {
     name_key: "name",
@@ -84,7 +85,7 @@ const ION_CONST = {
  * @param {string} prop
  * @param {*} value
  * @returns {string|undefined} undefined if ok, the error otherwise
- * @module Model.Validations
+ * @memberOf Validations
  */
 const propToError = function(prop, value){
     switch (prop){
@@ -98,6 +99,7 @@ const propToError = function(prop, value){
 /**
  * Does the match between the Browser's Validity state and the validators/type
  * @type {{tooShort: string, typeMismatch: string, stepMismatch: string, rangeOverFlow: string, badInput: undefined, customError: undefined, tooLong: string, patternMismatch: string, rangeUnderFlow: string, valueMissing: string}}
+ * @memberOf Validations
  */
 const ValidityStateMatcher = {
     patternMismatch: "pattern",
@@ -114,10 +116,17 @@ const ValidityStateMatcher = {
  * Returns
  * @return {*}
  * @constructor
+ * @memberOf Validations
  */
 const ValidatorRegistry = function(...initial){
     const registry =  new function(){
         const registry = {};
+
+        /**
+         *
+         * @param validator
+         * @memberOf ValidatorRegistry
+         */
         this.register = function(...validator){
             validator.forEach(v => {
                 const instance = new v();
@@ -125,6 +134,12 @@ const ValidatorRegistry = function(...initial){
             });
         }
 
+        /**
+         *
+         * @param name
+         * @return {*}
+         * @memberOf ValidatorRegistry
+         */
         this.getValidator = function(name){
             if (!(name in registry))
                 return;
@@ -135,6 +150,7 @@ const ValidatorRegistry = function(...initial){
          * does the matching between the fields validity params and the field's properties (type/subtype)
          * @param [validityState]
          * @return {*}
+         * @memberOf ValidatorRegistry
          */
         this.matchValidityState = function(validityState = ValidityStateMatcher){
             if (typeof validityState === 'string'){
@@ -158,6 +174,7 @@ const ValidatorRegistry = function(...initial){
  * Handles validations
  * @class Validator
  * @abstract
+ * @memberOf Validations
  */
 class Validator {
     /**
@@ -185,7 +202,7 @@ class Validator {
  * @param {string} text
  * @param {RegExp} pattern in the '//' notation
  * @returns {string|undefined} undefined if ok, the error otherwise
- * @module Model.Validations
+ * @memberOf Validations
  * @return {string | undefined}
  */
 const patternHasErrors = function(text, pattern){
@@ -198,6 +215,7 @@ const patternHasErrors = function(text, pattern){
  * Handles Pattern validations
  * @class PatternValidator
  * @extends Validator
+ * @memberOf Validations
  */
 class PatternValidator extends Validator {
     /**
@@ -224,7 +242,7 @@ const emailPattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~
 /**
  * @param {string} email
  * @returns {string|undefined} undefined if ok, the error otherwise
- * @module Model.Validations
+ * @memberOf Validations
  */
 const emailHasErrors = function(email){
     if (patternHasErrors(email, emailPattern))
@@ -235,6 +253,7 @@ const emailHasErrors = function(email){
  * Handles email validations
  * @class EmailValidator
  * @extends Validator
+ * @memberOf Validations
  */
 class EmailValidator extends Validator {
     /**
@@ -260,7 +279,7 @@ class EmailValidator extends Validator {
  * Validates a tin number
  * @param {string|number} tin
  * @returns {string|undefined} undefined if ok, the error otherwise
- * @module Model.Validations
+ * @memberOf Validations
  */
 const tinHasErrors = function(tin){
     if (!tin) return;
@@ -273,6 +292,7 @@ const tinHasErrors = function(tin){
  * Handles email validations
  * @class TinValidator
  * @extends Validator
+ * @memberOf Validations
  */
 class TinValidator extends Validator {
     /**
@@ -297,7 +317,7 @@ class TinValidator extends Validator {
  * Validates a number Field (only integers supported)
  * @param {number} value
  * @param props
- * @module Model.Validations
+ * @memberOf Validations
  */
 const numberHasErrors = function(value, props){
     if (props[ION_CONST.name_key] === SUB_TYPES.TIN)
@@ -313,7 +333,7 @@ const numberHasErrors = function(value, props){
  * Validates a date value
  * @param {Date} date
  * @param props
- * @module Model.Validations
+ * @memberOf Validations
  */
 const dateHasErrors = function(date, props){
     throw new Error("Not implemented date validation");
@@ -323,7 +343,7 @@ const dateHasErrors = function(date, props){
  * Validates a text value
  * @param {string} text
  * @param props
- * @module Model.Validations
+ * @memberOf Validations
  */
 const textHasErrors = function(text, props){
     if (props[ION_CONST.name_key] === SUB_TYPES.TIN)
@@ -333,7 +353,7 @@ const textHasErrors = function(text, props){
 /**
  * parses the numeric values
  * @param props
- * @module Model.Validations
+ * @memberOf Validations
  */
 const parseNumeric = function(props){
     let prop;
@@ -352,7 +372,7 @@ const parseNumeric = function(props){
  * Parses the supported attributes in the element
  * @param {HTMLElement} element
  * @return the object of existing supported attributes
- * @module Model.Validations
+ * @memberOf Validations
  */
 const getValidationAttributes = function(element){
     return {
@@ -371,7 +391,7 @@ const getValidationAttributes = function(element){
  * @param {HTMLElement} element
  * @param {object} props
  * @returns {string|undefined} undefined if ok, the error otherwise
- * @module Model.Validations
+ * @memberOf Validations
  */
 const hasRequiredAndLengthErrors = function(element, props){
     let {required, maxLength, minLength} = props;
@@ -391,7 +411,7 @@ const hasRequiredAndLengthErrors = function(element, props){
  * @param props
  * @param prefix
  * @return {boolean}
- * @module Model.Validations
+ * @memberOf Validations
  */
 const testInputEligibility = function(props, prefix){
     return !(!props[ION_CONST.name_key] || !props[ION_CONST.type_key] || props[ION_CONST.name_key].indexOf(prefix) === -1);
@@ -410,7 +430,7 @@ const testInputEligibility = function(props, prefix){
  *
  * @param {HTMLElement} element the ion-input field
  * @param {string} prefix the prefix for the ion-input to be validated
- * @module Model.Validations
+ * @memberOf Validations
  */
 const hasIonErrors = function(element, prefix){
     let props = getValidationAttributes(element);
@@ -455,7 +475,7 @@ const hasIonErrors = function(element, prefix){
  * @param {string} prefix prefix to the name of the input elements
  * @param {boolean} [force] defaults to false. if true ignores if the value changed or not
  * @returns {string|undefined} undefined if ok, the error otherwise
- * @module Model.Validations
+ * @memberOf Validations
  */
 const updateModelAndGetErrors = function(controller, element, prefix, force){
     force = !!force || false;
@@ -483,7 +503,7 @@ const updateModelAndGetErrors = function(controller, element, prefix, force){
  * @param {WebcController} controller
  * @param {HTMLElement} element
  * @param {string} hasErrors
- * @module Model.Validations
+ * @memberOf Validations
  */
 const updateStyleVariables = function(controller, element, hasErrors){
     let el, selected, q;
@@ -526,7 +546,7 @@ const updateStyleVariables = function(controller, element, hasErrors){
  * @param {string} prefix
  * @return {boolean} if there are any errors in the model
  * @param {boolean} force (Decides if forces the validation to happen even if fields havent changed)
- * @module Model.Validations
+ * @memberOf Validations
  */
 const controllerHasErrors = function(controller, prefix, force){
     let inputs = controller.element.querySelectorAll(`${ION_CONST.input_tag}[name^="${prefix}"]`);
@@ -560,7 +580,7 @@ const controllerHasErrors = function(controller, prefix, force){
  * @param {function()} [onValidModel] the function to be called when the whole Controller model is valid
  * @param {function()} [onInvalidModel] the function to be called when any part of the model is invalid
  * @param {string} [prefix] the prefix for the ion-input to be validated. defaults to 'input-'
- * @module Model.Validations
+ * @memberOf Validations
  */
 const bindIonicValidation = function(controller, onValidModel, onInvalidModel, prefix){
     if (typeof onInvalidModel === 'string' || !onInvalidModel){
@@ -616,7 +636,7 @@ const bindIonicValidation = function(controller, onValidModel, onInvalidModel, p
  *
  * @param evt
  * @private
- * @module Model.Validations
+ * @memberOf Validations
  */
 const _handleErrorElement = function(evt){
     let name = evt.detail;
@@ -645,7 +665,7 @@ const _handleErrorElement = function(evt){
  * *Does not validate 'required' or more complex attributes yet*
  * TODO use annotations to accomplish that
  * @returns {string|undefined} undefined if ok, the error otherwise
- * @module Model.Validations
+ * @memberOf Validations
  */
 const modelHasErrors = function(model){
     let error;
@@ -662,7 +682,7 @@ const modelHasErrors = function(model){
  * Provides the implementation for the Model to be validatable alongside Ionic components
  * via the {@link hasErrors} method
  * @interface
- * @module Model.Validations
+ * @memberOf Validations
  */
 class Validatable{
     /**
