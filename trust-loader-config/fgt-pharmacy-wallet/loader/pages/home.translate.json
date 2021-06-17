@@ -18,7 +18,7 @@
       {
         "name": "name",
         "element": "ion-input",
-        "label": "Name:",
+        "label": "Registered Name:",
         "public": true,
         "props": {
           "type": "text",
@@ -80,15 +80,15 @@
           "type": "number",
           "subtype": "tin",
           "placeholder": "Enter your TIN (Tax Identification Number)...",
-          "value": "5000000000",
-          "min": "1",
-          "max": "9999999999",
+          "value": 5000000000,
+          "min": 1,
+          "max": 9999999999,
           "required": true,
           "inputmode": "numeric"
         },
         "validation": {
           "required": {
-            "error": "Your Tad identification Number is mandatory"
+            "error": "Your Tin identification Number is mandatory"
           },
           "tin": {
             "args": [],

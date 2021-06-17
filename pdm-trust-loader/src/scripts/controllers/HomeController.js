@@ -40,9 +40,6 @@ export default class HomeController extends LocalizedController {
                 if (err)
                     return console.log(`${action} action failed`);
                 console.log(`${action} action successful. output: ${result}`)
-
-                if (action === 'login')
-                    await self._getLoader(self.translate("success.loading"), {cssClass: 'long-width-loader'}).present();
             });
         })
 
@@ -76,16 +73,14 @@ export default class HomeController extends LocalizedController {
      */
     async login(credentials, callback){
         let self = this;
-        let loader = this._getLoader(self.translate('loading.login'));
-        await loader.present();
-
+        const loader = self._getLoader(self.translate("success.login"));
         this.loaderService.load(credentials, loader, async (err, wallet) => {
            if (err){
+               await loader.dismiss();
                self.showErrorToast(self.translate('errors.loading'));
                return callback(err);
            }
-           self.showToast(self.translate('success.login'));
-           await loader.dismiss();
+
            callback(undefined, wallet);
         });
     }
