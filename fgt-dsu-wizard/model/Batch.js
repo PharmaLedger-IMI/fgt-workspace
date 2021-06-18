@@ -28,6 +28,10 @@ class Batch {
 
         if (!this.batchNumber)
             this.batchNumber = Utils.generateSerialNumber(6);
+
+        if (this.serialNumbers && this.serialNumbers.length)
+            if (this.quantity !== this.serialNumbers.length)
+                this.quantity = this.serialNumbers.length;
     }
 
     manage(delta, serialization = true){

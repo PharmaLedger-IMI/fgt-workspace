@@ -5,6 +5,7 @@ import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 import {getBarCodePopOver} from "../../utils/popOverUtils";
+import {ListItemLayout} from "../list-item-layout/list-item-layout";
 
 const Batch = wizard.Model.Batch;
 
@@ -139,9 +140,15 @@ export class ManagedBatchListItem {
                           })))}
                           id-prop="chip-label"
                           is-ion-item="false"
-                          orientation={this.element.querySelector('list-item-layout').orientation}
+                          orientation={this.getOrientation()}
                           onSelectEvent={this.triggerSelect.bind(this)}></pdm-item-organizer>
     )
+  }
+
+  private getOrientation(){
+    const layoutEl: ListItemLayout = this.element.querySelector('list-item-layout');
+    return layoutEl ? layoutEl.orientation : 'end';
+
   }
 
   addButtons(){

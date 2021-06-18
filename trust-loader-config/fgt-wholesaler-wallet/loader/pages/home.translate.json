@@ -83,7 +83,7 @@
           "type": "number",
           "subtype": "tin",
           "placeholder": "Enter your TIN (Tax Identification Number)...",
-          "value": 500000000,
+          "value": 5000000000,
           "min": 1,
           "max": 9999999999,
           "required": true,

@@ -4,7 +4,7 @@ export default class ShipmentController extends LocalizedController{
 
     initializeModel = () => ({
         shipmentRef: '',
-        order: JSON.stringify(''),
+        order: "{}",
         identity: {},
         mode: 'issued'
     });
@@ -39,12 +39,12 @@ export default class ShipmentController extends LocalizedController{
                 if (newRef === self.model.shipmentRef)
                     return self.shipmentEl.refresh();
                 self.model.shipmentRef = newRef;
-                self.model.order = ''
+                self.model.order = '{}'
 
             } else {
                 self.model.shipmentRef = '';
                 self.mode = 'issued';
-                self.order = '';
+                self.order = '{}';
             }
         }, {capture: true});
 
@@ -65,10 +65,17 @@ export default class ShipmentController extends LocalizedController{
      */
     async _handleCreateShipment(shipment, stockInfo, orderId) {
         let self = this;
-        if (shipment.validate())
-            return this.showErrorToast(this.translate(`create.error.invalid`));
+        shipment.id = Date.now();
+        shipment.shipmentLines = shipment.shipmentLines.map(sl => {
+            sl.batches = stockInfo.filter(si => si.orderLine.gtin === sl.gtin)[0].stock.batches;
+            return sl;
+        })
 
-        const alert = await self.showConfirm('create.confirm');
+        const errors = shipment.validate();
+        if (errors)
+            return self.showErrorToast(self.translate(`create.error.invalid`, errors.join('\n')));
+
+        const alert = await self.showConfirm(self.translate('create.confirm', shipment.requesterId));
 
         const {role} = await alert.onDidDismiss();
 

@@ -53,7 +53,7 @@
       "productCode": "Product Code:",
       "quantity": "Quantity:",
       "confirm": {
-        "message": "Please confirm Shipment creation",
+        "message": "Please confirm Shipment creation to {0}",
         "buttons": {
           "ok": "Confirm",
           "cancel": "Cancel"
@@ -67,7 +67,7 @@
       },
       "error": {
         "bind": "Could not bind participant to shipment",
-        "invalid": "Invalid Shipment: ",
+        "invalid": "Invalid Shipment:\n{0}",
         "error": "Could not create new Shipment: "
       }
     },

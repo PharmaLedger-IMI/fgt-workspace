@@ -390,6 +390,16 @@ export class LineStockManager {
     this.lines = this.result.map(r => r.orderLine);
   }
 
+  @Listen('ssapp-action')
+  async receiveAction(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    const {gtin, action} = evt.detail;
+    if (action === 'cancel')
+      return this.cancelLine(gtin);
+    this.markProductAsConfirmed(gtin, action === "confirm");
+  }
+
   private genLine(orderLine, available?){
     const self = this;
     const getButton = function(){
@@ -400,21 +410,12 @@ export class LineStockManager {
       }
     }
 
-    const receiveAction = function(evt){
-      evt.preventDefault();
-      evt.stopImmediatePropagation();
-      const {gtin, action} = evt.detail.data;
-      if (action === 'cancel')
-        return self.cancelLine(gtin);
-      self.markProductAsConfirmed(gtin, action === "confirm");
-    }
-
     return (
-      <managed-orderline-stock-chip onSendAction={receiveAction}
-                                    onClick={() => self.selectLine(orderLine.gtin)}
+      <managed-orderline-stock-chip onClick={() => self.selectLine(orderLine.gtin)}
                                     gtin={orderLine.gtin}
                                     quantity={orderLine.quantity}
                                     mode="detail"
+                                    button="cancel"
                                     available={available || undefined}
                                     {...getButton()}></managed-orderline-stock-chip>
     )
@@ -496,7 +497,28 @@ export class LineStockManager {
     const self  = this;
     if (!self.lines)
       return [];
-    return self.lines.map(u => self.genLine(u.orderLine || u));
+    return (
+      <pdm-item-organizer component-name="managed-orderline-stock-chip"
+                          component-props={JSON.stringify(self.lines.map(u => {
+                            const ul = u.orderLine || u;
+                            return {
+                              "gtin": ul.gtin,
+                              "quantity": ul.quantity,
+                              "mode": "detail",
+                              "button": self.enableActions ? "cancel" : undefined,
+                              "loader-type": SUPPORTED_LOADERS.bubblingSmall
+                          }
+                          }))}
+                          id-prop="gtin"
+                          is-ion-item="false"
+                          orientation="start"
+                          display-count="25"
+                          onSelectEvent={(evt) => {
+                            evt.preventDefault();
+                            evt.stopImmediatePropagation();
+                            self.selectLine(evt.detail);
+                          }}></pdm-item-organizer>
+    )
   }
 
   getMainHeader(){
@@ -513,12 +535,12 @@ export class LineStockManager {
 
   private getContent(){
     const content = [<ion-col size={this.showStock ? "6" : "12"}>
-                      {this.showStock ? this.getOrderLines() : this.getSimpleOrderLines()}
-                    </ion-col>];
+      {this.showStock ? this.getOrderLines() : this.getSimpleOrderLines()}
+    </ion-col>];
     if (this.showStock)
       content.push(<ion-col size="6">
-                    {...this.getAvailableStock()}
-                  </ion-col>)
+        {...this.getAvailableStock()}
+      </ion-col>)
     return content;
   }
 

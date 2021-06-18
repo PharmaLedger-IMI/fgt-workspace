@@ -20,9 +20,9 @@
 
 ## Events
 
-| Event        | Description                           | Type                                   |
-| ------------ | ------------------------------------- | -------------------------------------- |
-| `sendAction` | Through this event actions are passed | `CustomEvent<OverlayEventDetail<any>>` |
+| Event          | Description                           | Type               |
+| -------------- | ------------------------------------- | ------------------ |
+| `ssapp-action` | Through this event actions are passed | `CustomEvent<any>` |
 
 
 ## Dependencies
@@ -30,7 +30,6 @@
 ### Used by
 
  - [line-stock-manager](../line-stock-manager)
- - [managed-received-order](../managed-received-order)
 
 ### Depends on
 
@@ -41,7 +40,6 @@
 graph TD;
   managed-orderline-stock-chip --> generic-chip
   line-stock-manager --> managed-orderline-stock-chip
-  managed-received-order --> managed-orderline-stock-chip
   style managed-orderline-stock-chip fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

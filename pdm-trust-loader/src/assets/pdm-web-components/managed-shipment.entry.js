@@ -110,6 +110,7 @@ const ManagedShipment = class {
       if (err)
         return this.sendError(`Could not retrieve shipment ${self.shipmentRef}`);
       self.shipment = shipment;
+      self.participantId = this.getType() === SHIPMENT_TYPE.ISSUED ? shipment.requesterId : shipment.senderId;
     });
   }
   async componentDidRender() {
@@ -167,7 +168,7 @@ const ManagedShipment = class {
   }
   async reset() {
     this.shipmentRef = '';
-    if (!this.orderJSON || this.orderJSON.startsWith('@')) { // for webcardinal compatibility
+    if (!this.orderJSON || this.orderJSON.startsWith('@') || this.orderJSON === "{}") { // for webcardinal compatibility
       this.participantId = '';
       const stockEl = this.getStockManagerEl();
       if (stockEl)
@@ -189,12 +190,12 @@ const ManagedShipment = class {
     evt.stopImmediatePropagation();
     this.navigateToTab(`tab-${this.getType()}-shipments`, {});
   }
-  create(evt) {
+  async create(evt) {
     evt.preventDefault();
     evt.stopImmediatePropagation();
     this.sendCreateAction.emit({
-      shipment: new Shipment(undefined, this.identity.id, evt.detail.senderId, this.identity.address, undefined, this.lines.slice()),
-      stock: this.getStockManagerEl().getResult()
+      shipment: new Shipment(undefined, this.identity.id, evt.detail.requesterId, this.identity.address, undefined, this.lines.slice()),
+      stock: await this.getStockManagerEl().getResult()
     });
   }
   isCreate() {
@@ -259,7 +260,7 @@ const ManagedShipment = class {
           const options = {
             cssClass: 'product-select'
           };
-          return (h("ion-select", { name: "input-requesterId", interface: "popover", interfaceOptions: options, class: "requester-select", value: isCreate ? self.participantId : '' }, self.requesters.map(s => (h("ion-select-option", { value: s }, s)))));
+          return (h("ion-select", { name: "input-requesterId", interface: "popover", interfaceOptions: options, class: "requester-select", disabled: isCreate && self.order && !self.order.requesterID, value: isCreate ? (self.order ? self.order.requesterId : self.participantId) : '' }, self.requesters.map(s => (h("ion-select-option", { value: s }, s)))));
         }
         else if (self.getType() === SHIPMENT_TYPE.RECEIVED) {
           return (h("ion-input", { name: "input-requesterId", disabled: true, value: self.shipment.requesterId }));
@@ -338,7 +339,7 @@ const ManagedShipment = class {
   getManage() {
     if (this.isCreate())
       return;
-    return (h("line-stock-manager", { lines: typeof this.lines !== 'string' ? this.lines : [], "show-stock": this.getType() === SHIPMENT_TYPE.RECEIVED, "stock-string": this.stockString, "no-stock-string": this.noStockString, "select-string": this.selectString, "remaining-string": this.remainingString, "order-missing-string": this.orderMissingString, "available-string": this.availableString, "unavailable-string": this.unavailableString, "confirmed-string": this.confirmedString, "confirm-all-string": this.confirmAllString, "reset-all-string": this.resetAllString }));
+    return (h("line-stock-manager", { lines: this.lines, "show-stock": this.getType() === SHIPMENT_TYPE.RECEIVED, "enable-action": this.isCreate() && this.getType() === SHIPMENT_TYPE.ISSUED, "stock-string": this.stockString, "no-stock-string": this.noStockString, "select-string": this.selectString, "remaining-string": this.remainingString, "order-missing-string": this.orderMissingString, "available-string": this.availableString, "unavailable-string": this.unavailableString, "confirmed-string": this.confirmedString, "confirm-all-string": this.confirmAllString, "reset-all-string": this.resetAllString }));
   }
   getView() {
   }

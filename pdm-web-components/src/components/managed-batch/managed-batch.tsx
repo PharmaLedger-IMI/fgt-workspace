@@ -244,7 +244,7 @@ export class ManagedBatch implements CreateManageView{
         <ion-label position="floating">{self.expiryString}</ion-label>
         <ion-input type="date" name="input-expiry" min={formatDate(new Date())} required={true}
                    disabled={!isCreate} placeholder={self.expiryPlaceholderString}
-                   value={isCreate ? '' : (self.batch ? self.batch.expiry : '')}></ion-input>
+                   value={isCreate ? '' : (self.batch ? formatDate(new Date(self.batch.expiry)) : '')}></ion-input>
       </ion-item>,
       <ion-item>
         <ion-label position="floating">{self.serialsString}</ion-label>
@@ -288,6 +288,7 @@ export class ManagedBatch implements CreateManageView{
                                    create-string={this.addBatchString}
                                    clear-string={this.clearString}
                                    icon-name="layers"
+                                   break-point="xl-4"
                                    is-create={this.isCreate()}
                                    onGoBackEvent={(evt) => this.navigateBack(evt)}
                                    onCreateEvent={(evt) => this.create(evt)}>

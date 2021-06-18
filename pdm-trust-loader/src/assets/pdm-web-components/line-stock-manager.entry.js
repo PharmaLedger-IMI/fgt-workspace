@@ -293,6 +293,14 @@ const LineStockManager = class {
     this.selectLine(undefined);
     this.lines = this.result.map(r => r.orderLine);
   }
+  async receiveAction(evt) {
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    const { gtin, action } = evt.detail;
+    if (action === 'cancel')
+      return this.cancelLine(gtin);
+    this.markProductAsConfirmed(gtin, action === "confirm");
+  }
   genLine(orderLine, available) {
     const self = this;
     const getButton = function () {
@@ -302,15 +310,7 @@ const LineStockManager = class {
         button: !!orderLine.confirmed && available < orderLine.quantity ? "cancel" : "confirm"
       };
     };
-    const receiveAction = function (evt) {
-      evt.preventDefault();
-      evt.stopImmediatePropagation();
-      const { gtin, action } = evt.detail.data;
-      if (action === 'cancel')
-        return self.cancelLine(gtin);
-      self.markProductAsConfirmed(gtin, action === "confirm");
-    };
-    return (h("managed-orderline-stock-chip", Object.assign({ onSendAction: receiveAction, onClick: () => self.selectLine(orderLine.gtin), gtin: orderLine.gtin, quantity: orderLine.quantity, mode: "detail", available: available || undefined }, getButton())));
+    return (h("managed-orderline-stock-chip", Object.assign({ onClick: () => self.selectLine(orderLine.gtin), gtin: orderLine.gtin, quantity: orderLine.quantity, mode: "detail", button: "cancel", available: available || undefined }, getButton())));
   }
   getOrderLines() {
     const self = this;
@@ -358,7 +358,20 @@ const LineStockManager = class {
     const self = this;
     if (!self.lines)
       return [];
-    return self.lines.map(u => self.genLine(u.orderLine || u));
+    return (h("pdm-item-organizer", { "component-name": "managed-orderline-stock-chip", "component-props": JSON.stringify(self.lines.map(u => {
+        const ul = u.orderLine || u;
+        return {
+          "gtin": ul.gtin,
+          "quantity": ul.quantity,
+          "mode": "detail",
+          "button": self.enableActions ? "cancel" : undefined,
+          "loader-type": SUPPORTED_LOADERS.bubblingSmall
+        };
+      })), "id-prop": "gtin", "is-ion-item": "false", orientation: "start", "display-count": "25", onSelectEvent: (evt) => {
+        evt.preventDefault();
+        evt.stopImmediatePropagation();
+        self.selectLine(evt.detail);
+      } }));
   }
   getMainHeader() {
     return (h("ion-item-divider", null, this.linesString));

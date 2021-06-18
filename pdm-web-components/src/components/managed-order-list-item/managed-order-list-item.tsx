@@ -4,6 +4,7 @@ import {WebResolver, WebManagerService} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
 import {getBarCodePopOver} from "../../utils/popOverUtils";
+import {ListItemLayout} from "../list-item-layout/list-item-layout";
 
 const Order = wizard.Model.Order;
 
@@ -130,13 +131,18 @@ export class ManagedOrderListItem {
                           id-prop="gtin"
                           is-ion-item="false"
                           display-count="3"
-                          orientation={this.element.querySelector('list-item-layout').orientation}
+                          orientation={this.getOrientation()}
                           onSelectEvent={(evt) => {
                             evt.preventDefault();
                             evt.stopImmediatePropagation();
                             console.log(`Selected ${evt.detail}`);
                           }}></pdm-item-organizer>
     );
+  }
+
+  private getOrientation(){
+    const layout: ListItemLayout = this.element.querySelector('list-item-layout');
+    return layout ? layout.orientation : 'end';
   }
 
   addButtons(){

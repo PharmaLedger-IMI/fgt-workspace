@@ -14,7 +14,7 @@ function defineBarcodePopoverContent(){
 
   customElements.define(BAR_CODE_POPOVER_ELEMENT, class extends HTMLElement{
     connectedCallback(){
-      const popOverElement = document.querySelector('ion-popover');
+      const popOverElement: any = document.querySelector('ion-popover');
       if (!popOverElement || !popOverElement.componentProps)
         return console.log(`No Properties passed to the Bar Code Pop over`);
       const {type, size, scale, data} = popOverElement.componentProps;
@@ -40,7 +40,7 @@ export async function getBarCodePopOver(props, evt){
     scale: "6",
     data: ""
   }, props)
-  const popover = Object.assign(document.createElement('ion-popover'), {
+  const popover: any = Object.assign(document.createElement('ion-popover'), {
     component: BAR_CODE_POPOVER_ELEMENT,
     cssClass: 'bar-code-popover',
     translucent: true,
@@ -64,7 +64,7 @@ function defineProductPopOverContent(){
   customElements.define(PRODUCT_POPOVER_ELEMENT, class extends HTMLElement{
     connectedCallback(){
       const contentEl = this;
-      const popOverElement = contentEl.closest('ion-popover');
+      const popOverElement: any = contentEl.closest('ion-popover');
       if (!popOverElement || !popOverElement.componentProps)
         return console.log(`No Properties passed to the Bar Code Pop over`);
       const products = popOverElement.componentProps;
@@ -99,7 +99,7 @@ function defineProductPopOverContent(){
  */
 export async function getProductPopOver(evt, products: string[]): Promise<any>{
   defineProductPopOverContent();
-  const popover = Object.assign(document.createElement('ion-popover'), {
+  const popover: any = Object.assign(document.createElement('ion-popover'), {
     component: PRODUCT_POPOVER_ELEMENT,
     cssClass: 'product-popover',
     translucent: true,

@@ -2,6 +2,7 @@ import {Component, Host, h, Prop, State, Watch, Method, Element, Event, EventEmi
 import {WebResolver, WebManagerService} from '../../services/WebManagerService';
 import wizard from '../../services/WizardService';
 import {HostElement} from "../../decorators";
+import {ListItemLayout} from "../list-item-layout/list-item-layout";
 
 const Shipment = wizard.Model.Shipment;
 
@@ -133,13 +134,19 @@ export class ManagedShipmentListItem{
                           id-prop="gtin"
                           is-ion-item="false"
                           display-count="3"
-                          orientation={this.element.querySelector('list-item-layout').orientation}
+                          orientation={this.getOrientation()}
                           onSelectEvent={(evt) => {
                             evt.preventDefault();
                             evt.stopImmediatePropagation();
                             console.log(`Selected ${evt.detail}`);
                           }}></pdm-item-organizer>
     );
+  }
+
+  private getOrientation(){
+    const layoutEl: ListItemLayout = this.element.querySelector('list-item-layout');
+    return layoutEl ? layoutEl.orientation : 'end';
+
   }
 
   private getRelevantParticipantId(){

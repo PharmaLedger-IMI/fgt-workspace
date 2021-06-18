@@ -4,6 +4,7 @@ import {WebManager, WebManagerService} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
+import {ListItemLayout} from "../list-item-layout/list-item-layout";
 
 const Product = wizard.Model.Product;
 
@@ -132,13 +133,19 @@ export class ManagedProductListItem {
                           })))}
                           id-prop="gtin-batch"
                           is-ion-item="false"
-                          orientation={this.element.querySelector('list-item-layout').orientation}
+                          orientation={this.getOrientation()}
                           onSelectEvent={(evt) => {
                             evt.preventDefault();
                             evt.stopImmediatePropagation();
                             console.log(`Selected ${evt.detail}`);
                           }}></pdm-item-organizer>
     )
+  }
+
+  private getOrientation(){
+    const layoutEl: ListItemLayout = this.element.querySelector('list-item-layout');
+    return layoutEl ? layoutEl.orientation : 'end';
+
   }
 
   addButtons(){

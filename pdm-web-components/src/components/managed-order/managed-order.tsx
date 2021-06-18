@@ -168,6 +168,7 @@ export class ManagedOrder implements CreateManageView{
       if (err)
         return this.sendError(`Could not retrieve order ${self.orderRef}`);
       self.order = order;
+      self.participantId = this.getType() === ORDER_TYPE.ISSUED ? order.senderId : order.requesterId
       self.lines = [...order.orderLines];
     });
   }
@@ -227,7 +228,7 @@ export class ManagedOrder implements CreateManageView{
 
   @Method()
   async reset(){
-    if (this.isCreate() && this.lines){
+    if (this.isCreate() && this.lines && this.orderLines !== "[]"){
       this.order = undefined;
     } else {
       this.order = undefined;
@@ -348,7 +349,7 @@ export class ManagedOrder implements CreateManageView{
       }
       return (
         <ion-item lines="none">
-          <ion-label position="stacked">{self.fromAtString}</ion-label>
+          <ion-label position="stacked">{self.statusString}</ion-label>
           {getBadge()}
         </ion-item>
       )

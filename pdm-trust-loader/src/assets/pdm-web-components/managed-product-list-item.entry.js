@@ -92,11 +92,15 @@ const ManagedProductListItem = class {
         "gtin-batch": gtinBatch,
         "mode": "detail",
         "loader-type": SUPPORTED_LOADERS.bubblingSmall
-      }))), "id-prop": "gtin-batch", "is-ion-item": "false", orientation: this.element.querySelector('list-item-layout').orientation, onSelectEvent: (evt) => {
+      }))), "id-prop": "gtin-batch", "is-ion-item": "false", orientation: this.getOrientation(), onSelectEvent: (evt) => {
         evt.preventDefault();
         evt.stopImmediatePropagation();
         console.log(`Selected ${evt.detail}`);
       } }));
+  }
+  getOrientation() {
+    const layoutEl = this.element.querySelector('list-item-layout');
+    return layoutEl ? layoutEl.orientation : 'end';
   }
   addButtons() {
     let self = this;

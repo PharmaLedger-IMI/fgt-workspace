@@ -63,6 +63,7 @@ export class CreateManageViewLayout {
         return false;
       props[`size-${breakpoints[i]}`] = '' + (reverse ? 12 - bp : bp);
     });
+    return props;
   }
 
 
@@ -107,7 +108,7 @@ export class CreateManageViewLayout {
   private getHeader(){
     return [
       <div class="flex ion-align-items-center">
-        <ion-icon name="layers" size="large" color="medium"></ion-icon>
+        <ion-icon name={this.iconName} size="large" color="secondary"></ion-icon>
         <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">
           {this.isCreate ? this.createTitleString : this.manageTitleString}
         </ion-label>

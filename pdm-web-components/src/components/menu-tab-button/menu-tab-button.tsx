@@ -92,7 +92,7 @@ export class MenuTabButton {
 
   private async getPopOver(evt, options){
     this.definePopOverContent(options);
-    const popover = Object.assign(document.createElement('ion-popover'), {
+    const popover: any = Object.assign(document.createElement('ion-popover'), {
       component: this.getName(),
       cssClass: 'menu-tab-button-popover',
       translucent: true,
@@ -135,7 +135,8 @@ export class MenuTabButton {
 
         this.querySelectorAll('ion-item').forEach(item => {
           item.addEventListener('click', () => {
-            contentEl.closest('ion-popover').dismiss(undefined, item.getAttribute('tab'));
+            const popover: any = contentEl.closest('ion-popover');
+            popover.dismiss(undefined, item.getAttribute('tab'));
           });
         });
       }

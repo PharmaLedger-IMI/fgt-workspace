@@ -63,7 +63,7 @@ class IssuedShipmentManager extends ShipmentManager {
      * @private
      */
     _bindParticipant(shipment, callback){
-        shipment.shipmentId = shipment.shipmentId || (new Date()).toISOString();
+        shipment.shipmentId = shipment.shipmentId || Date.now();
 
         let self = this;
         self.getIdentity((err, wholesaler) => {

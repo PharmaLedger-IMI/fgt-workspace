@@ -4,7 +4,6 @@ import {WebManagerService, WebResolver} from "../../services/WebManagerService";
 import wizard from '../../services/WizardService'
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 import {getSteppedColor, FALLBACK_COLOR} from "../../utils/colorUtils";
-import {OverlayEventDetail} from "@ionic/core";
 
 const {Stock}  = wizard.Model;
 
@@ -32,15 +31,20 @@ export class ManagedOrderlineStockChip {
   /**
    * Through this event actions are passed
    */
-  @Event()
-  sendAction: EventEmitter<OverlayEventDetail>;
+  @Event({
+    eventName: 'ssapp-action',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  sendAction: EventEmitter;
 
-  private sendActionEvent(){
+  private sendActionEvent(evt?){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
     const event = this.sendAction.emit({
-      data: {
         action: this.button,
         gtin: this.gtin
-      }
     });
     if (!event.defaultPrevented)
       console.log(`Ignored action: ${this.button} for gtin: ${this.gtin}`);
@@ -146,7 +150,7 @@ export class ManagedOrderlineStockChip {
     }
 
     return (
-      <ion-button slot="buttons" fill="clear" size="small" color={props.color} onClick={() => this.sendActionEvent()} disabled={props.disabled}>
+      <ion-button slot="buttons" fill="clear" size="small" color={props.color} onClick={this.sendActionEvent.bind(this)} disabled={props.disabled}>
         <ion-icon slot="icon-only" name={props.iconName}></ion-icon>
       </ion-button>
     )

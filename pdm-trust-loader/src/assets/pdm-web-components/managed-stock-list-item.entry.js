@@ -81,21 +81,25 @@ const ManagedProductListItem = class {
         return (h("ion-skeleton-text", { animated: true }));
       return self.stock.name;
     };
-    return (h("ion-label", { color: "secondary" }, getGtinLabel(), h("span", { class: "ion-padding-start" }, getNameLabel()), h("span", { class: "ion-padding-start" }, getQuantityLabel())));
+    return (h("ion-label", { slot: "label", color: "secondary" }, getGtinLabel(), h("span", { class: "ion-padding-start" }, getNameLabel()), h("span", { class: "ion-padding-start" }, getQuantityLabel())));
   }
   addBatches() {
     if (!this.stock || !this.batches)
       return (h("ion-skeleton-text", { slot: "content", animated: true }));
     return (h("pdm-item-organizer", { slot: "content", "component-name": "batch-chip", "component-props": JSON.stringify(this.batches.map(batch => ({
         "gtin-batch": this.stock.gtin + '-' + batch.batchNumber,
-        "quantity": batch.quantity,
+        "quantity": batch.getQuantity(),
         "mode": "detail",
         "loader-type": SUPPORTED_LOADERS.bubblingSmall
-      }))), "id-prop": "gtin-batch", "is-ion-item": "false", "display-count": "2", orientation: this.element.querySelector('list-item-layout').orientation, onSelectEvent: (evt) => {
+      }))), "id-prop": "gtin-batch", "is-ion-item": "false", "display-count": "2", orientation: this.getOrientation(), onSelectEvent: (evt) => {
         evt.preventDefault();
         evt.stopImmediatePropagation();
         console.log(`Selected ${evt.detail}`);
       } }));
+  }
+  getOrientation() {
+    const layoutEl = this.element.querySelector('list-item-layout');
+    return layoutEl ? layoutEl.orientation : 'end';
   }
   addButtons() {
     let self = this;

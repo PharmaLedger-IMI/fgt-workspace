@@ -114,6 +114,7 @@ const ManagedOrder = class {
       if (err)
         return this.sendError(`Could not retrieve order ${self.orderRef}`);
       self.order = order;
+      self.participantId = this.getType() === ORDER_TYPE.ISSUED ? order.senderId : order.requesterId;
       self.lines = [...order.orderLines];
     });
   }
@@ -158,7 +159,7 @@ const ManagedOrder = class {
     this.lines = JSON.parse(newVal).map(o => new OrderLine(o.gtin, o.quantity, o.requesterId, o.senderId));
   }
   async reset() {
-    if (this.isCreate() && this.lines) {
+    if (this.isCreate() && this.lines && this.orderLines !== "[]") {
       this.order = undefined;
     }
     else {
@@ -246,7 +247,7 @@ const ManagedOrder = class {
           return (h("ion-skeleton-text", { animated: true }));
         return (h("ion-badge", { class: "ion-padding-horizontal" }, self.order.status));
       };
-      return (h("ion-item", { lines: "none" }, h("ion-label", { position: "stacked" }, self.fromAtString), getBadge()));
+      return (h("ion-item", { lines: "none" }, h("ion-label", { position: "stacked" }, self.statusString), getBadge()));
     };
     const getProductInput = function () {
       return (h("ion-item", { lines: "none" }, h("ion-label", { position: "stacked" }, self.productsCodeString), h("ion-input", { name: "input-gtin", type: "number", value: self.currentGtin }), h("ion-buttons", { slot: "end" }, h("ion-button", { onClick: () => self.scan(), color: "medium", size: "large", fill: "clear" }, h("ion-icon", { slot: "icon-only", name: "scan-circle" })), h("ion-button", { onClick: (evt) => self.showProductPopOver(evt), color: "secondary", size: "large", fill: "clear" }, h("ion-icon", { slot: "icon-only", name: "add-circle" })))));

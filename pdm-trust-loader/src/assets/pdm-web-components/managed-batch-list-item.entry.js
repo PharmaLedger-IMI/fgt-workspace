@@ -95,7 +95,11 @@ const ManagedBatchListItem = class {
     return (h("pdm-item-organizer", { slot: "content", "component-name": "generic-chip", "component-props": JSON.stringify(this.batch.serialNumbers.map(serial => ({
         "chip-label": serial,
         "class": "ion-margin-start"
-      }))), "id-prop": "chip-label", "is-ion-item": "false", orientation: this.element.querySelector('list-item-layout').orientation, onSelectEvent: this.triggerSelect.bind(this) }));
+      }))), "id-prop": "chip-label", "is-ion-item": "false", orientation: this.getOrientation(), onSelectEvent: this.triggerSelect.bind(this) }));
+  }
+  getOrientation() {
+    const layoutEl = this.element.querySelector('list-item-layout');
+    return layoutEl ? layoutEl.orientation : 'end';
   }
   addButtons() {
     let self = this;

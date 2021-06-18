@@ -5,6 +5,7 @@ import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 import {getBarCodePopOver} from "../../utils/popOverUtils";
+import {ListItemLayout} from "../list-item-layout/list-item-layout";
 
 const {Stock, Batch} = wizard.Model;
 
@@ -114,7 +115,7 @@ export class ManagedProductListItem {
     }
 
     return(
-      <ion-label color="secondary">
+      <ion-label slot="label" color="secondary">
         {getGtinLabel()}
         <span class="ion-padding-start">{getNameLabel()}</span>
         <span class="ion-padding-start">{getQuantityLabel()}</span>
@@ -128,20 +129,26 @@ export class ManagedProductListItem {
       <pdm-item-organizer slot="content"  component-name="batch-chip"
                           component-props={JSON.stringify(this.batches.map(batch => ({
                             "gtin-batch": this.stock.gtin + '-' + batch.batchNumber,
-                            "quantity": batch.quantity,
+                            "quantity": batch.getQuantity(),
                             "mode": "detail",
                             "loader-type": SUPPORTED_LOADERS.bubblingSmall
                           })))}
                           id-prop="gtin-batch"
                           is-ion-item="false"
                           display-count="2"
-                          orientation={this.element.querySelector('list-item-layout').orientation}
+                          orientation={this.getOrientation()}
                           onSelectEvent={(evt) => {
                             evt.preventDefault();
                             evt.stopImmediatePropagation();
                             console.log(`Selected ${evt.detail}`);
                           }}></pdm-item-organizer>
     )
+  }
+
+  private getOrientation(){
+    const layoutEl: ListItemLayout = this.element.querySelector('list-item-layout');
+    return layoutEl ? layoutEl.orientation : 'end';
+
   }
 
   addButtons(){

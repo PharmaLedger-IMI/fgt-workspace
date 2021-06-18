@@ -103,9 +103,11 @@ graph TD;
   managed-order --> pdm-barcode-scanner-controller
   line-stock-manager --> batch-chip
   line-stock-manager --> managed-orderline-stock-chip
+  line-stock-manager --> pdm-item-organizer
   batch-chip --> multi-spinner
   batch-chip --> generic-chip
   managed-orderline-stock-chip --> generic-chip
+  pdm-item-organizer --> more-chip
   style managed-order fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
