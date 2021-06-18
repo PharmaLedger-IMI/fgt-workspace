@@ -66,6 +66,7 @@ export default class ShipmentController extends LocalizedController{
     async _handleCreateShipment(shipment, stockInfo, orderId) {
         let self = this;
         shipment.id = Date.now();
+        shipment.
         shipment.shipmentLines = shipment.shipmentLines.map(sl => {
             sl.batches = stockInfo.filter(si => si.orderLine.gtin === sl.gtin)[0].stock.batches;
             return sl;

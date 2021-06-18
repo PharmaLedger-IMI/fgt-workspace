@@ -1,0 +1,3165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability DSU Wizard Documentation Commands</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability DSU Wizard Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/epi-workspace/fgt-dsu-wizard.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com"
+                        >
+                            Example Application - Finished Goods Traceability
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Namespaces</h3><ul><li><a href="Commands.html">Commands</a></li><li><a href="Constants.html">Constants</a></li><li><a href="Managers.html">Managers</a></li><li><a href="Model.html">Model</a></li><li><a href="Resolvers.html">Resolvers</a></li><li><a href="Services.html">Services</a></li></ul><h3>Classes</h3><ul><li><a href="Batch.html">Batch</a></li><li><a href="DirectoryEntry.html">DirectoryEntry</a></li><li><a href="MAH.html">MAH</a></li><li><a href="Managers.BatchManager.html">BatchManager</a></li><li><a href="Managers.DirectoryManager.html">DirectoryManager</a></li><li><a href="Managers.IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="Managers.IssuedShipmentManager.html">IssuedShipmentManager</a></li><li><a href="Managers.OrderLineManager.html">OrderLineManager</a></li><li><a href="Managers.OrderManager.html">OrderManager</a></li><li><a href="Managers.ParticipantManager.html">ParticipantManager</a></li><li><a href="Managers.ProductManager.html">ProductManager</a></li><li><a href="Managers.ReceivedShipmentManager.html">ReceivedShipmentManager</a></li><li><a href="Managers.ShipmentLineManager.html">ShipmentLineManager</a></li><li><a href="Managers.ShipmentManager.html">ShipmentManager</a></li><li><a href="Managers.StockManager.html">StockManager</a></li><li><a href="Model.Batch.html">Batch</a></li><li><a href="Model.DirectoryEntry.html">DirectoryEntry</a></li><li><a href="Model.MAH.html">MAH</a></li><li><a href="Model.Order.html">Order</a></li><li><a href="Model.OrderLine.html">OrderLine</a></li><li><a href="Model.OrderStatus.html">OrderStatus</a></li><li><a href="Model.Participant.html">Participant</a></li><li><a href="Model.Pharmacy.html">Pharmacy</a></li><li><a href="Model.Product.html">Product</a></li><li><a href="Model.Shipment.html">Shipment</a></li><li><a href="Model.ShipmentCode.html">ShipmentCode</a></li><li><a href="Model.ShipmentLine.html">ShipmentLine</a></li><li><a href="Model.Stock.html">Stock</a></li><li><a href="Model.TrackingCode.html">TrackingCode</a></li><li><a href="Model.Wholesaler.html">Wholesaler</a></li><li><a href="Order.html">Order</a></li><li><a href="OrderLine.html">OrderLine</a></li><li><a href="Participant.html">Participant</a></li><li><a href="Pharmacy.html">Pharmacy</a></li><li><a href="Product.html">Product</a></li><li><a href="Resolvers.BatchResolver.html">BatchResolver</a></li><li><a href="Resolvers.ProductResolver.html">ProductResolver</a></li><li><a href="Shipment.html">Shipment</a></li><li><a href="ShipmentCode.html">ShipmentCode</a></li><li><a href="ShipmentLine.html">ShipmentLine</a></li><li><a href="Stock.html">Stock</a></li><li><a href="TrackingCode.html">TrackingCode</a></li><li><a href="Wholesaler.html">Wholesaler</a></li></ul><h3>Global</h3><ul><li><a href="global.html#create">create</a></li><li><a href="global.html#get">get</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Namespace</p>
+                    <h1>Commands</h1>
+                </header>
+                
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>Commands</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>Defines the strategies for the KeySSI's for each DSU Type</p></div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_index.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_index.js.html">commands/index.js</a>, <a href="commands_index.js.html#line1">line 1</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".command">
+        <a class="href-link" href="#.command">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                command<span class="signature">(server)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary">Registers the endpoint on the api-hub's dsu-wizard.</p>
+    
+    
+    <div class="description">
+        <p>Registers the endpoint on the api-hub's dsu-wizard.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>server</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">HttpServer</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setBatchSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setBatchSSI.js.html">commands/setBatchSSI.js</a>, <a href="commands_setBatchSSI.js.html#line31">line 31</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".command">
+        <a class="href-link" href="#.command">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                command<span class="signature">(server)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary">Registers the endpoint on the api-hub's dsu-wizard.</p>
+    
+    
+    <div class="description">
+        <p>Registers the endpoint on the api-hub's dsu-wizard.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>server</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">HttpServer</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setOrderLineSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setOrderLineSSI.js.html">commands/setOrderLineSSI.js</a>, <a href="commands_setOrderLineSSI.js.html#line29">line 29</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".command">
+        <a class="href-link" href="#.command">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                command<span class="signature">(server)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary">Registers the endpoint on the api-hub's dsu-wizard.</p>
+    
+    
+    <div class="description">
+        <p>Registers the endpoint on the api-hub's dsu-wizard.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>server</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">HttpServer</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setOrderSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setOrderSSI.js.html">commands/setOrderSSI.js</a>, <a href="commands_setOrderSSI.js.html#line29">line 29</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".command">
+        <a class="href-link" href="#.command">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                command<span class="signature">(server)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary">Registers the endpoint on the api-hub's dsu-wizard.</p>
+    
+    
+    <div class="description">
+        <p>Registers the endpoint on the api-hub's dsu-wizard.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>server</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">HttpServer</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setParticipantSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setParticipantSSI.js.html">commands/setParticipantSSI.js</a>, <a href="commands_setParticipantSSI.js.html#line21">line 21</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".command">
+        <a class="href-link" href="#.command">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                command<span class="signature">(server)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary">Registers the endpoint on the api-hub's dsu-wizard.</p>
+    
+    
+    <div class="description">
+        <p>Registers the endpoint on the api-hub's dsu-wizard.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>server</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">HttpServer</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setProductSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setProductSSI.js.html">commands/setProductSSI.js</a>, <a href="commands_setProductSSI.js.html#line29">line 29</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".command">
+        <a class="href-link" href="#.command">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                command<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary">Registers the endpoint on the api-hub's dsu-wizard.</p>
+    
+    
+    <div class="description">
+        <p>Registers the endpoint on the api-hub's dsu-wizard.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setShipmentCodeSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setShipmentCodeSSI.js.html">commands/setShipmentCodeSSI.js</a>, <a href="commands_setShipmentCodeSSI.js.html#line27">line 27</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".command">
+        <a class="href-link" href="#.command">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                command<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary">Registers the endpoint on the api-hub's dsu-wizard.</p>
+    
+    
+    <div class="description">
+        <p>Registers the endpoint on the api-hub's dsu-wizard.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setShipmentLineSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setShipmentLineSSI.js.html">commands/setShipmentLineSSI.js</a>, <a href="commands_setShipmentLineSSI.js.html#line27">line 27</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".command">
+        <a class="href-link" href="#.command">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                command<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary">Registers the endpoint on the api-hub's dsu-wizard.</p>
+    
+    
+    <div class="description">
+        <p>Registers the endpoint on the api-hub's dsu-wizard.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setShipmentSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setShipmentSSI.js.html">commands/setShipmentSSI.js</a>, <a href="commands_setShipmentSSI.js.html#line27">line 27</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".command">
+        <a class="href-link" href="#.command">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                command<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary">Registers the endpoint on the api-hub's dsu-wizard.</p>
+    
+    
+    <div class="description">
+        <p>Registers the endpoint on the api-hub's dsu-wizard.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setStatusSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setStatusSSI.js.html">commands/setStatusSSI.js</a>, <a href="commands_setStatusSSI.js.html#line26">line 26</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".createBatchSSI">
+        <a class="href-link" href="#.createBatchSSI">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                createBatchSSI<span class="signature">(data, domain)</span><span class="type-signature"> &rarr; {ArraySSI}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Defines how to create the keyssi for a batch dsu</p>.</p>
+    
+    
+    <div class="description">
+        <p>Defines how to create the keyssi for a batch dsu</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>data</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>necessary properties:</p>
+<ul>
+    <li>gtin - the gtin of the batch</li>
+    <li>batch - the batch number</li>
+    <li>(optional) openDSU#constants#BRICKS_DOMAIN_KEY - the subDomain to store the bricks in. Will be concatenated like 'domain.subDomain'</li>
+</ul></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>domain</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>the anchoring domain</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setBatchSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setBatchSSI.js.html">commands/setBatchSSI.js</a>, <a href="commands_setBatchSSI.js.html#line14">line 14</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">ArraySSI</span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".createOrderLineSSI">
+        <a class="href-link" href="#.createOrderLineSSI">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                createOrderLineSSI<span class="signature">(data, domain)</span><span class="type-signature"> &rarr; {ArraySSI}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Defines how to create the keyssi for an orderLine dsu</p>.</p>
+    
+    
+    <div class="description">
+        <p>Defines how to create the keyssi for an orderLine dsu</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>data</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>necessary properties:</p>
+<ul>
+    <li>data</li> the specific string to be used as input
+    <li>(optional) openDSU#constants#BRICKS_DOMAIN_KEY - the subDomain to store the bricks in. Will be concatenated like 'domain.subDomain'</li>
+</ul></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>domain</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>the anchoring domain</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setOrderLineSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setOrderLineSSI.js.html">commands/setOrderLineSSI.js</a>, <a href="commands_setOrderLineSSI.js.html#line12">line 12</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">ArraySSI</span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".createOrderSSI">
+        <a class="href-link" href="#.createOrderSSI">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                createOrderSSI<span class="signature">(data, domain)</span><span class="type-signature"> &rarr; {ArraySSI}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Defines how to create the keyssi for an <a href="Order.html">Order</a> dsu</p>.</p>
+    
+    
+    <div class="description">
+        <p>Defines how to create the keyssi for an <a href="Order.html">Order</a> dsu</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>data</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>necessary properties:</p>
+<ul>
+    <li>data</li> the specific string
+    <li>(optional) openDSU#constants#BRICKS_DOMAIN_KEY - the subDomain to store the bricks in. Will be concatenated like 'domain.subDomain'</li>
+</ul></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>domain</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>the anchoring domain</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setOrderSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setOrderSSI.js.html">commands/setOrderSSI.js</a>, <a href="commands_setOrderSSI.js.html#line12">line 12</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">ArraySSI</span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".createParticipantSSI">
+        <a class="href-link" href="#.createParticipantSSI">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                createParticipantSSI<span class="signature">(participant, domain:)</span><span class="type-signature"> &rarr; {SeedSSI}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary">Creates a seedSSI meant to contain participant 'participant' data.</p>
+    
+    
+    <div class="description">
+        <p>Creates a seedSSI meant to contain participant 'participant' data.
+could be used as an identity</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>participant</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type"><a href="Participant.html">Participant</a></span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>domain:</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>anchoring domain</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setParticipantSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setParticipantSSI.js.html">commands/setParticipantSSI.js</a>, <a href="commands_setParticipantSSI.js.html#line9">line 9</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>(template)</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">SeedSSI</span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".createProductSSI">
+        <a class="href-link" href="#.createProductSSI">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                createProductSSI<span class="signature">(data, domain)</span><span class="type-signature"> &rarr; {ArraySSI}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Defines how to create the keyssi for a <a href="Product.html">Product</a> dsu</p>.</p>
+    
+    
+    <div class="description">
+        <p>Defines how to create the keyssi for a <a href="Product.html">Product</a> dsu</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>data</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>necessary properties:</p>
+<ul>
+    <li>gtin - the gtin of the product</li>
+    <li>(optional) openDSU#constants#BRICKS_DOMAIN_KEY - the subDomain to store the bricks in. Will be concatenated like 'domain.subDomain'</li>
+</ul></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>domain</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>the anchoring domain</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setProductSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setProductSSI.js.html">commands/setProductSSI.js</a>, <a href="commands_setProductSSI.js.html#line12">line 12</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">ArraySSI</span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".createShipmentCodeSSI">
+        <a class="href-link" href="#.createShipmentCodeSSI">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                createShipmentCodeSSI<span class="signature">(data, domain)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Defines how to create the keyssi for a <a href="ShipmentLine.html">ShipmentLine</a> dsu</p>.</p>
+    
+    
+    <div class="description">
+        <p>Defines how to create the keyssi for a <a href="ShipmentLine.html">ShipmentLine</a> dsu</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>data</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>necessary properties:</p>
+<ul>
+    <li>data</li> the specific string
+    <li>(optional) openDSU#constants#BRICKS_DOMAIN_KEY - the subDomain to store the bricks in. Will be concatenated like 'domain.subDomain'</li>
+</ul></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>domain</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>the anchoring domain</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setShipmentCodeSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setShipmentCodeSSI.js.html">commands/setShipmentCodeSSI.js</a>, <a href="commands_setShipmentCodeSSI.js.html#line11">line 11</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".createShipmentLineSSI">
+        <a class="href-link" href="#.createShipmentLineSSI">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                createShipmentLineSSI<span class="signature">(data, domain)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Defines how to create the keyssi for a <a href="ShipmentLine.html">ShipmentLine</a> dsu</p>.</p>
+    
+    
+    <div class="description">
+        <p>Defines how to create the keyssi for a <a href="ShipmentLine.html">ShipmentLine</a> dsu</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>data</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>necessary properties:</p>
+<ul>
+    <li>data</li> the specific string
+    <li>(optional) openDSU#constants#BRICKS_DOMAIN_KEY - the subDomain to store the bricks in. Will be concatenated like 'domain.subDomain'</li>
+</ul></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>domain</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>the anchoring domain</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setShipmentLineSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setShipmentLineSSI.js.html">commands/setShipmentLineSSI.js</a>, <a href="commands_setShipmentLineSSI.js.html#line11">line 11</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".createShipmentSSI">
+        <a class="href-link" href="#.createShipmentSSI">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                createShipmentSSI<span class="signature">(data, domain)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Defines how to create the keyssi for a <a href="Shipment.html">Shipment</a> dsu</p>.</p>
+    
+    
+    <div class="description">
+        <p>Defines how to create the keyssi for a <a href="Shipment.html">Shipment</a> dsu</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>data</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">object</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>necessary properties:</p>
+<ul>
+    <li>data</li> the specific string
+    <li>(optional) openDSU#constants#BRICKS_DOMAIN_KEY - the subDomain to store the bricks in. Will be concatenated like 'domain.subDomain'</li>
+</ul></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>domain</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>the anchoring domain</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setShipmentSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setShipmentSSI.js.html">commands/setShipmentSSI.js</a>, <a href="commands_setShipmentSSI.js.html#line11">line 11</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".createStatusSSI">
+        <a class="href-link" href="#.createStatusSSI">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                createStatusSSI<span class="signature">(domain)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Defines how to create the keyssi for a orderLine dsu</p>.</p>
+    
+    
+    <div class="description">
+        <p>Defines how to create the keyssi for a orderLine dsu</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>status.</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">OrderStatus</span>
+|
+
+<span class="param-type">ShipmentStatus</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>if status has the properties:</p>
+<ul>
+    <li>(optional) openDSU#constants#BRICKS_DOMAIN_KEY - the subDomain to store the bricks in. Will be concatenated like 'domain.subDomain'</li>
+</ul></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>domain</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>the anchoring domain</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setStatusSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setStatusSSI.js.html">commands/setStatusSSI.js</a>, <a href="commands_setStatusSSI.js.html#line10">line 10</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

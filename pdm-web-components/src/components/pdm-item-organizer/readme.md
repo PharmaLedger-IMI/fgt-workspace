@@ -15,6 +15,7 @@
 | `idProp`         | `id-prop`         | The identifying prop to be return upon click (must exist in the supplied {@link componentProps}                | `string`           | `undefined` |
 | `isItem`         | `is-ion-item`     | If the component does not generate an ion-item (so it can be handled by an ion-list) this must be set to false | `boolean`          | `true`      |
 | `orientation`    | `orientation`     |                                                                                                                | `"end" \| "start"` | `"end"`     |
+| `singleLine`     | `single-line`     |                                                                                                                | `boolean`          | `true`      |
 
 
 ## Events

@@ -1,4 +1,4 @@
-import {Component, h, Prop, Element, Event, EventEmitter} from '@stencil/core';
+import {Component, h, Prop, Element, Event, Host, EventEmitter} from '@stencil/core';
 import {HostElement} from "../../decorators";
 
 @Component({
@@ -25,7 +25,9 @@ export class MoreChip {
 
   @Prop({attribute: 'icon-name'}) iconName: string = "ellipsis-horizontal";
 
-  @Prop() color: string = 'medium';
+  @Prop({attribute: "color"}) color: string = 'medium';
+
+  @Prop({attribute: "float-more-button"}) float: boolean = false;
 
   async componentWillLoad() {
     if (!this.host.isConnected)
@@ -33,16 +35,35 @@ export class MoreChip {
   }
 
   private sendShowMoreEvent(evt){
+    evt.preventDefault()
+    evt.stopImmediatePropagation();
     this.showMoreEvent.emit(evt);
+  }
+
+  private getButton(){
+    if (this.float)
+      return (
+        <ion-fab vertical="top" horizontal="end">
+          <ion-fab-button fill="solid" size="small" color={this.color} onClick={(evt) => this.sendShowMoreEvent(evt)}>
+            <ion-icon name={this.iconName}></ion-icon>
+          </ion-fab-button>
+        </ion-fab>
+      )
+
+    return (
+      <ion-button fill="clear" size="small" color={this.color} onClick={(evt) => this.sendShowMoreEvent(evt)}>
+        <ion-icon slot="icon-only" name={this.iconName}></ion-icon>
+      </ion-button>
+    )
   }
 
   render() {
     if (!this.host.isConnected)
       return;
     return (
-      <ion-button fill="clear" size="small" color={this.color} onClick={(evt) => this.sendShowMoreEvent(evt)}>
-        <ion-icon slot="icon-only" name={this.iconName}></ion-icon>
-      </ion-button>
-    )
+        <Host>
+          {this.getButton()}
+        </Host>
+      )
   }
 }

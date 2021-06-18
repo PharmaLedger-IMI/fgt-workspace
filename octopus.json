@@ -780,7 +780,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "./docs/bin/drawio_convert.sh"
+                    "cmd": "./workdocs/bin/drawio_convert.sh"
                 },
                 {
 

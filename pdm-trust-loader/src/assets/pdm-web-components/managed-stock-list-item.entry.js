@@ -88,7 +88,7 @@ const ManagedProductListItem = class {
       return (h("ion-skeleton-text", { slot: "content", animated: true }));
     return (h("pdm-item-organizer", { slot: "content", "component-name": "batch-chip", "component-props": JSON.stringify(this.batches.map(batch => ({
         "gtin-batch": this.stock.gtin + '-' + batch.batchNumber,
-        "quantity": batch.getQuantity(),
+        "quantity": (new Batch(batch)).getQuantity(),
         "mode": "detail",
         "loader-type": SUPPORTED_LOADERS.bubblingSmall
       }))), "id-prop": "gtin-batch", "is-ion-item": "false", "display-count": "2", orientation: this.getOrientation(), onSelectEvent: (evt) => {

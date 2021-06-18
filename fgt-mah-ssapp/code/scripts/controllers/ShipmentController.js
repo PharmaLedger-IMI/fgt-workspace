@@ -65,7 +65,7 @@ export default class ShipmentController extends LocalizedController{
      */
     async _handleCreateShipment(shipment, stockInfo, orderId) {
         let self = this;
-        shipment.id = Date.now();
+        shipment.shipmentId = Date.now();
         const errors = shipment.validate();
         if (errors)
             return self.showErrorToast(self.translate(`create.error.invalid`, errors.join('\n')));

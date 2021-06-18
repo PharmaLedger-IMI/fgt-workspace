@@ -129,7 +129,7 @@ export class ManagedProductListItem {
       <pdm-item-organizer slot="content"  component-name="batch-chip"
                           component-props={JSON.stringify(this.batches.map(batch => ({
                             "gtin-batch": this.stock.gtin + '-' + batch.batchNumber,
-                            "quantity": batch.getQuantity(),
+                            "quantity": (new Batch(batch)).getQuantity(),
                             "mode": "detail",
                             "loader-type": SUPPORTED_LOADERS.bubblingSmall
                           })))}

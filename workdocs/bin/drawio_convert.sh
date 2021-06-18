@@ -110,8 +110,8 @@ function exportToPng(){
 }
 
 find_drawings_and_export_to_resources(){
-  local path="${PWD}/docs/drawings"
-  local output_path="${PWD}/docs/resources/drawings"
+  local path="${PWD}/workdocs/drawings"
+  local output_path="${PWD}/workdocs/resources/drawings"
   local os=$(test_os)
   local window_path=""
 

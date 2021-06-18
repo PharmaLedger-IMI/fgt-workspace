@@ -1,7 +1,7 @@
 import { r as registerInstance, e as createEvent, h, f as Host, g as getElement } from './index-d0e12a29.js';
 import { H as HostElement } from './index-3dd6e8f7.js';
 
-const pdmItemOrganizerCss = ":host{display:block}ion-popover.organizer-popover{--pop-over-margin:calc(var(--ion-margin, 16px) /2);--width:100%}ion-list.organizer-pop-over-list>*{margin:calc(var(--pop-over-margin)/2) var(--pop-over-margin)}ul.organizer-pop-over-list>*{margin:calc(var(--pop-over-margin)/2) var(--pop-over-margin)}pdm-item-organizer{--organizer-item-margin:var(--ion-margin, 16px)}pdm-item-organizer>div.ion-justify-content-end>*{margin-left:calc(var(--organizer-item-margin, 8px)/2)}pdm-item-organizer>div.ion-justify-content-start>*{margin-right:calc(var(--organizer-item-margin, 8px)/2)}";
+const pdmItemOrganizerCss = ":host{display:block}ion-popover.organizer-popover{--pop-over-margin:calc(var(--ion-margin, 16px) /2);--width:auto}ion-list.organizer-pop-over-list>*{margin:calc(var(--pop-over-margin)/2) var(--pop-over-margin)}ul.organizer-pop-over-list>*{margin:calc(var(--pop-over-margin)/2) var(--pop-over-margin)}pdm-item-organizer{--organizer-item-margin:var(--ion-margin, 16px);width:100%;height:100%}pdm-item-organizer>div.ion-justify-content-end>*{margin-left:calc(var(--organizer-item-margin, 8px)/2)}pdm-item-organizer>div.ion-justify-content-start>*{margin-right:calc(var(--organizer-item-margin, 8px)/2)}";
 
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
   var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -35,6 +35,7 @@ const PdmItemOrganizer = class {
      */
     this.idProp = undefined;
     this.orientation = "end";
+    this.singleLine = true;
     /**
      * If the component does not generate an ion-item (so it can be handled by an ion-list)
      * this must be set to false
@@ -141,14 +142,16 @@ const PdmItemOrganizer = class {
       return this.parsedProps.map(props => this.getComponentJSX(props));
     const toDisplay = Math.max(this.displayCount - 1, 1);
     const result = this.parsedProps.filter((props, i) => !!props && i <= toDisplay).map(props => this.getComponentJSX(props));
-    const operation = this.orientation === "start" ? result.push.bind(result) : result.unshift.bind(result);
-    operation((h("more-chip", null)));
+    if (this.singleLine) {
+      const operation = this.orientation === "end" || this.singleLine ? result.unshift.bind(result) : result.push.bind(result);
+      operation((h("more-chip", { "float-more-button": !this.singleLine })));
+    }
     return result;
   }
   render() {
     if (!this.host.isConnected)
       return;
-    return (h(Host, null, h("div", { class: `ion-padding-horizontal flex ion-justify-content-${this.orientation} ion-align-items-center` }, this.getFilteredComponents())));
+    return (h(Host, null, h("div", { class: `ion-padding-horizontal ${this.singleLine ? "flex " : ""}ion-justify-content-${this.orientation} ion-align-items-center` }, this.getFilteredComponents())));
   }
   get element() { return getElement(this); }
   static get watchers() { return {

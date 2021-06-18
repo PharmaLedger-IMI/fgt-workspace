@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_handleCreateOrder">_handleCreateOrder</a></li><li><a href="global.html#_handleCreateShipment">_handleCreateShipment</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,7 +109,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
+            <pre class="prettyprint source linenums"><code>import { LocalizedController, EVENT_REFRESH, EVENT_ACTION, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
 
 /**
  * Controls Application Flow
@@ -122,29 +122,81 @@
 export default class ProductController extends LocalizedController {
 
     initializeModel = () => ({
-        manufName: {
-            value: this.productManager.getIdentity().id
-        }
+        manufId: undefined,
+        gtinRef: undefined
     });
 
-    constructor(element, history) {
-        super(element, history, false);
+    constructor(...args) {
+        super(false, ...args)
         let self = this;
-        const wizard = require('wizard');
-        super.bindLocale(self, `product`, true);
-        this.participantManager = wizard.Managers.getParticipantManager();
-        this.productManager = wizard.Managers.getProductManager(this.participantManager);
+        super.bindLocale(self, `product`, false);
         self.model = self.initializeModel();
-        self.onTagClick(`try-create-product`, self._submitProduct.bind(self));
+
+        const wizard = require('wizard');
+        const participantManager = wizard.Managers.getParticipantManager();
+        this.productManager = wizard.Managers.getProductManager(participantManager);
+        this.productEl = this.element.querySelector('managed-product');
+
+        self.on(EVENT_REFRESH, (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            self.model.manufId = self.productManager.getIdentity().id;
+
+            const state = evt.detail;
+            if (state &amp;&amp; state.gtin){
+                if (state.gtin === self.model.gtinRef)
+                    return self.productEl.refresh();
+                self.model.gtinRef = state.gtin;
+            }
+            else
+                self.model.gtinRef = '';
+        });
+
+        self.on(EVENT_ACTION, (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            self._handleCreateProduct.call(self, evt.detail);
+        });
+
         console.log("ProductController initialized");
     }
 
-    _submitProduct = function () {
+    /**
+     * Sends an event named create-issued-order to the IssuedOrders controller.
+     */
+    async _handleCreateProduct(product) {
         let self = this;
-        if (self.hasErrors(true))
-            return this.showErrorToast('There are errors in the form');
-        const product = self.productManager.fromModel(self.model);
-        this.send('create-product', product);
+        if (product.validate())
+            return this.showErrorToast(this.translate(`create.error.invalid`));
+
+        const alert = await self.showConfirm('create.confirm');
+
+        const {role} = await alert.onDidDismiss();
+
+        if (BUTTON_ROLES.CONFIRM !== role)
+            return console.log(`Order creation canceled by clicking ${role}`);
+
+        const loader = self._getLoader(self.translate('create.loading'));
+        await loader.present()
+
+        const sendError = async function(msg){
+            await loader.dismiss();
+            self.showErrorToast(msg);
+        }
+
+        self.productManager.create(product, async (err, keySSI, dbPath) => {
+            if (err)
+                return sendError(`Could not create Product ${JSON.stringify(product, undefined, 2)}`, err);
+            self.showToast(`Product ${product.name} with gtin ${product.gtin} has been created`);
+            self.model.gtinRef = product.gtin;
+            await loader.dismiss();
+        });
+    }
+
+    async showConfirm(action = 'create.confirm'){
+        return super.showConfirm(this.translate(`${action}.message`),
+            this.translate(`${action}.buttons.ok`),
+            this.translate(`${action}.buttons.cancel`));
     }
 }</code></pre>
         </article>

@@ -41,7 +41,7 @@ class Shipment {
     validate() {
         const errors = [];
         if (!this.shipmentId) {
-            errors.push('OrderID is required.');
+            errors.push('ShipmentID is required.');
         }
         if (!this.requesterId) {
             errors.push('Ordering partner ID is required.');

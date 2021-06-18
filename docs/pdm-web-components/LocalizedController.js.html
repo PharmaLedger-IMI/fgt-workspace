@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul><h3>Classes</h3><ul><li><a href="module-controllers.html">controllers</a></li><li><a href="module-controllers-LocalizedController.html">LocalizedController</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="HomeController.html">HomeController</a></li><li><a href="LocalizedController.html">LocalizedController</a></li><li><a href="module.exports_module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_bindErrorHandler">_bindErrorHandler</a></li><li><a href="global.html#_bindMessageHandler">_bindMessageHandler</a></li><li><a href="global.html#_getLoader">_getLoader</a></li><li><a href="global.html#bindLocale">bindLocale</a></li><li><a href="global.html#closeIonicModal">closeIonicModal</a></li><li><a href="global.html#navigateToTab">navigateToTab</a></li><li><a href="global.html#on">on</a></li><li><a href="global.html#refresh">refresh</a></li><li><a href="global.html#showAlert">showAlert</a></li><li><a href="global.html#showBarcodeScanner">showBarcodeScanner</a></li><li><a href="global.html#showConfirm">showConfirm</a></li><li><a href="global.html#showErrorToast">showErrorToast</a></li><li><a href="global.html#showIonicModal">showIonicModal</a></li><li><a href="global.html#showToast">showToast</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,16 +109,10 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @module controllers
- */
+            <pre class="prettyprint source linenums"><code>import {EVENT_SSAPP_HAS_LOADED, EVENT_SEND_ERROR, EVENT_SEND_MESSAGE, EVENT_REFRESH, EVENT_NAVIGATE_TAB, CSS, BUTTON_ROLES} from "../constants/events";
 
-import {EVENT_SEND_ERROR, EVENT_SEND_MESSAGE, EVENT_REFRESH, EVENT_NAVIGATE_TAB, CSS, BUTTON_ROLES} from "../constants/events";
-
-/**
- *
- */
 const {WebcController} = WebCardinal.controllers;
+import wizard from '../services/WizardService';
 
 /**
  * Master Controller to provide access to the Localization features provided by WebCardinal.
@@ -133,14 +127,15 @@ const {WebcController} = WebCardinal.controllers;
  *          this.model = this.initializeModel();
  *      }
  * &lt;/pre>
- * @module controllers
+ * @module Controllers
  * @class LocalizedController
+ * @extends WebcController
  */
 export default class LocalizedController extends WebcController {
 
   /**
    * Should return the initialized model for the controller when needed.
-   * &lt;strong>MUST&lt;/strong> be called on the constructor for locale binding
+   * &lt;strong>MUST&lt;/strong> be called on the constructor for locale binding via {@link WebcLocaleService}
    * @return {{}}
    */
   initializeModel = () => ({});
@@ -201,6 +196,28 @@ export default class LocalizedController extends WebcController {
     if (this.useEvents)
       return this.send(EVENT_SEND_ERROR, message, {capture: true});
     return this.showToast(message + (err ? `\n$err` : ''), 'Error', 'danger', 'Close');
+  }
+
+  /**
+   * Integrates with {@link PdmBarcodeScannerController}. that mean that element needs to be somewhere,
+   * typically inside ion-tabs
+   * @param {{}} [props] props to pass to scanner:
+   *  - title: the modal title. falls back to its barcode-title prop
+   * @param {function(err, result)} callback
+   */
+  showBarcodeScanner(props, callback){
+    if (!callback &amp;&amp; typeof props === 'function'){
+      callback = props;
+      props= undefined;
+    }
+    const getScannerByHost = function(host){
+      return host.querySelector('pdm-barcode-scanner-controller');
+    }
+
+    let scannerEl = getScannerByHost(this.element) || getScannerByHost(document.body);
+    if (!scannerEl)
+      return callback(`Could not find the mandatory 'pdm-barcode-scanner-controller' element`);
+    scannerEl.present(props, callback);
   }
 
   /**
@@ -292,7 +309,7 @@ export default class LocalizedController extends WebcController {
         {
           text: 'Cancel',
           role: BUTTON_ROLES.CANCEL
-        },    
+        },
         {
           text: 'Ok',
           role: BUTTON_ROLES.CONFIRM
@@ -312,6 +329,29 @@ export default class LocalizedController extends WebcController {
     document.body.appendChild(alert);
     await alert.present();
     return alert;
+  }
+
+  /**
+   * Shows a confirmation Popup
+   * @param {string} message the message
+   * @param {string} confirmText the ok button text
+   * @param {string} cancelText the cancel button text
+   * @return {Promise&lt;HTMLElement>}
+   */
+  async showConfirm(message, confirmText, cancelText = "Cancel"){
+    return this.showAlert(message,
+      {
+        buttons: [
+          {
+            text: cancelText,
+            role: 'cancel'
+          },
+          {
+            text: confirmText,
+            role: 'confirm'
+          }
+        ]
+      });
   }
 
 
@@ -359,9 +399,9 @@ export default class LocalizedController extends WebcController {
    * @param {boolean} [enableValidations] defaults to false. If provided enabled Ionic Inputs form validations
    */
   bindLocale(controller, pageName, enableValidations) {
-    require('wizard').Services.WebcLocaleService.bindToLocale(controller, pageName);
+    wizard.LocaleService.bindToLocale(controller, pageName);
     if (enableValidations)
-      require('wizard').Model.Validations.bindIonicValidation(controller);
+      wizard.Model.Validations.bindIonicValidation(controller);
   }
 
   /**
@@ -390,10 +430,18 @@ export default class LocalizedController extends WebcController {
     }, {capture: true});
   }
 
+  /**
+   * Calls Refresh on the controller
+   */
   refresh(){
     this.send(EVENT_REFRESH, {}, {capture: true});
   }
 
+  /**
+   *
+   * @param tabName
+   * @param props
+   */
   navigateToTab(tabName, props){
     this.send(EVENT_NAVIGATE_TAB, {
       tab: tabName,
@@ -402,13 +450,25 @@ export default class LocalizedController extends WebcController {
   }
 
   /**
-   *
-   * @param {HTMLElement} element
-   * @param {*} history
-   * @param {boolean} [bindMessageHandlers] defaults to false. binds (or not) the error handler to the controller
+   * Override just for the special case of {@link EVENT_SSAPP_HAS_LOADED} to set it on document body and not the element it self because its raised on the body level
+   * @param eventName
+   * @param handler
+   * @param options
+   * @override
    */
-  constructor(element, history, bindMessageHandlers) {
-    super(element, history);
+  on(eventName, handler, options){
+    if (eventName === EVENT_SSAPP_HAS_LOADED &amp;&amp; document &amp;&amp; document.body)
+      return document.body.addEventListener(eventName, handler, options);
+    super.on(eventName, handler, options);
+  }
+
+  /**
+   *
+   * @param {boolean} [bindMessageHandlers] defaults to false. binds (or not) the error handler to the controller
+   * @param args the args for {@link WebcController}
+   */
+  constructor(bindMessageHandlers, ...args) {
+    super(...args);
     if (typeof bindMessageHandlers === 'undefined'){
       this.useEvents = false;
     } else if(typeof bindMessageHandlers === 'boolean'){
