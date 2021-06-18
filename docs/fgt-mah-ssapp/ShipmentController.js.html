@@ -1,0 +1,234 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability Marketing Authorization Holder SSApp ShipmentController.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability Marketing Authorization Holder SSApp</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/fgt-workspace/fgt-mah-ssapp.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com/fgt-mah-wallet/loader"
+                        >
+                            Application
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_handleCreateOrder">_handleCreateOrder</a></li><li><a href="global.html#_handleCreateShipment">_handleCreateShipment</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>ShipmentController.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { LocalizedController, EVENT_REFRESH, EVENT_SSAPP_HAS_LOADED, EVENT_ACTION, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
+
+export default class ShipmentController extends LocalizedController{
+
+    initializeModel = () => ({
+        shipmentRef: '',
+        order: "{}",
+        identity: {},
+        mode: 'issued'
+    });
+
+    constructor(...args) {
+        super(false, ...args);
+        super.bindLocale(this, 'shipment');
+        this.model = this.initializeModel();
+        const wizard = require('wizard');
+        const participantManager = wizard.Managers.getParticipantManager();
+        this.issuedShipmentManager = wizard.Managers.getIssuedShipmentManager(participantManager);
+        this.receivedShipmentManager = wizard.Managers.getReceivedShipmentManager(participantManager);
+        this.shipmentEl = this.element.querySelector('managed-shipment');
+
+        let self = this;
+
+        self.on(EVENT_REFRESH, (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            self.model.identity = self.issuedShipmentManager.getIdentity();
+
+            const state = evt.detail;
+            if (state &amp;&amp; state.mode) {
+                self.model.mode = state.mode;
+                if (state.order){
+                    self.model.order = JSON.stringify(state.order);
+                    self.model.shipmentRef = '';
+                    return;
+                }
+
+                const newRef = `${state.mode === 'issued' ? state.shipment.senderId : state.shipment.requesterId}-${state.shipment.shipmentId}`;
+                if (newRef === self.model.shipmentRef)
+                    return self.shipmentEl.refresh();
+                self.model.shipmentRef = newRef;
+                self.model.order = '{}'
+
+            } else {
+                self.model.shipmentRef = '';
+                self.mode = 'issued';
+                self.order = '{}';
+            }
+        }, {capture: true});
+
+        self.on(EVENT_SSAPP_HAS_LOADED, async () => {
+            await self.shipmentEl.updateDirectory();
+        }, {capture: true});
+
+        self.on(EVENT_ACTION, (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            const {shipment, stock, orderId} = evt.detail;
+            self._handleCreateShipment.call(self, shipment, stock, orderId);
+        });
+    }
+
+    /**
+     * Sends an event named create-issued-order to the IssuedOrders controller.
+     */
+    async _handleCreateShipment(shipment, stockInfo, orderId) {
+        let self = this;
+        shipment.shipmentId = Date.now();
+        const errors = shipment.validate();
+        if (errors)
+            return self.showErrorToast(self.translate(`create.error.invalid`, errors.join('\n')));
+
+        const alert = await self.showConfirm(self.translate('create.confirm', shipment.requesterId));
+
+        const {role} = await alert.onDidDismiss();
+
+        if (BUTTON_ROLES.CONFIRM !== role)
+            return console.log(`Shipment creation canceled by clicking ${role}`);
+
+        const loader = self._getLoader(self.translate('create.loading'));
+        await loader.present();
+
+        const sendError = async function(msg){
+            await loader.dismiss();
+            self.showErrorToast(msg);
+        }
+
+        self.issuedShipmentManager.create(orderId, shipment, stockInfo,  async (err, keySSI, dbPath) => {
+            if (err)
+                return sendError(self.translate('create.error.error'));
+            self.showToast(self.translate('create.success'));
+            self.model.mode = 'issued';
+            self.model.shipmentRef = `${shipment.requesterId}-${shipment.shipmentId}`;
+            await loader.dismiss();
+        });
+    }
+
+    async showConfirm(action = 'create.confirm'){
+        return super.showConfirm(this.translate(`${action}.message`),
+            this.translate(`${action}.buttons.ok`),
+            this.translate(`${action}.buttons.cancel`));
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

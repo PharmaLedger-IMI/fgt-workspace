@@ -36,6 +36,8 @@ export class PdmItemOrganizer {
 
   @Prop({attribute: "orientation", mutable: true}) orientation: "start" | "end" = "end";
 
+  @Prop({attribute: "single-line", mutable: true}) singleLine: boolean = true;
+
   /**
    * If the component does not generate an ion-item (so it can be handled by an ion-list)
    * this must be set to false
@@ -156,10 +158,12 @@ export class PdmItemOrganizer {
     if (this.parsedProps.length <= this.displayCount)
       return this.parsedProps.map(props => this.getComponentJSX(props));
     const toDisplay = Math.max(this.displayCount - 1, 1);
-    const result = this.parsedProps .filter((props,i) => !!props && i <= toDisplay).map(props => this.getComponentJSX(props));
+    const result = this.parsedProps.filter((props,i) => !!props && i <= toDisplay).map(props => this.getComponentJSX(props));
 
-    const operation = this.orientation === "start" ? result.push.bind(result) : result.unshift.bind(result);
-    operation((<more-chip></more-chip>));
+    if (this.singleLine){
+      const operation = this.orientation === "end" || this.singleLine ? result.unshift.bind(result) : result.push.bind(result);
+      operation((<more-chip float-more-button={!this.singleLine}></more-chip>));
+    }
     return result;
   }
 
@@ -168,7 +172,7 @@ export class PdmItemOrganizer {
       return;
     return (
       <Host>
-        <div class={`ion-padding-horizontal ion-justify-content-${this.orientation} ion-align-items-center`}>
+        <div class={`ion-padding-horizontal ${this.singleLine ? "flex " : ""}ion-justify-content-${this.orientation} ion-align-items-center`}>
           {...this.getFilteredComponents()}
         </div>
       </Host>

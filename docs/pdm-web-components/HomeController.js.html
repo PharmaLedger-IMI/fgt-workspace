@@ -1,0 +1,267 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDM&FC's Web Ionic Components Documentation HomeController.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">PDM&FC's Web Ionic Components Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/epi-workspace/pdm-trust-loader.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com"
+                        >
+                            Example Application - Finished Goods Traceability
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="HomeController.html">HomeController</a></li><li><a href="LocalizedController.html">LocalizedController</a></li><li><a href="module.exports_module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_bindErrorHandler">_bindErrorHandler</a></li><li><a href="global.html#_bindMessageHandler">_bindMessageHandler</a></li><li><a href="global.html#_getLoader">_getLoader</a></li><li><a href="global.html#bindLocale">bindLocale</a></li><li><a href="global.html#closeIonicModal">closeIonicModal</a></li><li><a href="global.html#navigateToTab">navigateToTab</a></li><li><a href="global.html#on">on</a></li><li><a href="global.html#refresh">refresh</a></li><li><a href="global.html#showAlert">showAlert</a></li><li><a href="global.html#showBarcodeScanner">showBarcodeScanner</a></li><li><a href="global.html#showConfirm">showConfirm</a></li><li><a href="global.html#showErrorToast">showErrorToast</a></li><li><a href="global.html#showIonicModal">showIonicModal</a></li><li><a href="global.html#showToast">showToast</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>HomeController.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import LocalizedController from "./LocalizedController";
+import {EVENT_SSAPP_HAS_LOADED, EVENT_SSAPP_STATUS_UPDATE, EVENT_REFRESH, EVENT_NAVIGATE_TAB, SIDE_MENU_CLASS_SELECTOR, EVENT_ION_TABS_WILL_CHANGE, EVENT_SELECT} from '../constants/events'
+import {WebManagerService} from '../services/WebManagerService'
+
+/**
+ * Main Controller For the SSApp Architecture. Should be instantiated like so:
+ *
+ * &lt;pre>
+ *   &lt;webc-container controller="HomeController">
+ *     &lt;ion-app>
+ *       &lt;ion-header class="ion-no-border ion-padding">
+ *         (...)
+ * &lt;/pre>
+ *
+ * Initializes the {@link BaseManager} providing access to:
+ * Complies with the Architecture described
+ *  - Access to Identity DSU;
+ *  - Access to Database DSU;
+ *  - Access to the Messaging API
+ *
+ * and provides the implementation for navigation and data management in an Ionic Tab Single Page Application Schema
+ * @module Controllers
+ * @class HomeController
+ * @abstract
+ */
+export default class HomeController extends LocalizedController {
+    initializeModel = () => ({
+        participant: {}
+    });
+
+    constructor(...args) {
+        super(true, ...args);
+        super.bindLocale(this, "");
+        this.model = this.initializeModel();
+        this.model.addExpression('identified', () => {
+            return !!this.model.participant.id;
+        }, "participant");
+        const self = this;
+        self._updateLoading(this.model.loading.loading.status, this.model.loading.loading.progress)
+
+        this.on(EVENT_ION_TABS_WILL_CHANGE, (evt) => {
+            const el = self.element.querySelector(`ion-tab[tab="${evt.detail.tab}"] webc-container`)
+              || self.querySelector(`ion-tab[tab="${evt.detail.tab}"] ion-content`);
+            if (el){
+              const detail = self.getState();
+              const evt = new Event(EVENT_REFRESH);
+              evt.detail = detail;
+              el.dispatchEvent(evt);
+            }
+            // For side Menu Integration we forward the ionTabsWillChange event if it exists
+            const menuEl = self.element.querySelectorAll(SIDE_MENU_CLASS_SELECTOR);
+            if (menuEl &amp;&amp; menuEl.length){
+              menuEl.forEach(el => {
+                const event = new Event(EVENT_SELECT);
+                event.detail = evt.detail;
+                el.dispatchEvent(event)
+              });
+            }
+
+        }, {capture: true});
+
+        this.on(EVENT_NAVIGATE_TAB, (evt) => {
+          evt.preventDefault();
+          evt.stopImmediatePropagation();
+          self._navigateToTab.call(self, evt.detail);
+        });
+
+        const participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, false, (err, pManager) => {
+            if (err)
+                console.log(`Failed Participant Manager Initialization`);
+            else
+                console.log(`Participant manager initialized`);
+            self.participantManager = pManager;
+            self._updateLoading(this.model.loading.loaded.status, this.model.loading.loaded.progress);
+          // Give UI some time to breathe and render stuff (including our animation)
+            setTimeout(() => {
+              WebManagerService.registerRepository(self.participantManager);
+              console.log("Home controller initialized");
+              self._testParticipant();
+            }, Math.floor(Math.random() * 100));
+        });
+
+        participantManager.setController(this);
+    }
+
+    _navigateToTab(props){
+      let self = this;
+      const el = self.element.querySelector(`ion-tabs`);
+      if (!el){
+        console.log(`A tab navigation request was received, but no ion-tabs could be found...`)
+        return;
+      }
+      self.setState(props.props);
+      el.select(props.tab);
+    }
+
+    _updateLoading(status, progress){
+      const loader = document.querySelector('pdm-ssapp-loader');
+      if (!loader){
+        console.log(`No Loader could be found`);
+        return;
+      }
+      if (!status &amp;&amp; !progress)
+        return this._concludeLoading();
+
+      this.send(EVENT_SSAPP_STATUS_UPDATE, {
+          status: status,
+          progress: progress
+        }, {capture: true});
+    };
+
+    _concludeLoading(){
+      this.send(EVENT_SSAPP_HAS_LOADED, {}, {capture: true});
+    }
+
+    _testParticipant(){
+        let self = this;
+        self._updateLoading(self.model.loading.booting.status, self.model.loading.booting.progress);
+      // Give UI some time to breathe and render stuff (including our animation)
+        setTimeout(() => {
+          this.participantManager.getIdentity((err, identity) => {
+            if (err)
+              return self.showErrorToast(`Could not retrieve identity. Build process seems to not have worked properly`);
+            self._updateLoading(this.model.loading.booted.status, this.model.loading.booted.progress)
+            self.model.participant = identity;
+
+            // Give UI some time to breathe and render stuff, it needs it this time...
+            setTimeout(() => {
+              self._concludeLoading();
+            }, 500);
+
+          });
+        }, Math.floor(Math.random() * 100));
+    }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

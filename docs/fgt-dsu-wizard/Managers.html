@@ -1,0 +1,2734 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability DSU Wizard Documentation Managers</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability DSU Wizard Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/epi-workspace/fgt-dsu-wizard.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com"
+                        >
+                            Example Application - Finished Goods Traceability
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Namespaces</h3><ul><li><a href="Commands.html">Commands</a></li><li><a href="Constants.html">Constants</a></li><li><a href="Managers.html">Managers</a></li><li><a href="Model.html">Model</a></li><li><a href="Resolvers.html">Resolvers</a></li><li><a href="Services.html">Services</a></li></ul><h3>Classes</h3><ul><li><a href="Batch.html">Batch</a></li><li><a href="DirectoryEntry.html">DirectoryEntry</a></li><li><a href="MAH.html">MAH</a></li><li><a href="Managers.BatchManager.html">BatchManager</a></li><li><a href="Managers.DirectoryManager.html">DirectoryManager</a></li><li><a href="Managers.IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="Managers.IssuedShipmentManager.html">IssuedShipmentManager</a></li><li><a href="Managers.OrderLineManager.html">OrderLineManager</a></li><li><a href="Managers.OrderManager.html">OrderManager</a></li><li><a href="Managers.ParticipantManager.html">ParticipantManager</a></li><li><a href="Managers.ProductManager.html">ProductManager</a></li><li><a href="Managers.ReceivedShipmentManager.html">ReceivedShipmentManager</a></li><li><a href="Managers.ShipmentLineManager.html">ShipmentLineManager</a></li><li><a href="Managers.ShipmentManager.html">ShipmentManager</a></li><li><a href="Managers.StockManager.html">StockManager</a></li><li><a href="Model.Batch.html">Batch</a></li><li><a href="Model.DirectoryEntry.html">DirectoryEntry</a></li><li><a href="Model.MAH.html">MAH</a></li><li><a href="Model.Order.html">Order</a></li><li><a href="Model.OrderLine.html">OrderLine</a></li><li><a href="Model.OrderStatus.html">OrderStatus</a></li><li><a href="Model.Participant.html">Participant</a></li><li><a href="Model.Pharmacy.html">Pharmacy</a></li><li><a href="Model.Product.html">Product</a></li><li><a href="Model.Shipment.html">Shipment</a></li><li><a href="Model.ShipmentCode.html">ShipmentCode</a></li><li><a href="Model.ShipmentLine.html">ShipmentLine</a></li><li><a href="Model.Stock.html">Stock</a></li><li><a href="Model.TrackingCode.html">TrackingCode</a></li><li><a href="Model.Wholesaler.html">Wholesaler</a></li><li><a href="Order.html">Order</a></li><li><a href="OrderLine.html">OrderLine</a></li><li><a href="Participant.html">Participant</a></li><li><a href="Pharmacy.html">Pharmacy</a></li><li><a href="Product.html">Product</a></li><li><a href="Resolvers.BatchResolver.html">BatchResolver</a></li><li><a href="Resolvers.ProductResolver.html">ProductResolver</a></li><li><a href="Shipment.html">Shipment</a></li><li><a href="ShipmentCode.html">ShipmentCode</a></li><li><a href="ShipmentLine.html">ShipmentLine</a></li><li><a href="Stock.html">Stock</a></li><li><a href="TrackingCode.html">TrackingCode</a></li><li><a href="Wholesaler.html">Wholesaler</a></li></ul><h3>Global</h3><ul><li><a href="global.html#create">create</a></li><li><a href="global.html#get">get</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Namespace</p>
+                    <h1>Managers</h1>
+                </header>
+                
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>Managers</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>Manager Classes in this context should do the bridge between the controllers
+and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.</p>
+<p>All Manager Classes should be singletons.</p>
+<p>This complete separation of concerts is very beneficial for 2 reasons:</p>
+<ul>
+    <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
+    <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
+</ul></div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="managers_index.js.html" class="button">View Source</a>
+            <span>
+                <a href="managers_index.js.html">managers/index.js</a>, <a href="managers_index.js.html#line1">line 1</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="Managers.BatchManager.html">BatchManager</a></dt>
+            <dd><p>Batch Manager Class</p>
+<p>Manager Classes in this context should do the bridge between the controllers
+and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.</p></dd>
+        
+            <dt><a href="Managers.DirectoryManager.html">DirectoryManager</a></dt>
+            <dd><p>Stores references to some entities for quicker lookup on the front end (eg, products, suppliers, etc)</p>.</dd>
+        
+            <dt><a href="Managers.IssuedOrderManager.html">IssuedOrderManager</a></dt>
+            <dd>Issued Order Manager Class - concrete OrderManager for issuedOrders.</dd>
+        
+            <dt><a href="Managers.IssuedOrderManager.html">IssuedOrderManager</a></dt>
+            <dd>Received Order Manager Class - concrete OrderManager for receivedOrders.</dd>
+        
+            <dt><a href="Managers.IssuedShipmentManager.html">IssuedShipmentManager</a></dt>
+            <dd>Issued Shipment Manager Class - concrete ShipmentManager for issuedShipments.</dd>
+        
+            <dt><a href="Managers.OrderLineManager.html">OrderLineManager</a></dt>
+            <dd><p>OrderLine Manager Class</p>
+<p>Manager Classes in this context should do the bridge between the controllers
+and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.</p></dd>
+        
+            <dt><a href="Managers.OrderManager.html">OrderManager</a></dt>
+            <dd><p>Order Manager Class</p>
+<p>Abstract class.</p></dd>
+        
+            <dt><a href="Managers.ParticipantManager.html">ParticipantManager</a></dt>
+            <dd><p>Participant Manager Class - Extension of Base Manager</p>
+<p>Manager Classes in this context should do the bridge between the controllers
+and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.</p></dd>
+        
+            <dt><a href="Managers.ProductManager.html">ProductManager</a></dt>
+            <dd><p>Product Manager Class</p>
+<p>Manager Classes in this context should do the bridge between the controllers
+and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.</p></dd>
+        
+            <dt><a href="Managers.ReceivedShipmentManager.html">ReceivedShipmentManager</a></dt>
+            <dd>Received Shipment Manager Class - concrete ShipmentManager for received Shipments.</dd>
+        
+            <dt><a href="Managers.ShipmentLineManager.html">ShipmentLineManager</a></dt>
+            <dd><p>ShipmentLine Manager Class</p>
+<p>Manager Classes in this context should do the bridge between the controllers
+and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.</p></dd>
+        
+            <dt><a href="Managers.ShipmentManager.html">ShipmentManager</a></dt>
+            <dd><p>Shipment Manager Class</p>
+<p>Abstract class.</p></dd>
+        
+            <dt><a href="Managers.StockManager.html">StockManager</a></dt>
+            <dd><p>Stock Manager Class</p>
+<p>Manager Classes in this context should do the bridge between the controllers
+and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.</p></dd>
+        </dl>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getBatchManager">
+        <a class="href-link" href="#.getBatchManager">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getBatchManager<span class="signature">(participantManager, callback<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="BatchManager.html">BatchManager</a>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>participantManager</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">BaseManager</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>callback</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">function</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>optional callback for when the assurance that the table has already been indexed is required.</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="managers_BatchManager.js.html" class="button">View Source</a>
+            <span>
+                <a href="managers_BatchManager.js.html">managers/BatchManager.js</a>, <a href="managers_BatchManager.js.html#line183">line 183</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type"><a href="BatchManager.html">BatchManager</a></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getDirectoryManager">
+        <a class="href-link" href="#.getDirectoryManager">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getDirectoryManager<span class="signature">(participantManager, callback<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="DirectoryManager.html">DirectoryManager</a>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>participantManager</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type"><a href="ParticipantManager.html">ParticipantManager</a></span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>callback</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">function</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>optional callback for when the assurance that the table has already been indexed is required.</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="managers_DirectoryManager.js.html" class="button">View Source</a>
+            <span>
+                <a href="managers_DirectoryManager.js.html">managers/DirectoryManager.js</a>, <a href="managers_DirectoryManager.js.html#line165">line 165</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type"><a href="DirectoryManager.html">DirectoryManager</a></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getIssuedOrderManager">
+        <a class="href-link" href="#.getIssuedOrderManager">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getIssuedOrderManager<span class="signature">(participantManager, callback<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="IssuedOrderManager.html">IssuedOrderManager</a>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>participantManager</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type"><a href="ParticipantManager.html">ParticipantManager</a></span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>callback</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">function</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>optional callback for when the assurance that the table has already been indexed is required.</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="managers_IssuedOrderManager.js.html" class="button">View Source</a>
+            <span>
+                <a href="managers_IssuedOrderManager.js.html">managers/IssuedOrderManager.js</a>, <a href="managers_IssuedOrderManager.js.html#line191">line 191</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type"><a href="IssuedOrderManager.html">IssuedOrderManager</a></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getIssuedShipmentManager">
+        <a class="href-link" href="#.getIssuedShipmentManager">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getIssuedShipmentManager<span class="signature">(participantManager, callback<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="IssuedShipmentManager.html">IssuedShipmentManager</a>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>participantManager</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type"><a href="ParticipantManager.html">ParticipantManager</a></span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>callback</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">function</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>optional callback for when the assurance that the table has already been indexed is required.</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="managers_IssuedShipmentManager.js.html" class="button">View Source</a>
+            <span>
+                <a href="managers_IssuedShipmentManager.js.html">managers/IssuedShipmentManager.js</a>, <a href="managers_IssuedShipmentManager.js.html#line211">line 211</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type"><a href="IssuedShipmentManager.html">IssuedShipmentManager</a></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getOrderLineManager">
+        <a class="href-link" href="#.getOrderLineManager">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getOrderLineManager<span class="signature">(participantManager, callback<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="OrderLineManager.html">OrderLineManager</a>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>participantManager</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type"><a href="ParticipantManager.html">ParticipantManager</a></span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>callback</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">function</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>optional callback for when the assurance that the table has already been indexed is required.</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="managers_OrderLineManager.js.html" class="button">View Source</a>
+            <span>
+                <a href="managers_OrderLineManager.js.html">managers/OrderLineManager.js</a>, <a href="managers_OrderLineManager.js.html#line186">line 186</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type"><a href="OrderLineManager.html">OrderLineManager</a></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getParticipantManager">
+        <a class="href-link" href="#.getParticipantManager">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getParticipantManager<span class="signature">(dsuStorage<span class="signature-attributes">opt</span>, force<span class="signature-attributes">opt</span>, callback<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="ParticipantManager.html">ParticipantManager</a>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>dsuStorage</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">DSUStorage</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>only required the first time, if not forced</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>force</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">boolean</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>defaults to false. overrides the singleton behaviour and forces a new instance.
+Makes DSU Storage required again!</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>callback</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">function</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="managers_ParticipantManager.js.html" class="button">View Source</a>
+            <span>
+                <a href="managers_ParticipantManager.js.html">managers/ParticipantManager.js</a>, <a href="managers_ParticipantManager.js.html#line68">line 68</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type"><a href="ParticipantManager.html">ParticipantManager</a></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getProductManager">
+        <a class="href-link" href="#.getProductManager">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getProductManager<span class="signature">(participantManager<span class="signature-attributes">opt</span>, callback<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="ProductManager.html">ProductManager</a>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>participantManager</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type"><a href="ParticipantManager.html">ParticipantManager</a></span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>only required the first time, if not forced</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>callback</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">function</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>optional callback for when the assurance that the table has already been indexed is required.</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="managers_ProductManager.js.html" class="button">View Source</a>
+            <span>
+                <a href="managers_ProductManager.js.html">managers/ProductManager.js</a>, <a href="managers_ProductManager.js.html#line214">line 214</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type"><a href="ProductManager.html">ProductManager</a></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getReceivedOrderManager">
+        <a class="href-link" href="#.getReceivedOrderManager">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getReceivedOrderManager<span class="signature">(participantManager, callback<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="OrderManager.html">OrderManager</a>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>participantManager</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type"><a href="ParticipantManager.html">ParticipantManager</a></span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>callback</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">function</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>optional callback for when the assurance that the table has already been indexed is required.</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="managers_ReceivedOrderManager.js.html" class="button">View Source</a>
+            <span>
+                <a href="managers_ReceivedOrderManager.js.html">managers/ReceivedOrderManager.js</a>, <a href="managers_ReceivedOrderManager.js.html#line153">line 153</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type"><a href="OrderManager.html">OrderManager</a></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getReceivedShipmentManager">
+        <a class="href-link" href="#.getReceivedShipmentManager">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getReceivedShipmentManager<span class="signature">(participantManager, callback<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="ReceivedShipmentManager.html">ReceivedShipmentManager</a>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>participantManager</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type"><a href="ParticipantManager.html">ParticipantManager</a></span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>callback</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">function</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>optional callback for when the assurance that the table has already been indexed is required.</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="managers_ReceivedShipmentManager.js.html" class="button">View Source</a>
+            <span>
+                <a href="managers_ReceivedShipmentManager.js.html">managers/ReceivedShipmentManager.js</a>, <a href="managers_ReceivedShipmentManager.js.html#line155">line 155</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type"><a href="ReceivedShipmentManager.html">ReceivedShipmentManager</a></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getShipmentLineManager">
+        <a class="href-link" href="#.getShipmentLineManager">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getShipmentLineManager<span class="signature">(participantManager, callback<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="ShipmentLineManager.html">ShipmentLineManager</a>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>participantManager</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type"><a href="ParticipantManager.html">ParticipantManager</a></span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>callback</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">function</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>optional callback for when the assurance that the table has already been indexed is required.</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="managers_ShipmentLineManager.js.html" class="button">View Source</a>
+            <span>
+                <a href="managers_ShipmentLineManager.js.html">managers/ShipmentLineManager.js</a>, <a href="managers_ShipmentLineManager.js.html#line212">line 212</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type"><a href="ShipmentLineManager.html">ShipmentLineManager</a></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getStockManager">
+        <a class="href-link" href="#.getStockManager">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getStockManager<span class="signature">(participantManager, serialization<span class="signature-attributes">opt</span>, callback<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="StockManager.html">StockManager</a>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>participantManager</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type"><a href="ParticipantManager.html">ParticipantManager</a></span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>serialization</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">boolean</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>defaults to true.</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>callback</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">function</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>optional callback for when the assurance that the table has already been indexed is required.</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="managers_StockManager.js.html" class="button">View Source</a>
+            <span>
+                <a href="managers_StockManager.js.html">managers/StockManager.js</a>, <a href="managers_StockManager.js.html#line225">line 225</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type"><a href="StockManager.html">StockManager</a></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

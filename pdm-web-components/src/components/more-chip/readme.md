@@ -7,10 +7,11 @@
 
 ## Properties
 
-| Property   | Attribute   | Description | Type     | Default                 |
-| ---------- | ----------- | ----------- | -------- | ----------------------- |
-| `color`    | `color`     |             | `string` | `'medium'`              |
-| `iconName` | `icon-name` |             | `string` | `"ellipsis-horizontal"` |
+| Property   | Attribute           | Description | Type      | Default                 |
+| ---------- | ------------------- | ----------- | --------- | ----------------------- |
+| `color`    | `color`             |             | `string`  | `'medium'`              |
+| `float`    | `float-more-button` |             | `boolean` | `false`                 |
+| `iconName` | `icon-name`         |             | `string`  | `"ellipsis-horizontal"` |
 
 
 ## Events

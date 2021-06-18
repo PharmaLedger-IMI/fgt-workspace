@@ -263,6 +263,7 @@ export namespace Components {
     }
     interface MoreChip {
         "color": string;
+        "float": boolean;
         "iconName": string;
     }
     interface MultiSpinner {
@@ -349,6 +350,7 @@ export namespace Components {
          */
         "isItem": boolean;
         "orientation": "start" | "end";
+        "singleLine": boolean;
     }
     interface PdmSsappLoader {
         "loader"?: string;
@@ -961,6 +963,7 @@ declare namespace LocalJSX {
     }
     interface MoreChip {
         "color"?: string;
+        "float"?: boolean;
         "iconName"?: string;
         /**
           * Through this event the clickEvent is passed
@@ -1058,6 +1061,7 @@ declare namespace LocalJSX {
         "isItem"?: boolean;
         "onSelectEvent"?: (event: CustomEvent<string>) => void;
         "orientation"?: "start" | "end";
+        "singleLine"?: boolean;
     }
     interface PdmSsappLoader {
         "loader"?: string;

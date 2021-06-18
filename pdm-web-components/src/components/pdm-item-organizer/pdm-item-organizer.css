@@ -4,7 +4,7 @@
 
 ion-popover.organizer-popover{
   --pop-over-margin: calc(var(--ion-margin, 16px) /2);
-  --width: 100%;
+  --width: auto;
 }
 
 ion-list.organizer-pop-over-list > *{
@@ -17,6 +17,8 @@ ul.organizer-pop-over-list > *{
 
 pdm-item-organizer {
   --organizer-item-margin: var(--ion-margin, 16px);
+  width: 100%;
+  height: 100%
 }
 
 pdm-item-organizer > div.ion-justify-content-end  > *{
