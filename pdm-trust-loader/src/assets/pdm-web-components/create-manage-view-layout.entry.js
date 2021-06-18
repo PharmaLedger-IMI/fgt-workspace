@@ -60,6 +60,7 @@ const CreateManageViewLayout = class {
         return false;
       props[`size-${breakpoints[i]}`] = '' + (reverse ? 12 - bp : bp);
     });
+    return props;
   }
   goBack(evt) {
     evt.preventDefault();
@@ -95,7 +96,7 @@ const CreateManageViewLayout = class {
   }
   getHeader() {
     return [
-      h("div", { class: "flex ion-align-items-center" }, h("ion-icon", { name: "layers", size: "large", color: "medium" }), h("ion-label", { class: "ion-text-uppercase ion-padding-start", color: "secondary" }, this.isCreate ? this.createTitleString : this.manageTitleString)),
+      h("div", { class: "flex ion-align-items-center" }, h("ion-icon", { name: this.iconName, size: "large", color: "secondary" }), h("ion-label", { class: "ion-text-uppercase ion-padding-start", color: "secondary" }, this.isCreate ? this.createTitleString : this.manageTitleString)),
       h("ion-row", { class: "ion-align-items-center" }, h("ion-button", { color: "secondary", fill: "clear", class: "ion-margin-start", onClick: this.goBack.bind(this) }, h("ion-icon", { slot: "start", name: "return-up-back", class: "ion-margin-end" }), this.backString))
     ];
   }

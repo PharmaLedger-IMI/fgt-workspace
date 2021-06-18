@@ -28,11 +28,11 @@ generic-chip{
   --color-step-100: var(--ion-color-primary);
 }
 
-ion-badge{
+generic-chip ion-badge{
   background-color: var(--color-step);
 }
 
-ion-chip {
+generic-chip ion-chip {
   animation: 500ms linear fadein;
 }
 
@@ -48,9 +48,12 @@ generic-chip div.button-div{
   display: flex;
 }
 
-generic-chip div.button-div > *:not(:first-child) {
+generic-chip div.button-div > *{
   display: none;
-  margin-left: var(calc(--ion-margin/2), 8px);
+}
+
+generic-chip div.button-div > *:not(:first-child) {
+  margin-left: calc(var(--ion-margin, 16px)/2);
 }
 
 generic-chip:hover div.button-div > * {

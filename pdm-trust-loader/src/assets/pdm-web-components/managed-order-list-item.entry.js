@@ -86,11 +86,15 @@ const ManagedOrderListItem = class {
         "gtin": ol.gtin,
         "quantity": ol.quantity,
         "mode": "detail"
-      }))), "id-prop": "gtin", "is-ion-item": "false", "display-count": "3", orientation: this.element.querySelector('list-item-layout').orientation, onSelectEvent: (evt) => {
+      }))), "id-prop": "gtin", "is-ion-item": "false", "display-count": "3", orientation: this.getOrientation(), onSelectEvent: (evt) => {
         evt.preventDefault();
         evt.stopImmediatePropagation();
         console.log(`Selected ${evt.detail}`);
       } }));
+  }
+  getOrientation() {
+    const layout = this.element.querySelector('list-item-layout');
+    return layout ? layout.orientation : 'end';
   }
   addButtons() {
     let self = this;

@@ -4,25 +4,5 @@
 
 managed-orderline-stock-chip{
   --color-step: var(--ion-color-primary);
-  animation: 0.5s linear fadein;
-}
 
-ion-badge{
-  background-color: var(--color-step);
-}
-
-ion-chip {
-  height: 28px;
-  --ion-padding: 8px;
-  --ion-margin: 8px;
-}
-
-@keyframes fadein {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
 }

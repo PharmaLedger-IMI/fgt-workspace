@@ -5,7 +5,7 @@ import { w as wizard } from './WizardService-2f7a45ff.js';
 import { S as SUPPORTED_LOADERS } from './supported-loader-4cd02ac2.js';
 import { F as FALLBACK_COLOR, g as getSteppedColor } from './colorUtils-62f7f6b9.js';
 
-const managedOrderlineStockChipCss = ":host{display:inherit}managed-orderline-stock-chip{--color-step:var(--ion-color-primary);animation:0.5s linear fadein}ion-badge{background-color:var(--color-step)}ion-chip{height:28px;--ion-padding:8px;--ion-margin:8px}@keyframes fadein{from{opacity:0}to{opacity:1}}";
+const managedOrderlineStockChipCss = ":host{display:inherit}managed-orderline-stock-chip{--color-step:var(--ion-color-primary)}";
 
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
   var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -29,7 +29,7 @@ const AVAILABLE_BUTTONS = {
 const ManagedOrderlineStockChip = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
-    this.sendAction = createEvent(this, "sendAction", 7);
+    this.sendAction = createEvent(this, "ssapp-action", 7);
     this.gtin = undefined;
     this.quantity = undefined;
     this.available = undefined;
@@ -42,12 +42,12 @@ const ManagedOrderlineStockChip = class {
     this.stock = undefined;
     this.expiry = undefined;
   }
-  sendActionEvent() {
+  sendActionEvent(evt) {
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
     const event = this.sendAction.emit({
-      data: {
-        action: this.button,
-        gtin: this.gtin
-      }
+      action: this.button,
+      gtin: this.gtin
     });
     if (!event.defaultPrevented)
       console.log(`Ignored action: ${this.button} for gtin: ${this.gtin}`);
@@ -116,7 +116,7 @@ const ManagedOrderlineStockChip = class {
       default:
         return;
     }
-    return (h("ion-button", { slot: "buttons", fill: "clear", size: "small", color: props.color, onClick: () => this.sendActionEvent(), disabled: props.disabled }, h("ion-icon", { slot: "icon-only", name: props.iconName })));
+    return (h("ion-button", { slot: "buttons", fill: "clear", size: "small", color: props.color, onClick: this.sendActionEvent.bind(this), disabled: props.disabled }, h("ion-icon", { slot: "icon-only", name: props.iconName })));
   }
   renderDetail() {
     return (h(Host, null, h("generic-chip", { style: {

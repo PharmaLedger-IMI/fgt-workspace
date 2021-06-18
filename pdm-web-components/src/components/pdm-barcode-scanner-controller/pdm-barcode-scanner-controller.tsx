@@ -52,7 +52,7 @@ export class PdmBarcodeScannerController {
       callback = props;
       props= undefined;
     }
-    const scanner = document.createElement('ion-modal');
+    const scanner: any = document.createElement('ion-modal');
     scanner.id = `bar-code-scanner`;
     scanner.component = CONTENT_COMPONENT_NAME;
     scanner.cssClass = 'barcode-scanner';

@@ -28,6 +28,7 @@
 
 ### Used by
 
+ - [line-stock-manager](../line-stock-manager)
  - [managed-batch](../managed-batch)
  - [managed-batch-list-item](../managed-batch-list-item)
  - [managed-order-list-item](../managed-order-list-item)
@@ -43,6 +44,7 @@
 ```mermaid
 graph TD;
   pdm-item-organizer --> more-chip
+  line-stock-manager --> pdm-item-organizer
   managed-batch --> pdm-item-organizer
   managed-batch-list-item --> pdm-item-organizer
   managed-order-list-item --> pdm-item-organizer

@@ -5,7 +5,6 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { OverlayEventDetail } from "@ionic/core";
 export namespace Components {
     interface BarcodeGenerator {
         /**
@@ -195,27 +194,6 @@ export namespace Components {
         "gtin": string;
         "refresh": () => Promise<void>;
     }
-    interface ManagedReceivedOrder {
-        "availableString": string;
-        "confirmAllString": string;
-        "confirmedString": string;
-        "delayString": string;
-        "detailsString": string;
-        "noStockString": string;
-        "orderId": string;
-        "orderString": string;
-        "proceedString": string;
-        "productsString": string;
-        "refresh": () => Promise<void>;
-        "rejectString": string;
-        "remainingString": string;
-        "resetAllString": string;
-        "selectOrderLine": (gtin: any) => Promise<void>;
-        "selectProductString": string;
-        "stockString": string;
-        "titleString": string;
-        "unavailableString": string;
-    }
     interface ManagedShipment {
         "availableString": string;
         "backString": string;
@@ -384,6 +362,8 @@ export namespace Components {
     }
     interface SlideInBoard {
     }
+    interface StatusBadge {
+    }
 }
 declare global {
     interface HTMLBarcodeGeneratorElement extends Components.BarcodeGenerator, HTMLStencilElement {
@@ -482,12 +462,6 @@ declare global {
         prototype: HTMLManagedProductListItemElement;
         new (): HTMLManagedProductListItemElement;
     };
-    interface HTMLManagedReceivedOrderElement extends Components.ManagedReceivedOrder, HTMLStencilElement {
-    }
-    var HTMLManagedReceivedOrderElement: {
-        prototype: HTMLManagedReceivedOrderElement;
-        new (): HTMLManagedReceivedOrderElement;
-    };
     interface HTMLManagedShipmentElement extends Components.ManagedShipment, HTMLStencilElement {
     }
     var HTMLManagedShipmentElement: {
@@ -572,6 +546,12 @@ declare global {
         prototype: HTMLSlideInBoardElement;
         new (): HTMLSlideInBoardElement;
     };
+    interface HTMLStatusBadgeElement extends Components.StatusBadge, HTMLStencilElement {
+    }
+    var HTMLStatusBadgeElement: {
+        prototype: HTMLStatusBadgeElement;
+        new (): HTMLStatusBadgeElement;
+    };
     interface HTMLElementTagNameMap {
         "barcode-generator": HTMLBarcodeGeneratorElement;
         "batch-chip": HTMLBatchChipElement;
@@ -589,7 +569,6 @@ declare global {
         "managed-orderline-stock-chip": HTMLManagedOrderlineStockChipElement;
         "managed-product": HTMLManagedProductElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
-        "managed-received-order": HTMLManagedReceivedOrderElement;
         "managed-shipment": HTMLManagedShipmentElement;
         "managed-shipment-list-item": HTMLManagedShipmentListItemElement;
         "managed-shipmentline-list-item": HTMLManagedShipmentlineListItemElement;
@@ -604,6 +583,7 @@ declare global {
         "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
         "simple-managed-product-item": HTMLSimpleManagedProductItemElement;
         "slide-in-board": HTMLSlideInBoardElement;
+        "status-badge": HTMLStatusBadgeElement;
     }
 }
 declare namespace LocalJSX {
@@ -834,7 +814,7 @@ declare namespace LocalJSX {
         /**
           * Through this event actions are passed
          */
-        "onSendAction"?: (event: CustomEvent<OverlayEventDetail>) => void;
+        "onSsapp-action"?: (event: CustomEvent<any>) => void;
         "quantity"?: number;
         "threshold"?: number;
     }
@@ -877,41 +857,6 @@ declare namespace LocalJSX {
           * Through this event errors are passed
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
-    }
-    interface ManagedReceivedOrder {
-        "availableString"?: string;
-        "confirmAllString"?: string;
-        "confirmedString"?: string;
-        "delayString"?: string;
-        "detailsString"?: string;
-        "noStockString"?: string;
-        /**
-          * Through this event shipment creation requests are made
-         */
-        "onCreated"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event shipment rejection requests are made
-         */
-        "onRejected"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event navigation requests to tabs are made
-         */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event errors are passed
-         */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
-        "orderId"?: string;
-        "orderString"?: string;
-        "proceedString"?: string;
-        "productsString"?: string;
-        "rejectString"?: string;
-        "remainingString"?: string;
-        "resetAllString"?: string;
-        "selectProductString"?: string;
-        "stockString"?: string;
-        "titleString"?: string;
-        "unavailableString"?: string;
     }
     interface ManagedShipment {
         "availableString"?: string;
@@ -1131,6 +1076,8 @@ declare namespace LocalJSX {
     }
     interface SlideInBoard {
     }
+    interface StatusBadge {
+    }
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;
         "batch-chip": BatchChip;
@@ -1148,7 +1095,6 @@ declare namespace LocalJSX {
         "managed-orderline-stock-chip": ManagedOrderlineStockChip;
         "managed-product": ManagedProduct;
         "managed-product-list-item": ManagedProductListItem;
-        "managed-received-order": ManagedReceivedOrder;
         "managed-shipment": ManagedShipment;
         "managed-shipment-list-item": ManagedShipmentListItem;
         "managed-shipmentline-list-item": ManagedShipmentlineListItem;
@@ -1163,6 +1109,7 @@ declare namespace LocalJSX {
         "pdm-ssapp-loader": PdmSsappLoader;
         "simple-managed-product-item": SimpleManagedProductItem;
         "slide-in-board": SlideInBoard;
+        "status-badge": StatusBadge;
     }
 }
 export { LocalJSX as JSX };
@@ -1185,7 +1132,6 @@ declare module "@stencil/core" {
             "managed-orderline-stock-chip": LocalJSX.ManagedOrderlineStockChip & JSXBase.HTMLAttributes<HTMLManagedOrderlineStockChipElement>;
             "managed-product": LocalJSX.ManagedProduct & JSXBase.HTMLAttributes<HTMLManagedProductElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
-            "managed-received-order": LocalJSX.ManagedReceivedOrder & JSXBase.HTMLAttributes<HTMLManagedReceivedOrderElement>;
             "managed-shipment": LocalJSX.ManagedShipment & JSXBase.HTMLAttributes<HTMLManagedShipmentElement>;
             "managed-shipment-list-item": LocalJSX.ManagedShipmentListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentListItemElement>;
             "managed-shipmentline-list-item": LocalJSX.ManagedShipmentlineListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentlineListItemElement>;
@@ -1200,6 +1146,7 @@ declare module "@stencil/core" {
             "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;
             "simple-managed-product-item": LocalJSX.SimpleManagedProductItem & JSXBase.HTMLAttributes<HTMLSimpleManagedProductItemElement>;
             "slide-in-board": LocalJSX.SlideInBoard & JSXBase.HTMLAttributes<HTMLSlideInBoardElement>;
+            "status-badge": LocalJSX.StatusBadge & JSXBase.HTMLAttributes<HTMLStatusBadgeElement>;
         }
     }
 }

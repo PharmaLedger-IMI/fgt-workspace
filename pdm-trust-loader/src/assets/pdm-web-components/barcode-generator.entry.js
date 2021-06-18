@@ -38710,7 +38710,7 @@ const BarcodeGenerator = class {
     if (this.data.length) {
       let canvas = this.element.querySelector("canvas");
       if (!canvas)
-        throw new Error('Could not find the canvas element');
+        return;
       canvas.innerHTML = "";
       let tryToGenerateBarcode = () => {
         //@ts-ignore

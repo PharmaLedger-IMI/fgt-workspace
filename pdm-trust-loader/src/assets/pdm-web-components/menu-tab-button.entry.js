@@ -96,7 +96,8 @@ const MenuTabButton = class {
 </ion-content>`;
         this.querySelectorAll('ion-item').forEach(item => {
           item.addEventListener('click', () => {
-            contentEl.closest('ion-popover').dismiss(undefined, item.getAttribute('tab'));
+            const popover = contentEl.closest('ion-popover');
+            popover.dismiss(undefined, item.getAttribute('tab'));
           });
         });
       }

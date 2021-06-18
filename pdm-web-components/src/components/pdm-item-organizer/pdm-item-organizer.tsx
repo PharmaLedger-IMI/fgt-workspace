@@ -78,7 +78,7 @@ export class PdmItemOrganizer {
         const listTag = isItem ? 'ion-list' : 'ul';
         this.innerHTML = `
 <ion-content>
-  <${listTag}>
+  <${listTag} class="organizer-pop-over-list">
     ${parsedProps.filter((props, i) => !!props && i >= displayCount)
           .map(props => self.getComponentLiteral(isItem, componentName, props)).join('')}
   </${listTag}>
@@ -86,7 +86,8 @@ export class PdmItemOrganizer {
 
         this.querySelectorAll(componentName).forEach(item => {
           item.addEventListener('click', () => {
-            contentEl.closest('ion-popover').dismiss(undefined, item.getAttribute(self.idProp));
+            const popover: any = contentEl.closest('ion-popover');
+            popover.dismiss(undefined, item.getAttribute(self.idProp));
           });
         });
       }
@@ -106,7 +107,7 @@ export class PdmItemOrganizer {
 
   private async getItemPopOver(evt){
     this.definePopOverContent();
-    const popover = Object.assign(document.createElement('ion-popover'), {
+    const popover: any = Object.assign(document.createElement('ion-popover'), {
       component: ORGANIZER_CUSTOM_EL_NAME,
       cssClass: 'organizer-popover',
       translucent: true,
@@ -167,7 +168,7 @@ export class PdmItemOrganizer {
       return;
     return (
       <Host>
-        <div class={`ion-padding-horizontal flex ion-justify-content-${this.orientation} ion-align-items-center`}>
+        <div class={`ion-padding-horizontal ion-justify-content-${this.orientation} ion-align-items-center`}>
           {...this.getFilteredComponents()}
         </div>
       </Host>

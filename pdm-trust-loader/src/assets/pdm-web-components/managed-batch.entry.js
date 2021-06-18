@@ -158,7 +158,7 @@ const ManagedBatch = class {
     };
     return [
       h("ion-item", { class: "ion-margin-top" }, h("ion-label", { position: "floating" }, self.batchNumberString), h("ion-input", { name: "input-batchNumber", required: true, maxlength: 30, disabled: !isCreate, value: isCreate ? '' : (self.batch ? self.batch.batchNumber : '') }), isCreate ? getRandomBatchNumberButton() : getBarCodeButton()),
-      h("ion-item", null, h("ion-label", { position: "floating" }, self.expiryString), h("ion-input", { type: "date", name: "input-expiry", min: formatDate(new Date()), required: true, disabled: !isCreate, placeholder: self.expiryPlaceholderString, value: isCreate ? '' : (self.batch ? self.batch.expiry : '') })),
+      h("ion-item", null, h("ion-label", { position: "floating" }, self.expiryString), h("ion-input", { type: "date", name: "input-expiry", min: formatDate(new Date()), required: true, disabled: !isCreate, placeholder: self.expiryPlaceholderString, value: isCreate ? '' : (self.batch ? formatDate(new Date(self.batch.expiry)) : '') })),
       h("ion-item", null, h("ion-label", { position: "floating" }, self.serialsString), h("ion-input", { name: "input-serialNumbers", required: true, pattern: "^[\\d,]+$", placeholder: self.serialsPlaceholderString }), getAddSerialsButton())
     ];
   }
@@ -182,7 +182,7 @@ const ManagedBatch = class {
   render() {
     if (!this.host.isConnected)
       return;
-    return (h(Host, null, h("create-manage-view-layout", { "create-title-string": this.titleString, "manage-title-string": this.manageString, "back-string": this.backString, "create-string": this.addBatchString, "clear-string": this.clearString, "icon-name": "layers", "is-create": this.isCreate(), onGoBackEvent: (evt) => this.navigateBack(evt), onCreateEvent: (evt) => this.create(evt) }, h("div", { slot: "create" }, this.getCreate()), h("div", { slot: "postcreate" }, this.getPostCreate()), h("div", { slot: "manage" }, this.getManage()), h("div", { slot: "view" }))));
+    return (h(Host, null, h("create-manage-view-layout", { "create-title-string": this.titleString, "manage-title-string": this.manageString, "back-string": this.backString, "create-string": this.addBatchString, "clear-string": this.clearString, "icon-name": "layers", "break-point": "xl-4", "is-create": this.isCreate(), onGoBackEvent: (evt) => this.navigateBack(evt), onCreateEvent: (evt) => this.create(evt) }, h("div", { slot: "create" }, this.getCreate()), h("div", { slot: "postcreate" }, this.getPostCreate()), h("div", { slot: "manage" }, this.getManage()), h("div", { slot: "view" }))));
   }
   get element() { return getElement(this); }
   static get watchers() { return {

@@ -273,6 +273,7 @@ export class ManagedProduct implements CreateManageView{
                                    back-string={this.backString}
                                    create-string={this.addProductString}
                                    clear-string={this.clearString}
+                                   break-point="xl-4"
                                    icon-name="layers"
                                    is-create={this.isCreate()}
                                    onGoBackEvent={(evt) => this.navigateBack(evt)}

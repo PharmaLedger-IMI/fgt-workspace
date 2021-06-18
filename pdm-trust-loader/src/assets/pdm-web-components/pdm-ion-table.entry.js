@@ -149,7 +149,7 @@ const PdmIonTable = class {
         return;
       return (h("div", { class: "ion-margin-end" }, h("ion-searchbar", { debounce: 1000, placeholder: self.searchBarPlaceholder, "search-icon": "search-outline" })));
     };
-    return (h("div", { class: "ion-margin-top ion-padding-horizontal" }, h("ion-row", { class: "ion-align-items-center ion-justify-content-between" }, h("div", { class: "flex ion-align-items-center" }, h("ion-icon", { size: "large", color: "medium", name: self.iconName }), h("ion-label", { class: "ion-text-uppercase ion-padding-start", color: "secondary" }, self.tableTitle)), h("ion-row", { class: "ion-align-items-center" }, getSearch(), h("ion-buttons", null, h("slot", { name: "buttons" }))))));
+    return (h("div", { class: "ion-margin-top ion-padding-horizontal" }, h("ion-row", { class: "ion-align-items-center ion-justify-content-between" }, h("div", { class: "flex ion-align-items-center" }, h("ion-icon", { size: "large", color: "secondary", name: self.iconName }), h("ion-label", { class: "ion-text-uppercase ion-padding-start", color: "secondary" }, self.tableTitle)), h("ion-row", { class: "ion-align-items-center" }, getSearch(), h("ion-buttons", null, h("slot", { name: "buttons" }))))));
   }
   getPagination() {
     if (!this.paginated)

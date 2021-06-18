@@ -88,15 +88,18 @@ Type: `Promise<void>`
 
 - [batch-chip](../batch-chip)
 - [managed-orderline-stock-chip](../managed-orderline-stock-chip)
+- [pdm-item-organizer](../pdm-item-organizer)
 
 ### Graph
 ```mermaid
 graph TD;
   line-stock-manager --> batch-chip
   line-stock-manager --> managed-orderline-stock-chip
+  line-stock-manager --> pdm-item-organizer
   batch-chip --> multi-spinner
   batch-chip --> generic-chip
   managed-orderline-stock-chip --> generic-chip
+  pdm-item-organizer --> more-chip
   managed-order --> line-stock-manager
   managed-shipment --> line-stock-manager
   style line-stock-manager fill:#f9f,stroke:#333,stroke-width:4px

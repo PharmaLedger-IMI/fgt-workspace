@@ -165,6 +165,7 @@ export class ManagedShipment implements CreateManageView{
       if (err)
         return this.sendError(`Could not retrieve shipment ${self.shipmentRef}`);
       self.shipment = shipment;
+      self.participantId = this.getType() === SHIPMENT_TYPE.ISSUED ? shipment.requesterId : shipment.senderId;
     });
   }
 
@@ -218,6 +219,7 @@ export class ManagedShipment implements CreateManageView{
   async refresh(){
     await this.load();
   }
+
   @Watch('orderJSON')
   async refreshOrder(newVal){
     if (newVal.startsWith('@'))
@@ -236,7 +238,7 @@ export class ManagedShipment implements CreateManageView{
   @Method()
   async reset() {
     this.shipmentRef = '';
-    if (!this.orderJSON || this.orderJSON.startsWith('@')){ // for webcardinal compatibility
+    if (!this.orderJSON || this.orderJSON.startsWith('@') || this.orderJSON === "{}"){ // for webcardinal compatibility
       this.participantId = '';
       const stockEl = this.getStockManagerEl();
       if (stockEl)
@@ -260,12 +262,12 @@ export class ManagedShipment implements CreateManageView{
     this.navigateToTab(`tab-${this.getType()}-shipments`, {});
   }
 
-  create(evt){
+  async create(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
     this.sendCreateAction.emit({
-      shipment: new Shipment(undefined, this.identity.id, evt.detail.senderId, this.identity.address, undefined, this.lines.slice()),
-      stock: this.getStockManagerEl().getResult()
+      shipment: new Shipment(undefined, this.identity.id, evt.detail.requesterId, this.identity.address, undefined, this.lines.slice()),
+      stock: await this.getStockManagerEl().getResult()
     });
   }
 
@@ -361,8 +363,8 @@ export class ManagedShipment implements CreateManageView{
           };
           return (
             <ion-select name="input-requesterId" interface="popover" interfaceOptions={options}
-                        class="requester-select"
-                        value={isCreate ? self.participantId : ''}>
+                        class="requester-select" disabled={isCreate && self.order && !self.order.requesterID}
+                        value={isCreate ? (self.order ? self.order.requesterId : self.participantId) : ''}>
               {...self.requesters.map(s => (<ion-select-option value={s}>{s}</ion-select-option>))}
             </ion-select>
           )
@@ -532,8 +534,10 @@ export class ManagedShipment implements CreateManageView{
     if (this.isCreate())
       return;
     return (
-      <line-stock-manager lines={typeof this.lines !== 'string' ? this.lines : []}
+      <line-stock-manager lines={this.lines}
                           show-stock={this.getType() === SHIPMENT_TYPE.RECEIVED}
+                          enable-action={this.isCreate() && this.getType() === SHIPMENT_TYPE.ISSUED}
+
                           stock-string={this.stockString}
                           no-stock-string={this.noStockString}
                           select-string={this.selectString}
