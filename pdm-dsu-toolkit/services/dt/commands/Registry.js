@@ -1,6 +1,8 @@
 /**
  * List of all available commands to the Dossier Builder
  * Without being here, they can't be used
+ * @module Commands
+ * @memberOf dt
  */
 const _availableCommands = {
     addfile: require('./addFile'),
@@ -24,6 +26,8 @@ const _availableCommands = {
  * return the Command class by its name
  * @param cmdName
  * @return {Command} the command calls to be instanced
+ * @module Commands
+ * @memberOf dt
  */
 const _getByName = function(cmdName){
     if (cmdName in _availableCommands)

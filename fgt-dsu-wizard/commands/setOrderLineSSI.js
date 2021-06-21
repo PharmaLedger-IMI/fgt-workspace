@@ -1,8 +1,4 @@
 /**
- * @module fgt-dsu-wizard.commands
- */
-
-/**
  * Defines how to create the keyssi for an orderLine dsu
  * @param {object} data necessary properties:
  * <ul>
@@ -11,6 +7,7 @@
  * </ul>
  * @param {string} domain the anchoring domain
  * @returns {ArraySSI}
+ * @memberOf Commands
  */
 function createOrderLineSSI(data, domain) {
     console.log("New ORDERLINE_SSI in domain ", domain);
@@ -27,6 +24,7 @@ function createOrderLineSSI(data, domain) {
 /**
  * Registers the endpoint on the api-hub's dsu-wizard.
  * @param {HttpServer} server
+ * @memberOf Commands
  */
 function command(server){
     const setSSI = require('../../pdm-dsu-toolkit/commands/setSSI');

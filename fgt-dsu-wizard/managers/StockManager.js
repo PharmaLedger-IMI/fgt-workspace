@@ -1,31 +1,34 @@
 const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
+const {functionCallIterator} = require('../services').utils;
 const Stock = require('../model/Stock');
 const Batch = require('../model/Batch');
 const StockStatus = require('../model/StockStatus');
 
 /**
+ * Stock Manager Class
+ *
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
  *
  * All Manager Classes should be singletons.
  *
- * This complete separation of concerns is very beneficial for 2 reasons:
+ * This complete separation of concerts is very beneficial for 2 reasons:
  * <ul>
  *     <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
  *
- * @param {Database} storage the DSU where the storage should happen or more commonly the Database Object
- * @param {BaseManager} baseManager the base manager to have access to the identity api
+ * @param {ParticipantManager} participantManager
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
-
- * @module managers
  * @class StockManager
+ * @extends Manager
+ * @memberOf Managers
  */
 class StockManager extends Manager{
-    constructor(baseManager, callback) {
-        super(baseManager, DB.stock, ['name', 'gtin', 'manufName'], callback);
+    constructor(participantManager, serialization, callback) {
+        super(participantManager, DB.stock, ['name', 'gtin', 'manufName'], callback);
+        this.serialization = serialization;
     }
 
     /**
@@ -41,11 +44,12 @@ class StockManager extends Manager{
             gtin = stock.gtin;
         }
         let self = this;
+        stock.quantity = stock.getQuantity();
         self.insertRecord(gtin, stock, (err) => {
             if (err)
                 return self._err(`Could not insert record with gtin ${gtin} on table ${self.tableName}`, err, callback);
             const path =`${self.tableName}/${gtin}`;
-            console.log(`Stock ${gtin} created stored at '${path}'`);
+            console.log(`Stock for Product ${gtin} created stored at '${path}'`);
             callback(undefined, stock, path);
         });
     }
@@ -67,8 +71,74 @@ class StockManager extends Manager{
         self.updateRecord(gtin, newStock, (err) => {
             if (err)
                 return self._err(`Could not update product with gtin ${gtin}`, err, callback);
-            console.log(`Product ${gtin} updated`);
+            console.log(`Stock for Product ${gtin} updated`);
             callback(undefined, newStock)
+        });
+    }
+
+
+    manage(product, batch, callback){
+        const self = this;
+
+        if (batch.length === 0)
+            return callback();
+
+        const gtin = product.gtin;
+
+        self.getOne(gtin, true, (err, stock) => {
+            if (err){
+                const newStock = new Stock(product);
+                newStock.batches = [batch];
+                return self.create(gtin, newStock, callback);
+            }
+
+            const sb = stock.batches.find(b => b.batchNumber === batch.batchNumber);
+
+            let serials;
+            if (!sb){
+                if (batch.getQuantity() < 0)
+                    return callback(`Given a negative amount on a unexisting stock`);
+                stock.batches.push(batch);
+                console.log(`Added batch ${batch.batchNumber} with ${batch.serialNumbers ? batch.serialNumbers.length : batch.getQuantity()} items`);
+            } else {
+                const newQuantity = sb.getQuantity()  + batch.getQuantity() ;
+                if (newQuantity < 0)
+                    return callback(`Illegal quantity. Not enough Stock. requested ${batch.getQuantity() } of ${sb.getQuantity() }`);
+                serials = sb.manage(batch.getQuantity() , this.serialization);
+            }
+
+            self.update(gtin, stock, (err) => {
+                if (err)
+                    return self._err(`Could not manage stock for ${gtin}`, err, callback);
+                console.log(`Updated Stock for ${gtin} batch ${batch.batchNumber}. ${self.serialization && serials ? serials.join(', ') : ''}`);
+                callback(undefined, serials || batch.serialNumbers || batch.quantity);
+            });
+        });
+    }
+
+    manageAll(products, batches, callback){
+        functionCallIterator(this.manage.bind(this), products, batches, callback);
+    }
+
+    /**
+     * updates a product from the list
+     * @param {string[]|number[]} [gtins] the table key
+     * @param {Stock[]} newStocks
+     * @param {function(err, Stock[])} callback
+     * @override
+     */
+    updateAll(gtins, newStocks, callback){
+        if (!callback){
+            callback = newStocks;
+            newStocks = gtin;
+            gtins = newStock.map(s => s.gtin);
+        }
+        let self = this;
+        super.updateAll(gtins, newStocks, (err) => {
+            if (err)
+                return self._err(`Could not update products`, err, callback);
+            console.log(`Products ${JSON.stringify(gtins)} updated`);
+            callback(undefined, newStocks)
         });
     }
 
@@ -76,7 +146,7 @@ class StockManager extends Manager{
      * reads ssi for that gtin in the db. loads is and reads the info at '/info'
      * @param {string} gtin
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
-     * @param {function(err, Product|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
+     * @param {function(err, Stock|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
      * @override
      */
     getOne(gtin, readDSU,  callback) {
@@ -144,22 +214,29 @@ class StockManager extends Manager{
     }
 }
 
-let stockManager;
+
 /**
- * @param {ParticipantManager} [participantManager] only required the first time, if not forced
- * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
- * Makes Participant Manager required again!
+ * @param {ParticipantManager} participantManager
+ * @param {boolean} [serialization] defaults to true.
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {StockManager}
+ * @memberOf Managers
  */
-const getStockManager = function (participantManager, force, callback) {
-    if (typeof force === 'function'){
-        callback = force;
-        force = false;
+const getStockManager = function (participantManager, serialization, callback) {
+    if (!callback){
+        callback = serialization;
+        serialization = true;
     }
-    if (!stockManager || force)
-        stockManager = new StockManager(participantManager, callback);
-    return stockManager;
+    let manager;
+    try {
+        manager = participantManager.getManager(StockManager);
+        if (callback)
+            return callback(undefined, manager);
+    } catch (e){
+        manager = new StockManager(participantManager, serialization, callback);
+    }
+
+    return manager;
 }
 
 module.exports = getStockManager;

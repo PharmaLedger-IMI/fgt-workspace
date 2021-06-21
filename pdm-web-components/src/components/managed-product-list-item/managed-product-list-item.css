@@ -2,10 +2,6 @@
   display: block;
 }
 
-ion-button[color="medium"]:hover{
-  --color: var(--ion-color-secondary);
-}
-
 ion-item.main-item{
   animation: 1s linear fadein;
 }

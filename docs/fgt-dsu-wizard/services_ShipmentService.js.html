@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-dsu-wizard.module_commands.html">commands</a></li><li><a href="fgt-dsu-wizard.module.managers.html">managers</a></li><li><a href="fgt-dsu-wizard.module_model.html">model</a></li><li><a href="fgt-dsu-wizard.module_services.html">services</a></li><li><a href="fgt-mah-ssapp.module_managers.html">managers</a></li><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Classes</h3><ul><li><a href="BatchManager.html">BatchManager</a></li><li><a href="BatchResolver.html">BatchResolver</a></li><li><a href="fgt-dsu-wizard.module_model-Batch.html">Batch</a></li><li><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html">ParticipantManager</a></li><li><a href="IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="IssuedShipmentManager.html">IssuedShipmentManager</a></li><li><a href="OrderLineManager.html">OrderLineManager</a></li><li><a href="OrderManager.html">OrderManager</a></li><li><a href="ProductManager.html">ProductManager</a></li><li><a href="ReceivedOrderManager.html">ReceivedOrderManager</a></li><li><a href="ReceivedShipmentManager.html">ReceivedShipmentManager</a></li><li><a href="ShipmentLineManager.html">ShipmentLineManager</a></li><li><a href="ShipmentManager.html">ShipmentManager</a></li><li><a href="Stock.html">Stock</a></li><li><a href="StockManager.html">StockManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getBatchManager">getBatchManager</a></li><li><a href="global.html#getBatchResolver">getBatchResolver</a></li><li><a href="global.html#getIssuedOrderManager">getIssuedOrderManager</a></li><li><a href="global.html#getIssuedShipmentManager">getIssuedShipmentManager</a></li><li><a href="global.html#getOrderLineManager">getOrderLineManager</a></li><li><a href="global.html#getProductManager">getProductManager</a></li><li><a href="global.html#getReceivedOrderManager">getReceivedOrderManager</a></li><li><a href="global.html#getReceivedShipmentManager">getReceivedShipmentManager</a></li><li><a href="global.html#getShipmentLineManager">getShipmentLineManager</a></li><li><a href="global.html#getStockManager">getStockManager</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Namespaces</h3><ul><li><a href="Commands.html">Commands</a></li><li><a href="Constants.html">Constants</a></li><li><a href="Managers.html">Managers</a></li><li><a href="Model.html">Model</a></li><li><a href="Resolvers.html">Resolvers</a></li><li><a href="Services.html">Services</a></li></ul><h3>Classes</h3><ul><li><a href="Batch.html">Batch</a></li><li><a href="DirectoryEntry.html">DirectoryEntry</a></li><li><a href="MAH.html">MAH</a></li><li><a href="Managers.BatchManager.html">BatchManager</a></li><li><a href="Managers.DirectoryManager.html">DirectoryManager</a></li><li><a href="Managers.IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="Managers.IssuedShipmentManager.html">IssuedShipmentManager</a></li><li><a href="Managers.OrderLineManager.html">OrderLineManager</a></li><li><a href="Managers.OrderManager.html">OrderManager</a></li><li><a href="Managers.ParticipantManager.html">ParticipantManager</a></li><li><a href="Managers.ProductManager.html">ProductManager</a></li><li><a href="Managers.ReceivedShipmentManager.html">ReceivedShipmentManager</a></li><li><a href="Managers.ShipmentLineManager.html">ShipmentLineManager</a></li><li><a href="Managers.ShipmentManager.html">ShipmentManager</a></li><li><a href="Managers.StockManager.html">StockManager</a></li><li><a href="Model.Batch.html">Batch</a></li><li><a href="Model.DirectoryEntry.html">DirectoryEntry</a></li><li><a href="Model.MAH.html">MAH</a></li><li><a href="Model.Order.html">Order</a></li><li><a href="Model.OrderLine.html">OrderLine</a></li><li><a href="Model.OrderStatus.html">OrderStatus</a></li><li><a href="Model.Participant.html">Participant</a></li><li><a href="Model.Pharmacy.html">Pharmacy</a></li><li><a href="Model.Product.html">Product</a></li><li><a href="Model.Shipment.html">Shipment</a></li><li><a href="Model.ShipmentCode.html">ShipmentCode</a></li><li><a href="Model.ShipmentLine.html">ShipmentLine</a></li><li><a href="Model.Stock.html">Stock</a></li><li><a href="Model.TrackingCode.html">TrackingCode</a></li><li><a href="Model.Wholesaler.html">Wholesaler</a></li><li><a href="Order.html">Order</a></li><li><a href="OrderLine.html">OrderLine</a></li><li><a href="Participant.html">Participant</a></li><li><a href="Pharmacy.html">Pharmacy</a></li><li><a href="Product.html">Product</a></li><li><a href="Resolvers.BatchResolver.html">BatchResolver</a></li><li><a href="Resolvers.ProductResolver.html">ProductResolver</a></li><li><a href="Shipment.html">Shipment</a></li><li><a href="ShipmentCode.html">ShipmentCode</a></li><li><a href="ShipmentLine.html">ShipmentLine</a></li><li><a href="Stock.html">Stock</a></li><li><a href="TrackingCode.html">TrackingCode</a></li><li><a href="Wholesaler.html">Wholesaler</a></li></ul><h3>Global</h3><ul><li><a href="global.html#create">create</a></li><li><a href="global.html#get">get</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,15 +109,13 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @module fgt-dsu-wizard.services
- */
-const utils = require('../../pdm-dsu-toolkit/services/utils');
-const {STATUS_MOUNT_PATH, INFO_PATH, LINES_PATH} = require('../constants');
+            <pre class="prettyprint source linenums"><code>const utils = require('../../pdm-dsu-toolkit/services/utils');
+const {STATUS_MOUNT_PATH, INFO_PATH, LINES_PATH, ORDER_MOUNT_PATH} = require('../constants');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
+ * @namespace Services
  */
 function ShipmentService(domain, strategy) {
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");
@@ -127,9 +125,24 @@ function ShipmentService(domain, strategy) {
     domain = domain || "default";
     const shipmentLineService = new (require('./ShipmentLineService'))(domain, strategy);
     const statusService = new (require('./StatusService'))(domain, strategy);
+    const shipmentCodeService = new (require('./ShipmentCodeService'))(domain, strategy);
 
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
 
+    let getDSUMountByPath = function(dsu, path, basePath, callback){
+        if (!callback &amp;&amp; typeof basePath === 'function'){
+            callback = basePath;
+            basePath = '/';
+        }
+        dsu.listMountedDSUs(basePath, (err, mounts) => {
+            if (err)
+                return callback(err);
+            const filtered = mounts.filter(m => m.path === path);
+            if (filtered.length !== 1)
+                return callback(`Invalid number of mounts found ${filtered.length}`);
+            callback(undefined, filtered[0].identifier);
+        });
+    }
 
     this.resolveMAH = function(shipmentLine, callback){
         const keyGen = require('../commands/setProductSSI').createProductSSI;
@@ -162,14 +175,14 @@ function ShipmentService(domain, strategy) {
             dsu.readFile(INFO_PATH, (err, data) => {
                 if (err)
                     return callback(err);
+                let shipment;
                 try{
-                    const shipment = JSON.parse(data);
+                    shipment = JSON.parse(data);
                     dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
                         if (err)
                             return callback(`could not retrieve orderLine status`);
                         try{
                             shipment.status = JSON.parse(status);
-                            callback(undefined, shipment);
                         } catch (e) {
                             callback(`unable to parse Order status: ${data.toString()}`);
                         }
@@ -177,16 +190,28 @@ function ShipmentService(domain, strategy) {
                 } catch (e){
                     callback(`Could not parse order in DSU ${keySSI.getIdentifier()}`);
                 }
-            })
+
+                getDSUMountByPath(dsu, ORDER_MOUNT_PATH, (err, identifier) => {
+                    if (err)
+                        return callback(err);
+                    shipment.orderSSI = identifier;
+                    callback(undefined, shipment);
+                });
+            });
         });
     }
 
     /**
      * Creates an shipment
      * @param {Shipment} shipment
+     * @param {string} orderSSI (the readSSI to the order)
      * @param {function(err, keySSI)} callback
      */
-    this.create = function (shipment, callback) {
+    this.create = function (shipment, orderSSI, callback) {
+        if (!callback){
+            callback = orderSSI;
+            orderSSI = undefined;
+        }
         // if product is invalid, abort immediatly.
         if (typeof shipment === 'object') {
             let err = shipment.validate();
@@ -195,23 +220,24 @@ function ShipmentService(domain, strategy) {
         }
 
         if (isSimple) {
-            createSimple(shipment, callback);
+            createSimple(shipment, orderSSI, callback);
         } else {
-            createAuthorized(shipment, callback);
+            createAuthorized(shipment, orderSSI, callback);
         }
     }
 
     /**
      * Creates the original OrderStatus DSU
+     * @param {string} id the id for the operation
      * @param {OrderStatus} [status]: defaults to OrderStatus.CREATED
      * @param {function(err, keySSI, orderLinesSSI)} callback
      */
-    let createShipmentStatus = function (status, callback) {
+    let createShipmentStatus = function (id,status,  callback) {
         if (typeof status === 'function') {
             callback = status;
             status = ShipmentStatus.CREATED;
         }
-        statusService.create(status, (err, keySSI) => {
+        statusService.create(status, id, (err, keySSI) => {
             if (err)
                 return callback(err);
             console.log(`ShipmentStatus DSU created with SSI ${keySSI.getIdentifier(true)}`);
@@ -219,9 +245,9 @@ function ShipmentService(domain, strategy) {
         });
     }
 
-    let createSimple = function (shipment, callback) {
+    let createSimple = function (shipment, orderSSI, callback) {
         let keyGenFunction = require('../commands/setShipmentSSI').createShipmentSSI;
-        let templateKeySSI = keyGenFunction({senderId: shipment.senderId, shipmentId: shipment.shipmentId}, domain);
+        let templateKeySSI = keyGenFunction({data: shipment.senderId + shipment.shipmentId}, domain);
         utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);
@@ -229,7 +255,7 @@ function ShipmentService(domain, strategy) {
                 if (err)
                     return callback(err);
                 console.log("Shipment /info ", JSON.stringify(shipment));
-                createShipmentStatus((err, statusSSI) => {
+                createShipmentStatus(shipment.senderId, (err, statusSSI) => {
                     if (err)
                         return callback(err);
                     // Mount must take string version of keyssi
@@ -237,20 +263,32 @@ function ShipmentService(domain, strategy) {
                         if (err)
                             return callback(err);
                         console.log(`OrderStatus DSU (${statusSSI.getIdentifier(true)}) mounted at '/status'`);
-                        createShipmentLines(shipment, statusSSI, (err, shipmentLines) => {
-                            if (err)
-                                return callback(err);
-                            const lines = JSON.stringify(shipmentLines.map(o => o.getIdentifier(true)));
-                            dsu.writeFile(LINES_PATH, lines, (err) => {
+
+                        const finalize = function(callback){
+                            createShipmentLines(shipment, statusSSI, (err, shipmentLines) => {
                                 if (err)
                                     return callback(err);
-                                dsu.getKeySSIAsObject((err, keySSI) => {
+                                const lines = JSON.stringify(shipmentLines.map(o => o.getIdentifier(true)));
+                                dsu.writeFile(LINES_PATH, lines, (err) => {
                                     if (err)
                                         return callback(err);
-                                    console.log("Finished creating Shipment " + keySSI.getIdentifier(true));
-                                    callback(undefined, keySSI, shipmentLines);
+                                    dsu.getKeySSIAsObject((err, keySSI) => {
+                                        if (err)
+                                            return callback(err);
+                                        console.log("Finished creating Shipment " + keySSI.getIdentifier(true));
+                                        callback(undefined, keySSI, shipmentLines, statusSSI.getIdentifier());
+                                    });
                                 });
                             });
+                        };
+
+                        if (!orderSSI)
+                            return finalize(callback);
+
+                        dsu.mount(ORDER_MOUNT_PATH, orderSSI, (err) => {
+                            if (err)
+                                return callback(err);
+                           finalize(callback);
                         });
                     });
                 });
@@ -258,13 +296,12 @@ function ShipmentService(domain, strategy) {
         });
     }
 
-    let createAuthorized = function (shipment, callback) {
+    let createAuthorized = function (shipment, orderSSI, callback) {
         let getEndpointData = function (shipment) {
             return {
                 endpoint: endpoint,
                 data: {
-                    senderId: shipment.senderId,
-                    shipmentId: shipment.shipmentId
+                    data: shipment.senderId + shipment.shipmentId
                 }
             }
         }
@@ -273,25 +310,69 @@ function ShipmentService(domain, strategy) {
             builder.addFileDataToDossier(INFO_PATH, JSON.stringify(shipment), (err) => {
                 if (err)
                     return cb(err);
-                createShipmentStatus((err, statusSSI) => {
+                createShipmentStatus(shipment.senderId, (err, statusSSI) => {
                     if (err)
                         return cb(err);
                     builder.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(), (err) => {
                         if (err)
                             return cb(err);
-                        createShipmentLines(shipment, statusSSI, (err, orderLines) => {
+
+                        const finalize = function(callback){
+                            createShipmentLines(shipment, statusSSI, (err, orderLines) => {
+                                if (err)
+                                    return callback(err);
+                                builder.addFileDataToDossier(LINES_PATH, JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
+                                    if (err)
+                                        return ccallback(err);
+                                    callback();
+                                });
+                            });
+                        }
+
+                        if (!orderSSI)
+                            return finalize(cb);
+
+                        builder.mount(ORDER_MOUNT_PATH, orderSSI, (err) => {
                             if (err)
                                 return cb(err);
-                            builder.addFileDataToDossier(LINES_PATH, JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
-                                if (err)
-                                    return cb(err);
-                                cb();
-                            })
+                            finalize(cb);
                         });
                     });
                 });
             });
         }, callback);
+    }
+
+    this.update = function(keySSI, shipment, id, callback){
+        if (!callback &amp;&amp; typeof id === 'function'){
+            callback = id;
+            id = shipment.senderId;
+        }
+
+        if (typeof shipment === 'object') {
+            let err = shipment.validate();
+            if (err)
+                return callback(err);
+        }
+
+        if (isSimple) {
+            keySSI = utils.getKeySSISpace().parse(keySSI);
+            utils.getResolver().loadDSU(keySSI, (err, dsu) => {
+                if (err)
+                    return callback(err);
+                getDSUMountByPath(dsu, STATUS_MOUNT_PATH, (err, identifier) => {
+                    if (err)
+                        return callback(err);
+                    statusService.update(identifier, shipment.status, shipment.senderId, (err) => {
+                        if (err)
+                            return callback(err);
+                        callback(undefined, keySSI.getIdentifier());
+                    });
+                });
+            });
+        } else {
+            return callback(`Not implemented`);
+        }
     }
 
     /**
@@ -302,6 +383,32 @@ function ShipmentService(domain, strategy) {
      * @return {Object[]} keySSIs
      */
     let createShipmentLines = function (shipment, statusSSI, callback) {
+        let shipmentLines = [];
+
+        statusSSI = statusSSI.derive();
+        let iterator = function (shipment, items, callback) {
+            let shipmentLine = items.shift();
+            if (!shipmentLine)
+                return callback(undefined, shipmentLines);
+            shipmentLineService.create(shipment.shipmentId, shipmentLine, statusSSI, (err, keySSI) => {
+                if (err)
+                    return callback(err);
+                shipmentLines.push(keySSI);
+                iterator(shipment, items, callback);
+            });
+        }
+        // the slice() clones the array, so that the shitf() does not destroy it.
+        iterator(shipment, shipment.shipmentLines.slice(), callback);
+    }
+
+    /**
+     * Creates the ShipmentCodeDSU for the shipment
+     * @param {Shipment} shipment
+     * @param {function} callback
+     * @param {KeySSI} statusSSI keySSI to the OrderStatus DSU
+     * @return {Object[]} keySSIs
+     */
+    let createShipmentCode = function (shipment, statusSSI, callback) {
         let shipmentLines = [];
 
         statusSSI = statusSSI.derive();

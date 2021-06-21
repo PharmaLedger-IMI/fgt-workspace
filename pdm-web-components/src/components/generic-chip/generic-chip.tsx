@@ -1,4 +1,4 @@
-import {Component, Host, h, Prop, Element} from '@stencil/core';
+import {Component, Host, h, Prop, Element, Event, EventEmitter} from '@stencil/core';
 import {HostElement} from "../../decorators";
 
 @Component({
@@ -18,18 +18,31 @@ export class GenericChip {
 
   @Prop({attribute: "color"}) color?: string = "secondary";
 
+  @Event({
+    bubbles: false
+  })
+  selectEvent: EventEmitter<string>
+
   async componentWillLoad() {
     if (!this.host.isConnected)
       return;
   }
 
+  private triggerSelect(){
+    this.selectEvent.emit(this.chipLabel);
+  }
+
   render() {
     return (
       <Host>
-        <ion-chip class="ion-padding-horizontal" outline={this.outline} color={this.color}>
-          <ion-label>{this.chipLabel}</ion-label>
-          <slot name="badges"></slot>
-          <slot name="buttons"></slot>
+        <ion-chip outline={this.outline} color={this.color} onClick={() => this.triggerSelect()}>
+          <ion-label class="ion-padding-horizontal">{this.chipLabel}</ion-label>
+          <div class="badges-div ion-align-items-center ion-justify-content-between">
+            <slot name="badges"></slot>
+          </div>
+          <div class="button-div ion-align-items-center ion-justify-content-between">
+            <slot name="buttons"></slot>
+          </div>
         </ion-chip>
       </Host>
     )

@@ -92,7 +92,7 @@ export class MenuTabButton {
 
   private async getPopOver(evt, options){
     this.definePopOverContent(options);
-    const popover = Object.assign(document.createElement('ion-popover'), {
+    const popover: any = Object.assign(document.createElement('ion-popover'), {
       component: this.getName(),
       cssClass: 'menu-tab-button-popover',
       translucent: true,
@@ -120,7 +120,7 @@ export class MenuTabButton {
         const contentEl = this;
         const getContent = function(){
           return options.map(o => `
-<ion-item class="pop-over-item" tab="${o.tab}" button>
+<ion-item lines="none" class="pop-over-item" tab="${o.tab}" button>
     <ion-icon slot="start" name="${o.icon}"></ion-icon>
     <ion-label class="ion-padding-horizontal">${o.label}</ion-label>
 </ion-item>`).join('\n');
@@ -135,7 +135,8 @@ export class MenuTabButton {
 
         this.querySelectorAll('ion-item').forEach(item => {
           item.addEventListener('click', () => {
-            contentEl.closest('ion-popover').dismiss(undefined, item.getAttribute('tab'));
+            const popover: any = contentEl.closest('ion-popover');
+            popover.dismiss(undefined, item.getAttribute('tab'));
           });
         });
       }

@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-dsu-wizard.module_commands.html">commands</a></li><li><a href="fgt-dsu-wizard.module.managers.html">managers</a></li><li><a href="fgt-dsu-wizard.module_model.html">model</a></li><li><a href="fgt-dsu-wizard.module_services.html">services</a></li><li><a href="fgt-mah-ssapp.module_managers.html">managers</a></li><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Classes</h3><ul><li><a href="BatchManager.html">BatchManager</a></li><li><a href="BatchResolver.html">BatchResolver</a></li><li><a href="fgt-dsu-wizard.module_model-Batch.html">Batch</a></li><li><a href="fgt-mah-ssapp.module_managers-ParticipantManager.html">ParticipantManager</a></li><li><a href="IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="IssuedShipmentManager.html">IssuedShipmentManager</a></li><li><a href="OrderLineManager.html">OrderLineManager</a></li><li><a href="OrderManager.html">OrderManager</a></li><li><a href="ProductManager.html">ProductManager</a></li><li><a href="ReceivedOrderManager.html">ReceivedOrderManager</a></li><li><a href="ReceivedShipmentManager.html">ReceivedShipmentManager</a></li><li><a href="ShipmentLineManager.html">ShipmentLineManager</a></li><li><a href="ShipmentManager.html">ShipmentManager</a></li><li><a href="Stock.html">Stock</a></li><li><a href="StockManager.html">StockManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getBatchManager">getBatchManager</a></li><li><a href="global.html#getBatchResolver">getBatchResolver</a></li><li><a href="global.html#getIssuedOrderManager">getIssuedOrderManager</a></li><li><a href="global.html#getIssuedShipmentManager">getIssuedShipmentManager</a></li><li><a href="global.html#getOrderLineManager">getOrderLineManager</a></li><li><a href="global.html#getProductManager">getProductManager</a></li><li><a href="global.html#getReceivedOrderManager">getReceivedOrderManager</a></li><li><a href="global.html#getReceivedShipmentManager">getReceivedShipmentManager</a></li><li><a href="global.html#getShipmentLineManager">getShipmentLineManager</a></li><li><a href="global.html#getStockManager">getStockManager</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Namespaces</h3><ul><li><a href="Commands.html">Commands</a></li><li><a href="Constants.html">Constants</a></li><li><a href="Managers.html">Managers</a></li><li><a href="Model.html">Model</a></li><li><a href="Resolvers.html">Resolvers</a></li><li><a href="Services.html">Services</a></li></ul><h3>Classes</h3><ul><li><a href="Batch.html">Batch</a></li><li><a href="DirectoryEntry.html">DirectoryEntry</a></li><li><a href="MAH.html">MAH</a></li><li><a href="Managers.BatchManager.html">BatchManager</a></li><li><a href="Managers.DirectoryManager.html">DirectoryManager</a></li><li><a href="Managers.IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="Managers.IssuedShipmentManager.html">IssuedShipmentManager</a></li><li><a href="Managers.OrderLineManager.html">OrderLineManager</a></li><li><a href="Managers.OrderManager.html">OrderManager</a></li><li><a href="Managers.ParticipantManager.html">ParticipantManager</a></li><li><a href="Managers.ProductManager.html">ProductManager</a></li><li><a href="Managers.ReceivedShipmentManager.html">ReceivedShipmentManager</a></li><li><a href="Managers.ShipmentLineManager.html">ShipmentLineManager</a></li><li><a href="Managers.ShipmentManager.html">ShipmentManager</a></li><li><a href="Managers.StockManager.html">StockManager</a></li><li><a href="Model.Batch.html">Batch</a></li><li><a href="Model.DirectoryEntry.html">DirectoryEntry</a></li><li><a href="Model.MAH.html">MAH</a></li><li><a href="Model.Order.html">Order</a></li><li><a href="Model.OrderLine.html">OrderLine</a></li><li><a href="Model.OrderStatus.html">OrderStatus</a></li><li><a href="Model.Participant.html">Participant</a></li><li><a href="Model.Pharmacy.html">Pharmacy</a></li><li><a href="Model.Product.html">Product</a></li><li><a href="Model.Shipment.html">Shipment</a></li><li><a href="Model.ShipmentCode.html">ShipmentCode</a></li><li><a href="Model.ShipmentLine.html">ShipmentLine</a></li><li><a href="Model.Stock.html">Stock</a></li><li><a href="Model.TrackingCode.html">TrackingCode</a></li><li><a href="Model.Wholesaler.html">Wholesaler</a></li><li><a href="Order.html">Order</a></li><li><a href="OrderLine.html">OrderLine</a></li><li><a href="Participant.html">Participant</a></li><li><a href="Pharmacy.html">Pharmacy</a></li><li><a href="Product.html">Product</a></li><li><a href="Resolvers.BatchResolver.html">BatchResolver</a></li><li><a href="Resolvers.ProductResolver.html">ProductResolver</a></li><li><a href="Shipment.html">Shipment</a></li><li><a href="ShipmentCode.html">ShipmentCode</a></li><li><a href="ShipmentLine.html">ShipmentLine</a></li><li><a href="Stock.html">Stock</a></li><li><a href="TrackingCode.html">TrackingCode</a></li><li><a href="Wholesaler.html">Wholesaler</a></li></ul><h3>Global</h3><ul><li><a href="global.html#create">create</a></li><li><a href="global.html#get">get</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,9 +109,10 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const {INFO_PATH, ANCHORING_DOMAIN, DB, DEFAULT_QUERY_OPTIONS} = require('../constants');
+            <pre class="prettyprint source linenums"><code>const {ANCHORING_DOMAIN, DB} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Batch = require('../model').Batch;
+const getStockManager = require('./StockManager');
 
 /**
  * Batch Manager Class
@@ -130,10 +131,13 @@ const Batch = require('../model').Batch;
  * @param {ParticipantManager} participantManager
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @class BatchManager
+ * @extends Manager
+ * @memberOf Managers
  */
 class BatchManager extends Manager{
     constructor(participantManager, callback) {
         super(participantManager, DB.batches, ['gtin', 'batchNumber'], callback);
+        this.stockManager = getStockManager(participantManager);
         this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
         this.batchService = new (require('../services/BatchService'))(ANCHORING_DOMAIN);
     }
@@ -177,13 +181,16 @@ class BatchManager extends Manager{
 
     /**
      * Creates a {@link Batch} dsu
-     * @param {string|number} gtin
+     * @param {Product} product
      * @param {Batch} batch
      * @param {function(err, keySSI, string)} callback first keySSI if for the batch, the second for its' product dsu
      * @override
      */
-    create(gtin, batch, callback) {
+    create(product, batch, callback) {
         let self = this;
+
+        const gtin = product.gtin;
+
         self.batchService.create(gtin, batch, (err, keySSI) => {
             if (err)
                 return callback(err);
@@ -194,7 +201,13 @@ class BatchManager extends Manager{
                     return self._err(`Could not inset record with gtin ${gtin} and batch ${batch.batchNumber} on table ${self.tableName}`, err, callback);
                 const path =`${self.tableName}/${dbKey}`;
                 console.log(`batch ${batch.batchNumber} created stored at '${path}'`);
-                callback(undefined, keySSI, path);
+
+                self.stockManager.manage(product, batch, (err) => {
+                    if (err)
+                        return self._err(`Error Updating Stock for ${product.gtin} batch ${batch.batchNumber}`, err, callback);
+                    console.log(`Stock for ${product.gtin} batch ${batch.batchNumber} updated`)
+                    callback(undefined, keySSI, path);
+                })
             });
         });
     }
@@ -264,6 +277,7 @@ class BatchManager extends Manager{
      * @param {string} keyword
      * @return {string[]} query
      * @protected
+     * @override
      */
     _keywordToQuery(keyword){
         keyword = keyword || '.*';
@@ -271,22 +285,23 @@ class BatchManager extends Manager{
     }
 }
 
-let batchManager;
 /**
- * @param {BaseManager} [participantManager] only required the first time, if not forced
- * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
- * Makes BaseManager required again!
+ * @param {BaseManager} participantManager
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {BatchManager}
+ * @memberOf Managers
  */
-const getBatchManager = function (participantManager, force, callback) {
-    if (typeof force === 'function'){
-        callback = force;
-        force = false;
+const getBatchManager = function (participantManager, callback) {
+    let manager;
+    try {
+       manager = participantManager.getManager(BatchManager);
+        if (callback)
+            return callback(undefined, manager);
+    } catch (e){
+       manager = new BatchManager(participantManager, callback);
     }
-    if (!batchManager || force)
-        batchManager = new BatchManager(participantManager, callback);
-    return batchManager;
+
+    return manager;
 }
 
 module.exports = getBatchManager;

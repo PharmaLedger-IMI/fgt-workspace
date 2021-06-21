@@ -1,5 +1,12 @@
 const { INFO_PATH , DEFAULT_QUERY_OPTIONS } = require('../constants');
 
+const {functionCallIterator} = require('../services/utils');
+
+/**
+ * Util class to handle pagination
+ * @class Page
+ * @memberOf Managers
+ */
 class Page {
     itemsPerPage = 10;
     currentPage = 1;
@@ -63,11 +70,18 @@ class Page {
  *                  });
  *              }
  * </pre>
- * @module managers
+ * @memberOf Managers
  * @class Manager
  * @abstract
  */
 class Manager{
+    /**
+     * @param {BaseManager} baseManager
+     * @param {string} tableName the name of the table this manager handles
+     * @param {string[]} indexes the indexes to be added to the table
+     * @param {function(err, Manager)} [callback] optional callback for better application flow control
+     * @constructor
+     */
     constructor(baseManager, tableName, indexes, callback){
         let self = this;
         this.storage = baseManager.db;
@@ -94,15 +108,17 @@ class Manager{
             }
             return baseManager.sendMessage(did, api, message, callback);
         }
-        this._registerMessageListener = function(listener){
-            return baseManager.registerMessageListener(this.tableName, listener);
-        }
         this._deleteMessage = function(message, callback){
             return baseManager.deleteMessage(message, callback);
         }
         this._getMessages = function(callback){
             return baseManager.getMessages(this.tableName, callback);
         }
+        this._registerMessageListener = function(listener){
+            return baseManager.registerMessageListener(this.tableName, listener);
+        }
+        baseManager.cacheManager(this);
+
         if (this.indexes && callback){
             this._indexTable(...this.indexes, (err) => {
                 if (err)
@@ -110,7 +126,9 @@ class Manager{
                 console.log(`Indexes for table ${self.tableName} updated`);
                 callback(undefined, self);
             });
-        }
+        } else if (callback)
+            callback(undefined, self);
+
     }
 
     /**
@@ -197,36 +215,42 @@ class Manager{
      */
     _sendMessage(did, api, message, callback){}
 
+    /**
+     * @see _registerMessageListener
+     */
     registerMessageListener(listener){
         return this._registerMessageListener(listener);
     }
 
+    /**
+     * Proxy call to {@link MessageManager#_registerMessageListener()}.
+     * @see BaseManager
+     */
     _registerMessageListener(listener){}
 
     /**
-     * Proxy call to {@link MessageManager#deleteMessage()}.
-     * 
-     * jpsl: PS to Tiago - I don't agree with proxying calls
-     * (without any explict reason). It would be better to get the messageManager
-     * and call the method there directly.
+     * @see _deleteMessage
      */
     deleteMessage(message, callback) {
         return this._deleteMessage(message, callback);
     }
 
+    /**
+     * Proxy call to {@link MessageManager#deleteMessage()}.
+     * @see BaseManager
+     */
     _deleteMessage(message, callback) {}
 
     /**
-     * Proxy call to {@link MessageManager#getMessages()} using tableName as the api value.
-     * 
-     * jpsl: PS to Tiago - I don't agree with proxying calls
-     * (without any explict reason). It would be better to get the messageManager
-     * and call the method there directly.
+     * @see _getMessages
      */
     getMessages(callback){
         return this._getMessages(callback);
     }
 
+    /**
+     * Proxy call to {@link MessageManager#getMessages()} using tableName as the api value.
+     */
     _getMessages(callback){}
 
     /**
@@ -258,6 +282,7 @@ class Manager{
      * Each child class must implement this behaviour if desired
      * @param {*} message
      * @param {function(err)} callback
+     * @private
      */
     _processMessageRecord(message, callback){
         callback(`Message processing is not implemented for ${this.tableName}`);
@@ -538,6 +563,31 @@ class Manager{
                     callback(undefined, newItem, dsu)
                 });
             });
+        });
+    }
+
+    /**
+     * updates a bunch of items
+     *
+     * @param {string[]} [keys] key is optional so child classes can override them
+     * @param {object[]} newItems
+     * @param {function(err, object[], Archive[])} callback
+     */
+    updateAll(keys, newItems, callback){
+        if (!callback)
+            return callback(`No key Provided...`);
+
+        let self = this;
+        functionCallIterator(this.updateRecord.bind(this), keys, newItems, (err, results) => {
+            if (err)
+                return self._err(`Could not update all records`, err, callback);
+            callback(undefined, ...results.reduce((accum, r) => {
+                accum[0] = accum[0] || [];
+                accum[1] = accum[1] || [];
+                accum[0].push(r[0]);
+                accum[1].push(r[1]);
+                return accum;
+            }, [2]));
         });
     }
 

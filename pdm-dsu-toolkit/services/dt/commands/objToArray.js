@@ -1,16 +1,11 @@
-/**
- * @module Commands
- * @memberOf dt
- */
-
-/**
- */
 const Command = require('./Command');
 const { _err } = require('./utils');
 
 /**
  * Util Command to convert objects to and array with their values
  * @class ObjToArrayCommand
+ * @module Commands
+ * @memberOf dt
  */
 class ObjToArrayCommand extends Command{
     constructor(varStore, source) {

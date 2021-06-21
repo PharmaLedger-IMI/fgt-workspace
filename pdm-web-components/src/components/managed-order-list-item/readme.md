@@ -7,11 +7,10 @@
 
 ## Properties
 
-| Property         | Attribute         | Description | Type     | Default             |
-| ---------------- | ----------------- | ----------- | -------- | ------------------- |
-| `orderId`        | `order-id`        |             | `string` | `undefined`         |
-| `orderlineCount` | `orderline-count` |             | `number` | `4`                 |
-| `type`           | `type`            |             | `string` | `ORDER_TYPE.ISSUED` |
+| Property  | Attribute  | Description | Type     | Default             |
+| --------- | ---------- | ----------- | -------- | ------------------- |
+| `orderId` | `order-id` |             | `string` | `undefined`         |
+| `type`    | `type`     |             | `string` | `ORDER_TYPE.ISSUED` |
 
 
 ## Events
@@ -39,14 +38,15 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [managed-orderline-stock-chip](../managed-orderline-stock-chip)
-- [more-chip](../more-chip)
+- [pdm-item-organizer](../pdm-item-organizer)
+- [list-item-layout](../list-item-layout)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-order-list-item --> managed-orderline-stock-chip
-  managed-order-list-item --> more-chip
+  managed-order-list-item --> pdm-item-organizer
+  managed-order-list-item --> list-item-layout
+  pdm-item-organizer --> more-chip
   style managed-order-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

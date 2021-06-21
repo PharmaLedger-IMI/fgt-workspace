@@ -2,7 +2,8 @@ const ShipmentStatus = require('./ShipmentStatus');
 const ShipmentLine = require('./ShipmentLine');
 
 /**
- * @module fgt-dsu-wizard.model
+ * @class Shipment
+ * @memberOf Model
  */
 class Shipment {
     shipmentId;
@@ -14,6 +15,16 @@ class Shipment {
     shipmentLines;
     code;
 
+    /**
+     *
+     * @param shipmentId
+     * @param requesterId
+     * @param senderId
+     * @param shipToAddress
+     * @param status
+     * @param shipmentLines
+     * @constructor
+     */
     constructor(shipmentId, requesterId, senderId, shipToAddress, status, shipmentLines){
         this.shipmentId = shipmentId;
         this.requesterId = requesterId;
@@ -30,7 +41,7 @@ class Shipment {
     validate() {
         const errors = [];
         if (!this.shipmentId) {
-            errors.push('OrderID is required.');
+            errors.push('ShipmentID is required.');
         }
         if (!this.requesterId) {
             errors.push('Ordering partner ID is required.');

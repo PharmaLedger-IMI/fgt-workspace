@@ -7,10 +7,11 @@
 
 ## Properties
 
-| Property   | Attribute   | Description | Type     | Default                 |
-| ---------- | ----------- | ----------- | -------- | ----------------------- |
-| `color`    | `color`     |             | `string` | `'medium'`              |
-| `iconName` | `icon-name` |             | `string` | `"ellipsis-horizontal"` |
+| Property   | Attribute           | Description | Type      | Default                 |
+| ---------- | ------------------- | ----------- | --------- | ----------------------- |
+| `color`    | `color`             |             | `string`  | `'medium'`              |
+| `float`    | `float-more-button` |             | `boolean` | `false`                 |
+| `iconName` | `icon-name`         |             | `string`  | `"ellipsis-horizontal"` |
 
 
 ## Events
@@ -24,15 +25,11 @@
 
 ### Used by
 
- - [managed-order-list-item](../managed-order-list-item)
- - [managed-shipment-list-item](../managed-shipment-list-item)
  - [pdm-item-organizer](../pdm-item-organizer)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-order-list-item --> more-chip
-  managed-shipment-list-item --> more-chip
   pdm-item-organizer --> more-chip
   style more-chip fill:#f9f,stroke:#333,stroke-width:4px
 ```

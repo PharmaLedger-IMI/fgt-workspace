@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-pharmacy-ssapp.module_LOCALE.html">LOCALE</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_handleTryCancel">_handleTryCancel</a></li><li><a href="global.html#_handleTryOk">_handleTryOk</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-pharmacy-ssapp.module_LOCALE.html">LOCALE</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_handleCreateOrder">_handleCreateOrder</a></li><li><a href="global.html#_handleCreateShipment">_handleCreateShipment</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,7 +109,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { LocalizedController, EVENT_REFRESH } from "../../assets/pdm-web-components/index.esm.js";
+            <pre class="prettyprint source linenums"><code>import { LocalizedController, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
 
 /**
  * List all the orders, and allows the creation of new orders.
@@ -119,8 +119,8 @@ export default class IssuedOrdersController extends LocalizedController {
         pharmacy: undefined,
     }); // uninitialized blank model
 
-    constructor(element, history) {
-        super(element, history);
+    constructor(...args) {
+        super(false, ...args);
         super.bindLocale(this, "issuedOrders");
         this.model = this.initializeModel();
         const wizard = require('wizard');
@@ -140,39 +140,7 @@ export default class IssuedOrdersController extends LocalizedController {
 
         // pressing "NEW" to create a new Issued Order
         self.onTagClick("new-issued-order", () => {
-            self._showCreateModal();
-        });
-
-        // pressed "CANCEL" while creating a new Issued Order
-        self.on("cancel-new-issued-order", (event) => {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            self.hideModal();
-        }, true);
-
-        // created a new Issued Order with success
-        self.on("created-issued-order", (event) => {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            self.hideModal();
-            self.refresh();
-        }, true);
-    }
-
-    _showCreateModal() {
-        let self = this;
-        // this.showIonicModal("a-generic-configurable-modal", false, {page: "registration"});
-        self.createWebcModal({
-            template: "issuedOrderModal",
-            controller: "IssuedOrderController",
-            disableBackdropClosing: true,
-            disableFooter: true,
-            disableHeader: true,
-            disableExpanding: true,
-            disableClosing: true,
-            disableCancelButton: true,
-            expanded: false,
-            centered: true
+            self.navigateToTab('tab-order');
         });
     }
 }

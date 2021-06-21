@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_handleCreateOrder">_handleCreateOrder</a></li><li><a href="global.html#_handleCreateShipment">_handleCreateShipment</a></li></ul></div>
                 
             </nav>
         </div>
@@ -110,7 +110,6 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import { HomeController as BaseHomeController, EVENT_SSAPP_HAS_LOADED } from "../../assets/pdm-web-components/index.esm.js";
-
 /**
  * Central Controller
  *
@@ -121,8 +120,8 @@
  * @module controllers
  */
 export default class HomeController extends BaseHomeController{
-    constructor(element, history) {
-        super(element, history);
+    constructor(...args) {
+        super(...args);
         let self = this;
         self.on(EVENT_SSAPP_HAS_LOADED, (evt) => {
             // This event must bubble to be caught by the loader

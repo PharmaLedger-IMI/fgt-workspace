@@ -55,14 +55,6 @@
           "type": "copy",
           "src": "./node_modules/ionicons/dist/ionicons",
           "target": "./src/assets/ionic-core/ionicons"
-        },
-        {
-          "type": "copy",
-          "src": "./node_modules/@ionic/pwa-elements/dist/ionicpwaelements",
-          "target": "./src/assets/ionic-core/pwa-elements",
-          "options": {
-            "overwrite": true
-          }
         }
       ]
     },
@@ -101,6 +93,28 @@
           "type": "copy",
           "src": "../pdm-dsu-toolkit/build/bundles/opendsuDT.js",
           "target": "./src/bundles/opendsuDT.js",
+          "options": {
+            "overwrite": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Copy pdm-web-components",
+      "src": "",
+      "actions": [
+        {
+          "type": "copy",
+          "src": "../pdm-web-components/dist/pdm-web-components",
+          "target": "./src/assets/pdm-web-components",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copy",
+          "src": "../pdm-web-components/css/globalStyles.css",
+          "target": "./src/assets/skin.css",
           "options": {
             "overwrite": true
           }

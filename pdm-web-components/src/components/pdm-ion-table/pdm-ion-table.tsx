@@ -1,15 +1,8 @@
-
-
 import {WebManager, WebManagerService} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 import {Component, ComponentInterface, EventEmitter, h, Host, Prop, Element, Event, State, Watch, Method} from "@stencil/core";
 
-// @ts-ignore
-const SEARCH_BAR_STATE = {
-  OPEN: 'open',
-  CLOSED: 'closed'
-}
 
 @Component({
   tag: 'pdm-ion-table',
@@ -47,15 +40,15 @@ export class PdmIonTable implements ComponentInterface {
   @Prop({attribute: 'no-content-message', mutable: true}) noContentMessage?: string = "No Content";
   @Prop({attribute: 'loading-message', mutable: true}) loadingMessage?: string = "Loading...";
   @Prop({attribute: 'query-placeholder', mutable: true}) searchBarPlaceholder?: string =  "enter search terms...";
-  @Prop({attribute: 'buttons', mutable: true}) buttons?: string[] | {} = [];
-  @Prop({attribute: 'send-real-events', mutable: true}) sendRealEvents: boolean = false;
+  // @Prop({attribute: 'buttons', mutable: true}) buttons?: string[] | {} = [];
+  // @Prop({attribute: 'send-real-events', mutable: true}) sendRealEvents: boolean = false;
 
   /**
    * Component Setup Params
    */
 
   /**
-   * Shows the search bar or not. (not working)
+   * Shows the search bar or not.
    */
   @Prop({attribute: 'can-query'}) canQuery?: boolean = true;
   /**
@@ -93,9 +86,6 @@ export class PdmIonTable implements ComponentInterface {
   private webManager: WebManager = undefined;
 
   @State() model = undefined;
-
-  // Graphical states
-  @State() searchBarVisible: boolean = undefined;
 
   async componentWillLoad() {
     if (!this.host.isConnected)
@@ -220,65 +210,25 @@ export class PdmIonTable implements ComponentInterface {
     const getSearch = function(){
       if (!self.canQuery)
         return;
-      const props = {};
-      if (self.searchBarVisible !== undefined)
-        props['class'] = self.searchBarVisible ? SEARCH_BAR_STATE.OPEN : SEARCH_BAR_STATE.CLOSED;
       return (
         <div class="ion-margin-end">
           <ion-searchbar debounce={1000} placeholder={self.searchBarPlaceholder}
-                         search-icon="search-outline" {...props}></ion-searchbar>
+                         search-icon="search-outline"></ion-searchbar>
         </div>
       )
-    }
-
-    const getActionButtons = function(){
-      if (!self.buttons || !Object.keys(self.buttons).length)
-        return;
-
-      const getButton = function(name, props, index){
-        const hasIcon = typeof props !== 'string';
-        const buttonLabel =  hasIcon ? props.label : props;
-        const buttonIcon = hasIcon ? props.icon : undefined;
-
-        const getIcon = function(){
-          if (!buttonIcon)
-            return;
-          return (<ion-icon class="ion-margin-start" slot="end" name={buttonIcon}></ion-icon>)
-        }
-
-        const buttonProps = {};
-        if (!self.sendRealEvents)
-          buttonProps['data-tag'] = name;
-        else
-          { // @ts-ignore
-            buttonProps['onClick'] = () => self.element.dispatchEvent(new CustomEvent(name, {
-              bubbles: true,
-              cancelable: true
-            }));
-          }
-
-        return (
-          <ion-button fill="solid" class="ion-margin-start" color={index === 0 ? "secondary" : "tertiary"} {...buttonProps}>
-            {buttonLabel}
-            {getIcon()}
-          </ion-button>
-        )
-      }
-
-      return Object.keys(self.buttons).map((name, i) => getButton(name, self.buttons[name], i));
     }
 
     return (
       <div class="ion-margin-top ion-padding-horizontal">
         <ion-row class="ion-align-items-center ion-justify-content-between">
           <div class="flex ion-align-items-center">
-            <ion-icon size="large" color="medium" name={self.iconName}></ion-icon>
+            <ion-icon size="large" color="secondary" name={self.iconName}></ion-icon>
             <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">{self.tableTitle}</ion-label>
           </div>
           <ion-row class="ion-align-items-center">
             {getSearch()}
             <ion-buttons>
-              {...getActionButtons()}
+              <slot name="buttons"></slot>
             </ion-buttons>
           </ion-row>
         </ion-row>

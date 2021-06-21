@@ -16,14 +16,14 @@ const generateWholesalerCredentials = function(id) {
             "required": true
         },
         "tin": {
-            "secret": 500000000,
+            "secret": 5000000000,
             "public": true,
             "required": true
         },
         "address": {
             "required": true,
             "public": true,
-            "secret": "This in an Address"
+            "secret": "London, England"
         },
         "pass": {
             "required": true,
@@ -54,14 +54,14 @@ const generatePharmacyCredentials = function(id) {
             "required": true
         },
         "tin": {
-            "secret": 500000000,
+            "secret": 5000000000,
             "public": true,
             "required": true
         },
         "address": {
             "required": true,
             "public": true,
-            "secret": "This in an Address"
+            "secret": "Avenida da Liberdade, Lisboa, Portugal"
         },
         "pass": {
             "required": true,
@@ -92,14 +92,14 @@ const generateMAHCredentials = function(id) {
             "required": true
         },
         "tin": {
-            "secret": 500000000,
+            "secret": 5000000000,
             "public": true,
             "required": true
         },
         "address": {
             "required": true,
             "public": true,
-            "secret": "This in an Address"
+            "secret": "New York, USA"
         },
         "pass": {
             "required": true,

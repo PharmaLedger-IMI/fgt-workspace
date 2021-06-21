@@ -1,0 +1,41 @@
+# list-item-layout
+
+
+
+<!-- Auto Generated Below -->
+
+
+## Properties
+
+| Property      | Attribute     | Description | Type                          | Default               |
+| ------------- | ------------- | ----------- | ----------------------------- | --------------------- |
+| `color`       | `color`       |             | `string`                      | `"light"`             |
+| `cssClass`    | `class`       |             | `string`                      | `"ion-margin-bottom"` |
+| `lines`       | `lines`       |             | `"full" \| "inset" \| "none"` | `"none"`              |
+| `orientation` | `orientation` |             | `"end" \| "start"`            | `"end"`               |
+
+
+## Dependencies
+
+### Used by
+
+ - [managed-batch-list-item](../managed-batch-list-item)
+ - [managed-order-list-item](../managed-order-list-item)
+ - [managed-product-list-item](../managed-product-list-item)
+ - [managed-shipment-list-item](../managed-shipment-list-item)
+ - [managed-stock-list-item](../managed-stock-list-item)
+
+### Graph
+```mermaid
+graph TD;
+  managed-batch-list-item --> list-item-layout
+  managed-order-list-item --> list-item-layout
+  managed-product-list-item --> list-item-layout
+  managed-shipment-list-item --> list-item-layout
+  managed-stock-list-item --> list-item-layout
+  style list-item-layout fill:#f9f,stroke:#333,stroke-width:4px
+```
+
+----------------------------------------------
+
+*Built with [StencilJS](https://stenciljs.com/)*

@@ -3,5 +3,28 @@
 }
 
 ion-popover.organizer-popover{
+  --pop-over-margin: calc(var(--ion-margin, 16px) /2);
   --width: auto;
+}
+
+ion-list.organizer-pop-over-list > *{
+  margin: calc(var(--pop-over-margin)/2) var(--pop-over-margin);
+}
+
+ul.organizer-pop-over-list > *{
+  margin: calc(var(--pop-over-margin)/2) var(--pop-over-margin);
+}
+
+pdm-item-organizer {
+  --organizer-item-margin: var(--ion-margin, 16px);
+  width: 100%;
+  height: 100%
+}
+
+pdm-item-organizer > div.ion-justify-content-end  > *{
+  margin-left: calc(var(--organizer-item-margin, 8px)/2);
+}
+
+pdm-item-organizer > div.ion-justify-content-start > *{
+  margin-right: calc(var(--organizer-item-margin, 8px)/2);
 }

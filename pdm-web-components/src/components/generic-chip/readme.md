@@ -14,16 +14,25 @@
 | `outline`   | `outline`    |             | `boolean` | `true`        |
 
 
+## Events
+
+| Event         | Description | Type                  |
+| ------------- | ----------- | --------------------- |
+| `selectEvent` |             | `CustomEvent<string>` |
+
+
 ## Dependencies
 
 ### Used by
 
- - [managed-batch](../managed-batch)
+ - [batch-chip](../batch-chip)
+ - [managed-orderline-stock-chip](../managed-orderline-stock-chip)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-batch --> generic-chip
+  batch-chip --> generic-chip
+  managed-orderline-stock-chip --> generic-chip
   style generic-chip fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

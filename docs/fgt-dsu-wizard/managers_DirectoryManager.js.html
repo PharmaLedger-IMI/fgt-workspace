@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability DSU Wizard Documentation managers/DirectoryManager.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability DSU Wizard Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/epi-workspace/fgt-dsu-wizard.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com"
+                        >
+                            Example Application - Finished Goods Traceability
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Namespaces</h3><ul><li><a href="Commands.html">Commands</a></li><li><a href="Constants.html">Constants</a></li><li><a href="Managers.html">Managers</a></li><li><a href="Model.html">Model</a></li><li><a href="Resolvers.html">Resolvers</a></li><li><a href="Services.html">Services</a></li></ul><h3>Classes</h3><ul><li><a href="Batch.html">Batch</a></li><li><a href="DirectoryEntry.html">DirectoryEntry</a></li><li><a href="MAH.html">MAH</a></li><li><a href="Managers.BatchManager.html">BatchManager</a></li><li><a href="Managers.DirectoryManager.html">DirectoryManager</a></li><li><a href="Managers.IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="Managers.IssuedShipmentManager.html">IssuedShipmentManager</a></li><li><a href="Managers.OrderLineManager.html">OrderLineManager</a></li><li><a href="Managers.OrderManager.html">OrderManager</a></li><li><a href="Managers.ParticipantManager.html">ParticipantManager</a></li><li><a href="Managers.ProductManager.html">ProductManager</a></li><li><a href="Managers.ReceivedShipmentManager.html">ReceivedShipmentManager</a></li><li><a href="Managers.ShipmentLineManager.html">ShipmentLineManager</a></li><li><a href="Managers.ShipmentManager.html">ShipmentManager</a></li><li><a href="Managers.StockManager.html">StockManager</a></li><li><a href="Model.Batch.html">Batch</a></li><li><a href="Model.DirectoryEntry.html">DirectoryEntry</a></li><li><a href="Model.MAH.html">MAH</a></li><li><a href="Model.Order.html">Order</a></li><li><a href="Model.OrderLine.html">OrderLine</a></li><li><a href="Model.OrderStatus.html">OrderStatus</a></li><li><a href="Model.Participant.html">Participant</a></li><li><a href="Model.Pharmacy.html">Pharmacy</a></li><li><a href="Model.Product.html">Product</a></li><li><a href="Model.Shipment.html">Shipment</a></li><li><a href="Model.ShipmentCode.html">ShipmentCode</a></li><li><a href="Model.ShipmentLine.html">ShipmentLine</a></li><li><a href="Model.Stock.html">Stock</a></li><li><a href="Model.TrackingCode.html">TrackingCode</a></li><li><a href="Model.Wholesaler.html">Wholesaler</a></li><li><a href="Order.html">Order</a></li><li><a href="OrderLine.html">OrderLine</a></li><li><a href="Participant.html">Participant</a></li><li><a href="Pharmacy.html">Pharmacy</a></li><li><a href="Product.html">Product</a></li><li><a href="Resolvers.BatchResolver.html">BatchResolver</a></li><li><a href="Resolvers.ProductResolver.html">ProductResolver</a></li><li><a href="Shipment.html">Shipment</a></li><li><a href="ShipmentCode.html">ShipmentCode</a></li><li><a href="ShipmentLine.html">ShipmentLine</a></li><li><a href="Stock.html">Stock</a></li><li><a href="TrackingCode.html">TrackingCode</a></li><li><a href="Wholesaler.html">Wholesaler</a></li></ul><h3>Global</h3><ul><li><a href="global.html#create">create</a></li><li><a href="global.html#get">get</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>managers/DirectoryManager.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const { DB } = require('../constants');
+const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
+const {DirectoryEntry, ROLE } = require('../model/DirectoryEntry');
+
+/**
+ * Stores references to some entities for quicker lookup on the front end (eg, products, suppliers, etc)
+ *
+ * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
+ * @param {string} tableName the default table name for this manager eg: MessageManager will write to the messages table
+ * @module managers
+ * @class DirectoryManager
+ * @extends Manager
+ * @memberOf Managers
+ */
+class DirectoryManager extends Manager {
+    constructor(participantManager, callback) {
+        super(participantManager, DB.directory, ['role', 'id'], callback);
+    }
+
+    _testRoles(role){
+        return Object.values(ROLE).indexOf(role) !== -1;
+    }
+
+    saveEntry(role, id, callback){
+        if (!this._testRoles(role))
+            return callback(`invalid role provided`);
+        const entry = new DirectoryEntry({
+            id: id,
+            role: role
+        });
+        return this.create(entry, callback)
+    }
+
+    /**
+     * generates the db's key for the Directory entry
+     * @param {string|number} role
+     * @param {string|number} id
+     * @return {string}
+     * @protected
+     */
+    _genCompostKey(role, id){
+        return `${role}-${id}`;
+    }
+
+    /**
+     * Creates a {@link DirectoryEntry}
+     * @param {string} key the readSSI to the order that generates the shipment
+     * @param {string|number} [key] the table key
+     * @param {DirectoryEntry} entry
+     * @param {function(err, sReadSSI, dbPath)} callback where the dbPath follows a "tableName/shipmentId" template.
+     * @override
+     */
+    create(key, entry, callback) {
+        let self = this;
+        if (!callback){
+            callback = entry;
+            entry = key;
+            key = self._genCompostKey(entry.role, entry.id);
+        }
+
+        const matchEntries = function(fromDb){
+            try{
+                return entry.role === fromDb.role &amp;&amp; entry.id === fromDb.id;
+            } catch(e){
+                return false;
+            }
+        }
+
+        self.getOne(key, (err, existing) => {
+            if (!err &amp;&amp; !!existing){
+                if (matchEntries(existing))
+                    return console.log(`Entry already exists in directory. skipping`);
+                else
+                    return callback(`Provided directory entry does not match existing.`);
+            }
+
+            self.insertRecord(key, entry, (err) => {
+                if (err)
+                    return self._err(`Could not insert directory entry ${entry.id} on table ${self.tableName}`, err, callback);
+                const path = `${self.tableName}/${key}`;
+                console.log(`Directory entry for ${entry.id} as a ${entry.role} created stored at DB '${path}'`);
+                callback(undefined, entry, path);
+            });
+        });
+    }
+
+    /**
+     * Loads the Directory entry for the provided key
+     * @param {string} key
+     * @param {boolean} [readDSU] does nothing in this manager
+     * @param {function(err, DirectoryEntry)} callback returns the Entry
+     * @override
+     */
+    getOne(key, readDSU,  callback) {
+        if (!callback){
+            callback = readDSU;
+            readDSU = true;
+        }
+        let self = this;
+        self.getRecord(key, (err, entry) => {
+            if (err)
+                return self._err(`Could not load record with key ${key} on table ${self._getTableName()}`, err, callback);
+            callback(undefined, entry);
+        });
+    }
+
+    /**
+     * @protected
+     * @override
+     */
+    _keywordToQuery(keyword) {
+        keyword = keyword || '.*';
+        return [`role like /${keyword}/g`];
+    }
+
+    /**
+     * Lists all registered items according to query options provided
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
+     * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
+     * @param {function(err, object[])} callback
+     * @override
+     */
+    getAll(readDSU, options, callback){
+        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
+            query: ['role like /.*/g']
+        });
+
+        if (!callback){
+            if (!options){
+                callback = readDSU;
+                options = defaultOptions();
+                readDSU = true;
+            }
+            if (typeof readDSU === 'boolean'){
+                callback = options;
+                options = defaultOptions();
+            }
+            if (typeof readDSU === 'object'){
+                callback = options;
+                options = readDSU;
+                readDSU = true;
+            }
+        }
+
+        options = options || defaultOptions();
+
+        let self = this;
+        self.query(options.query, options.sort, options.limit, (err, records) => {
+            if (err)
+                return self._err(`Could not perform query`, err, callback);
+            if (!readDSU)
+                return callback(undefined, records.map(r => r.id));
+            callback(undefined, records);
+        });
+    }
+
+}
+
+/**
+ * @param {ParticipantManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @returns {DirectoryManager}
+ * @memberOf Managers
+ */
+const getDirectoryManager = function (participantManager, callback) {
+    let manager;
+    try {
+        manager = participantManager.getManager(DirectoryManager);
+        if (callback)
+            return callback(undefined, manager);
+    } catch (e){
+        manager = new DirectoryManager(participantManager, callback);
+    }
+
+    return manager;
+}
+
+module.exports = getDirectoryManager;</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

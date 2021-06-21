@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li><li><a href="module-loader.html">loader</a></li><li><a href="module-services.html">services</a></li></ul><h3>Namespaces</h3><ul><li><a href="pdm-trust-loader.html">pdm-trust-loader</a></li><li><a href="pdm-trust-loader.controllers.html">controllers</a></li><li><a href="pdm-trust-loader.loader.html">loader</a></li><li><a href="pdm-trust-loader.services.html">services</a></li></ul><h3>Classes</h3><ul><li><a href="module-controllers-FormController.html">FormController</a></li><li><a href="module-controllers-HomeController.html">HomeController</a></li><li><a href="module-controllers-LocalizedController.html">LocalizedController</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-loader.html">loader</a></li><li><a href="module-services.html">services</a></li><li><a href="module-Trust-Loader.html">Trust-Loader</a></li></ul><h3>Namespaces</h3><ul><li><a href="pdm-trust-loader.html">pdm-trust-loader</a></li><li><a href="pdm-trust-loader.controllers.html">controllers</a></li><li><a href="pdm-trust-loader.loader.html">loader</a></li><li><a href="pdm-trust-loader.services.html">services</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,72 +109,52 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @module controllers
- */
-
-/**
- *
- */
-import env from "../../environment.js"
-import LocalizedController from './LocalizedController.js'
+            <pre class="prettyprint source linenums"><code>import env from "../../environment.js";
+import {LocalizedController, EVENT_ACTION} from "../../assets/pdm-web-components/index.esm.js";
 import LoaderService from "../services/LoaderService.js";
 
 /**
+ * Basic controller with just enough functionality to register and login
  * @class HomeController
+ * @namespace Controllers
+ * @module Trust-Loader
  */
 export default class HomeController extends LocalizedController {
     initializeModel = () => ({
-        participant: undefined
+        formJSON: '{}'
     });
 
-    constructor(element, history) {
-        super(element, history);
-        super.bindLocale(this);
+    constructor(...args) {
+        super(undefined, ...args);
+        super.bindLocale(this, '');
         this.model = this.initializeModel();
 
-        let self = this;
-        this.on('perform-registration', async (event) => {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            await self.register(event.detail, (err) => {
-                if (err)
-                    self.showErrorToast(err);
-            });
-        }, true)
+        this.model.formJSON = JSON.stringify(this.model.form)
 
         this.loaderService = new LoaderService(env);
-        this.on('perform-login', (event) => {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            self.login(event.detail, (err) => {
-                if (err)
-                    self.showErrorToast(err);
-                self.hideModal();
-            });
-        }, true)
+        let self = this;
 
+        this.on(EVENT_ACTION,async (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+
+            const {action, form} = evt.detail;
+            const method = action === 'login' ? self.login: self.register;
+
+            const credentials = Object.keys(form).reduce((accum, name) => {
+                const isPublic = self.model.form.fields.find(f => f.name === name).public;
+                accum[name] = {secret: form[name], public: isPublic}
+                return accum;
+            }, {});
+
+            await method.call(self, credentials, async (err, result) => {
+                if (err)
+                    return console.log(`${action} action failed`);
+                console.log(`${action} action successful. output: ${result}`)
+            });
+        })
 
         console.log("Home controller initialized");
-        this._showLoginModal();
-    }
-
-    /**
-     * Instantiates a new Spinner
-     * @param {string} message
-     * @param {number} duration
-     * @return {ion-loading} a spinner
-     * @private
-     */
-    _getLoader(message, duration){
-        duration = duration || 0;
-        const loading = document.createElement('ion-loading');
-        loading.cssClass = 'ion-loading';
-        loading.message = message;
-        loading.translucent = true;
-        loading.duration = duration;
-        document.body.appendChild(loading);
-        return loading;
     }
 
     /**
@@ -184,12 +164,12 @@ export default class HomeController extends LocalizedController {
      */
     async register(credentials, callback){
         let self = this;
-        let loader = self._getLoader("Registering...");
+        let loader = self._getLoader(self.translate('loading.register'));
         await loader.present();
 
         self.loaderService.create(credentials, async (err, keySSI) => {
             if (err)
-                self.showErrorToast(err);
+                self.showErrorToast(self.translate('errors.register'));
             else
                 self.showToast(self.translate('success.register'));
             await loader.dismiss();
@@ -204,30 +184,15 @@ export default class HomeController extends LocalizedController {
      */
     async login(credentials, callback){
         let self = this;
-        let loader = this._getLoader("Logging in...");
+        const loader = self._getLoader(self.translate("success.login"));
         this.loaderService.load(credentials, loader, async (err, wallet) => {
            if (err){
-               self.showErrorToast(err);
+               await loader.dismiss();
+               self.showErrorToast(self.translate('errors.loading'));
                return callback(err);
            }
-           self.showToast(self.translate('success.login'));
-           callback(undefined, wallet);
-        });
-    }
 
-    _showLoginModal() {
-        // this.showIonicModal("a-generic-configurable-modal", false, {page: "registration"});
-        this.createWebcModal({
-            template: "genericModal",
-            controller: "FormController",
-            disableBackdropClosing: true,
-            disableFooter: true,
-            disableHeader: true,
-            disableExpanding: true,
-            disableClosing: true,
-            disableCancelButton: true,
-            expanded: false,
-            centered: true
+           callback(undefined, wallet);
         });
     }
 }</code></pre>

@@ -8,6 +8,7 @@ const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE } = require('../constant
 
 /**
  * Class to wrap messages
+ * @memberOf MessageManager
  */
 class Message{
     /**
@@ -36,7 +37,7 @@ class Message{
  * @param {BaseManager} baseManager the base manager to have access to the identity api
  * @param {string} didString
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
- * @module managers
+ * @memberOf Managers
  * @class MessageManager
  */
 class MessageManager extends Manager{
@@ -86,11 +87,25 @@ class MessageManager extends Manager{
      *
      * @param {string} api - should match one the DB constants with the tableName.
      * @param {function(Message)} onNewApiMsgListener where Message is an object obtained by JSON.parse(message)
+     *
      */
     registerListeners(api, onNewApiMsgListener){
         if (!(api in this._listeners))
             this._listeners[api] = [];
         this._listeners[api].push(onNewApiMsgListener);
+        const self = this;
+        self.getAll(true, {
+            query: [
+                `api like /${api}/g`
+            ]
+        }, (err, messages) => {
+            if (err)
+                return console.log(`Could not list messages from Inbox, api: ${api}`);
+            if (!messages || !messages.length)
+                return console.log(`No Stashed Messages Stored for ${api}...`);
+            console.log(`${messages.length} Stashed Messages found for manager ${api}`);
+            messages.forEach(m => onNewApiMsgListener(m));
+        })
     }
 
     /**
@@ -156,8 +171,11 @@ class MessageManager extends Manager{
         let self = this;
         console.log("_startMessageListener", did.getIdentifier());
         did.readMessage((err, message) => {
-            if (err)
-                return console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
+            if (err){
+                console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
+                return self._startMessageListener(did);
+            }
+
             console.log("did.readMessage did", did.getIdentifier(), "message", message);
             // jpsl: did.readMessage appears to return a string, but db.insertRecord requires a record object.
             // ... So JSON.parse the message into an object.
@@ -204,17 +222,14 @@ let messageManager;
  * @returns {MessageManager}
  * @module managers
  */
-const getMessageManager = function(baseManager, didString, force, callback) {
-    if (typeof force === 'function'){
-        callback = force;
-        force = false;
+const getMessageManager = function(baseManager, didString, callback) {
+    let manager;
+    try {
+        manager = baseManager.getManager(MessageManager);
+    } catch (e){
+        manager = new MessageManager(baseManager, didString, callback);
     }
-    if (!messageManager || force) {
-        if (!baseManager || !didString)
-            throw new Error("Missing Objects for instantiation");
-        messageManager = new MessageManager(baseManager, didString, callback);
-    }
-    return messageManager;
+    return manager;
 }
 
 module.exports = {

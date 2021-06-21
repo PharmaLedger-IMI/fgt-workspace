@@ -1,3 +1,7 @@
+/**
+ * @namespace Constants
+ */
+
 const ANCHORING_DOMAIN = "traceability";
 const BATCH_MOUNT_PATH = "/batches";
 const INBOX_MOUNT_PATH = '/inbox';

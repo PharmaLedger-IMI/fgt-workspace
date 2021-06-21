@@ -39,14 +39,15 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [managed-orderline-stock-chip](../managed-orderline-stock-chip)
-- [more-chip](../more-chip)
+- [pdm-item-organizer](../pdm-item-organizer)
+- [list-item-layout](../list-item-layout)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-shipment-list-item --> managed-orderline-stock-chip
-  managed-shipment-list-item --> more-chip
+  managed-shipment-list-item --> pdm-item-organizer
+  managed-shipment-list-item --> list-item-layout
+  pdm-item-organizer --> more-chip
   style managed-shipment-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

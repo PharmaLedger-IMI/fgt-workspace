@@ -188,6 +188,8 @@ module.exports = {
     generateRandomInt,
     genDate,
     impersonateDSUStorage,
+    getEnvJs,
+    parseEnvJS,
     argParser,
     instantiateSSApp,
     jsonStringifyReplacer

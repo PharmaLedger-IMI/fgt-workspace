@@ -20,29 +20,26 @@
 
 ## Events
 
-| Event        | Description                           | Type                                   |
-| ------------ | ------------------------------------- | -------------------------------------- |
-| `sendAction` | Through this event actions are passed | `CustomEvent<OverlayEventDetail<any>>` |
+| Event          | Description                           | Type               |
+| -------------- | ------------------------------------- | ------------------ |
+| `ssapp-action` | Through this event actions are passed | `CustomEvent<any>` |
 
 
 ## Dependencies
 
 ### Used by
 
- - [managed-issued-order](../managed-issued-order)
- - [managed-issued-shipment](../managed-issued-shipment)
- - [managed-order-list-item](../managed-order-list-item)
- - [managed-received-order](../managed-received-order)
- - [managed-shipment-list-item](../managed-shipment-list-item)
+ - [line-stock-manager](../line-stock-manager)
+
+### Depends on
+
+- [generic-chip](../generic-chip)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-issued-order --> managed-orderline-stock-chip
-  managed-issued-shipment --> managed-orderline-stock-chip
-  managed-order-list-item --> managed-orderline-stock-chip
-  managed-received-order --> managed-orderline-stock-chip
-  managed-shipment-list-item --> managed-orderline-stock-chip
+  managed-orderline-stock-chip --> generic-chip
+  line-stock-manager --> managed-orderline-stock-chip
   style managed-orderline-stock-chip fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

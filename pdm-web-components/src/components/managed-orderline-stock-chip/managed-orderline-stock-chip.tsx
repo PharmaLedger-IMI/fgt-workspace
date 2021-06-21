@@ -1,12 +1,11 @@
 import {Component, Host, h, Prop, Element, State, Event, EventEmitter} from '@stencil/core';
 import {HostElement} from "../../decorators";
 import {WebManagerService, WebResolver} from "../../services/WebManagerService";
+import wizard from '../../services/WizardService'
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 import {getSteppedColor, FALLBACK_COLOR} from "../../utils/colorUtils";
-import {OverlayEventDetail} from "@ionic/core";
 
-// @ts-ignore
-const {Stock, Product}  = require('wizard').Model;
+const {Stock}  = wizard.Model;
 
 const CHIP_TYPE = {
   SIMPLE: "simple",
@@ -32,15 +31,20 @@ export class ManagedOrderlineStockChip {
   /**
    * Through this event actions are passed
    */
-  @Event()
-  sendAction: EventEmitter<OverlayEventDetail>;
+  @Event({
+    eventName: 'ssapp-action',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  sendAction: EventEmitter;
 
-  private sendActionEvent(){
+  private sendActionEvent(evt?){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
     const event = this.sendAction.emit({
-      data: {
         action: this.button,
         gtin: this.gtin
-      }
     });
     if (!event.defaultPrevented)
       console.log(`Ignored action: ${this.button} for gtin: ${this.gtin}`);
@@ -101,10 +105,9 @@ export class ManagedOrderlineStockChip {
   private renderSimple(){
     return (
       <Host>
-        <ion-chip outline>
-          <ion-label class="ion-padding-horizontal">{this.gtin}</ion-label>
+        <generic-chip chip-label={this.gtin} outline={true}>
           {this.renderQuantity()}
-        </ion-chip>
+        </generic-chip>
       </Host>
     )
   }
@@ -113,7 +116,7 @@ export class ManagedOrderlineStockChip {
     if (!this.quantity && this.quantity !== 0)
       return;
     return (
-      <ion-badge class="ion-margin ion-padding-horizontal">{this.quantity}</ion-badge>
+      <ion-badge slot="badges">{this.quantity}</ion-badge>
     )
   }
 
@@ -147,7 +150,7 @@ export class ManagedOrderlineStockChip {
     }
 
     return (
-      <ion-button fill="clear" size="small" color={props.color} onClick={() => this.sendActionEvent()} disabled={props.disabled}>
+      <ion-button slot="buttons" fill="clear" size="small" color={props.color} onClick={this.sendActionEvent.bind(this)} disabled={props.disabled}>
         <ion-icon slot="icon-only" name={props.iconName}></ion-icon>
       </ion-button>
     )
@@ -156,13 +159,12 @@ export class ManagedOrderlineStockChip {
   private renderDetail(){
     return (
       <Host>
-        <ion-chip outline style={{
+        <generic-chip style={{
           "--color-step": this.getColor()
-        }}>
-          <ion-label class="ion-padding-start">{this.gtin}</ion-label>
+        }} chip-label={this.gtin} outline={true}>
           {this.renderQuantity()}
           {this.renderButton()}
-        </ion-chip>
+        </generic-chip>
       </Host>
     )
   }

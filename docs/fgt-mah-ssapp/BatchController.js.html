@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_handleCreateOrder">_handleCreateOrder</a></li><li><a href="global.html#_handleCreateShipment">_handleCreateShipment</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,7 +109,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import {LocalizedController} from "../../assets/pdm-web-components/index.esm";
+            <pre class="prettyprint source linenums"><code>import {LocalizedController, EVENT_REFRESH, EVENT_ACTION, BUTTON_ROLES} from "../../assets/pdm-web-components/index.esm.js";
 
 /**
  * Controls Application Flow
@@ -121,25 +121,94 @@
  */
 export default class BatchController extends LocalizedController {
 
-    initializeModel = () => ({});
+    initializeModel = () => ({
+        gtinBatch: undefined
+    });
 
-    constructor(element, history) {
-        super(element, history, false);
+    constructor(...args) {
+        super(false, ...args)
         let self = this;
-        const wizard = require('wizard').Managers
-        super.bindLocale(this, "batch", true);
-        let participantManager = wizard.Managers.getParticipantManager();
+        super.bindLocale(self, `batch`, false);
+        self.model = self.initializeModel();
+
+        const wizard = require('wizard');
+        const participantManager = wizard.Managers.getParticipantManager();
         this.batchManager = wizard.Managers.getBatchManager(participantManager);
-        this.model = self.initializeModel();
-        self.onTagClick(`try-create-batch`, self._submitBatch.bind(self));
+        this.productmanager = wizard.Managers.getProductManager(participantManager);
+        this.batchEl = this.element.querySelector('managed-batch');
+
+        self.on(EVENT_REFRESH, (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            const state = evt.detail;
+            if (state &amp;&amp; state.gtin){
+                const gtinRef = state.gtin + (state.batchNumber ? `-${state.batchNumber}` : '');
+                if (self.model.gtinBatch === gtinRef)
+                    return self.batchEl.refresh();
+                self.model.gtinBatch = gtinRef;
+            } else {
+                if (self.model.gtinBatch !== "")
+                    self.model.gtinBatch = "";
+            }
+        }, {capture: true});
+
+        self.on(EVENT_ACTION, (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            self._handleCreateBatch.call(self, evt.detail);
+        });
+
+        console.log("BatchController initialized");
     }
 
-    _submitBatch = function () {
+    _getGtinFromRef(){
+        if (!this.model.gtinBatch)
+            throw new Error(`No gtin present. Should not happen`);
+        return this.model.gtinBatch.split('-')[0];
+    }
+
+    /**
+     * Sends an event named create-issued-order to the IssuedOrders controller.
+     */
+    async _handleCreateBatch(batch) {
         let self = this;
-        if (self.hasErrors(true))
-            return this.showErrorToast('There are errors in the form');
-        const product = self.batchManager.fromModel(self.model);
-        this.send('create-batch', product);
+        if (batch.validate())
+            return this.showErrorToast(this.translate(`create.error.invalid`));
+
+        const alert = await self.showConfirm('create.confirm');
+
+        const {role} = await alert.onDidDismiss();
+
+        if (BUTTON_ROLES.CONFIRM !== role)
+            return console.log(`Order creation canceled by clicking ${role}`);
+
+        const loader = self._getLoader(self.translate('create.loading'));
+        await loader.present()
+
+        const sendError = async function(msg){
+            await loader.dismiss();
+            self.showErrorToast(msg);
+        }
+
+        const gtin = this._getGtinFromRef();
+
+        self.productmanager.getOne(gtin, (err, product) => {
+            if (err)
+                return sendError(this.translate(`create.error.bind`));
+            self.batchManager.create(product, batch, async (err, keySSI, dbPath) => {
+                if (err)
+                    return sendError(self.translate('create.error.error'), err);
+                self.showToast(self.translate('create.success'));
+                self.model.gtinBatch = `${self.model.gtinBatch}-${batch.batchNumber}`;
+                await loader.dismiss();
+            });
+        });
+    }
+
+    async showConfirm(action = 'create.confirm'){
+        return super.showConfirm(this.translate(`${action}.message`),
+            this.translate(`${action}.buttons.ok`),
+            this.translate(`${action}.buttons.cancel`));
     }
 }</code></pre>
         </article>

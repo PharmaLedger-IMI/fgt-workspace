@@ -1,9 +1,6 @@
 /**
- * @module utils
- */
-
-/**
- * Provides Util functions and Methods as well as caching for the open DSU resolver and {@Link DSUBuilder}
+ * @namespace Utils
+ * @memberOf Services
  */
 
 let resolver, DSUService, keyssi;
@@ -12,6 +9,7 @@ let resolver, DSUService, keyssi;
  * util function to get the env type.
  * Needs openDSU to be loaded to have access to $$ regardless of environment
  * @return {string} the environment type - nodejs or
+ * @memberOf Utils
  */
 function getEnv(){
 	return $$.environmentType;
@@ -20,6 +18,7 @@ function getEnv(){
 /**
  * for singleton use
  * @returns {function} resolver
+ * @memberOf Utils
  */
 function getResolver(){
 	if (!resolver)
@@ -30,6 +29,7 @@ function getResolver(){
 /**
  * for singleton use
  * @returns {function} resolver
+ * @memberOf Utils
  */
 function getKeySSISpace(){
 	if (!keyssi)
@@ -40,6 +40,7 @@ function getKeySSISpace(){
 /**
  * for singleton use
  * @returns {DSUService}
+ * @memberOf Utils
  */
 function getDSUService(){
 	if (!DSUService)
@@ -51,6 +52,7 @@ function getDSUService(){
  * Convenience method to select the appropriate resolver method to use depending on the key
  * @param keySSI
  * @returns {function} the appropriate resolver method for creating dsus {@link resolver#createDSU}/{@link resolver#createDSUForExistingSSI}
+ * @memberOf Utils
  */
 function selectMethod(keySSI){
 	if (['array', 'const'].indexOf(keySSI.getTypeName()) > -1)
@@ -64,6 +66,7 @@ function selectMethod(keySSI){
  * @param {Archive} dsu
  * @param {string[]} folders
  * @param {function(err, string[])} callback the folders there where actually created (didn't already exist)
+ * @memberOf Utils
  */
 function createDSUFolders(dsu, folders, callback){
 	let created = [];
@@ -96,6 +99,7 @@ const system = require('opendsu').loadApi('system');
  * - refactored for server side use compatibility
  * @param {string} apiname
  * @returns {doPost} postHandler
+ * @memberOf Utils
  */
 function getPostHandlerFor(apiname){
 
@@ -167,10 +171,49 @@ function getPostHandlerFor(apiname){
  * @param err
  * @param callback
  * @protected
+ * @memberOf Utils
  */
 const _err = function(msg, err, callback){
 	return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(msg, err));
 }
+
+/**
+ * Utll function that calls the fame function iteratively wit the next arguments (destructive)
+ * @param func
+ * @param args
+ * @memberOf Utils
+ */
+const functionCallIterator = function(func, ...args){
+	if (!args || args.length < 1)
+		throw new Error("Needs at least a callback");
+	args.forEach(a => {
+		if (!Array.isArray(a))
+			throw new Error("arguments need to be arrays");
+	})
+	const callback = args.pop();
+
+	const result = []
+
+	const iterator = function(...argz){
+		const callback = argz.pop();
+		const callArgs = argz.map(a => a.shift()).filter(a => !!a);
+
+		if (callArgs.length !== argz.length)
+			callback()
+		callArgs.push((err) => err ? callback(err) : iterator(...argz, callback))
+
+		try{
+			result.push(func(...callArgs));
+		} catch(e){
+			return callback(e);
+		}
+	}
+
+	iterator(...args, (err) => err
+		? callback(err)
+		: callback(undefined, result));
+}
+
 
 module.exports = {
 	getResolver,
@@ -180,5 +223,6 @@ module.exports = {
 	selectMethod,
 	createDSUFolders,
 	getEnv,
-	_err
+	_err,
+	functionCallIterator
 }

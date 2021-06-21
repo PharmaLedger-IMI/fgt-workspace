@@ -1,13 +1,15 @@
+
+const TrackingCode = require("./TrackingCode");
+
 /**
  * This is a particular Model class, where all its properties represent
  * the mount parts in the dsu where the property value
  * (the keySSI) will be mounted
  *
  * @class ShipmentCode
- * @module fgt-dsu-wizard.model
+ * @extends TrackingCode
+ * @memberOf Model
  */
-const TrackingCode = require("./TrackingCode");
-
 class ShipmentCode extends TrackingCode {
     /**
      * the {@link ShipmentStatus}
@@ -16,6 +18,11 @@ class ShipmentCode extends TrackingCode {
      */
     status;
 
+    /**
+     *
+     * @param shipmentCode
+     * @constructor
+     */
     constructor(shipmentCode) {
         super(shipmentCode);
         if (typeof shipmentCode !== undefined)

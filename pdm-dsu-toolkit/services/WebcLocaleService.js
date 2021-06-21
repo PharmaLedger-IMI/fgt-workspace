@@ -1,11 +1,13 @@
 /**
- * @module locale
+ * @namespace Locale
+ * @memberOf Services
  */
 
 /**
  * This service depends on WebCardinal's translation API
  *
  * Integrates with {@link WebCardinal}'s translation model, and natively integrates into controllers and their model
+ * @memberOf Locale
  */
 function LocaleService(){
     if (!WebCardinal)
@@ -76,6 +78,7 @@ function LocaleService(){
 
 /**
  * Util function to merge JSON objects according to a specified priority
+ * @memberOf Locale
  */
 const merge = function(target, source){
     for (const key of Object.keys(source))
@@ -86,7 +89,24 @@ const merge = function(target, source){
 }
 
 /**
+ * Util function to provide string format functionality similar to C#'s string.format
+ *
+ * @param {string} string
+ * @param {string} args replacements made by order of appearance (replacement0 wil replace {0} and so on)
+ * @return {string} formatted string
+ * @memberOf Locale
+ */
+const stringFormat = function(string, ...args){
+    return string.replace(/{(\d+)}/g, function(match, number) {
+        return typeof args[number] != 'undefined'
+            ? args[number]
+            : match;
+    });
+}
+
+/**
  * Binds the translation model to the controller and its setModel method
+ * @memberOf Locale
  */
 const bindToController = function(controller, page){
     if (!controller.localized) {
@@ -103,8 +123,9 @@ const bindToController = function(controller, page){
         };
 
         let translator = controller.translate;
-        controller.translate = (key) => {
-            return translator.call(controller, page && page.length > 0 ? `${page}.${key}` : key);
+        controller.translate = (key, ...args) => {
+            const translation = translator.call(controller, page && page.length > 0 ? `${page}.${key}` : key);
+            return translation && args && args.length ? stringFormat(translation, ...args) : translation;
         }
 
         controller.localized = true;
@@ -119,6 +140,7 @@ module.exports = {
      * @param {WebcController} controller: the current controller
      * @param {string} page: the name of the view. Must match an existing key in {@link WebCardinal#translations}
      * @returns {LocaleService}
+     * @memberOf Locale
      */
     bindToLocale: function (controller, page){
         if (!localeService)

@@ -2,22 +2,42 @@ const { DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN } = require('../constants');
 const OrderLine = require('../model').OrderLine;
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 /**
- * Issued OrderLine Manager Class.
- * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
+ * ShipmentLine Manager Class
+ *
+ * Manager Classes in this context should do the bridge between the controllers
+ * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
+ *
+ * All Manager Classes should be singletons.
+ *
+ * This complete separation of concerts is very beneficial for 2 reasons:
+ * <ul>
+ *     <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
+ *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
+ * </ul>
+ *
+ * @param {ParticipantManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @class ShipmentLineManager
+ * @extends Manager
+ * @memberOf Managers
  */
 class ShipmentLineManager extends Manager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.shipmentLines, ['gtin', 'date', 'batch', 'requesterId', 'senderId'], callback);
-        const self = this;
-        this.shipmentLineService = new (require('../services/ShipmentLineService'))(ANCHORING_DOMAIN);
-        this.registerMessageListener((message) => {
-            self.processMessageRecord(message, (err) => {
-                if (err)
-                    console.log(`Error processing message: ${message}`);
-                if (self.controller)
-                    self.controller.refresh();
+        super(participantManager, DB.shipmentLines, ['gtin', 'date', 'batch', 'requesterId', 'senderId'], (err, manager) => {
+            if (err)
+                return callback ? callback(err) : console.log(err);
+            manager.registerMessageListener((message) => {
+                manager.processMessageRecord(message, (err) => {
+                    if (err)
+                        console.log(`Could not process message: ${err}`);
+                    if (manager.controller)
+                        manager.controller.refresh();
+                });
             });
+            if (callback)
+                callback(undefined, manager);
         });
+        this.shipmentLineService = new (require('../services/ShipmentLineService'))(ANCHORING_DOMAIN);
     }
 
     /**
@@ -183,22 +203,23 @@ class ShipmentLineManager extends Manager {
     };
 }
 
-let shipmentLineManager;
 /**
  * @param {ParticipantManager} participantManager
- * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
- * Makes BaseManager required again!
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {ShipmentLineManager}
+ * @memberOf Managers
  */
-const getShipmentLineManager = function (participantManager, force, callback) {
-    if (typeof force === 'function'){
-        callback = force;
-        force = false;
+const getShipmentLineManager = function (participantManager,  callback) {
+    let manager;
+    try {
+        manager = participantManager.getManager(ShipmentLineManager);
+        if (callback)
+            return callback(undefined, manager);
+    } catch (e){
+        manager = new ShipmentLineManager(participantManager, callback);
     }
-    if (!shipmentLineManager || force)
-        shipmentLineManager = new ShipmentLineManager(participantManager, callback);
-    return shipmentLineManager;
+
+    return manager;
 }
 
 module.exports = getShipmentLineManager;

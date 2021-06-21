@@ -4,8 +4,10 @@ import {WebManagerService, WebManager} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
+import {getBarCodePopOver} from "../../utils/popOverUtils";
+import {ListItemLayout} from "../list-item-layout/list-item-layout";
 
-const Stock = wizard.Model.Stock;
+const {Stock, Batch} = wizard.Model;
 
 @Component({
   tag: 'managed-stock-list-item',
@@ -60,7 +62,7 @@ export class ManagedProductListItem {
   private stockManager: WebManager = undefined;
 
   @State() stock: typeof Stock = undefined;
-  @State() batches: string[] = undefined;
+  @State() batches: typeof Batch[] = undefined;
   @State() quantity: number = undefined;
 
   async componentWillLoad() {
@@ -91,98 +93,96 @@ export class ManagedProductListItem {
     await this.loadStock();
   }
 
-  addBarCode(){
-    const self = this;
-
-    const getBarCode = function(){
-      if (!self.stock || !self.stock.gtin)
-        return (<ion-skeleton-text animated></ion-skeleton-text>);
-      return (<barcode-generator class="ion-align-self-center" type="code128" size="32" scale="6" data={self.stock.gtin}></barcode-generator>);
-    }
-
-    return(
-      <ion-thumbnail class="ion-align-self-center" slot="start">
-        {getBarCode()}
-      </ion-thumbnail>
-    )
-  }
-
   addLabel(){
     const self = this;
 
+    const getQuantityLabel = function(){
+      if (!self.stock || !self.stock.batches)
+        return (<ion-skeleton-text animated></ion-skeleton-text>)
+      return self.stock.getQuantity();
+    }
+
     const getGtinLabel = function(){
       if (!self.stock || !self.stock.gtin)
-        return (<h3><ion-skeleton-text animated></ion-skeleton-text> </h3>)
-      return (<h3>{self.stock.gtin}</h3>)
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
+      return self.stock.gtin;
     }
 
     const getNameLabel = function(){
       if (!self.stock || !self.stock.name)
-        return (<h5><ion-skeleton-text animated></ion-skeleton-text> </h5>)
-      return (<h5>{self.stock.name}</h5>)
-    }
-
-    const getQuantityLabel = function(){
-      if (!self.stock || !self.stock.description)
-        return (<p><ion-skeleton-text animated></ion-skeleton-text> </p>)
-      return (<p>{self.stock.quantity}</p>)
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
+      return self.stock.name;
     }
 
     return(
-      <ion-label class="ion-padding-horizontal ion-align-self-center">
+      <ion-label slot="label" color="secondary">
         {getGtinLabel()}
-        {getNameLabel()}
-        {getQuantityLabel()}
+        <span class="ion-padding-start">{getNameLabel()}</span>
+        <span class="ion-padding-start">{getQuantityLabel()}</span>
       </ion-label>)
   }
 
-  addBatch(batch){
+  addBatches(){
+    if (!this.stock || !this.batches)
+      return (<ion-skeleton-text slot="content" animated></ion-skeleton-text>);
     return(
-      <batch-chip gtin-batch={this.stock.gtin + '-' + batch.batchNumber} loader-type={SUPPORTED_LOADERS.bubblingSmall} mode="detail" quantity={this.quantity}></batch-chip>
+      <pdm-item-organizer slot="content"  component-name="batch-chip"
+                          component-props={JSON.stringify(this.batches.map(batch => ({
+                            "gtin-batch": this.stock.gtin + '-' + batch.batchNumber,
+                            "quantity": (new Batch(batch)).getQuantity(),
+                            "mode": "detail",
+                            "loader-type": SUPPORTED_LOADERS.bubblingSmall
+                          })))}
+                          id-prop="gtin-batch"
+                          is-ion-item="false"
+                          display-count="2"
+                          orientation={this.getOrientation()}
+                          onSelectEvent={(evt) => {
+                            evt.preventDefault();
+                            evt.stopImmediatePropagation();
+                            console.log(`Selected ${evt.detail}`);
+                          }}></pdm-item-organizer>
     )
   }
 
-  addBatches(){
-    const batches = !!this.stock && !!this.batches ? this.batches.map(b => this.addBatch(b)) : (<ion-skeleton-text animated></ion-skeleton-text>);
-    return(
-      <ion-grid class="ion-padding-horizontal">
-        <ion-row>
-          <ion-col size="12">
-            {batches}
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    )
+  private getOrientation(){
+    const layoutEl: ListItemLayout = this.element.querySelector('list-item-layout');
+    return layoutEl ? layoutEl.orientation : 'end';
+
   }
 
   addButtons(){
     let self = this;
-    const getButtons = function(){
-      if (!self.stock)
-        return (<ion-skeleton-text animated></ion-skeleton-text>)
+    if (!self.stock)
+      return (<ion-skeleton-text animated></ion-skeleton-text>);
+
+    const getButton = function(slot, color, icon, handler){
       return (
-        <ion-button slot="primary" onClick={() => self.navigateToTab('tab-batches', {gtin: self.gtin})}>
-          <ion-icon name="file-tray-stacked-outline"></ion-icon>
+        <ion-button slot={slot} color={color} fill="clear" onClick={handler}>
+          <ion-icon size="large" slot="icon-only" name={icon}></ion-icon>
         </ion-button>
       )
     }
 
-    return(
-      <ion-buttons class="ion-align-self-center ion-padding" slot="end">
-        {getButtons()}
-      </ion-buttons>
-    )
+    return [
+      getButton("buttons", "medium", "barcode", (evt) => getBarCodePopOver({
+        type: "code128",
+        size: "32",
+        scale: "6",
+        data: self.gtin
+      }, evt)),
+      getButton("buttons", "medium", "eye", () => self.navigateToTab('tab-batches', {gtin: self.gtin}))
+    ]
   }
 
   render() {
     return (
       <Host>
-        <ion-item class="ion-align-self-center main-item">
-          {this.addBarCode()}
+        <list-item-layout>
           {this.addLabel()}
           {this.addBatches()}
           {this.addButtons()}
-        </ion-item>
+        </list-item-layout>
       </Host>
     );
   }

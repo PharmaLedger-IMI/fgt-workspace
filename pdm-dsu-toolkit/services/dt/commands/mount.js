@@ -1,10 +1,3 @@
-/**
- * @module Commands
- * @memberOf dt
- */
-
-/**
- */
 const Command = require('./Command');
 const ReadFileCommand = require('./readFile');
 const { _err, _getFS, _getKeySSISpace } = require('./utils');
@@ -13,6 +6,8 @@ const { _err, _getFS, _getKeySSISpace } = require('./utils');
  * Mounts a DSU onto the provided path
  *
  * @class MountCommand
+ * @module Commands
+ * @memberOf dt
  */
 class MountCommand extends Command{
     constructor(varStore, source) {
