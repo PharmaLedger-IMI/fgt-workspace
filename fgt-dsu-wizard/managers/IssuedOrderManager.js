@@ -3,14 +3,29 @@ const OrderManager = require("./OrderManager");
 const Order = require('../model').Order;
 const OrderStatus = require('../model').OrderStatus;
 
-
 /**
  * Issued Order Manager Class - concrete OrderManager for issuedOrders.
- * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
+ *
+ * Manager Classes in this context should do the bridge between the controllers
+ * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
+ *
+ * All Manager Classes should be singletons.
+ *
+ * This complete separation of concerts is very beneficial for 2 reasons:
+ * <ul>
+ *     <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
+ *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
+ * </ul>
+ *
+ * @param {ParticipantManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @class IssuedOrderManager
+ * @extends Manager
+ * @memberOf Managers
  */
 class IssuedOrderManager extends OrderManager {
-    constructor(participantManager) {
-        super(participantManager, DB.issuedOrders, ['senderId']);
+    constructor(participantManager, callback) {
+        super(participantManager, DB.issuedOrders, ['senderId'], callback);
     }
 
     /**
@@ -57,7 +72,7 @@ class IssuedOrderManager extends OrderManager {
             console.log("Order seedSSI="+keySSIStr+" sReadSSI="+sReadSSIStr);
             // storing the sReadSSI in base58
             const record = sReadSSIStr;
-            self.insertRecord(super._genCompostKey(order.requesterId, order.orderId), self._indexItem(orderId, order, record), (err) => {
+            self.insertRecord(super._genCompostKey(order.senderId, order.orderId), self._indexItem(orderId, order, record), (err) => {
                 if (err)
                     return self._err(`Could not insert record with orderId ${orderId} on table ${self.tableName}`, err, callback);
                 const path = `${self.tableName}/${orderId}`;
@@ -115,35 +130,6 @@ class IssuedOrderManager extends OrderManager {
             console.log(`Parsed ${result.length} orders`);
             callback(undefined, result);
         });
-        /*
-        let orderLine1 = new OrderLine('123', 1, '', '');
-        let orderLine2 = new OrderLine('321', 5, '', '');
-        let order1 = new Order("IOID1", "TPID1", 'WHSID555', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
-        let order2 = new Order("IOID2", "TPID2", 'WHSID432', "SA1", OrderStatus.CREATED, [orderLine1, orderLine2]);
-        return callback(undefined, [
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-            order1,order2,order1,order2,order1,order2,order1,order2,
-        ]);
-        */
-        /*
-        super.listMounts(ISSUED_ORDERS_MOUNT_PATH, (err, mounts) => {
-            if (err)
-                return callback(err);
-            console.log(`Found ${mounts.length} orders at ${ISSUED_ORDERS_MOUNT_PATH}`);
-            mounts = mounts.map(m => {
-                console.log("Listing mounted m", m);
-                m.path = `${ISSUED_ORDERS_MOUNT_PATH}/${m.path}`;
-                return m;
-            });
-            super.readAll(mounts, callback);
-        });
-        */
     }
 
     /**
@@ -153,9 +139,6 @@ class IssuedOrderManager extends OrderManager {
      */
     newBlank(callback) {
         let self = this;
-        //let orderLine1 = new OrderLine('123', 1, '', '');
-        //let orderLine2 = new OrderLine('321', 5, '', '');
-        //return new Order(orderId, orderingTradingPartnerId, '', shippingAddress, OrderStatus.CREATED, [orderLine1, orderLine2]);
         self.getIdentity((err, participant) => {
             if (err) {
                 return callback(err);
@@ -199,16 +182,23 @@ class IssuedOrderManager extends OrderManager {
     }
 }
 
-let issuedOrderManager;
 /**
  * @param {ParticipantManager} participantManager
- * @param {boolean} force
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {IssuedOrderManager}
+ * @memberOf Managers
  */
-const getIssuedOrderManager = function (participantManager, force, callback) {
-    if (!issuedOrderManager || force)
-        issuedOrderManager = new IssuedOrderManager(participantManager);
-    return issuedOrderManager;
+const getIssuedOrderManager = function (participantManager, callback) {
+    let manager;
+    try {
+        manager = participantManager.getManager(IssuedOrderManager);
+        if (callback)
+            return callback(undefined, manager);
+    } catch (e){
+        manager = new IssuedOrderManager(participantManager, callback);
+    }
+
+    return manager;
 }
 
 module.exports = getIssuedOrderManager;

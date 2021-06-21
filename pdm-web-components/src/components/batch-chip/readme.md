@@ -16,27 +16,30 @@
 | `quantity`        | `quantity`         |             | `number` | `undefined`                 |
 
 
+## Events
+
+| Event         | Description | Type                  |
+| ------------- | ----------- | --------------------- |
+| `selectEvent` |             | `CustomEvent<string>` |
+
+
 ## Dependencies
 
 ### Used by
 
- - [managed-issued-shipment](../managed-issued-shipment)
- - [managed-product-list-item](../managed-product-list-item)
- - [managed-received-order](../managed-received-order)
- - [managed-stock-list-item](../managed-stock-list-item)
+ - [line-stock-manager](../line-stock-manager)
 
 ### Depends on
 
 - [multi-spinner](../multi-spinner)
+- [generic-chip](../generic-chip)
 
 ### Graph
 ```mermaid
 graph TD;
   batch-chip --> multi-spinner
-  managed-issued-shipment --> batch-chip
-  managed-product-list-item --> batch-chip
-  managed-received-order --> batch-chip
-  managed-stock-list-item --> batch-chip
+  batch-chip --> generic-chip
+  line-stock-manager --> batch-chip
   style batch-chip fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

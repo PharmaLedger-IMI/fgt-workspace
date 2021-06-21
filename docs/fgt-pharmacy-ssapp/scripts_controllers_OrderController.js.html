@@ -1,0 +1,224 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability Pharmacy SSApp scripts/controllers/OrderController.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability Pharmacy SSApp</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/fgt-workspace.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com/fgt-pharmacy-wallet/loader"
+                        >
+                            Application
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="fgt-pharmacy-ssapp.module_LOCALE.html">LOCALE</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_handleCreateOrder">_handleCreateOrder</a></li><li><a href="global.html#_handleCreateShipment">_handleCreateShipment</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>scripts/controllers/OrderController.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { LocalizedController, EVENT_REFRESH, EVENT_ACTION, EVENT_SSAPP_HAS_LOADED, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
+export default class OrderController extends LocalizedController {
+
+    initializeModel = () => ({
+        orderLines: JSON.stringify([]),
+        identity: {},
+        orderRef: '',
+        mode: 'issued'
+    });
+
+    constructor(...args) {
+        super(false, ...args);
+        let self = this;
+        super.bindLocale(self, `order`);
+        self.model = self.initializeModel();
+
+        const wizard = require('wizard');
+        const participantManager = wizard.Managers.getParticipantManager();
+        self.issuedOrderManager = wizard.Managers.getIssuedOrderManager(participantManager);
+        self.orderEl = self.querySelector('managed-order');
+
+        self.on(EVENT_REFRESH, (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            self.model.identity = self.issuedOrderManager.getIdentity();
+
+            const state = evt.detail;
+            if (state &amp;&amp; state.mode &amp;&amp; state.order) {
+                self.model.mode = state.mode;
+                const newRef = `${state.mode === 'issued' ? state.order.senderId : state.order.requesterId}-${state.order.orderId}`;
+                if (newRef === self.model.orderRef)
+                    return self.orderEl.refresh();
+                self.model.orderRef = newRef;
+
+            } else {
+                self.model.orderRef = '';
+                self.mode = 'issued';
+                self.model.orderLines = JSON.stringify(state &amp;&amp; state.orderLines ? [...state.orderLines] : []);
+            }
+        });
+
+        self.on(EVENT_SSAPP_HAS_LOADED, async () => {
+            await self.orderEl.updateDirectory();
+        }, {capture: true});
+
+        self.on(EVENT_ACTION, async (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            await self._handleCreateOrder.call(self, evt.detail);
+        });
+
+        console.log("OrderController initialized");
+    }
+
+    /**
+     * Sends an event named create-issued-order to the IssuedOrders controller.
+     */
+     async _handleCreateOrder(order) {
+        let self = this;
+        if (order.validate())
+            return this.showErrorToast(this.translate(`create.error.invalid`));
+
+        const alert = await self.showConfirm('create.confirm');
+
+        const {role} = await alert.onDidDismiss();
+
+        if (BUTTON_ROLES.CONFIRM !== role)
+            return console.log(`Order creation canceled by clicking ${role}`);
+
+        const loader = self._getLoader(self.translate('create.loading'));
+        await loader.present()
+
+        const sendError = async function(msg){
+            await loader.dismiss();
+            self.showErrorToast(msg);
+        }
+
+        self.issuedOrderManager.create(order, async (err, keySSI, dbPath) => {
+            if (err)
+                return sendError(self.translate('create.error.error'));
+            self.showToast(self.translate('create.success'));
+            self.model.mode = 'issued';
+            self.model.orderRef = `${order.senderId}-${order.orderId}`;
+            await loader.dismiss();
+        });
+    }
+
+    async showConfirm(action = 'create.confirm'){
+         return super.showConfirm(this.translate(`${action}.message`),
+             this.translate(`${action}.buttons.ok`),
+             this.translate(`${action}.buttons.cancel`));
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

@@ -3,33 +3,46 @@ const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Order = require('../model').Order;
 const OrderLine = require('../model').OrderLine;
 const OrderStatus = require('../model').OrderStatus;
+
 /**
  * Order Manager Class
  *
  * Abstract class.
  * Use only concrete subclasses {@link IssuedOrderManager} or {@link ReceivedOrderManager}.
  *
- * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
- * @param {string} tableName the default table name for this manager eg: MessageManager will write to the messages table
- * @module managers
+ * Manager Classes in this context should do the bridge between the controllers
+ * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
+ *
+ * All Manager Classes should be singletons.
+ *
+ * This complete separation of concerts is very beneficial for 2 reasons:
+ * <ul>
+ *     <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
+ *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
+ * </ul>
+ *
+ * @param {ParticipantManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @class OrderManager
  * @abstract
+ * @extends Manager
+ * @memberOf Managers
  */
 class OrderManager extends Manager {
-    constructor(participantManager, tableName, indexes) {
-        super(participantManager, tableName, ['orderId', 'products', ...indexes]);
+    constructor(participantManager, tableName, indexes, callback) {
+        super(participantManager, tableName, ['orderId', 'products', ...indexes], callback);
         this.orderService = new (require('../services').OrderService)(ANCHORING_DOMAIN);
     }
 
     /**
      * generates the db's key for the Order
-     * @param {string|number} requesterId
+     * @param {string|number} otherActorId
      * @param {string|number} orderId
      * @return {string}
      * @protected
      */
-    _genCompostKey(requesterId, orderId){
-        return `${requesterId}-${orderId}`;
+    _genCompostKey(otherActorId, orderId){
+        return `${otherActorId}-${orderId}`;
     }
 
     /**
@@ -77,7 +90,6 @@ class OrderManager extends Manager {
                 if (err)
                     return self._err(`Could not send message to MAH ${mahId} for orderLine ${JSON.stringify(orderLine)} with ssi ${ssi}`, err, callback);
                 console.log(`Orderline ${JSON.stringify(orderLine)} transmitted to MAH ${mahId}`);
-                callback();
             })
         });
 

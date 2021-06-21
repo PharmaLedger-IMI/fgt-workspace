@@ -4,6 +4,7 @@ import {WebManager, WebManagerService} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
+import {ListItemLayout} from "../list-item-layout/list-item-layout";
 
 const Product = wizard.Model.Product;
 
@@ -104,7 +105,7 @@ export class ManagedProductListItem {
     const getGtinLabel = function(){
       if (!self.product || !self.product.gtin)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
-      return self.product.gtin
+      return self.product.gtin;
     }
 
     const getNameLabel = function(){
@@ -114,39 +115,45 @@ export class ManagedProductListItem {
     }
 
     return(
-      <ion-label color="secondary">
+      <ion-label slot="label" color="secondary">
         {getGtinLabel()}
         <span class="ion-padding-start">{getNameLabel()}</span>
       </ion-label>)
   }
 
-  addBatch(gtinBatch){
-    return(
-      <batch-chip gtin-batch={gtinBatch} loader-type={SUPPORTED_LOADERS.bubblingSmall} mode="detail"></batch-chip>
-    )
-  }
-
   addBatches(){
     if (!this.product || !this.batches)
-      return (<ion-skeleton-text animated></ion-skeleton-text>);
+      return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
     return(
-      <pdm-item-organizer component-name="batch-chip"
+      <pdm-item-organizer slot="content" component-name="batch-chip"
                           component-props={JSON.stringify(this.batches.map(gtinBatch => ({
                             "gtin-batch": gtinBatch,
                             "mode": "detail",
                             "loader-type": SUPPORTED_LOADERS.bubblingSmall
                           })))}
                           id-prop="gtin-batch"
-                          is-ion-item="false"></pdm-item-organizer>
+                          is-ion-item="false"
+                          orientation={this.getOrientation()}
+                          onSelectEvent={(evt) => {
+                            evt.preventDefault();
+                            evt.stopImmediatePropagation();
+                            console.log(`Selected ${evt.detail}`);
+                          }}></pdm-item-organizer>
     )
+  }
+
+  private getOrientation(){
+    const layoutEl: ListItemLayout = this.element.querySelector('list-item-layout');
+    return layoutEl ? layoutEl.orientation : 'end';
+
   }
 
   addButtons(){
     let self = this;
+    if (!self.product)
+      return (<ion-skeleton-text animated></ion-skeleton-text>);
 
     const getButton = function(slot, color, icon, handler){
-      if (!self.product)
-        return (<ion-skeleton-text animated></ion-skeleton-text>);
       return (
         <ion-button slot={slot} color={color} fill="clear" onClick={handler}>
           <ion-icon size="large" slot="icon-only" name={icon}></ion-icon>
@@ -155,26 +162,24 @@ export class ManagedProductListItem {
     }
 
     return [
-        getButton("end", "medium", "barcode", (evt) => getBarCodePopOver({
+        getButton("buttons", "medium", "barcode", (evt) => getBarCodePopOver({
           type: "code128",
           size: "32",
           scale: "6",
           data: self.gtin
         }, evt)),
-        getButton("end", "medium", "eye", () => self.navigateToTab('tab-product', {gtin: self.gtin}))
+        getButton("buttons", "medium", "eye", () => self.navigateToTab('tab-product', {gtin: self.gtin}))
    ]
   }
 
   render() {
     return (
       <Host>
-        <ion-item class="ion-margin-bottom" lines="none" color="light">
+        <list-item-layout>
           {this.addLabel()}
-          <div class="ion-padding flex">
-            {this.addBatches()}
-          </div>
+          {this.addBatches()}
           {this.addButtons()}
-        </ion-item>
+        </list-item-layout>
       </Host>
     );
   }

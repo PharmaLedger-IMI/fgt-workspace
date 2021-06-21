@@ -1,10 +1,3 @@
-/**
- * @module Commands
- * @memberOf dt
- */
-
-/**
- */
 const Command = require('./Command');
 const {_getFS, _err} = require('./utils');
 
@@ -13,6 +6,8 @@ const {_getFS, _err} = require('./utils');
  * (similar to a touch command with added content)
  *
  * @class CreateFileCommand
+ * @module Commands
+ * @memberOf dt
  */
 class CreateFileCommand extends Command{
     constructor(varStore) {

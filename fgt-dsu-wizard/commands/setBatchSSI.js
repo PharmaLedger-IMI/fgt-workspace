@@ -1,6 +1,3 @@
-/**
- * @module fgt-dsu-wizard.commands
- */
 
 /**
  * Defines how to create the keyssi for a batch dsu
@@ -12,6 +9,7 @@
  * </ul>
  * @param {string} domain the anchoring domain
  * @returns {ArraySSI}
+ * @memberOf Commands
  */
 function createBatchSSI(data, domain) {
     console.log("New BATCH_SSI in domain", domain);
@@ -28,6 +26,7 @@ function createBatchSSI(data, domain) {
 /**
  * Registers the endpoint on the api-hub's dsu-wizard.
  * @param {HttpServer} server
+ * @memberOf Commands
  */
 function command(server){
     const setSSI = require('../../pdm-dsu-toolkit/commands/setSSI');

@@ -1,7 +1,8 @@
 
 const OrderStatus = require('./OrderStatus');
 /**
- * @module fgt-dsu-wizard.model
+ * ShipmentStatus
+ * @memberOf Model
  */
 const ShipmentStatus = {
     CREATED: OrderStatus.CREATED,

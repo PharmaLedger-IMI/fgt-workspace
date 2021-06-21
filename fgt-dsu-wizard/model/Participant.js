@@ -1,8 +1,12 @@
-/**
- * @module fgt-dsu-wizard.model
- */
+
 const { Validatable } = require('../../pdm-dsu-toolkit/model/Validations');
 
+/**
+ * Base class for Actors in this use case. Definies the basic necessary public info
+ * for each actor
+ * @class Participant
+ * @memberOf Model
+ */
 class Participant extends Validatable{
     id = "";
     name = "";
@@ -10,6 +14,10 @@ class Participant extends Validatable{
     tin = "";
     address = "";
 
+    /**
+     * @param participant
+     * @constructor
+     */
     constructor(participant){
         super();
         console.log("participant:" + participant);

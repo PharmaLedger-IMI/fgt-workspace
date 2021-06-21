@@ -37,15 +37,15 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [barcode-generator](../barcode-generator)
-- [batch-chip](../batch-chip)
+- [pdm-item-organizer](../pdm-item-organizer)
+- [list-item-layout](../list-item-layout)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-stock-list-item --> barcode-generator
-  managed-stock-list-item --> batch-chip
-  batch-chip --> multi-spinner
+  managed-stock-list-item --> pdm-item-organizer
+  managed-stock-list-item --> list-item-layout
+  pdm-item-organizer --> more-chip
   style managed-stock-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

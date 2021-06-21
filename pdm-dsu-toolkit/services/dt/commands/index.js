@@ -2,7 +2,6 @@
  * @module Commands
  * @memberOf dt
  */
-
 module.exports = {
     AddFileCommand: require('./addFile'),
     AddFolderCommand: require('./addFolder'),

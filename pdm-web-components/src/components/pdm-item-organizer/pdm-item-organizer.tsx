@@ -1,4 +1,4 @@
-import {Component, Host, h, Element, Prop, Listen, Watch, State} from '@stencil/core';
+import {Component, Host, h, Element, Prop, Listen, Watch, State, EventEmitter, Event} from '@stencil/core';
 import {HostElement} from "../../decorators";
 
 const ORGANIZER_CUSTOM_EL_NAME = "organizer-item-popover";
@@ -13,6 +13,9 @@ export class PdmItemOrganizer {
   @HostElement() host: HTMLElement;
 
   @Element() element;
+
+  @Event()
+  selectEvent: EventEmitter<string>
 
   /**
    * The number of items to display (minimum is 1), defaults to 3
@@ -30,10 +33,11 @@ export class PdmItemOrganizer {
    * The identifying prop to be return upon click (must exist in the supplied {@link componentProps}
    */
   @Prop({attribute: "id-prop"}) idProp: string = undefined;
-  /**
-   * The Handler on the click in each item when expanded
-   */
-  @Prop({attribute: "click-handler"}) clickHandler: (any) => void = undefined;
+
+  @Prop({attribute: "orientation", mutable: true}) orientation: "start" | "end" = "end";
+
+  @Prop({attribute: "single-line", mutable: true}) singleLine: boolean = true;
+
   /**
    * If the component does not generate an ion-item (so it can be handled by an ion-list)
    * this must be set to false
@@ -71,27 +75,41 @@ export class PdmItemOrganizer {
     customElements.define(ORGANIZER_CUSTOM_EL_NAME, class extends HTMLElement{
       connectedCallback(){
         const contentEl = this;
-        const listTag = self.isItem ? 'ion-list' : 'ul';
+        const popOverElement: any = document.querySelector('ion-popover');
+        const {displayCount, parsedProps, componentName, isItem} = popOverElement.componentProps;
+        const listTag = isItem ? 'ion-list' : 'ul';
         this.innerHTML = `
 <ion-content>
-  <${listTag}>
-    ${self.parsedProps.filter((props, i) => !!props && i >= self.displayCount)
-          .map(props => self.getComponentLiteral(props)).join('')}
+  <${listTag} class="organizer-pop-over-list">
+    ${parsedProps.filter((props, i) => !!props && i >= displayCount)
+          .map(props => self.getComponentLiteral(isItem, componentName, props)).join('')}
   </${listTag}>
 </ion-content>`;
 
-        this.querySelectorAll(self.componentName).forEach(item => {
+        this.querySelectorAll(componentName).forEach(item => {
           item.addEventListener('click', () => {
-            contentEl.closest('ion-popover').dismiss(undefined, item.getAttribute(self.idProp));
+            const popover: any = contentEl.closest('ion-popover');
+            popover.dismiss(undefined, item.getAttribute(self.idProp));
           });
         });
       }
     });
   }
 
+  private getComponentLiteral(isItem, componentName, props){
+    const getNotIonItemListItem = function(isClose?){
+      if (isItem)
+        return '';
+      return `<${isClose ? '/' : ''}li>`
+    }
+    return `${getNotIonItemListItem()}<${componentName}${Object.keys(props).reduce((accum, prop) => {
+      return accum + ` ${prop}="${props[prop]}"`
+    }, '')}></${componentName}>${getNotIonItemListItem(true)}`;
+  }
+
   private async getItemPopOver(evt){
     this.definePopOverContent();
-    const popover = Object.assign(document.createElement('ion-popover'), {
+    const popover: any = Object.assign(document.createElement('ion-popover'), {
       component: ORGANIZER_CUSTOM_EL_NAME,
       cssClass: 'organizer-popover',
       translucent: true,
@@ -99,16 +117,20 @@ export class PdmItemOrganizer {
       showBackdrop: false,
       animated: true,
       backdropDismiss: true,
+      componentProps: {
+        displayCount: this.displayCount,
+        parsedProps: this.parsedProps,
+        componentName: this.componentName,
+        isItem: this.isItem
+      }
     });
     document.body.appendChild(popover);
     await popover.present();
 
     const {role} = await popover.onWillDismiss();
-    if (role && role !== 'backdrop')
-      if (this.clickHandler)
-        this.clickHandler(role);
-      else
-        console.log(role);
+    if (role && role !== 'backdrop'){
+      this.selectEvent.emit(role);
+    }
   }
 
   @Listen('ssapp-show-more')
@@ -118,21 +140,16 @@ export class PdmItemOrganizer {
     await this.getItemPopOver(evt.detail);
   }
 
-  private getComponentJSX(props){
-    const Tag = this.componentName;
-    return (<Tag {...props}></Tag>)
+  private triggerSelect(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    this.selectEvent.emit(evt.detail);
   }
 
-  private getComponentLiteral(props){
+  private getComponentJSX(props){
     const self = this;
-    const getNotIonItemListItem = function(isClose?){
-      if (self.isItem)
-        return '';
-      return `<${isClose ? '/' : ''}li>`
-    }
-    return `${getNotIonItemListItem()}<${this.componentName}${Object.keys(props).reduce((accum, prop) => {
-      return accum + ` ${prop}="${props[prop]}"`
-    }, '')}></${this.componentName}>${getNotIonItemListItem(true)}`;
+    const Tag = this.componentName;
+    return (<Tag {...props} onSelectEvent={self.triggerSelect.bind(self)}></Tag>)
   }
 
   private getFilteredComponents(){
@@ -141,8 +158,12 @@ export class PdmItemOrganizer {
     if (this.parsedProps.length <= this.displayCount)
       return this.parsedProps.map(props => this.getComponentJSX(props));
     const toDisplay = Math.max(this.displayCount - 1, 1);
-    const result = this.parsedProps .filter((props,i) => !!props && i <= toDisplay).map(props => this.getComponentJSX(props));
-    result.unshift(<more-chip></more-chip>);
+    const result = this.parsedProps.filter((props,i) => !!props && i <= toDisplay).map(props => this.getComponentJSX(props));
+
+    if (this.singleLine){
+      const operation = this.orientation === "end" || this.singleLine ? result.unshift.bind(result) : result.push.bind(result);
+      operation((<more-chip float-more-button={!this.singleLine}></more-chip>));
+    }
     return result;
   }
 
@@ -151,11 +172,10 @@ export class PdmItemOrganizer {
       return;
     return (
       <Host>
-        <div class="ion-padding-horizontal flex ion-justify-content-between ion-align-items-center">
+        <div class={`ion-padding-horizontal ${this.singleLine ? "flex " : ""}ion-justify-content-${this.orientation} ion-align-items-center`}>
           {...this.getFilteredComponents()}
         </div>
       </Host>
     );
   }
-
 }

@@ -1,8 +1,5 @@
 const { ANCHORING_DOMAIN, DB } = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
-const Order = require('../model').Order;
-const OrderLine = require('../model').OrderLine;
-const OrderStatus = require('../model').OrderStatus;
 
 /**
  * Shipment Manager Class
@@ -14,8 +11,9 @@ const OrderStatus = require('../model').OrderStatus;
  * @param {string} tableName the default table name for this manager eg: MessageManager will write to the messages table
  * @param {string[]} indexes the indexes to be applied to the table in the db. cannot be undefined
  * @param {function(err, Manager)} callback
- * @module managers
+ * @memberOf Managers
  * @class ShipmentManager
+ * @extends Manager
  * @abstract
  */
 class ShipmentManager extends Manager {
@@ -133,12 +131,6 @@ class ShipmentManager extends Manager {
 
             Object.keys(byMAH).forEach(mahId => {
                 const ssis = byMAH[mahId].map(k => typeof k === 'string' ? k.getIdentifier() : k);
-
-                // ssis.forEach(ssi => {
-                //     self.sendMessage(mahId, DB.shipmentLines, ssi, (err) =>
-                //         self._messageCallback(err ? `Could not send message to MAH ${mahId} for shipmentLine ${JSON.stringify(byMAH[mahId])} with ssi ${ssi} ${err}` : err,
-                //             `ShipmentLines ${ssi} transmitted to MAH ${mahId}`));
-                // });
                 const message = JSON.stringify(ssis);
                 self.sendMessage(mahId, DB.shipmentLines, message, (err) =>
                     self._messageCallback(err ? `Could not send message to MAH ${mahId} for shipmentLines ${JSON.stringify(byMAH[mahId])} with ssis ${ssis} ${err}` : err,

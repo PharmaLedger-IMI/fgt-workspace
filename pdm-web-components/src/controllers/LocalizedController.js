@@ -1,13 +1,7 @@
-/**
- * @module controllers
- */
-
 import {EVENT_SSAPP_HAS_LOADED, EVENT_SEND_ERROR, EVENT_SEND_MESSAGE, EVENT_REFRESH, EVENT_NAVIGATE_TAB, CSS, BUTTON_ROLES} from "../constants/events";
 
-/**
- *
- */
 const {WebcController} = WebCardinal.controllers;
+import wizard from '../services/WizardService';
 
 /**
  * Master Controller to provide access to the Localization features provided by WebCardinal.
@@ -22,14 +16,15 @@ const {WebcController} = WebCardinal.controllers;
  *          this.model = this.initializeModel();
  *      }
  * </pre>
- * @module controllers
+ * @module Controllers
  * @class LocalizedController
+ * @extends WebcController
  */
 export default class LocalizedController extends WebcController {
 
   /**
    * Should return the initialized model for the controller when needed.
-   * <strong>MUST</strong> be called on the constructor for locale binding
+   * <strong>MUST</strong> be called on the constructor for locale binding via {@link WebcLocaleService}
    * @return {{}}
    */
   initializeModel = () => ({});
@@ -225,6 +220,29 @@ export default class LocalizedController extends WebcController {
     return alert;
   }
 
+  /**
+   * Shows a confirmation Popup
+   * @param {string} message the message
+   * @param {string} confirmText the ok button text
+   * @param {string} cancelText the cancel button text
+   * @return {Promise<HTMLElement>}
+   */
+  async showConfirm(message, confirmText, cancelText = "Cancel"){
+    return this.showAlert(message,
+      {
+        buttons: [
+          {
+            text: cancelText,
+            role: 'cancel'
+          },
+          {
+            text: confirmText,
+            role: 'confirm'
+          }
+        ]
+      });
+  }
+
 
   /**
    * Instantiates a new Spinner
@@ -270,9 +288,9 @@ export default class LocalizedController extends WebcController {
    * @param {boolean} [enableValidations] defaults to false. If provided enabled Ionic Inputs form validations
    */
   bindLocale(controller, pageName, enableValidations) {
-    require('wizard').Services.WebcLocaleService.bindToLocale(controller, pageName);
+    wizard.LocaleService.bindToLocale(controller, pageName);
     if (enableValidations)
-      require('wizard').Model.Validations.bindIonicValidation(controller);
+      wizard.Model.Validations.bindIonicValidation(controller);
   }
 
   /**

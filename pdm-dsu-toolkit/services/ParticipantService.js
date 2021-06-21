@@ -1,14 +1,8 @@
 /**
- * @module services
- */
-
-/**
- **/
-const utils = require('./utils');
-
-/**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {STRATEGY} strategy
+ * @typedef Service
+ * @memberOf Services
  */
 function ParticipantService(domain, strategy){
     const strategies = require('./strategy');
@@ -20,6 +14,7 @@ function ParticipantService(domain, strategy){
      * Creates an Participant's DSU, including the const and MQ.
      * @param {Participant} participant
      * @param {function(err, participantKeySSI)} callback
+     * @memberOf ParticipantService
      */
     this.create = function(participant, callback){
         if (typeof callback != "function")
@@ -31,6 +26,13 @@ function ParticipantService(domain, strategy){
         }
     }
 
+    /**
+     *
+     * @param participant
+     * @param inbox
+     * @param callback\
+     * @memberOf ParticipantService
+     */
     let createSimple = function (participant, inbox, callback) {
 
     };
@@ -39,6 +41,7 @@ function ParticipantService(domain, strategy){
      * Locate the const DSU of a participant, given the id.
      * @param {string} id - a Participant.id
      * @param {function(err, participantConstDsu)} callback
+     * @memberOf ParticipantService
      */
     this.locateConstDSU = function(id, callback) {
         const opendsu = require("opendsu");

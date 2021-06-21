@@ -1,4 +1,10 @@
+/**
+ * @namespace PdmWebComponents
+ */
 
+/**
+ *
+ */
 export const FALLBACK_COLOR = '--ion-color-primary;'
 
 export function parseDates (threshold, currentVal, referenceVal){

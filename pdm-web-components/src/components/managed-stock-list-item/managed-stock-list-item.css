@@ -1,6 +1,5 @@
 :host {
   display: block;
-  --background: inherit;
 }
 
 ion-item.main-item{

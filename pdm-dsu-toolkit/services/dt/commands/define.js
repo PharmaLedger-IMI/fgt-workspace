@@ -1,10 +1,3 @@
-/**
- * @module Commands
- * @memberOf dt
- */
-
-/**
- */
 const Command = require('./Command');
 const { _err } = require('./utils');
 
@@ -12,6 +5,8 @@ const { _err } = require('./utils');
  * Defines a variable that can later be used in the script
  *
  * @class DefineCommand
+ * @module Commands
+ * @memberOf dt
  */
 class DefineCommand extends Command {
     constructor(varStore) {

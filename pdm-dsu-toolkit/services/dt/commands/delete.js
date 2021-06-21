@@ -1,11 +1,3 @@
-/**
- * @module Commands
- * @memberOf dt
- */
-
-
-/**
- */
 const Command = require('./Command');
 const { _err } = require('./utils');
 
@@ -13,6 +5,8 @@ const { _err } = require('./utils');
  * Deletes everything in the specified path of the DSU
  *
  * @class DeleteCommand
+ * @module Commands
+ * @memberOf dt
  */
 class DeleteCommand extends Command {
     constructor(varStore) {

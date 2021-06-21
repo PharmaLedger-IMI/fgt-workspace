@@ -4,7 +4,8 @@ const path = require('path');
 
 require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
 const dt = require('./../../pdm-dsu-toolkit/services/dt');
-const { getParticipantManager, getProductManager, getBatchManager, getOrderLineManager, getShipmentLineManager } = require('../../fgt-dsu-wizard/managers');
+const getIssuedShipmentManager = require("../../fgt-dsu-wizard/managers/IssuedShipmentManager");
+const { getParticipantManager, getProductManager, getBatchManager, getOrderLineManager, getShipmentLineManager, getStockManager, getReceivedOrderManager, getReceivedShipmentManager} = require('../../fgt-dsu-wizard/managers');
 const { impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 
 const { APPS } = require('./credentials/credentials');
@@ -22,7 +23,7 @@ const defaultOps = {
 let conf = argParser(defaultOps, process.argv);
 
 const setupProducts = function(participantManager, products, batches, callback){
-    getProductManager(participantManager, true, (err, productManager) => {
+    getProductManager(participantManager, (err, productManager) => {
         if (err)
             return callback(err);
         participantManager.productManager = productManager;
@@ -44,7 +45,7 @@ const setupProducts = function(participantManager, products, batches, callback){
 }
 
 const setupBatches = function(participantManager, products, batches,  callback){
-    getBatchManager(participantManager, true, (err, batchManager) => {
+    getBatchManager(participantManager, (err, batchManager) => {
         if (err)
             return callback(err);
         participantManager.batchManager = batchManager;
@@ -65,20 +66,20 @@ const setupBatches = function(participantManager, products, batches,  callback){
 
             const pBatches = getBatches(product.gtin);
 
-            const batchIterator = function(gtin, batchesCopy, callback){
+            const batchIterator = function(product, batchesCopy, callback){
                 const batch = batchesCopy.shift();
                 if (!batch){
-                    console.log(`${pBatches.length} batches created for ${gtin}`);
+                    console.log(`${pBatches.length} batches created for ${product.gtin}`);
                     return callback(undefined, pBatches);
                 }
-                batchManager.create(gtin, batch, (err, keySSI, path) => {
+                batchManager.create(product, batch, (err, keySSI, path) => {
                     if (err)
                         return callback(err);
-                    batchIterator(gtin, batchesCopy, callback);
+                    batchIterator(product, batchesCopy, callback);
                 });
             }
 
-            batchIterator(product.gtin, pBatches.slice(), (err, batches) => {
+            batchIterator(product, pBatches.slice(), (err, batches) => {
                 if (err)
                     return callback(err);
                 batchesObject[product.gtin] = batches;
@@ -99,21 +100,23 @@ const setupBatches = function(participantManager, products, batches,  callback){
     });
 }
 
-const setupOrderLines = function (participantManager, callback){
-    getOrderLineManager(participantManager, true, (err, orderLineManager) => {
+const setupManager = function(participantManager, callback){
+    getReceivedOrderManager(participantManager,  (err, receivedOrderManager) => {
         if (err)
             return callback(err);
-        participantManager.orderLineManager = orderLineManager; // just to keep the reference and keep it instantiated so it can receive messages
-        callback();
-    });
-}
-
-const setupShipmentLines = function (participantManager, callback){
-    getShipmentLineManager(participantManager, true, (err, shipmentLineManager) => {
-        if (err)
-            return callback(err);
-        participantManager.shipmentLineManager = shipmentLineManager; // just to keep the reference and keep it instantiated so it can receive messages
-        callback();
+        getIssuedShipmentManager(participantManager, (err, issuedShipmentManager) => {
+            if (err)
+                return callback(err);
+            getOrderLineManager(participantManager, (err, orderLineManager) => {
+                if (err)
+                    return callback(err);
+                getShipmentLineManager(participantManager, (err, shipmentLineManager) => {
+                    if (err)
+                        return callback(err);
+                    callback();
+                });
+            });
+        });
     });
 }
 
@@ -124,14 +127,10 @@ const setup = function(participantManager, products, batches, callback){
         setupBatches(participantManager, productsObj, batches, (err, batchesObj) => {
             if (err)
                 return callback(err);
-            setupOrderLines(participantManager, (err) => {
+            setupManager(participantManager, (err) => {
                 if (err)
                     return callback(err);
-                setupShipmentLines(participantManager, (err) => {
-                    if (err)
-                        return callback(err);
-                    callback(undefined, productsObj, batchesObj);
-                });
+                callback(undefined, productsObj, batchesObj);
             });
         });
     });

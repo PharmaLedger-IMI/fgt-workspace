@@ -12,9 +12,9 @@
     "octopus": "git+https://github.com/PrivateSky/octopus.git#1.0"
   },
   "devDependencies": {
+    "@capacitor/core": "^3.0.1",
     "@ionic/cli": "^6.13.1",
     "@ionic/core": "^5.6.0",
-    "@ionic/pwa-elements": "^3.0.2",
     "ionicons": "^5.5.1",
     "jsdoc": "^3.6.6",
     "markdown-include": "^0.4.3",

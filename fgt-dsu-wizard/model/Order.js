@@ -1,8 +1,10 @@
-/**
- * @module fgt-dsu-wizard.model
- */
 const OrderStatus = require('./OrderStatus');
+const OrderLine = require('./OrderLine');
 
+/**
+ * @class Order
+ * @memberOf Model
+ */
 class Order{
     orderId;
     requesterId;
@@ -11,13 +13,22 @@ class Order{
     status;
     orderLines;
 
+    /**
+     * @param orderId
+     * @param requesterId
+     * @param senderId
+     * @param shipToAddress
+     * @param status
+     * @param orderLines
+     * @constructor
+     */
     constructor(orderId, requesterId, senderId, shipToAddress, status, orderLines) {
-        this.orderId = orderId;
+        this.orderId = orderId || (new Date()).getTime();
         this.requesterId = requesterId;
         this.senderId = senderId;
         this.shipToAddress = shipToAddress;
         this.status = status || OrderStatus.CREATED;
-        this.orderLines = orderLines || [];
+        this.orderLines = orderLines ? orderLines.map(sl => new OrderLine(sl.gtin, sl.quantity, sl.requesterId, sl.senderId)) : [];
     }
 
     /**
@@ -41,7 +52,7 @@ class Order{
         if (!this.status) {
             errors.push('status is required.');
         }
-        if (!this.orderLines || this.orderLines.length == 0) {
+        if (!this.orderLines || !this.orderLines.length) {
             errors.push('orderLines is required.');
         } else {
             this.orderLines.forEach((orderLine,orderLineIndex) => {

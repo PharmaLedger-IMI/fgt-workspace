@@ -1,11 +1,7 @@
-/**
- * @module fgt-mah-ssapp.managers
- */
-
 const BaseManager = require('../../pdm-dsu-toolkit/managers/BaseManager');
 
 /**
- * Participant Manager Class
+ * Participant Manager Class - Extension of Base Manager
  *
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
@@ -18,17 +14,32 @@ const BaseManager = require('../../pdm-dsu-toolkit/managers/BaseManager');
  *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
  * </ul>
  *
- * Should eventually integrate with the WP3 decisions
- *
- * @param {DSUStorage} dsuStorage the controllers dsu storage
- * @param {boolean} [force] defaults to false. overrides the singleton behaviour and forces a new instance.
- * Makes DSU Storage required again!
- * @param {function(err, ParticipantManager)} [callback}
+ * @param {DSUStorage} DSUStorage
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @class ParticipantManager
+ * @extends BaseManager
+ * @memberOf Managers
+ * @see BaseManager
  */
 class ParticipantManager extends BaseManager{
-    constructor(dsuStorage, force, callback) {
-        super(dsuStorage, force, callback);
-        this.directoryManager = require('./DirectoryManager')(this, force);
+    constructor(dsuStorage, callback) {
+        super(dsuStorage, (err, manager) => {
+            if (err)
+                return callback(err);
+            require('./DirectoryManager')(this, (err, directoryManager) => {
+                if (err)
+                    return callback(err);
+                manager.directoryManager = directoryManager;
+                require('./StockManager')(this, true, (err, stockManager) => {
+                    if (err)
+                        return callback(err);
+                    manager.stockManager = stockManager;
+                    callback(undefined, manager);
+                });
+            });
+        });
+        this.directoryManager = undefined;
+        this.stockManager = undefined;
     };
 
     /**
@@ -52,6 +63,7 @@ let participantManager;
  * Makes DSU Storage required again!
  * @param {function(err, ParticipantManager)} [callback]
  * @returns {ParticipantManager}
+ * @memberOf Managers
  */
 const getParticipantManager = function (dsuStorage, force, callback) {
     if (!callback){
@@ -63,7 +75,7 @@ const getParticipantManager = function (dsuStorage, force, callback) {
     if (!participantManager || force) {
         if (!dsuStorage)
             throw new Error("No DSUStorage provided");
-        participantManager = new ParticipantManager(dsuStorage, force, callback);
+        participantManager = new ParticipantManager(dsuStorage, callback);
     }
     return participantManager;
 }

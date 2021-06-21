@@ -7,7 +7,7 @@ export default class IssuedShipmentsController extends LocalizedController {
     initializeModel = () => ({}); // creates a new uninitialized blank model
 
     constructor(...args) {
-        super(false, ...args)
+        super(false, ...args);
         super.bindLocale(this, "issuedShipments");
         this.model = this.initializeModel();
         const wizard = require('wizard');

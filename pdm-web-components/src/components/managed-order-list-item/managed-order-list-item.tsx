@@ -3,6 +3,8 @@ import {Component, Host, h, Element, Prop, State, Watch, Method, Event, EventEmi
 import {WebResolver, WebManagerService} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
+import {getBarCodePopOver} from "../../utils/popOverUtils";
+import {ListItemLayout} from "../list-item-layout/list-item-layout";
 
 const Order = wizard.Model.Order;
 
@@ -61,11 +63,9 @@ export class ManagedOrderListItem {
 
   @Prop({attribute: 'order-id'}) orderId: string;
 
-  @Prop({attribute: 'orderline-count'}) orderlineCount?: number = 4;
-
   @Prop({attribute: 'type'}) type?: string = ORDER_TYPE.ISSUED;
 
-  private receivedOrderManager: WebResolver = undefined;
+  private orderManager: WebResolver = undefined;
 
   @State() order: typeof Order = undefined;
 
@@ -73,15 +73,15 @@ export class ManagedOrderListItem {
     if (!this.host.isConnected)
       return;
     const prefix = this.type.charAt(0).toUpperCase() + this.type.slice(1).toLowerCase();
-    this.receivedOrderManager = await WebManagerService.getWebManager(`${prefix}OrderManager`);
+    this.orderManager = await WebManagerService.getWebManager(`${prefix}OrderManager`);
     return await this.loadOrders();
   }
 
   async loadOrders(){
     let self = this;
-    if (!self.receivedOrderManager)
+    if (!self.orderManager)
       return;
-    self.receivedOrderManager.getOne(self.orderId, true, (err, order) => {
+    self.orderManager.getOne(self.orderId, true, (err, order) => {
       if (err){
         self.sendError(`Could not get Order with id ${self.orderId}`, err);
         return;
@@ -101,79 +101,98 @@ export class ManagedOrderListItem {
 
     const getOrderIdLabel = function(){
       if (!self.order || !self.order.orderId)
-        return (<h3><ion-skeleton-text animated></ion-skeleton-text> </h3>)
-      return (<h3>{self.order.orderId}</h3>)
+        return (<ion-skeleton-text animated></ion-skeleton-text>)
+      return self.order.orderId;
     }
 
     const getRequesterIdLabel = function(){
       if (!self.order || !self.order.requesterId)
-        return (<h5><ion-skeleton-text animated></ion-skeleton-text> </h5>)
-      return (<h5>{self.order.requesterId}</h5>)
+        return (<ion-skeleton-text animated></ion-skeleton-text>)
+      return self.order.requesterId;
     }
 
     return(
-      <ion-label class="ion-padding-horizontal ion-align-self-center">
+      <ion-label slot="label" color="secondary">
         {getOrderIdLabel()}
-        {getRequesterIdLabel()}
+        <span class="ion-padding-start">{getRequesterIdLabel()}</span>
       </ion-label>)
   }
 
-  addOrderLine(orderLine){
+  addOrderLines() {
+    if (!this.order || !this.order.orderLines)
+      return (<ion-skeleton-text slot="content" animated></ion-skeleton-text>);
     return(
-      <managed-orderline-stock-chip gtin={orderLine.gtin} quantity={orderLine.quantity} mode="detail"></managed-orderline-stock-chip>
-    )
+      <pdm-item-organizer slot="content" component-name="managed-orderline-stock-chip"
+                          component-props={JSON.stringify(this.order.orderLines.map(ol => ({
+                            "gtin": ol.gtin,
+                            "quantity": ol.quantity,
+                            "mode": "detail"
+                          })))}
+                          id-prop="gtin"
+                          is-ion-item="false"
+                          display-count="3"
+                          orientation={this.getOrientation()}
+                          onSelectEvent={(evt) => {
+                            evt.preventDefault();
+                            evt.stopImmediatePropagation();
+                            console.log(`Selected ${evt.detail}`);
+                          }}></pdm-item-organizer>
+    );
   }
 
-  addOrderLines() {
-    let orderLines = (<ion-skeleton-text animated></ion-skeleton-text>);
-    if (this.order && this.order.orderLines) {
-      if (this.order.orderLines.length > this.orderlineCount) {
-        orderLines = [...this.order.orderLines].slice(0, this.orderlineCount).map(ol => this.addOrderLine(ol));
-        orderLines.push((
-          <more-chip color="secondary"></more-chip>
-        ));
-      } else {
-        orderLines = this.order.orderLines.map(ol => this.addOrderLine(ol));
-      }
-    }
-    return (
-      <ion-grid class="ion-padding-horizontal">
-        <ion-row>
-          <ion-col size="12">
-            {orderLines}
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    );
+  private getOrientation(){
+    const layout: ListItemLayout = this.element.querySelector('list-item-layout');
+    return layout ? layout.orientation : 'end';
   }
 
   addButtons(){
     let self = this;
-    const getButtons = function(){
-      if (!self.order)
-        return (<ion-skeleton-text animated></ion-skeleton-text>)
+    if (!self.order)
+      return (<ion-skeleton-text animated></ion-skeleton-text>);
+
+    const getButton = function(slot, color, icon, handler){
       return (
-        <ion-button slot="primary" onClick={() => self.navigateToTab('tab-order', {orderId: self.order.orderId, requesterId: self.order.requesterId})}>
-          <ion-icon name="cog-outline"></ion-icon>
+        <ion-button slot={slot} color={color} fill="clear" onClick={handler}>
+          <ion-icon size="large" slot="icon-only" name={icon}></ion-icon>
         </ion-button>
       )
     }
 
-    return(
-      <ion-buttons class="ion-align-self-center ion-padding" slot="end">
-        {getButtons()}
-      </ion-buttons>
-    )
+    const getProcessOrderButton = function(){
+      if (self.type === ORDER_TYPE.ISSUED)
+        return;
+      return getButton("buttons", "medium", "cog",
+        () => self.navigateToTab('tab-shipment', {
+          mode: ORDER_TYPE.ISSUED,
+          order: self.order
+        }));
+    }
+
+    const props = {
+      mode: self.type,
+      order: self.order
+    };
+
+    return [
+      getButton("buttons", "medium", "barcode", (evt) => getBarCodePopOver({
+        type: "code128",
+        size: "32",
+        scale: "6",
+        data: self.order.orderId
+      }, evt)),
+      getButton("buttons", "medium", "eye", () => self.navigateToTab('tab-order', props)),
+      getProcessOrderButton()
+    ]
   }
 
   render() {
     return (
       <Host>
-        <ion-item class="ion-align-self-center main-item">
+        <list-item-layout>
           {this.addLabel()}
           {this.addOrderLines()}
           {this.addButtons()}
-        </ion-item>
+        </list-item-layout>
       </Host>
     );
   }

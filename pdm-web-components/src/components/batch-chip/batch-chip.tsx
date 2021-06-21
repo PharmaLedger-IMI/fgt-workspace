@@ -1,4 +1,4 @@
-import {Component, Host, h, Prop, Element, State, Watch} from '@stencil/core';
+import {Component, Host, h, Prop, Element, State, Watch, Event, EventEmitter} from '@stencil/core';
 import {HostElement} from "../../decorators";
 import {WebManagerService, WebResolver} from "../../services/WebManagerService";
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
@@ -22,6 +22,9 @@ export class BatchChip {
   @HostElement() host: HTMLElement;
 
   @Element() element;
+
+  @Event()
+  selectEvent: EventEmitter<string>
 
   @Prop({attribute: "gtin-batch", mutable: true}) gtinBatch: string = undefined;
 
@@ -76,19 +79,20 @@ export class BatchChip {
       return `${daysLeft}d`;
     }
     return (
-      <ion-badge class="ion-margin-start" style={{
+      <ion-badge slot="badges" style={{
         "--color-step": `var(${getSteppedColor(this.expiryThreshold, this.batch.expiry, new Date())})`
       }}>{getDaysTillExpiryString()}</ion-badge>
     )
   }
 
   private renderSimple(){
+    const self=this;
     return (
       <Host>
-        <ion-chip class="ion-padding-start ion-margin-start" outline={true} color="secondary">
-          <ion-label>{this.getBatchNumber()}</ion-label>
-          {this.renderQuantity()}
-        </ion-chip>
+        <generic-chip chip-label={this.getBatchNumber()} outline={true}
+                      color="secondary" onSelectEvent={self.triggerSelect.bind(self)}>
+          {self.renderQuantity()}
+        </generic-chip>
       </Host>
     )
   }
@@ -97,18 +101,25 @@ export class BatchChip {
     if (!this.quantity && this.quantity !== 0)
       return;
     return (
-      <ion-badge class="ion-margin-start" color="tertiary">{this.quantity}</ion-badge>
+      <ion-badge slot="badges" color="tertiary">{this.quantity}</ion-badge>
     )
   }
 
+  private triggerSelect(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    this.selectEvent.emit(this.gtinBatch)
+  }
+
   private renderDetail(){
+    const self = this;
     return (
       <Host>
-        <ion-chip class="ion-padding-start ion-margin-start" outline={true} color="secondary">
-          <ion-label>{this.getBatchNumber()}</ion-label>
-          {this.renderExpiryInfo()}
-          {this.renderQuantity()}
-        </ion-chip>
+        <generic-chip chip-label={this.getBatchNumber()} outline={true} color="secondary"
+                      onSelectEvent={self.triggerSelect.bind(self)}>
+          {self.renderExpiryInfo()}
+          {self.renderQuantity()}
+        </generic-chip>
       </Host>
     )
   }

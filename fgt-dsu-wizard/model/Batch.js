@@ -1,20 +1,25 @@
-/**
- * @module fgt-dsu-wizard.model
- */
-
 const Utils = require("../../pdm-dsu-toolkit/model/Utils");
 
 /**
  * @prop {string} batchNumber
  * @prop {Date} expiryDate
  * @prop {string[]} serialNumbers
+ * @prop {number} quantity
+ * @prop {string} batchStatus
+ * @class Batch
+ * @memberOf Model
  */
 class Batch {
     batchNumber;
     expiry = "";
-    serialNumbers = ["430239925150"]; // add quantity exxplicitly
+    serialNumbers = [];
+    quantity = 0;
     batchStatus
 
+    /**
+     * @param {Batch} batch
+     * @constructor
+     */
     constructor(batch) {
         if (typeof batch !== undefined)
             for (let prop in batch)
@@ -23,6 +28,32 @@ class Batch {
 
         if (!this.batchNumber)
             this.batchNumber = Utils.generateSerialNumber(6);
+
+        if (this.serialNumbers && this.serialNumbers.length)
+            if (this.quantity !== this.serialNumbers.length)
+                this.quantity = this.serialNumbers.length;
+    }
+
+    manage(delta, serialization = true){
+        if (Array.isArray(delta))
+            this.serialNumbers.push(...delta);
+        if (delta === 0)
+            return;
+        if (delta > 0 && this.serialNumbers.length)
+            if (serialization) {
+                this.serialNumbers.push(...Array.from(Array(10), (_) => Utils.generateSerialNumber(12)));
+                this.quantity = this.getQuantity();
+                return;
+            }
+        if (serialization)
+            return this.serialNumbers.splice(0, Math.abs(delta));
+        this.quantity += delta;
+    }
+
+    getQuantity(){
+        return this.serialNumbers && this.serialNumbers.length
+            ? this.serialNumbers.length
+            : this.quantity;
     }
 
     generateViewModel() {

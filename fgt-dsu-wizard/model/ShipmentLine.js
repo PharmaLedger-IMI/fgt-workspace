@@ -1,5 +1,6 @@
 /**
- * @module fgt-dsu-wizard.model
+ * @class ShipmentLine
+ * @memberOf Model
  */
 class ShipmentLine{
     gtin;
@@ -9,6 +10,11 @@ class ShipmentLine{
     requesterId;
     status;
 
+    /**
+     *
+     * @param line
+     * @constructor
+     */
     constructor(line) {
         if (typeof line !== undefined)
             for (let prop in line)

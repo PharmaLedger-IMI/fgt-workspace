@@ -1,12 +1,11 @@
-/**
- * @module fgt-dsu-wizard.services
- */
 const utils = require('../../pdm-dsu-toolkit/services/utils');
 const {STATUS_MOUNT_PATH, INFO_PATH} = require('../constants');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
+ * @function BatchService
+ * @namespace Services
  */
 function BatchService(domain, strategy){
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");
@@ -28,6 +27,7 @@ function BatchService(domain, strategy){
      * Resolves the DSU and loads the Batch object with all its properties, mutable or not
      * @param {KeySSI} keySSI
      * @param {function(err, Order)} callback
+     * @memberOf BatchService
      */
     this.get = function(keySSI, callback){
         utils.getResolver().loadDSU(keySSI, (err, dsu) => {
@@ -51,6 +51,7 @@ function BatchService(domain, strategy){
      * @param {string} gtin
      * @param {Batch} batch
      * @param {function(err, keySSI)} callback
+     * @memberOf BatchService
      */
     this.create = function(gtin, batch, callback){
 

@@ -3,13 +3,19 @@ const Batch = require('./Batch');
 const StockStatus = require('./StockStatus');
 
 /**
- * @module fgt-dsu-wizard.model
  * @class Stock
+ * @extends Product
+ * @memberOf Model
  */
 class Stock extends Product{
     batches = [];
     status = undefined;
 
+    /**
+     *
+     * @param stock
+     * @constructor
+     */
     constructor(stock) {
         super(stock)
         if (typeof stock !== undefined)
@@ -25,7 +31,7 @@ class Stock extends Product{
     }
 
     getQuantity(){
-        return this.batches.reduce((sum, b) => sum + b.quantity, 0);
+        return this.batches.reduce((sum, b) => sum + b.getQuantity(), 0);
     }
 
     /**

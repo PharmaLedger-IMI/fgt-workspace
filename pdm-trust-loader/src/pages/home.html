@@ -1,16 +1,43 @@
 <webc-container controller="HomeController" translations="true">
     <ion-app>
-        <ion-tabs id="main-content">
-            <ion-header>
-                <ion-toolbar>
-                    <ion-img align="center" class="main-logo" slot="start" src="assets/images/logo.svg"></ion-img>
-                    <ion-title align="center">{{ @title }}</ion-title>
-                </ion-toolbar>
-            </ion-header>
-            <ion-content class="main-content">
-                <div class="with-gradient"></div>
-                </div>
-            </ion-content>
-        </ion-tabs>
+        <ion-content>
+            <ion-grid class="full-height">
+                <ion-row class="full-height ion-align-items-center">
+                    <ion-col size="4" class="ion-hide-lg-down">
+                        <ion-img src="./assets/images/login-bg.png" alt="" class="login-image"></ion-img>
+                    </ion-col>
+                    <ion-col>
+                        <ion-grid>
+                            <ion-row class="ion-padding-vertical ion-align-items-center ion-justify-content-center">
+                                <ion-col size="12" size-sm="11" size-md="10" size-lg="5">
+                                    <form-validate-submit form-json="@formJSON" enable-custom-validation="false">
+                                        <div slot="header" class="ion-text-center ion-padding-vertical">
+                                            <img src="./assets/images/logo.svg" alt="" class="ion-margin-top">
+                                            <div class="ion-text-center ion-padding-top flex flex-col">
+                                                <span>{{ @sub-title }}</span>
+                                                <span>{{ @title }}</span>
+                                            </div>
+                                        </div>
+                                        <div slot="buttons">
+                                            <ion-button name="clear" type="reset" color="medium" fill="clear" lass="ion-margin-start">
+                                                {{ @form.buttons.clear.label }}
+                                            </ion-button>
+                                            <ion-button name="register" type="submit" color="medium" class="ion-margin-start primary-button">
+                                                {{ @form.buttons.register.label }}
+                                                <ion-icon slot="end" name="@form.buttons.register.icon" class="ion-margin-start"></ion-icon>
+                                            </ion-button>
+                                            <ion-button name="login" type="submit" color="secondary" class="ion-margin-start">
+                                                {{ @form.buttons.login.label }}
+                                                <ion-icon slot="end" name="@form.buttons.login.icon" class="ion-margin-start"></ion-icon>
+                                            </ion-button>
+                                        </div>
+                                    </form-validate-submit>
+                                </ion-col>
+                            </ion-row>
+                        </ion-grid>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-content>
     </ion-app>
 </webc-container>

@@ -1,26 +1,45 @@
 const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const OrderManager = require("./OrderManager");
-const Order = require('../model').Order;
-const Stock = require('../model').Stock;
-const OrderLine = require('../model').OrderLine;
-const OrderStatus = require('../model').OrderStatus;
+const getStockManager = require("./StockManager");
+const {Order} = require('../model');
 
 /**
- * Issued Order Manager Class - concrete OrderManager for issuedOrders.
- * @param {ParticipantManager} participantManager the top-level manager for this participant, which knows other managers.
+ * Received Order Manager Class - concrete OrderManager for receivedOrders.
+ *
+ * Manager Classes in this context should do the bridge between the controllers
+ * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
+ *
+ * All Manager Classes should be singletons.
+ *
+ * This complete separation of concerts is very beneficial for 2 reasons:
+ * <ul>
+ *     <li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'</li>
+ *     <li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)</li>
+ * </ul>
+ *
+ * @param {ParticipantManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @class IssuedOrderManager
+ * @extends OrderManager
+ * @memberOf Managers
  */
 class ReceivedOrderManager extends OrderManager {
-    constructor(participantManager) {
-        super(participantManager, DB.receivedOrders, ['orderId', 'requesterId']);
-        const self = this;
-        this.registerMessageListener((message) => {
-            self.processMessageRecord(message, (err) => {
-                if (err)
-                    console.log(`Could not process message: ${err}`);
-                if (self.controller)
-                    self.controller.refresh();
+    constructor(participantManager, callback) {
+        super(participantManager, DB.receivedOrders, ['orderId', 'requesterId'], (err, manager) => {
+            if (err)
+                return callback ? callback(err) : console.log(err);
+            manager.registerMessageListener((message) => {
+                manager.processMessageRecord(message, (err) => {
+                    if (err)
+                        console.log(`Could not process message: ${err}`);
+                    if (manager.controller)
+                        manager.controller.refresh();
+                });
             });
+            if (callback)
+                callback(undefined, manager);
         });
+        this.stockManager = getStockManager(participantManager);
     }
 
 
@@ -65,28 +84,6 @@ class ReceivedOrderManager extends OrderManager {
         keyword = keyword || '.*';
         return [`orderId like /${keyword}/g`];
     }
-
-    // /**
-    //  * Loads Stock that gtin in the db. loads is and reads the info at '/info'
-    //  * @param {string} gtin
-    //  * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
-    //  * @param {function(err, object|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
-    //  */
-    // getOne(gtin, readDSU,  callback) {
-    //     if (!callback){
-    //         callback = readDSU;
-    //         readDSU = true;
-    //     }
-    //     let self = this;
-    //     self.getRecord(gtin, (err, stock) => {
-    //         if (err)
-    //             return self._err(`Could not load Stock for product ${gtin} on table ${self._getTableName()}`, err, callback);
-    //         stock = new Stock(stock);
-    //         if (!readDSU)
-    //             return callback(undefined, stock);
-    //         // sort the orderlines
-    //     });
-    // }
 
     /**
      * Lists all received orders.
@@ -146,16 +143,24 @@ class ReceivedOrderManager extends OrderManager {
     };
 }
 
-let receivedOrderManager;
+
 /**
  * @param {ParticipantManager} participantManager
- * @param {boolean} force
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {OrderManager}
+ * @memberOf Managers
  */
-const getReceivedOrderManager = function (participantManager, force) {
-    if (!receivedOrderManager || force)
-        receivedOrderManager = new ReceivedOrderManager(participantManager);
-    return receivedOrderManager;
+const getReceivedOrderManager = function (participantManager,  callback) {
+    let manager;
+    try {
+        manager = participantManager.getManager(ReceivedOrderManager);
+        if (callback)
+            return callback(undefined, manager);
+    } catch (e){
+        manager = new ReceivedOrderManager(participantManager, callback);
+    }
+
+    return manager;
 }
 
 module.exports = getReceivedOrderManager;

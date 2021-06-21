@@ -5,6 +5,7 @@ import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 import {getBarCodePopOver} from "../../utils/popOverUtils";
+import {ListItemLayout} from "../list-item-layout/list-item-layout";
 
 const Batch = wizard.Model.Batch;
 
@@ -99,6 +100,12 @@ export class ManagedBatchListItem {
     }
   }
 
+  private triggerSelect(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    console.log(`Selected ${evt.detail}`);
+  }
+
   addLabel(){
     const self = this;
 
@@ -116,31 +123,32 @@ export class ManagedBatchListItem {
     }
 
     return(
-      <ion-label color="secondary">
+      <ion-label slot="label" color="secondary">
         {getBatchNumberLabel()}
         <span class="ion-padding-start">{getExpiryLabel()}</span>
       </ion-label>)
   }
 
-  addSerialNumber(serial){
+  addSerialsNumbers(){
+    if (!this.serialNumbers || !this.batch)
+      return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
     return(
-      <ion-chip outline color="primary">
-        <ion-label class="ion-padding-horizontal">{serial}</ion-label>
-      </ion-chip>
+      <pdm-item-organizer slot="content" component-name="generic-chip"
+                          component-props={JSON.stringify(this.batch.serialNumbers.map(serial => ({
+                            "chip-label": serial,
+                            "class": "ion-margin-start"
+                          })))}
+                          id-prop="chip-label"
+                          is-ion-item="false"
+                          orientation={this.getOrientation()}
+                          onSelectEvent={this.triggerSelect.bind(this)}></pdm-item-organizer>
     )
   }
 
-  addSerialsNumbers(){
-    if (!this.serialNumbers || !this.batch)
-      return (<multi-spinner type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
-    return(
-      <pdm-item-organizer component-name="generic-chip"
-                          component-props={JSON.stringify(this.batch.serialNumbers.map(serial => ({
-                            "chip-label": serial
-                          })))}
-                          id-prop="chip-label"
-                          is-ion-item="false"></pdm-item-organizer>
-    )
+  private getOrientation(){
+    const layoutEl: ListItemLayout = this.element.querySelector('list-item-layout');
+    return layoutEl ? layoutEl.orientation : 'end';
+
   }
 
   addButtons(){
@@ -157,26 +165,27 @@ export class ManagedBatchListItem {
     }
 
     return [
-      getButton("end", "medium", "barcode", (evt) => getBarCodePopOver({
+      getButton("buttons", "medium", "barcode", (evt) => getBarCodePopOver({
         type: "gs1datamatrix",
         size: "32",
         scale: "6",
         data: self.batch.generate2DMatrixCode(self.getGtinAndBatchNumber().gtin)
       }, evt)),
-      getButton("end", "medium", "eye", () => self.navigateToTab('tab-batch', {gtinBatch: self.gtinBatch}))
+      getButton("buttons", "medium", "eye", () => self.navigateToTab('tab-batch', {
+        gtin: self.getGtinAndBatchNumber().gtin,
+        batchNumber: self.getGtinAndBatchNumber().batchNumber
+      }))
     ]
   }
 
   render() {
     return (
       <Host>
-        <ion-item class="ion-margin-bottom" lines="none" color="light">
+        <list-item-layout>
           {this.addLabel()}
-          <div class="ion-padding flex">
-            {this.addSerialsNumbers()}
-          </div>
+          {this.addSerialsNumbers()}
           {this.addButtons()}
-        </ion-item>
+        </list-item-layout>
       </Host>
     );
   }

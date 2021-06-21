@@ -1,5 +1,6 @@
 /**
- * @module fgt-dsu-wizard.services
+ * Integrates with OpenDSU Framework to create/manage DSU's while exposing a simple CRUD like API
+ * @namespace Services
  */
 module.exports = {
     DSUService: require('../../pdm-dsu-toolkit/services/DSUService'),
