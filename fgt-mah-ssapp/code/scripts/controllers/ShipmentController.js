@@ -68,6 +68,7 @@ export default class ShipmentController extends LocalizedController{
     async _handleCreateShipment(shipment, stockInfo, orderId) {
         let self = this;
         shipment.shipmentId = Date.now();
+        shipment.shipFromAddress = self.model.identity.address;
 
         utils.confirmWithStock(self.stockManager, shipment, stockInfo, async (err, confirmedShipment) => {
             if (err)

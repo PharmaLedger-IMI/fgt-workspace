@@ -1,7 +1,7 @@
 const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const ShipmentManager = require("./ShipmentManager");
 const getReceivedOrderManager = require("./ReceivedOrderManager");
-const {Shipment, Order, OrderStatus, ShipmentStatus, Wholesaler} = require('../model');
+const {Shipment, Order, OrderStatus, ShipmentStatus, Wholesaler, Batch} = require('../model');
 
 
 /**
@@ -94,12 +94,7 @@ class IssuedShipmentManager extends ShipmentManager {
         let self = this;
 
 
-        const createInner = function(chosenSerials, callback){
-            if (!callback){
-                callback = chosenSerials;
-                chosenSerials = undefined
-            }
-
+        const createInner = function(callback){
             const receivedOrderManager = getReceivedOrderManager(self.participantManager);
                 const receivedOrderKey = receivedOrderManager._genCompostKey(shipment.requesterId, orderId);
 
@@ -125,29 +120,44 @@ class IssuedShipmentManager extends ShipmentManager {
         }
 
         const gtinIterator = function(gtins, batchesObj, callback){
-            if (gtins.length !== batchesObj.length)
-                return callback(`gtins dont match batches in size`);
             const gtin = gtins.shift();
             if (!gtin)
                 return callback();
-            const batches = batchesObj.shift();
-            self.stockManager.manageAll(gtin,  batches, (err, removed)=> {
+            if (!(gtin in batchesObj))
+                return callback(`gtins not found in batches`);
+            const batches = batchesObj[gtin];
+            self.stockManager.manageAll(gtin,  batches, (err, removed) => {
                 if (err)
                     return self._err(`Could not update Stock`, err, callback);
-                createInner(removed, callback);
+                if (self.stockManager.serialization)
+                    shipment.shipmentLines.forEach(sl => {
+                        sl.serialNumbers = removed[sl.batch];
+                    });
+                gtinIterator(gtins, batchesObj, callback);
             })
         }
 
         const gtins = shipment.shipmentLines.map(sl => sl.gtin);
         const batchesObj = shipment.shipmentLines.reduce((accum, sl) => {
-            accum[sl.gtin] = sl.batches.map(b => {
-                b.quantity = -b.quantity;
-                return b;
-            } )
-        }, [])
+            accum[sl.gtin] = accum[sl.gtin] || [];
+            accum[sl.gtin].push(new Batch({
+                batchNumber: sl.batch,
+                quantity: (-1) * sl.quantity
+            }))
+        }, {});
 
 
-
+        gtinIterator(gtins, batchesObj, (err) => {
+            if (err)
+                return self._err(`Could not retrieve info from stock`, err, callback);
+            console.log(`Shipment updated after Stock confirmation`);
+            createInner((err, keySSI, path) => {
+                if (err)
+                    return self._err(`Could not create Shipment`, err, callback);
+                console.log(`Shipment ${shipment.shipmentId} created!`);
+                callback(undefined, keySSI, path);
+            })
+        });
     }
 
     sendMessagesAsync(shipment, shipmentLinesSSIs, aKey){

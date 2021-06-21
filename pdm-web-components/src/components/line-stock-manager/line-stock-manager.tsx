@@ -511,6 +511,7 @@ export class LineStockManager {
                           }))}
                           id-prop="gtin"
                           is-ion-item="false"
+                          single-line="false"
                           orientation="start"
                           display-count="25"
                           onSelectEvent={(evt) => {
