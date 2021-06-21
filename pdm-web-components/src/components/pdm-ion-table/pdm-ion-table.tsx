@@ -219,7 +219,7 @@ export class PdmIonTable implements ComponentInterface {
     }
 
     return (
-      <div class="ion-margin-top ion-padding-horizontal">
+      <div class="ion-margin-top ion-margin-bottom ion-padding-horizontal">
         <ion-row class="ion-align-items-center ion-justify-content-between">
           <div class="flex ion-align-items-center">
             <ion-icon size="large" color="secondary" name={self.iconName}></ion-icon>

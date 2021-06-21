@@ -39,14 +39,14 @@
                 </ion-col>
                 <ion-col>
                     <ion-tabs id="main-content">
-                        <ion-tab tab="tab-dashboard">
+                        <ion-tab tab="tab-dashboard" class="ion-margin">
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <div data-if="@identified">
                                     <webc-template template="dashboard" disable-container></webc-template>
                                 </div>
                             </ion-content>
                         </ion-tab>
-                        <ion-tab tab="tab-products">
+                        <ion-tab tab="tab-products" class="ion-margin">
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <div data-if="@identified">
                                     <webc-template template="products" disable-container></webc-template>
@@ -54,7 +54,7 @@
                             </ion-content>
                         </ion-tab>
 
-                        <ion-tab tab="tab-batches">
+                        <ion-tab tab="tab-batches" class="ion-margin">
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <div data-if="@identified">
                                     <webc-template template="batches" disable-container></webc-template>
