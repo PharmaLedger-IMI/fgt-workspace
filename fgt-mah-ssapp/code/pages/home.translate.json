@@ -82,6 +82,8 @@
         "value": "This is a description...",
         "minlength": 10
       },
+      "loading": "Creating Product. Please wait...",
+      "success": "Product Successfully created",
       "confirm": {
         "message": "Please confirm Product creation",
         "buttons": {
@@ -126,54 +128,58 @@
     }
   },
   "batch": {
-    "create-title": "Create a Batch",
-    "manage-title": "Manage Batch",
-    "back": "Back to Product",
-    "batchNumber": {
-      "label": "BatchNumber:",
-      "placeholder": "Insert batch number...",
-      "type": "text",
-      "required": true,
-      "input-mode": "text",
-      "minlength": 4
-    },
-    "gtin": {
-      "label": "Product Gtin:",
-      "placeholder": "Insert product gtin...",
-      "type": "number",
-      "required": true,
-      "input-mode": "number",
-      "minlength": 12,
-      "maxlength": 12,
-      "max": 999999999999
-    },
-    "expiry": {
-      "label": "Expiration date:",
-      "type": "date",
-      "required": true,
-      "input-mode": "date"
-    },
-    "serialNumbers": {
-      "label": "Serial Numbers:",
-      "placeholder": "Insert serial numbers (comma separated)...",
-      "type": "text",
-      "required": true,
-      "input-mode": "text"
-    },
-    "buttons": {
-      "create-batch": "Create",
-      "cancel": "Cancel"
-    },
-    "confirm": {
-      "message": "Please confirm Batch creation",
+    "create": {
+      "title": "Create a Batch",
+      "batchNumber": {
+        "label": "BatchNumber:",
+        "placeholder": "Insert batch number...",
+        "type": "text",
+        "required": true,
+        "input-mode": "text",
+        "minlength": 4
+      },
+      "gtin": {
+        "label": "Product Gtin:",
+        "placeholder": "Insert product gtin...",
+        "type": "number",
+        "required": true,
+        "input-mode": "number",
+        "minlength": 12,
+        "maxlength": 12,
+        "max": 999999999999
+      },
+      "expiry": {
+        "label": "Expiration date:",
+        "type": "date",
+        "required": true,
+        "input-mode": "date"
+      },
+      "serialNumbers": {
+        "label": "Serial Numbers:",
+        "placeholder": "Insert serial numbers (comma separated)...",
+        "type": "text",
+        "required": true,
+        "input-mode": "text"
+      },
       "buttons": {
-        "ok": "Confirm",
+        "create-batch": "Create",
         "cancel": "Cancel"
+      },
+      "confirm": {
+        "message": "Please confirm Batch creation",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
       }
     },
+    "manage": {
+      "title": "Manage Batch"
+    },
+    "back": "Back to Product",
     "error": {
       "bind": "Could not bind Product to Batch",
-      "invalid": "Invalid Batch: ",
+      "invalid": "Invalid Batch:\n",
       "error": "Could not create new Batch: "
     }
   },
@@ -215,8 +221,9 @@
         "clear": "Clear"
       },
       "error": {
-        "stock": "Could not retrieve updated Stock:\n{0}",
-        "invalid": "Invalid Shipment:\n{0}",
+        "stock": "Not enough stock:\n",
+        "bind": "Could not bind participant to shipment",
+        "invalid": "Invalid Shipment:\n",
         "error": "Could not create new Shipment: "
       }
     },
@@ -233,7 +240,7 @@
       "success": "Shipment Successfully updated",
       "error": {
         "bind": "Could not bind participant to shipment",
-        "invalid": "Invalid Shipment: ",
+        "invalid": "Invalid Shipment:\n{0}",
         "error": "Could not update Shipment: "
       }
     },

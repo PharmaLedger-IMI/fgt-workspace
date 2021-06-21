@@ -310,7 +310,7 @@ const LineStockManager = class {
         button: !!orderLine.confirmed && available < orderLine.quantity ? "cancel" : "confirm"
       };
     };
-    return (h("managed-orderline-stock-chip", Object.assign({ onClick: () => self.selectLine(orderLine.gtin), gtin: orderLine.gtin, quantity: orderLine.quantity, mode: "detail", button: "cancel", available: available || undefined }, getButton())));
+    return (h("managed-orderline-stock-chip", Object.assign({ onClick: () => self.selectLine(orderLine.gtin), gtin: orderLine.gtin, quantity: orderLine.quantity, mode: "detail", button: getButton(), available: available || undefined }, getButton())));
   }
   getOrderLines() {
     const self = this;

@@ -428,7 +428,7 @@ export class ManagedOrder implements CreateManageView{
                           enable-actions={true}
 
                           onSelectEvent={(evt) => this.selectOrderLine(evt)}
-
+                          single-line={false}
                           lines-string={this.orderLinesString}
                           stock-string={this.stockString}
                           no-stock-string={this.noStockString}
@@ -458,6 +458,7 @@ export class ManagedOrder implements CreateManageView{
                           show-stock={this.isCreate()}
                           enable-action={this.getType() === ORDER_TYPE.RECEIVED || this.isCreate()}
 
+                          single-line={false}
                           stock-string={this.stockString}
                           no-stock-string={this.noStockString}
                           select-string={this.selectString}

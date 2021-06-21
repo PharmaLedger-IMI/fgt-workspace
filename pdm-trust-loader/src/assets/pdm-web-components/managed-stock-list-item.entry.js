@@ -81,7 +81,7 @@ const ManagedProductListItem = class {
         return (h("ion-skeleton-text", { animated: true }));
       return self.stock.name;
     };
-    return (h("ion-label", { slot: "label", color: "secondary" }, getGtinLabel(), h("span", { class: "ion-padding-start" }, getNameLabel()), h("span", { class: "ion-padding-start" }, getQuantityLabel())));
+    return (h("ion-label", { slot: "label", color: "secondary" }, getGtinLabel(), h("span", { class: "ion-padding-start" }, h("ion-badge", null, getQuantityLabel())), h("span", { class: "ion-padding-start" }, getNameLabel())));
   }
   addBatches() {
     if (!this.stock || !this.batches)

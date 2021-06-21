@@ -62,7 +62,7 @@ export default class BatchController extends LocalizedController {
     async _handleCreateBatch(batch) {
         let self = this;
         if (batch.validate())
-            return this.showErrorToast(this.translate(`create.error.invalid`));
+            return this.showErrorToast(this.translate(`error.invalid`));
 
         const alert = await self.showConfirm('create.confirm');
 
@@ -83,10 +83,10 @@ export default class BatchController extends LocalizedController {
 
         self.productmanager.getOne(gtin, (err, product) => {
             if (err)
-                return sendError(this.translate(`create.error.bind`));
+                return sendError(this.translate(`error.bind`));
             self.batchManager.create(product, batch, async (err, keySSI, dbPath) => {
                 if (err)
-                    return sendError(self.translate('create.error.error'), err);
+                    return sendError(self.translate('error.error'), err);
                 self.showToast(self.translate('create.success'));
                 self.model.gtinBatch = `${self.model.gtinBatch}-${batch.batchNumber}`;
                 await loader.dismiss();

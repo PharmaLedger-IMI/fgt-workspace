@@ -117,8 +117,12 @@ export class ManagedProductListItem {
     return(
       <ion-label slot="label" color="secondary">
         {getGtinLabel()}
+        <span class="ion-padding-start">
+          <ion-badge>
+            {getQuantityLabel()}
+          </ion-badge>
+        </span>
         <span class="ion-padding-start">{getNameLabel()}</span>
-        <span class="ion-padding-start">{getQuantityLabel()}</span>
       </ion-label>)
   }
 

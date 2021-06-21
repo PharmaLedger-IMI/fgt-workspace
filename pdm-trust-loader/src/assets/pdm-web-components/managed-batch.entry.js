@@ -120,7 +120,7 @@ const ManagedBatch = class {
       return;
     return (h("pdm-item-organizer", { "component-name": "generic-chip", "component-props": JSON.stringify(this.serialsNumbers.map(s => ({
         "chip-label": s
-      }))), "id-prop": "chip-label", "is-ion-item": false, "display-count": 25, onSelectEvent: (evt) => {
+      }))), "id-prop": "chip-label", "is-ion-item": false, "display-count": 25, "single-line": false, onSelectEvent: (evt) => {
         evt.preventDefault();
         evt.stopImmediatePropagation();
         console.log(`Selected ${evt.detail}`);

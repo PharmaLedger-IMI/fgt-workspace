@@ -56,7 +56,7 @@ export default class ProductController extends LocalizedController {
     async _handleCreateProduct(product) {
         let self = this;
         if (product.validate())
-            return this.showErrorToast(this.translate(`create.error.invalid`));
+            return this.showErrorToast(this.translate(`error.invalid`));
 
         const alert = await self.showConfirm('create.confirm');
 
@@ -75,8 +75,8 @@ export default class ProductController extends LocalizedController {
 
         self.productManager.create(product, async (err, keySSI, dbPath) => {
             if (err)
-                return sendError(`Could not create Product ${JSON.stringify(product, undefined, 2)}`, err);
-            self.showToast(`Product ${product.name} with gtin ${product.gtin} has been created`);
+                return sendError(self.translate('error.error', err));
+            self.showToast('create.success');
             self.model.gtinRef = product.gtin;
             await loader.dismiss();
         });
