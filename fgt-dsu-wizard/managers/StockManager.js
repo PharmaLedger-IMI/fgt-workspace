@@ -83,10 +83,14 @@ class StockManager extends Manager{
         if (batch.length === 0)
             return callback();
 
-        const gtin = product.gtin;
+        const gtin = product.gtin || product;
 
         self.getOne(gtin, true, (err, stock) => {
             if (err){
+                if (batch.quantity < 0)
+                    return callback(`Trying to reduce from an unexisting stock`);
+                if (typeof product === 'string')
+                    return callback(`Must provide a product when adding to stock`)
                 const newStock = new Stock(product);
                 newStock.batches = [batch];
                 return self.create(gtin, newStock, callback);
@@ -116,8 +120,8 @@ class StockManager extends Manager{
         });
     }
 
-    manageAll(products, batches, callback){
-        functionCallIterator(this.manage.bind(this), products, batches, callback);
+    manageAll(product, batches, callback){
+        functionCallIterator(this.manage.bind(this), product, batches, callback);
     }
 
     /**
@@ -158,7 +162,7 @@ class StockManager extends Manager{
         self.getRecord(gtin, (err, stock) => {
             if (err)
                 return self._err(`Could not load record with key ${gtin} on table ${self._getTableName()}`, err, callback);
-            callback(undefined, stock);
+            callback(undefined, new Stock(stock));
         });
     }
 
