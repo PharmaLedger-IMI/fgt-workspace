@@ -169,6 +169,13 @@ SOFTWARE.</p>
 <h4>Concrete SSApp Architecture</h4>
 <p>SSApps built under the PDM Architecture present the following structure:</p>
 <p><a href="resources/drawings/finishedGoodsTraceabilityDSUTypes-BaseSSAppArchitecture.png">Current SSApp Architecture</a></p>
+<p>Please note the following elements:</p>
+<ul>
+<li>Id DSU: Holds some the registration information (the public parts);</li>
+<li>Participant const DSU: A readOnly DSU with a reference to the ID DSU also in readOnly. This allows the key to this DSU to be shared, and its info to be used to generate the specific DID for that participant enabling him ti send/received messages.</li>
+<li>DB DSU: Specific DSU Database implementation DSU, allowing for querying and storing information. Can be replaced by a Classical Database implementation if desired;</li>
+<li>Code: this folder if mounted in read-only and contains the base code for the web application (javascript, html etc)</li>
+</ul>
 <p>That Structure is achieve during the build process of the SSApp, which happens following a registration.</p>
 <p>By registering, you are deterministically generating a KeySSI from the provided registrations details,
 and using it to anchor a new DSU to the blockchain, containing all the necessary code to run the application

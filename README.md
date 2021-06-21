@@ -69,6 +69,14 @@ SSApps built under the PDM Architecture present the following structure:
 
 [Current SSApp Architecture](resources/drawings/finishedGoodsTraceabilityDSUTypes-BaseSSAppArchitecture.png)
 
+Please note the following elements:
+
+ - Id DSU: Holds some the registration information (the public parts);
+ - Participant const DSU: A readOnly DSU with a reference to the ID DSU also in readOnly. This allows the key to this DSU to be shared, and its info to be used to generate the specific DID for that participant enabling him ti send/received messages.
+ - DB DSU: Specific DSU Database implementation DSU, allowing for querying and storing information. Can be replaced by a Classical Database implementation if desired;
+ - Code: this folder if mounted in read-only and contains the base code for the web application (javascript, html etc)
+
+
 That Structure is achieve during the build process of the SSApp, which happens following a registration.
 
 By registering, you are deterministically generating a KeySSI from the provided registrations details, 
