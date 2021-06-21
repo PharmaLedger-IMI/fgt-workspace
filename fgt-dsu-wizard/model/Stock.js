@@ -23,11 +23,7 @@ class Stock extends Product{
                 if (stock.hasOwnProperty(prop))
                     this[prop] = stock[prop];
         this.status = this.status || StockStatus.AVAILABLE;
-        this.batches = this.batches.map(b => {
-            const batch = new Batch(b);
-            batch.quantity = b.quantity;
-            return batch;
-        });
+        this.batches = this.batches.map(b => new Batch(b));
     }
 
     getQuantity(){

@@ -90,7 +90,7 @@ export class LineStockManager {
   @State() selectedProduct: number = undefined;
 
   private result: any = [];
-  private shipmentLines = {};
+  @State() shipmentLines = {};
 
   async componentWillLoad(){
     if (!this.host.isConnected)
@@ -415,7 +415,7 @@ export class LineStockManager {
                                     gtin={orderLine.gtin}
                                     quantity={orderLine.quantity}
                                     mode="detail"
-                                    button="cancel"
+                                    button={getButton()}
                                     available={available || undefined}
                                     {...getButton()}></managed-orderline-stock-chip>
     )

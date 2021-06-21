@@ -45,71 +45,72 @@
     }
   },
   "product": {
-    "create-title": "Create a Product",
-    "manage-title": "Manage product",
-    "back": "Back to Products",
-    "name": {
-      "label": "Product Name:",
-      "placeholder": "Insert product name...",
-      "type": "text",
-      "required": true,
-      "input-mode": "text",
-      "minlength": 4
-    },
-    "gtin": {
-      "label": "Product Gtin:",
-      "placeholder": "Insert product gtin...",
-      "type": "number",
-      "required": true,
-      "input-mode": "number",
-      "minlength": 12,
-      "maxlength": 12,
-      "max": 999999999999
-    },
-    "manufName": {
-      "label": "Manufacturer Id:",
-      "type": "text",
-      "required": true,
-      "disabled": true,
-      "input-mode": "text",
-      "minlength": 4
-    },
-    "description": {
-      "label": "Product Description:",
-      "placeholder": "Insert product description...",
-      "type": "text",
-      "required": true,
-      "input-mode": "text",
-      "value": "This is a description...",
-      "minlength": 10
-    },
-    "buttons": {
-      "create-product": "Add Product",
-      "cancel": "Cancel"
-    },
-    "confirm": {
-      "message": "Please confirm Product creation",
-      "buttons": {
-        "ok": "Confirm",
-        "cancel": "Cancel"
+    "create": {
+      "title": "Create a Product",
+      "name": {
+        "label": "Product Name:",
+        "placeholder": "Insert product name...",
+        "type": "text",
+        "required": true,
+        "input-mode": "text",
+        "minlength": 4
+      },
+      "gtin": {
+        "label": "Product Gtin:",
+        "placeholder": "Insert product gtin...",
+        "type": "number",
+        "required": true,
+        "input-mode": "number",
+        "minlength": 12,
+        "maxlength": 12,
+        "max": 999999999999
+      },
+      "manufName": {
+        "label": "Manufacturer Id:",
+        "type": "text",
+        "required": true,
+        "disabled": true,
+        "input-mode": "text",
+        "minlength": 4
+      },
+      "description": {
+        "label": "Product Description:",
+        "placeholder": "Insert product description...",
+        "type": "text",
+        "required": true,
+        "input-mode": "text",
+        "value": "This is a description...",
+        "minlength": 10
+      },
+      "confirm": {
+        "message": "Please confirm Product creation",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
       }
     },
+    "manage": {
+      "title": "Manage product",
+      "batches": {
+        "title": "Manage Batches",
+        "buttons": {
+          "add-batch": {
+            "label": "Add Batch",
+            "icon": "add-circle"
+          }
+        },
+        "errors": {
+          "list-error": "Could not list batches"
+        }
+      }
+    },
+    "back": "Back to Products",
+    "scan": "Scan Product",
     "error": {
       "bind": "Could not bind participant to Product",
       "invalid": "Invalid Product: ",
       "error": "Could not create new Product: "
-    },
-    "batches": {
-      "title": "Manage Batches",
-      "buttons": {
-        "add-batch": {
-          "label": "Add Batch",
-          "icon": "add-circle"
-        }
-      },
-      "errors": {
-        "list-error": "Could not list batches"
-      }
     }
   },
   "batches": {
@@ -214,7 +215,7 @@
         "clear": "Clear"
       },
       "error": {
-        "bind": "Could not bind participant to shipment",
+        "stock": "Could not retrieve updated Stock:\n{0}",
         "invalid": "Invalid Shipment:\n{0}",
         "error": "Could not create new Shipment: "
       }

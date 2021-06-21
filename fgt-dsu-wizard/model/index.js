@@ -2,9 +2,6 @@
  * Definition of Model Objects
  * @namespace Model
  */
-
-const {generateProductName, generateGtin, validateGtin, calculateGtinCheckSum, generateBatchNumber, generateRandomInt, genDate} = require('../../bin/environment/utils');
-
 module.exports = {
     Order: require('./Order'),
     OrderStatus: require('./OrderStatus'),
@@ -26,13 +23,5 @@ module.exports = {
     ROLE: require('./DirectoryEntry').ROLE,
     ShipmentCode: require('./ShipmentCode'),
     TrackingCode: require('./TrackingCode'),
-    utils: {
-        generateProductName,
-        generateGtin,
-        validateGtin,
-        calculateGtinCheckSum,
-        generateBatchNumber,
-        generateRandomInt,
-        genDate,
-    }
+    utils: require('./utils')
 }

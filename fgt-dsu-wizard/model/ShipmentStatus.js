@@ -1,7 +1,7 @@
 
 const OrderStatus = require('./OrderStatus');
 /**
- * ShipmentStatus
+ * @enum ShipmentStatus
  * @memberOf Model
  */
 const ShipmentStatus = {

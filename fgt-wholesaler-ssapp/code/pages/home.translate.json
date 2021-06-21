@@ -172,6 +172,7 @@
     },
     "manage": {
       "title": "Manage Order",
+      "status": "Order Status:",
       "confirm": {
         "message": "Please confirm Order update",
         "buttons": {
