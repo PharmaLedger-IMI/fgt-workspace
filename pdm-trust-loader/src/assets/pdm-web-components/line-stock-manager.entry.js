@@ -367,7 +367,7 @@ const LineStockManager = class {
           "button": self.enableActions ? "cancel" : undefined,
           "loader-type": SUPPORTED_LOADERS.bubblingSmall
         };
-      })), "id-prop": "gtin", "is-ion-item": "false", "single-line": false, orientation: "start", "display-count": "25", onSelectEvent: (evt) => {
+      })), "id-prop": "gtin", "is-ion-item": "false", "single-line": "false", orientation: "start", "display-count": "25", onSelectEvent: (evt) => {
         evt.preventDefault();
         evt.stopImmediatePropagation();
         self.selectLine(evt.detail);

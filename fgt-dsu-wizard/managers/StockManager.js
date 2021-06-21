@@ -121,7 +121,22 @@ class StockManager extends Manager{
     }
 
     manageAll(product, batches, callback){
-        functionCallIterator(this.manage.bind(this), product, batches, callback);
+        const self = this;
+        const iterator = function(product){
+            return function(batches, callback){
+                return self.manage(product, batches, callback);
+            }
+        }
+
+        functionCallIterator(iterator(product).bind(this), ['batchNumber'], batches, (err, results) => {
+            if (err)
+                return self._err(`Could not perform manage all on Stock`, err, callback);
+            results = Object.keys(results).reduce((accum, key) => {
+                accum[key] = results[key][0];
+                return accum;
+            }, {})
+            callback(undefined, results);
+        });
     }
 
     /**

@@ -28,6 +28,7 @@ class IssuedShipmentManager extends ShipmentManager {
     constructor(participantManager, callback) {
         super(participantManager, DB.issuedShipments, ['requesterId'], callback);
         this.participantManager = participantManager;
+        this.stockManager = participantManager.stockManager;
     }
 
     /**
@@ -98,7 +99,7 @@ class IssuedShipmentManager extends ShipmentManager {
             const receivedOrderManager = getReceivedOrderManager(self.participantManager);
                 const receivedOrderKey = receivedOrderManager._genCompostKey(shipment.requesterId, orderId);
 
-            receivedOrderManager.getOne(receivedOrderKey, (err, orderSSI) => {
+            receivedOrderManager.getOne(receivedOrderKey, false, (err, orderSSI) => {
                 if (err)
                     return self._err(`Could not retrieve received order ${orderId}`, err, callback);
                 self.shipmentService.create(shipment, orderSSI, (err, keySSI, shipmentLinesSSIs) => {
@@ -144,6 +145,7 @@ class IssuedShipmentManager extends ShipmentManager {
                 batchNumber: sl.batch,
                 quantity: (-1) * sl.quantity
             }))
+            return accum;
         }, {});
 
 

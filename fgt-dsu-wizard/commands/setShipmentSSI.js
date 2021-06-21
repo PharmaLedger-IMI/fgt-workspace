@@ -17,7 +17,7 @@ function createShipmentSSI(data, domain) {
         hint = {};
         hint[openDSU.constants.BRICKS_DOMAIN_KEY] = [domain, data[openDSU.constants.BRICKS_DOMAIN_KEY]].join('.');
     }
-    return keyssiSpace.createArraySSI(domain, data.data, 'v0', hint ? JSON.stringify(hint) : undefined);
+    return keyssiSpace.createTemplateSeedSSI(domain, data.data, 'v0', hint ? JSON.stringify(hint) : undefined);
 }
 
 /**

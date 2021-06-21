@@ -180,30 +180,47 @@ const _err = function(msg, err, callback){
 /**
  * Utll function that calls the fame function iteratively wit the next arguments (destructive)
  * @param func
+ * @param {string[]} keys
  * @param args
  * @memberOf Utils
  */
-const functionCallIterator = function(func, ...args){
+const functionCallIterator = function(func, keys, ...args){
 	if (!args || args.length < 1)
 		throw new Error("Needs at least a callback");
+	const callback = args.pop();
+
 	args.forEach(a => {
 		if (!Array.isArray(a))
 			throw new Error("arguments need to be arrays");
-	})
-	const callback = args.pop();
+	});
 
-	const result = []
+	if (!keys || keys.length !== args.length)
+		throw new Error("Keys dont match args");
+
+	const result = {}
+
+	const updateResult = function(callArgs, ...res){
+		let scope = result;
+		callArgs.forEach((ca, i) => {
+			scope[ca[keys[i]]] = scope[ca[keys[i]]] || (i === callArgs.length - 1 ? res : {});
+			scope = scope[ca[keys[i]]];
+		});
+	}
 
 	const iterator = function(...argz){
 		const callback = argz.pop();
 		const callArgs = argz.map(a => a.shift()).filter(a => !!a);
 
-		if (callArgs.length !== argz.length)
-			callback()
-		callArgs.push((err) => err ? callback(err) : iterator(...argz, callback))
+		if (callArgs.length !== argz.length || callArgs.every(ca => Array.isArray(ca) && !ca.length))
+			return callback();
 
 		try{
-			result.push(func(...callArgs));
+			func(...callArgs, (err, ...results) => {
+				if (err)
+					return callback(err);
+				updateResult(callArgs, results);
+				iterator(argz, callback);
+			});
 		} catch(e){
 			return callback(e);
 		}

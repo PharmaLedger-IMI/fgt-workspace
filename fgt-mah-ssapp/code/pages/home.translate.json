@@ -191,16 +191,13 @@
   },
   "receivedOrders": {
     "title": "Received Orders",
-    "numberHeader": "ID",
-    "orderingPartnerHeader": "Issued By",
-    "supplyingPartnerHeader": "Issued To",
     "none": "No orders issued..."
   },
   "issuedShipments": {
-    "title": "IssuedShipments",
-    "numberHeader": "ID",
-    "orderingPartnerHeader": "Issued By",
-    "supplyingPartnerHeader": "Issued To",
+    "title": "Issued Shipments",
+    "buttons": {
+      "new-issued-shipment": "Create Shipment"
+    },
     "none": "No shipments issued..."
   },
   "shipment": {
