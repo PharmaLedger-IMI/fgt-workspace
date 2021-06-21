@@ -6,6 +6,7 @@ class ShipmentLine{
     gtin;
     batch;
     quantity;
+    serialNumbers;
     senderId;
     requesterId;
     status;
@@ -20,6 +21,17 @@ class ShipmentLine{
             for (let prop in line)
                 if (line.hasOwnProperty(prop))
                     this[prop] = line[prop];
+
+
+        if (this.serialNumbers && this.serialNumbers.length)
+            if (this.quantity !== this.serialNumbers.length)
+                this.quantity = this.serialNumbers.length;
+    }
+
+    getQuantity(){
+        return this.serialNumbers && this.serialNumbers.length
+            ? this.serialNumbers.length
+            : this.quantity;
     }
 
     /**

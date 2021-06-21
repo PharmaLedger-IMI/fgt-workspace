@@ -1,5 +1,5 @@
 /**
- * @class OrderStatus
+ * @enum OrderStatus
  * @memberOf Model
  */
 const OrderStatus = {

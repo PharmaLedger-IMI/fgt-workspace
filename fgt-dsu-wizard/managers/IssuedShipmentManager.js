@@ -87,17 +87,12 @@ class IssuedShipmentManager extends ShipmentManager {
      * @param {string} orderId the id to the received order that generates the shipment
      * @param {string|number} [shipmentId] the table key
      * @param {Shipment} shipment
-     * @param {{}} stockInfo
      * @param {function(err, sReadSSI, dbPath)} callback where the dbPath follows a "tableName/shipmentId" template.
      * @override
      */
-    create(orderId, shipment, stockInfo, callback) {
+    create(orderId, shipment, callback) {
         let self = this;
 
-        if (!callback){
-            callback = stockInfo;
-            stockInfo = undefined;
-        }
 
         const createInner = function(chosenSerials, callback){
             if (!callback){
@@ -129,18 +124,30 @@ class IssuedShipmentManager extends ShipmentManager {
             });
         }
 
-        if (!stockInfo)
-            return createInner(callback);
+        const gtinIterator = function(gtins, batchesObj, callback){
+            if (gtins.length !== batchesObj.length)
+                return callback(`gtins dont match batches in size`);
+            const gtin = gtins.shift();
+            if (!gtin)
+                return callback();
+            const batches = batchesObj.shift();
+            self.stockManager.manageAll(gtin,  batches, (err, removed)=> {
+                if (err)
+                    return self._err(`Could not update Stock`, err, callback);
+                createInner(removed, callback);
+            })
+        }
 
-        self.stockManager.manageAll(stockInfo.map(s => s.stock.available.map(a => {
-            a.quantity = - a.getQuantity();
-            a.serialNumbers = [];
-            return a;
-        })), (err, serials)=> {
-            if (err)
-                return self._err(`Could not update Stock`, err, callback);
-           createInner(serials, callback);
-        });
+        const gtins = shipment.shipmentLines.map(sl => sl.gtin);
+        const batchesObj = shipment.shipmentLines.reduce((accum, sl) => {
+            accum[sl.gtin] = sl.batches.map(b => {
+                b.quantity = -b.quantity;
+                return b;
+            } )
+        }, [])
+
+
+
     }
 
     sendMessagesAsync(shipment, shipmentLinesSSIs, aKey){
