@@ -89,7 +89,7 @@ export class LineStockManager {
   @State() stockForProduct = undefined;
   @State() selectedProduct: number = undefined;
 
-  private result: any = [];
+  @State() result: any[] = undefined;
   @State() shipmentLines = {};
 
   async componentWillLoad(){
@@ -173,7 +173,7 @@ export class LineStockManager {
     orderLineIterator(self.lines.slice(), (err, result) => {
       if (err)
         return console.log(err);
-      self.result = result.sort((first, second) => {
+      self.result = [...result.sort((first, second) => {
         if (first.stock === second.stock)
           return 0;
         if (!!first.stock && !second.stock)
@@ -181,7 +181,7 @@ export class LineStockManager {
         if (!!second.stock && !first.stock)
           return -1;
         return first.stock.getQuantity() - second.stock.getQuantity();
-      });
+      })];
     });
   }
 

@@ -76,7 +76,7 @@ export default class ShipmentController extends LocalizedController{
             if (errors)
                 return self.showErrorToast(self.translate(`create.error.invalid`, errors.join('\n')));
 
-            const alert = await self.showConfirm(self.translate('create.confirm', shipment.requesterId));
+            const alert = await self.showConfirm('create.confirm', shipment.requesterId);
 
             const {role} = await alert.onDidDismiss();
 
@@ -102,8 +102,8 @@ export default class ShipmentController extends LocalizedController{
         });
     }
 
-    async showConfirm(action = 'create.confirm'){
-        return super.showConfirm(this.translate(`${action}.message`),
+    async showConfirm(action = 'create.confirm', ...args){
+        return super.showConfirm(this.translate(`${action}.message`, ...args),
             this.translate(`${action}.buttons.ok`),
             this.translate(`${action}.buttons.cancel`));
     }

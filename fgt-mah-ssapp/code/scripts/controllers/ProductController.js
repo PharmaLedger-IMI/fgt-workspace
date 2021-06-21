@@ -76,7 +76,7 @@ export default class ProductController extends LocalizedController {
         self.productManager.create(product, async (err, keySSI, dbPath) => {
             if (err)
                 return sendError(self.translate('error.error', err));
-            self.showToast('create.success');
+            self.showToast(self.translate('create.success'));
             self.model.gtinRef = product.gtin;
             await loader.dismiss();
         });

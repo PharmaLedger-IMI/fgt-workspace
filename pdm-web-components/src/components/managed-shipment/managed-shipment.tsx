@@ -267,7 +267,8 @@ export class ManagedShipment implements CreateManageView{
     evt.stopImmediatePropagation();
     this.sendCreateAction.emit({
       shipment: new Shipment(undefined, this.identity.id, evt.detail.requesterId, this.identity.address, undefined, this.lines.slice()),
-      stock: await this.getStockManagerEl().getResult()
+      stock: await this.getStockManagerEl().getResult(),
+      orderId: this.order ? this.order.orderId : undefined
     });
   }
 

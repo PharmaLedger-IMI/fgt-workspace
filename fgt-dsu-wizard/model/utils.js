@@ -1,6 +1,7 @@
 const {generateProductName, generateGtin, validateGtin, calculateGtinCheckSum, generateBatchNumber, generateRandomInt, genDate} = require('../../bin/environment/utils');
 const ShipmentLine = require('./ShipmentLine');
 const Shipment = require('./Shipment');
+const Batch = require('./Batch');
 
 /**
  * Confirms the existence os the selected batches for each shipmentLine and returns the appropriate object
@@ -75,7 +76,7 @@ const confirmWithStock = function(stockManager, shipment, stockObj, callback){
             result[s.gtin].forEach(b => {
                 accum.push(new ShipmentLine({
                     gtin: s.gtin,
-                    batch: b,
+                    batch: b.batchNumber,
                     quantity: b.getQuantity(),
                     serialNumbers: b.serialNumbers,
                     senderId: shipment.senderId,

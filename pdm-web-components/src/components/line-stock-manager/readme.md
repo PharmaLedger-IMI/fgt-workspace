@@ -46,13 +46,13 @@ Type: `Promise<void>`
 
 
 
-### `getResult() => Promise<any>`
+### `getResult() => Promise<any[]>`
 
 
 
 #### Returns
 
-Type: `Promise<any>`
+Type: `Promise<any[]>`
 
 
 

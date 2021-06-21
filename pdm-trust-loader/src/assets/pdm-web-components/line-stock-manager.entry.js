@@ -47,7 +47,7 @@ const LineStockManager = class {
     this.stockManager = undefined;
     this.stockForProduct = undefined;
     this.selectedProduct = undefined;
-    this.result = [];
+    this.result = undefined;
     this.shipmentLines = {};
   }
   sendError(message, err) {
@@ -127,15 +127,15 @@ const LineStockManager = class {
     orderLineIterator(self.lines.slice(), (err, result) => {
       if (err)
         return console.log(err);
-      self.result = result.sort((first, second) => {
-        if (first.stock === second.stock)
-          return 0;
-        if (!!first.stock && !second.stock)
-          return 1;
-        if (!!second.stock && !first.stock)
-          return -1;
-        return first.stock.getQuantity() - second.stock.getQuantity();
-      });
+      self.result = [...result.sort((first, second) => {
+          if (first.stock === second.stock)
+            return 0;
+          if (!!first.stock && !second.stock)
+            return 1;
+          if (!!second.stock && !first.stock)
+            return -1;
+          return first.stock.getQuantity() - second.stock.getQuantity();
+        })];
     });
   }
   getLoading(type = SUPPORTED_LOADERS.simple) {

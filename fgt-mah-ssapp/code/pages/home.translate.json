@@ -115,8 +115,8 @@
     "scan": "Scan Product",
     "error": {
       "bind": "Could not bind participant to Product",
-      "invalid": "Invalid Product: ",
-      "error": "Could not create new Product: "
+      "invalid": "Invalid Product:\n",
+      "error": "Could not create new Product:\n"
     }
   },
   "batches": {
@@ -165,6 +165,8 @@
         "required": true,
         "input-mode": "text"
       },
+      "loading": "Creating Batch. Please wait...",
+      "success": "Batch Successfully created",
       "buttons": {
         "create-batch": "Create",
         "cancel": "Cancel"
@@ -184,7 +186,7 @@
     "error": {
       "bind": "Could not bind Product to Batch",
       "invalid": "Invalid Batch:\n",
-      "error": "Could not create new Batch: "
+      "error": "Could not create new Batch:\n"
     }
   },
   "receivedOrders": {
