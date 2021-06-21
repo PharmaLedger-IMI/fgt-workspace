@@ -185,6 +185,7 @@ export default class HomeController extends LocalizedController {
     async login(credentials, callback){
         let self = this;
         const loader = self._getLoader(self.translate("success.login"));
+        await loader.present();
         this.loaderService.load(credentials, loader, async (err, wallet) => {
            if (err){
                await loader.dismiss();

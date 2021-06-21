@@ -158,7 +158,7 @@ SOFTWARE.</p>
 <h3>Running</h3>
 <p>To run the application launch your browser (preferably Chrome) in Incognito mode and access the http://localhost:8080 link.</p>
 <p>You will be present with a menu from where you can choose the SSApp you with to launch</p>
-<h1>Modules (Should Be Repos!)</h1>
+<h1>Modules</h1>
 <p><a href="pdm-dsu-toolkit/index.html">PDM-DSU-Toolkit</a></p>
 <p><a href="fgt-dsu-wizard/index.html">FGT DSU Wizard</a></p>
 <p><a href="pdm-web-components/index.html">Web Components</a></p>
@@ -166,10 +166,69 @@ SOFTWARE.</p>
 <p><a href="fgt-wholesaler-ssapp/index.html">Wholesaler Wallet</a></p>
 <p><a href="fgt-mah-ssapp/index.html">Pharmacy Wallet</a></p>
 <h3>Architecture</h3>
-<h3>DSU Types</h3>
-<p><a href="resources/drawings/finishedGoodsTraceabilityDSUTypes-Current.png">DSU Constitution</a></p>
+<h4>Concrete SSApp Architecture</h4>
+<p>SSApps built under the PDM Architecture present the following structure:</p>
 <p><a href="resources/drawings/finishedGoodsTraceabilityDSUTypes-BaseSSAppArchitecture.png">Current SSApp Architecture</a></p>
-<p><a href="resources/drawings/finishedGoodsTraceabilityDSUTypes-WholesalerSSAppArchitecture.png">Proposal for SSApp Architecture - Ex: Wholesaler SSApp</a></p>
+<p>That Structure is achieve during the build process of the SSApp, which happens following a registration.</p>
+<p>By registering, you are deterministically generating a KeySSI from the provided registrations details,
+and using it to anchor a new DSU to the blockchain, containing all the necessary code to run the application
+(by mounting the SSApp template DSU in read-only).</p>
+<p>To achieve this necessary structure, a small scripting language was developed,
+so the build script could be incorporated into the SSApp code, and for the Architecture presented above
+look like:</p>
+<pre class="prettyprint source lang-shell"><code>define $ID$ -$Identity-
+define $ENV$ -$Environment-
+
+with createdsu seed traceability specificstring
+    define $SEED$ getidentifier
+    createfile info $ID$
+endwith
+
+createfile environment.json $ENV$
+mount $SEED$ /id
+
+with $SEED$
+    define $READ$ derive
+endwith
+
+define $SECRETS$ objtoarray $ID$
+
+with createdsu const traceability $SECRETS$
+    mount $READ$ /id
+    define $CONST$ getidentifier
+endwith
+
+mount $CONST$ /participant
+
+with createdsu seed traceability innerdb
+    define $INNER$ getidentifier
+endwith
+
+with createdsu seed traceability fordb
+    mount $INNER$ /data
+    define $DB$ getidentifier
+endwith
+
+mount $DB$ /db
+</code></pre>
+<p>The documentation for the Scripting language and build process can be found in the pdm-dsu-toolkit module.</p>
+<p>Both the Pharmacy and Wholesaler SSApp present the following structure:</p>
+<p><a href="resources/drawings/finishedGoodsTraceabilityDSUTypes-WholesalerSSAppArchitecture.png">Ex: Wholesaler SSApp</a></p>
+<p>While the MAH one will have 3 more managers, for Products, Batches and ShipmentLines</p>
+<h3>DSU Types</h3>
+<p>In the link bellow please find the main DSU types currently in use and how they relate to each other</p>
+<p><a href="resources/drawings/finishedGoodsTraceabilityDSUTypes-DSUTypes.png">DSU Constitution</a></p>
+<h3>Traceability</h3>
+<h4>On the Batch Level</h4>
+<p>By always transmitting to the manufacturer of each Product, the shipmentLines on a batch level, and by chaining this information,
+we can, without change to the existing wholesaler processes other than a simple API call, upon the sale/administration
+of a product, recreate the chain of custody back to the manufacturer with a variable degree of confidence,
+depending on how many different shipments of a single gtin/batch combination each participant has received.</p>
+<p>This will also allow the manufacturer to know the stock of his products/batches in each participant.</p>
+<h4>Batch Recall</h4>
+<p>After obtaining the aforementioned traceability on the batch level, the batch Recall feature will be implemented, where
+upon an action by the manufacturer, each participant with any stock of the product/batch will be warned of the recall,
+so they can adapt their processes accordingly.</p>
 <h3>Installation</h3>
 <p>In order to use the workspace, we need to follow a list of steps presented below.</p>
 <p><a href="http://nodejs.org/download/"><img src="https://img.shields.io/node/v/%5Bfgt-workspace%5D.svg?style=flat" alt="Node version"></a></p>

@@ -26,7 +26,7 @@ To run the application launch your browser (preferably Chrome) in Incognito mode
 
 You will be present with a menu from where you can choose the SSApp you with to launch
 
-# Modules (Should Be Repos!)
+# Modules
 
 [PDM-DSU-Toolkit](pdm-dsu-toolkit/index.html)
 
@@ -41,6 +41,8 @@ You will be present with a menu from where you can choose the SSApp you with to 
 [Pharmacy Wallet](fgt-mah-ssapp/index.html)
 
 #include "workdocs/architecture.md"
+
+#include "workdocs/traceability.md"
 
 #include "workdocs/Installation.md"
 

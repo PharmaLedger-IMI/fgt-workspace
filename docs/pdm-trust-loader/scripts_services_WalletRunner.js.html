@@ -243,11 +243,12 @@ function WalletRunner(options) {
         document.addEventListener('ssapp:loading:progress', async (e) => {
             const data = e.detail;
             const progress = data.progress;
-            if (this.spinner)
-                if (progress &lt; 100)
-                    await this.spinner.present();
+            if (this.spinner){
+                console.log(`Loading Progress: ${progress}%...`)
                 if (progress === 100)
                     await this.spinner.dismiss();
+            }
+
         });
     }
 
@@ -271,9 +272,9 @@ function WalletRunner(options) {
             }, 1000);
 
 
-            iframe.onload = () => {
+            iframe.onload = async () => {
                 clearInterval(loadingInterval);
-                this.spinner.removeFromView();
+                await this.spinner.dismiss()();
             };
             document.body.appendChild(iframe);
             

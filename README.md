@@ -47,7 +47,7 @@ To run the application launch your browser (preferably Chrome) in Incognito mode
 
 You will be present with a menu from where you can choose the SSApp you with to launch
 
-# Modules (Should Be Repos!)
+# Modules
 
 [PDM-DSU-Toolkit](pdm-dsu-toolkit/index.html)
 
@@ -63,13 +63,95 @@ You will be present with a menu from where you can choose the SSApp you with to 
 
 ### Architecture
 
-### DSU Types
+#### Concrete SSApp Architecture
 
-[DSU Constitution](resources/drawings/finishedGoodsTraceabilityDSUTypes-Current.png)
+SSApps built under the PDM Architecture present the following structure:
 
 [Current SSApp Architecture](resources/drawings/finishedGoodsTraceabilityDSUTypes-BaseSSAppArchitecture.png)
 
-[Proposal for SSApp Architecture - Ex: Wholesaler SSApp](resources/drawings/finishedGoodsTraceabilityDSUTypes-WholesalerSSAppArchitecture.png)
+That Structure is achieve during the build process of the SSApp, which happens following a registration.
+
+By registering, you are deterministically generating a KeySSI from the provided registrations details, 
+and using it to anchor a new DSU to the blockchain, containing all the necessary code to run the application
+(by mounting the SSApp template DSU in read-only).
+
+To achieve this necessary structure, a small scripting language was developed, 
+so the build script could be incorporated into the SSApp code, and for the Architecture presented above
+look like: 
+
+```shell
+define $ID$ -$Identity-
+define $ENV$ -$Environment-
+
+with createdsu seed traceability specificstring
+    define $SEED$ getidentifier
+    createfile info $ID$
+endwith
+
+createfile environment.json $ENV$
+mount $SEED$ /id
+
+with $SEED$
+    define $READ$ derive
+endwith
+
+define $SECRETS$ objtoarray $ID$
+
+with createdsu const traceability $SECRETS$
+    mount $READ$ /id
+    define $CONST$ getidentifier
+endwith
+
+mount $CONST$ /participant
+
+with createdsu seed traceability innerdb
+    define $INNER$ getidentifier
+endwith
+
+with createdsu seed traceability fordb
+    mount $INNER$ /data
+    define $DB$ getidentifier
+endwith
+
+mount $DB$ /db
+```
+
+The documentation for the Scripting language and build process can be found in the pdm-dsu-toolkit module.
+
+Both the Pharmacy and Wholesaler SSApp present the following structure:
+
+[Ex: Wholesaler SSApp](resources/drawings/finishedGoodsTraceabilityDSUTypes-WholesalerSSAppArchitecture.png)
+
+While the MAH one will have 3 more managers, for Products, Batches and ShipmentLines
+
+### DSU Types
+
+In the link bellow please find the main DSU types currently in use and how they relate to each other
+
+[DSU Constitution](resources/drawings/finishedGoodsTraceabilityDSUTypes-DSUTypes.png)
+
+
+
+
+
+
+
+### Traceability
+
+#### On the Batch Level
+
+By always transmitting to the manufacturer of each Product, the shipmentLines on a batch level, and by chaining this information,
+we can, without change to the existing wholesaler processes other than a simple API call, upon the sale/administration
+of a product, recreate the chain of custody back to the manufacturer with a variable degree of confidence,
+depending on how many different shipments of a single gtin/batch combination each participant has received.
+
+This will also allow the manufacturer to know the stock of his products/batches in each participant.
+
+#### Batch Recall
+
+After obtaining the aforementioned traceability on the batch level, the batch Recall feature will be implemented, where 
+upon an action by the manufacturer, each participant with any stock of the product/batch will be warned of the recall, 
+so they can adapt their processes accordingly.
 
 ### Installation
 

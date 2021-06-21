@@ -8,7 +8,7 @@ const Batch = require('./Batch');
  * for {@link StockManager#manage} method
  * @param {StockManager} stockManager
  * @param {Shipment} shipment
- * @param {[{orderLine: OrderLine, stock: Stock}]} stockObj
+ * @param {{}} stockObj
  * @param {function(err, batches?)} callback
  */
 const confirmWithStock = function(stockManager, shipment, stockObj, callback){
