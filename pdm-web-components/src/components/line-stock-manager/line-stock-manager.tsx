@@ -90,7 +90,7 @@ export class LineStockManager {
   @State() selectedProduct: number = undefined;
 
   private result: any = [];
-  private shipmentLines = {};
+  @State() shipmentLines = {};
 
   async componentWillLoad(){
     if (!this.host.isConnected)
