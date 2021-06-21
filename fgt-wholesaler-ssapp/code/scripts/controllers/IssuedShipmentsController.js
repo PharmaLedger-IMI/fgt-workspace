@@ -11,8 +11,8 @@ export default class IssuedShipmentsController extends LocalizedController {
         super.bindLocale(this, "issuedShipments");
         this.model = this.initializeModel();
         const wizard = require('wizard');
-        this.participantManager = wizard.Managers.getParticipantManager();
-        this.issuedShipmentManager = wizard.Managers.getIssuedShipmentManager(this.participantManager);
+        const participantManager = wizard.Managers.getParticipantManager();
+        this.issuedShipmentManager = wizard.Managers.getIssuedShipmentManager(participantManager);
 
         let self = this;
         // the HomeController takes care of sending refresh events for each tab.
@@ -22,6 +22,11 @@ export default class IssuedShipmentsController extends LocalizedController {
             evt.stopImmediatePropagation();
             self.element.querySelector('pdm-ion-table').refresh()
         }, {capture: true});
+
+        // pressing "NEW" to create a new Issued Order
+        self.onTagClick("new-issued-shipment", () => {
+            self.navigateToTab('tab-shipment');
+        });
     }
 
 }

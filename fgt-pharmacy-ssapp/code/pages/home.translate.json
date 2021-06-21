@@ -66,8 +66,9 @@
         "clear": "Clear"
       },
       "error": {
+        "stock": "Not enough stock:\n",
         "bind": "Could not bind participant to shipment",
-        "invalid": "Invalid Shipment:\n{0}",
+        "invalid": "Invalid Shipment:\n",
         "error": "Could not create new Shipment: "
       }
     },
@@ -84,7 +85,7 @@
       "success": "Shipment Successfully updated",
       "error": {
         "bind": "Could not bind participant to shipment",
-        "invalid": "Invalid Shipment: ",
+        "invalid": "Invalid Shipment:\n{0}",
         "error": "Could not update Shipment: "
       }
     },
@@ -135,6 +136,7 @@
     },
     "manage": {
       "title": "Manage Order",
+      "status": "Order Status:",
       "confirm": {
         "message": "Please confirm Order update",
         "buttons": {

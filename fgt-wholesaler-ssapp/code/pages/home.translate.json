@@ -103,8 +103,9 @@
         "clear": "Clear"
       },
       "error": {
+        "stock": "Not enough stock:\n",
         "bind": "Could not bind participant to shipment",
-        "invalid": "Invalid Shipment: ",
+        "invalid": "Invalid Shipment:\n",
         "error": "Could not create new Shipment: "
       }
     },

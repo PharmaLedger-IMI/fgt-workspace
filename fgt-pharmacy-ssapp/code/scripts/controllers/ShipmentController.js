@@ -1,4 +1,5 @@
 import { LocalizedController, EVENT_REFRESH, EVENT_SSAPP_HAS_LOADED, EVENT_ACTION, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
+const {ShipmentLine, utils} = require('wizard').Model;
 
 export default class ShipmentController extends LocalizedController{
 
@@ -17,6 +18,7 @@ export default class ShipmentController extends LocalizedController{
         const participantManager = wizard.Managers.getParticipantManager();
         this.issuedShipmentManager = wizard.Managers.getIssuedShipmentManager(participantManager);
         this.receivedShipmentManager = wizard.Managers.getReceivedShipmentManager(participantManager);
+        this.stockManager = wizard.Managers.getStockManager(participantManager);
         this.shipmentEl = this.element.querySelector('managed-shipment');
 
         let self = this;
@@ -65,44 +67,44 @@ export default class ShipmentController extends LocalizedController{
      */
     async _handleCreateShipment(shipment, stockInfo, orderId) {
         let self = this;
-        shipment.id = Date.now();
-        shipment.
-        shipment.shipmentLines = shipment.shipmentLines.map(sl => {
-            sl.batches = stockInfo.filter(si => si.orderLine.gtin === sl.gtin)[0].stock.batches;
-            return sl;
-        })
+        shipment.shipmentId = Date.now();
+        shipment.shipFromAddress = self.model.identity.address;
 
-        const errors = shipment.validate();
-        if (errors)
-            return self.showErrorToast(self.translate(`create.error.invalid`, errors.join('\n')));
-
-        const alert = await self.showConfirm(self.translate('create.confirm', shipment.requesterId));
-
-        const {role} = await alert.onDidDismiss();
-
-        if (BUTTON_ROLES.CONFIRM !== role)
-            return console.log(`Shipment creation canceled by clicking ${role}`);
-
-        const loader = self._getLoader(self.translate('create.loading'));
-        await loader.present();
-
-        const sendError = async function(msg){
-            await loader.dismiss();
-            self.showErrorToast(msg);
-        }
-
-        self.issuedShipmentManager.create(orderId, shipment, stockInfo,  async (err, keySSI, dbPath) => {
+        utils.confirmWithStock(self.stockManager, shipment, stockInfo, async (err, confirmedShipment) => {
             if (err)
-                return sendError(self.translate('create.error.error'));
-            self.showToast(self.translate('create.success'));
-            self.model.mode = 'issued';
-            self.model.shipmentRef = `${shipment.requesterId}-${shipment.shipmentId}`;
-            await loader.dismiss();
+                return self.showErrorToast(self.translate(`create.error.stock`, err));
+            const errors = confirmedShipment.validate();
+            if (errors)
+                return self.showErrorToast(self.translate(`create.error.invalid`, errors.join('\n')));
+
+            const alert = await self.showConfirm('create.confirm', shipment.requesterId);
+
+            const {role} = await alert.onDidDismiss();
+
+            if (BUTTON_ROLES.CONFIRM !== role)
+                return console.log(`Shipment creation canceled by clicking ${role}`);
+
+            const loader = self._getLoader(self.translate('create.loading'));
+            await loader.present();
+
+            const sendError = async function(msg){
+                await loader.dismiss();
+                self.showErrorToast(msg);
+            }
+
+            self.issuedShipmentManager.create(orderId, shipment,  async (err, keySSI, dbPath) => {
+                if (err)
+                    return sendError(self.translate('create.error.error'));
+                self.showToast(self.translate('create.success'));
+                self.model.mode = 'issued';
+                self.model.shipmentRef = `${shipment.requesterId}-${shipment.shipmentId}`;
+                await loader.dismiss();
+            });
         });
     }
 
-    async showConfirm(action = 'create.confirm'){
-        return super.showConfirm(this.translate(`${action}.message`),
+    async showConfirm(action = 'create.confirm', ...args){
+        return super.showConfirm(this.translate(`${action}.message`, ...args),
             this.translate(`${action}.buttons.ok`),
             this.translate(`${action}.buttons.cancel`));
     }
