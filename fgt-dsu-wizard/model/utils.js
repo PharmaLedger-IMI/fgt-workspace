@@ -24,7 +24,7 @@ const confirmWithStock = function(stockManager, shipment, stockObj, callback){
         stockManager.getOne(gtin, true, (err, currentStock) => {
             if (err)
                 return callback(`No stock found for product ${gtin}`);
-            const {currentBatches} = currentStock;
+            const currentBatches = currentStock.batches;
 
             let errorMessage = undefined;
 

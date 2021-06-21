@@ -84,6 +84,10 @@
       },
       "loading": "Creating Product. Please wait...",
       "success": "Product Successfully created",
+      "buttons": {
+        "create": "Create Product",
+        "clear": "Clear"
+      },
       "confirm": {
         "message": "Please confirm Product creation",
         "buttons": {
