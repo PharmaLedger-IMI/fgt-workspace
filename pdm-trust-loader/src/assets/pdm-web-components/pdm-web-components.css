@@ -88,6 +88,10 @@ ion-item {
   --background: transparent;
 }
 
+.tabs-inner > ion-item {
+  margin-bottom: 8px;
+}
+
 ion-button {
   --box-shadow: 0;
   --border-radius: 8px;

@@ -26,7 +26,7 @@
             <ion-row class="full-height">
                 <ion-col size="1" class="ion-hide-lg-down">
                     <div data-if="@identified">
-                        <ion-list class="side-menu">
+                        <ion-list class="side-menu ion-margin-top ion-margin-start">
                             <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard"></menu-tab-button>
                             <menu-tab-button icon-name="reader" label="@menu.orders.label" tab="@menu.orders.options"></menu-tab-button>
                             <menu-tab-button icon-name="map" label="@menu.shipments.label" tab="@menu.shipments.options"></menu-tab-button>
@@ -35,7 +35,7 @@
                     </div>
                 </ion-col>
                 <ion-col>
-                    <ion-tabs id="main-content">
+                    <ion-tabs id="main-content" class="ion-padding-horizontal">
                         <ion-tab tab="tab-dashboard">
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <div data-if="@identified">

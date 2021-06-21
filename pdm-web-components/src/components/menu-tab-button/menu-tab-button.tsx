@@ -148,12 +148,12 @@ export class MenuTabButton {
     const tabName = !hasOptions ? this.tab : this.tab.label;
 
     return (
-        <ion-item lines="none" class={`ion-margin-bottom nav-menu-item${!!this.selected ? " tab-selected" : ''}`} button={true} onClick={(evt) => !hasOptions ? this.navigateToTab(tabName) : this.getPopOver(evt, this.tab)}>
+        <ion-item lines="none" class={`menu-btn ion-margin-start nav-menu-item${!!this.selected ? " tab-selected" : ''}`} button={true} onClick={(evt) => !hasOptions ? this.navigateToTab(tabName) : this.getPopOver(evt, this.tab)}>
           <ion-grid>
-            <ion-row class="ion-align-items-center ion-justify-content-center">
+            <ion-row class="ion-align-items-center ion-justify-content-center ion-padding-top">
               {this._getIcon()}
             </ion-row>
-            <ion-row class="ion-align-items-center ion-justify-content-center">
+            <ion-row class="ion-align-items-center ion-justify-content-center ion-padding-bottom">
               <span class="menu-text">
                 <ion-note class="menu-text ion-text-center ion-text-wrap">{this.label}</ion-note>
               </span>
