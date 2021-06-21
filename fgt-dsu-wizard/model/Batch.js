@@ -1,11 +1,12 @@
 const Utils = require("../../pdm-dsu-toolkit/model/Utils");
+const BatchStatus = require('./BatchStatus');
 
 /**
  * @prop {string} batchNumber
  * @prop {Date} expiryDate
  * @prop {string[]} serialNumbers
  * @prop {number} quantity
- * @prop {string} batchStatus
+ * @prop {string} batchStatus {@link BatchStatus}
  * @class Batch
  * @memberOf Model
  */
@@ -32,6 +33,8 @@ class Batch {
         if (this.serialNumbers && this.serialNumbers.length)
             if (this.quantity !== this.serialNumbers.length)
                 this.quantity = this.serialNumbers.length;
+
+        this.batchStatus = this.batchStatus || BatchStatus.COMMISSIONED;
     }
 
     manage(delta, serialization = true){
