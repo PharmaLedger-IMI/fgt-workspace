@@ -415,7 +415,7 @@ export class LineStockManager {
                                     gtin={orderLine.gtin}
                                     quantity={orderLine.quantity}
                                     mode="detail"
-                                    button="cancel"
+                                    button={getButton()}
                                     available={available || undefined}
                                     {...getButton()}></managed-orderline-stock-chip>
     )
