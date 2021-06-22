@@ -123,7 +123,7 @@
 <p>Meant to be integrated into OpenDSU.</p>
 <p>The need to produce DSUs with complicated relations between them as well as the addition of the database API to the
 Open DSU framework, which, on its first run, creates a complicated DSU structure (which can sometimes take a long time
-from a UX perspective) led initially to long waits on webapps, often with frozen UI due to the intense processing happening.</p>
+from a UI/UX perspective) led initially to long waits on webapps, often with frozen UI due to the intense processing happening.</p>
 <p>This created the need for a more powerful, more configurable building process,
 that could adapt to the individual needs of each SSApp</p>
 <p>For that reason this module was refactored, exposing most of the OpenDSU Archive API via simple text commands,
@@ -192,7 +192,26 @@ and without any further inconveniences to the end user.</p>
 <li>-$Environment- : this placeholder will be replaced the the environment file contents from the loader</li>
 </ul>
 <p>Also notice how by using the with command we change the source object to be able to perform actions of them
-and/or extract relevant information and store it in variables for later use.</p></div>
+and/or extract relevant information and store it in variables for later use.</p>
+<p>To be able to achieve this level of control a Command Design Pattern was implemented providing access to the most common
+OpenDSU APIs:</p>
+<ul>
+<li>addFile: <a href="AddFileCommand.html">AddFileCommand</a> - from OpenDSU's Archive API</li>
+<li>addFolder: <a href="AddFolderCommand.html">AddFolderCommand</a> - from OpenDSU's Archive API</li>
+<li>createDSU: <a href="CreateDSUCommand.html">CreateDSUCommand</a> - from OpenDSU's Resolver API</li>
+<li>createFile: <a href="CreateFileCommand.html">CreateFileCommand</a> - from OpenDSU's Archive API</li>
+<li>define: <a href="DefineCommand.html">DefineCommand</a> - functional Command</li>
+<li>delete: <a href="DeleteCommand.html">DeleteCommand</a> - from OpenDSU's Archive API</li>
+<li>derive: <a href="DeriveCommand.html">DeriveCommand</a> - from OpenDSU's KeySSI API</li>
+<li>endWith: <a href="EndWithCommand.html">EndWithCommand</a> - functional Command</li>
+<li>genDB: <a href="GenDBCommand.html">GenDBCommand</a> - functional Command</li>
+<li>genKey: <a href="GenKeyCommand.html">GenKeyCommand</a> - from OpenDSU's KeySSI API</li>
+<li>getIdentifier: <a href="GetIdentifierCommand.html">GetIdentifierCommand</a> - from OpenDSU's Archive|KeySSI API</li>
+<li>mount: <a href="MountCommand.html">MountCommand</a> - from OpenDSU's Archive API</li>
+<li>objToArray: <a href="ObjToArrayCommand.html">ObjToArrayCommand</a> - functional Command</li>
+<li>readFile: <a href="ReadFileCommand.html">ReadFileCommand</a> - from OpenDSU's Archive API</li>
+<li>with: WithCommand - functional Command</li>
+</ul></div>
         
 
         

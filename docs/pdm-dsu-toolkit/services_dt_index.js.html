@@ -116,7 +116,7 @@
  *
  * The need to produce DSUs with complicated relations between them as well as the addition of the database API to the
  * Open DSU framework, which, on its first run, creates a complicated DSU structure (which can sometimes take a long time
- * from a UX perspective) led initially to long waits on webapps, often with frozen UI due to the intense processing happening.
+ * from a UI/UX perspective) led initially to long waits on webapps, often with frozen UI due to the intense processing happening.
  *
  * This created the need for a more powerful, more configurable building process,
  * that could adapt to the individual needs of each SSApp
@@ -197,6 +197,23 @@
  * Also notice how by using the with command we change the source object to be able to perform actions of them
  * and/or extract relevant information and store it in variables for later use.
  *
+ * To be able to achieve this level of control a Command Design Pattern was implemented providing access to the most common
+ * OpenDSU APIs:
+ *  - addFile: {@link AddFileCommand} - from OpenDSU's Archive API
+ *  - addFolder: {@link AddFolderCommand} - from OpenDSU's Archive API
+ *  - createDSU: {@link CreateDSUCommand} - from OpenDSU's Resolver API
+ *  - createFile: {@link CreateFileCommand} - from OpenDSU's Archive API
+ *  - define: {@link DefineCommand} - functional Command
+ *  - delete: {@link DeleteCommand} - from OpenDSU's Archive API
+ *  - derive: {@link DeriveCommand} - from OpenDSU's KeySSI API
+ *  - endWith: {@link EndWithCommand} - functional Command
+ *  - genDB: {@link GenDBCommand} - functional Command
+ *  - genKey: {@link GenKeyCommand} - from OpenDSU's KeySSI API
+ *  - getIdentifier: {@link GetIdentifierCommand} - from OpenDSU's Archive|KeySSI API
+ *  - mount: {@link MountCommand} - from OpenDSU's Archive API
+ *  - objToArray: {@link ObjToArrayCommand} - functional Command
+ *  - readFile: {@link ReadFileCommand} - from OpenDSU's Archive API
+ *  - with: {@link WithCommand} - functional Command
  * @namespace dt
  * @memberOf Services
  */
