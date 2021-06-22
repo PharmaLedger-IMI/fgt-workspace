@@ -1,12 +1,25 @@
+/**
+ * @namespace PopOver
+ * @memberOf Utils
+ */
+
+
 import {WebManager} from "../services/WebManagerService";
 import wizard from '../services/WizardService';
 const {ROLE} = wizard.Model;
 
+
+/**
+ *
+ * @memberOf PopOver
+ */
 const BAR_CODE_POPOVER_ELEMENT = 'bar-code-pop-over';
 
 /**
- * @module Utils
- * @memberOf pdm-web-components
+ * @function defineBarcodePopOverContent
+ * @constructor
+ * @memberOf PopOver
+ * @private
  */
 function defineBarcodePopoverContent(){
   if (!!customElements.get(BAR_CODE_POPOVER_ELEMENT))
@@ -31,6 +44,7 @@ function defineBarcodePopoverContent(){
  * @param {event} [evt] the click event so the popover show in the correct place. if ommited will show in the center
  * @param {{type: string, size: string: scale: string: data: any}} props the properties to pass to the {@link BarcodeGenerator}
  * @return {Promise<HTMLIonPopoverElement>}
+ * @memberOf PopOver
  */
 export async function getBarCodePopOver(props, evt){
   defineBarcodePopoverContent();
@@ -55,8 +69,17 @@ export async function getBarCodePopOver(props, evt){
   return popover;
 }
 
+/**
+ *
+ * @memberOf PopOver
+ */
 const PRODUCT_POPOVER_ELEMENT = "product-pop-over";
 
+/**
+ * @constructor
+ * @memberOf PopOver
+ * @private
+ */
 function defineProductPopOverContent(){
   if (!!customElements.get(PRODUCT_POPOVER_ELEMENT))
     return;
@@ -96,6 +119,7 @@ function defineProductPopOverContent(){
  * @param {event} [evt] the click event so the popover show in the correct place. if ommited will show in the center
  * @param {string[]} products the properties to pass to the {@link BarcodeGenerator}
  * @return {Promise<HTMLIonPopoverElement>}
+ * @memberOf PopOver
  */
 export async function getProductPopOver(evt, products: string[]): Promise<any>{
   defineProductPopOverContent();
@@ -118,6 +142,7 @@ export async function getProductPopOver(evt, products: string[]): Promise<any>{
  * Retrieves all the products from the provided directory manager
  * @param {DirectoryManager} directoryManager
  * @param {function(err, string[])} callback
+ * @memberOf PopOver
  */
 export function getDirectoryProducts(directoryManager: WebManager, callback){
   const options = {
@@ -132,6 +157,7 @@ export function getDirectoryProducts(directoryManager: WebManager, callback){
  * Retrieves all the suppliers from the provided directory manager
  * @param {DirectoryManager} directoryManager
  * @param {function(err, string[])} callback
+ * @memberOf PopOver
  */
 export function getDirectorySuppliers(directoryManager: WebManager, callback){
   const options = {
@@ -147,6 +173,7 @@ export function getDirectorySuppliers(directoryManager: WebManager, callback){
  * Retrieves all the requesters from the provided directory manager
  * @param {DirectoryManager} directoryManager
  * @param {function(err, string[])} callback
+ * @memberOf PopOver
  */
 export function getDirectoryRequesters(directoryManager: WebManager, callback){
   const options = {

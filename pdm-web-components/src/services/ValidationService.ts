@@ -2,10 +2,17 @@ import wizard from './WizardService';
 const {Registry, Validator, Validators} = wizard.Model.Validations.Validators;
 const {INPUT_FIELD_PREFIX} = wizard.Constants
 
+
+/**
+ * @namespace Validations
+ * @memberOf Services
+ */
+
 /**
  * Handles equality validation between fields
  * @class EqualityValidator
  * @extends Validator
+ * @memberOf Validations
  */
 class EqualityValidator extends Validator {
   /**
@@ -34,6 +41,11 @@ class EqualityValidator extends Validator {
 
 Registry.register(EqualityValidator);
 
+/**
+ * Validation service
+ * Provides form validation for the front end
+ * @memberOf Validations
+ */
 export const ValidationService = {
   Registry: Registry,
   Validators: Object.assign({}, Validators, {

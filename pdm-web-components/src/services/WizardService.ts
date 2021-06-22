@@ -1,3 +1,8 @@
+/**
+ * @namespace Wizard
+ * @memberOf Services
+ */
+
 
 let wizardCache;
 
@@ -13,6 +18,10 @@ if (!wizard){
   }
 }
 
+/**
+ * Exposes a limited subset of dsu-wizard's functionality
+ * @memberOf Wizard
+ */
 wizard = {
   Constants: wizardCache.Constants,
     Model: wizardCache.Model,
@@ -22,6 +31,7 @@ wizard = {
 
 /**
  * Gives access the the bundled 'wizard/toolkit' without only one import
- * @module Services.Wizard
+ * @memberOf Wizard
+ * @see wizard
  */
 export default wizard;

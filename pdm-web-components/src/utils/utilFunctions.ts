@@ -1,8 +1,9 @@
+
+
 /**
  *
  * @param str
- * @module Utils
- * @memberOf pdm-web-components
+ * @memberOf Utils
  */
 export function stringToBoolean(str){
   if(typeof str === "boolean"){
@@ -26,7 +27,7 @@ export function stringToBoolean(str){
 }
 
 /**
- * @module Utils
+ * @memberOf Utils
  */
 export const ionBreakpoints = {
   xs: 0,
@@ -39,7 +40,7 @@ export const ionBreakpoints = {
 /**
  *
  * @return {string} the current Ionic BreakPoint
- * @module Utils
+ * @memberOf Utils
  */
 export function calcBreakPoint() {
   if (!window)

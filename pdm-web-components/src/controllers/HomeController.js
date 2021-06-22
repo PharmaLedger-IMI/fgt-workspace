@@ -19,7 +19,7 @@ import {WebManagerService} from '../services/WebManagerService'
  *  - Access to the Messaging API
  *
  * and provides the implementation for navigation and data management in an Ionic Tab Single Page Application Schema
- * @module Controllers
+ * @memberOf Controllers
  * @class HomeController
  * @abstract
  */
@@ -83,7 +83,12 @@ export default class HomeController extends LocalizedController {
         participantManager.setController(this);
     }
 
-    _navigateToTab(props){
+  /**
+   * Handles navigation request events
+   * @param {*} props the props to send to the controllers at the required tab
+   * @private
+   */
+  _navigateToTab(props){
       let self = this;
       const el = self.element.querySelector(`ion-tabs`);
       if (!el){
@@ -94,6 +99,12 @@ export default class HomeController extends LocalizedController {
       el.select(props.tab);
     }
 
+  /**
+   * Updates loading status
+   * @param status
+   * @param progress
+   * @private
+   */
     _updateLoading(status, progress){
       const loader = document.querySelector('pdm-ssapp-loader');
       if (!loader){
@@ -109,11 +120,19 @@ export default class HomeController extends LocalizedController {
         }, {capture: true});
     };
 
-    _concludeLoading(){
+  /**
+   * Signals the SSApp has finished loading
+   * @private
+   */
+  _concludeLoading(){
       this.send(EVENT_SSAPP_HAS_LOADED, {}, {capture: true});
     }
 
-    _testParticipant(){
+  /**
+   * Reads the identity from the DSU
+   * @private
+   */
+  _testParticipant(){
         let self = this;
         self._updateLoading(self.model.loading.booting.status, self.model.loading.booting.progress);
       // Give UI some time to breathe and render stuff (including our animation)

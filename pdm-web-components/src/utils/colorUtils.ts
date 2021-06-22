@@ -1,12 +1,21 @@
 /**
- * @namespace PdmWebComponents
+ * @namespace Color
+ * @memberOf Utils
  */
 
 /**
- *
+ * Default callback color css variable
+ * @memberOf Utils
  */
 export const FALLBACK_COLOR = '--ion-color-primary;'
 
+/**
+ * color grades dates
+ * @param threshold
+ * @param currentVal
+ * @param referenceVal
+ * @memberOf Color
+ */
 export function parseDates (threshold, currentVal, referenceVal){
   const dayDiff = calculateDiffInDays(new Date(currentVal), referenceVal)
   if (dayDiff >= threshold)
@@ -14,6 +23,12 @@ export function parseDates (threshold, currentVal, referenceVal){
   return calculateStep(dayDiff, threshold);
 }
 
+/**
+ * calculates a step
+ * @param currentVal
+ * @param referenceVal
+ * @memberOf Color
+ */
 export function calculateStep(currentVal, referenceVal){
   let colorStep = 100;
   if (currentVal < referenceVal){
@@ -24,6 +39,13 @@ export function calculateStep(currentVal, referenceVal){
   return `--color-step-${colorStep}`;
 }
 
+/**
+ *
+ * @param threshold
+ * @param currentVal
+ * @param referenceVal
+ * @memberOf Color
+ */
 export function getSteppedColor(threshold, currentVal, referenceVal){
   if (referenceVal instanceof Date)
     return parseDates(threshold, currentVal, referenceVal);
@@ -37,6 +59,12 @@ export function getSteppedColor(threshold, currentVal, referenceVal){
   return calculateStep(diff, threshold);
 }
 
+/**
+ *
+ * @param current
+ * @param reference
+ * @memberOf Color
+ */
 export function calculateDiffInDays(current, reference){
   const timeDiff = current.getTime() - reference.getTime();
   return Math.floor(timeDiff/ (1000 * 3600 * 24));

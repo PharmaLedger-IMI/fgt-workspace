@@ -16,9 +16,10 @@ import wizard from '../services/WizardService';
  *          this.model = this.initializeModel();
  *      }
  * </pre>
- * @module Controllers
+ * @memberOf Controllers
  * @class LocalizedController
  * @extends WebcController
+ * @abstract
  */
 export default class LocalizedController extends WebcController {
 

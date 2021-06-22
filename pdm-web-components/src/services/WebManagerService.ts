@@ -4,7 +4,13 @@ const Managers = wizardService.Managers;
 const WebResolverMaxTimeout = 100;
 
 /**
- * @module Services.WebManager
+ * @namespace WebManagers
+ * @memberOf Services
+ */
+
+
+/**
+ * @memberOf WebManager
  * @interface QueryOptions
  */
 export interface QueryOptions {
@@ -14,7 +20,7 @@ export interface QueryOptions {
 }
 
 /**
- * @module Services.WebManager
+ * @memberOf WebManager
  * @interface WebResolver
  */
 export interface WebResolver{
@@ -22,7 +28,7 @@ export interface WebResolver{
 }
 
 /**
- * @module Services.WebManager
+ * @memberOf WebManager
  * @interface WebManager
  */
 export interface WebManager extends WebResolver{
@@ -31,7 +37,7 @@ export interface WebManager extends WebResolver{
 }
 
 /**
- * @module Services.WebManager
+ * @memberOf WebManager
  */
 const bindAsControllerManager = function(manager): WebManager{
   return new class implements WebManager {
@@ -44,7 +50,7 @@ const bindAsControllerManager = function(manager): WebManager{
 /**
  * Hack so many simultaneous requests to generate a Key and load its DSU dont freeze the UI
  * @param resolver
- * @module Services.WebManager
+ * @memberOf WebManager
  */
 const delayRequest = function(resolver: WebResolver){
   return function(...args){
@@ -55,7 +61,7 @@ const delayRequest = function(resolver: WebResolver){
 }
 
 /**
- * @module Services.WebManager
+ * @memberOf WebManager
  */
 const bindAsControllerResolver = function(resolver): WebManager{
   return new class implements WebManager {
@@ -72,7 +78,7 @@ const bindAsControllerResolver = function(resolver): WebManager{
 let webManagerRepository = undefined;
 
 /**
- * @module Services.WebManager
+ * @memberOf WebManager
  */
 const registerManagerRepository = function(repo){
   webManagerRepository = {
@@ -82,7 +88,7 @@ const registerManagerRepository = function(repo){
 }
 
 /**
- * @module Services.WebManager
+ * @memberOf WebManager
  */
 const changeToResolver = function(name){
   if (name.indexOf("Manager") === -1)
@@ -94,7 +100,9 @@ const changeToResolver = function(name){
  * Tries to get the Previously Instantiated WebManager by Name.
  * If unable falls back to the matching WebSResolver
  * @param managerName
- * @module Services.WebManager
+ * @function getWebmanager
+ * @constructor
+ * @memberOf WebManager
  */
 const getWebManager = async function(managerName: string): Promise<WebManager> {
   try{
@@ -111,7 +119,9 @@ const getWebManager = async function(managerName: string): Promise<WebManager> {
 }
 
 /**
- * @module Services.WebManager
+ * @function getWebResolver
+ * @constructor
+ * @memberOf WebManager
  */
 const getWebResolver = async function(resolverName: string): Promise<WebManager>{
   try{
@@ -128,6 +138,10 @@ const getWebResolver = async function(resolverName: string): Promise<WebManager>
   }
 }
 
+/**
+ * WebManagerService: provides access tho a limited API of the Managers class for frontend use
+ * @memberOf WebManager
+ */
 export const WebManagerService = {
   registerRepository: registerManagerRepository,
   getWebManager: getWebManager
