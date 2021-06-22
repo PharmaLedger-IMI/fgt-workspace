@@ -2,7 +2,7 @@ import { r as registerInstance, e as createEvent, h, f as Host, g as getElement 
 import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-a462b2bc.js';
 import { W as WebManagerService } from './WebManagerService-e3623754.js';
-import { a as getDirectoryProducts, d as getDirectoryRequesters, c as getProductPopOver } from './popOverUtils-2abe6b65.js';
+import { a as getDirectoryProducts, c as getDirectoryRequesters, d as getProductPopOver } from './popOverUtils-b2c08a50.js';
 
 const managedShipmentCss = ":host{display:block}managed-shipment{--color:var(--ion-color-primary-contrast)}managed-shipment ion-item ion-grid{width:100%}ion-card-title{color:var(--ion-color-primary)}ion-card-subtitle{color:var(--ion-color-secondary)}ion-item.selected{--color:var(--ion-color-success)}ion-item.unnecessary{--color:red}";
 
@@ -234,8 +234,8 @@ const ManagedShipment = class {
     };
     const getOrderReference = function () {
       const getInput = function () {
-        if (self.getType() === SHIPMENT_TYPE.ISSUED && self.order && isCreate) {
-          return (h("ion-input", { name: "input-orderId", disabled: true, value: self.getType() === SHIPMENT_TYPE.ISSUED ? self.order.orderId || self.shipment.orderId : 'TODO' }));
+        if ((self.order && isCreate) || self.shipment) {
+          return (h("ion-input", { name: "input-orderId", disabled: true, value: self.order ? self.order.orderId : (self.shipment ? self.shipment.orderId : '-') }));
         }
         else {
           h("ion-skeleton-text", { animated: true });

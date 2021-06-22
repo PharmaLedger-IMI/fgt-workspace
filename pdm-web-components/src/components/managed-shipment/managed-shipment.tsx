@@ -313,10 +313,10 @@ export class ManagedShipment implements CreateManageView{
 
     const getOrderReference = function(){
       const getInput = function () {
-        if (self.getType() === SHIPMENT_TYPE.ISSUED && self.order && isCreate) {
+        if ((self.order && isCreate) || self.shipment) {
           return (
             <ion-input name="input-orderId" disabled={true}
-                       value={self.getType() === SHIPMENT_TYPE.ISSUED ? self.order.orderId || self.shipment.orderId : 'TODO'}></ion-input>
+                       value={self.order ? self.order.orderId : (self.shipment ? self.shipment.orderId : '-')}></ion-input>
           )
         } else {
           <ion-skeleton-text animated></ion-skeleton-text>;

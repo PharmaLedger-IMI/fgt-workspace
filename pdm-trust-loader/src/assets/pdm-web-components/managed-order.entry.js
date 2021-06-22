@@ -2,7 +2,7 @@ import { r as registerInstance, e as createEvent, h, f as Host, g as getElement 
 import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-a462b2bc.js';
 import { W as WebManagerService } from './WebManagerService-e3623754.js';
-import { a as getDirectoryProducts, b as getDirectorySuppliers, c as getProductPopOver } from './popOverUtils-2abe6b65.js';
+import { a as getDirectoryProducts, b as getDirectorySuppliers, c as getDirectoryRequesters, d as getProductPopOver } from './popOverUtils-b2c08a50.js';
 
 const managedOrderCss = ":host{display:block}managed-order{--color:var(--ion-color-primary-contrast)}managed-order ion-item ion-grid{width:100%}.product-select .select-interface-option{color:var(--ion-color-secondary)}ion-select.supplier-select::part(placeholder){color:var(--ion-color-secondary)}ion-select.supplier-select::part(text){color:var(--ion-color-primary)}ion-select.supplier-select::part(icon){color:var(--ion-color-primary)}ion-card-title{color:var(--ion-color-primary)}ion-card-subtitle{color:var(--ion-color-secondary)}ion-item.selected{--color:var(--ion-color-success)}ion-item.unnecessary{--color:red}";
 
@@ -62,6 +62,7 @@ const ManagedOrder = class {
     this.directoryManager = undefined;
     this.suppliers = undefined;
     this.products = undefined;
+    this.requesters = undefined;
     this.issuedOrderManager = undefined;
     this.receivedOrderManager = undefined;
     this.lines = undefined;
@@ -137,8 +138,16 @@ const ManagedOrder = class {
         self.suppliers = records;
       });
     };
+    const getDirectoryRequestersAsync = function () {
+      getDirectoryRequesters(self.directoryManager, (err, records) => {
+        if (err)
+          return self.sendError(`Could not list requesters from directory`, err);
+        self.requesters = records;
+      });
+    };
     getDirectoryProductsAsync();
     getDirectorySuppliersAsync();
+    getDirectoryRequestersAsync();
   }
   onInputChange(evt) {
     evt.preventDefault();
@@ -223,8 +232,9 @@ const ManagedOrder = class {
       };
       const getFrom = function () {
         const result = [];
-        if (self.suppliers) {
-          result.push(h("ion-select", { name: "input-senderId", interface: "popover", interfaceOptions: options, class: "supplier-select", placeholder: self.fromPlaceholderString, disabled: !isCreate, value: !isCreate ? self.participantId : '' }, self.suppliers.map(s => (h("ion-select-option", { value: s }, s)))));
+        const directory = self.getType() === ORDER_TYPE.ISSUED ? self.suppliers : self.requesters;
+        if (directory) {
+          result.push(h("ion-select", { name: "input-senderId", interface: "popover", interfaceOptions: options, class: "supplier-select", placeholder: self.getType() === ORDER_TYPE.ISSUED ? self.fromPlaceholderString : '', disabled: !isCreate, value: !isCreate ? self.participantId : '' }, directory.map(s => (h("ion-select-option", { value: s }, s)))));
         }
         else {
           result.push(h("ion-skeleton-text", { animated: true }));

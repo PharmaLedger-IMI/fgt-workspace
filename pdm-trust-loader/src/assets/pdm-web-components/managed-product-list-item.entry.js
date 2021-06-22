@@ -1,5 +1,5 @@
 import { r as registerInstance, e as createEvent, h, f as Host, g as getElement } from './index-d0e12a29.js';
-import { g as getBarCodePopOver } from './popOverUtils-2abe6b65.js';
+import { g as getBarCodePopOver } from './popOverUtils-b2c08a50.js';
 import { W as WebManagerService } from './WebManagerService-e3623754.js';
 import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-a462b2bc.js';

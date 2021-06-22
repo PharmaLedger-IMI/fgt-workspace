@@ -3,7 +3,7 @@ import {HostElement} from "../../decorators";
 import wizard from '../../services/WizardService';
 import {WebManager, WebManagerService} from "../../services/WebManagerService";
 import CreateManageView from "../create-manage-view-layout/CreateManageView";
-import {getProductPopOver, getDirectoryProducts, getDirectorySuppliers} from "../../utils/popOverUtils";
+import {getProductPopOver, getDirectoryProducts, getDirectorySuppliers, getDirectoryRequesters,} from "../../utils/popOverUtils";
 
 const ORDER_TYPE = {
   ISSUED: "issued",
@@ -116,6 +116,7 @@ export class ManagedOrder implements CreateManageView{
   private directoryManager: WebManager = undefined;
   @State() suppliers?: string[] = undefined;
   @State() products?: string[] = undefined;
+  @State() requesters?: string[] = undefined;
 
   private issuedOrderManager: WebManager = undefined;
   private receivedOrderManager: WebManager = undefined;
@@ -197,8 +198,17 @@ export class ManagedOrder implements CreateManageView{
       });
     }
 
+    const getDirectoryRequestersAsync = function(){
+      getDirectoryRequesters(self.directoryManager, (err, records) => {
+        if (err)
+          return self.sendError(`Could not list requesters from directory`, err);
+        self.requesters = records;
+      });
+    }
+
     getDirectoryProductsAsync();
     getDirectorySuppliersAsync();
+    getDirectoryRequestersAsync();
   }
 
   @Listen('ionChange')
@@ -304,12 +314,14 @@ export class ManagedOrder implements CreateManageView{
 
       const getFrom = function(){
         const result = [];
-        if (self.suppliers){
+        const directory = self.getType() === ORDER_TYPE.ISSUED ? self.suppliers : self.requesters;
+
+        if (directory){
           result.push(
             <ion-select name="input-senderId" interface="popover" interfaceOptions={options}
-                        class="supplier-select" placeholder={self.fromPlaceholderString}
+                        class="supplier-select" placeholder={self.getType() === ORDER_TYPE.ISSUED ? self.fromPlaceholderString : ''}
                         disabled={!isCreate} value={!isCreate ? self.participantId : ''}>
-              {...self.suppliers.map(s => (<ion-select-option value={s}>{s}</ion-select-option>))}
+              {...directory.map(s => (<ion-select-option value={s}>{s}</ion-select-option>))}
             </ion-select>
           )
         } else {
