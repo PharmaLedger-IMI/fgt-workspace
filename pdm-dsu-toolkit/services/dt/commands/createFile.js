@@ -6,8 +6,8 @@ const {_getFS, _err} = require('./utils');
  * (similar to a touch command with added content)
  *
  * @class CreateFileCommand
- * @module Commands
- * @memberOf dt
+ * @extends Command
+ * @memberOf Commands
  */
 class CreateFileCommand extends Command{
     constructor(varStore) {

@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDM&FC's OpenDSU Toolkit Documentation Commands</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">PDM&FC's OpenDSU Toolkit Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/epi-workspace/pdm-dsu-toolkit.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com"
+                        >
+                            Example Application - Finished Goods Traceability
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="dt.module_Commands.html">Commands</a></li><li><a href="module-managers.html">managers</a></li><li><a href="module-pdm-dsu-toolkit.html">pdm-dsu-toolkit</a></li><li><a href="module-services.html">services</a></li></ul><h3>Namespaces</h3><ul><li><a href="Commands.html">Commands</a></li><li><a href="Commands.utils.html">utils</a></li><li><a href="Constants.html">Constants</a></li><li><a href="Managers.html">Managers</a></li><li><a href="Model.html">Model</a></li><li><a href="Model.Utils.html">Utils</a></li><li><a href="Model.Validations.html">Validations</a></li><li><a href="module-pdm-dsu-toolkit-Server.html">Server</a></li><li><a href="Resolvers.html">Resolvers</a></li><li><a href="Services.html">Services</a></li><li><a href="Services.dt.html">dt</a></li><li><a href="Services.Locale.html">Locale</a></li><li><a href="Services.Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="BaseManager.html">BaseManager</a></li><li><a href="Commands.AddFileCommand.html">AddFileCommand</a></li><li><a href="Commands.AddFolderCommand.html">AddFolderCommand</a></li><li><a href="Commands.Command.html">Command</a></li><li><a href="Commands.CreateDSUCommand.html">CreateDSUCommand</a></li><li><a href="Commands.CreateFileCommand.html">CreateFileCommand</a></li><li><a href="Commands.DefineCommand.html">DefineCommand</a></li><li><a href="Commands.DeleteCommand.html">DeleteCommand</a></li><li><a href="Commands.DeriveCommand.html">DeriveCommand</a></li><li><a href="Commands.EndWithCommand.html">EndWithCommand</a></li><li><a href="Commands.GenDBCommand.html">GenDBCommand</a></li><li><a href="Commands.GenKeyCommand.html">GenKeyCommand</a></li><li><a href="Commands.GetIdentifierCommand.html">GetIdentifierCommand</a></li><li><a href="Commands.MountCommand.html">MountCommand</a></li><li><a href="Commands.ObjToArrayCommand.html">ObjToArrayCommand</a></li><li><a href="Commands.ReadFileCommand.html">ReadFileCommand</a></li><li><a href="Commands.WithCommand.html">WithCommand</a></li><li><a href="EmailValidator.html">EmailValidator</a></li><li><a href="Manager.html">Manager</a></li><li><a href="Managers.BaseManager.html">BaseManager</a></li><li><a href="Managers.Manager.html">Manager</a></li><li><a href="Managers.MessageManager.html">MessageManager</a></li><li><a href="Managers.Page.html">Page</a></li><li><a href="MessageManager.Message.html">Message</a></li><li><a href="PatternValidator.html">PatternValidator</a></li><li><a href="Resolver.html">Resolver</a></li><li><a href="Resolvers.Resolver.html">Resolver</a></li><li><a href="Services.DSUService.html">DSUService</a></li><li><a href="TinValidator.html">TinValidator</a></li><li><a href="Validations.EmailValidator.html">EmailValidator</a></li><li><a href="Validations.PatternValidator.html">PatternValidator</a></li><li><a href="Validations.TinValidator.html">TinValidator</a></li><li><a href="Validations.Validator.html">Validator</a></li><li><a href="Validations.ValidatorRegistry.html">ValidatorRegistry</a></li><li><a href="Validator.html">Validator</a></li></ul><h3>Interfaces</h3><ul><li><a href="Validations.Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_loadLocale">_loadLocale</a></li><li><a href="global.html#buildDossier">buildDossier</a></li><li><a href="global.html#buildSSApp">buildSSApp</a></li><li><a href="global.html#buildWallet">buildWallet</a></li><li><a href="global.html#clone">clone</a></li><li><a href="global.html#getByPage">getByPage</a></li><li><a href="global.html#getFile">getFile</a></li><li><a href="global.html#getFolderContentAsJSON">getFolderContentAsJSON</a></li><li><a href="global.html#getInfo">getInfo</a></li><li><a href="global.html#resolver">resolver</a></li><li><a href="global.html#WebComponentService">WebComponentService</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Namespace</p>
+                    <h1>Commands</h1>
+                </header>
+                
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>Commands</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>Defines the strategies for the KeySSI's for each DSU Type</p></div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_index.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_index.js.html">commands/index.js</a>, <a href="commands_index.js.html#line1">line 1</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="Commands.AddFileCommand.html">AddFileCommand</a></dt>
+            <dd><p>Copies a File from disk or from a source DSU when provided</p>
+<p>supports sourceDSU, defaults to fs</p>
+<p>Can run iteratively</p>.</dd>
+        
+            <dt><a href="Commands.AddFolderCommand.html">AddFolderCommand</a></dt>
+            <dd><p>This command copies an entire folder from the filesystem onto the destination DSU
+(as a single brick for efficiency if I'm not mistaken)</p>
+<p>Does not Support sourceDSU (yet)</p>
+<p>Can run iteratively</p>.</dd>
+        
+            <dt><a href="Commands.Command.html">Command</a></dt>
+            <dd><p><strong>Every Command must be registered under the index.js file in the commands folder</strong></p>.</dd>
+        
+            <dt><a href="Commands.CreateDSUCommand.html">CreateDSUCommand</a></dt>
+            <dd><p>creates a new DSU of the provided type and with the provided key gen arguments</p>.</dd>
+        
+            <dt><a href="Commands.CreateFileCommand.html">CreateFileCommand</a></dt>
+            <dd><p>Creates a file with the provided content on the destination DSU
+(similar to a touch command with added content)</p>.</dd>
+        
+            <dt><a href="Commands.DefineCommand.html">DefineCommand</a></dt>
+            <dd><p>Defines a variable that can later be used in the script</p>.</dd>
+        
+            <dt><a href="Commands.DeleteCommand.html">DeleteCommand</a></dt>
+            <dd><p>Deletes everything in the specified path of the DSU</p>.</dd>
+        
+            <dt><a href="Commands.DeriveCommand.html">DeriveCommand</a></dt>
+            <dd><p>Derives the provided keySSI</p>.</dd>
+        
+            <dt><a href="Commands.EndWithCommand.html">EndWithCommand</a></dt>
+            <dd><p>Allows for more complex logic by allowing you to control the output/input for commands
+while keeping the commands readable</p>
+<p>basically sets whatever the result of the with operation into the source portion until it finds the endwith command</p>.</dd>
+        
+            <dt><a href="Commands.GenDBCommand.html">GenDBCommand</a></dt>
+            <dd><p>Generates a DB and returns it's SSI after initialization</p>.</dd>
+        
+            <dt><a href="Commands.GenKeyCommand.html">GenKeyCommand</a></dt>
+            <dd><p>Generates a KeySSI</p>.</dd>
+        
+            <dt><a href="Commands.GetIdentifierCommand.html">GetIdentifierCommand</a></dt>
+            <dd><p>Returns the identifier for the current source object</p>.</dd>
+        
+            <dt><a href="Commands.MountCommand.html">MountCommand</a></dt>
+            <dd><p>Mounts a DSU onto the provided path</p>.</dd>
+        
+            <dt><a href="Commands.ObjToArrayCommand.html">ObjToArrayCommand</a></dt>
+            <dd><p>Util Command to convert objects to and array with their values</p>.</dd>
+        
+            <dt><a href="Commands.ReadFileCommand.html">ReadFileCommand</a></dt>
+            <dd><p>Reads The contents of a file from disk or from a sourceDSU</p>
+<p>supports sourceDSU</p>.</dd>
+        
+            <dt><a href="Commands.WithCommand.html">WithCommand</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Namespaces</h3>
+
+        <dl>
+            <dt><a href="Commands.utils.html">utils</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Members</h1>
+            <div class="members">
+            
+                <div class="member">
+
+<h4 class="name" id="._availableCommands">
+    <a class="href-link" href="#._availableCommands">#</a>
+    
+        
+            <span class='tag'>static</span>
+        
+            <span class='tag'>constant</span>
+        
+    
+    <span class="code-name">
+        _availableCommands
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>List of all available commands to the Dossier Builder
+Without being here, they can't be used</p>.</p>
+
+
+
+<div class="description">
+    <p>List of all available commands to the Dossier Builder
+Without being here, they can't be used</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="services_dt_commands_Registry.js.html" class="button">View Source</a>
+            <span>
+                <a href="services_dt_commands_Registry.js.html">services/dt/commands/Registry.js</a>, <a href="services_dt_commands_Registry.js.html#line6">line 6</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="._getByName">
+        <a class="href-link" href="#._getByName">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                _getByName<span class="signature">(cmdName)</span><span class="type-signature"> &rarr; {<a href="Command.html">Command</a>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>return the Command class by its name</p>.</p>
+    
+    
+    <div class="description">
+        <p>return the Command class by its name</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>cmdName</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="services_dt_commands_Registry.js.html" class="button">View Source</a>
+            <span>
+                <a href="services_dt_commands_Registry.js.html">services/dt/commands/Registry.js</a>, <a href="services_dt_commands_Registry.js.html#line30">line 30</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>the command calls to be instanced</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type"><a href="Command.html">Command</a></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".createParticipantConstSSI">
+        <a class="href-link" href="#.createParticipantConstSSI">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                createParticipantConstSSI<span class="signature">(domain:)</span><span class="type-signature"> &rarr; {SeedSSI}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary">Creates a seedSSI meant to contain participant 'participantConst' data.</p>
+    
+    
+    <div class="description">
+        <p>Creates a seedSSI meant to contain participant 'participantConst' data.
+could be used as an identity</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>participant.</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Participant</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>Must have a valid id property.</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>domain:</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>anchoring domain</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setParticipantConstSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setParticipantConstSSI.js.html">commands/setParticipantConstSSI.js</a>, <a href="commands_setParticipantConstSSI.js.html#line9">line 9</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>(template)</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">SeedSSI</span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".createParticipantSSI">
+        <a class="href-link" href="#.createParticipantSSI">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                createParticipantSSI<span class="signature">(participant, domain:)</span><span class="type-signature"> &rarr; {SeedSSI}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary">Creates a seedSSI meant to contain participant 'participant' data.</p>
+    
+    
+    <div class="description">
+        <p>Creates a seedSSI meant to contain participant 'participant' data.
+could be used as an identity</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>participant</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Participant</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>domain:</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>anchoring domain</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="commands_setParticipantSSI.js.html" class="button">View Source</a>
+            <span>
+                <a href="commands_setParticipantSSI.js.html">commands/setParticipantSSI.js</a>, <a href="commands_setParticipantSSI.js.html#line9">line 9</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>(template)</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">SeedSSI</span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".VarStore">
+        <a class="href-link" href="#.VarStore">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                VarStore<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>A simple variable store</p>.</p>
+    
+    
+    <div class="description">
+        <p>A simple variable store</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="services_dt_commands_VarStore.js.html" class="button">View Source</a>
+            <span>
+                <a href="services_dt_commands_VarStore.js.html">services/dt/commands/VarStore.js</a>, <a href="services_dt_commands_VarStore.js.html#line5">line 5</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

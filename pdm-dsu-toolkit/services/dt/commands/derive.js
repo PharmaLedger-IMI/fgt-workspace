@@ -5,8 +5,8 @@ const { _getKeySSISpace, _err } = require('./utils');
  * Derives the provided keySSI
  *
  * @class DeriveCommand
- * @module Commands
- * @memberOf dt
+ * @extends Command
+ * @memberOf Commands
  */
 class DeriveCommand extends Command{
     constructor(varStore) {

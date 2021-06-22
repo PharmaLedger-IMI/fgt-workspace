@@ -1,7 +1,6 @@
 /**
  * A simple variable store
- * @module Commands
- * @memberOf dt
+ * @memberOf Commands
  */
 const VarStore = function(){
     const _memory = {};

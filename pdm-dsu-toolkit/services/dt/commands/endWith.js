@@ -7,8 +7,8 @@ const Command = require('./Command');
  * basically sets whatever the result of the with operation into the source portion until it finds the endwith command
  *
  * @class EndWithCommand
- * @module Commands
- * @memberOf dt
+ * @extends Command
+ * @memberOf Commands
  */
 class EndWithCommand extends Command{
     constructor(varStore) {

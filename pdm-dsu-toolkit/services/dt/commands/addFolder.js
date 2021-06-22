@@ -10,8 +10,8 @@ const { _err } = require('./utils');
  * Can run iteratively
  *
  * @class AddFolderCommand
- * @module Commands
- * @memberOf dt
+ * @extends Command
+ * @memberOf Commands
  */
 class AddFolderCommand extends Command {
     constructor(varStore, source) {

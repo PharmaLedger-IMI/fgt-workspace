@@ -8,8 +8,7 @@ const { _err } = require('./utils');
  * @param {boolean} [canRunIteratively] defines if the command can expect multiple arguments and run multiple times. defaults to false
  * @class Command
  * @abstract
- * @module Commands
- * @memberOf dt
+ * @memberOf Commands
  */
 class Command {
     constructor(varStore, source, canRunIteratively) {

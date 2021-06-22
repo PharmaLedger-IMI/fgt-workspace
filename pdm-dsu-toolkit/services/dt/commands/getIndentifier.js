@@ -6,8 +6,8 @@ const { _err } = require('./utils');
  * Returns the identifier for the current source object
  *
  * @class GetIdentifierCommand
- * @module Commands
- * @memberOf dt
+ * @extends Command
+ * @memberOf Commands
  */
 class GetIdentifierCommand extends Command{
     constructor(varStore) {

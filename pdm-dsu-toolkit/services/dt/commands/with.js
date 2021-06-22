@@ -12,9 +12,8 @@ const startCommand = 'with';
  *
  * basically sets whatever the result of the with operation into the source portion until it finds the endwith command
  *
- * @class WithCommand
- * @module Commands
- * @memberOf dt
+ * @extends Command
+ * @memberOf Commands
  */
 class WithCommand extends Command {
     constructor(varStore, source) {

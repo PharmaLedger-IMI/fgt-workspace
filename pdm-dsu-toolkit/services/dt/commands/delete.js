@@ -5,8 +5,8 @@ const { _err } = require('./utils');
  * Deletes everything in the specified path of the DSU
  *
  * @class DeleteCommand
- * @module Commands
- * @memberOf dt
+ * @extends Command
+ * @memberOf Commands
  */
 class DeleteCommand extends Command {
     constructor(varStore) {

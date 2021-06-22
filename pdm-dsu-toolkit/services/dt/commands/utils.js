@@ -1,16 +1,19 @@
+/**
+ * @namespace utils
+ * @memberOf Commands
+ */
+
 
 /**
  * cache of node's fs object
- * @module Commands
- * @memberOf dt
+ * @memberOf utils
  */
 let  _fileSystem = undefined;
 
 /**
  * Caches and returns node's fs object if the environment is right
  * @return {fs}
- * @module Commands
- * @memberOf dt
+ * @memberOf utils
  */
 const _getFS = function(){
     if ($$.environmentType !== 'nodejs')
@@ -35,8 +38,7 @@ let resolver, keyssi;
  * @param err
  * @param callback
  * @protected
- * @module Commands
- * @memberOf dt
+ * @memberOf utils
  */
 const _err = function(msg, err, callback){
     return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(msg, err));
@@ -45,8 +47,7 @@ const _err = function(msg, err, callback){
 /**
  * for singleton use
  * @returns {function} resolver api
- * @module Commands
- * @memberOf dt
+ * @memberOf utils
  */
 const _getResolver = function(){
     if (!resolver)
@@ -57,8 +58,7 @@ const _getResolver = function(){
 /**
  * for singleton use
  * @returns {function} keyssi api
- * @module Commands
- * @memberOf dt
+ * @memberOf utils
  */
 const _getKeySSISpace = function(){
     if (!keyssi)
@@ -69,8 +69,7 @@ const _getKeySSISpace = function(){
 /**
  *
  * @type {{ARRAY: string, WALLET: string, SEED: string}}
- * @module Commands
- * @memberOf dt
+ * @memberOf utils
  */
 const KEY_TYPE = {
     ARRAY: "array",
@@ -80,8 +79,7 @@ const KEY_TYPE = {
 /**
  *
  * @type {{WALLET: string, CONST: string, SEED: string}}
- * @module Commands
- * @memberOf dt
+ * @memberOf utils
  */
 const DSU_TYPE = {
     CONST: "const",
@@ -91,8 +89,7 @@ const DSU_TYPE = {
 /**
  *
  * @type {{WALLET: string}}
- * @module Commands
- * @memberOf dt
+ * @memberOf utils
  */
 const DB_TYPE = {
     WALLET: "wallet"

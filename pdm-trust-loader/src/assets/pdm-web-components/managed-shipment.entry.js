@@ -106,9 +106,11 @@ const ManagedShipment = class {
     let self = this;
     if (this.isCreate())
       return this.reset();
-    await self.getManager().getOne(this.shipmentRef, true, async (err, shipment) => {
+    // @ts-ignore
+    self.getManager().getOne(this.shipmentRef, true, async (err, shipment, dsu, orderId) => {
       if (err)
         return this.sendError(`Could not retrieve shipment ${self.shipmentRef}`);
+      shipment.orderId = orderId;
       self.shipment = shipment;
       self.participantId = this.getType() === SHIPMENT_TYPE.ISSUED ? shipment.requesterId : shipment.senderId;
     });
@@ -233,7 +235,7 @@ const ManagedShipment = class {
     const getOrderReference = function () {
       const getInput = function () {
         if (self.getType() === SHIPMENT_TYPE.ISSUED && self.order && isCreate) {
-          return (h("ion-input", { name: "input-orderId", disabled: true, value: self.getType() === SHIPMENT_TYPE.ISSUED ? self.order.orderId : 'TODO' }));
+          return (h("ion-input", { name: "input-orderId", disabled: true, value: self.getType() === SHIPMENT_TYPE.ISSUED ? self.order.orderId || self.shipment.orderId : 'TODO' }));
         }
         else {
           h("ion-skeleton-text", { animated: true });

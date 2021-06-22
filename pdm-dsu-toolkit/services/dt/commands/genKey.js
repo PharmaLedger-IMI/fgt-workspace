@@ -5,8 +5,8 @@ const { _err, _getKeySSISpace, KEY_TYPE } = require('./utils');
  * Generates a KeySSI
  *
  * @class GenKeyCommand
- * @module Commands
- * @memberOf dt
+ * @extends Command
+ * @memberOf Commands
  */
 class GenKeyCommand extends Command {
     constructor(varStore) {

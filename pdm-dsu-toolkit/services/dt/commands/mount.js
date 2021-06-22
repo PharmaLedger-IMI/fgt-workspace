@@ -6,8 +6,8 @@ const { _err, _getFS, _getKeySSISpace } = require('./utils');
  * Mounts a DSU onto the provided path
  *
  * @class MountCommand
- * @module Commands
- * @memberOf dt
+ * @extends Command
+ * @memberOf Commands
  */
 class MountCommand extends Command{
     constructor(varStore, source) {

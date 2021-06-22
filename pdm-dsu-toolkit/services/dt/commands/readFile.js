@@ -7,8 +7,8 @@ const { _getFS, _err } = require('./utils')
  * supports sourceDSU
  *
  * @class ReadFileCommand
- * @module Commands
- * @memberOf dt
+ * @extends Command
+ * @memberOf Commands
  */
 class ReadFileCommand extends Command{
     constructor(varStore, source) {

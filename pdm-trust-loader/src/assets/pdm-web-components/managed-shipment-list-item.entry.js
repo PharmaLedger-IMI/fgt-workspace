@@ -69,16 +69,16 @@ const ManagedShipmentListItem = class {
     const self = this;
     const getShipmentId = function () {
       if (!self.shipment || !self.shipment.shipmentId)
-        return (h("h3", null, h("ion-skeleton-text", { animated: true }), " "));
-      return (h("h3", null, self.shipment.shipmentId));
+        return (h("ion-skeleton-text", { animated: true }));
+      return self.shipment.shipmentId;
     };
     const getIdLabel = function () {
       if (!self.shipment)
-        return (h("h5", null, h("ion-skeleton-text", { animated: true }), " "));
+        return (h("ion-skeleton-text", { animated: true }));
       const attribute = self.shipment[self.type === SHIPMENT_TYPE.ISSUED ? 'requesterId' : 'senderId'];
       if (!attribute)
-        return (h("h5", null, h("ion-skeleton-text", { animated: true }), " "));
-      return (h("h5", null, attribute));
+        return (h("ion-skeleton-text", { animated: true }));
+      return attribute;
     };
     return (h("ion-label", { slot: "label", color: "secondary" }, getShipmentId(), h("span", { class: "ion-padding-start" }, getIdLabel())));
   }
@@ -99,9 +99,6 @@ const ManagedShipmentListItem = class {
     const layoutEl = this.element.querySelector('list-item-layout');
     return layoutEl ? layoutEl.orientation : 'end';
   }
-  getRelevantParticipantId() {
-    return this.shipment[this.type === SHIPMENT_TYPE.ISSUED ? 'senderId' : 'requesterId'];
-  }
   addButtons() {
     let self = this;
     if (!self.shipment)
@@ -110,13 +107,9 @@ const ManagedShipmentListItem = class {
       return (h("ion-button", { slot: slot, color: color, fill: "clear", onClick: handler }, h("ion-icon", { size: "large", slot: "icon-only", name: icon })));
     };
     return [
-      getButton("buttons", "medium", "eye", () => self.navigateToTab('tab-shipment', {
-        mode: this.type,
-        shipment: this.shipment
-      })),
-      getButton("buttons", "medium", "cog", () => self.navigateToTab('tab-product', {
-        shipmentId: self.shipment.shipmentId,
-        participantId: self.getRelevantParticipantId()
+      getButton("buttons", "medium", self.type === SHIPMENT_TYPE.ISSUED ? "cog" : "eye", () => self.navigateToTab('tab-shipment', {
+        shipment: self.shipment,
+        mode: self.type
       }))
     ];
   }

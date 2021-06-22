@@ -5,8 +5,9 @@ const genKey = require('./genKey');
 /**
  * @param {DSU_TYPE} dsuType
  * @return {KEY_TYPE}
- * @module Commands
- * @memberOf dt
+ * @function _getKeyType
+ * @memberOf Commands
+ * @private
  */
 const _getKeyType = function(dsuType){
     switch (dsuType){
@@ -28,6 +29,8 @@ const _getKeyType = function(dsuType){
  * Adds options.hint to hit if available
  * @param {string[]} arg
  * @param {function(err, KeySSI)} callback
+ * @memberOf Commands
+ * @private
  */
 _createSSI = function(varStore, arg, callback){
     const argToArray = (arg) => {
@@ -45,6 +48,8 @@ _createSSI = function(varStore, arg, callback){
  * @param {string[]} arg
  * @param {object} opts DSU Creation Options
  * @param {function(err, Archive)} callback
+ * @memberOf Commands
+ * @private
  */
 _createWalletDSU = function(varStore, arg, opts, callback){
     _createSSI(varStore, arg, (err, keySSI) => {
@@ -61,6 +66,8 @@ _createWalletDSU = function(varStore, arg, opts, callback){
  * @param {string[]} arg String for Seed SSI
  * @param {object} opts DSU Creation Options
  * @param {function(err, Archive)} callback
+ * @memberOf Commands
+ * @private
  */
 _createDSU = function(varStore, arg, opts, callback){
     _createSSI(varStore, arg, (err, keySSI) => {
@@ -77,6 +84,8 @@ _createDSU = function(varStore, arg, opts, callback){
  * @param {string[]} arg
  * @param {object} opts DSU Creation Options
  * @param {function(err, Archive)} callback
+ * @memberOf Commands
+ * @private
  */
 _createConstDSU = function(varStore, arg,opts , callback){
     _createSSI(varStore, arg, (err, keySSI) => {
@@ -88,6 +97,14 @@ _createConstDSU = function(varStore, arg,opts , callback){
     });
 }
 
+/**
+ *
+ * @param isConst
+ * @param isWallet
+ * @return {Commands._createWalletDSU|Commands._createConstDSU|Commands._createDSU}
+ * @private
+ * @memberOf Commands
+ */
 _getDSUFactory = function(isConst, isWallet){
     return isConst ? (isWallet ? _createWalletDSU : _createConstDSU) : _createDSU;
 }
@@ -96,6 +113,8 @@ _getDSUFactory = function(isConst, isWallet){
  * creates a new DSU of the provided type and with the provided key gen arguments
  *
  * @class CreateDSUCommand
+ * @extends Command
+ * @memberOf Commands
  */
 class CreateDSUCommand extends Command{
     constructor(varStore, source) {

@@ -5,8 +5,8 @@ const { _err } = require('./utils');
  * Defines a variable that can later be used in the script
  *
  * @class DefineCommand
- * @module Commands
- * @memberOf dt
+ * @extends Command
+ * @memberOf Commands
  */
 class DefineCommand extends Command {
     constructor(varStore) {
