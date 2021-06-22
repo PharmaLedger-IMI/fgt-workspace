@@ -4,6 +4,17 @@ const { _getKeySSISpace, _err } = require('./utils');
 /**
  * Derives the provided keySSI
  *
+ * Analog to OpenDSU's KeySSI derive method
+ *
+ * Command syntax:
+ *
+ * <pre>
+ *     derive [true|false]
+ * </pre>
+ *
+ * Source object:
+ *  - a KeySSI;
+ *
  * @class DeriveCommand
  * @extends Command
  * @memberOf Commands

@@ -1,7 +1,15 @@
 /**
+ * Stores references to the available commands and exposes them by command name
+ * Commands must be added here to be available
+ * @namespace Registry
+ * @memberOf Commands
+ */
+
+
+/**
  * List of all available commands to the Dossier Builder
  * Without being here, they can't be used
- * @memberOf Commands
+ * @memberOf Registry
  */
 const _availableCommands = {
     addfile: require('./addFile'),
@@ -25,7 +33,7 @@ const _availableCommands = {
  * return the Command class by its name
  * @param cmdName
  * @return {Command} the command calls to be instanced
- * @memberOf Commands
+ * @memberOf Registry
  */
 const _getByName = function(cmdName){
     if (cmdName in _availableCommands)

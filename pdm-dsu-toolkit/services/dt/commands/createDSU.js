@@ -112,6 +112,22 @@ _getDSUFactory = function(isConst, isWallet){
 /**
  * creates a new DSU of the provided type and with the provided key gen arguments
  *
+ * Analog to OpenDSU's Resolver createDSU method
+ *
+ * Command syntax:
+ *
+ * <pre>
+ *     createdsu type domain args
+ * </pre>
+ *
+ * args:
+ *  - type: 'array' | 'seed'
+ *  - domain: the anchoring domain
+ *  - args: string|string[] stringified
+ *
+ *  * Source object:
+ *  - any;
+ *
  * @class CreateDSUCommand
  * @extends Command
  * @memberOf Commands

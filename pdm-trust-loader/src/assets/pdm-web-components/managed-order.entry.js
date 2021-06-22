@@ -1,8 +1,8 @@
 import { r as registerInstance, e as createEvent, h, f as Host, g as getElement } from './index-d0e12a29.js';
 import { H as HostElement } from './index-3dd6e8f7.js';
-import { w as wizard } from './WizardService-2f7a45ff.js';
-import { W as WebManagerService } from './WebManagerService-65b4b71c.js';
-import { a as getDirectoryProducts, b as getDirectorySuppliers, c as getProductPopOver } from './popOverUtils-dba969aa.js';
+import { w as wizard } from './WizardService-a462b2bc.js';
+import { W as WebManagerService } from './WebManagerService-e3623754.js';
+import { a as getDirectoryProducts, b as getDirectorySuppliers, c as getProductPopOver } from './popOverUtils-2abe6b65.js';
 
 const managedOrderCss = ":host{display:block}managed-order{--color:var(--ion-color-primary-contrast)}managed-order ion-item ion-grid{width:100%}.product-select .select-interface-option{color:var(--ion-color-secondary)}ion-select.supplier-select::part(placeholder){color:var(--ion-color-secondary)}ion-select.supplier-select::part(text){color:var(--ion-color-primary)}ion-select.supplier-select::part(icon){color:var(--ion-color-primary)}ion-card-title{color:var(--ion-color-primary)}ion-card-subtitle{color:var(--ion-color-secondary)}ion-item.selected{--color:var(--ion-color-success)}ion-item.unnecessary{--color:red}";
 

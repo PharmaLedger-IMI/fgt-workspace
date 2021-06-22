@@ -5,6 +5,9 @@ const { _err } = require('./utils');
 /**
  * Returns the identifier for the current source object
  *
+ * Source object:
+ *  - a DSU|KeySSI;
+ *
  * @class GetIdentifierCommand
  * @extends Command
  * @memberOf Commands

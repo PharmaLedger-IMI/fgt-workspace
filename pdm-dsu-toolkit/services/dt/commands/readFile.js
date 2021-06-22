@@ -6,6 +6,9 @@ const { _getFS, _err } = require('./utils')
  *
  * supports sourceDSU
  *
+ * Source object:
+ *  - a DSU|fs;
+ *
  * @class ReadFileCommand
  * @extends Command
  * @memberOf Commands

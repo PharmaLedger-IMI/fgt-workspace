@@ -1,13 +1,18 @@
 import { r as registerInstance, h, f as Host, g as getElement } from './index-d0e12a29.js';
 import { H as HostElement } from './index-3dd6e8f7.js';
-import { w as wizard } from './WizardService-2f7a45ff.js';
+import { w as wizard } from './WizardService-a462b2bc.js';
 
 const { Registry: Registry$1, Validator, Validators } = wizard.Model.Validations.Validators;
 const { INPUT_FIELD_PREFIX: INPUT_FIELD_PREFIX$1 } = wizard.Constants;
 /**
+ * @namespace Validations
+ * @memberOf Services
+ */
+/**
  * Handles equality validation between fields
  * @class EqualityValidator
  * @extends Validator
+ * @memberOf Validations
  */
 class EqualityValidator extends Validator {
   /**
@@ -32,6 +37,11 @@ class EqualityValidator extends Validator {
   }
 }
 Registry$1.register(EqualityValidator);
+/**
+ * Validation service
+ * Provides form validation for the front end
+ * @memberOf Validations
+ */
 const ValidationService = {
   Registry: Registry$1,
   Validators: Object.assign({}, Validators, {

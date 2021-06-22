@@ -5,6 +5,9 @@ const GenKeyCommand = require('./genKey');
 /**
  * Generates a DB and returns it's SSI after initialization
  *
+ * Source object:
+ *  - a DSU;
+ *
  * @class GenDBCommand
  * @extends Command
  * @memberOf Commands

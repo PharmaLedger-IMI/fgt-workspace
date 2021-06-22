@@ -77,6 +77,7 @@ const envToOptions = function(env, opts){
  * @param {object} [opts] options object mimicking {@link OPTIONS}
  * @memberOf dt
  * @function AppBuilderService
+ * @constructor
  */
 function AppBuilderService(environment, opts) {
     const options = envToOptions(environment, opts);

@@ -3,6 +3,10 @@ const { _err } = require('./utils');
 
 /**
  * Util Command to convert objects to and array with their values
+ *
+ * Source object:
+ *  - any
+ *
  * @class ObjToArrayCommand
  * @extends Command
  * @memberOf Commands

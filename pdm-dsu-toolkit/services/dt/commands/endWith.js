@@ -4,7 +4,10 @@ const Command = require('./Command');
  * Allows for more complex logic by allowing you to control the output/input for commands
  * while keeping the commands readable
  *
- * basically sets whatever the result of the with operation into the source portion until it finds the endwith command
+ * basically sets whatever the result of the with operation into the source Object until it finds the endwith command
+ *
+ * Source object:
+ *  - any;
  *
  * @class EndWithCommand
  * @extends Command

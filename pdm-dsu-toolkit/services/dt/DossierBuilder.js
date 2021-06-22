@@ -26,6 +26,7 @@ const {_getResolver, _getKeySSISpace} = require('./commands/utils');
  * @param {VarStore} [varStore]
  * @memberOf dt
  * @function DossierBuilder
+ * @constructor
  */
 const DossierBuilder = function(sourceDSU, varStore){
 

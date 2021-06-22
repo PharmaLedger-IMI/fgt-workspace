@@ -9,6 +9,17 @@ const { _err } = require('./utils');
  *
  * Can run iteratively
  *
+ * Analog to OpenDSU's Archive addFolder method
+ *
+ * Command syntax:
+ *
+ * <pre>
+ *     addfolder origin_path [destination_path]
+ * </pre>
+ *
+ * Source object:
+ *  - a DSU;
+ *
  * @class AddFolderCommand
  * @extends Command
  * @memberOf Commands

@@ -12,6 +12,9 @@ const startCommand = 'with';
  *
  * basically sets whatever the result of the with operation into the source portion until it finds the endwith command
  *
+ * Source object:
+ *  - any
+ *
  * @extends Command
  * @memberOf Commands
  */

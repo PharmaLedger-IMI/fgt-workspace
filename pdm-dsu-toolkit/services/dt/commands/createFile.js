@@ -5,6 +5,22 @@ const {_getFS, _err} = require('./utils');
  * Creates a file with the provided content on the destination DSU
  * (similar to a touch command with added content)
  *
+ * Analog to OpenDSU's Archive writeFile method
+ *
+ * fs compatible
+ *
+ * Command syntax:
+ *
+ * <pre>
+ *     createfile path content
+ * </pre>
+ *
+ * args:
+ *  - content: string
+ *
+ *  * Source object:
+ *  - a DSU;
+ *
  * @class CreateFileCommand
  * @extends Command
  * @memberOf Commands

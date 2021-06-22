@@ -1,6 +1,10 @@
 /**
- * A simple variable store
+ * A simple variable store.
+ *
+ * Holds variables via the define commands and exposes them when available
  * @memberOf Commands
+ * @function
+ * @constructor
  */
 const VarStore = function(){
     const _memory = {};

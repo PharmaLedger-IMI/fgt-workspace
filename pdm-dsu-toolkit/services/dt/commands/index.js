@@ -1,5 +1,5 @@
 /**
- * @module Commands
+ * @namespace Commands
  * @memberOf dt
  */
 module.exports = {

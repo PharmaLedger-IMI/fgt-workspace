@@ -1,5 +1,5 @@
-import { w as wizard } from './WizardService-2f7a45ff.js';
-import { W as WebManagerService } from './WebManagerService-65b4b71c.js';
+import { w as wizard } from './WizardService-a462b2bc.js';
+import { W as WebManagerService } from './WebManagerService-e3623754.js';
 
 const EVENT_CONFIG_GET_CORE_TYPE = 'webcardinal:config:getCoreType';
 const EVENT_CONFIG_GET_DOCS_SOURCE = 'webcardinal:config:getDocsSource';
@@ -12,32 +12,88 @@ const EVENT_MODEL_GET = 'webcardinal:model:get';
 const EVENT_ROUTING_GET = 'webcardinal:routing:get';
 const EVENT_TAGS_GET = 'webcardinal:tags:get';
 const EVENT_TRANSLATION_MODEL_GET = 'webcardinal:translationModel:get';
+/**
+ * @namespace Constants
+ */
+/**
+ * Send error Event. Handled by Home Controller
+ * @memberOf Constants
+ */
 const EVENT_SEND_ERROR = 'ssapp-send-error';
+/**
+ * Send Message Event. Handled by Home Controller
+ * @memberOf Constants
+ */
 const EVENT_SEND_MESSAGE = 'ssapp-send-message';
+/**
+ * Signals when the SSApp has loaded
+ * @memberOf Constants
+ */
 const EVENT_SSAPP_HAS_LOADED = 'ssapp-has-loaded';
+/**
+ * signals loading progress
+ * @memberOf Constants
+ */
 const EVENT_SSAPP_STATUS_UPDATE = 'ssapp-update-status';
+/**
+ * Signals a refresh event
+ * @memberOf Constants
+ */
 const EVENT_REFRESH = 'ssapp-refresh';
+/**
+ * Send Select event
+ * @memberOf Constants
+ */
 const EVENT_SELECT = 'ssapp-select';
 /**
+ * Standard event for navigation events on PDM's SSApp Architecture
  * Expects an object like
- * {
- *   tab: 'tab name',
- *   props: 'optional properties that will appear on controller.getState() when catching the refresh event'
- * }
+ * <pre>
+ *  {
+ *    tab: 'tab name',
+ *    props: 'optional properties that will appear on the tab's controller's {@link EVENT_REFRESH} event detail
+ *  }
+ * </pre>
+ *
+ * @memberOf Constants
  */
 const EVENT_NAVIGATE_TAB = 'ssapp-navigate-tab';
+/**
+ * Show more event
+ * @memberOf Constants
+ */
 const EVENT_SHOW_MORE = 'ssapp-show-more';
+/**
+ * Send action event
+ * @memberOf Constants
+ */
 const EVENT_ACTION = 'ssapp-action';
+/**
+ * Ioniuc's tab change event
+ * @memberOf Constants
+ */
 const EVENT_ION_TABS_WILL_CHANGE = "ionTabsWillChange";
+/**
+ * CSS constants
+ * @memberOf Constants
+ */
 const CSS = {
   ALERT: 'ssapp-alert',
   TOAST: 'ssapp-toast',
   SPINNER: 'ssapp-spinner'
 };
+/**
+ * Button roles
+ * @memberOf Constants
+ */
 const BUTTON_ROLES = {
   CONFIRM: 'confirm',
   CANCEL: 'cancel'
 };
+/**
+ * Specific CSS selector for the side menu button
+ * @memberOf Constants
+ */
 const SIDE_MENU_CLASS_SELECTOR = ".side-menu menu-tab-button";
 
 const {WebcController} = WebCardinal.controllers;
@@ -55,9 +111,10 @@ const {WebcController} = WebCardinal.controllers;
  *          this.model = this.initializeModel();
  *      }
  * </pre>
- * @module Controllers
+ * @memberOf Controllers
  * @class LocalizedController
  * @extends WebcController
+ * @abstract
  */
 class LocalizedController extends WebcController {
 
@@ -428,7 +485,7 @@ class LocalizedController extends WebcController {
  *  - Access to the Messaging API
  *
  * and provides the implementation for navigation and data management in an Ionic Tab Single Page Application Schema
- * @module Controllers
+ * @memberOf Controllers
  * @class HomeController
  * @abstract
  */
@@ -492,7 +549,12 @@ class HomeController extends LocalizedController {
         participantManager.setController(this);
     }
 
-    _navigateToTab(props){
+  /**
+   * Handles navigation request events
+   * @param {*} props the props to send to the controllers at the required tab
+   * @private
+   */
+  _navigateToTab(props){
       let self = this;
       const el = self.element.querySelector(`ion-tabs`);
       if (!el){
@@ -503,6 +565,12 @@ class HomeController extends LocalizedController {
       el.select(props.tab);
     }
 
+  /**
+   * Updates loading status
+   * @param status
+   * @param progress
+   * @private
+   */
     _updateLoading(status, progress){
       const loader = document.querySelector('pdm-ssapp-loader');
       if (!loader){
@@ -518,11 +586,19 @@ class HomeController extends LocalizedController {
         }, {capture: true});
     };
 
-    _concludeLoading(){
+  /**
+   * Signals the SSApp has finished loading
+   * @private
+   */
+  _concludeLoading(){
       this.send(EVENT_SSAPP_HAS_LOADED, {}, {capture: true});
     }
 
-    _testParticipant(){
+  /**
+   * Reads the identity from the DSU
+   * @private
+   */
+  _testParticipant(){
         let self = this;
         self._updateLoading(self.model.loading.booting.status, self.model.loading.booting.progress);
       // Give UI some time to breathe and render stuff (including our animation)

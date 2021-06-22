@@ -163,14 +163,14 @@ class DSUService {
         return new class DSUBuilder {
             /**
              * @see {@link DSUService#addFileDataToDossier} with already filled transactionId and domain
-             * @module services
+             * @memberOf Services
              */
             addFileDataToDossier(fileName, fileData, callback){
                 self.addFileDataToDossier(transactionId, domain, fileName, fileData, callback);
             };
             /**
              * @see {@link DSUService#mount} with already filled transactionId and domain
-             * @module services
+             * @memberOf Services
              */
             mount(path, seed, callback){
                 self.mount(transactionId, domain, path, seed, callback);

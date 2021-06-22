@@ -4,6 +4,20 @@ const { _err } = require('./utils');
 /**
  * Defines a variable that can later be used in the script
  *
+ *
+ * Command syntax:
+ *
+ * <pre>
+ *     defined var_name [value|command|
+ * </pre>
+ *
+ * args:
+ *  - var_name: string : this variable with be replaced in every subsequent command
+ *  - value|command: string: a value, or a command that will be executed and its result stored as the variable
+ *
+ *  * Source object:
+ *  - any;
+ *
  * @class DefineCommand
  * @extends Command
  * @memberOf Commands

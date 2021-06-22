@@ -1,7 +1,7 @@
 import { r as registerInstance, e as createEvent, h, g as getElement } from './index-d0e12a29.js';
-import { W as WebManagerService } from './WebManagerService-65b4b71c.js';
+import { W as WebManagerService } from './WebManagerService-e3623754.js';
 import { H as HostElement } from './index-3dd6e8f7.js';
-import { w as wizard } from './WizardService-2f7a45ff.js';
+import { w as wizard } from './WizardService-a462b2bc.js';
 import { S as SUPPORTED_LOADERS } from './supported-loader-4cd02ac2.js';
 
 const managedOrderlineListItemCss = ":host{display:block;--background:inherit}ion-item.main-item{animation:1s linear fadein}ion-item.main-item ion-grid{width:100%}ion-col ion-label.ion-padding{padding-top:4px;padding-bottom:4px}managed-orderline-list-item ion-skeleton-text.label-name{width:50%}managed-orderline-list-item ion-skeleton-text.label-gtin{width:60%}managed-orderline-list-item ion-skeleton-text.label-requester{width:50%}managed-orderline-list-item ion-skeleton-text.label-date{width:80%}ion-chip{height:28px;--ion-padding:8px;--ion-margin:8px}@keyframes fadein{from{opacity:0}to{opacity:1}}";

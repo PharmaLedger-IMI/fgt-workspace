@@ -8,6 +8,17 @@ const { _err } = require('./utils');
  *
  * Can run iteratively
  *
+ * Analog to OpenDSU's Archive addFile method
+ *
+ * Command syntax:
+ *
+ * <pre>
+ *     addfile origin_path destination_path
+ * </pre>
+ *
+ * Source object:
+ *  - a DSU;
+ *
  * @class AddFileCommand
  * @extends Command
  * @memberOf Commands

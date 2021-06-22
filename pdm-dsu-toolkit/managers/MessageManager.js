@@ -221,7 +221,7 @@ let messageManager;
  * Makes DSU Storage required again!
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @returns {MessageManager}
- * @module managers
+ * @memberOf managers
  */
 const getMessageManager = function(baseManager, didString, callback) {
     let manager;

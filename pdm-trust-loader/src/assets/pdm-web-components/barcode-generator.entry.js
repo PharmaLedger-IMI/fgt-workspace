@@ -1,5 +1,5 @@
 import { r as registerInstance, h, g as getElement } from './index-d0e12a29.js';
-import { s as stringToBoolean } from './utilFunctions-f6105aef.js';
+import { s as stringToBoolean } from './utilFunctions-e534eb9e.js';
 import { H as HostElement } from './index-3dd6e8f7.js';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};

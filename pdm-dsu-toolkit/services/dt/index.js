@@ -1,7 +1,91 @@
 /**
  * Provides a Environment Independent and Versatile Dossier Building API.
  *
- * Meant to be integrated into OpenDSU
+ * Meant to be integrated into OpenDSU.
+ *
+ * The need to produce DSUs with complicated relations between them as well as the addition of the database API to the
+ * Open DSU framework, which, on its first run, creates a complicated DSU structure (which can sometimes take a long time
+ * from a UX perspective) led initially to long waits on webapps, often with frozen UI due to the intense processing happening.
+ *
+ * This created the need for a more powerful, more configurable building process,
+ * that could adapt to the individual needs of each SSApp
+ *
+ * For that reason this module was refactored, exposing most of the OpenDSU Archive API via simple text commands,
+ * that can be hardcoded into any SSApp and serve as its individual build script upon the creation of a new instance.
+ *
+ * This concentrates all the heavy processing in a single execution, at a time where the UI is perfectly manageable,
+ * and without any further inconveniences to the end user.
+ *
+ * The build process rests on the concept of a source object, typically a source DSU, on which the commands will operate on.
+ *
+ * for instance, the simple (original) build script for most SSApps in the PharmaLedger Ecosystem is:
+ * <pre>
+ *     delete /
+ *     addfolder code
+ *     mount ../cardinal/seed /cardinal
+ *     mount ../themes/#/seed /themes/#
+ * </pre>
+ * (the cardinal represents an '*')
+ *
+ * This simple build simples has with it, implicitly a sourceDSU that is the DSU just created using the credentials from the loader.
+ *
+ * Explicitly the script would be:
+ * <pre>
+ *     with createdsu wallet domain stringified_keygenargs
+ *          delete /
+ *          addfolder code
+ *          mount ../cardinal/seed /cardinal
+ *          mount ../themes/#/seed /themes/#
+ *     endwith
+ * </pre>
+ *
+ * in the with command it becomes apparent how to use the with command and the source DSU/Object.
+ *
+ * This notion is imperative for more complex scripts like this:
+ *
+ * <pre>
+ *     define $ID$ -$Identity-
+ *     define $ENV$ -$Environment-
+ *
+ *     with createdsu seed traceability specificstring
+ *          define $SEED$ getidentifier
+ *          createfile info $ID$
+ *     endwith
+ *
+ *     createfile environment.json $ENV$
+ *     mount $SEED$ /id
+ *
+ *     with $SEED$
+ *          define $READ$ derive
+ *     endwith
+ *
+ *     define $SECRETS$ objtoarray $ID$
+ *
+ *     with createdsu const traceability $SECRETS$
+ *          mount $READ$ /id
+ *          define $CONST$ getidentifier
+ *     endwith
+ *
+ *     mount $CONST$ /participant
+ *
+ *     with createdsu seed traceability innerdb
+ *          define $INNER$ getidentifier
+ *     endwith
+ *
+ *     with createdsu seed traceability fordb
+ *          mount $INNER$ /data
+ *          define $DB$ getidentifier
+ *     endwith
+ *     mount $DB$ /db
+ * </pre>
+ *
+ * Notice the existence of 2 specific placeholders:
+ *  - -$Identity- : this placeholder will be replaced by the public parts the the loader credentials
+ *  - -$Environment- : this placeholder will be replaced the the environment file contents from the loader
+ *
+ * Also notice how by using the with command we change the source object to be able to perform actions of them
+ * and/or extract relevant information and store it in variables for later use.
+ *
  * @namespace dt
  * @memberOf Services
  */

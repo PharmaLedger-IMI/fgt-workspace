@@ -4,6 +4,18 @@ const { _err } = require('./utils');
 /**
  * Deletes everything in the specified path of the DSU
  *
+ * Analog to OpenDSU's Archive delete method
+ *
+ * Command syntax:
+ *
+ * <pre>
+ *     delete path
+ * </pre>
+ *
+ *  Source object:
+ *  - a DSU;
+ *
+ *
  * @class DeleteCommand
  * @extends Command
  * @memberOf Commands

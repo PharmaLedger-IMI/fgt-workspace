@@ -2,7 +2,17 @@
 const { _err } = require('./utils');
 
 /**
+ * Base class for the Commands.
+ *
+ * Provides the basic functionality for all commands
+ *
+ * Arguments cannot have spaces (other than in stringyfied JSONS)
+ *
  * **Every Command must be registered under the index.js file in the commands folder**
+ *
+ *  * Source object:
+ *  - any;
+ *
  * @param {VarStore} varStore
  * @param {Archive|fs} [source]
  * @param {boolean} [canRunIteratively] defines if the command can expect multiple arguments and run multiple times. defaults to false

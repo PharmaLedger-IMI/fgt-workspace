@@ -4,6 +4,10 @@ const { _err, _getKeySSISpace, KEY_TYPE } = require('./utils');
 /**
  * Generates a KeySSI
  *
+ * Source object:
+ *  - any;
+ *
+ *
  * @class GenKeyCommand
  * @extends Command
  * @memberOf Commands
