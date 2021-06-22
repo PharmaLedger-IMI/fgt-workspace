@@ -131,7 +131,7 @@ class ReceivedShipmentManager extends ShipmentManager {
         if (!message || typeof message !== "string")
             return callback(`Message ${message} does not have  non-empty string with keySSI. Skipping record.`);
 
-        self._getDSUInfo(message, (err, shipmentObj, orderDsu) => {
+        self.shipmentService.get(message, (err, shipmentObj, shipmentDsu) => {
             if (err)
                 return self._err(`Could not read DSU from message keySSI in record ${record}. Skipping record.`, err, callback);
 
@@ -140,7 +140,7 @@ class ReceivedShipmentManager extends ShipmentManager {
             if (!shipmentId)
                 return callback("ReceivedShipment doest not have an shipmentId. Skipping record.");
 
-            self.insertRecord(self._genCompostKey(shipmentObj.requesterId, shipmentId), self._indexItem(shipmentId, shipmentObj, message), callback);
+            self.insertRecord(self._genCompostKey(shipmentObj.senderId, shipmentId), self._indexItem(shipmentId, shipmentObj, message), callback);
         });
     };
 }

@@ -106,7 +106,7 @@ const MenuTabButton = class {
   _getMenuMode() {
     const hasOptions = typeof this.tab !== 'string';
     const tabName = !hasOptions ? this.tab : this.tab.label;
-    return (h("ion-item", { lines: "none", class: `ion-margin-bottom nav-menu-item${!!this.selected ? " tab-selected" : ''}`, button: true, onClick: (evt) => !hasOptions ? this.navigateToTab(tabName) : this.getPopOver(evt, this.tab) }, h("ion-grid", null, h("ion-row", { class: "ion-align-items-center ion-justify-content-center" }, this._getIcon()), h("ion-row", { class: "ion-align-items-center ion-justify-content-center" }, h("span", { class: "menu-text" }, h("ion-note", { class: "menu-text ion-text-center ion-text-wrap" }, this.label)))), this.getBadge()));
+    return (h("ion-item", { lines: "none", class: `ion-padding-vertical nav-menu-item${!!this.selected ? " tab-selected" : ''}`, button: true, onClick: (evt) => !hasOptions ? this.navigateToTab(tabName) : this.getPopOver(evt, this.tab) }, h("ion-grid", null, h("ion-row", { class: "ion-align-items-center ion-justify-content-center" }, this._getIcon()), h("ion-row", { class: "ion-align-items-center ion-justify-content-center" }, h("span", { class: "menu-text" }, h("ion-note", { class: "menu-text ion-text-center ion-text-wrap" }, this.label)))), this.getBadge()));
   }
   _getTabBarMode() {
     const hasOptions = typeof this.tab !== 'string';

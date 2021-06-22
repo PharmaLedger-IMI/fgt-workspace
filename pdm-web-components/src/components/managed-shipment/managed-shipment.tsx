@@ -161,9 +161,11 @@ export class ManagedShipment implements CreateManageView{
     if (this.isCreate())
       return this.reset();
 
-    await self.getManager().getOne(this.shipmentRef, true, async (err, shipment) => {
+    // @ts-ignore
+    self.getManager().getOne(this.shipmentRef, true, async (err, shipment, dsu, orderId) => {
       if (err)
         return this.sendError(`Could not retrieve shipment ${self.shipmentRef}`);
+      shipment.orderId = orderId;
       self.shipment = shipment;
       self.participantId = this.getType() === SHIPMENT_TYPE.ISSUED ? shipment.requesterId : shipment.senderId;
     });
@@ -314,7 +316,7 @@ export class ManagedShipment implements CreateManageView{
         if (self.getType() === SHIPMENT_TYPE.ISSUED && self.order && isCreate) {
           return (
             <ion-input name="input-orderId" disabled={true}
-                       value={self.getType() === SHIPMENT_TYPE.ISSUED ? self.order.orderId : 'TODO'}></ion-input>
+                       value={self.getType() === SHIPMENT_TYPE.ISSUED ? self.order.orderId || self.shipment.orderId : 'TODO'}></ion-input>
           )
         } else {
           <ion-skeleton-text animated></ion-skeleton-text>;

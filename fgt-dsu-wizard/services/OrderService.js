@@ -58,7 +58,7 @@ function OrderService(domain, strategy) {
                             order.status = JSON.parse(status);
                             callback(undefined, order);
                         } catch (e) {
-                            callback(`unable to parse Order status: ${data.toString()}`);
+                            callback(`unable to parse Order status: ${status}`);
                         }
                     });
                 } catch (e){

@@ -40,7 +40,7 @@ function BatchService(domain, strategy){
                     const batch = JSON.parse(data);
                     callback(undefined, batch);
                 } catch (e) {
-                    callback(`unable to parse Batch: ${data.toString()}`);
+                    callback(`unable to parse Batch: ${data}`);
                 }
             });
         });

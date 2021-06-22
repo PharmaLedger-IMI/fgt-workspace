@@ -38,7 +38,7 @@ function ProductService(domain, strategy){
                     const product = JSON.parse(data);
                     callback(undefined, product);
                 } catch (e) {
-                    callback(`unable to parse Batch: ${data.toString()}`);
+                    callback(`unable to parse Product: ${data}`);
                 }
             });
         });

@@ -101,17 +101,17 @@ export class ManagedShipmentListItem{
 
     const getShipmentId = function(){
       if (!self.shipment || !self.shipment.shipmentId)
-        return (<h3><ion-skeleton-text animated></ion-skeleton-text> </h3>)
-      return (<h3>{self.shipment.shipmentId}</h3>)
+        return (<ion-skeleton-text animated></ion-skeleton-text>)
+      return self.shipment.shipmentId;
     }
 
     const getIdLabel = function(){
       if (!self.shipment)
-        return (<h5><ion-skeleton-text animated></ion-skeleton-text> </h5>);
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
       const attribute = self.shipment[self.type === SHIPMENT_TYPE.ISSUED ? 'requesterId' : 'senderId'];
       if (!attribute)
-        return (<h5><ion-skeleton-text animated></ion-skeleton-text> </h5>)
-      return (<h5>{attribute}</h5>)
+        return (<ion-skeleton-text animated></ion-skeleton-text>)
+      return attribute;
     }
 
     return(
@@ -149,10 +149,6 @@ export class ManagedShipmentListItem{
 
   }
 
-  private getRelevantParticipantId(){
-    return this.shipment[this.type === SHIPMENT_TYPE.ISSUED ? 'senderId' : 'requesterId'];
-  }
-
   private addButtons(){
     let self = this;
     if (!self.shipment)
@@ -167,13 +163,9 @@ export class ManagedShipmentListItem{
     }
 
     return [
-      getButton("buttons", "medium", "eye", () => self.navigateToTab('tab-shipment', {
-        mode: this.type,
-        shipment: this.shipment
-      })),
-      getButton("buttons", "medium", "cog", () => self.navigateToTab('tab-product', {
-        shipmentId: self.shipment.shipmentId,
-        participantId: self.getRelevantParticipantId()
+      getButton("buttons", "medium", self.type === SHIPMENT_TYPE.ISSUED ? "cog" : "eye", () => self.navigateToTab('tab-shipment', {
+        shipment: self.shipment,
+        mode: self.type
       }))
     ]
 

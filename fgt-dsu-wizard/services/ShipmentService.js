@@ -26,7 +26,7 @@ function ShipmentService(domain, strategy) {
         dsu.listMountedDSUs(basePath, (err, mounts) => {
             if (err)
                 return callback(err);
-            const filtered = mounts.filter(m => m.path === path);
+            const filtered = mounts.filter(m => "/" + m.path === path);
             if (filtered.length !== 1)
                 return callback(`Invalid number of mounts found ${filtered.length}`);
             callback(undefined, filtered[0].identifier);
@@ -55,7 +55,7 @@ function ShipmentService(domain, strategy) {
     /**
      * Resolves the DSU and loads the Order object with all its properties, mutable or not
      * @param {KeySSI} keySSI
-     * @param {function(err, Shipment)} callback
+     * @param {function(err, Shipment, Archive)} callback
      */
     this.get = function(keySSI, callback){
         utils.getResolver().loadDSU(keySSI, (err, dsu) => {
@@ -69,22 +69,32 @@ function ShipmentService(domain, strategy) {
                     shipment = JSON.parse(data);
                     dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
                         if (err)
-                            return callback(`could not retrieve orderLine status`);
+                            return callback(`could not retrieve shipment status`);
                         try{
                             shipment.status = JSON.parse(status);
                         } catch (e) {
-                            callback(`unable to parse Order status: ${data.toString()}`);
+                            callback(`unable to parse shipment status: ${status}`);
                         }
                     });
                 } catch (e){
-                    callback(`Could not parse order in DSU ${keySSI.getIdentifier()}`);
+                    callback(`Could not parse shipment in DSU ${keySSI.getIdentifier()}`);
                 }
 
                 getDSUMountByPath(dsu, ORDER_MOUNT_PATH, (err, identifier) => {
                     if (err)
                         return callback(err);
                     shipment.orderSSI = identifier;
-                    callback(undefined, shipment);
+                    dsu.readFile(`${ORDER_MOUNT_PATH}${INFO_PATH}`, (err, order) => {
+                        if (err)
+                            return callback(`Could not read from order DSU`);
+                        let orderId;
+                        try{
+                            orderId = JSON.parse(order).orderId;
+                        } catch (e) {
+                            callback(`unable to parse shipment mounted Order: ${order}`);
+                        }
+                    })
+                    callback(undefined, shipment, dsu, orderId);
                 });
             });
         });
