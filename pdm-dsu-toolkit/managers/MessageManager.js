@@ -38,6 +38,7 @@ class Message{
  * @param {string} didString
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @memberOf Managers
+ * @extends Manager
  * @class MessageManager
  */
 class MessageManager extends Manager{

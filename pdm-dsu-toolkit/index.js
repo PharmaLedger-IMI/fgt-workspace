@@ -1,7 +1,7 @@
 /**
  * This Toolkit proposes a Standard Enterprise DSU SSApp Architecture && Provides the underlying API to handle DSUs
  * in that environment in such a way that approximates the expected of a standard enterprise application
- * @namespace pdm-dsu-toolkit
+ * @module pdm-dsu-toolkit
  */
 
 /**
@@ -17,7 +17,6 @@
 /**
  * Handles interactions with OpenDSU's ApiHub Server
  * @namespace Server
- * @memberOf pdm-dsu-toolkit
  */
 
 /**

@@ -2,6 +2,7 @@
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {STRATEGY} strategy
  * @typedef Service
+ * @function ParticipantService
  * @memberOf Services
  */
 function ParticipantService(domain, strategy){

@@ -4,6 +4,11 @@
  */
 
 /**
+ * Handles interactions with OpenDSU's ApiHub Server
+ * @namespace Server
+ */
+
+/**
  * iterates through all the commands in the command folder and registers them
  * Is called by the apihub via the server.json
  */

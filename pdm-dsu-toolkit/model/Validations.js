@@ -1,6 +1,5 @@
 /**
  * @namespace Validations
- * @memberOf Model
  */
 
 /**

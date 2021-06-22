@@ -22,7 +22,7 @@ function createShipmentCodeSSI(data, domain) {
 
 /**
  * Registers the endpoint on the api-hub's dsu-wizard.
- * @memberOf Commands
+ * @memberOf Server
  */
 function command(server){
     const setSSI = require('../../pdm-dsu-toolkit/commands/setSSI');

@@ -24,7 +24,7 @@ function createOrderLineSSI(data, domain) {
 /**
  * Registers the endpoint on the api-hub's dsu-wizard.
  * @param {HttpServer} server
- * @memberOf Commands
+ * @memberOf Server
  */
 function command(server){
     const setSSI = require('../../pdm-dsu-toolkit/commands/setSSI');

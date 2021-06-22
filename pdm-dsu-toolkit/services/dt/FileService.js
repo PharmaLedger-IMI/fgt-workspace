@@ -1,7 +1,8 @@
 /**
  * Forked from PrivateSky
  * Provides an environment independent file service to the {@link AppBuilderService}
- * @module dt
+ * @memberOf dt
+ * @function FileService
  */
 function FileService(options) {
     const isBrowser = $$.environmentType === 'browser';

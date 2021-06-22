@@ -1,6 +1,4 @@
-/**
- * @module dt
- */
+
 const FileService = require("./FileService");
 
 const DSU_SPECIFIC_FILES = ["dsu-metadata.log", "manifest"]
@@ -31,7 +29,7 @@ const {_getResolver, _getKeySSISpace} = require('./commands/utils');
             }
         }
  * </pre>
- * @module dt
+ * @memberOf dt
  */
 const OPTIONS = {
     anchoring: "default",
@@ -57,7 +55,7 @@ const OPTIONS = {
 
 /**
  * Convert the Environment object into the Options object
- * @module dt
+ * @memberOf dt
  */
 const envToOptions = function(env, opts){
     let options = Object.assign({}, OPTIONS, opts);
@@ -77,7 +75,8 @@ const envToOptions = function(env, opts){
  *
  * @param {object} environment typically comes from an environment.js file is the ssapps. Overrides some options
  * @param {object} [opts] options object mimicking {@link OPTIONS}
- * @module dt
+ * @memberOf dt
+ * @function AppBuilderService
  */
 function AppBuilderService(environment, opts) {
     const options = envToOptions(environment, opts);

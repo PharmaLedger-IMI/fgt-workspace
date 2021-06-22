@@ -7,6 +7,7 @@
  * This service depends on WebCardinal's translation API
  *
  * Integrates with {@link WebCardinal}'s translation model, and natively integrates into controllers and their model
+ * @function LocaleService
  * @memberOf Locale
  */
 function LocaleService(){
