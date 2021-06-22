@@ -272,7 +272,7 @@ const ManagedOrder = class {
       return [];
     return [
       ...this.getInputs(),
-      h("line-stock-manager", { lines: this.lines, "show-stock": false, "enable-actions": true, onSelectEvent: (evt) => this.selectOrderLine(evt), "single-line": false, "lines-string": this.orderLinesString, "stock-string": this.stockString, "no-stock-string": this.noStockString, "select-string": this.selectString, "remaining-string": this.remainingString, "order-missing-string": this.orderMissingString, "available-string": this.availableString, "unavailable-string": this.unavailableString, "confirmed-string": this.confirmedString, "confirm-all-string": this.confirmAllString, "reset-all-string": this.resetAllString })
+      h("line-stock-manager", { lines: this.lines, "show-stock": false, "enable-actions": true, onSelectEvent: (evt) => this.selectOrderLine(evt), "single-line": "false", "lines-string": this.orderLinesString, "stock-string": this.stockString, "no-stock-string": this.noStockString, "select-string": this.selectString, "remaining-string": this.remainingString, "order-missing-string": this.orderMissingString, "available-string": this.availableString, "unavailable-string": this.unavailableString, "confirmed-string": this.confirmedString, "confirm-all-string": this.confirmAllString, "reset-all-string": this.resetAllString })
     ];
   }
   getPostCreate() {
@@ -283,7 +283,7 @@ const ManagedOrder = class {
   getManage() {
     if (this.isCreate())
       return;
-    return (h("line-stock-manager", { lines: this.lines, "show-stock": this.isCreate(), "enable-action": this.getType() === ORDER_TYPE.RECEIVED || this.isCreate(), "single-line": false, "stock-string": this.stockString, "no-stock-string": this.noStockString, "select-string": this.selectString, "remaining-string": this.remainingString, "order-missing-string": this.orderMissingString, "available-string": this.availableString, "unavailable-string": this.unavailableString, "confirmed-string": this.confirmedString, "confirm-all-string": this.confirmAllString, "reset-all-string": this.resetAllString }));
+    return (h("line-stock-manager", { lines: this.lines, "show-stock": this.isCreate(), "enable-action": this.getType() === ORDER_TYPE.RECEIVED || this.isCreate(), "single-line": "false", "stock-string": this.stockString, "no-stock-string": this.noStockString, "select-string": this.selectString, "remaining-string": this.remainingString, "order-missing-string": this.orderMissingString, "available-string": this.availableString, "unavailable-string": this.unavailableString, "confirmed-string": this.confirmedString, "confirm-all-string": this.confirmAllString, "reset-all-string": this.resetAllString }));
   }
   getView() {
   }

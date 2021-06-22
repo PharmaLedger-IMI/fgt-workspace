@@ -1,5 +1,5 @@
 /**
- * @namespace pdm-web-components
+ * @module pdm-web-components
  */
 
 import * as ColorUtils from './src/utils/colorUtils';

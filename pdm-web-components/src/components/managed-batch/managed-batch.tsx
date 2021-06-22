@@ -178,7 +178,7 @@ export class ManagedBatch implements CreateManageView{
                           id-prop="chip-label"
                           is-ion-item={false}
                           display-count={25}
-                          single-line={false}
+                          single-line="false"
                           onSelectEvent={(evt) => {
                             evt.preventDefault();
                             evt.stopImmediatePropagation();

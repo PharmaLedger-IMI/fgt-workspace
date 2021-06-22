@@ -94,8 +94,8 @@ function ShipmentService(domain, strategy) {
                         } catch (e) {
                             callback(`unable to parse shipment mounted Order: ${order}`);
                         }
-                    })
-                    callback(undefined, shipment, dsu, orderId);
+                        callback(undefined, shipment, dsu, orderId);
+                    });
                 });
             });
         });
