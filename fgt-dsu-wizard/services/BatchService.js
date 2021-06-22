@@ -5,7 +5,7 @@ const {STATUS_MOUNT_PATH, INFO_PATH} = require('../constants');
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
  * @function BatchService
- * @namespace Services
+ * @memberOf Services
  */
 function BatchService(domain, strategy){
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");

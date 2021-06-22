@@ -7,7 +7,8 @@ const {Shipment, ShipmentLine, ShipmentCode, TrackingCode} = require('../model')
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
- * @namespace Services
+ * @function ShipmentCodeService
+ * @memberOf Services
  */
 function ShipmentCodeService(domain, strategy){
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");

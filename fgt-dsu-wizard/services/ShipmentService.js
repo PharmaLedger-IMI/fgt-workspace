@@ -4,7 +4,8 @@ const {STATUS_MOUNT_PATH, INFO_PATH, LINES_PATH, ORDER_MOUNT_PATH} = require('..
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
- * @namespace Services
+ * @function ShipmentService
+ * @memberOf Services
  */
 function ShipmentService(domain, strategy) {
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");

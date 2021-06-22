@@ -4,7 +4,8 @@ const { INFO_PATH } = require('../constants');
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
- * @namespace Services
+ * @function ProductService
+ * @memberOf Services
  */
 function ProductService(domain, strategy){
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");

@@ -2,7 +2,17 @@
  * @namespace Constants
  */
 
+/**
+ * Anchoring domain
+ * @type {string}
+ * @memberOf Constants
+ */
 const ANCHORING_DOMAIN = "traceability";
+/**
+ * Batch mount path
+ * @type {string}
+ * @memberOf Constants
+ */
 const BATCH_MOUNT_PATH = "/batches";
 const INBOX_MOUNT_PATH = '/inbox';
 const INBOX_ORDER_LINES_PROP = 'orderLines';
@@ -26,7 +36,11 @@ const LINES_PATH = '/lines';
 const STATUS_MOUNT_PATH = '/status';
 const ORDER_MOUNT_PATH = '/order';
 
-// these constants depend on the previous constants
+/**
+ * @deprecated
+ * @type {{}}
+ * @memberOf Constants
+ */
 const INBOX_PATHS_AND_PROPS = [
     {path: INBOX_ORDER_LINES_PATH, prop: INBOX_ORDER_LINES_PROP},
     {path: INBOX_SHIPMENT_LINES_PATH, prop: INBOX_SHIPMENT_LINES_PROP},
@@ -34,6 +48,11 @@ const INBOX_PATHS_AND_PROPS = [
     {path: INBOX_RECEIVED_SHIPMENTS_PATH, prop: INBOX_RECEIVED_SHIPMENTS_PROP},
 ];
 
+/**
+ * Database paths
+ * @type {{}}
+ * @memberOf Constants
+ */
 const DB = {
     batches: 'batches',
     issuedOrders: 'issuedOrders',
@@ -47,6 +66,11 @@ const DB = {
     directory: 'directory'
 }
 
+/**
+ * Database Querying options
+ * @type {{}}
+ * @memberOf Constants
+ */
 const DEFAULT_QUERY_OPTIONS = require('../pdm-dsu-toolkit/constants').DEFAULT_QUERY_OPTIONS;
 
 module.exports = {
