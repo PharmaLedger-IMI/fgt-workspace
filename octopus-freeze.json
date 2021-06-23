@@ -29,7 +29,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "f30cca093dc6eee15ccbaf187b949b31bc23dbc8"
+                    "commit": "4cab7e1c0b1620bf2c32a0abf5b00a31ea6b26e5"
                 },
                 {
                     "type": "execute",
@@ -54,7 +54,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "2959842eb76c4ab6129cb1435d4b3eb8bdb08db5"
+                    "commit": "605a753f15e53ef6befabd6e79ba626987d4794e"
                 },
                 {
                     "type": "execute",
@@ -136,43 +136,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd pdm-trust-loader && npm run build"
-                },
-                {
-                    "type": "remove",
-                    "target": "./apihub-root/fgt-wholesaler-wallet/loader"
-                },
-                {
-                    "type": "copy",
-                    "src": "./pdm-trust-loader/src",
-                    "target": "./apihub-root/fgt-wholesaler-wallet/loader",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "remove",
-                    "target": "./apihub-root/fgt-pharmacy-wallet/loader"
-                },
-                {
-                    "type": "copy",
-                    "src": "./pdm-trust-loader/src",
-                    "target": "./apihub-root/fgt-pharmacy-wallet/loader",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "remove",
-                    "target": "./apihub-root/fgt-mah-wallet/loader"
-                },
-                {
-                    "type": "copy",
-                    "src": "./pdm-trust-loader/src",
-                    "target": "./apihub-root/fgt-mah-wallet/loader",
-                    "options": {
-                        "overwrite": true
-                    }
+                    "cmd": "npm run build-deploy-loader"
                 }
             ]
         },
@@ -216,7 +180,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "793cde9bcf5568c16c3fe9d0160bb24c964c8ad8"
+                    "commit": "dfacf252514588f7d89c1ed986850b0f4f8ea641"
                 },
                 {
                     "type": "execute",
@@ -349,49 +313,9 @@
             ]
         }
     ],
-    "build-use-case": [
+    "build-deploy-loader": [
         {
-            "name": "pdm-theme-wallet-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd themes/pdm-theme && npm run build-dossier"
-                }
-            ]
-        },
-        {
-            "name": "Bundle_dsu-toolkit",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-dsu-toolkit && npm run prebuild"
-                }
-            ]
-        },
-        {
-            "name": "Bundle_dsu_wizard",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd fgt-dsu-wizard && npm run prebuild"
-                }
-            ]
-        },
-        {
-            "name": "Build Components",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-web-components && npm run build"
-                }
-            ]
-        },
-        {
-            "name": "Build and deploy PDM Trust Loader to WHolesaler & Pharmacy & mah",
+            "name": "Build and deploy PDM Trust Loader to Wholesaler and Pharmacy & mah",
             "src": ".",
             "actions": [
                 {
@@ -437,6 +361,94 @@
             ]
         },
         {
+            "name": "trust-loader-config",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./trust-loader-config/fgt-mah-wallet",
+                    "target": "./apihub-root/fgt-mah-wallet",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "./trust-loader-config/fgt-wholesaler-wallet",
+                    "target": "./apihub-root/fgt-wholesaler-wallet",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "./trust-loader-config/fgt-pharmacy-wallet",
+                    "target": "./apihub-root/fgt-pharmacy-wallet",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "generate-service-workers",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npx workbox generateSW"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/fgt-pharmacy-wallet/loader && npx workbox generateSW"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && npx workbox generateSW"
+                }
+            ]
+        }
+    ],
+    "build-use-case": [
+        {
+            "name": "pdm-theme-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/pdm-theme && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "Bundle_dsu-toolkit",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-dsu-toolkit && npm run prebuild"
+                }
+            ]
+        },
+        {
+            "name": "Bundle_dsu_wizard",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-dsu-wizard && npm run prebuild"
+                }
+            ]
+        },
+        {
+            "name": "Build Components",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd pdm-web-components && npm run build"
+                }
+            ]
+        },
+        {
             "name": "bind_ssapps_to_pharmaledger-wallet",
             "src": "",
             "actions": [
@@ -469,10 +481,6 @@
                     "options": {
                         "overwrite": true
                     }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/fgt-mah-wallet/apps-patch/fgt-mah-ssapp/readme"
                 }
             ]
         },
@@ -491,10 +499,6 @@
                     "options": {
                         "overwrite": true
                     }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/fgt-pharmacy-wallet/apps-patch/fgt-pharmacy-ssapp/readme"
                 }
             ]
         },
@@ -513,10 +517,16 @@
                     "options": {
                         "overwrite": true
                     }
-                },
+                }
+            ]
+        },
+        {
+            "name": "Build and deploy loader",
+            "src": "",
+            "actions": [
                 {
                     "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/fgt-wholesaler-wallet/apps-patch/fgt-wholesaler-ssapp/readme"
+                    "cmd": "npm run build-deploy-loader"
                 }
             ]
         },
@@ -534,7 +544,7 @@
             ]
         },
         {
-            "name": "copy-bundles",
+            "name": "generate-service-workers",
             "actions": [
                 {
                     "type": "execute",
@@ -639,10 +649,6 @@
                     "options": {
                         "overwrite": true
                     }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/readme"
                 }
             ]
         },
@@ -781,7 +787,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "./docs/bin/drawio_convert.sh"
+                    "cmd": "./workdocs/bin/drawio_convert.sh"
                 },
                 {
                     "type": "copy",
