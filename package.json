@@ -31,7 +31,8 @@
     "components-loader": "npm run build pdm-web-components && npm run build-deploy-loader",
     "freeze": "node ./node_modules/octopus/scripts/freeze dependencies install-mobile",
     "docs": "node ./node_modules/octopus/scripts/run docs devmode",
-    "incversion": "npm --no-git-tag-version version patch"
+    "incversion": "npm --no-git-tag-version version patch",
+    "environment": "cd ./bin/environment && node ./setup.js --app=traceability --exportCredentials=true"
   },
   "repository": {
     "type": "git",

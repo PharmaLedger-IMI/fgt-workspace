@@ -68,16 +68,58 @@
             order/shipment management ERP operations on to blockchain read/write operations (so that each company operates as
             usual as they already do today).</p>
 
+        <div id="credentials" style="display: none;">
+            <p>Below are the necessary credentials to login with some pre-generated data.</p>
+            <p>For each participant change only the ID. all the other credentials remain the same.</p>
+            <p>To view the contents of each Participant SSApp, use the keys below in the Dossier Explorer</p>
+            <table>
+                <tr>
+                    <th>Marketing Authorization Holder</th>
+                    <th>Wholesaler</th>
+                    <th>Pharmacy</th>
+                </tr>
+                <tr>
+                    <td id="id-mah"></td>
+                    <td id="id-whs"></td>
+                    <td id="id-pha"></td>
+                </tr>
+                <tr>
+                    <td id="key-mah"></td>
+                    <td id="key-whs"></td>
+                    <td id="key-pha"></td>
+                </tr>
+            </table>
+        </div>
+
         <p><span style="font-weight: bold;">WARNING:</span> Unstable software and environments. Use at your own risk! Data persistence at risk of un-expected reset!</p>
+
+        <h2>v0.3.0 Release notes 2021-06-23</h2>
+
+        <p>Technological architecture refactoring (using ionic components) complete;</p>
+        <p>Re-Design according to PharmaLedger's Style rules complete;</p>
+        <p>Communication between Participant Wallets achieved;</p>
+        <p>Creation and transmission of orders complete;</p>
+        <p>Creation and transmission of shipments complete;</p>
+        <p>Creation and transmission of orderLines complete - deprecated - will be removed for the next release!;</p>
+        <p>Creation and transmission of shipmentLines complete;</p>
+        <p>Auto Instantiation of Participant Wallets with dummy data complete (we await proper 'real' data to start recreating a proper business environment);</p>
+
+        <h3>Upcoming developments for the next release:</h3>
+        <p>Order And Shipment status update;</p>
+        <p>Final product state implementation (ADMINISTERED);</p>
+        <p>Traceability on the batch level after product is in final state;</p>
+        <p>Implicit stock evaluation for all chain of custody participants by the MAH for their products;</p>
+
+        <p>Milestones achieved on this release, compared to the plan 2021-01-20_ImplementationPlanMVPFinishedGoodsTraceability.docx:</p>
+        <ul>
+            <li>M1 OpenDSU Solution Concept Complete - 100% - PDM's Architecture concept/Framework complete and stable.</li>
+            <li>M2 Development Environment Setup Complete - complete 100% - development environment available at <a href="https://fgt-dev.pharmaledger.pdmfc.com/">https://fgt-dev.pharmaledger.pdmfc.com/</a>. (Data persistence and other configuration tasks still in progress).</li>
+            <li>M3 Business Test Environment Setup Complete - complete 100% - environment available at <a href="https://fgt.pharmaledger.pdmfc.com/">https://fgt.pharmaledger.pdmfc.com/</a>. (Data persistence and other configuration tasks still in progress).</li>
+        </ul>
 
         <h2>v0.2.1 Release notes 2021-05-03</h2>
 
         <p>Technological architecture refactoring (using ionic components). Data preloading instructions soon.</p>
-
-
-        <h2>v0.2.1 Release notes 2021-05-03</h2>
-
-        <p>Technological architecture refacoring (using ionic components). Data preloading instructions soon.</p>
 
         <h2>Release notes 2021-03-26</h2>
 
@@ -113,6 +155,39 @@
     <footer>
         v<!-- VERSION_START -->0.2.2-g84d1260<!-- VERSION_END --> &copy;&nbsp;2021 <a href="http://pharmaledger.eu">Pharmaledger.eu</a> - All Rights Reserved.
     </footer>
+
+    <script type="application/javascript">
+
+        const displayCredentials = function(credentials){
+            const byWallet = credentials.reduce((accum, cred) => {
+                accum[cred.type] = accum[cred.type] || [];
+                accum[cred.type].push(...cred.created);
+                return accum;
+            }, {});
+
+            document.getElementById('id-mah').innerText = byWallet['fgt-mah-wallet'][0].id;
+            document.getElementById('id-whs').innerText = byWallet['fgt-wholesaler-wallet'][0].id;
+            document.getElementById('id-pha').innerText = byWallet['fgt-pharmacy-wallet'][0].id;
+
+            document.getElementById('key-mah').innerText = byWallet['fgt-mah-wallet'][0].ssi;
+            document.getElementById('key-whs').innerText = byWallet['fgt-wholesaler-wallet'][0].ssi;
+            document.getElementById('key-pha').innerText = byWallet['fgt-pharmacy-wallet'][0].ssi;
+
+            document.getElementById('credentials').style.display = "block";
+        }
+
+        const getCredentials = function(){
+            const credentialsFile = new XMLHttpRequest();
+            credentialsFile.open("GET", './credentials.json', true);
+            credentialsFile.send();
+            credentialsFile.onreadystatechange = function() {
+                if (credentialsFile.readyState === 4 && credentialsFile.status === 200)
+                    displayCredentials(JSON.parse(credentialsFile.responseText));
+            }
+        }
+
+        getCredentials();
+    </script>
 </body>
 
 </html>

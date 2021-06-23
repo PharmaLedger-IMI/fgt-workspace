@@ -73,9 +73,9 @@ export class ManagedOrder implements CreateManageView{
 
   @Prop({attribute: "order-ref", mutable: true}) orderRef?: string;
   @Prop({attribute: 'order-lines-json', mutable: true}) orderLines: string;
-  @Prop({attribute: 'identity', mutable: true}) identity;
+  @Prop({attribute: 'identity'}) identity;
 
-  @Prop({attribute: 'order-type', mutable: true}) orderType: string = ORDER_TYPE.ISSUED;
+  @Prop({attribute: 'order-type'}) orderType: string = ORDER_TYPE.ISSUED;
 
   // strings
   @Prop({attribute: "create-title-string"}) titleString: string = "Title String"
@@ -234,6 +234,13 @@ export class ManagedOrder implements CreateManageView{
     if (newVal.startsWith('@'))
       return;
     this.lines = JSON.parse(newVal).map(o => new OrderLine(o.gtin, o.quantity, o.requesterId, o.senderId));
+  }
+
+  @Watch('orderType')
+  async updateType(newVal){
+    if (newVal.startsWith('@'))
+      return;
+    console.log(newVal);
   }
 
   @Method()

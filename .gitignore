@@ -17,6 +17,7 @@ apihub-root/pdm-trust-loader/**
 apihub-root/dossier-explorer/**
 apihub-root/messaging
 apihub-root/seedsBackup
+apihub-root/credentials.json
 cardinal
 
 documentation/bin/draw.io.path

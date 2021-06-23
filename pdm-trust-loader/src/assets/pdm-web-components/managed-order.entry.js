@@ -167,6 +167,11 @@ const ManagedOrder = class {
       return;
     this.lines = JSON.parse(newVal).map(o => new OrderLine(o.gtin, o.quantity, o.requesterId, o.senderId));
   }
+  async updateType(newVal) {
+    if (newVal.startsWith('@'))
+      return;
+    console.log(newVal);
+  }
   async reset() {
     if (this.isCreate() && this.lines && this.orderLines !== "[]") {
       this.order = undefined;
@@ -305,7 +310,8 @@ const ManagedOrder = class {
   get element() { return getElement(this); }
   static get watchers() { return {
     "orderRef": ["refresh"],
-    "orderLines": ["updateLines"]
+    "orderLines": ["updateLines"],
+    "orderType": ["updateType"]
   }; }
 };
 __decorate([

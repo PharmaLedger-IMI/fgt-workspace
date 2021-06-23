@@ -78,8 +78,8 @@ export class ManagedShipment implements CreateManageView{
   // Functional Props
   @Prop({attribute: "shipment-ref", mutable: true}) shipmentRef?: string;
   @Prop({attribute: "order-json", mutable: true}) orderJSON?: string = undefined;
-  @Prop({attribute: 'identity', mutable: true}) identity;
-  @Prop({attribute: 'shipment-type', mutable: true}) shipmentType: string = SHIPMENT_TYPE.ISSUED;
+  @Prop({attribute: 'identity'}) identity;
+  @Prop({attribute: 'shipment-type'}) shipmentType: string = SHIPMENT_TYPE.ISSUED;
 
   // strings
 
@@ -123,6 +123,7 @@ export class ManagedShipment implements CreateManageView{
   private directoryManager: WebManager = undefined;
   @State() products?: string[] = undefined;
   @State() requesters?: string[] = undefined;
+  @State() suppliers?: string[] = undefined;
 
   private issuedShipmentManager: WebManager = undefined;
   private receivedShipmentManager: WebManager = undefined;
@@ -332,18 +333,18 @@ export class ManagedShipment implements CreateManageView{
 
     const getSender = function() {
       const getFrom = function () {
+        const directory = self.getType() === SHIPMENT_TYPE.ISSUED ? self.requesters : self.suppliers;
         if (self.getType() === SHIPMENT_TYPE.ISSUED && self.requesters && isCreate) {
-
           return (
               <ion-select name="input-senderId" interface="popover" interfaceOptions={options}
                           class="sender-select"
                           disabled={!isCreate} value={!isCreate ? self.participantId : ''}>
-                {...self.requesters.map(s => (<ion-select-option value={s}>{s}</ion-select-option>))}
+                {...directory.map(s => (<ion-select-option value={s}>{s}</ion-select-option>))}
               </ion-select>
           )
-        } else if (isCreate || self.getType() === SHIPMENT_TYPE.RECEIVED) {
+        } else if (self.getType() === SHIPMENT_TYPE.RECEIVED) {
           return (
-            <ion-input name="input-senderId" disabled={true} value={self.getType() === SHIPMENT_TYPE.RECEIVED ? self.participantId : self.identity.id}></ion-input>
+            <ion-input name="input-senderId" disabled={true} value={self.getType() === SHIPMENT_TYPE.RECEIVED ? self.shipment.senderId : self.identity.id}></ion-input>
           )
         } else {
           <ion-skeleton-text animated></ion-skeleton-text>;
@@ -360,14 +361,14 @@ export class ManagedShipment implements CreateManageView{
 
     const getRequester = function(){
       const getTo = function(){
-        if (self.getType() === SHIPMENT_TYPE.ISSUED && self.requesters && isCreate) {
+        if (self.getType() === SHIPMENT_TYPE.ISSUED && self.requesters) {
           const options = {
             cssClass: 'product-select'
           };
           return (
             <ion-select name="input-requesterId" interface="popover" interfaceOptions={options}
-                        class="requester-select" disabled={isCreate && self.order && !self.order.requesterID}
-                        value={isCreate ? (self.order ? self.order.requesterId : self.participantId) : ''}>
+                        class="requester-select" disabled={isCreate && self.order && !self.order.requesterID || !isCreate}
+                        value={isCreate ? (self.order ? self.order.requesterId : self.participantId) : (self.shipment.requesterId)}>
               {...self.requesters.map(s => (<ion-select-option value={s}>{s}</ion-select-option>))}
             </ion-select>
           )

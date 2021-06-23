@@ -65,6 +65,7 @@ const ManagedShipment = class {
     this.directoryManager = undefined;
     this.products = undefined;
     this.requesters = undefined;
+    this.suppliers = undefined;
     this.issuedShipmentManager = undefined;
     this.receivedShipmentManager = undefined;
     this.layoutComponent = undefined;
@@ -245,11 +246,12 @@ const ManagedShipment = class {
     };
     const getSender = function () {
       const getFrom = function () {
+        const directory = self.getType() === SHIPMENT_TYPE.ISSUED ? self.requesters : self.suppliers;
         if (self.getType() === SHIPMENT_TYPE.ISSUED && self.requesters && isCreate) {
-          return (h("ion-select", { name: "input-senderId", interface: "popover", interfaceOptions: options, class: "sender-select", disabled: !isCreate, value: !isCreate ? self.participantId : '' }, self.requesters.map(s => (h("ion-select-option", { value: s }, s)))));
+          return (h("ion-select", { name: "input-senderId", interface: "popover", interfaceOptions: options, class: "sender-select", disabled: !isCreate, value: !isCreate ? self.participantId : '' }, directory.map(s => (h("ion-select-option", { value: s }, s)))));
         }
-        else if (isCreate || self.getType() === SHIPMENT_TYPE.RECEIVED) {
-          return (h("ion-input", { name: "input-senderId", disabled: true, value: self.getType() === SHIPMENT_TYPE.RECEIVED ? self.participantId : self.identity.id }));
+        else if (self.getType() === SHIPMENT_TYPE.RECEIVED) {
+          return (h("ion-input", { name: "input-senderId", disabled: true, value: self.getType() === SHIPMENT_TYPE.RECEIVED ? self.shipment.senderId : self.identity.id }));
         }
         else {
           h("ion-skeleton-text", { animated: true });
@@ -259,11 +261,11 @@ const ManagedShipment = class {
     };
     const getRequester = function () {
       const getTo = function () {
-        if (self.getType() === SHIPMENT_TYPE.ISSUED && self.requesters && isCreate) {
+        if (self.getType() === SHIPMENT_TYPE.ISSUED && self.requesters) {
           const options = {
             cssClass: 'product-select'
           };
-          return (h("ion-select", { name: "input-requesterId", interface: "popover", interfaceOptions: options, class: "requester-select", disabled: isCreate && self.order && !self.order.requesterID, value: isCreate ? (self.order ? self.order.requesterId : self.participantId) : '' }, self.requesters.map(s => (h("ion-select-option", { value: s }, s)))));
+          return (h("ion-select", { name: "input-requesterId", interface: "popover", interfaceOptions: options, class: "requester-select", disabled: isCreate && self.order && !self.order.requesterID || !isCreate, value: isCreate ? (self.order ? self.order.requesterId : self.participantId) : (self.shipment.requesterId) }, self.requesters.map(s => (h("ion-select-option", { value: s }, s)))));
         }
         else if (self.getType() === SHIPMENT_TYPE.RECEIVED) {
           return (h("ion-input", { name: "input-requesterId", disabled: true, value: self.shipment.requesterId }));
