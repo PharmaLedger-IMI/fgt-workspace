@@ -1,10 +1,10 @@
 process.env.NO_LOGS = true;
 
-const { APPS, getCredentials } = require('./credentials/credentials');
+const { APPS, getCredentials } = require('./credentials/credentials2');
 
 const getProducts = require('./products/productsRandom');
 const { getStockFromProductsAndBatchesObj, getFullStockFromProductsAndBatchesObj } = require('./stocks/stocksRandomFromProducts');
-const { getDummyWholesalers } = require('./credentials/credentials');
+const { getDummyWholesalers } = require('./credentials/credentials2');
 
 const { ROLE } = require('../../fgt-dsu-wizard/model/DirectoryEntry');
 

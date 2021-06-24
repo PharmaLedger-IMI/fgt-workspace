@@ -8,7 +8,7 @@ const getIssuedShipmentManager = require("../../fgt-dsu-wizard/managers/IssuedSh
 const { getParticipantManager, getProductManager, getBatchManager, getOrderLineManager, getShipmentLineManager, getStockManager, getReceivedOrderManager, getReceivedShipmentManager} = require('../../fgt-dsu-wizard/managers');
 const { impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 
-const { APPS } = require('./credentials/credentials');
+const { APPS } = require('./credentials/credentials2');
 
 const defaultOps = {
     app: "fgt-mah-wallet",
