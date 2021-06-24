@@ -71,7 +71,7 @@ class StockManager extends Manager{
         let self = this;
         self.updateRecord(gtin, newStock, (err) => {
             if (err)
-                return self._err(`Could not update product with gtin ${gtin}`, err, callback);
+                return self._err(`Could not update stock with gtin ${gtin}: ${err.message}`, err, callback);
             console.log(`Stock for Product ${gtin} updated`);
             callback(undefined, newStock)
         });
@@ -114,7 +114,7 @@ class StockManager extends Manager{
 
             self.update(gtin, stock, (err) => {
                 if (err)
-                    return self._err(`Could not manage stock for ${gtin}`, err, callback);
+                    return self._err(`Could not manage stock for ${gtin}: ${err.message}`, err, callback);
                 console.log(`Updated Stock for ${gtin} batch ${batch.batchNumber}. ${self.serialization && serials ? serials.join(', ') : ''}`);
                 callback(undefined, serials || batch.serialNumbers || batch.quantity);
             });
