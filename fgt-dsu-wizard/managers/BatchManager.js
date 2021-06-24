@@ -94,8 +94,11 @@ class BatchManager extends Manager{
                 self.stockManager.manage(product, batch, (err) => {
                     if (err)
                         return self._err(`Error Updating Stock for ${product.gtin} batch ${batch.batchNumber}`, err, callback);
-                    console.log(`Stock for ${product.gtin} batch ${batch.batchNumber} updated`)
-                    callback(undefined, keySSI, path);
+                    console.log(`Stock for ${product.gtin} batch ${batch.batchNumber} updated`);
+                    setTimeout(() => {
+                        callback(undefined, keySSI, path);
+                    }, 500);
+
                 })
             });
         });
