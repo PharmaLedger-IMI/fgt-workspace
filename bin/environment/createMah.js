@@ -121,16 +121,36 @@ const setupManager = function(participantManager, callback){
 }
 
 const setup = function(participantManager, products, batches, callback){
+    const db = participantManager.db;
+    if (!db)
+        return callback(`database is not initialized`);
+
+    const newCallback = function(...args){
+        db.cancelBatch((err, result) => {
+            if (err)
+                return callback(`Could not even cancel batch`);
+            console.log(`Cancel batch succeeded`, result);
+            callback(...args);
+        })
+    }
+
+    console.log(`Beginning batch operation on database`);
+    db.beginBatch();
     setupProducts(participantManager, products, batches, (err, productsObj) => {
         if (err)
-            return callback(err);
+            return newCallback(err);
         setupBatches(participantManager, productsObj, batches, (err, batchesObj) => {
             if (err)
-                return callback(err);
+                return newCallback(err);
             setupManager(participantManager, (err) => {
                 if (err)
-                    return callback(err);
-                callback(undefined, productsObj, batchesObj);
+                    return newCallback(err);
+                db.commitBatch((err) => {
+                    if (err)
+                        return newCallback(err);
+                    console.log(`Updates to db committed`);
+                    callback(undefined, productsObj, batchesObj);
+                });
             });
         });
     });
