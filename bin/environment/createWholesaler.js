@@ -9,7 +9,7 @@ const getIssuedShipmentManager = require("../../fgt-dsu-wizard/managers/IssuedSh
 const { getIssuedOrderManager, getParticipantManager, getReceivedOrderManager, getStockManager } = require('../../fgt-dsu-wizard/managers');
 const { impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 
-const { APPS } = require('./credentials/credentials');
+const { APPS } = require('./credentials/credentials2');
 
 const defaultOps = {
     app: "fgt-wholesaler-wallet",

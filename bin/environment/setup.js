@@ -1,6 +1,6 @@
 process.env.NO_LOGS = true;
 
-const { APPS } = require('./credentials/credentials');
+const { APPS } = require('./credentials/credentials2');
 const { argParser } = require('./utils');
 
 const {create} = require('./setupEnvironment');
