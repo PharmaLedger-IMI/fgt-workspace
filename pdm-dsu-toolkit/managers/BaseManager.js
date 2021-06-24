@@ -118,11 +118,11 @@ class BaseManager {
 
     /**
      * Returns a cached {@link Manager}
-     * @param {class} manager the class ex: 'getManager(SomethingManager)'
+     * @param {class | string} manager the class ex: 'getManager(SomethingManager)'
      * @throws error when the requested manager is not cached
      */
     getManager(manager){
-        const name = manager.name;
+        const name = typeof manager === 'string' ? manager : manager.name;
         if (!(name in this.managerCache))
             throw new Error("No manager cached " + name);
         return this.managerCache[name];
