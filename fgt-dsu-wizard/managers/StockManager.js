@@ -45,6 +45,7 @@ class StockManager extends Manager{
         }
         let self = this;
         stock.quantity = stock.getQuantity();
+        console.log(`Adding Stock for ${gtin} batches: ${stock.batches.map(b => b.batchNumber).join(', ')}`);
         self.insertRecord(gtin, stock, (err) => {
             if (err)
                 return self._err(`Could not insert record with gtin ${gtin} on table ${self.tableName}`, err, callback);

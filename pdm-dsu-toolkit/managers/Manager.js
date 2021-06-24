@@ -529,6 +529,25 @@ class Manager{
     }
 
     /**
+     * reads ssi for that gtin in the db. loads is and reads the info at '/info'
+     * @param {string} key
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
+     * @param {function(err, object
+     * |KeySSI, Archive?)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
+     */
+    getOneStripped(key,  callback) {
+        let self = this;
+        self.getRecord(key, (err, record) => {
+            if (err)
+                return self._err(`Could not load record with key ${key} on table ${self._getTableName()}`, err, callback);
+            delete record.pk;
+            delete record.__timestamp;
+            delete record.__version ;
+            callback(undefined, record);
+        });
+    }
+
+    /**
      * Removes a product from the list (does not delete/invalidate DSU, simply 'forgets' the reference)
      * @param {string|number} key
      * @param {function(err)} callback
@@ -714,13 +733,7 @@ class Manager{
                 return self._err(`Could not insert record with key ${key} in table ${tableName}`, err, callback);
             if (!self.indexes)
                 return callback(undefined);
-            self._indexTable(...self.indexes, (err, updated) => {
-                if (err)
-                    return self._err(`Could not update table ${tableName}'s indexes`, err, callback);
-                if (updated)
-                    updated.forEach(index => console.log(`Index ${index} created on table ${tableName}`));
-                callback(undefined);
-            });
+            callback(undefined);
         });
     }
 
