@@ -9,7 +9,7 @@ const { getParticipantManager, getIssuedOrderManager, getStockManager, getReceiv
 const { Order, OrderLine } = require('../../fgt-dsu-wizard/model');
 const { generateRandomInt, impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 
-const { APPS } = require('./credentials/credentials2');
+const { APPS } = require('./credentials/credentials3');
 
 const defaultOps = {
     app: "fgt-pharmacy-wallet",

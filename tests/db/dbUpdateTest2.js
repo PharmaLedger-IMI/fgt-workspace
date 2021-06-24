@@ -1,5 +1,5 @@
 const {create} = require('../../bin/environment/createMah');
-const {APPS, getCredentials} = require('../../bin/environment/credentials/credentials2');
+const {APPS, getCredentials} = require('../../bin/environment/credentials/credentials3');
 const {getProductManager, getBatchManager} = require('../../fgt-dsu-wizard/managers');
 const {Product, Batch, Stock, utils} = require('../../fgt-dsu-wizard/model');
 
