@@ -119,6 +119,18 @@
             <li>M3 Business Test Environment Setup Complete - complete 100% - environment available at <a href="https://fgt.pharmaledger.pdmfc.com/">https://fgt.pharmaledger.pdmfc.com/</a>. (Data persistence and other configuration tasks still in progress).</li>
         </ul>
 
+        <p>Known bugs:</p>
+        <ul>
+            <li>Login page does not present input fields: Happens rarely, refresh the browser. Will be handled next version;</li>
+            <li>Order/Shipment screens fail to load directory (suppliers, requesters): Happens occasionally, refresh the browser and re-login. Will be handled next version;</li>
+            <li>Other issues (still in development, not considered bugs):
+                <ul>
+                    <li>Some buttons are enabled when they shouldn't be and clicking them (without the necessary preconditions) will throw an error. eg: Create a shipment with products not confirmed or that you have no stock for;</li>
+                    <li>Some screens still allows for 'illegal actions': eg: a 'Manage issued shipment' screen will still allow adding products, which it shouldn't;</li>
+                </ul>
+            </li>
+        </ul>
+
         <h2>v0.2.1 Release notes 2021-05-03</h2>
 
         <p>Technological architecture refactoring (using ionic components). Data preloading instructions soon.</p>
@@ -155,7 +167,7 @@
         <p>PDM welcomes technical contributions at <a href="https://github.com/PharmaLedger-IMI/fgt-workspace">https://github.com/PharmaLedger-IMI/fgt-workspace</a></p>
     </div>
     <footer>
-        v<!-- VERSION_START -->0.3.0-gdfed4d7<!-- VERSION_END --> &copy;&nbsp;2021 <a href="http://pharmaledger.eu">Pharmaledger.eu</a> - All Rights Reserved.
+        v<!-- VERSION_START -->0.3.0-g06c5a46<!-- VERSION_END --> &copy;&nbsp;2021 <a href="http://pharmaledger.eu">Pharmaledger.eu</a> - All Rights Reserved.
     </footer>
 
     <script type="application/javascript">

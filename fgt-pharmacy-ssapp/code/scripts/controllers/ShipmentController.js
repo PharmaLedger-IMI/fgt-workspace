@@ -37,7 +37,7 @@ export default class ShipmentController extends LocalizedController{
                     return;
                 }
 
-                const newRef = `${state.mode === 'issued' ? state.shipment.senderId : state.shipment.requesterId}-${state.shipment.shipmentId}`;
+                const newRef = `${state.mode === 'issued' ? state.shipment.requesterId : state.shipment.senderId}-${state.shipment.shipmentId}`;
                 if (newRef === self.model.shipmentRef)
                     return self.shipmentEl.refresh();
                 self.model.shipmentRef = newRef;

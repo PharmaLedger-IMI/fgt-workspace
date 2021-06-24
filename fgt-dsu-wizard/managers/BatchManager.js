@@ -25,7 +25,7 @@ const getStockManager = require('./StockManager');
  */
 class BatchManager extends Manager{
     constructor(participantManager, callback) {
-        super(participantManager, DB.batches, ['batchNumber', 'expiry'], callback);
+        super(participantManager, DB.batches, ['gtin', 'batchNumber', 'expiry'], callback);
         this.stockManager = getStockManager(participantManager);
         this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
         this.batchService = new (require('../services/BatchService'))(ANCHORING_DOMAIN);

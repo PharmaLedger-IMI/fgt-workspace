@@ -46,7 +46,7 @@
   },
   "homepage": "https://github.com/PharmaLedger-IMI/fgt-workspace#readme",
   "engines": {
-    "node": "~12",
+    "node": "~14",
     "npm": "~6"
   },
   "dependencies": {
