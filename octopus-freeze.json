@@ -23,13 +23,13 @@
         },
         {
             "name": "privatesky",
-            "src": "http://github.com/privatesky/privatesky.git",
+            "src": "http://github.com/privatesky/psk-release.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "4cab7e1c0b1620bf2c32a0abf5b00a31ea6b26e5"
+                    "commit": "5daa5ff0354d6ad533190d88a75ac5aa7a7061b1"
                 },
                 {
                     "type": "execute",
@@ -42,7 +42,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd privatesky && npm run build && npm run prepare-release"
+                    "cmd": "cd privatesky && npm run build"
                 }
             ]
         },
