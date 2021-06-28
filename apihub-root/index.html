@@ -11,7 +11,6 @@
         : '';
         document.title = document.title + plEnvironment;
     </script>
-
 </head>
 <body>
     <div class="center-aligned-controls vertical-align">
@@ -82,22 +81,25 @@
                 </ul></li>
             </ul>
             <p>For each participant change only the ID. all the other credentials remain the same.</p>
-            <p>To view the contents of each Participant SSApp, use the keys below in the Dossier Explorer</p>
+            <p>To view the contents of each Participant SSApp, use the <span style="font-weight: bold;">Id</span> to LOGIN, and the keySSI to explore DSU details in the <img src="assets/images/cube.png" style="height: 1em;"><a href="/dsu-explorer/loader/" target="_blank">DSU Explorer</a> (using +Add, Receive Dossier, choosing a name for it, and then "Enter Dossier SEED" to enter the keySSI). (Note that keySSIs are <span style="font-weight: bold;">private secrets</span>, unless you share them.)</p>
             <table>
                 <tr>
+                    <th></th>
                     <th>Marketing Authorization Holder</th>
                     <th>Wholesaler</th>
                     <th>Pharmacy</th>
                 </tr>
                 <tr>
-                    <td id="id-mah"></td>
-                    <td id="id-whs"></td>
-                    <td id="id-pha"></td>
+                    <th>Id</th>
+                    <td style="border-style: solid;" id="id-mah"></td>
+                    <td style="border-style: solid;" id="id-whs"></td>
+                    <td style="border-style: solid;" id="id-pha"></td>
                 </tr>
-                <tr>
-                    <td id="key-mah"></td>
-                    <td id="key-whs"></td>
-                    <td id="key-pha"></td>
+                <tr style="word-break: break-all;">
+                    <th>KeySSI</th>
+                    <td style="border-style: solid;" id="key-mah"></td>
+                    <td style="border-style: solid;" id="key-whs"></td>
+                    <td style="border-style: solid;" id="key-pha"></td>
                 </tr>
             </table>
         </div>
@@ -106,7 +108,7 @@
 
         <p><span style="font-weight: bold;">WARNING:</span> Unstable software and environments. Use at your own risk! Data persistence at risk of un-expected reset!</p>
 
-        <h2>v0.3.0 Release notes 2021-06-23</h2>
+        <h2>v0.3.1 Release notes 2021-06-28</h2>
 
         <p>Technological architecture refactoring (using ionic components) complete;</p>
         <p>Re-Design according to PharmaLedger's Style rules complete;</p>
