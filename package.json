@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "dev-install": "node ./bin/mkDevEnv.js && npm install",
-    "postinstall": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"npm run do-install\"",
+    "postinstall": "cp apihub-root/index.html apihub-root/index.bak && node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"npm run do-install\"",
     "do-install": "node ./node_modules/octopus/scripts/ensureFreezeState.js && node ./bin/version.js && node ./node_modules/octopus/scripts/run",
     "install-mobile": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run install-mobile\"",
     "add": "node ./node_modules/octopus/scripts/add",
