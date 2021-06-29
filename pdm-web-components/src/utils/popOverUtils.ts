@@ -73,6 +73,87 @@ export async function getBarCodePopOver(props, evt){
  *
  * @memberOf PopOver
  */
+const SINGLE_INPUT_POPOVER_ELEMENT = "single-input-popover";
+
+/**
+ * @constructor
+ * @memberOf PopOver
+ * @private
+ */
+function defineSingleInputPopOverContent(){
+  if (!!customElements.get(SINGLE_INPUT_POPOVER_ELEMENT))
+    return;
+
+  customElements.define(SINGLE_INPUT_POPOVER_ELEMENT, class extends HTMLElement {
+    connectedCallback() {
+      const contentEl = this;
+      const popOverElement: any = contentEl.closest('ion-popover');
+      if (!popOverElement || !popOverElement.componentProps)
+        return console.log(`No Properties passed to Single Input pop over`);
+      const {message, placeholder} = popOverElement.componentProps;
+
+      const getMessage= function(){
+        if (message)
+          return `<ion-label>${message}</ion-label>`;
+        return '';
+      }
+
+      this.innerHTML = `
+<ion-content>
+    <ion-item lines="none">
+        ${getMessage()}
+        <ion-input type="text" placeholder="${placeholder}"></ion-input>
+        <ion-button slot="end" color="primary" fill="clear" class="ion-padding-horizontal">
+            <ion-icon slot="icon-only" name="add-circle"></ion-icon>
+        </ion-button>
+    </ion-item>
+</ion-content>`;
+
+      const input: HTMLFormElement = this.querySelector('ion-input');
+      this.querySelector('ion-button').addEventListener('click', () => {
+        popOverElement.dismiss(undefined, input.value);
+      });
+    }
+  });
+}
+/**
+ * Shows a popover with the barcode/2dMatrix etc with the provided props
+ * @param {event} [evt] the click event so the popover show in the correct place. if ommited will show in the center
+ * @param {string} message
+ * @param {string} placeholder
+ * @return {Promise<HTMLIonPopoverElement>}
+ * @memberOf PopOver
+ */
+export async function getSingleInputPopOver(evt, message: string, placeholder?: string): Promise<any>{
+
+  if (!placeholder){
+    placeholder = message;
+    message = ''
+  }
+
+  defineSingleInputPopOverContent();
+  const popover: any = Object.assign(document.createElement('ion-popover'), {
+    component: SINGLE_INPUT_POPOVER_ELEMENT,
+    cssClass: 'single-input-popover',
+    translucent: true,
+    event: evt,
+    showBackdrop: false,
+    animated: true,
+    componentProps: {
+      message: message,
+      placeholder: placeholder
+    },
+    backdropDismiss: true,
+  });
+  document.body.appendChild(popover);
+  await popover.present();
+  return popover;
+}
+
+/**
+ *
+ * @memberOf PopOver
+ */
 const PRODUCT_POPOVER_ELEMENT = "product-pop-over";
 
 /**

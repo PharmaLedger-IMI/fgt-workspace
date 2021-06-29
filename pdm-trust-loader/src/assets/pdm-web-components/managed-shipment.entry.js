@@ -2,7 +2,7 @@ import { r as registerInstance, e as createEvent, h, f as Host, g as getElement 
 import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-a462b2bc.js';
 import { W as WebManagerService } from './WebManagerService-e3623754.js';
-import { a as getDirectoryProducts, c as getDirectoryRequesters, d as getProductPopOver } from './popOverUtils-b2c08a50.js';
+import { a as getDirectoryProducts, c as getDirectoryRequesters, e as getProductPopOver, d as getSingleInputPopOver } from './popOverUtils-13db4611.js';
 
 const managedShipmentCss = ":host{display:block}managed-shipment{--color:var(--ion-color-primary-contrast)}managed-shipment ion-item ion-grid{width:100%}ion-card-title{color:var(--ion-color-primary)}ion-card-subtitle{color:var(--ion-color-secondary)}ion-item.selected{--color:var(--ion-color-success)}ion-item.unnecessary{--color:red}";
 
@@ -222,6 +222,14 @@ const ManagedShipment = class {
     this.currentGtin = undefined;
     this.currentQuantity = 0;
   }
+  async addToDirectory(evt, message, setter) {
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    const popover = await getSingleInputPopOver(evt, message);
+    const { role } = await popover.onWillDismiss();
+    if (role && role !== 'backdrop')
+      setter(role);
+  }
   selectOrderLine(evt) {
     evt.preventDefault();
     evt.stopImmediatePropagation();
@@ -246,33 +254,50 @@ const ManagedShipment = class {
     };
     const getSender = function () {
       const getFrom = function () {
+        const result = [];
         const directory = self.getType() === SHIPMENT_TYPE.ISSUED ? isCreate ? self.suppliers : self.requesters : self.suppliers;
         if (self.getType() === SHIPMENT_TYPE.ISSUED && self.requesters && isCreate) {
-          return (h("ion-select", { name: "input-senderId", interface: "popover", interfaceOptions: options, class: "sender-select", disabled: !isCreate, value: !isCreate ? self.participantId : '' }, directory.map(s => (h("ion-select-option", { value: s }, s)))));
+          result.push(h("ion-select", { name: "input-senderId", interface: "popover", interfaceOptions: options, class: "sender-select", disabled: !isCreate, value: !isCreate ? self.participantId : '' }, directory.map(s => (h("ion-select-option", { value: s }, s)))), h("ion-button", { slot: "end", color: "medium", fill: "clear", class: "ion-padding-vertical", onClick: (evt) => self.addToDirectory.call(self, evt, "Please add a new SenderId", (result) => {
+              directory.push(result);
+              const input = self.element.querySelector(`input[name="input-senderId"]`).closest('ion-select');
+              if (input)
+                input.value = result;
+            }) }, h("ion-icon", { slot: "icon-only", name: "add-circle" })));
         }
         else if (self.getType() === SHIPMENT_TYPE.RECEIVED) {
-          return (h("ion-input", { name: "input-senderId", disabled: true, value: self.shipment ? self.shipment.senderId : self.identity.id }));
+          result.push(h("ion-input", { name: "input-senderId", disabled: true, value: self.shipment ? self.shipment.senderId : self.identity.id }));
         }
         else {
-          h("ion-skeleton-text", { animated: true });
+          result.push(h("ion-skeleton-text", { animated: true }));
         }
+        return result;
       };
       return (h("ion-item", { lines: "none", disabled: false }, h("ion-label", { position: "stacked" }, self.fromString), getFrom()));
     };
     const getRequester = function () {
       const getTo = function () {
+        const isDisabled = isCreate && self.order && !self.order.requesterID || !isCreate;
+        const result = [];
         if (self.getType() === SHIPMENT_TYPE.ISSUED && self.requesters) {
           const options = {
             cssClass: 'product-select'
           };
-          return (h("ion-select", { name: "input-requesterId", interface: "popover", interfaceOptions: options, class: "requester-select", disabled: isCreate && self.order && !self.order.requesterID || !isCreate, value: isCreate ? (self.order ? self.order.requesterId : self.participantId) : (self.shipment ? self.shipment.requesterId : self.participantId) }, self.requesters.map(s => (h("ion-select-option", { value: s }, s)))));
+          result.push(h("ion-select", { name: "input-requesterId", interface: "popover", interfaceOptions: options, class: "requester-select", disabled: isDisabled, value: isCreate ? (self.order ? self.order.requesterId : self.participantId) : (self.shipment ? self.shipment.requesterId : self.participantId) }, self.requesters.map(s => (h("ion-select-option", { value: s }, s)))));
+          if (!isDisabled)
+            result.push(h("ion-button", { slot: "start", color: "medium", class: "ion-padding-vertical", fill: "clear", onClick: (evt) => self.addToDirectory.call(self, evt, "Please add a new RequesterId", (result) => {
+                self.requesters.push(result);
+                const input = self.element.querySelector(`input[name="input-requesterId"]`).closest('ion-select');
+                if (input)
+                  input.value = result;
+              }) }, h("ion-icon", { slot: "icon-only", name: "add-circle" })));
         }
         else if (self.getType() === SHIPMENT_TYPE.RECEIVED) {
-          return (h("ion-input", { name: "input-requesterId", disabled: true, value: self.shipment.requesterId }));
+          result.push(h("ion-input", { name: "input-requesterId", disabled: true, value: self.shipment.requesterId }));
         }
         else {
-          return h("ion-skeleton-text", { animated: true });
+          result.push(h("ion-skeleton-text", { animated: true }));
         }
+        return result;
       };
       return (h("ion-item", { lines: "none", disabled: false }, h("ion-label", { position: "stacked" }, self.to_String), getTo()));
     };

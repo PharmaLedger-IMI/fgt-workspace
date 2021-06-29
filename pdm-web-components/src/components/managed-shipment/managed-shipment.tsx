@@ -7,6 +7,7 @@ import {
   getProductPopOver,
   getDirectoryProducts,
   getDirectoryRequesters,
+  getSingleInputPopOver
 } from "../../utils/popOverUtils";
 
 const SHIPMENT_TYPE = {
@@ -298,6 +299,15 @@ export class ManagedShipment implements CreateManageView{
     this.currentQuantity = 0;
   }
 
+  private async addToDirectory(evt, message, setter){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    const popover = await getSingleInputPopOver(evt, message);
+    const {role} = await popover.onWillDismiss();
+    if (role && role !== 'backdrop')
+      setter(role);
+  }
+
   private selectOrderLine(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
@@ -333,58 +343,83 @@ export class ManagedShipment implements CreateManageView{
 
     const getSender = function() {
       const getFrom = function () {
+        const result = [];
         const directory = self.getType() === SHIPMENT_TYPE.ISSUED ? isCreate ? self.suppliers : self.requesters : self.suppliers;
         if (self.getType() === SHIPMENT_TYPE.ISSUED && self.requesters && isCreate) {
-          return (
+          result.push(
               <ion-select name="input-senderId" interface="popover" interfaceOptions={options}
                           class="sender-select"
                           disabled={!isCreate} value={!isCreate ? self.participantId : ''}>
                 {...directory.map(s => (<ion-select-option value={s}>{s}</ion-select-option>))}
-              </ion-select>
+              </ion-select>,
+              <ion-button slot="end" color="medium" fill="clear" class="ion-padding-vertical" onClick={(evt) => self.addToDirectory.call(self, evt, "Please add a new SenderId",  (result) => {
+                directory.push(result);
+                const input = self.element.querySelector(`input[name="input-senderId"]`).closest('ion-select');
+                if (input)
+                  input.value = result;
+              })}>
+                <ion-icon slot="icon-only" name="add-circle"></ion-icon>
+              </ion-button>
           )
         } else if (self.getType() === SHIPMENT_TYPE.RECEIVED) {
-          return (
+          result.push (
             <ion-input name="input-senderId" disabled={true} value={self.shipment ? self.shipment.senderId : self.identity.id}></ion-input>
           )
         } else {
-          <ion-skeleton-text animated></ion-skeleton-text>;
+          result.push(<ion-skeleton-text animated></ion-skeleton-text>);
         }
+
+        return result;
       };
 
       return (
         <ion-item lines="none" disabled={false}>
           <ion-label position="stacked">{self.fromString}</ion-label>
-          {getFrom()}
+          {...getFrom()}
         </ion-item>
       )
     }
 
     const getRequester = function(){
       const getTo = function(){
+        const isDisabled = isCreate && self.order && !self.order.requesterID || !isCreate;
+        const result = [];
         if (self.getType() === SHIPMENT_TYPE.ISSUED && self.requesters) {
           const options = {
             cssClass: 'product-select'
           };
-          return (
+          result.push(
             <ion-select name="input-requesterId" interface="popover" interfaceOptions={options}
-                        class="requester-select" disabled={isCreate && self.order && !self.order.requesterID || !isCreate}
+                        class="requester-select" disabled={isDisabled}
                         value={isCreate ? (self.order ? self.order.requesterId : self.participantId) : (self.shipment ? self.shipment.requesterId : self.participantId)}>
               {...self.requesters.map(s => (<ion-select-option value={s}>{s}</ion-select-option>))}
             </ion-select>
           )
+          if (!isDisabled)
+            result.push(
+              <ion-button slot="start" color="medium" class="ion-padding-vertical" fill="clear" onClick={(evt) => self.addToDirectory.call(self, evt, "Please add a new RequesterId",  (result) => {
+                self.requesters.push(result);
+                const input = self.element.querySelector(`input[name="input-requesterId"]`).closest('ion-select');
+                if (input)
+                  input.value = result;
+              })}>
+                <ion-icon slot="icon-only" name="add-circle"></ion-icon>
+              </ion-button>
+            )
         } else if (self.getType() === SHIPMENT_TYPE.RECEIVED) {
-          return (
+          result.push(
             <ion-input name="input-requesterId" disabled={true} value={self.shipment.requesterId}></ion-input>
           )
         } else {
-          return <ion-skeleton-text animated></ion-skeleton-text>;
+          result.push(<ion-skeleton-text animated></ion-skeleton-text>);
         }
+        return result;
       };
 
       return (
           <ion-item lines="none" disabled={false}>
             <ion-label position="stacked">{self.to_String}</ion-label>
-            {getTo()}
+            {...getTo()}
           </ion-item>
         )
     }

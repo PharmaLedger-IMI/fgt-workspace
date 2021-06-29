@@ -2,7 +2,7 @@ import { r as registerInstance, e as createEvent, h, f as Host, g as getElement 
 import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-a462b2bc.js';
 import { W as WebManagerService } from './WebManagerService-e3623754.js';
-import { a as getDirectoryProducts, b as getDirectorySuppliers, c as getDirectoryRequesters, d as getProductPopOver } from './popOverUtils-b2c08a50.js';
+import { a as getDirectoryProducts, b as getDirectorySuppliers, c as getDirectoryRequesters, d as getSingleInputPopOver, e as getProductPopOver } from './popOverUtils-13db4611.js';
 
 const managedOrderCss = ":host{display:block}managed-order{--color:var(--ion-color-primary-contrast)}managed-order ion-item ion-grid{width:100%}.product-select .select-interface-option{color:var(--ion-color-secondary)}ion-select.supplier-select::part(placeholder){color:var(--ion-color-secondary)}ion-select.supplier-select::part(text){color:var(--ion-color-primary)}ion-select.supplier-select::part(icon){color:var(--ion-color-primary)}ion-card-title{color:var(--ion-color-primary)}ion-card-subtitle{color:var(--ion-color-secondary)}ion-item.selected{--color:var(--ion-color-success)}ion-item.unnecessary{--color:red}";
 
@@ -200,6 +200,14 @@ const ManagedOrder = class {
   isCreate() {
     return !this.orderRef || this.orderRef.startsWith('@');
   }
+  async addToDirectory(evt, message, setter) {
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    const popover = await getSingleInputPopOver(evt, message);
+    const { role } = await popover.onWillDismiss();
+    if (role && role !== 'backdrop')
+      setter(role);
+  }
   scan() {
     const self = this;
     const controller = self.element.querySelector('pdm-barcode-scanner-controller');
@@ -240,6 +248,13 @@ const ManagedOrder = class {
         const directory = self.getType() === ORDER_TYPE.ISSUED ? self.suppliers : self.requesters;
         if (directory) {
           result.push(h("ion-select", { name: "input-senderId", interface: "popover", interfaceOptions: options, class: "supplier-select", placeholder: self.getType() === ORDER_TYPE.ISSUED ? self.fromPlaceholderString : '', disabled: !isCreate, value: !isCreate ? self.participantId : '' }, directory.map(s => (h("ion-select-option", { value: s }, s)))));
+          if (isCreate)
+            result.push(h("ion-button", { slot: "start", color: "medium", class: "ion-padding-vertical", fill: "clear", onClick: (evt) => self.addToDirectory.call(self, evt, "Please add a new SenderId", (result) => {
+                directory.push(result);
+                const input = self.element.querySelector(`input[name="input-senderId"]`).closest('ion-select');
+                if (input)
+                  input.value = result;
+              }) }, h("ion-icon", { slot: "icon-only", name: "add-circle" })));
         }
         else {
           result.push(h("ion-skeleton-text", { animated: true }));
