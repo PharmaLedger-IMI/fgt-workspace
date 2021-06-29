@@ -3,7 +3,7 @@ import {HostElement} from "../../decorators";
 import wizard from '../../services/WizardService';
 import {WebManager, WebManagerService} from "../../services/WebManagerService";
 import CreateManageView from "../create-manage-view-layout/CreateManageView";
-import {getProductPopOver, getDirectoryProducts, getDirectorySuppliers, getDirectoryRequesters,} from "../../utils/popOverUtils";
+import {getProductPopOver, getDirectoryProducts, getDirectorySuppliers, getDirectoryRequesters, getSingleInputPopOver} from "../../utils/popOverUtils";
 
 const ORDER_TYPE = {
   ISSUED: "issued",
@@ -278,6 +278,15 @@ export class ManagedOrder implements CreateManageView{
     return !this.orderRef || this.orderRef.startsWith('@');
   }
 
+  private async addToDirectory(evt, message, setter){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    const popover = await getSingleInputPopOver(evt, message);
+    const {role} = await popover.onWillDismiss();
+    if (role && role !== 'backdrop')
+      setter(role);
+  }
+
   private scan(){
     const self = this;
     const controller = self.element.querySelector('pdm-barcode-scanner-controller');
@@ -331,6 +340,17 @@ export class ManagedOrder implements CreateManageView{
               {...directory.map(s => (<ion-select-option value={s}>{s}</ion-select-option>))}
             </ion-select>
           )
+          if (isCreate)
+            result.push(
+              <ion-button slot="start" color="medium" class="ion-padding-vertical" fill="clear" onClick={(evt) => self.addToDirectory.call(self, evt, "Please add a new SenderId",  (result) => {
+                directory.push(result);
+                const input = self.element.querySelector(`input[name="input-senderId"]`).closest('ion-select');
+                if (input)
+                  input.value = result;
+              })}>
+                <ion-icon slot="icon-only" name="add-circle"></ion-icon>
+              </ion-button>
+            )
         } else {
           result.push(<ion-skeleton-text animated></ion-skeleton-text>);
         }
