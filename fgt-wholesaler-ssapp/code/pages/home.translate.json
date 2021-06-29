@@ -65,7 +65,10 @@
     "none": "No orders issued..."
   },
   "issuedShipments": {
-    "title": "IssuedShipments",
+    "title": "Issued Shipments",
+    "buttons": {
+      "new-issued-shipment": "Create Shipment"
+    },
     "none": "No shipments issued..."
   },
   "receivedShipments": {
