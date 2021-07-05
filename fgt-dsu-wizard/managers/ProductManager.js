@@ -71,6 +71,17 @@ class ProductManager extends Manager {
     };
 
     /**
+     * Util function that loads a ProductDSU and reads its information
+     * @param {string|KeySSI} keySSI
+     * @param {function(err, Product, Archive)} callback
+     * @protected
+     * @override
+     */
+    _getDSUInfo(keySSI, callback){
+        return this.productService.get(keySSI, callback);
+    }
+
+    /**
      * Creates a {@link Product} dsu
      * @param {string|number} [gtin] the table key
      * @param {Product} product

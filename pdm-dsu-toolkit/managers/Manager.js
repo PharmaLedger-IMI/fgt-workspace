@@ -417,7 +417,7 @@ class Manager{
     /**
      * Util function that loads a dsu and reads and JSON parses from the dsu's {@link INFO_PATH}
      * @param {string|KeySSI} keySSI
-     * @param {function(err, object, Archive)} callback. object is the /info parsed as JSON.
+     * @param {function(err, any, Archive)} callback. object is the /info parsed as JSON.
      * @protected
      */
     _getDSUInfo(keySSI, callback){

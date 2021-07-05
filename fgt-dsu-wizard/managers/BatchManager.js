@@ -69,6 +69,17 @@ class BatchManager extends Manager{
     };
 
     /**
+     * Util function that loads a BatchDSU and reads its information
+     * @param {string|KeySSI} keySSI
+     * @param {function(err, Batch, Archive)} callback
+     * @protected
+     * @override
+     */
+    _getDSUInfo(keySSI, callback){
+        return this.batchService.get(keySSI, callback);
+    }
+
+    /**
      * Creates a {@link Batch} dsu
      * @param {Product} product
      * @param {Batch} batch

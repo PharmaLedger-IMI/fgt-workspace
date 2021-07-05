@@ -178,6 +178,27 @@ const _err = function(msg, err, callback){
 }
 
 /**
+ * Returns the corresponding identifiers to the provided mount paths
+ * @param {Archive} dsu
+ * @param {string} basePath
+ * @param {string|function(err?, {}?)} paths the last argument must be the callback
+ */
+const getMounts = function(dsu, basePath, ...paths){
+	const callback = paths.pop();
+	paths = paths.map(p => p.startsWith('/') ? p.substring(1) : p);
+	dsu.listMountedDSUs(basePath, (err, mounts) => {
+		if (err)
+			return callback(err);
+		mounts = mounts.filter(m => paths.indexOf(m.path) !== -1)
+			.reduce((accum, m) => {
+				accum['/' + m.path] = m.identifier;
+				return accum;
+			}, {});
+		callback(undefined, mounts);
+	})
+}
+
+/**
  * Utll function that calls the fame function iteratively wit the next arguments (destructive)
  * @param func
  * @param {string[]} keys
@@ -219,7 +240,7 @@ const functionCallIterator = function(func, keys, ...args){
 				if (err)
 					return callback(err);
 				updateResult(callArgs, results);
-				iterator(argz, callback);
+				iterator(...argz, callback);
 			});
 		} catch(e){
 			return callback(e);
@@ -241,5 +262,6 @@ module.exports = {
 	createDSUFolders,
 	getEnv,
 	_err,
-	functionCallIterator
+	functionCallIterator,
+	getMounts
 }

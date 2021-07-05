@@ -34,6 +34,17 @@ class ShipmentManager extends Manager {
     }
 
     /**
+     * Util function that loads a ShipmentDSU and reads its information
+     * @param {string|KeySSI} keySSI
+     * @param {function(err, Shipment, Archive)} callback
+     * @protected
+     * @override
+     */
+    _getDSUInfo(keySSI, callback){
+        return this.shipmentService.get(keySSI, callback);
+    }
+
+    /**
      * Must wrap the entry in an object like:
      * <pre>
      *     {

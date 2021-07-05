@@ -46,6 +46,17 @@ class OrderManager extends Manager {
     }
 
     /**
+     * Util function that loads a OrderDSU and reads its information
+     * @param {string|KeySSI} keySSI
+     * @param {function(err, Order, Archive)} callback
+     * @protected
+     * @override
+     */
+    _getDSUInfo(keySSI, callback){
+        return this.orderService.get(keySSI, callback);
+    }
+
+    /**
      * Must wrap the entry in an object like:
      * <pre>
      *     {
@@ -68,6 +79,29 @@ class OrderManager extends Manager {
             products: item.orderLines.map(ol => ol.gtin).join(','),
             value: record
         }
+    }
+
+    /**
+     * updates an item
+     *
+     * @param {string} [key] key is optional so child classes can override them
+     * @param {object} newOrder
+     * @param {function(err, object, Archive)} callback
+     */
+    update(key, newOrder, callback){
+        if (!callback)
+            return callback(`No key Provided...`);
+
+        let self = this;
+        self.getRecord(key, (err, record) => {
+            if (err)
+                return self._err(`Unable to retrieve record with key ${key} from table ${self._getTableName()}`, err, callback);
+            self.orderService.update(record.value, newOrder, (err, updatedOrder) => {
+                if (err)
+                    return self._err(`Could not Update Order DSU`, err, callback);
+                self.updateRecord(key, self._indexItem(key, updatedOrder, record.value), callback);
+            });
+        });
     }
 
     // messages to all MAHs.

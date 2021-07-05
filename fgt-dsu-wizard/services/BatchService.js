@@ -37,7 +37,7 @@ function BatchService(domain, strategy){
                 if (err)
                     return callback(err);
                 try{
-                    const batch = JSON.parse(data);
+                    const batch = new Batch(JSON.parse(data));
                     callback(undefined, batch);
                 } catch (e) {
                     callback(`unable to parse Batch: ${data}`);

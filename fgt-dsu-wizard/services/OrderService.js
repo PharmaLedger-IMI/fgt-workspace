@@ -1,5 +1,5 @@
 const utils = require('../../pdm-dsu-toolkit/services/utils');
-const {STATUS_MOUNT_PATH, INFO_PATH} = require('../constants');
+const {STATUS_MOUNT_PATH, INFO_PATH, SHIPMENT_PATH} = require('../constants');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
@@ -41,7 +41,7 @@ function OrderService(domain, strategy) {
     /**
      * Resolves the DSU and loads the Order object with all its properties, mutable or not
      * @param {KeySSI} keySSI
-     * @param {function(err, Order)} callback
+     * @param {function(err, Order?)} callback
      */
     this.get = function(keySSI, callback){
         utils.getResolver().loadDSU(keySSI, (err, dsu) => {
@@ -50,22 +50,36 @@ function OrderService(domain, strategy) {
             dsu.readFile(INFO_PATH, (err, data) => {
                 if (err)
                     return callback(err);
-                try{
-                    const order = JSON.parse(data);
+                try {
+                    let order = JSON.parse(data);
+                    order = new Order(order.orderId, order.requesterId, order.senderId, order.shipToAddress, order.status, order.orderLines)
                     dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
                         if (err)
                             return callback(`could not retrieve orderLine status`);
-                        try{
+                        try {
                             order.status = JSON.parse(status);
-                            callback(undefined, order);
+
+                            if (order.status === OrderStatus.CREATED)
+                                return callback(undefined, order);
+                            dsu.readFile(`${SHIPMENT_PATH}${INFO_PATH}`, (err, data) => {
+                                if (err || !data)
+                                    return callback(undefined, order);
+                                try {
+                                    const shipment = JSON.parse(data);
+                                    order.shipmentId = shipment.shipmentId;
+                                    callback(undefined, order);
+                                } catch (e) {
+                                    callback(e);
+                                }
+                            });
                         } catch (e) {
                             callback(`unable to parse Order status: ${status}`);
                         }
                     });
-                } catch (e){
+                } catch (e) {
                     callback(`Could not parse order in DSU ${keySSI.getIdentifier()}`);
                 }
-            })
+            });
         });
     }
 
@@ -87,6 +101,45 @@ function OrderService(domain, strategy) {
         } else {
             createAuthorized(order, callback);
         }
+    }
+
+    /**
+     * updates an order DSU
+     * @param {KeySSI} keySSI
+     * @param {Order} order
+     * @param {function(err?)} callback
+     */
+    this.update = function (keySSI, order, callback) {
+        // if product is invalid, abort immediatly.
+        const self = this;
+        if (typeof order === 'object') {
+            let err = order.validate();
+            if (err)
+                return callback(err);
+        }
+
+        utils.getResolver().loadDSU(keySSI, (err, orderDsu) => {
+            if (err)
+                return callback(err);
+            utils.getMounts(orderDsu, '/', STATUS_MOUNT_PATH, SHIPMENT_PATH, (err, mounts) => {
+                if (err)
+                    return callback(err);
+                if (!mounts[STATUS_MOUNT_PATH])
+                    return callback(`Could not find status mount`);
+                statusService.update(mounts[STATUS_MOUNT_PATH], order.status, order.requesterId, (err) => {
+                    if (err)
+                        return callback(err);
+                    if (!mounts[SHIPMENT_PATH] && order.shipmentSSI)
+                        orderDsu.mount(SHIPMENT_PATH, order.shipmentSSI, (err) => {
+                            if (err)
+                                return callback(err);
+                            self.get(keySSI, callback);
+                        });
+                    else
+                        self.get(keySSI, callback);
+                });
+            });
+        });
     }
 
     /**

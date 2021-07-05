@@ -68,6 +68,7 @@ function ShipmentService(domain, strategy) {
                 let shipment;
                 try{
                     shipment = JSON.parse(data);
+                    shipment = new Shipment(shipment.shipmentId, shipment.requesterId, shipment.senderId, shipment.shipToAddress, shipment.status, shipment.shipmentLines)
                     dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
                         if (err)
                             return callback(`could not retrieve shipment status`);

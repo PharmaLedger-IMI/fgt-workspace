@@ -1,7 +1,6 @@
 const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const OrderManager = require("./OrderManager");
-const Order = require('../model').Order;
-const OrderStatus = require('../model').OrderStatus;
+const {Order, OrderStatus, ShipmentStatus} = require('../model');
 
 /**
  * Issued Order Manager Class - concrete OrderManager for issuedOrders.
@@ -130,6 +129,41 @@ class IssuedOrderManager extends OrderManager {
             console.log(`Parsed ${result.length} orders`);
             callback(undefined, result);
         });
+    }
+
+    updateOrderByShipment(orderId, shipmentSSI, shipment, callback){
+        const getOrderStatusByShipment = function(shipmentStatus){
+            switch (shipmentStatus){
+                case ShipmentStatus.CREATED:
+                    return OrderStatus.ACKNOWLEDGED;
+                default:
+                    return shipmentStatus;
+            }
+        }
+
+        const self = this;
+        this.getOne(this._genCompostKey(shipment.senderId, orderId), (err, order) => {
+            if (err)
+                return self._err(`Could not load Order`, err, callback);
+            order.status = getOrderStatusByShipment(shipment.status);
+            order.shipmentSSI = shipmentSSI;
+            self.update(order, (err) => {
+                if (err)
+                    return self._err(`Could not update Order:\n${err.message}`, err, callback);
+                callback();
+            });
+        });
+    }
+
+    update(key, order, callback){
+        if (!callback){
+            callback = order;
+            order = key;
+            key = this._genCompostKey(order.senderId, order.orderId);
+        }
+
+        self._indexItem(orderId, order, record)
+        super.update(key, order, callback);
     }
 
     /**

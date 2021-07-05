@@ -82,7 +82,7 @@ function StatusService(domain, strategy){
 
         if (isSimple){
             keySSI = utils.getKeySSISpace().parse(keySSI);
-            utils.getResolver.loadDSU(keySSI, (err, dsu) => {
+            utils.getResolver().loadDSU(keySSI.getIdentifier(), (err, dsu) => {
                 if (err)
                     return callback(err);
 

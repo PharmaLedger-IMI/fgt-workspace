@@ -32,6 +32,7 @@ const INBOX_RECEIVED_SHIPMENTS_PATH = '/receivedShipments';
 const INBOX_SHIPMENT_LINES_PATH = '/shipmentLines';
 const STOCK_PATH = '/stock';
 const LINES_PATH = '/lines';
+const SHIPMENT_PATH = '/shipment';
 
 const STATUS_MOUNT_PATH = '/status';
 const ORDER_MOUNT_PATH = '/order';
@@ -98,5 +99,6 @@ module.exports = {
     STOCK_PATH,
     LINES_PATH,
     ORDER_MOUNT_PATH,
-    INPUT_FIELD_PREFIX
+    INPUT_FIELD_PREFIX,
+    SHIPMENT_PATH
 }

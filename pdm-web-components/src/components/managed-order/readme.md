@@ -92,6 +92,7 @@ Type: `Promise<void>`
 ### Depends on
 
 - [line-stock-manager](../line-stock-manager)
+- [status-updater](../status-updater)
 - [create-manage-view-layout](../create-manage-view-layout)
 - [pdm-barcode-scanner-controller](../pdm-barcode-scanner-controller)
 
@@ -99,6 +100,7 @@ Type: `Promise<void>`
 ```mermaid
 graph TD;
   managed-order --> line-stock-manager
+  managed-order --> status-updater
   managed-order --> create-manage-view-layout
   managed-order --> pdm-barcode-scanner-controller
   line-stock-manager --> batch-chip

@@ -68,6 +68,24 @@ const PdmIonTable = class {
     if (this.autoLoad)
       await this.loadContents();
   }
+  updateTable(newModel) {
+    if (!this.model) {
+      this.model = [...newModel];
+      return;
+    }
+    const model = this.model;
+    const equals = [];
+    newModel.forEach((m, i) => {
+      if (m === model[i])
+        equals.push(i);
+    });
+    this.model = [...newModel];
+    this.element.querySelectorAll(`div[id="ion-table-content"] > *`).forEach((e, i) => {
+      if (equals.indexOf(i) !== -1)
+        if (e.refresh)
+          e.refresh();
+    });
+  }
   async loadContents(pageNumber) {
     this.webManager = this.webManager || await WebManagerService.getWebManager(this.manager);
     if (!this.webManager)
@@ -80,7 +98,7 @@ const PdmIonTable = class {
         }
         this.currentPage = contents.currentPage;
         this.pageCount = contents.totalPages;
-        this.model = contents.items;
+        this.updateTable(contents.items);
       });
     }
     else {
@@ -89,7 +107,7 @@ const PdmIonTable = class {
           this.sendError(`Could not list items`, err);
           return;
         }
-        this.model = contents;
+        this.updateTable(contents);
       });
     }
   }
@@ -158,7 +176,7 @@ const PdmIonTable = class {
   }
   ;
   render() {
-    return (h(Host, null, this.getTableHeader(), h("div", { class: "ion-padding" }, this.getContent()), this.getPagination()));
+    return (h(Host, null, this.getTableHeader(), h("div", { id: "ion-table-content", class: "ion-padding" }, this.getContent()), this.getPagination()));
   }
   get element() { return getElement(this); }
   static get watchers() { return {

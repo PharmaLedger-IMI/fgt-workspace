@@ -2,6 +2,8 @@ const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const ShipmentManager = require("./ShipmentManager");
 const {Order, Stock, OrderLine, OrderStatus} = require('../model');
 
+const getIssuedOrderManager = require('./IssuedOrderManager');
+
 /**
  * Received Shipment Manager Class - concrete ShipmentManager for received Shipments.
  *
@@ -27,17 +29,28 @@ class ReceivedShipmentManager extends ShipmentManager {
         super(participantManager, DB.receivedShipments, ['requesterId'], (err, manager) => {
             if (err)
                 return callback ? callback(err) : console.log(err);
-            manager.registerMessageListener((message) => {
-                manager.processMessageRecord(message, (err) => {
-                    if (err)
-                        console.log(`Could not process message: ${err}`);
-                    if (manager.controller)
-                        manager.controller.refresh();
+
+            getIssuedOrderManager(participantManager, (err, issuedOrderManager) => {
+                if (err)
+                    console.log(`Could not get IssuedOrderManager:`, err);
+                else
+                    manager.issuedOrderManager = issuedOrderManager;
+
+                manager.registerMessageListener((message) => {
+                    manager.processMessageRecord(message, (err) => {
+                        if (err)
+                            console.log(`Could not process message: ${err}`);
+                        if (manager.controller)
+                            manager.controller.refresh();
+                    });
                 });
+
+                if (callback)
+                    callback(undefined, manager);
             });
-            if (callback)
-                callback(undefined, manager);
         });
+
+        this.issuedOrderManager = this.issuedOrderManager || undefined;
     }
 
 
@@ -122,7 +135,7 @@ class ReceivedShipmentManager extends ShipmentManager {
     /**
      * Processes the received messages, saves them to the the table and deletes the message
      * @param {*} message
-     * @param {function(err)} callback
+     * @param {function(err?)} callback
      * @protected
      * @override
      */
@@ -131,16 +144,24 @@ class ReceivedShipmentManager extends ShipmentManager {
         if (!message || typeof message !== "string")
             return callback(`Message ${message} does not have  non-empty string with keySSI. Skipping record.`);
 
-        self.shipmentService.get(message, (err, shipmentObj, shipmentDsu) => {
+        self._getDSUInfo(message, (err, shipmentObj, shipmentDsu) => {
             if (err)
-                return self._err(`Could not read DSU from message keySSI in record ${record}. Skipping record.`, err, callback);
+                return self._err(`Could not read DSU from message keySSI in record ${message}. Skipping record.`, err, callback);
 
             console.log(`ReceivedShipment`, shipmentObj);
             const shipmentId = shipmentObj.shipmentId;
             if (!shipmentId)
                 return callback("ReceivedShipment doest not have an shipmentId. Skipping record.");
 
-            self.insertRecord(self._genCompostKey(shipmentObj.senderId, shipmentId), self._indexItem(shipmentId, shipmentObj, message), callback);
+            self.insertRecord(self._genCompostKey(shipmentObj.senderId, shipmentId), self._indexItem(shipmentId, shipmentObj, message), err => {
+                if (err)
+                    return self._err(`Could not insert record:\n${err.message}`, err, callback);
+                self.issuedOrderManager._getDSUInfo(shipmentObj.orderSSI, (err, orderObj) => {
+                    if (err)
+                        return self._err(`Could not read order Info`, err, callback);
+                    self.issuedOrderManager.updateOrderByShipment(orderObj.orderId, message, shipmentObj, callback);
+                });
+            });
         });
     };
 }

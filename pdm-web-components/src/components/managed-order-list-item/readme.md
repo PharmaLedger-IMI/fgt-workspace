@@ -23,7 +23,7 @@
 
 ## Methods
 
-### `refresh() => Promise<void>`
+### `refresh(newOrder?: any, oldOrder?: any) => Promise<void>`
 
 
 

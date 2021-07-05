@@ -20,7 +20,13 @@ const ORDER_TYPE = {
   ISSUED: "issued",
   RECEIVED: 'received'
 };
-const { Order, OrderLine, ROLE } = wizard.Model;
+const { Order, OrderLine, ROLE, OrderStatus } = wizard.Model;
+const statuses = Object.keys(OrderStatus).reduce((accum, key) => {
+  accum[key] = {
+    state: OrderStatus[key]
+  };
+  return accum;
+}, {});
 const ManagedOrder = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
@@ -236,6 +242,9 @@ const ManagedOrder = class {
     if (role && role !== 'backdrop')
       this.currentGtin = role;
   }
+  updateStatus(evt) {
+    console.log(`Status `, evt);
+  }
   getInputs() {
     const self = this;
     const isCreate = self.isCreate();
@@ -313,7 +322,13 @@ const ManagedOrder = class {
   getManage() {
     if (this.isCreate())
       return;
-    return (h("line-stock-manager", { lines: this.lines, "show-stock": this.isCreate(), "enable-action": this.getType() === ORDER_TYPE.RECEIVED || this.isCreate(), "single-line": "false", "stock-string": this.stockString, "no-stock-string": this.noStockString, "select-string": this.selectString, "remaining-string": this.remainingString, "order-missing-string": this.orderMissingString, "available-string": this.availableString, "unavailable-string": this.unavailableString, "confirmed-string": this.confirmedString, "confirm-all-string": this.confirmAllString, "reset-all-string": this.resetAllString }));
+    const self = this;
+    const getLines = function () {
+      return (h("line-stock-manager", { lines: self.lines, "show-stock": "false", "enable-action": "false", "single-line": "false", "stock-string": self.stockString, "no-stock-string": self.noStockString, "select-string": self.selectString, "remaining-string": self.remainingString, "order-missing-string": self.orderMissingString, "available-string": self.availableString, "unavailable-string": self.unavailableString, "confirmed-string": self.confirmedString, "confirm-all-string": self.confirmAllString, "reset-all-string": self.resetAllString }));
+    };
+    if (self.orderType !== ORDER_TYPE.ISSUED || !self.order)
+      return getLines();
+    return (h("ion-grid", null, h("ion-row", null, h("ion-col", { size: "12", "size-lg": "6" }, getLines()), h("ion-col", { size: "12", "size-lg": "6" }, h("status-updater", { "state-json": JSON.stringify(statuses), "current-state": self.order.status, onStatusUpdateEvent: self.updateStatus.bind(self) })))));
   }
   getView() {
   }

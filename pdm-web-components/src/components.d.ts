@@ -148,7 +148,7 @@ export namespace Components {
     }
     interface ManagedOrderListItem {
         "orderId": string;
-        "refresh": () => Promise<void>;
+        "refresh": (newOrder?: any, oldOrder?: any) => Promise<void>;
         "type"?: string;
     }
     interface ManagedOrderlineListItem {
@@ -366,6 +366,10 @@ export namespace Components {
     }
     interface StatusBadge {
     }
+    interface StatusUpdater {
+        "currentState": string;
+        "statesJSON": string;
+    }
 }
 declare global {
     interface HTMLBarcodeGeneratorElement extends Components.BarcodeGenerator, HTMLStencilElement {
@@ -554,6 +558,12 @@ declare global {
         prototype: HTMLStatusBadgeElement;
         new (): HTMLStatusBadgeElement;
     };
+    interface HTMLStatusUpdaterElement extends Components.StatusUpdater, HTMLStencilElement {
+    }
+    var HTMLStatusUpdaterElement: {
+        prototype: HTMLStatusUpdaterElement;
+        new (): HTMLStatusUpdaterElement;
+    };
     interface HTMLElementTagNameMap {
         "barcode-generator": HTMLBarcodeGeneratorElement;
         "batch-chip": HTMLBatchChipElement;
@@ -586,6 +596,7 @@ declare global {
         "simple-managed-product-item": HTMLSimpleManagedProductItemElement;
         "slide-in-board": HTMLSlideInBoardElement;
         "status-badge": HTMLStatusBadgeElement;
+        "status-updater": HTMLStatusUpdaterElement;
     }
 }
 declare namespace LocalJSX {
@@ -1082,6 +1093,14 @@ declare namespace LocalJSX {
     }
     interface StatusBadge {
     }
+    interface StatusUpdater {
+        "currentState"?: string;
+        /**
+          * Through this event action requests are made
+         */
+        "onStatusUpdateEvent"?: (event: CustomEvent<string>) => void;
+        "statesJSON"?: string;
+    }
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;
         "batch-chip": BatchChip;
@@ -1114,6 +1133,7 @@ declare namespace LocalJSX {
         "simple-managed-product-item": SimpleManagedProductItem;
         "slide-in-board": SlideInBoard;
         "status-badge": StatusBadge;
+        "status-updater": StatusUpdater;
     }
 }
 export { LocalJSX as JSX };
@@ -1151,6 +1171,7 @@ declare module "@stencil/core" {
             "simple-managed-product-item": LocalJSX.SimpleManagedProductItem & JSXBase.HTMLAttributes<HTMLSimpleManagedProductItemElement>;
             "slide-in-board": LocalJSX.SlideInBoard & JSXBase.HTMLAttributes<HTMLSlideInBoardElement>;
             "status-badge": LocalJSX.StatusBadge & JSXBase.HTMLAttributes<HTMLStatusBadgeElement>;
+            "status-updater": LocalJSX.StatusUpdater & JSXBase.HTMLAttributes<HTMLStatusUpdaterElement>;
         }
     }
 }

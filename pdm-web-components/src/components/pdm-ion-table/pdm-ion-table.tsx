@@ -94,6 +94,27 @@ export class PdmIonTable implements ComponentInterface {
       await this.loadContents();
   }
 
+  private updateTable(newModel){
+    if (!this.model){
+      this.model = [...newModel];
+      return;
+    }
+    const model = this.model;
+    const equals = [];
+    newModel.forEach((m,i) => {
+      if (m === model[i])
+        equals.push(i);
+    });
+
+    this.model = [...newModel];
+
+    this.element.querySelectorAll(`div[id="ion-table-content"] > *`).forEach((e,i) => {
+      if (equals.indexOf(i) !== -1)
+        if (e.refresh)
+          e.refresh();
+    });
+  }
+
   async loadContents(pageNumber?: number){
     this.webManager = this.webManager || await WebManagerService.getWebManager(this.manager);
     if (!this.webManager)
@@ -107,7 +128,7 @@ export class PdmIonTable implements ComponentInterface {
         }
         this.currentPage = contents.currentPage;
         this.pageCount = contents.totalPages;
-        this.model = contents.items;
+        this.updateTable(contents.items)
       });
     } else {
       await this.webManager.getAll( false, undefined, (err, contents) => {
@@ -115,7 +136,7 @@ export class PdmIonTable implements ComponentInterface {
           this.sendError(`Could not list items`, err);
           return;
         }
-        this.model = contents;
+        this.updateTable(contents)
       });
     }
   }
@@ -258,7 +279,7 @@ export class PdmIonTable implements ComponentInterface {
     return (
       <Host>
         {this.getTableHeader()}
-        <div class="ion-padding">
+        <div id="ion-table-content" class="ion-padding">
           {this.getContent()}
         </div>
         {this.getPagination()}

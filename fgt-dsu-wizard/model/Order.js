@@ -5,13 +5,14 @@ const OrderLine = require('./OrderLine');
  * @class Order
  * @memberOf Model
  */
-class Order{
+class Order {
     orderId;
     requesterId;
     senderId;
     shipToAddress;
     status;
     orderLines;
+    shipmentId;
 
     /**
      * @param orderId

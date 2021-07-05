@@ -26,7 +26,7 @@ function ProductService(domain, strategy){
     /**
      * Resolves the DSU and loads the Product object with all its properties, mutable or not
      * @param {KeySSI} keySSI
-     * @param {function(err, Order)} callback
+     * @param {function(err, Product)} callback
      */
     this.get = function(keySSI, callback){
         utils.getResolver().loadDSU(keySSI, (err, dsu) => {
@@ -36,7 +36,7 @@ function ProductService(domain, strategy){
                 if (err)
                     return callback(err);
                 try{
-                    const product = JSON.parse(data);
+                    const product = new Product(JSON.parse(data));
                     callback(undefined, product);
                 } catch (e) {
                     callback(`unable to parse Product: ${data}`);

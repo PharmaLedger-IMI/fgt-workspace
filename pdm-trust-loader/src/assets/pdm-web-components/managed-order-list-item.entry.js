@@ -59,10 +59,11 @@ const ManagedOrderListItem = class {
         self.sendError(`Could not get Order with id ${self.orderId}`, err);
         return;
       }
-      self.order = order;
+      self.order = Object.assign({}, order);
     });
   }
-  async refresh() {
+  async refresh(newOrder, oldOrder) {
+    console.log(`New ${newOrder} and old ${oldOrder}`);
     await this.loadOrders();
   }
   addLabel() {
@@ -111,6 +112,14 @@ const ManagedOrderListItem = class {
         order: self.order
       }));
     };
+    const getViewShipmentButton = function () {
+      if (self.type !== ORDER_TYPE.ISSUED || !self.order || !self.order.shipmentId)
+        return;
+      return getButton("buttons", "medium", "subway", () => self.navigateToTab('tab-shipment', {
+        mode: ORDER_TYPE.RECEIVED,
+        shipmentRef: self.order.shipmentId
+      }));
+    };
     const props = {
       mode: self.type,
       order: self.order
@@ -123,7 +132,8 @@ const ManagedOrderListItem = class {
         data: self.order.orderId
       }, evt)),
       getButton("buttons", "medium", "eye", () => self.navigateToTab('tab-order', props)),
-      getProcessOrderButton()
+      getProcessOrderButton(),
+      getViewShipmentButton()
     ];
   }
   render() {
