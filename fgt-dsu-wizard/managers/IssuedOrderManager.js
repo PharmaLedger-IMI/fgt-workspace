@@ -24,7 +24,7 @@ const {Order, OrderStatus, ShipmentStatus} = require('../model');
  */
 class IssuedOrderManager extends OrderManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.issuedOrders, ['senderId'], callback);
+        super(participantManager, DB.issuedOrders, ['senderId', 'shipmentId'], callback);
     }
 
     /**
@@ -84,11 +84,11 @@ class IssuedOrderManager extends OrderManager {
                     if (err)
                         return self._err(`Could not sent message to ${order.orderId} with ${DB.receivedOrders}`, err, callback);
                     console.log("Message sent to "+order.senderId+", "+DB.receivedOrders+", "+aKey);
-                    self.sendOrderLinesToMAH([...order.orderLines], [...orderLinesSSIs], (err) => {
-                        if (err)
-                            return self._err(`Could not transmit orderLines to The manufacturers`, err, callback);
+                    // self.sendOrderLinesToMAH([...order.orderLines], [...orderLinesSSIs], (err) => {
+                    //     if (err)
+                    //         return self._err(`Could not transmit orderLines to The manufacturers`, err, callback);
                         callback(undefined, keySSI, path);
-                    });
+                    // });
                 });
             });
         });
@@ -146,7 +146,7 @@ class IssuedOrderManager extends OrderManager {
             if (err)
                 return self._err(`Could not load Order`, err, callback);
             order.status = getOrderStatusByShipment(shipment.status);
-            order.shipmentSSI = shipmentSSI;
+            order.shipmentId = shipment.shipmentId;
             self.update(order, (err) => {
                 if (err)
                     return self._err(`Could not update Order:\n${err.message}`, err, callback);
@@ -162,7 +162,6 @@ class IssuedOrderManager extends OrderManager {
             key = this._genCompostKey(order.senderId, order.orderId);
         }
 
-        self._indexItem(orderId, order, record)
         super.update(key, order, callback);
     }
 
