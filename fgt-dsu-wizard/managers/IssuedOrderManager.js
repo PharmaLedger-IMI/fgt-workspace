@@ -83,7 +83,7 @@ class IssuedOrderManager extends OrderManager {
                 this.sendMessage(order.senderId, DB.receivedOrders, sReadSSIStr, (err) => {
                     if (err)
                         return self._err(`Could not sent message to ${order.orderId} with ${DB.receivedOrders}`, err, callback);
-                    console.log("Message sent to "+order.senderId+", "+DB.receivedOrders+", "+aKey);
+                    console.log("Message sent to "+order.senderId+", "+DB.receivedOrders+", "+sReadSSIStr);
                     // self.sendOrderLinesToMAH([...order.orderLines], [...orderLinesSSIs], (err) => {
                     //     if (err)
                     //         return self._err(`Could not transmit orderLines to The manufacturers`, err, callback);

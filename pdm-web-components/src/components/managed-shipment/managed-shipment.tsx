@@ -15,7 +15,14 @@ const SHIPMENT_TYPE = {
   RECEIVED: 'received'
 }
 
-const {ROLE, OrderLine, Shipment, Order} = wizard.Model;
+const {ROLE, OrderLine, Shipment, Order, ShipmentStatus} = wizard.Model;
+
+const statuses = Object.keys(ShipmentStatus).reduce((accum, key) => {
+  accum[key] = {
+    state: ShipmentStatus[key]
+  }
+  return accum;
+}, {})
 
 @Component({
   tag: 'managed-shipment',
@@ -314,6 +321,10 @@ export class ManagedShipment implements CreateManageView{
     this.currentGtin = evt.detail;
   }
 
+  private updateStatus(evt){
+    console.log(`Status `, evt);
+  }
+
   private getInputs(){
     const self = this;
     const isCreate = self.isCreate();
@@ -572,22 +583,45 @@ export class ManagedShipment implements CreateManageView{
   getManage() {
     if (this.isCreate())
       return;
-    return (
-      <line-stock-manager lines={this.lines}
-                          show-stock={this.getType() === SHIPMENT_TYPE.RECEIVED}
-                          enable-action={this.isCreate() && this.getType() === SHIPMENT_TYPE.ISSUED}
+    const self = this;
+    const getLines = function(){
+      return (
+        <line-stock-manager lines={self.lines}
+                            show-stock={self.getType() === SHIPMENT_TYPE.RECEIVED}
+                            enable-action="false"
+                            single-line="false"
 
-                          stock-string={this.stockString}
-                          no-stock-string={this.noStockString}
-                          select-string={this.selectString}
-                          remaining-string={this.remainingString}
-                          order-missing-string={this.orderMissingString}
-                          available-string={this.availableString}
-                          unavailable-string={this.unavailableString}
-                          confirmed-string={this.confirmedString}
-                          confirm-all-string={this.confirmAllString}
-                          reset-all-string={this.resetAllString}>
-      </line-stock-manager>
+                            stock-string={self.stockString}
+                            no-stock-string={self.noStockString}
+                            select-string={self.selectString}
+                            remaining-string={self.remainingString}
+                            order-missing-string={self.orderMissingString}
+                            available-string={self.availableString}
+                            unavailable-string={self.unavailableString}
+                            confirmed-string={self.confirmedString}
+                            confirm-all-string={self.confirmAllString}
+                            reset-all-string={self.resetAllString}>
+        </line-stock-manager>
+      )
+    }
+
+    if (self.shipmentType !== SHIPMENT_TYPE.ISSUED || !self.shipment)
+      return getLines();
+
+    return (
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" size-lg="6">
+            {getLines()}
+          </ion-col>
+          <ion-col size="12" size-lg="6">
+            <status-updater state-json={JSON.stringify(statuses)}
+                            current-state={self.order.status}
+                            onStatusUpdateEvent={self.updateStatus.bind(self)}>
+            </status-updater>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     )
   }
 

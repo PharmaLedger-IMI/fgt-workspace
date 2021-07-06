@@ -117,7 +117,10 @@ const ManagedOrderListItem = class {
         return;
       return getButton("buttons", "medium", "subway", () => self.navigateToTab('tab-shipment', {
         mode: ORDER_TYPE.RECEIVED,
-        shipmentRef: self.order.shipmentId
+        shipment: {
+          shipmentId: self.order.shipmentId,
+          senderId: self.order.senderId
+        }
       }));
     };
     const props = {
