@@ -430,7 +430,7 @@ const create = function(config, credentials, callback){
             };
             results[type] = result[type] || [];
             results[type].push(result);
-            return shouldSetup ? setup(type, result, callback) : callback();
+            return shouldSetup ? setup(type, result, callback) : callback(undefined, result);
         }
     }
 

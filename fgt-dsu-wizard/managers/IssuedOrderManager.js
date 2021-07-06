@@ -70,7 +70,7 @@ class IssuedOrderManager extends OrderManager {
             const sReadSSIStr = sReadSSI.getIdentifier();
             console.log("Order seedSSI="+keySSIStr+" sReadSSI="+sReadSSIStr);
             // storing the sReadSSI in base58
-            const record = sReadSSIStr;
+            const record = keySSIStr;
             self.insertRecord(super._genCompostKey(order.senderId, order.orderId), self._indexItem(orderId, order, record), (err) => {
                 if (err)
                     return self._err(`Could not insert record with orderId ${orderId} on table ${self.tableName}`, err, callback);
@@ -80,7 +80,7 @@ class IssuedOrderManager extends OrderManager {
                 // TODO send the message before inserting record ? The message gives error if senderId does not exist/not listening.
                 // TODO derive sReadSSI from keySSI
                 const aKey = keySSI.getIdentifier();
-                this.sendMessage(order.senderId, DB.receivedOrders, aKey, (err) => {
+                this.sendMessage(order.senderId, DB.receivedOrders, sReadSSIStr, (err) => {
                     if (err)
                         return self._err(`Could not sent message to ${order.orderId} with ${DB.receivedOrders}`, err, callback);
                     console.log("Message sent to "+order.senderId+", "+DB.receivedOrders+", "+aKey);
@@ -146,7 +146,7 @@ class IssuedOrderManager extends OrderManager {
             if (err)
                 return self._err(`Could not load Order`, err, callback);
             order.status = getOrderStatusByShipment(shipment.status);
-            order.shipmentId = shipment.shipmentId;
+            order.shipmentSSI = shipmentSSI;
             self.update(order, (err) => {
                 if (err)
                     return self._err(`Could not update Order:\n${err.message}`, err, callback);

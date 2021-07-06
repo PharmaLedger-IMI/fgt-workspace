@@ -52,34 +52,32 @@ function OrderService(domain, strategy) {
                     return callback(err);
                 try {
                     let order = JSON.parse(data);
-                    let shipmentId = order.shipmentId;
                     order = new Order(order.orderId, order.requesterId, order.senderId, order.shipToAddress, order.status, order.orderLines);
-                    order.shipmentId = shipmentId;
                     dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
                         if (err)
                             return callback(`could not retrieve orderLine status`);
                         try {
                             order.status = JSON.parse(status);
 
-                            // if (order.status === OrderStatus.CREATED)
+                            if (order.status === OrderStatus.CREATED)
                                 return callback(undefined, order);
-                            // dsu.readFile(`${SHIPMENT_PATH}${INFO_PATH}`, (err, data) => {
-                            //     if (err || !data)
-                            //         return callback(undefined, order);
-                            //     try {
-                            //         const shipment = JSON.parse(data);
-                            //         order.shipmentId = shipment.shipmentId;
-                            //         callback(undefined, order);
-                            //     } catch (e) {
-                            //         callback(e);
-                            //     }
-                            // });
+                            dsu.readFile(`${SHIPMENT_PATH}${INFO_PATH}`, (err, data) => {
+                                if (err || !data)
+                                    return callback(undefined, order);
+                                try {
+                                    const shipment = JSON.parse(data);
+                                    order.shipmentId = shipment.shipmentId;
+                                    callback(undefined, order);
+                                } catch (e) {
+                                    return callback(e);
+                                }
+                            });
                         } catch (e) {
-                            callback(`unable to parse Order status: ${status}`);
+                            return callback(`unable to parse Order status: ${status}`);
                         }
                     });
                 } catch (e) {
-                    callback(`Could not parse order in DSU ${keySSI.getIdentifier()}`);
+                    return callback(`Could not parse order in DSU ${keySSI.getIdentifier()}`);
                 }
             });
         });
@@ -124,41 +122,23 @@ function OrderService(domain, strategy) {
             if (err)
                 return callback(err);
 
-            orderDsu.readFile(INFO_PATH, (err, data) => {
+            utils.getMounts(orderDsu, '/', STATUS_MOUNT_PATH, SHIPMENT_PATH, (err, mounts) => {
                 if (err)
                     return callback(err);
-                let oldOrder;
-                try{
-                    oldOrder = JSON.parse(data);
-                } catch (e){
-                    return callback(e);
-                }
-
-                utils.getMounts(orderDsu, '/', STATUS_MOUNT_PATH, SHIPMENT_PATH, (err, mounts) => {
+                if (!mounts[STATUS_MOUNT_PATH])
+                    return callback(`Could not find status mount`);
+                statusService.update(mounts[STATUS_MOUNT_PATH], order.status, order.requesterId, (err) => {
                     if (err)
                         return callback(err);
-                    if (!mounts[STATUS_MOUNT_PATH])
-                        return callback(`Could not find status mount`);
-                    statusService.update(mounts[STATUS_MOUNT_PATH], order.status, order.requesterId, (err) => {
-                        if (err)
-                            return callback(err);
 
-                        if (!oldOrder.shipmentId){
-                            oldOrder.shipmentId = order.shipmentId;
-                            orderDsu.writeFile(INFO_PATH, JSON.stringify(oldOrder), (err) => {
-                                if (err)
-                                    return callback(err);
-                                self.get(keySSI, callback);
-                            });
-                            // if (!mounts[SHIPMENT_PATH] && order.shipmentSSI)
-                            //     orderDsu.mount(SHIPMENT_PATH, order.shipmentSSI, (err) => {
-                            //         if (err)
-                            //             return callback(err);
-                            //         self.get(keySSI, callback);
-                            //     });
-                        } else
+                    if (!mounts[SHIPMENT_PATH] && order.shipmentSSI)
+                        orderDsu.mount(SHIPMENT_PATH, order.shipmentSSI, (err) => {
+                            if (err)
+                                return callback(err);
                             self.get(keySSI, callback);
-                    });
+                        });
+                    else
+                        self.get(keySSI, callback);
                 });
             });
         });
