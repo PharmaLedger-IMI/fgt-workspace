@@ -1,6 +1,9 @@
 const OrderStatus = require('./OrderStatus');
 const OrderLine = require('./OrderLine');
 
+
+
+
 /**
  * @class Order
  * @memberOf Model
@@ -34,9 +37,10 @@ class Order {
 
     /**
      * Validate if everything seems ok with the properties of this object.
+     * @param {string} [oldStatus] if oldStatus validation is available
      * @returns undefined if all ok. An arry of errors if not all ok.
      */
-    validate() {
+    validate(oldStatus) {
         const errors = [];
         if (!this.orderId) {
             errors.push('OrderID is required.');
@@ -66,7 +70,21 @@ class Order {
             });
         }
 
+        if (oldStatus && Order.getAllowedStatusUpdates(oldStatus).indexOf(this.status) === -1)
+            errors.push(`Status update from ${oldStatus} to ${this.status} is not allowed`);
+
         return errors.length === 0 ? undefined : errors;
+    }
+
+    static getAllowedStatusUpdates(status){
+        switch(status){
+            case OrderStatus.DELIVERED:
+                return [OrderStatus.RECEIVED, OrderStatus.REJECTED]
+            case OrderStatus.RECEIVED:
+                return [OrderStatus.CONFIRMED, OrderStatus.REJECTED]
+            default:
+                return [];
+        }
     }
 }
 

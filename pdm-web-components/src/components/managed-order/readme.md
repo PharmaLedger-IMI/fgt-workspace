@@ -39,6 +39,7 @@
 | `scanString`            | `scanner-title-string`    |             | `string` | `"Please Scan your Product"` |
 | `selectString`          | `select-string`           |             | `string` | `'Please Select an item...'` |
 | `statusString`          | `status-string`           |             | `string` | `'Shipment Status:'`         |
+| `statuses`              | `statuses`                |             | `any`    | `undefined`                  |
 | `stockString`           | `stock-string`            |             | `string` | `'Stock:'`                   |
 | `titleString`           | `create-title-string`     |             | `string` | `"Title String"`             |
 | `toAtString`            | `to-at-string`            |             | `string` | `'from:'`                    |

@@ -140,6 +140,7 @@ export namespace Components {
         "scanString": string;
         "selectString": string;
         "statusString": string;
+        "statuses": any;
         "stockString": string;
         "titleString": string;
         "toAtString": string;
@@ -221,6 +222,7 @@ export namespace Components {
         "shipmentRef"?: string;
         "shipmentType": string;
         "statusString": string;
+        "statuses": any;
         "stockString": string;
         "titleString": string;
         "toAtString": string;
@@ -368,7 +370,10 @@ export namespace Components {
     }
     interface StatusUpdater {
         "currentState": string;
-        "statesJSON": string;
+        "currentString"?: string;
+        "noUpdateString"?: string;
+        "statesJSON": any;
+        "updateString"?: string;
     }
 }
 declare global {
@@ -783,6 +788,7 @@ declare namespace LocalJSX {
         "scanString"?: string;
         "selectString"?: string;
         "statusString"?: string;
+        "statuses"?: any;
         "stockString"?: string;
         "titleString"?: string;
         "toAtString"?: string;
@@ -908,6 +914,7 @@ declare namespace LocalJSX {
         "shipmentRef"?: string;
         "shipmentType"?: string;
         "statusString"?: string;
+        "statuses"?: any;
         "stockString"?: string;
         "titleString"?: string;
         "toAtString"?: string;
@@ -1095,11 +1102,14 @@ declare namespace LocalJSX {
     }
     interface StatusUpdater {
         "currentState"?: string;
+        "currentString"?: string;
+        "noUpdateString"?: string;
         /**
           * Through this event action requests are made
          */
         "onStatusUpdateEvent"?: (event: CustomEvent<string>) => void;
-        "statesJSON"?: string;
+        "statesJSON"?: any;
+        "updateString"?: string;
     }
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;

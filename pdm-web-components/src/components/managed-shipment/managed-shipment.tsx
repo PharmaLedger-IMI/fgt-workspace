@@ -15,14 +15,7 @@ const SHIPMENT_TYPE = {
   RECEIVED: 'received'
 }
 
-const {ROLE, OrderLine, Shipment, Order, ShipmentStatus} = wizard.Model;
-
-const statuses = Object.keys(ShipmentStatus).reduce((accum, key) => {
-  accum[key] = {
-    state: ShipmentStatus[key]
-  }
-  return accum;
-}, {})
+const {ROLE, OrderLine, Shipment, Order} = wizard.Model;
 
 @Component({
   tag: 'managed-shipment',
@@ -89,6 +82,7 @@ export class ManagedShipment implements CreateManageView{
   @Prop({attribute: 'identity'}) identity;
   @Prop({attribute: 'shipment-type'}) shipmentType: string = SHIPMENT_TYPE.ISSUED;
 
+  @Prop({attribute: 'statuses', mutable: true, reflect: true}) statuses: any;
   // strings
 
   // General
@@ -244,6 +238,13 @@ export class ManagedShipment implements CreateManageView{
         order.orderLines.map(ol => new OrderLine(ol.gtin, ol.quantity, ol.requesterId, ol.senderId)));
       this.lines = [...this.order.orderLines];
     }
+  }
+
+  @Watch('statuses')
+  async updateStatuses(newVal){
+    if (typeof newVal === 'string')
+      return;
+    console.log(newVal);
   }
 
   @Method()
@@ -615,8 +616,8 @@ export class ManagedShipment implements CreateManageView{
             {getLines()}
           </ion-col>
           <ion-col size="12" size-lg="6">
-            <status-updater state-json={JSON.stringify(statuses)}
-                            current-state={self.order.status}
+            <status-updater state-json={JSON.stringify(self.statuses)}
+                            current-state={self.shipment.status}
                             onStatusUpdateEvent={self.updateStatus.bind(self)}>
             </status-updater>
           </ion-col>

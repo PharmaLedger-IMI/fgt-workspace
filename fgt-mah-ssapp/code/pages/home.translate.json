@@ -262,7 +262,57 @@
     "back": "Back",
     "status": "Shipment Status:",
     "scan": "Scan Product",
-    "scan-code": "Scan Shipment Code"
+    "scan-code": "Scan Shipment Code",
+    "statuses": {
+      "created": {
+        "action": "Create Shipment",
+        "label": "Created",
+        "color": "success",
+        "paths": []
+      },
+      "rejected": {
+        "action": "Reject Shipment",
+        "label": "Rejected",
+        "color": "danger",
+        "paths": []
+      },
+      "hold": {
+        "action": "Mark as 'On Hold'",
+        "label": "On Hold",
+        "color": "warning",
+        "paths": []
+      },
+      "pickup": {
+        "action": "Mark as 'For Pickup'",
+        "label": "On Hold",
+        "color": "secondary",
+        "paths": []
+      },
+      "transit": {
+        "action": "Mark as 'In Transit'",
+        "label": "In Transit",
+        "color": "primary",
+        "paths": []
+      },
+      "delivered": {
+        "action": "Deliver Shipment",
+        "label": "Delivered",
+        "color": "tertiary",
+        "paths": []
+      },
+      "received": {
+        "action": "Receive Shipment",
+        "label": "Received",
+        "color": "tertiary",
+        "paths": []
+      },
+      "confirm": {
+        "action": "Confirm Shipment",
+        "label": "Confirmed",
+        "color": "success",
+        "paths": []
+      }
+    }
   },
   "order": {
     "create": {
@@ -311,7 +361,63 @@
       }
     },
     "back": "Back to Orders",
-    "scan": "Scan Product"
+    "scan": "Scan Product",
+    "statuses": {
+      "created": {
+        "action": "Create Shipment",
+        "label": "Created",
+        "color": "secondary",
+        "paths": []
+      },
+      "acknowledged": {
+        "action": "Acknowledge Shipment",
+        "label": "Acknowledged",
+        "color": "success",
+        "paths": []
+      },
+      "rejected": {
+        "action": "Reject Shipment",
+        "label": "Rejected",
+        "color": "danger",
+        "paths": []
+      },
+      "hold": {
+        "action": "Mark as 'On Hold'",
+        "label": "On Hold",
+        "color": "warning",
+        "paths": []
+      },
+      "pickup": {
+        "action": "Mark as 'For Pickup'",
+        "label": "On Hold",
+        "color": "secondary",
+        "paths": []
+      },
+      "transit": {
+        "action": "Mark as 'In Transit'",
+        "label": "In Transit",
+        "color": "primary",
+        "paths": []
+      },
+      "delivered": {
+        "action": "Deliver Shipment",
+        "label": "Delivered",
+        "color": "tertiary",
+        "paths": []
+      },
+      "received": {
+        "action": "Receive Shipment",
+        "label": "Received",
+        "color": "tertiary",
+        "paths": []
+      },
+      "confirm": {
+        "action": "Confirm Shipment",
+        "label": "Confirmed",
+        "color": "success",
+        "paths": []
+      }
+    }
   },
   "orderLines": {
     "title": "Orders",

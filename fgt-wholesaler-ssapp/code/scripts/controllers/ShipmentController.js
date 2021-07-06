@@ -1,5 +1,5 @@
 import { LocalizedController, EVENT_REFRESH, EVENT_SSAPP_HAS_LOADED, EVENT_ACTION, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
-const {ShipmentLine, utils} = require('wizard').Model;
+const {ShipmentLine, utils, Shipment} = require('wizard').Model;
 
 export default class ShipmentController extends LocalizedController{
 
@@ -14,6 +14,7 @@ export default class ShipmentController extends LocalizedController{
         super(false, ...args);
         super.bindLocale(this, 'shipment');
         this.model = this.initializeModel();
+        this._updateStatuses(Shipment);
         const wizard = require('wizard');
         const participantManager = wizard.Managers.getParticipantManager();
         this.issuedShipmentManager = wizard.Managers.getIssuedShipmentManager(participantManager);
@@ -60,6 +61,16 @@ export default class ShipmentController extends LocalizedController{
             const {shipment, stock, orderId} = evt.detail;
             self._handleCreateShipment.call(self, shipment, stock, orderId);
         });
+    }
+
+    _updateStatuses(clazz){
+        if (!clazz.getAllowedStatusUpdates)
+            throw new Error("Invalid Class provided")
+        const obj = this.model.toObject().statuses;
+        this.model.statuses = Object.keys(obj).reduce((accum, state) => {
+            accum[state].paths = clazz.getAllowedStatusUpdates(state);
+            return accum;
+        }, obj);
     }
 
     /**

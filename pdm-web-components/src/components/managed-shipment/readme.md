@@ -33,6 +33,7 @@
 | `shipmentRef`         | `shipment-ref`          |             | `string` | `undefined`                  |
 | `shipmentType`        | `shipment-type`         |             | `string` | `SHIPMENT_TYPE.ISSUED`       |
 | `statusString`        | `status-string`         |             | `string` | `'Shipment Status:'`         |
+| `statuses`            | `statuses`              |             | `any`    | `undefined`                  |
 | `stockString`         | `stock-string`          |             | `string` | `'Stock:'`                   |
 | `titleString`         | `create-title-string`   |             | `string` | `"Title String"`             |
 | `toAtString`          | `to-at-string`          |             | `string` | `'from:'`                    |

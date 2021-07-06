@@ -7,10 +7,13 @@
 
 ## Properties
 
-| Property       | Attribute       | Description | Type     | Default     |
-| -------------- | --------------- | ----------- | -------- | ----------- |
-| `currentState` | `current-state` |             | `string` | `undefined` |
-| `statesJSON`   | `state-json`    |             | `string` | `undefined` |
+| Property         | Attribute          | Description | Type     | Default                     |
+| ---------------- | ------------------ | ----------- | -------- | --------------------------- |
+| `currentState`   | `current-state`    |             | `string` | `undefined`                 |
+| `currentString`  | `current-string`   |             | `string` | `"Current Status:"`         |
+| `noUpdateString` | `no-update-string` |             | `string` | `"No operations available"` |
+| `statesJSON`     | `state-json`       |             | `any`    | `undefined`                 |
+| `updateString`   | `update-string`    |             | `string` | `"Available Operation:"`    |
 
 
 ## Events

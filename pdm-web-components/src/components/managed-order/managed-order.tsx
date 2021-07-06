@@ -10,14 +10,7 @@ const ORDER_TYPE = {
   RECEIVED: 'received'
 }
 
-const {Order, OrderLine, ROLE, OrderStatus} = wizard.Model;
-
-const statuses = Object.keys(OrderStatus).reduce((accum, key) => {
-  accum[key] = {
-    state: OrderStatus[key]
-  }
-  return accum;
-}, {})
+const {Order, OrderLine, ROLE} = wizard.Model;
 
 @Component({
   tag: 'managed-order',
@@ -83,6 +76,8 @@ export class ManagedOrder implements CreateManageView{
   @Prop({attribute: 'identity'}) identity;
 
   @Prop({attribute: 'order-type'}) orderType: string = ORDER_TYPE.ISSUED;
+
+  @Prop({attribute: 'statuses', mutable: true, reflect: true}) statuses: any;
 
   // strings
   @Prop({attribute: "create-title-string"}) titleString: string = "Title String"
@@ -246,6 +241,13 @@ export class ManagedOrder implements CreateManageView{
   @Watch('orderType')
   async updateType(newVal){
     if (newVal.startsWith('@'))
+      return;
+    console.log(newVal);
+  }
+
+  @Watch('statuses')
+  async updateStatuses(newVal){
+    if (typeof newVal === 'string')
       return;
     console.log(newVal);
   }
@@ -534,7 +536,7 @@ export class ManagedOrder implements CreateManageView{
             {getLines()}
           </ion-col>
           <ion-col size="12" size-lg="6">
-            <status-updater state-json={JSON.stringify(statuses)}
+            <status-updater state-json={JSON.stringify(self.statuses)}
                             current-state={self.order.status}
                             onStatusUpdateEvent={self.updateStatus.bind(self)}>
             </status-updater>

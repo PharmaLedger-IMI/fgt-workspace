@@ -36,9 +36,10 @@ class Shipment {
 
     /**
      * Validate if everything seems ok with the properties of this object.
+     * @param {string} [oldStatus] if oldStatus validation is available
      * @returns undefined if all ok. An arry of errors if not all ok.
      */
-    validate() {
+    validate(oldStatus) {
         const errors = [];
         if (!this.shipmentId) {
             errors.push('ShipmentID is required.');
@@ -68,7 +69,26 @@ class Shipment {
             });
         }
 
+        if (oldStatus && Shipment.getAllowedStatusUpdates(oldStatus).indexOf(this.status) === -1)
+            errors.push(`Status update from ${oldStatus} to ${this.status} is not allowed`);
+
         return errors.length === 0 ? undefined : errors;
+    }
+
+
+    static getAllowedStatusUpdates(status){
+        switch(status){
+            case ShipmentStatus.CREATED:
+                return [ShipmentStatus.REJECTED, ShipmentStatus.ON_HOLD, ShipmentStatus.PICKUP]
+            case ShipmentStatus.ON_HOLD:
+                return [ShipmentStatus.PICKUP, ShipmentStatus.REJECTED]
+            case ShipmentStatus.PICKUP:
+                return [ShipmentStatus.ON_HOLD, ShipmentStatus.REJECTED, ShipmentStatus.TRANSIT]
+            case ShipmentStatus.TRANSIT:
+                return [ShipmentStatus.REJECTED, ShipmentStatus.ON_HOLD, ShipmentStatus.DELIVERED]
+            default:
+                return [];
+        }
     }
 }
 

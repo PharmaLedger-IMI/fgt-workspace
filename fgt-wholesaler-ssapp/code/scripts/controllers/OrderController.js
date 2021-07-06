@@ -15,6 +15,9 @@ export default class OrderController extends LocalizedController {
         self.model = self.initializeModel();
 
         const wizard = require('wizard');
+        const {Order} = wizard.Model;
+        self._updateStatuses(Order)
+
         const participantManager = wizard.Managers.getParticipantManager();
         self.issuedOrderManager = wizard.Managers.getIssuedOrderManager(participantManager);
         self.orderEl = self.querySelector('managed-order');
@@ -52,10 +55,20 @@ export default class OrderController extends LocalizedController {
         console.log("OrderController initialized");
     }
 
+    _updateStatuses(clazz){
+        if (!clazz.getAllowedStatusUpdates)
+            throw new Error("Invalid Class provided")
+        const obj = this.model.toObject().statuses;
+        this.model.statuses = Object.keys(obj).reduce((accum, state) => {
+            accum[state].paths = clazz.getAllowedStatusUpdates(state);
+            return accum;
+        }, obj);
+    }
+
     /**
      * Sends an event named create-issued-order to the IssuedOrders controller.
      */
-     async _handleCreateOrder(order) {
+    async _handleCreateOrder(order) {
         let self = this;
         if (order.validate())
             return this.showErrorToast(this.translate(`create.error.invalid`));
@@ -86,8 +99,8 @@ export default class OrderController extends LocalizedController {
     }
 
     async showConfirm(action = 'create.confirm'){
-         return super.showConfirm(this.translate(`${action}.message`),
-             this.translate(`${action}.buttons.ok`),
-             this.translate(`${action}.buttons.cancel`));
+        return super.showConfirm(this.translate(`${action}.message`),
+            this.translate(`${action}.buttons.ok`),
+            this.translate(`${action}.buttons.cancel`));
     }
 }

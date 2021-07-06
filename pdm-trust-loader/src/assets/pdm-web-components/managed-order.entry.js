@@ -20,13 +20,7 @@ const ORDER_TYPE = {
   ISSUED: "issued",
   RECEIVED: 'received'
 };
-const { Order, OrderLine, ROLE, OrderStatus } = wizard.Model;
-const statuses = Object.keys(OrderStatus).reduce((accum, key) => {
-  accum[key] = {
-    state: OrderStatus[key]
-  };
-  return accum;
-}, {});
+const { Order, OrderLine, ROLE } = wizard.Model;
 const ManagedOrder = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
@@ -175,6 +169,11 @@ const ManagedOrder = class {
   }
   async updateType(newVal) {
     if (newVal.startsWith('@'))
+      return;
+    console.log(newVal);
+  }
+  async updateStatuses(newVal) {
+    if (typeof newVal === 'string')
       return;
     console.log(newVal);
   }
@@ -328,7 +327,7 @@ const ManagedOrder = class {
     };
     if (self.orderType !== ORDER_TYPE.ISSUED || !self.order)
       return getLines();
-    return (h("ion-grid", null, h("ion-row", null, h("ion-col", { size: "12", "size-lg": "6" }, getLines()), h("ion-col", { size: "12", "size-lg": "6" }, h("status-updater", { "state-json": JSON.stringify(statuses), "current-state": self.order.status, onStatusUpdateEvent: self.updateStatus.bind(self) })))));
+    return (h("ion-grid", null, h("ion-row", null, h("ion-col", { size: "12", "size-lg": "6" }, getLines()), h("ion-col", { size: "12", "size-lg": "6" }, h("status-updater", { "state-json": JSON.stringify(self.statuses), "current-state": self.order.status, onStatusUpdateEvent: self.updateStatus.bind(self) })))));
   }
   getView() {
   }
@@ -341,7 +340,8 @@ const ManagedOrder = class {
   static get watchers() { return {
     "orderRef": ["refresh"],
     "orderLines": ["updateLines"],
-    "orderType": ["updateType"]
+    "orderType": ["updateType"],
+    "statuses": ["updateStatuses"]
   }; }
 };
 __decorate([

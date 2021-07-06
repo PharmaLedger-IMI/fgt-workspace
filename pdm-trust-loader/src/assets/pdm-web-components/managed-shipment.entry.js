@@ -20,13 +20,7 @@ const SHIPMENT_TYPE = {
   ISSUED: "issued",
   RECEIVED: 'received'
 };
-const { ROLE, OrderLine, Shipment, Order, ShipmentStatus } = wizard.Model;
-const statuses = Object.keys(ShipmentStatus).reduce((accum, key) => {
-  accum[key] = {
-    state: ShipmentStatus[key]
-  };
-  return accum;
-}, {});
+const { ROLE, OrderLine, Shipment, Order } = wizard.Model;
 const ManagedShipment = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
@@ -174,6 +168,11 @@ const ManagedShipment = class {
       this.order = new Order(order.orderId, order.requesterId, order.senderId, order.shipToAddress, order.status, order.orderLines.map(ol => new OrderLine(ol.gtin, ol.quantity, ol.requesterId, ol.senderId)));
       this.lines = [...this.order.orderLines];
     }
+  }
+  async updateStatuses(newVal) {
+    if (typeof newVal === 'string')
+      return;
+    console.log(newVal);
   }
   async reset() {
     this.shipmentRef = '';
@@ -384,7 +383,7 @@ const ManagedShipment = class {
     };
     if (self.shipmentType !== SHIPMENT_TYPE.ISSUED || !self.shipment)
       return getLines();
-    return (h("ion-grid", null, h("ion-row", null, h("ion-col", { size: "12", "size-lg": "6" }, getLines()), h("ion-col", { size: "12", "size-lg": "6" }, h("status-updater", { "state-json": JSON.stringify(statuses), "current-state": self.order.status, onStatusUpdateEvent: self.updateStatus.bind(self) })))));
+    return (h("ion-grid", null, h("ion-row", null, h("ion-col", { size: "12", "size-lg": "6" }, getLines()), h("ion-col", { size: "12", "size-lg": "6" }, h("status-updater", { "state-json": JSON.stringify(self.statuses), "current-state": self.shipment.status, onStatusUpdateEvent: self.updateStatus.bind(self) })))));
   }
   getView() {
   }
@@ -396,7 +395,8 @@ const ManagedShipment = class {
   get element() { return getElement(this); }
   static get watchers() { return {
     "shipmentRef": ["refresh"],
-    "orderJSON": ["refreshOrder"]
+    "orderJSON": ["refreshOrder"],
+    "statuses": ["updateStatuses"]
   }; }
 };
 __decorate([
