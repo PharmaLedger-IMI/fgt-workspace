@@ -55,6 +55,7 @@ Type: `Promise<any>`
 ### Used by
 
  - [managed-batch](../managed-batch)
+ - [managed-individual-product](../managed-individual-product)
  - [managed-order](../managed-order)
  - [managed-product](../managed-product)
  - [managed-shipment](../managed-shipment)
@@ -63,6 +64,7 @@ Type: `Promise<any>`
 ```mermaid
 graph TD;
   managed-batch --> create-manage-view-layout
+  managed-individual-product --> create-manage-view-layout
   managed-order --> create-manage-view-layout
   managed-product --> create-manage-view-layout
   managed-shipment --> create-manage-view-layout

@@ -26,9 +26,9 @@ function IndividualProductService(domain, strategy){
     }
 
     /**
-     * Resolves the DSU and loads the Product object with all its properties, mutable or not
+     * Resolves the DSU and loads the IndividualProduct object with all its properties, mutable or not
      * @param {KeySSI} keySSI
-     * @param {function(err, Product)} callback
+     * @param {function(err, IndividualProduct)} callback
      */
     this.get = function(keySSI, callback){
         utils.getResolver().loadDSU(keySSI, (err, dsu) => {
@@ -41,7 +41,7 @@ function IndividualProductService(domain, strategy){
                 try{
                     individualProduct = new IndividualProduct(JSON.parse(data));
                 } catch (e) {
-                    return callback(`unable to parse Product: ${data}`);
+                    return callback(`unable to parse IndividualProduct: ${data.toString()}`);
                 }
                 callback(undefined, individualProduct);
             });
@@ -50,7 +50,7 @@ function IndividualProductService(domain, strategy){
 
     /**
      * Creates a {@link Product} DSU
-     * @param {Product|string} product
+     * @param {IndividualProduct|string} product
      * @param {function(err, keySSI)} callback
      */
     this.create = function(product, callback){
@@ -62,7 +62,7 @@ function IndividualProductService(domain, strategy){
             return callback(err);
 
         if (isSimple){
-            let keySSI = this.generateKey(product.gtin);
+            let keySSI = this.generateKey(product.gtin, product.batchNumber, product.serialNumber);
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);

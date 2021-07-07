@@ -125,6 +125,14 @@
                             </ion-content>
                         </ion-tab>
 
+                        <ion-tab tab="tab-individual-product">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <div data-if="@identified">
+                                    <webc-template template="individualProduct" disable-container></webc-template>
+                                </div>
+                            </ion-content>
+                        </ion-tab>
+
                         <div slot="bottom" data-if="@identified">
                             <ion-tab-bar class="ion-hide-lg-up">
                                 <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>

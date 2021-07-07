@@ -64,6 +64,7 @@ const DB = {
     stock: 'stock',
     orderLines: 'orderLines',
     shipmentLines: 'shipmentLines',
+    individualProduct: 'individualProduct',
     directory: 'directory'
 }
 

@@ -78,6 +78,7 @@ export class ManagedIndividualProduct implements CreateManageView{
   @Prop({attribute: "expiry-string"}) expiryString: string = "Product Expiry";
   @Prop({attribute: "serial-string"}) serialString: string = "SerialNumber";
   @Prop({attribute: "status-string"}) statusString: string = "Status";
+  @Prop({attribute: "batch-string"}) batchString: string = "Batch";
 
 
 
@@ -224,6 +225,10 @@ export class ManagedIndividualProduct implements CreateManageView{
       <ion-item class="ion-margin-bottom">
         <ion-label position="floating">{self.manufString}</ion-label>
         <ion-input name="input-manufName" disabled={true} value={self.manufName}></ion-input>
+      </ion-item>,
+      <ion-item class="ion-margin-bottom">
+        <ion-label position="floating">{self.batchString}</ion-label>
+        <ion-input name="input-manufName" disabled={true} value={self.individualProduct && self.individualProduct.batchNumber}></ion-input>
       </ion-item>,
       <ion-item className="ion-margin-bottom">
         <ion-label position="floating">{self.expiryString}</ion-label>

@@ -131,7 +131,7 @@ class ReceivedOrderManager extends OrderManager {
         const orderSReadSSIStr = message;
         self._getDSUInfo(orderSReadSSIStr, (err, orderObj, orderDsu) => {
             if (err)
-                return self._err(`Could not read DSU from message keySSI in record ${record}. Skipping record.`, err, callback);
+                return self._err(`Could not read DSU from message keySSI in record ${message}. Skipping record.`, err, callback);
 
             console.log(`ReceivedOrder`, orderObj);
             const orderId = orderObj.orderId;

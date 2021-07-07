@@ -93,6 +93,16 @@ export class ManagedProductListItem {
     });
   }
 
+  private triggerSelect(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    console.log(`Selected ${evt.detail}`);
+    this.navigateToTab('tab-batch', {
+      gtin: this.gtin,
+      batchNumber: evt.detail
+    })
+  }
+
   @Watch('gtin')
   @Method()
   async refresh(){
@@ -134,11 +144,7 @@ export class ManagedProductListItem {
                           id-prop="gtin-batch"
                           is-ion-item="false"
                           orientation={this.getOrientation()}
-                          onSelectEvent={(evt) => {
-                            evt.preventDefault();
-                            evt.stopImmediatePropagation();
-                            console.log(`Selected ${evt.detail}`);
-                          }}></pdm-item-organizer>
+                          onSelectEvent={this.triggerSelect.bind(this)}></pdm-item-organizer>
     )
   }
 

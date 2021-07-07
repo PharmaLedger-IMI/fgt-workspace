@@ -455,6 +455,65 @@
     "title": "Stocks",
     "none": "No products in stock..."
   },
+  "individualProduct": {
+    "manage": {
+      "title": "Manage Single Product",
+      "status": "Status:",
+      "name": "Product Name:",
+      "gtin": "Product GTIN:",
+      "batch": "Batch Number:",
+      "manufName": "Product Manufacturer:",
+      "expiry": "Product Expiry:",
+      "serial": "Product Serial Number:",
+      "confirm": {
+        "message": "Please confirm status update from {0} to {1}",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Updating Order. Please wait...",
+      "success": "Order Successfully updated",
+      "error": {
+        "bind": "Could not bind participant to product",
+        "invalid": "Invalid: ",
+        "error": "Could not update: "
+      }
+    },
+    "back": "Back to Products",
+    "statuses": {
+      "commissioned": {
+        "action": "Commission Product",
+        "label": "Commissioned",
+        "color": "secondary",
+        "paths": []
+      },
+      "recall": {
+        "action": "Recall Product",
+        "label": "Recalled",
+        "color": "warning",
+        "paths": []
+      },
+      "dispensed": {
+        "action": "Dispense Product",
+        "label": "Dispensed",
+        "color": "success",
+        "paths": []
+      },
+      "administered": {
+        "action": "Administer Product",
+        "label": "Administered",
+        "color": "success",
+        "paths": []
+      },
+      "destroyed": {
+        "action": "Destroy Product",
+        "label": "destroyed",
+        "color": "danger",
+        "paths": []
+      }
+    }
+  },
   "scan": {
     "title": "Please Scan your pack",
     "changeCamera": "Change camera"
