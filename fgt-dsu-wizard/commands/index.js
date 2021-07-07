@@ -11,5 +11,6 @@ module.exports = {
     createBatchSSI: require("./setBatchSSI").createBatchSSI,
     createProductSSI: require("./setProductSSI").createProductSSI,
     createShipmentLineSSI: require("./setShipmentLineSSI").createShipmentLineSSI,
-    createShipmentSSI: require("./setShipmentSSI").createShipmentSSI
+    createShipmentSSI: require("./setShipmentSSI").createShipmentSSI,
+    createIndividualProductSSI: require('./setIndividualProductSSI')
 }

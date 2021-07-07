@@ -28,12 +28,13 @@ function OrderService(domain, strategy) {
             dsu.readFile(INFO_PATH, (err, data) => {
                 if (err)
                     return callback(`Could not read product from dsu ${err}`);
+                let product;
                 try{
-                    const product = JSON.parse(data);
-                    callback(undefined, product.manufName);
+                    product = JSON.parse(data);
                 } catch (e){
                     return callback(`Could not parse Product data ${err}`)
                 }
+                callback(undefined, product.manufName);
             });
         });
     }
@@ -41,7 +42,7 @@ function OrderService(domain, strategy) {
     /**
      * Resolves the DSU and loads the Order object with all its properties, mutable or not
      * @param {KeySSI} keySSI
-     * @param {function(err, Order?)} callback
+     * @param {function(err, Order?, Archive?)} callback
      */
     this.get = function(keySSI, callback){
         utils.getResolver().loadDSU(keySSI, (err, dsu) => {
@@ -58,23 +59,24 @@ function OrderService(domain, strategy) {
                             return callback(`could not retrieve orderLine status`);
                         try {
                             order.status = JSON.parse(status);
-
-                            if (order.status === OrderStatus.CREATED)
-                                return callback(undefined, order);
-                            dsu.readFile(`${SHIPMENT_PATH}${INFO_PATH}`, (err, data) => {
-                                if (err || !data)
-                                    return callback(undefined, order);
-                                try {
-                                    const shipment = JSON.parse(data);
-                                    order.shipmentId = shipment.shipmentId;
-                                    callback(undefined, order);
-                                } catch (e) {
-                                    return callback(e);
-                                }
-                            });
                         } catch (e) {
                             return callback(`unable to parse Order status: ${status}`);
                         }
+                        if (order.status === OrderStatus.CREATED)
+                            return callback(undefined, order, dsu);
+                        dsu.readFile(`${SHIPMENT_PATH}${INFO_PATH}`, (err, data) => {
+                            if (err || !data)
+                                return callback(undefined, order, dsu);
+                            let shipment;
+                            try {
+                                shipment = JSON.parse(data);
+                            } catch (e) {
+                                return callback(e);
+                            }
+                            order.shipmentId = shipment.shipmentId;
+                            callback(undefined, order, dsu);
+                        });
+
                     });
                 } catch (e) {
                     return callback(`Could not parse order in DSU ${keySSI.getIdentifier()}`);

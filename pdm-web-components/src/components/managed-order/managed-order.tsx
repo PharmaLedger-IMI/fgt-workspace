@@ -10,7 +10,7 @@ const ORDER_TYPE = {
   RECEIVED: 'received'
 }
 
-const {Order, OrderLine, ROLE} = wizard.Model;
+const {Order, OrderLine, ROLE, OrderStatus} = wizard.Model;
 
 @Component({
   tag: 'managed-order',
@@ -54,7 +54,7 @@ export class ManagedOrder implements CreateManageView{
     composed: true,
     cancelable: true,
   })
-  sendCreateAction: EventEmitter;
+  sendAction: EventEmitter;
 
   private sendError(message: string, err?: object){
     const event = this.sendErrorEvent.emit(message);
@@ -275,12 +275,27 @@ export class ManagedOrder implements CreateManageView{
     this.navigateToTab(`tab-${this.getType()}-orders`, {});
   }
 
-  create(evt){
+  async create(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.sendCreateAction.emit(new Order(undefined, this.identity.id,
-      evt.detail.senderId, this.identity.address, undefined,
-      this.lines.slice()));
+    this.sendAction.emit({
+      action: OrderStatus.CREATED,
+      props: new Order(undefined, this.identity.id,
+        evt.detail.senderId, this.identity.address, undefined,
+        this.lines.slice())
+    });
+  }
+
+  async update(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    this.sendAction.emit({
+      action: evt.detail,
+      props:{
+        order: this.order,
+        newStatus: evt.detail
+      }
+    });
   }
 
   isCreate(){
@@ -326,10 +341,6 @@ export class ManagedOrder implements CreateManageView{
     const {role} = await popover.onWillDismiss();
     if (role && role !== 'backdrop')
       this.currentGtin = role;
-  }
-
-  private updateStatus(evt){
-    console.log(`Status `, evt);
   }
 
   getInputs(){
@@ -538,7 +549,7 @@ export class ManagedOrder implements CreateManageView{
           <ion-col size="12" size-lg="6">
             <status-updater state-json={JSON.stringify(self.statuses)}
                             current-state={self.order.status}
-                            onStatusUpdateEvent={self.updateStatus.bind(self)}>
+                            onStatusUpdateEvent={self.update.bind(self)}>
             </status-updater>
           </ion-col>
         </ion-row>

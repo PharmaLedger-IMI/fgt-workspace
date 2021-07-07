@@ -30,7 +30,7 @@ const OrderStatus = require('../model').OrderStatus;
  */
 class OrderManager extends Manager {
     constructor(participantManager, tableName, indexes, callback) {
-        super(participantManager, tableName, ['orderId', 'products', ...indexes], callback);
+        super(participantManager, tableName, ['orderId', 'products', 'status', ...indexes], callback);
         this.orderService = new (require('../services').OrderService)(ANCHORING_DOMAIN);
     }
 
@@ -76,6 +76,7 @@ class OrderManager extends Manager {
     _indexItem(key, item, record) {
         return {
             orderId: item.orderId,
+            status: item.status,
             products: item.orderLines.map(ol => ol.gtin).join(','),
             value: record
         }

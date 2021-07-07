@@ -1,4 +1,7 @@
 import { LocalizedController, EVENT_REFRESH, EVENT_ACTION, EVENT_SSAPP_HAS_LOADED, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
+const {OrderStatus} = require('wizard').Model;
+
+
 export default class OrderController extends LocalizedController {
 
     initializeModel = () => ({
@@ -49,7 +52,14 @@ export default class OrderController extends LocalizedController {
         self.on(EVENT_ACTION, async (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            await self._handleCreateOrder.call(self, evt.detail);
+            const {action, props} = evt.detail;
+            switch (action){
+                case OrderStatus.CREATED:
+                    return await self._handleCreateOrder.call(self, props);
+                default:
+                    const {newStatus, order} = props;
+                    return await self._handleUpdateOrderStatus.call(self, order, newStatus);
+            }
         });
 
         console.log("OrderController initialized");
@@ -64,6 +74,43 @@ export default class OrderController extends LocalizedController {
             return accum;
         }, obj);
     }
+
+    async _handleUpdateOrderStatus(order, newStatus){
+        const self = this;
+
+        const oldStatus = order.status;
+        order.status = newStatus;
+        const errors = order.validate(oldStatus);
+        if (errors)
+            return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
+
+        const alert = await self.showConfirm('manage.confirm', order.status, newStatus);
+
+        const {role} = await alert.onDidDismiss();
+
+        if (BUTTON_ROLES.CONFIRM !== role)
+            return console.log(`Order update canceled by clicking ${role}`);
+
+        const loader = self._getLoader(self.translate('manage.loading'));
+        await loader.present();
+
+        const sendError = async function(msg){
+            await loader.dismiss();
+            self.showErrorToast(msg);
+        }
+
+        self.issuedOrderManager.update(order, async (err, updatedOrder) => {
+            if (err)
+                return sendError(self.translate('manage.error.error'));
+            self.showToast(self.translate('manage.success'));
+            self.refresh({
+                mode: 'issued',
+                order: updatedOrder
+            });
+            await loader.dismiss();
+        });
+    }
+
 
     /**
      * Sends an event named create-issued-order to the IssuedOrders controller.

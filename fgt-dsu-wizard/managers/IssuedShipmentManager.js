@@ -86,9 +86,8 @@ class IssuedShipmentManager extends ShipmentManager {
     /**
      * Creates a {@link Shipment} dsu
      * @param {string} orderId the id to the received order that generates the shipment
-     * @param {string|number} [shipmentId] the table key
      * @param {Shipment} shipment
-     * @param {function(err, sReadSSI, dbPath)} callback where the dbPath follows a "tableName/shipmentId" template.
+     * @param {function(err, KeySSI, dbPath)} callback where the dbPath follows a "tableName/shipmentId" template.
      * @override
      */
     create(orderId, shipment, callback) {
@@ -163,13 +162,18 @@ class IssuedShipmentManager extends ShipmentManager {
     }
 
     sendMessagesAsync(shipment, shipmentLinesSSIs, aKey){
+        if (!aKey){
+            aKey = shipmentLinesSSIs;
+            shipmentLinesSSIs = undefined;
+        }
+
         const self = this;
         self.sendMessage(shipment.requesterId, DB.receivedShipments, aKey, (err) =>
             self._messageCallback(err ? `Could not sent message to ${shipment.shipmentId} with ${DB.receivedShipments}: ${err}` : err,
                 `Message sent to ${shipment.requesterId}, ${DB.receivedShipments}, ${aKey}`));
-
-        self.sendShipmentLinesToMAH([...shipment.shipmentLines], [...shipmentLinesSSIs], (err) =>
-            self._messageCallback( err ? `Could not transmit shipmentLines to The manufacturers` : 'Lines Notice sent to Manufacturers'));
+        if (shipmentLinesSSIs)
+            self.sendShipmentLinesToMAH([...shipment.shipmentLines], [...shipmentLinesSSIs], (err) =>
+                self._messageCallback( err ? `Could not transmit shipmentLines to The manufacturers` : 'Lines Notice sent to Manufacturers'));
     }
 
     /**
@@ -217,6 +221,28 @@ class IssuedShipmentManager extends ShipmentManager {
                 return self._err(`Could not parse IssuedShipments ${JSON.stringify(result)}`, err, callback);
             console.log(`Parsed ${result.length} shipments`);
             callback(undefined, result);
+        });
+    }
+
+    /**
+     * updates an Issued Shipment
+     *
+     * @param {string} [key] key is optional so child classes can override them
+     * @param {Shipment} shipment
+     * @param {function(err, Shipment?, Archive?)} callback
+     */
+    update(key, shipment, callback){
+        if (!callback){
+            callback = shipment;
+            shipment = key;
+            key = this._genCompostKey(shipment.requesterId, shipment.shipmentId);
+        }
+        const self = this;
+        super.update(key, shipment, (err, updatedShipment, keySSI, orderId, linesSSIs) => {
+            if (err)
+                return self._err(`Could not update Shipment`, err, callback);
+            self.sendMessagesAsync(updatedShipment, linesSSIs, keySSI);
+            callback(undefined, updatedShipment, keySSI);
         });
     }
 }

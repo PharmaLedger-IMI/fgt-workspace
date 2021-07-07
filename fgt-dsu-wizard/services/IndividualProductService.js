@@ -4,21 +4,23 @@ const { INFO_PATH } = require('../constants');
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
- * @function ProductService
+ * @function IndividualProductService
  * @memberOf Services
  */
-function ProductService(domain, strategy){
+function IndividualProductService(domain, strategy){
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");
-    const Product = require('../model/Product');
-    const endpoint = 'product';
-    const keyGenFunction = require('../commands/setProductSSI').createProductSSI;
+    const IndividualProduct = require('../model/IndividualProduct');
+    const endpoint = 'individualproduct';
+    const keyGenFunction = require('../commands/setIndividualProductSSI').createIndividualProductSSI;
 
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
 
-    this.generateKey = function(gtin){
+    this.generateKey = function(gtin, batchNumber, serialNumber){
         let keyGenData = {
-            gtin: gtin
+            gtin: gtin,
+            batchNumber: batchNumber,
+            serialNumber: serialNumber
         }
         return keyGenFunction(keyGenData, domain);
     }
@@ -35,14 +37,13 @@ function ProductService(domain, strategy){
             dsu.readFile(INFO_PATH, (err, data) => {
                 if (err)
                     return callback(err);
-                let product;
-
+                let individualProduct;
                 try{
-                    product = new Product(JSON.parse(data));
+                    individualProduct = new IndividualProduct(JSON.parse(data));
                 } catch (e) {
                     return callback(`unable to parse Product: ${data}`);
                 }
-                callback(undefined, product);
+                callback(undefined, individualProduct);
             });
         });
     }
@@ -81,6 +82,8 @@ function ProductService(domain, strategy){
                     endpoint: endpoint,
                     data: {
                         gtin: product.gtin,
+                        batchNumber: product.batchNumber,
+                        serialNumber: product.serialNumber
                     }
                 }
             }
@@ -92,4 +95,4 @@ function ProductService(domain, strategy){
     };
 }
 
-module.exports = ProductService;
+module.exports = IndividualProductService;

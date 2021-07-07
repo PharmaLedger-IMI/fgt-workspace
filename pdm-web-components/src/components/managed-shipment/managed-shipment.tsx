@@ -15,7 +15,7 @@ const SHIPMENT_TYPE = {
   RECEIVED: 'received'
 }
 
-const {ROLE, OrderLine, Shipment, Order} = wizard.Model;
+const {ROLE, OrderLine, Shipment, Order, ShipmentStatus} = wizard.Model;
 
 @Component({
   tag: 'managed-shipment',
@@ -59,7 +59,7 @@ export class ManagedShipment implements CreateManageView{
     composed: true,
     cancelable: true,
   })
-  sendCreateAction: EventEmitter;
+  sendAction: EventEmitter;
 
   private sendError(message: string, err?: object){
     const event = this.sendErrorEvent.emit(message);
@@ -277,10 +277,25 @@ export class ManagedShipment implements CreateManageView{
   async create(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.sendCreateAction.emit({
-      shipment: new Shipment(undefined, evt.detail.requesterId, this.identity.id,  this.identity.address, undefined, this.lines.slice()),
-      stock: await this.getStockManagerEl().getResult(),
-      orderId: this.order ? this.order.orderId : undefined
+    this.sendAction.emit({
+      action: ShipmentStatus.CREATED,
+      props:{
+        shipment: new Shipment(undefined, evt.detail.requesterId, this.identity.id,  this.identity.address, undefined, this.lines.slice()),
+        stock: await this.getStockManagerEl().getResult(),
+        orderId: this.order ? this.order.orderId : undefined
+      }
+    });
+  }
+
+  async update(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    this.sendAction.emit({
+      action: evt.detail,
+      props:{
+        shipment: this.shipment,
+        newStatus: evt.detail
+      }
     });
   }
 
@@ -320,10 +335,6 @@ export class ManagedShipment implements CreateManageView{
     evt.preventDefault();
     evt.stopImmediatePropagation();
     this.currentGtin = evt.detail;
-  }
-
-  private updateStatus(evt){
-    console.log(`Status `, evt);
   }
 
   private getInputs(){
@@ -618,7 +629,7 @@ export class ManagedShipment implements CreateManageView{
           <ion-col size="12" size-lg="6">
             <status-updater state-json={JSON.stringify(self.statuses)}
                             current-state={self.shipment.status}
-                            onStatusUpdateEvent={self.updateStatus.bind(self)}>
+                            onStatusUpdateEvent={self.update.bind(self)}>
             </status-updater>
           </ion-col>
         </ion-row>

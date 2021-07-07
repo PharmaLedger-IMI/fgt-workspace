@@ -18,7 +18,7 @@ const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
  */
 class ShipmentManager extends Manager {
     constructor(participantManager, tableName, indexes, callback) {
-        super(participantManager, tableName, ['shipmentId', 'products', 'batches', ...indexes], callback);
+        super(participantManager, tableName, ['shipmentId', 'products', 'batches', 'status', ...indexes], callback);
         this.shipmentService = new (require('../services').ShipmentService)(ANCHORING_DOMAIN);
     }
 
@@ -69,6 +69,7 @@ class ShipmentManager extends Manager {
         }
         return {
             shipmentId: item.shipmentId,
+            status: item.status,
             products: item.shipmentLines.map(ol => ol.gtin).join(','),
             batches: item.shipmentLines.map(ol => ol.batch).join(','),
             value: record
@@ -149,6 +150,33 @@ class ShipmentManager extends Manager {
             });
 
             callback();
+        });
+    }
+
+    /**
+     * updates an item
+     *
+     * @param {string} [key] key is optional so child classes can override them
+     * @param {Shipment} shipment
+     * @param {function(err, Shipment?, Archive?)} callback
+     */
+    update(key, shipment, callback){
+        if (!callback)
+            return callback(`No key Provided...`);
+
+        let self = this;
+        self.getRecord(key, (err, record) => {
+            if (err)
+                return self._err(`Unable to retrieve record with key ${key} from table ${self._getTableName()}`, err, callback);
+            self.shipmentService.update(record.value, shipment, (err, updatedShipment, dsu, orderId, linesSSis) => {
+                if (err)
+                    return self._err(`Could not Update Order DSU`, err, callback);
+                self.updateRecord(key, self._indexItem(key, updatedShipment, record.value), (err) => {
+                    if (err)
+                        return self._err(`Unable to update record with key ${key} from table ${self._getTableName()}`, err, callback);
+                    callback(undefined, updatedShipment, record.value, orderId, linesSSis);
+                });
+            });
         });
     }
 }

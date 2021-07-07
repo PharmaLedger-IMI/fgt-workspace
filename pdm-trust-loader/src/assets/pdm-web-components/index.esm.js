@@ -417,9 +417,10 @@ class LocalizedController extends WebcController {
 
   /**
    * Calls Refresh on the controller
+   * @param {{}} [detail] option props to pass on the event
    */
-  refresh(){
-    this.send(EVENT_REFRESH, {}, {capture: true});
+  refresh(detail){
+    this.send(EVENT_REFRESH, detail || {}, {capture: true});
   }
 
   /**

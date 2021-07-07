@@ -117,6 +117,26 @@ function getRandom(arr, n) {
     return result;
 }
 
+/**
+ * Generates the 2D Data Matrix code for a batch or a serial
+ * @param gtin
+ * @param {string} batchNumber
+ * @param {string} expiry (must be parseable to date)
+ * @param [serialNumber]
+ * @return {string}
+ */
+function generate2DMatrixCode(gtin, batchNumber, expiry, serialNumber){
+    const formattedExpiry = new Date(expiry).toLocaleDateString("en-US", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit"
+    }).split('/').reverse().join('');
+
+    if (!serialNumber)
+        return `(01)${gtin}(10)${batchNumber}(17)${formattedExpiry}`;
+    return `(01)${gtin}(21)${serialNumber}(10)${batchNumber}(17)${formattedExpiry}`;
+}
+
 module.exports = {
     /**
      * Generates a string of the provided length filled with random characters from 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -154,5 +174,6 @@ module.exports = {
     generateGtin,
     generateRandomInt,
     stringFormat,
-    getRandom
+    getRandom,
+    generate2DMatrixCode
 }

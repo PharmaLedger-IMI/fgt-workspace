@@ -1,5 +1,5 @@
 import { LocalizedController, EVENT_REFRESH, EVENT_SSAPP_HAS_LOADED, EVENT_ACTION, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
-const {ShipmentLine, utils, Shipment} = require('wizard').Model;
+const {ShipmentLine, utils, Shipment, ShipmentStatus} = require('wizard').Model;
 
 export default class ShipmentController extends LocalizedController{
 
@@ -55,11 +55,19 @@ export default class ShipmentController extends LocalizedController{
             await self.shipmentEl.updateDirectory();
         }, {capture: true});
 
-        self.on(EVENT_ACTION, (evt) => {
+        self.on(EVENT_ACTION, async (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            const {shipment, stock, orderId} = evt.detail;
-            self._handleCreateShipment.call(self, shipment, stock, orderId);
+            const {action, props} = evt.detail;
+            const {shipment} = props;
+            switch (action){
+                case ShipmentStatus.CREATED:
+                    const {stock, orderId} = props;
+                    return await self._handleCreateShipment.call(self, shipment, stock, orderId);
+                default:
+                    const {newStatus} = props;
+                    return await self._handleUpdateShipmentStatus.call(self, shipment, newStatus);
+            }
         });
     }
 
@@ -71,6 +79,41 @@ export default class ShipmentController extends LocalizedController{
             accum[state].paths = clazz.getAllowedStatusUpdates(state);
             return accum;
         }, obj);
+    }
+
+    async _handleUpdateShipmentStatus(shipment, newStatus){
+        const self = this;
+        const oldStatus = shipment.status;
+        shipment.status = newStatus;
+        const errors = shipment.validate(oldStatus);
+        if (errors)
+            return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
+
+        const alert = await self.showConfirm('manage.confirm', shipment.status, newStatus);
+
+        const {role} = await alert.onDidDismiss();
+
+        if (BUTTON_ROLES.CONFIRM !== role)
+            return console.log(`Shipment update canceled by clicking ${role}`);
+
+        const loader = self._getLoader(self.translate('manage.loading'));
+        await loader.present();
+
+        const sendError = async function(msg){
+            await loader.dismiss();
+            self.showErrorToast(msg);
+        }
+
+        self.issuedShipmentManager.update(shipment, async (err, updatedShipment) => {
+            if (err)
+                return sendError(self.translate('manage.error.error'));
+            self.showToast(self.translate('manage.success'));
+            self.refresh({
+                mode: 'issued',
+                shipment: updatedShipment
+            });
+            await loader.dismiss();
+        });
     }
 
     /**

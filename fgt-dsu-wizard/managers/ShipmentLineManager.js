@@ -23,7 +23,7 @@ const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
  */
 class ShipmentLineManager extends Manager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.shipmentLines, ['gtin', 'date', 'batch', 'requesterId', 'senderId'], (err, manager) => {
+        super(participantManager, DB.shipmentLines, ['gtin', 'createdOn', 'batch', 'requesterId', 'senderId'], (err, manager) => {
             if (err)
                 return callback ? callback(err) : console.log(err);
             manager.registerMessageListener((message) => {
@@ -45,12 +45,12 @@ class ShipmentLineManager extends Manager {
      * @param {string|number} requesterId
      * @param {string|number} senderId
      * @param {string|number} gtin
-     * @param {string|number} date
+     * @param {string|number} createdOn
      * @return {string}
      * @protected
      */
-    _genCompostKey(requesterId, senderId, gtin, date){
-        return `${requesterId}-${senderId}-${gtin}-${date}`;
+    _genCompostKey(requesterId, senderId, gtin, createdOn){
+        return `${requesterId}-${senderId}-${gtin}-${createdOn}`;
     }
 
     /**
@@ -73,7 +73,7 @@ class ShipmentLineManager extends Manager {
     _indexItem(key, item, record) {
         return {
             gtin: item.gtin,
-            date: Date.now(),
+            createdOn: item.createdOn,
             batch: item.batch,
             requesterId: item.requesterId,
             senderId: item.senderId,
@@ -183,13 +183,21 @@ class ShipmentLineManager extends Manager {
                     console.log(`Could not read DSU from message keySSI in record ${message}. Skipping record.`);
                     return callback();
                 }
-                console.log(`Received ShipmentLine`, shipmentLine);
-                const indexedItem = self._indexItem(undefined, shipmentLine, lineSSI);
-                const compostKey = self._genCompostKey(shipmentLine.requesterId, shipmentLine.senderId, shipmentLine.gtin, indexedItem.date);
-                self.insertRecord(compostKey, indexedItem, (err) => {
+                const compostKey = self._genCompostKey(shipmentLine.requesterId, shipmentLine.senderId, shipmentLine.gtin, shipmentLine.createdOn);
+
+                const cb = function(err){
                     if (err)
-                        return self._err(`Could not insert record for ShipmentLine ${compostKey}`, err, callback);
+                        return self._err(`Could not insert/update record for ShipmentLine ${compostKey}`, err, callback);
                     shipmentLineIterator(linesCopy, callback);
+                }
+
+                self.getRecord(compostKey, (err, record) => {
+                    if (err){
+                        console.log(`Received ShipmentLine`, shipmentLine);
+                        return self.insertRecord(compostKey, self._indexItem(undefined, shipmentLine, lineSSI), cb);
+                    }
+                    console.log(`Updating ShipmentLine`, shipmentLine);
+                    self.updateRecord(compostKey, self._indexItem(undefined, shipmentLine, lineSSI), cb);
                 });
             });
         }
@@ -201,6 +209,22 @@ class ShipmentLineManager extends Manager {
             callback(undefined, lines);
         });
     };
+
+    /**
+     * updates a shipmentLine
+     *
+     * @param {string} [key] key is optional so child classes can override them
+     * @param {ShipmentLine} shipmentLine
+     * @param {function(err, Shipment?, Archive?)} callback
+     */
+    update(key, shipmentLine, callback){
+        if (!callback){
+            callback = shipmentLine;
+            shipmentLine = key;
+            key = this._genCompostKey(shipmentLine.requesterId, shipmentLine.senderId, shipmentLine.gtin, shipmentLine.createdOn);
+        }
+        super.update(key, shipmentLine, callback);
+    }
 }
 
 /**

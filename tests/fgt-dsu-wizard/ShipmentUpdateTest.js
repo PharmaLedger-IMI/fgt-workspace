@@ -5,7 +5,7 @@ const path = require('path');
 require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
 
 let domains = ['traceability'];
-let testName = 'OrderShipment Test';
+let testName = 'Shipment Update Test';
 
 const {create} = require('../../bin/environment/setupEnvironment');
 const {APPS, getCredentials} = require('../../bin/environment/credentials/credentials3')
@@ -16,8 +16,10 @@ const {getIssuedOrderManager, getIssuedShipmentManager, getReceivedOrderManager,
 const {ShipmentService} = wizard.Services;
 
 const defaultOps = {
-    timeout: 3000,
-    fakeServer: true
+    batchCount: 11,
+    serialQuantity: 100,
+    expiryOffset: 100,
+    trueStock: false,
 }
 
 const argParser = function(args){
@@ -71,14 +73,34 @@ const genShipment = function(order, mah){
 }
 
 const getParticipants = function(callback){
-    create({app: APPS.MAH}, getCredentials(APPS.MAH), (err, mah) => {
+    create(Object.assign({app: APPS.MAH}, defaultOps), (err, mah) => {
         if (err)
             return callback(err);
-        create({app: APPS.WHOLESALER}, getCredentials(APPS.WHOLESALER), (err, wholesaler) => {
+        getReceivedOrderManager(mah.manager, (err) => {
             if (err)
                 return callback(err);
-            callback(undefined, mah, wholesaler);
-        });
+            getIssuedShipmentManager(mah.manager, (err) => {
+                if (err)
+                    return callback(err);
+                create({app: APPS.WHOLESALER}, getCredentials(APPS.WHOLESALER), (err, wholesaler) => {
+                    if (err)
+                        return callback(err);
+                    getIssuedOrderManager(mah.manager, (err) => {
+                        if (err)
+                            return callback(err);
+                        getReceivedShipmentManager(mah.manager, (err) => {
+                            if (err)
+                                return callback(err);
+                            create({app: APPS.WHOLESALER}, getCredentials(APPS.WHOLESALER), (err, wholesaler) => {
+                                if (err)
+                                    return callback(err);
+                                callback(undefined, mah, wholesaler);
+                            });
+                        });
+                    })
+                });
+            });
+        })
     });
 }
 
@@ -97,21 +119,22 @@ const makeOrder = function(wholesaler, mah, callback){
 }
 
 const makeShipment = function(mah, order, orderSSI, callback){
-    const shipmentService = new ShipmentService(domains[0]);
-    const shipment = genShipment(order, mah);
-    shipmentService.create(shipment, orderSSI, (err, shipmentSSI, shipmentLinesSSI) => {
+    getIssuedShipmentManager(mah.manager, (err, issuedShipmentManager) => {
         if (err)
             return callback(err);
-        callback(undefined, shipment, shipmentSSI);
+        const shipment = genShipment(order, mah)
+        issuedShipmentManager.create(order.orderId, shipment, (err, sReadSSI, dbPath) => {
+            if (err)
+                return callback(err);
+            callback(undefined, shipment, shipmentSSI, issuedShipmentManager);
+        });
     });
 }
 
-const updateOrder = function(order, shipment, shipmentSSI, issuedOrderManager, callback){
-    issuedOrderManager.updateOrderByShipment(order.orderId, shipmentSSI.getIdentifier(), shipment, (err) => {
-        if (err)
-            return callback(err);
-        callback();
-    })
+const updateShipment = function(shipment, issuedShipmentManager, callback){
+    if (ShipmentStatus.CREATED === shipment.status)
+        shipment.status = ShipmentStatus.PICKUP;
+    issuedShipmentManager.update(shipment, callback)
 }
 
 let conf = argParser(process.argv);
@@ -125,16 +148,18 @@ const runTest = function(testFinished){
             if (err)
                 throw err;
             console.log(`order created`, order, orderSSI)
-            makeShipment(mah, order, orderSSI, (err, shipment, shipmentSSI) => {
+            makeShipment(mah, order, orderSSI, (err, shipment, shipmentSSI, issuedShipmentManager) => {
                 if (err)
                     throw err;
                 console.log(`shipment created`, shipment, shipmentSSI);
-                console.log(`trying to update order`)
-                updateOrder(order, shipment, shipmentSSI, issuedOrderManager, err => {
-                    if (err)
-                        throw err;
-                    testFinished()
-                });
+                setTimeout(() => {
+                    updateShipment(shipment, issuedShipmentManager, (err) => {
+                        if (err)
+                            throw err;
+                        console.log(`shipment updated`, shipment, shipmentSSI);
+                        testFinished()
+                    })
+                }, 1000);
             });
         });
     });

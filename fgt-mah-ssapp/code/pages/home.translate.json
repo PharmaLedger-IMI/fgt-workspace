@@ -232,8 +232,11 @@
     },
     "manage": {
       "title": "Manage Shipment",
+      "status": "Shipment Status:",
+      "update": "Update Shipment Status:",
+      "no-update": "The Shipment Status Cannot be Updated.",
       "confirm": {
-        "message": "Please confirm Shipment update",
+        "message": "Please confirm Shipment status update from {0} to {1}",
         "buttons": {
           "ok": "Confirm",
           "cancel": "Cancel"
@@ -345,8 +348,10 @@
     "manage": {
       "title": "Manage Order",
       "status": "Order Status:",
+      "update": "Update Order Status:",
+      "no-update": "The Order Status Cannot be Updated.",
       "confirm": {
-        "message": "Please confirm Order update",
+        "message": "Please confirm Order status update from {0} to {1}",
         "buttons": {
           "ok": "Confirm",
           "cancel": "Cancel"

@@ -20,13 +20,13 @@ const SHIPMENT_TYPE = {
   ISSUED: "issued",
   RECEIVED: 'received'
 };
-const { ROLE, OrderLine, Shipment, Order } = wizard.Model;
+const { ROLE, OrderLine, Shipment, Order, ShipmentStatus } = wizard.Model;
 const ManagedShipment = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
     this.sendErrorEvent = createEvent(this, "ssapp-send-error", 7);
     this.sendNavigateTab = createEvent(this, "ssapp-navigate-tab", 7);
-    this.sendCreateAction = createEvent(this, "ssapp-action", 7);
+    this.sendAction = createEvent(this, "ssapp-action", 7);
     this.orderJSON = undefined;
     this.shipmentType = SHIPMENT_TYPE.ISSUED;
     // strings
@@ -201,10 +201,24 @@ const ManagedShipment = class {
   async create(evt) {
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.sendCreateAction.emit({
-      shipment: new Shipment(undefined, evt.detail.requesterId, this.identity.id, this.identity.address, undefined, this.lines.slice()),
-      stock: await this.getStockManagerEl().getResult(),
-      orderId: this.order ? this.order.orderId : undefined
+    this.sendAction.emit({
+      action: ShipmentStatus.CREATED,
+      props: {
+        shipment: new Shipment(undefined, evt.detail.requesterId, this.identity.id, this.identity.address, undefined, this.lines.slice()),
+        stock: await this.getStockManagerEl().getResult(),
+        orderId: this.order ? this.order.orderId : undefined
+      }
+    });
+  }
+  async update(evt) {
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    this.sendAction.emit({
+      action: evt.detail,
+      props: {
+        shipment: this.shipment,
+        newStatus: evt.detail
+      }
     });
   }
   isCreate() {
@@ -239,9 +253,6 @@ const ManagedShipment = class {
     evt.preventDefault();
     evt.stopImmediatePropagation();
     this.currentGtin = evt.detail;
-  }
-  updateStatus(evt) {
-    console.log(`Status `, evt);
   }
   getInputs() {
     const self = this;
@@ -383,7 +394,7 @@ const ManagedShipment = class {
     };
     if (self.shipmentType !== SHIPMENT_TYPE.ISSUED || !self.shipment)
       return getLines();
-    return (h("ion-grid", null, h("ion-row", null, h("ion-col", { size: "12", "size-lg": "6" }, getLines()), h("ion-col", { size: "12", "size-lg": "6" }, h("status-updater", { "state-json": JSON.stringify(self.statuses), "current-state": self.shipment.status, onStatusUpdateEvent: self.updateStatus.bind(self) })))));
+    return (h("ion-grid", null, h("ion-row", null, h("ion-col", { size: "12", "size-lg": "6" }, getLines()), h("ion-col", { size: "12", "size-lg": "6" }, h("status-updater", { "state-json": JSON.stringify(self.statuses), "current-state": self.shipment.status, onStatusUpdateEvent: self.update.bind(self) })))));
   }
   getView() {
   }

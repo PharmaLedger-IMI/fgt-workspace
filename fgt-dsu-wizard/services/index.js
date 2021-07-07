@@ -14,5 +14,6 @@ module.exports = {
     ProductService: require("./ProductService"),
     BatchService: require("./BatchService"),
     Strategy: require("../../pdm-dsu-toolkit/services/strategy"),
+    IndividualProductService: require('./IndividualProductService'),
     utils: require('../../pdm-dsu-toolkit/services/utils')
 }

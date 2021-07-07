@@ -10,6 +10,7 @@ class ShipmentLine{
     senderId;
     requesterId;
     status;
+    createdOn
 
     /**
      *
@@ -22,10 +23,12 @@ class ShipmentLine{
                 if (line.hasOwnProperty(prop))
                     this[prop] = line[prop];
 
-
         if (this.serialNumbers && this.serialNumbers.length)
             if (this.quantity !== this.serialNumbers.length)
                 this.quantity = this.serialNumbers.length;
+
+            if (!this.createdOn)
+                this.createdOn = Date.now();
     }
 
     getQuantity(){

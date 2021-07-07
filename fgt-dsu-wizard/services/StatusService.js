@@ -24,6 +24,31 @@ function StatusService(domain, strategy){
     let createLog = function(id, prevStatus, status){
          return `${id} ${prevStatus ? `updated status from ${prevStatus} to ${status}.` : `set status to ${status}`}`;
     }
+
+    /**
+     * Resolves the DSU and loads the status object with all its properties, mutable or not
+     * @param {KeySSI} keySSI
+     * @param {function(err, Shipment, Archive)} callback
+     */
+    this.get = function(keySSI, callback){
+        utils.getResolver().loadDSU(keySSI, (err, dsu) => {
+            if (err)
+                return callback(err);
+            dsu.readFile(INFO_PATH, (err, data) => {
+                if (err)
+                    return callback(err);
+                let status;
+
+                try{
+                    status = JSON.parse(data);
+                } catch (e){
+                    return callback(`Could not parse status in DSU ${keySSI.getIdentifier()}`);
+                }
+                callback(undefined, status, dsu);
+            });
+        });
+    }
+
     /**
      * Creates an OrderStatus DSU
      * @param {OrderStatus|ShipmentStatus} status
@@ -61,12 +86,12 @@ function StatusService(domain, strategy){
                             return dsu.writeFile(LOG_PATH, JSON.stringify([log]), returnFunc);
                         try {
                             data = JSON.parse(data);
-                            if (!Array.isArray(data))
-                                return callback(`Invalid log data`);
-                            return dsu.writeFile(LOG_PATH, JSON.stringify([...data, log]), returnFunc);
                         } catch (e){
                             return callback(e);
                         }
+                        if (!Array.isArray(data))
+                            return callback(`Invalid log data`);
+                        return dsu.writeFile(LOG_PATH, JSON.stringify([...data, log]), returnFunc);
                     })
 
                 });

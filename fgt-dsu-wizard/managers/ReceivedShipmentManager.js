@@ -152,8 +152,9 @@ class ReceivedShipmentManager extends ShipmentManager {
             const shipmentId = shipmentObj.shipmentId;
             if (!shipmentId)
                 return callback("ReceivedShipment doest not have an shipmentId. Skipping record.");
+            const shipmentKey = self._genCompostKey(shipmentObj.senderId, shipmentId);
 
-            self.insertRecord(self._genCompostKey(shipmentObj.senderId, shipmentId), self._indexItem(shipmentId, shipmentObj, message), err => {
+            const cb = function(err){
                 if (err)
                     return self._err(`Could not insert record:\n${err.message}`, err, callback);
                 self.issuedOrderManager._getDSUInfo(shipmentObj.orderSSI, (err, orderObj) => {
@@ -161,9 +162,29 @@ class ReceivedShipmentManager extends ShipmentManager {
                         return self._err(`Could not read order Info`, err, callback);
                     self.issuedOrderManager.updateOrderByShipment(orderObj.orderId, message, shipmentObj, callback);
                 });
-            });
+            }
+
+            self.getRecord(shipmentKey, (err, record) => {
+                if (err){
+                    console.log(`received new ReceivedShipment`, shipmentObj)
+                    return self.insertRecord(shipmentKey, self._indexItem(shipmentId, shipmentObj, message), cb);
+                }
+                console.log(`Updating ReceivedShipment`, shipmentObj)
+                self.updateRecord(shipmentKey, self._indexItem(shipmentKey, shipmentObj, record.value), cb);
+            })
         });
     };
+
+    /**
+     * updates an item
+     *
+     * @param {string} [key] key is optional so child classes can override them
+     * @param {Shipment} shipment
+     * @param {function(err, Shipment?, Archive?)} callback
+     */
+    update(key, shipment, callback){
+        callback(`Functionality not available`);
+    }
 }
 
 

@@ -36,12 +36,13 @@ function BatchService(domain, strategy){
             dsu.readFile(INFO_PATH, (err, data) => {
                 if (err)
                     return callback(err);
+                let batch;
                 try{
-                    const batch = new Batch(JSON.parse(data));
-                    callback(undefined, batch);
+                    batch = new Batch(JSON.parse(data));
                 } catch (e) {
-                    callback(`unable to parse Batch: ${data}`);
+                    return callback(`unable to parse Batch: ${data}`);
                 }
+                callback(undefined, batch);
             });
         });
     }

@@ -1,5 +1,6 @@
 const Utils = require("../../pdm-dsu-toolkit/model/Utils");
 const BatchStatus = require('./BatchStatus');
+const IndividualProduct = require('./IndividualProduct');
 
 /**
  * @prop {string} batchNumber
@@ -53,6 +54,19 @@ class Batch {
         this.quantity += delta;
     }
 
+    getIndividualProduct(gtin, serial){
+        const s = this.serialNumbers.find(s => {
+            return (typeof s === 'string' && s === serial) || (typeof s === 'object' && s.serialNumber === serial)
+        });
+
+        return !s ? undefined : new IndividualProduct(typeof s === 'object' ? s : {
+                gtin: gtin,
+                batchNumber: this.batchNumber,
+                serialNumber: s,
+                status: this.batchStatus
+            });
+    }
+
     getQuantity(){
         return this.serialNumbers && this.serialNumbers.length
             ? this.serialNumbers.length
@@ -80,15 +94,7 @@ class Batch {
      * @return {string}
      */
     generate2DMatrixCode(gtin, serialNumber){
-        const formattedExpiry = new Date(this.expiry).toLocaleDateString("en-US", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "2-digit"
-        }).split('/').reverse().join('');
-
-        if (!serialNumber)
-            return `(01)${gtin}(10)${this.batchNumber}(17)${formattedExpiry}`;
-        return `(01)${gtin}(21)${serialNumber}(10)${this.batchNumber}(17)${formattedExpiry}`;
+        return Utils.generate2DMatrixCode(gtin, this.batchNumber, this.expiry, serialNumber);
     }
 
     addSerialNumbers(serials){

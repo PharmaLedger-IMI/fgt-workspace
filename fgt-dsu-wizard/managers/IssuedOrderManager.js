@@ -1,6 +1,7 @@
 const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const OrderManager = require("./OrderManager");
-const {Order, OrderStatus, ShipmentStatus} = require('../model');
+const {Order, OrderStatus, ShipmentStatus, Shipment} = require('../model');
+const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 
 /**
  * Issued Order Manager Class - concrete OrderManager for issuedOrders.
@@ -25,6 +26,7 @@ const {Order, OrderStatus, ShipmentStatus} = require('../model');
 class IssuedOrderManager extends OrderManager {
     constructor(participantManager, callback) {
         super(participantManager, DB.issuedOrders, ['senderId', 'shipmentId'], callback);
+        this.stockManager = participantManager.stockManager;
     }
 
     /**
@@ -150,7 +152,46 @@ class IssuedOrderManager extends OrderManager {
             self.update(order, (err) => {
                 if (err)
                     return self._err(`Could not update Order:\n${err.message}`, err, callback);
-                callback();
+                if (order.status !== OrderStatus.CONFIRMED)
+                    return callback();
+                Manager.prototype._getDSUInfo.call(self, shipmentSSI, (err, shipment) => {
+                    if (err)
+                        return self._err(`Could not read shipment info`, err, callback);
+                    shipment = new Shipment(shipment.shipmentId, shipment.requesterId, shipment.senderId, shipment.shipToAddress, shipment.status, shipment.shipmentLines);
+
+                    const gtinIterator = function(gtins, batchesObj, callback){
+                        const gtin = gtins.shift();
+                        if (!gtin)
+                            return callback();
+                        if (!(gtin in batchesObj))
+                            return callback(`gtins not found in batches`);
+                        const batches = batchesObj[gtin];
+                        self.stockManager.manageAll(gtin,  batches, (err, added) => {
+                            if (err)
+                                return self._err(`Could not update Stock`, err, callback);
+                            gtinIterator(gtins, batchesObj, callback);
+                        })
+                    }
+
+                    const gtins = shipment.shipmentLines.map(sl => sl.gtin);
+                    const batchesObj = shipment.shipmentLines.reduce((accum, sl) => {
+                        accum[sl.gtin] = accum[sl.gtin] || [];
+                        accum[sl.gtin].push(new Batch({
+                            batchNumber: sl.batch,
+                            quantity: sl.quantity,
+                            serialNumbers: sl.serialNumbers
+                        }))
+                        return accum;
+                    }, {});
+
+                    gtinIterator(gtins, batchesObj, (err) => {
+                        if (err)
+                            return self._err(`Could not update stock info`, err, callback);
+                        console.log(`Shipment updated after Stock confirmation`);
+                        callback();
+                    });
+
+                });
             });
         });
     }

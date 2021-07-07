@@ -20,13 +20,13 @@ const ORDER_TYPE = {
   ISSUED: "issued",
   RECEIVED: 'received'
 };
-const { Order, OrderLine, ROLE } = wizard.Model;
+const { Order, OrderLine, ROLE, OrderStatus } = wizard.Model;
 const ManagedOrder = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
     this.sendErrorEvent = createEvent(this, "ssapp-send-error", 7);
     this.sendNavigateTab = createEvent(this, "ssapp-navigate-tab", 7);
-    this.sendCreateAction = createEvent(this, "ssapp-action", 7);
+    this.sendAction = createEvent(this, "ssapp-action", 7);
     this.orderType = ORDER_TYPE.ISSUED;
     // strings
     this.titleString = "Title String";
@@ -197,10 +197,24 @@ const ManagedOrder = class {
     evt.stopImmediatePropagation();
     this.navigateToTab(`tab-${this.getType()}-orders`, {});
   }
-  create(evt) {
+  async create(evt) {
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.sendCreateAction.emit(new Order(undefined, this.identity.id, evt.detail.senderId, this.identity.address, undefined, this.lines.slice()));
+    this.sendAction.emit({
+      action: OrderStatus.CREATED,
+      props: new Order(undefined, this.identity.id, evt.detail.senderId, this.identity.address, undefined, this.lines.slice())
+    });
+  }
+  async update(evt) {
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    this.sendAction.emit({
+      action: evt.detail,
+      props: {
+        order: this.order,
+        newStatus: evt.detail
+      }
+    });
   }
   isCreate() {
     return !this.orderRef || this.orderRef.startsWith('@');
@@ -240,9 +254,6 @@ const ManagedOrder = class {
     const { role } = await popover.onWillDismiss();
     if (role && role !== 'backdrop')
       this.currentGtin = role;
-  }
-  updateStatus(evt) {
-    console.log(`Status `, evt);
   }
   getInputs() {
     const self = this;
@@ -327,7 +338,7 @@ const ManagedOrder = class {
     };
     if (self.orderType !== ORDER_TYPE.ISSUED || !self.order)
       return getLines();
-    return (h("ion-grid", null, h("ion-row", null, h("ion-col", { size: "12", "size-lg": "6" }, getLines()), h("ion-col", { size: "12", "size-lg": "6" }, h("status-updater", { "state-json": JSON.stringify(self.statuses), "current-state": self.order.status, onStatusUpdateEvent: self.updateStatus.bind(self) })))));
+    return (h("ion-grid", null, h("ion-row", null, h("ion-col", { size: "12", "size-lg": "6" }, getLines()), h("ion-col", { size: "12", "size-lg": "6" }, h("status-updater", { "state-json": JSON.stringify(self.statuses), "current-state": self.order.status, onStatusUpdateEvent: self.update.bind(self) })))));
   }
   getView() {
   }
