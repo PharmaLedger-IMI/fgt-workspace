@@ -17,7 +17,7 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
         r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
   return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-const { ShipmentLine, Product, Batch, ShipmentStatus } = wizard.Model;
+const { ShipmentLine, Product, Batch } = wizard.Model;
 const ManagedOrderlineListItem = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
@@ -57,11 +57,11 @@ const ManagedOrderlineListItem = class {
     this.shipmentLineManager = await WebManagerService.getWebManager("ShipmentLineManager");
     this.productManager = await WebManagerService.getWebManager("ProductManager");
     this.batchManager = await WebManagerService.getWebManager("BatchManager");
-    return await this.loadOrderLine();
+    return await this.loadShipmentLine();
   }
-  async loadOrderLine() {
+  async loadShipmentLine() {
     let self = this;
-    if (!self.shipmentLineManager)
+    if (!self.shipmentLineManager || !self.shipmentLine)
       return;
     self.shipmentLineManager.getOne(self.shipmentLine, true, (err, line) => {
       if (err) {
@@ -86,7 +86,7 @@ const ManagedOrderlineListItem = class {
     });
   }
   async refresh() {
-    await this.loadOrderLine();
+    await this.loadShipmentLine();
   }
   getPropsFromKey() {
     if (!this.shipmentLine)
@@ -98,62 +98,6 @@ const ManagedOrderlineListItem = class {
       gtin: props[2],
       createdOn: (new Date(parseInt(props[3]) * 1000)).toLocaleDateString("en-US")
     };
-  }
-  addSenderColumn(props) {
-    const self = this;
-    const getSenderLabel = function () {
-      if (!props || !props.senderId)
-        return (h("h4", null, h("ion-skeleton-text", { animated: true, class: "label-sender" })));
-      return (h("h4", null, props.senderId));
-    };
-    const getDateLabel = function () {
-      if (!props || !props.date)
-        return (h("h4", null, h("ion-skeleton-text", { animated: true, class: "label-date" })));
-      return (h("h4", null, props.date));
-    };
-    return [
-      h("ion-label", { class: "ion-padding-horizontal ion-align-self-center", position: "stacked" }, h("p", null, self.senderLabel)),
-      h("ion-label", { class: "ion-padding ion-align-self-center" }, getSenderLabel()),
-      h("ion-label", { class: "ion-padding-horizontal ion-align-self-center", position: "stacked" }, h("p", null, self.createdOnLabel)),
-      h("ion-label", { class: "ion-padding ion-align-self-center" }, getDateLabel()),
-    ];
-  }
-  addDetailsColumn() {
-    const self = this;
-    const getStatusBadge = function () {
-      if (!self.line || !self.line.status)
-        return (h("multi-loader", { class: "ion-float-start", type: SUPPORTED_LOADERS.bubblingSmall }));
-      const getColorByStatus = function () {
-        switch (self.line.status) {
-          case ShipmentStatus.REJECTED:
-            return 'danger';
-          case ShipmentStatus.On_HOLD:
-            return 'warning';
-          case ShipmentStatus.CONFIRMED:
-            return 'success';
-          case ShipmentStatus.CREATED:
-            return 'medium';
-          case ShipmentStatus.ACKNOWLEDGED:
-          case ShipmentStatus.TRANSIT:
-          case ShipmentStatus.RECEIVED:
-            return 'secondary';
-          default:
-            return 'primary';
-        }
-      };
-      return (h("ion-badge", { color: getColorByStatus(), class: "ion-padding-horizontal ion-text-uppercase" }, self.line.status));
-    };
-    const getQuantityBadge = function () {
-      if (!self.line || !self.line.quantity)
-        return (h("multi-loader", { type: SUPPORTED_LOADERS.bubblingSmall }));
-      return (h("ion-badge", { color: "primary", class: "ion-padding-horizontal ion-text-uppercase" }, self.line.quantity));
-    };
-    return [
-      h("ion-label", { class: "ion-padding-horizontal ion-align-self-center", position: "stacked" }, h("p", null, self.statusLabel)),
-      h("ion-label", { class: "ion-padding ion-align-self-center" }, getStatusBadge()),
-      h("ion-label", { class: "ion-padding-horizontal ion-align-self-center", position: "stacked" }, h("p", null, self.quantityLabel)),
-      h("ion-label", { class: "ion-padding ion-align-self-center" }, getQuantityBadge())
-    ];
   }
   triggerSelect(evt) {
     evt.preventDefault();
@@ -188,7 +132,7 @@ const ManagedOrderlineListItem = class {
     const getBatchLabel = function () {
       if (!self.batch)
         return (h("ion-skeleton-text", { animated: true, className: "label-batch" }));
-      return self.batch;
+      return self.batch.batchNumber;
     };
     const getQuantityLabel = function () {
       if (!self.line)

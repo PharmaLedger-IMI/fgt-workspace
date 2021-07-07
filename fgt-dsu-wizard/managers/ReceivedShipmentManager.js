@@ -170,7 +170,7 @@ class ReceivedShipmentManager extends ShipmentManager {
                     return self.insertRecord(shipmentKey, self._indexItem(shipmentId, shipmentObj, message), cb);
                 }
                 console.log(`Updating ReceivedShipment`, shipmentObj)
-                self.updateRecord(shipmentKey, self._indexItem(shipmentKey, shipmentObj, record.value), cb);
+                self.updateRecord(shipmentKey, self._indexItem(shipmentKey, shipmentObj, message), cb);
             })
         });
     };

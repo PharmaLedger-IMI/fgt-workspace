@@ -7,7 +7,7 @@ import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 import {ListItemLayout} from "../list-item-layout/list-item-layout";
 import {getBarCodePopOver} from "../../utils/popOverUtils";
 
-const {ShipmentLine, Product, Batch, ShipmentStatus} = wizard.Model;
+const {ShipmentLine, Product, Batch} = wizard.Model;
 
 @Component({
   tag: 'managed-shipmentline-list-item',
@@ -93,12 +93,12 @@ export class ManagedOrderlineListItem {
     this.shipmentLineManager = await WebManagerService.getWebManager("ShipmentLineManager");
     this.productManager = await WebManagerService.getWebManager("ProductManager");
     this.batchManager = await WebManagerService.getWebManager("BatchManager");
-    return await this.loadOrderLine();
+    return await this.loadShipmentLine();
   }
 
-  private async loadOrderLine(){
+  private async loadShipmentLine(){
     let self = this;
-    if (!self.shipmentLineManager)
+    if (!self.shipmentLineManager || !self.shipmentLine)
       return;
     self.shipmentLineManager.getOne(self.shipmentLine, true, (err, line) => {
       if (err){
@@ -128,7 +128,7 @@ export class ManagedOrderlineListItem {
   @Watch('shipmentLine')
   @Method()
   async refresh(){
-    await this.loadOrderLine();
+    await this.loadShipmentLine();
   }
 
   private getPropsFromKey(){
@@ -142,82 +142,6 @@ export class ManagedOrderlineListItem {
       createdOn: (new Date(parseInt(props[3]) * 1000)).toLocaleDateString("en-US")
     }
   }
-
-  addSenderColumn(props){
-    const self = this;
-
-    const getSenderLabel = function(){
-      if (!props || !props.senderId)
-        return (<h4><ion-skeleton-text animated class="label-sender"></ion-skeleton-text></h4>);
-      return (<h4>{props.senderId}</h4>)
-    }
-
-    const getDateLabel = function(){
-      if (!props || !props.date)
-        return (<h4><ion-skeleton-text animated class="label-date"></ion-skeleton-text></h4>)
-      return (<h4>{props.date}</h4>)
-    }
-
-    return [
-      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.senderLabel}</p></ion-label>,
-      <ion-label class="ion-padding ion-align-self-center">
-        {getSenderLabel()}
-      </ion-label>,
-      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.createdOnLabel}</p></ion-label>,
-      <ion-label class="ion-padding ion-align-self-center">
-        {getDateLabel()}
-      </ion-label>,
-    ];
-  }
-
-  addDetailsColumn(){
-    const self = this;
-
-    const getStatusBadge = function(){
-      if (!self.line || !self.line.status)
-        return (<multi-loader class="ion-float-start" type={SUPPORTED_LOADERS.bubblingSmall}></multi-loader>)
-
-      const getColorByStatus = function(){
-        switch (self.line.status){
-          case ShipmentStatus.REJECTED:
-            return 'danger';
-          case ShipmentStatus.On_HOLD:
-            return 'warning';
-          case ShipmentStatus.CONFIRMED:
-            return 'success';
-          case ShipmentStatus.CREATED:
-            return 'medium';
-          case ShipmentStatus.ACKNOWLEDGED:
-          case ShipmentStatus.TRANSIT:
-          case ShipmentStatus.RECEIVED:
-            return 'secondary';
-          default:
-            return 'primary'
-        }
-      }
-
-      return (<ion-badge color={getColorByStatus()} class="ion-padding-horizontal ion-text-uppercase">{self.line.status}</ion-badge>)
-    }
-
-    const getQuantityBadge = function() {
-      if (!self.line || !self.line.quantity)
-        return (<multi-loader type={SUPPORTED_LOADERS.bubblingSmall}></multi-loader>)
-
-      return (<ion-badge color="primary" class="ion-padding-horizontal ion-text-uppercase">{self.line.quantity}</ion-badge>)
-    }
-
-    return [
-      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.statusLabel}</p></ion-label>,
-      <ion-label class="ion-padding ion-align-self-center">
-        {getStatusBadge()}
-      </ion-label>,
-      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.quantityLabel}</p></ion-label>,
-      <ion-label class="ion-padding ion-align-self-center">
-        {getQuantityBadge()}
-      </ion-label>
-    ];
-  }
-
   private triggerSelect(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
@@ -266,7 +190,7 @@ export class ManagedOrderlineListItem {
     const getBatchLabel = function(){
       if (!self.batch)
         return (<ion-skeleton-text animated className="label-batch"></ion-skeleton-text>)
-      return self.batch;
+      return self.batch.batchNumber;
     }
 
     const getQuantityLabel = function(){

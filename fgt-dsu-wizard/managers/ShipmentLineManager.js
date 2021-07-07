@@ -202,7 +202,7 @@ class ShipmentLineManager extends Manager {
                     shipmentLineIterator(linesCopy, callback);
                 }
 
-                self.getRecord(compostKey, (err, record) => {
+                self.getRecord(compostKey,  (err, record) => {
                     if (err){
                         console.log(`Received ShipmentLine`, shipmentLine);
                         return self.insertRecord(compostKey, self._indexItem(undefined, shipmentLine, lineSSI), cb);
