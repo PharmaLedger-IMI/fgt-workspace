@@ -167,6 +167,18 @@ export class ManagedBatch implements CreateManageView{
     return !this.getGtinBatch() || !this.getGtinBatch().batchNumber;
   }
 
+  private triggerSelect(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    console.log(`Selected ${evt.detail}`);
+    const {gtin, batchNumber} = this.getGtinBatch();
+    this.navigateToTab('tab-individual-product', {
+      gtin: gtin,
+      batchNumber: batchNumber,
+      serialNumber: evt.detail
+    })
+  }
+
   private getSerials(){
     if (!this.serialsNumbers)
       return;
@@ -179,11 +191,8 @@ export class ManagedBatch implements CreateManageView{
                           is-ion-item={false}
                           display-count={25}
                           single-line="false"
-                          onSelectEvent={(evt) => {
-                            evt.preventDefault();
-                            evt.stopImmediatePropagation();
-                            console.log(`Selected ${evt.detail}`);
-                          }}></pdm-item-organizer>
+                          onSelectEvent={this.triggerSelect.bind(this)}
+                          ></pdm-item-organizer>
     )
   }
 

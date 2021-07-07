@@ -137,7 +137,7 @@ export class ManagedIndividualProduct implements CreateManageView{
 
         self.expiry = new Date(batch.expiry);
 
-        const individualProduct = batch.getIndividualproduct(ref.serialNumber);
+        const individualProduct = batch.getIndividualProduct(ref.gtin, ref.serialNumber);
         if (!individualProduct)
           return self.sendError(`Could not find Individual Product ${ref.serialNumber} in Batch ${ref.batchNumber} for gtin ${ref.gtin}. Should be impossible`);
 

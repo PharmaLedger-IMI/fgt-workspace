@@ -115,16 +115,23 @@ const ManagedBatch = class {
   isCreate() {
     return !this.getGtinBatch() || !this.getGtinBatch().batchNumber;
   }
+  triggerSelect(evt) {
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    console.log(`Selected ${evt.detail}`);
+    const { gtin, batchNumber } = this.getGtinBatch();
+    this.navigateToTab('tab-individual-product', {
+      gtin: gtin,
+      batchNumber: batchNumber,
+      serialNumber: evt.detail
+    });
+  }
   getSerials() {
     if (!this.serialsNumbers)
       return;
     return (h("pdm-item-organizer", { "component-name": "generic-chip", "component-props": JSON.stringify(this.serialsNumbers.map(s => ({
         "chip-label": s
-      }))), "id-prop": "chip-label", "is-ion-item": false, "display-count": 25, "single-line": "false", onSelectEvent: (evt) => {
-        evt.preventDefault();
-        evt.stopImmediatePropagation();
-        console.log(`Selected ${evt.detail}`);
-      } }));
+      }))), "id-prop": "chip-label", "is-ion-item": false, "display-count": 25, "single-line": "false", onSelectEvent: this.triggerSelect.bind(this) }));
   }
   addSerialNumbers() {
     const newSerials = this.layoutComponent.getInput('serialNumbers').value.split(',');

@@ -28,9 +28,9 @@ function ShipmentLineService(domain, strategy){
             dsu.readFile(INFO_PATH, (err, data) => {
                 if (err)
                     return callback(err);
-                let orderLine;
+                let shipmentLine;
                 try{
-                    orderLine = JSON.parse(data);
+                    shipmentLine = new ShipmentLine(JSON.parse(data));
                 } catch (e){
                     return callback(`Could not parse ShipmentLine in DSU ${keySSI.getIdentifier()}`);
                 }
@@ -39,8 +39,8 @@ function ShipmentLineService(domain, strategy){
                     if (err)
                         return callback(`could not retrieve shipmentLine status`);
                     try{
-                        orderLine.status = JSON.parse(status);
-                        callback(undefined, orderLine);
+                        shipmentLine.status = JSON.parse(status);
+                        callback(undefined, shipmentLine);
                     } catch (e) {
                         return callback(`unable to parse ShipmentLine status: ${status.toString()}`);
                     }

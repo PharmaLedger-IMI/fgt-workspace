@@ -41,6 +41,17 @@ class ShipmentLineManager extends Manager {
     }
 
     /**
+     * Util function that loads a ShipmentLineDSU and reads its information
+     * @param {string|KeySSI} keySSI
+     * @param {function(err, ShipmentLine, Archive)} callback
+     * @protected
+     * @override
+     */
+    _getDSUInfo(keySSI, callback){
+        return this.shipmentLineService.get(keySSI, callback);
+    }
+
+    /**
      * generates the db's key for the ShipmentLine
      * @param {string|number} requesterId
      * @param {string|number} senderId

@@ -45,12 +45,17 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [barcode-generator](../barcode-generator)
+- [multi-spinner](../multi-spinner)
+- [pdm-item-organizer](../pdm-item-organizer)
+- [list-item-layout](../list-item-layout)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-shipmentline-list-item --> barcode-generator
+  managed-shipmentline-list-item --> multi-spinner
+  managed-shipmentline-list-item --> pdm-item-organizer
+  managed-shipmentline-list-item --> list-item-layout
+  pdm-item-organizer --> more-chip
   style managed-shipmentline-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

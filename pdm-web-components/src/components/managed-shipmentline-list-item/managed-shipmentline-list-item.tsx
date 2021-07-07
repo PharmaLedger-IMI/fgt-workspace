@@ -1,9 +1,11 @@
-import {Component, h, Element, Prop, State, Watch, Method, Event, EventEmitter} from '@stencil/core';
+import {Component, h, Element, Prop, State, Watch, Method, Event, EventEmitter, Host} from '@stencil/core';
 
 import {WebManagerService, WebResolver} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
+import {ListItemLayout} from "../list-item-layout/list-item-layout";
+import {getBarCodePopOver} from "../../utils/popOverUtils";
 
 const {ShipmentLine, Product, Batch, ShipmentStatus} = wizard.Model;
 
@@ -129,22 +131,6 @@ export class ManagedOrderlineListItem {
     await this.loadOrderLine();
   }
 
-  private addBarCode(){
-    const self = this;
-
-    const getBarCode = function(){
-      if (!self.line || !self.line.gtin)
-        return (<ion-skeleton-text animated></ion-skeleton-text>);
-      return (<barcode-generator class="ion-align-self-center" type="code128" size="32" scale="6" data={self.line.gtin}></barcode-generator>);
-    }
-
-    return(
-      <ion-thumbnail class="ion-align-self-center bar-code" slot="start">
-        {getBarCode()}
-      </ion-thumbnail>
-    )
-  }
-
   private getPropsFromKey(){
     if (!this.shipmentLine)
       return undefined;
@@ -153,60 +139,8 @@ export class ManagedOrderlineListItem {
       requesterId: props[0],
       senderId: props[1],
       gtin: props[2],
-      date: (new Date(parseInt(props[3]) * 1000)).toLocaleDateString("en-US")
+      createdOn: (new Date(parseInt(props[3]) * 1000)).toLocaleDateString("en-US")
     }
-  }
-
-  private addProductColumn(props){
-    const self = this;
-    const getNameLabel = function(){
-      if (!self.product || !self.product.name)
-        return (<h4><ion-skeleton-text animated class="label-name"></ion-skeleton-text></h4>)
-      return (<h4>{self.product.name}</h4>)
-    }
-    const getGtinLabel = function(){
-      if (!props || !props.gtin)
-        return (<h3><ion-skeleton-text animated class="label-gtin"></ion-skeleton-text></h3>);
-      return (<h3>{props.gtin}</h3>)
-    }
-
-    return [
-      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.gtinLabel}</p></ion-label>,
-      <ion-label class="ion-padding ion-align-self-center">
-        {getGtinLabel()}
-      </ion-label>,
-      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.nameLabel}</p></ion-label>,
-      <ion-label class="ion-padding ion-align-self-center">
-        {getNameLabel()}
-      </ion-label>
-    ];
-  }
-
-  private addRequesterColumn(props){
-    const self = this;
-
-    const getRequesterLabel = function(){
-      if (!props || !props.requesterId)
-        return (<h4><ion-skeleton-text animated class="label-requester"></ion-skeleton-text></h4>)
-      return (<h4>{props.requesterId}</h4>)
-    }
-
-    const getDateLabel = function(){
-      if (!props || !props.date)
-        return (<h4><ion-skeleton-text animated class="label-date"></ion-skeleton-text></h4>)
-      return (<h4>{props.date}</h4>)
-    }
-
-    return [
-      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.requesterLabel}</p></ion-label>,
-      <ion-label class="ion-padding ion-align-self-center">
-        {getRequesterLabel()}
-      </ion-label>,
-      <ion-label class="ion-padding-horizontal ion-align-self-center" position="stacked"><p>{self.createdOnLabel}</p></ion-label>,
-      <ion-label class="ion-padding ion-align-self-center">
-        {getDateLabel()}
-      </ion-label>
-    ];
   }
 
   addSenderColumn(props){
@@ -284,48 +218,117 @@ export class ManagedOrderlineListItem {
     ];
   }
 
-  private addButtons(){
-    let self = this;
-    const getButtons = function(){
+  private triggerSelect(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    console.log(`Selected ${evt.detail}`);
+    const {gtin} = this.line;
+    const {batchNumber} = this.batch;
+    this.navigateToTab('tab-individual-product', {
+      gtin: gtin,
+      batchNumber: batchNumber,
+      serialNumber: evt.detail
+    })
+  }
+
+  addSerials(){
+    if (!this.batch)
+      return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
+    return(
+      <pdm-item-organizer slot="content" component-name="generic-chip"
+                          component-props={JSON.stringify(this.batch.serialNumbers.map(serial => ({
+                            "chip-label": serial,
+                            "class": "ion-margin-start"
+                          })))}
+                          id-prop="chip-label"
+                          is-ion-item="false"
+                          display-count="1"
+                          orientation={this.getOrientation()}
+                          onSelectEvent={this.triggerSelect.bind(this)}></pdm-item-organizer>
+    )
+  }
+
+  addDetails(){
+    const props = this.getPropsFromKey();
+    return [
+      <ion-label slot="content" color="secondary" class="ion-float-left">
+        {props.requesterId}
+        <span class="ion-padding-start">{props.senderId}</span>
+      </ion-label>,
+      this.addSerials()
+    ]
+  }
+
+  addLabel(){
+    const props = this.getPropsFromKey();
+    const self = this;
+
+    const getBatchLabel = function(){
+      if (!self.batch)
+        return (<ion-skeleton-text animated className="label-batch"></ion-skeleton-text>)
+      return self.batch;
+    }
+
+    const getQuantityLabel = function(){
       if (!self.line)
-        return (<ion-skeleton-text animated></ion-skeleton-text>)
+        return (<ion-skeleton-text animated className="label-quantity"></ion-skeleton-text>)
+      return self.line.getQuantity();
+    }
+
+    const getStatusLabel = function(){
+      if (!self.line)
+        return (<ion-skeleton-text animated className="label-status"></ion-skeleton-text>)
+      return (<ion-badge>{self.line.status}</ion-badge>);
+    }
+
+    return(
+      <ion-label slot="label" color="secondary">
+        {props.gtin}
+        <span class="ion-padding-start">{getBatchLabel()}</span>
+        <span class="ion-padding-start">{getQuantityLabel()}</span>
+        <span class="ion-padding-start">{getStatusLabel()}</span>
+      </ion-label>)
+  }
+
+  private getOrientation(){
+    const layout: ListItemLayout = this.element.querySelector('list-item-layout');
+    return layout ? layout.orientation : 'end';
+  }
+
+  addButtons(){
+    let self = this;
+    if (!self.shipmentLine)
+      return (<ion-skeleton-text animated></ion-skeleton-text>);
+
+    const getButton = function(slot, color, icon, handler){
       return (
-        <ion-button slot="primary" onClick={() => self.navigateToTab('tab-batches', {shipmentLine: self.shipmentLine})}>
-          <ion-icon name="file-tray-stacked-outline"></ion-icon>
+        <ion-button slot={slot} color={color} fill="clear" onClick={handler}>
+          <ion-icon size="large" slot="icon-only" name={icon}></ion-icon>
         </ion-button>
       )
     }
 
-    return(
-      <ion-buttons class="ion-align-self-center ion-padding" slot="end">
-        {getButtons()}
-      </ion-buttons>
-    )
+    return [
+      getButton("buttons", "medium", "barcode", (evt) => getBarCodePopOver({
+        type: "code128",
+        size: "32",
+        scale: "6",
+        data: self.shipmentLine
+      }, evt))
+    ]
   }
 
   render() {
-    const props = this.getPropsFromKey();
+    if(!this.host.isConnected)
+      return;
     return (
-      <ion-item class="ion-align-self-center main-item">
-        {this.addBarCode()}
-        <ion-grid>
-          <ion-row>
-            <ion-col size="4">
-              {...this.addProductColumn(props)}
-            </ion-col>
-            <ion-col size="3">
-              {...this.addRequesterColumn(props)}
-            </ion-col>
-            <ion-col size="3">
-              {...this.addSenderColumn(props)}
-            </ion-col>
-            <ion-col size="2">
-              {...this.addDetailsColumn()}
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-        {this.addButtons()}
-      </ion-item>
+      <Host>
+        <list-item-layout>
+          {this.addLabel()}
+          {...this.addDetails()}
+          {this.addButtons()}
+        </list-item-layout>
+      </Host>
     );
   }
 }

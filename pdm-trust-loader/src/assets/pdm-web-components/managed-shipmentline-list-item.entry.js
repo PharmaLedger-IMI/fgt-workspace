@@ -1,10 +1,11 @@
-import { r as registerInstance, e as createEvent, h, g as getElement } from './index-d0e12a29.js';
+import { r as registerInstance, e as createEvent, h, f as Host, g as getElement } from './index-d0e12a29.js';
 import { W as WebManagerService } from './WebManagerService-e3623754.js';
 import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-a462b2bc.js';
 import { S as SUPPORTED_LOADERS } from './supported-loader-4cd02ac2.js';
+import { g as getBarCodePopOver } from './popOverUtils-13db4611.js';
 
-const managedShipmentlineListItemCss = ":host{display:block;--background:inherit}ion-item.main-item{animation:1s linear fadein}ion-item.main-item ion-grid{width:100%}ion-col ion-label.ion-padding{padding-top:4px;padding-bottom:4px}managed-orderline-list-item ion-skeleton-text.label-name{width:50%}managed-orderline-list-item ion-skeleton-text.label-gtin{width:60%}managed-orderline-list-item ion-skeleton-text.label-requester{width:50%}managed-orderline-list-item ion-skeleton-text.label-date{width:80%}ion-chip{height:28px;--ion-padding:8px;--ion-margin:8px}@keyframes fadein{from{opacity:0}to{opacity:1}}";
+const managedShipmentlineListItemCss = ":host{display:block}ion-item.main-item{animation:1s linear fadein}managed-shipmentline-list-item ion-skeleton-text.label-batch{width:20%}managed-shipmentline-list-item ion-skeleton-text.label-quantity{width:15%}managed-shipmentline-list-item ion-skeleton-text.label-status{width:15%}@keyframes fadein{from{opacity:0}to{opacity:1}}";
 
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
   var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -87,15 +88,6 @@ const ManagedOrderlineListItem = class {
   async refresh() {
     await this.loadOrderLine();
   }
-  addBarCode() {
-    const self = this;
-    const getBarCode = function () {
-      if (!self.line || !self.line.gtin)
-        return (h("ion-skeleton-text", { animated: true }));
-      return (h("barcode-generator", { class: "ion-align-self-center", type: "code128", size: "32", scale: "6", data: self.line.gtin }));
-    };
-    return (h("ion-thumbnail", { class: "ion-align-self-center bar-code", slot: "start" }, getBarCode()));
-  }
   getPropsFromKey() {
     if (!this.shipmentLine)
       return undefined;
@@ -104,46 +96,8 @@ const ManagedOrderlineListItem = class {
       requesterId: props[0],
       senderId: props[1],
       gtin: props[2],
-      date: (new Date(parseInt(props[3]) * 1000)).toLocaleDateString("en-US")
+      createdOn: (new Date(parseInt(props[3]) * 1000)).toLocaleDateString("en-US")
     };
-  }
-  addProductColumn(props) {
-    const self = this;
-    const getNameLabel = function () {
-      if (!self.product || !self.product.name)
-        return (h("h4", null, h("ion-skeleton-text", { animated: true, class: "label-name" })));
-      return (h("h4", null, self.product.name));
-    };
-    const getGtinLabel = function () {
-      if (!props || !props.gtin)
-        return (h("h3", null, h("ion-skeleton-text", { animated: true, class: "label-gtin" })));
-      return (h("h3", null, props.gtin));
-    };
-    return [
-      h("ion-label", { class: "ion-padding-horizontal ion-align-self-center", position: "stacked" }, h("p", null, self.gtinLabel)),
-      h("ion-label", { class: "ion-padding ion-align-self-center" }, getGtinLabel()),
-      h("ion-label", { class: "ion-padding-horizontal ion-align-self-center", position: "stacked" }, h("p", null, self.nameLabel)),
-      h("ion-label", { class: "ion-padding ion-align-self-center" }, getNameLabel())
-    ];
-  }
-  addRequesterColumn(props) {
-    const self = this;
-    const getRequesterLabel = function () {
-      if (!props || !props.requesterId)
-        return (h("h4", null, h("ion-skeleton-text", { animated: true, class: "label-requester" })));
-      return (h("h4", null, props.requesterId));
-    };
-    const getDateLabel = function () {
-      if (!props || !props.date)
-        return (h("h4", null, h("ion-skeleton-text", { animated: true, class: "label-date" })));
-      return (h("h4", null, props.date));
-    };
-    return [
-      h("ion-label", { class: "ion-padding-horizontal ion-align-self-center", position: "stacked" }, h("p", null, self.requesterLabel)),
-      h("ion-label", { class: "ion-padding ion-align-self-center" }, getRequesterLabel()),
-      h("ion-label", { class: "ion-padding-horizontal ion-align-self-center", position: "stacked" }, h("p", null, self.createdOnLabel)),
-      h("ion-label", { class: "ion-padding ion-align-self-center" }, getDateLabel())
-    ];
   }
   addSenderColumn(props) {
     const self = this;
@@ -201,18 +155,77 @@ const ManagedOrderlineListItem = class {
       h("ion-label", { class: "ion-padding ion-align-self-center" }, getQuantityBadge())
     ];
   }
+  triggerSelect(evt) {
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    console.log(`Selected ${evt.detail}`);
+    const { gtin } = this.line;
+    const { batchNumber } = this.batch;
+    this.navigateToTab('tab-individual-product', {
+      gtin: gtin,
+      batchNumber: batchNumber,
+      serialNumber: evt.detail
+    });
+  }
+  addSerials() {
+    if (!this.batch)
+      return (h("multi-spinner", { slot: "content", type: SUPPORTED_LOADERS.bubblingSmall }));
+    return (h("pdm-item-organizer", { slot: "content", "component-name": "generic-chip", "component-props": JSON.stringify(this.batch.serialNumbers.map(serial => ({
+        "chip-label": serial,
+        "class": "ion-margin-start"
+      }))), "id-prop": "chip-label", "is-ion-item": "false", "display-count": "1", orientation: this.getOrientation(), onSelectEvent: this.triggerSelect.bind(this) }));
+  }
+  addDetails() {
+    const props = this.getPropsFromKey();
+    return [
+      h("ion-label", { slot: "content", color: "secondary", class: "ion-float-left" }, props.requesterId, h("span", { class: "ion-padding-start" }, props.senderId)),
+      this.addSerials()
+    ];
+  }
+  addLabel() {
+    const props = this.getPropsFromKey();
+    const self = this;
+    const getBatchLabel = function () {
+      if (!self.batch)
+        return (h("ion-skeleton-text", { animated: true, className: "label-batch" }));
+      return self.batch;
+    };
+    const getQuantityLabel = function () {
+      if (!self.line)
+        return (h("ion-skeleton-text", { animated: true, className: "label-quantity" }));
+      return self.line.getQuantity();
+    };
+    const getStatusLabel = function () {
+      if (!self.line)
+        return (h("ion-skeleton-text", { animated: true, className: "label-status" }));
+      return (h("ion-badge", null, self.line.status));
+    };
+    return (h("ion-label", { slot: "label", color: "secondary" }, props.gtin, h("span", { class: "ion-padding-start" }, getBatchLabel()), h("span", { class: "ion-padding-start" }, getQuantityLabel()), h("span", { class: "ion-padding-start" }, getStatusLabel())));
+  }
+  getOrientation() {
+    const layout = this.element.querySelector('list-item-layout');
+    return layout ? layout.orientation : 'end';
+  }
   addButtons() {
     let self = this;
-    const getButtons = function () {
-      if (!self.line)
-        return (h("ion-skeleton-text", { animated: true }));
-      return (h("ion-button", { slot: "primary", onClick: () => self.navigateToTab('tab-batches', { shipmentLine: self.shipmentLine }) }, h("ion-icon", { name: "file-tray-stacked-outline" })));
+    if (!self.shipmentLine)
+      return (h("ion-skeleton-text", { animated: true }));
+    const getButton = function (slot, color, icon, handler) {
+      return (h("ion-button", { slot: slot, color: color, fill: "clear", onClick: handler }, h("ion-icon", { size: "large", slot: "icon-only", name: icon })));
     };
-    return (h("ion-buttons", { class: "ion-align-self-center ion-padding", slot: "end" }, getButtons()));
+    return [
+      getButton("buttons", "medium", "barcode", (evt) => getBarCodePopOver({
+        type: "code128",
+        size: "32",
+        scale: "6",
+        data: self.shipmentLine
+      }, evt))
+    ];
   }
   render() {
-    const props = this.getPropsFromKey();
-    return (h("ion-item", { class: "ion-align-self-center main-item" }, this.addBarCode(), h("ion-grid", null, h("ion-row", null, h("ion-col", { size: "4" }, this.addProductColumn(props)), h("ion-col", { size: "3" }, this.addRequesterColumn(props)), h("ion-col", { size: "3" }, this.addSenderColumn(props)), h("ion-col", { size: "2" }, this.addDetailsColumn()))), this.addButtons()));
+    if (!this.host.isConnected)
+      return;
+    return (h(Host, null, h("list-item-layout", null, this.addLabel(), this.addDetails(), this.addButtons())));
   }
   get element() { return getElement(this); }
   static get watchers() { return {

@@ -1,41 +1,22 @@
 :host {
   display: block;
-  --background: inherit;
 }
+
 
 ion-item.main-item{
   animation: 1s linear fadein;
 }
 
-ion-item.main-item ion-grid{
-  width: 100%;
+managed-shipmentline-list-item ion-skeleton-text.label-batch{
+  width: 20%;
 }
 
-ion-col ion-label.ion-padding{
-  padding-top: 4px;
-  padding-bottom: 4px;
+managed-shipmentline-list-item ion-skeleton-text.label-quantity{
+  width: 15%;
 }
 
-managed-orderline-list-item ion-skeleton-text.label-name{
-  width: 50%;
-}
-
-managed-orderline-list-item ion-skeleton-text.label-gtin{
-  width: 60%;
-}
-
-managed-orderline-list-item ion-skeleton-text.label-requester{
-  width: 50%;
-}
-
-managed-orderline-list-item ion-skeleton-text.label-date{
-  width: 80%;
-}
-
-ion-chip {
-  height: 28px;
-  --ion-padding: 8px;
-  --ion-margin: 8px;
+managed-shipmentline-list-item ion-skeleton-text.label-status{
+  width: 15%;
 }
 
 @keyframes fadein {
