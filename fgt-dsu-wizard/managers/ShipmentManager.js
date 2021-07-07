@@ -142,7 +142,7 @@ class ShipmentManager extends Manager {
             }, {});
 
             Object.keys(byMAH).forEach(mahId => {
-                const ssis = byMAH[mahId].map(k => typeof k === 'string' ? k.getIdentifier() : k);
+                const ssis = byMAH[mahId].map(k => typeof k === 'string' ? k : k.getIdentifier());
                 const message = JSON.stringify(ssis);
                 self.sendMessage(mahId, DB.shipmentLines, message, (err) =>
                     self._messageCallback(err ? `Could not send message to MAH ${mahId} for shipmentLines ${JSON.stringify(byMAH[mahId])} with ssis ${ssis} ${err}` : err,
