@@ -12,7 +12,7 @@ module.exports = {
     Participant: require('./Participant'),
     Product: require('./Product'),
     Batch: require('./Batch'),
-    BatchStatus: require("BatchStatus"),
+    BatchStatus: require("./BatchStatus"),
     MAH: require('./MAH'),
     Pharmacy: require('./Pharmacy'),
     Wholesaler: require('./Wholesaler'),

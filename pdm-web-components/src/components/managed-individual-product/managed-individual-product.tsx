@@ -251,7 +251,7 @@ export class ManagedIndividualProduct implements CreateManageView{
   }
 
   getManage() {
-    if (this.isCreate())
+    if (this.isCreate() || !this.individualProduct)
       return;
     const self = this;
     return (

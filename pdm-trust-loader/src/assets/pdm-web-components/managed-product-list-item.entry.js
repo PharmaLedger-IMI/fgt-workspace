@@ -68,6 +68,15 @@ const ManagedProductListItem = class {
       });
     });
   }
+  triggerSelect(evt) {
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    console.log(`Selected ${evt.detail}`);
+    this.navigateToTab('tab-batch', {
+      gtin: this.gtin,
+      batchNumber: evt.detail
+    });
+  }
   async refresh() {
     await this.loadProduct();
   }
@@ -92,11 +101,7 @@ const ManagedProductListItem = class {
         "gtin-batch": gtinBatch,
         "mode": "detail",
         "loader-type": SUPPORTED_LOADERS.bubblingSmall
-      }))), "id-prop": "gtin-batch", "is-ion-item": "false", orientation: this.getOrientation(), onSelectEvent: (evt) => {
-        evt.preventDefault();
-        evt.stopImmediatePropagation();
-        console.log(`Selected ${evt.detail}`);
-      } }));
+      }))), "id-prop": "gtin-batch", "is-ion-item": "false", orientation: this.getOrientation(), onSelectEvent: this.triggerSelect.bind(this) }));
   }
   getOrientation() {
     const layoutEl = this.element.querySelector('list-item-layout');

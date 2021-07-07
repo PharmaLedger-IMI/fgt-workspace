@@ -354,14 +354,14 @@ const ManagedShipment = class {
     };
     switch (self.getType()) {
       case SHIPMENT_TYPE.ISSUED:
-        return [
+        const inputs = [
           getOrderReference(),
           getRequester(),
-          getRequesterLocale(),
-          getProductInput(),
-          getQuantityInput(),
-          getStatus()
+          getRequesterLocale()
         ];
+        if (isCreate)
+          inputs.push(getProductInput(), getQuantityInput());
+        return inputs;
       case SHIPMENT_TYPE.RECEIVED:
         return [
           getOrderReference(),
@@ -390,7 +390,7 @@ const ManagedShipment = class {
       return;
     const self = this;
     const getLines = function () {
-      return (h("line-stock-manager", { lines: self.lines, "show-stock": self.getType() === SHIPMENT_TYPE.RECEIVED, "enable-action": "false", "single-line": "false", "stock-string": self.stockString, "no-stock-string": self.noStockString, "select-string": self.selectString, "remaining-string": self.remainingString, "order-missing-string": self.orderMissingString, "available-string": self.availableString, "unavailable-string": self.unavailableString, "confirmed-string": self.confirmedString, "confirm-all-string": self.confirmAllString, "reset-all-string": self.resetAllString }));
+      return (h("line-stock-manager", { lines: self.lines, "show-stock": "false", "enable-action": "false", "single-line": "false", "stock-string": self.stockString, "no-stock-string": self.noStockString, "select-string": self.selectString, "remaining-string": self.remainingString, "order-missing-string": self.orderMissingString, "available-string": self.availableString, "unavailable-string": self.unavailableString, "confirmed-string": self.confirmedString, "confirm-all-string": self.confirmAllString, "reset-all-string": self.resetAllString }));
     };
     if (self.shipmentType !== SHIPMENT_TYPE.ISSUED || !self.shipment)
       return getLines();

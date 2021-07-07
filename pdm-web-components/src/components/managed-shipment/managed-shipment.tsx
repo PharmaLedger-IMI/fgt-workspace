@@ -542,14 +542,14 @@ export class ManagedShipment implements CreateManageView{
 
     switch (self.getType()){
       case SHIPMENT_TYPE.ISSUED:
-        return [
+        const inputs =  [
           getOrderReference(),
           getRequester(),
-          getRequesterLocale(),
-          getProductInput(),
-          getQuantityInput(),
-          getStatus()
+          getRequesterLocale()
         ]
+        if (isCreate)
+          inputs.push(getProductInput(), getQuantityInput());
+        return inputs;
       case SHIPMENT_TYPE.RECEIVED:
         return [
           getOrderReference(),
@@ -599,7 +599,7 @@ export class ManagedShipment implements CreateManageView{
     const getLines = function(){
       return (
         <line-stock-manager lines={self.lines}
-                            show-stock={self.getType() === SHIPMENT_TYPE.RECEIVED}
+                            show-stock="false"
                             enable-action="false"
                             single-line="false"
 

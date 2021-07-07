@@ -374,7 +374,7 @@ const LineStockManager = class {
       } }));
   }
   getMainHeader() {
-    return (h("ion-item-divider", null, this.linesString));
+    return (h("ion-item-divider", { class: this.showStock ? "" : "ion-margin-bottom" }, this.linesString));
   }
   isReady() {
     return typeof this.lines !== 'string';

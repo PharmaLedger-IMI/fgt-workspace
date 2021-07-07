@@ -524,7 +524,7 @@ export class LineStockManager {
 
   getMainHeader(){
     return (
-      <ion-item-divider>
+      <ion-item-divider class={this.showStock ? "" : "ion-margin-bottom"}>
         {this.linesString}
       </ion-item-divider>
     )
