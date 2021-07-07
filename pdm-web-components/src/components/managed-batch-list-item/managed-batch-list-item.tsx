@@ -104,9 +104,10 @@ export class ManagedBatchListItem {
     evt.preventDefault();
     evt.stopImmediatePropagation();
     console.log(`Selected ${evt.detail}`);
+    const {gtin, batchNumber} = this.getGtinAndBatchNumber();
     this.navigateToTab('tab-individual-product', {
-      gtin: this.getGtinAndBatchNumber().gtin,
-      batchNumber: this.getGtinAndBatchNumber().batchNumber,
+      gtin: gtin,
+      batchNumber: batchNumber,
       serialNumber: evt.detail
     })
   }

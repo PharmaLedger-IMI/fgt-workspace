@@ -106,7 +106,7 @@ export class ManagedIndividualProduct implements CreateManageView{
 
   async load(){
     let self = this;
-    if (!self.stockManager)
+    if (!self.stockManager || !self.individualRef)
       return;
 
     const parseRef = function(){

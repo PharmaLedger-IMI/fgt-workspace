@@ -97,9 +97,10 @@ export class ManagedProductListItem {
     evt.preventDefault();
     evt.stopImmediatePropagation();
     console.log(`Selected ${evt.detail}`);
+    const split = evt.detail.split('-');
     this.navigateToTab('tab-batch', {
-      gtin: this.gtin,
-      batchNumber: evt.detail
+      gtin: split[0],
+      batchNumber: split[1]
     })
   }
 
