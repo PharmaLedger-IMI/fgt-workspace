@@ -241,7 +241,11 @@ class IssuedShipmentManager extends ShipmentManager {
         super.update(key, shipment, (err, updatedShipment, keySSI, orderId, linesSSIs) => {
             if (err)
                 return self._err(`Could not update Shipment`, err, callback);
-            self.sendMessagesAsync(updatedShipment, linesSSIs, keySSI);
+            try {
+                self.sendMessagesAsync(updatedShipment, linesSSIs, keySSI);
+            } catch (e) {
+                console.log(e);
+            }
             callback(undefined, updatedShipment, keySSI);
         });
     }
