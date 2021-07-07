@@ -108,6 +108,15 @@
 
         <p><span style="font-weight: bold;">WARNING:</span> Unstable software and environments. Use at your own risk! Data persistence at risk of unexpected reset!</p>
 
+        <h3>Test Script</h3>
+
+        <ul>
+            <li>In the browser, open an MAH Wallet, and log in. (This ensures that there is an active listener for messages sent to the MAH). Leave that tab open and proceed with the script.</li>
+            <li>In the browser, open an Wholesale Wallet, and log in ; Go to the "Orders Received" and there are some pre-created orders (from Pharmacies) available. ; For any of those orders, click the "clockwork wheel" ; A "CREATE SHIPMENT" screen appears. Click on the "ORDER MISSING", and it jumps to a "CREATE ORDER" screen ; On the "CREATE ORDER" screen, select the pre-existing MAHID, and then press "ISSUED ORDER +", and "CONFIRM".</li>
+            <li>In the browser, go the MAH Wallet tab previously opened; Go to the "Orders", and the order just created from the Wholesaler should be visible. ; For that specific order, click the "clockwork wheel" ; A "CREATE SHIPMENT" screen appears ; Click on "CONFIRM ALL AVAILABLE", and then click on the "CREATE +", and "CONFIRM".</li>
+            <li>TODO - rest of the script...</li>
+        </ul>
+
         <h2>v0.3.3 Release notes 2021-06-29</h2>
 
         <p>Adds the possibility to add requesters/senders to the directory (allowing to choose newly created wallets as targets for orders/shipments);</p>
