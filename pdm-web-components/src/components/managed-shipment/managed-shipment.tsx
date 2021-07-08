@@ -601,7 +601,6 @@ export class ManagedShipment implements CreateManageView{
         <line-stock-manager lines={self.lines}
                             show-stock="false"
                             enable-action="false"
-                            single-line="false"
 
                             stock-string={self.stockString}
                             no-stock-string={self.noStockString}

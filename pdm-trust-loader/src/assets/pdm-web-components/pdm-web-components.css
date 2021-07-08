@@ -113,6 +113,11 @@ ion-input {
   display: flex;
 }
 
+.flex-break {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .flex-col {
   flex-direction: column;
 }
@@ -174,4 +179,8 @@ ion-loading.ssapp-spinner{
 
 .full-height{
   height: 100%
+}
+
+.full-width{
+  width: 100%
 }

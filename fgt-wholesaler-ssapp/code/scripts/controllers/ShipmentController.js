@@ -89,7 +89,7 @@ export default class ShipmentController extends LocalizedController{
         if (errors)
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
 
-        const alert = await self.showConfirm('manage.confirm', shipment.status, newStatus);
+        const alert = await self.showConfirm('manage.confirm', oldStatus, newStatus);
 
         const {role} = await alert.onDidDismiss();
 

@@ -366,7 +366,7 @@ export namespace Components {
           * If the component does not generate an ion-item (so it can be handled by an ion-list) this must be set to false
          */
         "isItem": boolean;
-        "orientation": "start" | "end";
+        "orientation": "between" | "end" | "evenly" | "around" | "center" | "start";
         "singleLine": boolean;
     }
     interface PdmSsappLoader {
@@ -1125,7 +1125,7 @@ declare namespace LocalJSX {
          */
         "isItem"?: boolean;
         "onSelectEvent"?: (event: CustomEvent<string>) => void;
-        "orientation"?: "start" | "end";
+        "orientation"?: "between" | "end" | "evenly" | "around" | "center" | "start";
         "singleLine"?: boolean;
     }
     interface PdmSsappLoader {

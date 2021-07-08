@@ -166,7 +166,7 @@
       },
       "pickup": {
         "action": "Mark as 'For Pickup'",
-        "label": "On Hold",
+        "label": "For Pickup",
         "color": "secondary",
         "paths": []
       },
@@ -271,7 +271,7 @@
       },
       "pickup": {
         "action": "Mark as 'For Pickup'",
-        "label": "On Hold",
+        "label": "For Pickup",
         "color": "secondary",
         "paths": []
       },

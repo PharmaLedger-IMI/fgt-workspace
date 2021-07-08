@@ -512,7 +512,7 @@ export class LineStockManager {
                           id-prop="gtin"
                           is-ion-item="false"
                           single-line="false"
-                          orientation="start"
+                          orientation="evenly"
                           display-count="25"
                           onSelectEvent={(evt) => {
                             evt.preventDefault();

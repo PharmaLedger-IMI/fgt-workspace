@@ -183,7 +183,7 @@ function ShipmentService(domain, strategy) {
                             createShipmentLines(shipment, statusSSI, (err, shipmentLines) => {
                                 if (err)
                                     return callback(err);
-                                const lines = JSON.stringify(shipmentLines.map(o => o.getIdentifier(true)));
+                                const lines = JSON.stringify(shipmentLines.map(o => o.getIdentifier()));
                                 dsu.writeFile(LINES_PATH, lines, (err) => {
                                     if (err)
                                         return callback(err);

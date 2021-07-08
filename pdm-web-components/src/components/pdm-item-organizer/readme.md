@@ -7,15 +7,15 @@
 
 ## Properties
 
-| Property         | Attribute         | Description                                                                                                    | Type               | Default     |
-| ---------------- | ----------------- | -------------------------------------------------------------------------------------------------------------- | ------------------ | ----------- |
-| `componentName`  | `component-name`  | the Tag for the component to be rendered                                                                       | `string`           | `undefined` |
-| `componentProps` | `component-props` | the list of props that will be passed to the HTML Element {@link componentName}                                | `string`           | `undefined` |
-| `displayCount`   | `display-count`   | The number of items to display (minimum is 1), defaults to 3                                                   | `number`           | `3`         |
-| `idProp`         | `id-prop`         | The identifying prop to be return upon click (must exist in the supplied {@link componentProps}                | `string`           | `undefined` |
-| `isItem`         | `is-ion-item`     | If the component does not generate an ion-item (so it can be handled by an ion-list) this must be set to false | `boolean`          | `true`      |
-| `orientation`    | `orientation`     |                                                                                                                | `"end" \| "start"` | `"end"`     |
-| `singleLine`     | `single-line`     |                                                                                                                | `boolean`          | `true`      |
+| Property         | Attribute         | Description                                                                                                    | Type                                                                | Default     |
+| ---------------- | ----------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ----------- |
+| `componentName`  | `component-name`  | the Tag for the component to be rendered                                                                       | `string`                                                            | `undefined` |
+| `componentProps` | `component-props` | the list of props that will be passed to the HTML Element {@link componentName}                                | `string`                                                            | `undefined` |
+| `displayCount`   | `display-count`   | The number of items to display (minimum is 1), defaults to 3                                                   | `number`                                                            | `3`         |
+| `idProp`         | `id-prop`         | The identifying prop to be return upon click (must exist in the supplied {@link componentProps}                | `string`                                                            | `undefined` |
+| `isItem`         | `is-ion-item`     | If the component does not generate an ion-item (so it can be handled by an ion-list) this must be set to false | `boolean`                                                           | `true`      |
+| `orientation`    | `orientation`     |                                                                                                                | `"around" \| "between" \| "center" \| "end" \| "evenly" \| "start"` | `"end"`     |
+| `singleLine`     | `single-line`     |                                                                                                                | `boolean`                                                           | `true`      |
 
 
 ## Events

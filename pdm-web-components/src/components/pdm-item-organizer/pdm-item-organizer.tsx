@@ -34,7 +34,7 @@ export class PdmItemOrganizer {
    */
   @Prop({attribute: "id-prop"}) idProp: string = undefined;
 
-  @Prop({attribute: "orientation", mutable: true}) orientation: "start" | "end" = "end";
+  @Prop({attribute: "orientation", mutable: true}) orientation: "between" | "end" | "evenly" | "around" | "center" | "start" = "end";
 
   @Prop({attribute: "single-line", mutable: true}) singleLine: boolean = true;
 
@@ -157,7 +157,7 @@ export class PdmItemOrganizer {
       return [];
     if (this.parsedProps.length <= this.displayCount)
       return this.parsedProps.map(props => this.getComponentJSX(props));
-    const toDisplay = Math.max(this.displayCount - 1, 1);
+    const toDisplay = Math.max(this.displayCount, 0) - 1;
     const result = this.parsedProps.filter((props,i) => !!props && i <= toDisplay).map(props => this.getComponentJSX(props));
 
     if (this.singleLine){
@@ -172,7 +172,7 @@ export class PdmItemOrganizer {
       return;
     return (
       <Host>
-        <div class={`ion-padding-horizontal ${this.singleLine ? "flex " : ""}ion-justify-content-${this.orientation} ion-align-items-center`}>
+        <div class={`ion-padding-horizontal ${this.singleLine ? "flex " : "flex-break "}ion-justify-content-${this.orientation} ion-align-items-center`}>
           {...this.getFilteredComponents()}
         </div>
       </Host>

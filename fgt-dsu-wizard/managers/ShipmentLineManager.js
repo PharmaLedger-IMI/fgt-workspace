@@ -1,5 +1,4 @@
 const { DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN } = require('../constants');
-const OrderLine = require('../model').OrderLine;
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 /**
  * ShipmentLine Manager Class

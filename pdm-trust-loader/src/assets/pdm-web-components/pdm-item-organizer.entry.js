@@ -140,7 +140,7 @@ const PdmItemOrganizer = class {
       return [];
     if (this.parsedProps.length <= this.displayCount)
       return this.parsedProps.map(props => this.getComponentJSX(props));
-    const toDisplay = Math.max(this.displayCount - 1, 1);
+    const toDisplay = Math.max(this.displayCount, 0) - 1;
     const result = this.parsedProps.filter((props, i) => !!props && i <= toDisplay).map(props => this.getComponentJSX(props));
     if (this.singleLine) {
       const operation = this.orientation === "end" || this.singleLine ? result.unshift.bind(result) : result.push.bind(result);
@@ -151,7 +151,7 @@ const PdmItemOrganizer = class {
   render() {
     if (!this.host.isConnected)
       return;
-    return (h(Host, null, h("div", { class: `ion-padding-horizontal ${this.singleLine ? "flex " : ""}ion-justify-content-${this.orientation} ion-align-items-center` }, this.getFilteredComponents())));
+    return (h(Host, null, h("div", { class: `ion-padding-horizontal ${this.singleLine ? "flex " : "flex-break "}ion-justify-content-${this.orientation} ion-align-items-center` }, this.getFilteredComponents())));
   }
   get element() { return getElement(this); }
   static get watchers() { return {

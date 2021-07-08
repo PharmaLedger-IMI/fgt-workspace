@@ -40,10 +40,10 @@ function ShipmentLineService(domain, strategy){
                         return callback(`could not retrieve shipmentLine status`);
                     try{
                         shipmentLine.status = JSON.parse(status);
-                        callback(undefined, shipmentLine);
                     } catch (e) {
                         return callback(`unable to parse ShipmentLine status: ${status.toString()}`);
                     }
+                    callback(undefined, shipmentLine);
                 });
             })
         });

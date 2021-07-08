@@ -523,7 +523,6 @@ export class ManagedOrder implements CreateManageView{
                             show-stock="false"
                             enable-action="false"
 
-                            single-line="false"
                             stock-string={self.stockString}
                             no-stock-string={self.noStockString}
                             select-string={self.selectString}

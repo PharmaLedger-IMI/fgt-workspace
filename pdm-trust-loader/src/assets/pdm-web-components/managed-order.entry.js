@@ -334,7 +334,7 @@ const ManagedOrder = class {
       return;
     const self = this;
     const getLines = function () {
-      return (h("line-stock-manager", { lines: self.lines, "show-stock": "false", "enable-action": "false", "single-line": "false", "stock-string": self.stockString, "no-stock-string": self.noStockString, "select-string": self.selectString, "remaining-string": self.remainingString, "order-missing-string": self.orderMissingString, "available-string": self.availableString, "unavailable-string": self.unavailableString, "confirmed-string": self.confirmedString, "confirm-all-string": self.confirmAllString, "reset-all-string": self.resetAllString }));
+      return (h("line-stock-manager", { lines: self.lines, "show-stock": "false", "enable-action": "false", "stock-string": self.stockString, "no-stock-string": self.noStockString, "select-string": self.selectString, "remaining-string": self.remainingString, "order-missing-string": self.orderMissingString, "available-string": self.availableString, "unavailable-string": self.unavailableString, "confirmed-string": self.confirmedString, "confirm-all-string": self.confirmAllString, "reset-all-string": self.resetAllString }));
     };
     if (self.orderType !== ORDER_TYPE.ISSUED || !self.order)
       return getLines();
