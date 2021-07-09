@@ -16,10 +16,12 @@ function ShipmentLineService(domain, strategy){
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
 
+    const statusService = new (require('./StatusService'))(domain, strategy);
+
     /**
      * Resolves the DSU and loads the OrderLine object with all its properties, mutable or not
      * @param {KeySSI} keySSI
-     * @param {function(err, OrderLine)} callback
+     * @param {function(err?, OrderLine?)} callback
      */
     this.get = function(keySSI, callback){
         utils.getResolver().loadDSU(keySSI, (err, dsu) => {
@@ -35,17 +37,17 @@ function ShipmentLineService(domain, strategy){
                     return callback(`Could not parse ShipmentLine in DSU ${keySSI.getIdentifier()}`);
                 }
 
-                dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
-                    if (err)
-                        return callback(`could not retrieve shipmentLine status`);
-                    try{
-                        shipmentLine.status = JSON.parse(status);
-                    } catch (e) {
-                        return callback(`unable to parse ShipmentLine status: ${status.toString()}`);
-                    }
-                    callback(undefined, shipmentLine);
+                utils.getMounts(dsu, '/', STATUS_MOUNT_PATH,  (err, mounts) => {
+                    if (err || !mounts[STATUS_MOUNT_PATH])
+                        return callback(`Could not find status mount`);
+                    statusService.get(mounts[STATUS_MOUNT_PATH], (err, status) => {
+                        if (err)
+                            return callback(err);
+                        shipmentLine.status = status;
+                        callback(undefined, shipmentLine);
+                    });
                 });
-            })
+            });
         });
     }
 

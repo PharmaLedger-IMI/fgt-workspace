@@ -101,9 +101,9 @@ function ShipmentService(domain, strategy) {
                                 if (err)
                                     return callback(err);
                                 let linesSSI;
-                                try{
+                                try {
                                     linesSSI = JSON.parse(data);
-                                }catch (e){
+                                } catch (e) {
                                     return callback(e);
                                 }
                                 callback(undefined, shipment, dsu, orderId, linesSSI);

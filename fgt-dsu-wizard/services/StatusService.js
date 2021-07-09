@@ -44,7 +44,19 @@ function StatusService(domain, strategy){
                 } catch (e){
                     return callback(`Could not parse status in DSU ${keySSI.getIdentifier()}`);
                 }
-                callback(undefined, status, dsu);
+
+                dsu.readFile(LOG_PATH, (err, log) => {
+                    if (err)
+                        return callback(err);
+                    try {
+                        log = JSON.parse(log);
+                    } catch (e){
+                        return callback(e);
+                    }
+                    if (!Array.isArray(log))
+                        return callback(`Invalid log data`);
+                    callback(undefined, status, log, dsu);
+                });
             });
         });
     }
@@ -116,38 +128,40 @@ function StatusService(domain, strategy){
                         return callback(err);
                     try{
                         prevStatus = JSON.parse(prevStatus);
-                        dsu.writeFile(INFO_PATH, data, (err) => {
-                            if (err)
-                                return callback(err);
-
-                            const returnFunc = function(err){
-                                if (err)
-                                    return callback(err);
-                                dsu.getKeySSIAsObject((err, keySSI) => {
-                                    if (err)
-                                        return callback(err);
-                                    callback(undefined, keySSI);
-                                });
-                            }
-
-                            let log = createLog(id, prevStatus, status);
-
-                            dsu.readFile(LOG_PATH, (err, data) => {
-                                if (err)
-                                    return callback(err);
-                                try {
-                                    data = JSON.parse(data);
-                                    if (!Array.isArray(data))
-                                        return callback(`Invalid log data`);
-                                    return dsu.writeFile(LOG_PATH, JSON.stringify([...data, log]), returnFunc);
-                                } catch (e){
-                                    return callback(e);
-                                }
-                            })
-                        });
                     } catch (e){
                         return callback(e);
                     }
+
+                    dsu.writeFile(INFO_PATH, data, (err) => {
+                        if (err)
+                            return callback(err);
+
+                        const returnFunc = function(err){
+                            if (err)
+                                return callback(err);
+                            dsu.getKeySSIAsObject((err, keySSI) => {
+                                if (err)
+                                    return callback(err);
+                                callback(undefined, keySSI);
+                            });
+                        }
+
+                        let log = createLog(id, prevStatus, status);
+
+                        dsu.readFile(LOG_PATH, (err, data) => {
+                            if (err)
+                                return callback(err);
+                            try {
+                                data = JSON.parse(data);
+                            } catch (e){
+                                return callback(e);
+                            }
+                            if (!Array.isArray(data))
+                                return callback(`Invalid log data`);
+                            return dsu.writeFile(LOG_PATH, JSON.stringify([...data, log]), returnFunc);
+                        });
+                    });
+
                 });
 
             });

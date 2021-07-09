@@ -32,8 +32,12 @@ function getResolver(){
  * @memberOf Utils
  */
 function getKeySSISpace(){
-	if (!keyssi)
-		keyssi = require('opendsu').loadApi('keyssi');
+	if (!keyssi){
+		const ssiSpace = require('opendsu').loadApi('keyssi');
+		keyssi = ssiSpace;
+		keyssi.parse = (keySSI, options) => typeof keySSI === 'string' ? ssiSpace.parse(keySSI, options) : keySSI;
+	}
+
 	return keyssi;
 }
 

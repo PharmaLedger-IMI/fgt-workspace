@@ -1,4 +1,4 @@
-process.env.NO_LOGS = true;
+ process.env.NO_LOGS = true;
 process.env.PSK_CONFIG_LOCATION = process.cwd();
 
 const path = require('path');

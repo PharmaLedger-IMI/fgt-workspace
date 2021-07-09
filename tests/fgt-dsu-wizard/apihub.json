@@ -1,0 +1,61 @@
+{
+  "port": 8080,
+  "preventRateLimit": true,
+  "activeComponents": [
+    "virtualMQ",
+    "messaging",
+    "notifications",
+    "filesManager",
+    "bdns",
+    "bricksLedger",
+    "bricksFabric",
+    "bricking",
+    "anchoring",
+    "dsu-wizard",
+    "gtin-dsu-wizard",
+    "fgt-dsu-wizard",
+    "staticServer"
+  ],
+  "componentsConfig": {
+    "gtin-dsu-wizard": {
+      "module": "./../../gtin-dsu-wizard"
+    },
+    "fgt-dsu-wizard": {
+      "module": "./../../fgt-dsu-wizard",
+      "function": "Init"
+    },
+    "dsu-wizard": {
+      "module": "dsu-wizard",
+      "function": "initWizard",
+      "storage": "./external-volume/dsu-wizard/transactions",
+      "workers": 5,
+      "bundle": "./../../privatesky/psknode/bundles/openDSU.js"
+    },
+    "bricking": {},
+    "anchoring": {}
+  },
+  "enableRequestLogger": true,
+  "enableJWTAuthorisation": false,
+  "enableLocalhostAuthorization": false,
+  "skipJWTAuthorisation": [
+    "/assets",
+    "/leaflet-wallet",
+    "/dsu-fabric-wallet",
+    "/directory-summary",
+    "/resources",
+    "/bdns",
+    "/anchor/epi",
+    "/anchor/default",
+    "/anchor/vault",
+    "/bricking",
+    "/bricksFabric",
+    "/bricksledger",
+    "/create-channel",
+    "/forward-zeromq",
+    "/send-message",
+    "/receive-message",
+    "/files",
+    "/notifications",
+    "/mq"
+  ]
+}

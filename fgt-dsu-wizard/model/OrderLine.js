@@ -14,13 +14,15 @@ class OrderLine{
      * @param quantity
      * @param requesterId
      * @param senderId
+     * @param status
      * @constructor
      */
-    constructor(gtin, quantity, requesterId, senderId){
+    constructor(gtin, quantity, requesterId, senderId, status){
         this.gtin = gtin;
         this.quantity = quantity;
         this.requesterId = requesterId;
         this.senderId = senderId;
+        this.status = status;
     }
 
     /**
