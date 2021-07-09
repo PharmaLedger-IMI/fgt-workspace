@@ -108,21 +108,22 @@
 
         <p><span style="font-weight: bold;">WARNING:</span> Unstable software and environments. Use at your own risk! Data persistence at risk of unexpected reset!</p>
 
+        <h2>v0.4.0 Release notes 2021-07-09</h2>
+
+        <p>Shipment creation and status updates are propagated to the requester (as received shipments and an update to the order);</p>
+        <p>Minor bug fixes;</p>
+
         <h3>Test Script</h3>
-
+        <h5>Browser</h5>
         <ul>
-            <li>In the browser, open an MAH Wallet, and log in. (This ensures that there is an active listener for messages sent to the MAH). Leave that tab open and proceed with the script.</li>
-            <li>In the browser, open an Wholesale Wallet, and log in ; Go to the "Orders Received" and there are some pre-created orders (from Pharmacies) available. ; For any of those orders, click the "clockwork wheel" ; A "CREATE SHIPMENT" screen appears. Click on the "ORDER MISSING", and it jumps to a "CREATE ORDER" screen ; On the "CREATE ORDER" screen, select the pre-existing MAHID, and then press "ISSUED ORDER +", and "CONFIRM".</li>
-            <li>In the browser, go the MAH Wallet tab previously opened; Go to the "Orders", and the order just created from the Wholesaler should be visible. ; For that specific order, click the "clockwork wheel" ; A "CREATE SHIPMENT" screen appears ; Click on "CONFIRM ALL AVAILABLE", and then click on the "CREATE +", and "CONFIRM".</li>
-            <li>TODO - rest of the script...</li>
+            <li>Open an MAH Wallet, and log in. (This ensures that there is an active listener for messages sent to the MAH). Leave that tab open and proceed with the script.</li>
+            <li>Open an Wholesale Wallet, and log in ; Go to the "Orders Received" and there are some pre-created orders (from Pharmacies) available. ; For any of those orders, click the "clockwork wheel" ; A "CREATE SHIPMENT" screen appears. Click on the "ORDER MISSING", and it jumps to a "CREATE ORDER" screen ; On the "CREATE ORDER" screen, select the pre-existing MAHID, and then press "ISSUED ORDER +", and "CONFIRM".</li>
+            <li>Go the MAH Wallet tab previously opened; Go to the "Orders", and the order just created from the Wholesaler should be visible. ; For that specific order, click the "Cogwheel" ; A "CREATE SHIPMENT" screen appears ; Click on "CONFIRM ALL AVAILABLE", and then click on the "CREATE +", and "CONFIRM".</li>
+            <li>Still in the MAH Wallet, go to 'Shipment Lines'. The ShipmentLines referring the the newly created shipments should be listed;</li>
+            <li>Return to Wholesale Wallet click "Shipments" => "Incoming Shipments"; you should find the recently created incoming shipment displayed in the list; Click "Orders" => "Issued Orders" you should see a 'train' button in the recently created Order. The order is now linked to the shipment. Click the "Eye" button; Its status should have changed to 'ACKNOWLEDGED';</li>
+            <li>Return to the MAH Wallet, go to 'Shipments' and click on the "Cogwheel" for the recently created shipment; Click "MARK AS 'FOR PICKUP'" and confirm. This will update the shipment status</li>
+            <li>Go back to the Wholesaler Wallet, click "Orders" => "Issued Orders" and the "Eye" button for the created Order; The status of the order should have changed to "FOR PICKUP";</li>
         </ul>
-
-        <h2>v0.4.0 Release notes 2021-06-29</h2>
-
-        <p>Adds the possibility to add requesters/senders to the directory (allowing to choose newly created wallets as targets for orders/shipments);</p>
-        <p>The limitation of not being able to create a shipment without an order, exists solely because without an order and without eGovernance,
-            we have no way of knowing the destination address, which is mandatory for a shipment in the existing Data Model
-            (and required for all user stories that include 'time until delivery' estimation). This limitation would not exist in a real product because all the information would be provided by the participants ERP systems.</p>
 
         <h2>v0.3.3 Release notes 2021-06-29</h2>
 

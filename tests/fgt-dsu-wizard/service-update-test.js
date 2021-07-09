@@ -5,6 +5,7 @@ const path = require('path');
 
 const test_bundles_path = path.join('../../privatesky/psknode/bundles', 'testsRuntime.js');
 require(test_bundles_path);
+const {argParser} = require('../../bin/environment/utils');
 
 const dc = require("double-check");
 const assert = dc.assert;
@@ -13,6 +14,13 @@ const tir = require("../../privatesky/psknode/tests/util/tir");
 let domain = 'default';
 let testName = 'OrderServiceTest'
 
+const defaultOps = {
+    timeout: 250000,
+    fakeServer: true,
+    useCallback: false
+}
+
+const TEST_CONF = argParser(defaultOps, process.argv);
 
 const getOrder = function(Model){
     const {utils, Order, OrderStatus} = Model;
@@ -69,10 +77,16 @@ const getShipment = function(Model, order, orderSSI){
 }
 
 const testShipmentLineStatus = function(shipmentLineService, keySSI, status, callback){
+    console.log(`Getting ShipmentLine with SSI: ${keySSI}`)
     return shipmentLineService.get(keySSI, (err, shipmentLine) => {
         if (err)
             return callback(err);
-        assert.true(status === shipmentLine.status);
+        try {
+            assert.true(status === shipmentLine.status);
+        } catch(e) {
+            return callback(e);
+        }
+
         return callback()
     });
 }
@@ -82,7 +96,12 @@ const testShipmentStatus = function(services, keySSI, status, callback){
     return shipmentService.get(keySSI, (err, shipment, shipmentDSU, orderId, linesSSIs) => {
         if (err)
             return callback(err);
-        assert.true(status === shipment.status);
+        try{
+            assert.true(status === shipment.status);
+        }catch(e){
+            return callback(e);
+        }
+
 
         const shipmentLineIterator = function(lines, callback){
             const line = lines.shift();
@@ -151,23 +170,48 @@ const runTest = function(callback){
     });
 }
 
-const testFinishCallback = function(){
-    console.log(`Test ${testName} finished successfully. Quitting...`);
+const testFinishCallback = function(callback){
+    console.log(`Test ${testName} finished successfully`);
+    if (callback)
+        return callback();
     setTimeout(() => {
         process.exit(0);
     }, 1000)
-
 }
 
-// tir.launchVirtualMQNode((err, port) => {
-//     if (err)
-//         throw err;
-    runTest((err) => {
-        if (err)
-            throw err;
-        testFinishCallback();
-    });
-// });
+const launchTest = function(callback){
+    const testRunner = function(callback){
+        runTest((err) => {
+            if (err)
+                return callback(err);
+            testFinishCallback(callback);
+        });
+    }
+
+    const runWithFakeServer = function(callback){
+        tir.launchVirtualMQNode((err, port) => {
+            if (err)
+                return callback(err);
+            if (!callback)
+                assert.begin(`Running test ${testName}`, undefined, TEST_CONF.timeout);
+            testRunner(callback);
+        });
+    }
+
+    if (TEST_CONF.fakeServer)
+        return runWithFakeServer(callback);
+
+    testRunner(callback);
+}
+
+if (!TEST_CONF.useCallback)
+    return launchTest();
+assert.callback(testName, (testFinished) => {
+    launchTest(testFinished);
+}, TEST_CONF.timeout)
+
+
+
 
 
 

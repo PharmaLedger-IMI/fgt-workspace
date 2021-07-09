@@ -289,13 +289,13 @@ class BaseManager {
             const loadDB = function(callback){
                 try{
                     self.db = require('opendsu').loadApi('db').getWalletDB(dbSSI, 'mydb');
+                    self.db.on('initialised', () => {
+                        console.log(`Database Cached`);
+                        callback();
+                    });
                 } catch (e) {
                     return self._err(`Error Loading Database`, e, callback);
                 }
-                self.db.on('initialised', () => {
-                    console.log(`Database Cached`);
-                    callback();
-                });
             }
 
             const loadMessenger = function(callback){
