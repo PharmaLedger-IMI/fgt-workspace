@@ -69,17 +69,17 @@ const getShipment = function(Model, order, orderSSI){
 }
 
 const testShipmentLineStatus = function(shipmentLineService, keySSI, status, callback){
-    shipmentLineService.get(keySSI, (err, shipmentLine) => {
+    return shipmentLineService.get(keySSI, (err, shipmentLine) => {
         if (err)
             return callback(err);
         assert.true(status === shipmentLine.status);
-        callback()
+        return callback()
     });
 }
 
 const testShipmentStatus = function(services, keySSI, status, callback){
     const {shipmentService, shipmentLineService} = services;
-    shipmentService.get(keySSI, (err, shipment, shipmentDSU, orderId, linesSSIs) => {
+    return shipmentService.get(keySSI, (err, shipment, shipmentDSU, orderId, linesSSIs) => {
         if (err)
             return callback(err);
         assert.true(status === shipment.status);
@@ -88,12 +88,12 @@ const testShipmentStatus = function(services, keySSI, status, callback){
             const line = lines.shift();
             if (!line)
                 return callback();
-            testShipmentLineStatus(shipmentLineService, line, status, (err) => err
+            return testShipmentLineStatus(shipmentLineService, line, status, (err) => err
                     ? callback(err)
                     : shipmentLineIterator(lines, callback));
         }
 
-        shipmentLineIterator(linesSSIs.slice(), callback);
+        return shipmentLineIterator(linesSSIs.slice(), callback);
     });
 }
 
@@ -129,13 +129,14 @@ const runTest = function(callback){
             return callback(err);
         orderSSI = orderSSI.derive();
         const shipment = getShipment(Model, order, orderSSI);
-        shipmentService.create(shipment, orderSSI, (err, shipmentSSI, linesSSIs, statusSSI) => {
+        shipmentService.create(shipment, orderSSI.getIdentifier(), (err, shipmentSSI, linesSSIs, statusSSI) => {
             if (err)
                 return callback(err);
             testShipmentStatus(services, shipmentSSI, ShipmentStatus.CREATED, (err) => {
                 if (err)
                     return callback(err);
                 shipment.status = ShipmentStatus.PICKUP;
+                console.log(shipmentSSI.getIdentifier());
                 shipmentService.update(shipmentSSI, shipment, shipment.senderId, (err) => {
                     if (err)
                         return callback(err);
@@ -151,25 +152,22 @@ const runTest = function(callback){
 }
 
 const testFinishCallback = function(){
-    console.log(`Test finished. Quitting...`);
+    console.log(`Test ${testName} finished successfully. Quitting...`);
     setTimeout(() => {
         process.exit(0);
     }, 1000)
 
 }
 
-// assert.callback(testName, (testFinishCallback) => {
-    // dc.createTestFolder(testName, (err, folder) => {
-    //     tir.launchApiHubTestNode(10, folder, err => {
-    tir.launchVirtualMQNode((err, port) => {
+// tir.launchVirtualMQNode((err, port) => {
+//     if (err)
+//         throw err;
+    runTest((err) => {
         if (err)
             throw err;
-        runTest((err) => {
-            if (err)
-                throw err;
-            testFinishCallback();
-        });
+        testFinishCallback();
     });
-// }, 25000)
+// });
+
 
 
