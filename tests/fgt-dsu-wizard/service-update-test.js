@@ -81,6 +81,7 @@ const testShipmentLineStatus = function(shipmentLineService, keySSI, status, cal
     return shipmentLineService.get(keySSI, (err, shipmentLine) => {
         if (err)
             return callback(err);
+        console.log(`Testing ShipmentLine Status ${status} vs ${shipmentLine.status}. They should be the same`);
         try {
             assert.true(status === shipmentLine.status);
         } catch(e) {
@@ -96,6 +97,7 @@ const testShipmentStatus = function(services, keySSI, status, callback){
     return shipmentService.get(keySSI, (err, shipment, shipmentDSU, orderId, linesSSIs) => {
         if (err)
             return callback(err);
+        console.log(`Testing Shipment Status ${status} vs ${shipment.status}. They should be the same`);
         try{
             assert.true(status === shipment.status);
         }catch(e){
@@ -201,6 +203,8 @@ const launchTest = function(callback){
     if (TEST_CONF.fakeServer)
         return runWithFakeServer(callback);
 
+    if (!callback)
+        assert.begin(`Running test ${testName}`, undefined, TEST_CONF.timeout);
     testRunner(callback);
 }
 
