@@ -239,9 +239,9 @@ class BaseManager {
                         ? self._err(`Could not get Identity`, err, callback)
                         : setTimeout(() => {
                             self._cacheRelevant(callback, identity);
-                        }), 20);
-                }), 20);
-        }, 20);
+                        }), 100);
+                }), 100);
+        }, 100);
     };
 
     /**
@@ -289,14 +289,13 @@ class BaseManager {
             const loadDB = function(callback){
                 try{
                     self.db = require('opendsu').loadApi('db').getWalletDB(dbSSI, 'mydb');
-                    self.db.on('initialised', () => {
-                        console.log(`Database Cached`);
-                        callback();
-                    });
                 } catch (e) {
-                    self._err(`Error Loading Database`, e, callback);
+                    return self._err(`Error Loading Database`, e, callback);
                 }
-
+                self.db.on('initialised', () => {
+                    console.log(`Database Cached`);
+                    callback();
+                });
             }
 
             const loadMessenger = function(callback){
