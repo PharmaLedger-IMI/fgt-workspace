@@ -62,7 +62,7 @@ function StatusService(domain, strategy){
     }
 
     /**
-     * Creates an OrderStatus DSU
+     * Creates aC Status DSU
      * @param {OrderStatus|ShipmentStatus} status
      * @param {String} id the sender id
      * @param {function} callback

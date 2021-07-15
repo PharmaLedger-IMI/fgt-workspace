@@ -90,6 +90,16 @@ function ProductService(domain, strategy){
             }, callback);
         }
     };
+
+    /**
+     * updates a product DSU
+     * @param {KeySSI} keySSI
+     * @param {Product} product
+     * @param {function(err?)} callback
+     */
+    this.update = function (keySSI, product, callback) {
+        return callback(`Product DSUs cannot be updated`);
+    }
 }
 
 module.exports = ProductService;

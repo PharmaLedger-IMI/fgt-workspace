@@ -89,6 +89,17 @@ function BatchService(domain, strategy){
             }, callback);
         }
     };
+
+
+    /**
+     * updates a product DSU
+     * @param {KeySSI} keySSI
+     * @param {Batch} product
+     * @param {function(err?)} callback
+     */
+    this.update = function (keySSI, product, callback) {
+        return callback(`Product DSUs cannot be updated`);
+    }
 }
 
 module.exports = BatchService;

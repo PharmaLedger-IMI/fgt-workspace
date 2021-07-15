@@ -3,6 +3,26 @@
  * @memberOf Model
  */
 
+/**
+ * Deep Object Comparison
+ * https://stackoverflow.com/questions/30476150/javascript-deep-comparison-recursively-objects-and-properties
+ *
+ * with optional ignored properties
+ * @param {{}} a
+ * @param {{}} b
+ * @param {string} [propsToIgnore]
+ * @return {boolean}
+ */
+const isEqual = (a, b,...propsToIgnore) => {
+    if (a === b) return true;
+    if (a instanceof Date && b instanceof Date) return a.getTime() === b.getTime();
+    if (!a || !b || (typeof a !== 'object' && typeof b !== 'object')) return a === b;
+    if (a === null || a === undefined || b === null || b === undefined) return false;
+    if (a.prototype !== b.prototype) return false;
+    let keys = Object.keys(a);
+    if (keys.length !== Object.keys(b).length) return false;
+    return keys.every(k => propsToIgnore.indexOf(k) !== -1 || isEqual(a[k], b[k], ...propsToIgnore));
+};
 
 /**
  * @memberOf Utils
@@ -175,5 +195,6 @@ module.exports = {
     generateRandomInt,
     stringFormat,
     getRandom,
-    generate2DMatrixCode
+    generate2DMatrixCode,
+    isEqual
 }

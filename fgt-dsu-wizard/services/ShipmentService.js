@@ -1,6 +1,6 @@
 const utils = require('../../pdm-dsu-toolkit/services/utils');
 const {STATUS_MOUNT_PATH, INFO_PATH, LINES_PATH, ORDER_MOUNT_PATH} = require('../constants');
-
+const {Shipment, ShipmentStatus} = require('../model');
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
@@ -9,7 +9,6 @@ const {STATUS_MOUNT_PATH, INFO_PATH, LINES_PATH, ORDER_MOUNT_PATH} = require('..
  */
 function ShipmentService(domain, strategy) {
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");
-    const {Shipment, ShipmentStatus} = require('../model');
     const endpoint = 'shipment';
 
     domain = domain || "default";
@@ -144,7 +143,7 @@ function ShipmentService(domain, strategy) {
     /**
      * Creates the original OrderStatus DSU
      * @param {string} id the id for the operation
-     * @param {OrderStatus} [status]: defaults to OrderStatus.CREATED
+     * @param {ShipmentStatus} [status]: defaults to ShipmentStatus.CREATED
      * @param {function(err, keySSI, orderLinesSSI)} callback
      */
     let createShipmentStatus = function (id,status,  callback) {

@@ -1,4 +1,5 @@
 const {generateProductName, generateGtin, validateGtin, calculateGtinCheckSum, generateBatchNumber, generateRandomInt, genDate} = require('../../bin/environment/utils');
+const {isEqual} = require('../../pdm-dsu-toolkit/model/Utils');
 const ShipmentLine = require('./ShipmentLine');
 const Shipment = require('./Shipment');
 const Batch = require('./Batch');
@@ -109,5 +110,6 @@ module.exports ={
     generateBatchNumber,
     generateRandomInt,
     genDate,
-    confirmWithStock
+    confirmWithStock,
+    isEqual
 }

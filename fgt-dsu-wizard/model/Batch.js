@@ -28,6 +28,9 @@ class Batch {
                 if (batch.hasOwnProperty(prop))
                     this[prop] = batch[prop];
 
+        if (this.expiry && typeof this.expiry === 'string')
+            this.expiry = new Date(this.expiry);
+
         if (!this.batchNumber)
             this.batchNumber = Utils.generateSerialNumber(6);
 

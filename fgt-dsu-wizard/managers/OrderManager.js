@@ -87,7 +87,7 @@ class OrderManager extends Manager {
      *
      * @param {string} [key] key is optional so child classes can override them
      * @param {object} newOrder
-     * @param {function(err, object, Archive)} callback
+     * @param {function(err, Order?, Archive?)} callback
      */
     update(key, newOrder, callback){
         if (!callback)

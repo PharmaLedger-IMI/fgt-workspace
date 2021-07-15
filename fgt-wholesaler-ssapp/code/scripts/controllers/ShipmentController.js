@@ -19,6 +19,8 @@ export default class ShipmentController extends LocalizedController{
         const participantManager = wizard.Managers.getParticipantManager();
         this.issuedShipmentManager = wizard.Managers.getIssuedShipmentManager(participantManager);
         this.receivedShipmentManager = wizard.Managers.getReceivedShipmentManager(participantManager);
+        this.issuedShipmentManager.bindController(this);
+        this.receivedShipmentManager.bindController(this);
         this.stockManager = wizard.Managers.getStockManager(participantManager);
         this.shipmentEl = this.element.querySelector('managed-shipment');
 

@@ -1,6 +1,6 @@
 const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const OrderManager = require("./OrderManager");
-const {Order, OrderStatus, ShipmentStatus, Shipment} = require('../model');
+const {Order, OrderStatus, ShipmentStatus} = require('../model');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 
 /**
@@ -72,8 +72,7 @@ class IssuedOrderManager extends OrderManager {
             const sReadSSIStr = sReadSSI.getIdentifier();
             console.log("Order seedSSI="+keySSIStr+" sReadSSI="+sReadSSIStr);
             // storing the sReadSSI in base58
-            const record = keySSIStr;
-            self.insertRecord(super._genCompostKey(order.senderId, order.orderId), self._indexItem(orderId, order, record), (err) => {
+            self.insertRecord(super._genCompostKey(order.senderId, order.orderId), self._indexItem(orderId, order, keySSIStr), (err) => {
                 if (err)
                     return self._err(`Could not insert record with orderId ${orderId} on table ${self.tableName}`, err, callback);
                 const path = `${self.tableName}/${orderId}`;
@@ -81,16 +80,11 @@ class IssuedOrderManager extends OrderManager {
                 // send a message to senderId
                 // TODO send the message before inserting record ? The message gives error if senderId does not exist/not listening.
                 // TODO derive sReadSSI from keySSI
-                const aKey = keySSI.getIdentifier();
                 this.sendMessage(order.senderId, DB.receivedOrders, sReadSSIStr, (err) => {
                     if (err)
                         return self._err(`Could not sent message to ${order.orderId} with ${DB.receivedOrders}`, err, callback);
                     console.log("Message sent to "+order.senderId+", "+DB.receivedOrders+", "+sReadSSIStr);
-                    // self.sendOrderLinesToMAH([...order.orderLines], [...orderLinesSSIs], (err) => {
-                    //     if (err)
-                    //         return self._err(`Could not transmit orderLines to The manufacturers`, err, callback);
-                        callback(undefined, keySSI, path);
-                    // });
+                    callback(undefined, keySSI, path);
                 });
             });
         });
@@ -133,6 +127,19 @@ class IssuedOrderManager extends OrderManager {
         });
     }
 
+    /**
+     *
+     * @param [order]
+     * @override
+     */
+    refreshController(order) {
+        const props = order ? {
+                mode: 'issued',
+                order: order
+            } : undefined;
+        super.refreshController(props);
+    }
+
     updateOrderByShipment(orderId, shipmentSSI, shipment, callback){
         const getOrderStatusByShipment = function(shipmentStatus){
             switch (shipmentStatus){
@@ -143,21 +150,31 @@ class IssuedOrderManager extends OrderManager {
             }
         }
 
+        console.log(`Updating order ${orderId} witj shipment ${shipment.shipmentId}`)
+
         const self = this;
-        this.getOne(this._genCompostKey(shipment.senderId, orderId), (err, order) => {
+        const key = this._genCompostKey(shipment.senderId, orderId);
+        self.getOne(key, true, (err, order) => {
             if (err)
                 return self._err(`Could not load Order`, err, callback);
             order.status = getOrderStatusByShipment(shipment.status);
+            console.log(`Order Status for Issued Order ${key} to be updated to to ${order.status}`);
             order.shipmentSSI = shipmentSSI;
-            self.update(order, (err) => {
+            super.update(key, order, (err) => {
                 if (err)
                     return self._err(`Could not update Order:\n${err.message}`, err, callback);
-                if (order.status !== OrderStatus.CONFIRMED)
+                console.log(`Order Status for Issued Order ${key} updated to ${order.status}`);
+                if (order.status !== OrderStatus.CONFIRMED){
+                    self.refreshController({
+                        mode: 'issued',
+                        order: order
+                    });
                     return callback();
+                }
+
                 Manager.prototype._getDSUInfo.call(self, shipmentSSI, (err, shipment) => {
                     if (err)
                         return self._err(`Could not read shipment info`, err, callback);
-                    shipment = new Shipment(shipment.shipmentId, shipment.requesterId, shipment.senderId, shipment.shipToAddress, shipment.status, shipment.shipmentLines);
 
                     const gtinIterator = function(gtins, batchesObj, callback){
                         const gtin = gtins.shift();
@@ -188,14 +205,21 @@ class IssuedOrderManager extends OrderManager {
                         if (err)
                             return self._err(`Could not update stock info`, err, callback);
                         console.log(`Shipment updated after Stock confirmation`);
+                        self.refreshController();
                         callback();
                     });
-
                 });
             });
         });
     }
 
+    /**
+     * updates an item
+     *
+     * @param {string} [key] key is optional so child classes can override them
+     * @param {Order} order
+     * @param {function(err, Order?, Archive?)} callback
+     */
     update(key, order, callback){
         if (!callback){
             callback = order;
@@ -203,7 +227,23 @@ class IssuedOrderManager extends OrderManager {
             key = this._genCompostKey(order.senderId, order.orderId);
         }
 
-        super.update(key, order, callback);
+        const self = this;
+
+        self.getOne(key, (err, record) => {
+            if (err)
+                return callback(err);
+            super.update(key, order, (err, updatedOrder, dsu) => {
+                if (err)
+                    return callback(err);
+                const sReadSSIStr = utils._getKeySSISpace().parse(record.value).derive().getIdentifier();
+                self.sendMessage(order.senderId, DB.receivedOrders, sReadSSIStr, (err) => {
+                    if (err)
+                        return self._err(`Could not sent message to ${order.orderId} with ${DB.receivedOrders}`, err, callback);
+                    console.log("Message sent to "+order.senderId+", "+DB.receivedOrders+", "+sReadSSIStr);
+                    callback(undefined, updatedOrder, dsu);
+                });
+            });
+        });
     }
 
     /**

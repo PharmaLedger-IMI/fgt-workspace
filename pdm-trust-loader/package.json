@@ -18,7 +18,7 @@
     "ionicons": "^5.5.1",
     "jsdoc": "^3.6.6",
     "markdown-include": "^0.4.3",
-    "workbox-cli": "5.1.4"
+    "workbox-cli": "^6.1.5"
   },
   "license": "MIT"
 }

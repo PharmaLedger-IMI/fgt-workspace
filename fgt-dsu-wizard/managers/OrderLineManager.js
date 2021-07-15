@@ -31,8 +31,7 @@ class OrderLineManager extends Manager {
                 manager.processMessageRecord(message, (err) => {
                     if (err)
                         console.log(`Could not process message: ${err}`);
-                    if (manager.controller)
-                        manager.controller.refresh();
+                    manager.refreshController();
                 });
             });
             if (callback)

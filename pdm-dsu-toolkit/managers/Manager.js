@@ -94,7 +94,7 @@ class Manager{
         }
         this.tableName = tableName;
         this.indexes = indexes;
-        this.controller = undefined;
+        this.controllers = undefined;
         this.getIdentity = baseManager.getIdentity.bind(baseManager);
         this._getResolver = baseManager._getResolver;
         this._getKeySSISpace = baseManager._getKeySSISpace;
@@ -133,13 +133,25 @@ class Manager{
 
     /**
      * Util method to give optional access to the controller for event sending purposes
-     * and UI operations when required eg: refresh the view
-     * @param controller
+     * and UI operations when required eg: refresh the view.
+     *
+     * Accepts multiple calls (with keep the reference to all controllers)
+     * @param {LocalizedController} controller
      */
     bindController(controller){
-        this.controller = controller;
+        this.controllers = this.controllers || [];
+        this.controllers.push(controller);
     }
 
+    /**
+     * Util method to give optional access to the controller to be able to refresh the view
+     * (will call the refresh method on all binded controllers via {@link Manager#bindController})
+     * @param {{}} [props] option props to pass to the controllers refresh method
+     */
+    refreshController(props){
+        if (this.controllers)
+            this.controllers.forEach(c => c.refresh(props));
+    }
 
     /**
      * Should be called by child classes if then need to index the table.
@@ -731,8 +743,6 @@ class Manager{
         this.getStorage().insertRecord(tableName, key, record, (err) => {
             if (err)
                 return self._err(`Could not insert record with key ${key} in table ${tableName}`, err, callback);
-            if (!self.indexes)
-                return callback(undefined);
             callback(undefined);
         });
     }

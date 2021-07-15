@@ -23,6 +23,7 @@ export default class OrderController extends LocalizedController {
 
         const participantManager = wizard.Managers.getParticipantManager();
         self.issuedOrderManager = wizard.Managers.getIssuedOrderManager(participantManager);
+        self.issuedOrderManager.bindController(self);
         self.orderEl = self.querySelector('managed-order');
 
         self.on(EVENT_REFRESH, (evt) => {

@@ -1,4 +1,4 @@
-const utils = require('../../pdm-dsu-toolkit/services/utils');
+const Utils = require('../../pdm-dsu-toolkit/services/utils');
 const {STATUS_MOUNT_PATH, INFO_PATH, SHIPMENT_PATH} = require('../constants');
 
 /**
@@ -9,7 +9,7 @@ const {STATUS_MOUNT_PATH, INFO_PATH, SHIPMENT_PATH} = require('../constants');
  */
 function OrderService(domain, strategy) {
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");
-    const {Order, OrderStatus} = require('../model');
+    const {Order, OrderStatus, utils} = require('../model');
     const endpoint = 'order';
 
     domain = domain || "default";
@@ -22,7 +22,7 @@ function OrderService(domain, strategy) {
     this.resolveMAH = function(orderLine, callback){
         const keyGen = require('../commands/setProductSSI').createProductSSI;
         const productSSI = keyGen({gtin: orderLine.gtin}, domain);
-        utils.getResolver().loadDSU(productSSI, (err, dsu) => {
+        Utils.getResolver().loadDSU(productSSI, (err, dsu) => {
             if (err)
                 return callback(`Could not load Product DSU ${err}`);
             dsu.readFile(INFO_PATH, (err, data) => {
@@ -45,7 +45,7 @@ function OrderService(domain, strategy) {
      * @param {function(err, Order?, Archive?)} callback
      */
     this.get = function(keySSI, callback){
-        utils.getResolver().loadDSU(keySSI, (err, dsu) => {
+        Utils.getResolver().loadDSU(keySSI, (err, dsu) => {
             if (err)
                 return callback(err);
             dsu.readFile(INFO_PATH, (err, data) => {
@@ -105,6 +105,16 @@ function OrderService(domain, strategy) {
         }
     }
 
+    const validateUpdate = function(orderFromSSI, updatedOrder, callback){
+        if (!(utils.isEqual(orderFromSSI, updatedOrder, "status", "orderLines")
+            && orderFromSSI.orderLines.every((ol, i) => {
+                const updated = updatedOrder.orderLines[i];
+                return utils.isEqual(ol, updated, "status") && updated.status === updatedOrder.status;
+            })))
+            return callback('invalid update');
+        return callback();
+    }
+
     /**
      * updates an order DSU
      * @param {KeySSI} keySSI
@@ -120,27 +130,30 @@ function OrderService(domain, strategy) {
                 return callback(err);
         }
 
-        utils.getResolver().loadDSU(keySSI, (err, orderDsu) => {
+        self.get(keySSI, (err, orderFromSSI, orderDsu) => {
             if (err)
                 return callback(err);
-
-            utils.getMounts(orderDsu, '/', STATUS_MOUNT_PATH, SHIPMENT_PATH, (err, mounts) => {
+            validateUpdate(orderFromSSI, order, (err) => {
                 if (err)
                     return callback(err);
-                if (!mounts[STATUS_MOUNT_PATH])
-                    return callback(`Could not find status mount`);
-                statusService.update(mounts[STATUS_MOUNT_PATH], order.status, order.requesterId, (err) => {
+                Utils.getMounts(orderDsu, '/', STATUS_MOUNT_PATH, SHIPMENT_PATH, (err, mounts) => {
                     if (err)
                         return callback(err);
+                    if (!mounts[STATUS_MOUNT_PATH])
+                        return callback(`Could not find status mount`);
+                    statusService.update(mounts[STATUS_MOUNT_PATH], order.status, order.requesterId, (err) => {
+                        if (err)
+                            return callback(err);
 
-                    if (!mounts[SHIPMENT_PATH] && order.shipmentSSI)
-                        orderDsu.mount(SHIPMENT_PATH, order.shipmentSSI, (err) => {
-                            if (err)
-                                return callback(err);
+                        if (!mounts[SHIPMENT_PATH] && order.shipmentSSI)
+                            orderDsu.mount(SHIPMENT_PATH, order.shipmentSSI, (err) => {
+                                if (err)
+                                    return callback(err);
+                                self.get(keySSI, callback);
+                            });
+                        else
                             self.get(keySSI, callback);
-                        });
-                    else
-                        self.get(keySSI, callback);
+                    });
                 });
             });
         });
@@ -168,7 +181,7 @@ function OrderService(domain, strategy) {
     let createSimple = function (order, callback) {
         let keyGenFunction = require('../commands/setOrderSSI').createOrderSSI;
         let templateKeySSI = keyGenFunction({data: order.orderId + order.requesterId}, domain);
-        utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
+        Utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);
             dsu.writeFile(INFO_PATH, JSON.stringify(order), (err) => {
@@ -214,7 +227,7 @@ function OrderService(domain, strategy) {
             }
         }
 
-        utils.getDSUService().create(domain, getEndpointData(order), (builder, cb) => {
+        Utils.getDSUService().create(domain, getEndpointData(order), (builder, cb) => {
             builder.addFileDataToDossier(INFO_PATH, JSON.stringify(order), (err) => {
                 if (err)
                     return cb(err);

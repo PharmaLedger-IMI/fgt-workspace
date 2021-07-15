@@ -40,8 +40,7 @@ class ReceivedShipmentManager extends ShipmentManager {
                     manager.processMessageRecord(message, (err) => {
                         if (err)
                             console.log(`Could not process message: ${err}`);
-                        if (manager.controller)
-                            manager.controller.refresh();
+                        manager.refreshController();
                     });
                 });
 
@@ -171,7 +170,7 @@ class ReceivedShipmentManager extends ShipmentManager {
                 }
                 console.log(`Updating ReceivedShipment`, shipmentObj)
                 self.updateRecord(shipmentKey, self._indexItem(shipmentKey, shipmentObj, message), cb);
-            })
+            });
         });
     };
 
