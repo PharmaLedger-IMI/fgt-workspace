@@ -51,36 +51,36 @@ function OrderService(domain, strategy) {
             dsu.readFile(INFO_PATH, (err, data) => {
                 if (err)
                     return callback(err);
+                let order;
                 try {
-                    let order = JSON.parse(data);
-                    order = new Order(order.orderId, order.requesterId, order.senderId, order.shipToAddress, order.status, order.orderLines);
-                    dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
-                        if (err)
-                            return callback(`could not retrieve orderLine status`);
-                        try {
-                            order.status = JSON.parse(status);
-                        } catch (e) {
-                            return callback(`unable to parse Order status: ${status}`);
-                        }
-                        if (order.status === OrderStatus.CREATED)
-                            return callback(undefined, order, dsu);
-                        dsu.readFile(`${SHIPMENT_PATH}${INFO_PATH}`, (err, data) => {
-                            if (err || !data)
-                                return callback(undefined, order, dsu);
-                            let shipment;
-                            try {
-                                shipment = JSON.parse(data);
-                            } catch (e) {
-                                return callback(e);
-                            }
-                            order.shipmentId = shipment.shipmentId;
-                            callback(undefined, order, dsu);
-                        });
-
-                    });
+                    order = JSON.parse(data);
                 } catch (e) {
                     return callback(`Could not parse order in DSU ${keySSI.getIdentifier()}`);
                 }
+                order = new Order(order.orderId, order.requesterId, order.senderId, order.shipToAddress, order.status, order.orderLines);
+                dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
+                    if (err)
+                        return callback(`could not retrieve orderLine status`);
+                    try {
+                        order.status = JSON.parse(status);
+                    } catch (e) {
+                        return callback(`unable to parse Order status: ${status}`);
+                    }
+                    if (order.status === OrderStatus.CREATED)
+                        return callback(undefined, order, dsu);
+                    dsu.readFile(`${SHIPMENT_PATH}${INFO_PATH}`, (err, data) => {
+                        if (err || !data)
+                            return callback(undefined, order, dsu);
+                        let shipment;
+                        try {
+                            shipment = JSON.parse(data);
+                        } catch (e) {
+                            return callback(e);
+                        }
+                        order.shipmentId = shipment.shipmentId;
+                        callback(undefined, order, dsu);
+                    });
+                });
             });
         });
     }
