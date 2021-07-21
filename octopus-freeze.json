@@ -2,6 +2,21 @@
     "workDir": ".",
     "dependencies": [
         {
+            "name": "privatesky",
+            "src": "http://github.com/privatesky/privatesky.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd privatesky && npm install"
+                }
+            ]
+        },
+        {
             "name": "cardinal",
             "src": "http://github.com/privatesky/cardinal.git",
             "actions": [
@@ -18,22 +33,6 @@
                 {
                     "type": "execute",
                     "cmd": "cd cardinal && npm run build"
-                }
-            ]
-        },
-        {
-            "name": "privatesky",
-            "src": "http://github.com/privatesky/psk-release.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "4628c4b4834281a45b9e54af9a6fd28e8a2cac09"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd privatesky && npm install"
                 }
             ]
         },
@@ -809,9 +808,3 @@
         }
     ]
 }
-
-
-
-
-
-

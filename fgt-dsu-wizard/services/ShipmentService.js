@@ -73,19 +73,18 @@ function ShipmentService(domain, strategy) {
                     return callback(`Could not parse shipment in DSU ${keySSI.getIdentifier()}`);
                 }
 
-                shipment = new Shipment(shipment.shipmentId, shipment.requesterId, shipment.senderId, shipment.shipToAddress, shipment.status, shipment.shipmentLines)
-                dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
+                shipment = new Shipment(shipment.shipmentId, shipment.requesterId, shipment.senderId, shipment.shipToAddress, shipment.status, shipment.shipmentLines);
+
+                utils.getMounts(dsu, '/', STATUS_MOUNT_PATH, ORDER_MOUNT_PATH, (err, mounts) => {
                     if (err)
-                        return callback(`could not retrieve shipment status`);
-                    try{
-                        shipment.status = JSON.parse(status);
-                    } catch (e) {
-                        return callback(`unable to parse shipment status: ${status}`);
-                    }
-                    getDSUMountByPath(dsu, ORDER_MOUNT_PATH, (err, identifier) => {
+                        return callback(err);
+                    if (!mounts[STATUS_MOUNT_PATH] || !mounts[ORDER_MOUNT_PATH])
+                        return callback(`Could not find status/order mount`);
+                    statusService.get(mounts[STATUS_MOUNT_PATH], (err, status) => {
                         if (err)
                             return callback(err);
-                        shipment.orderSSI = identifier;
+                        shipment.status = status;
+                        shipment.orderSSI = mounts[ORDER_MOUNT_PATH];
                         dsu.readFile(`${ORDER_MOUNT_PATH}${INFO_PATH}`, (err, order) => {
                             if (err)
                                 return callback(`Could not read from order DSU`);
@@ -106,11 +105,10 @@ function ShipmentService(domain, strategy) {
                                     return callback(e);
                                 }
                                 callback(undefined, shipment, dsu, orderId, linesSSI);
-                            })
+                            });
                         });
                     });
                 });
-
             });
         });
     }
