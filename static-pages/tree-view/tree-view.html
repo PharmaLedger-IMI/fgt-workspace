@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" class="md">
+<head>
+    <meta charset="UTF-8">
+    <title>Pharma Ledger</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css"/>
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.js"></script>
+
+    <link rel="stylesheet" href="./../src/assets/css/styles.css"/>
+    <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+<ion-app>
+
+    <ion-content>
+        <ion-header class="ion-no-border ion-padding ion-margin-bottom">
+            <ion-grid>
+                <ion-row>
+                    <ion-col size="1" class="ion-text-center">
+                        <img src="./../src/assets/images/logo.svg" alt="">
+                    </ion-col>
+
+                    <ion-col>
+                        <ion-row class="ion-justify-content-between">
+                            <div class="flex flex-col ion-padding-start top-bar-text">
+                                Marketing Authorization Holder
+                                <span>MAH790845312</span>
+                            </div>
+
+                            <ion-button fill="clear" color="secondary">
+                                Logout
+                                <ion-icon slot="end" name="log-out" class="ion-margin-start"></ion-icon>
+                            </ion-button>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-header>
+
+
+        <ion-grid class="ion-padding">
+            <ion-row>
+                <ion-col size="1">
+                    <ion-list lines="none">
+                        <ion-item>
+                            <ion-label class="ion-text-center">
+                                <ion-button fill="clear" color="medium" slot="icon-only" size="large">
+                                    <ion-icon name="grid"></ion-icon>
+                                </ion-button>
+                            </ion-label>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label class="ion-text-center">
+                                <ion-button fill="clear" color="secondary" slot="icon-only" size="large">
+                                    <ion-icon name="layers"></ion-icon>
+                                </ion-button>
+                            </ion-label>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label class="ion-text-center">
+                                <ion-button fill="clear" color="medium" slot="icon-only" size="large">
+                                    <ion-icon name="cart"></ion-icon>
+                                </ion-button>
+                            </ion-label>
+                        </ion-item>
+                    </ion-list>
+                </ion-col>
+
+                <ion-col>
+                    <div class="ion-margin-bottom ion-padding-horizontal">
+                        <ion-row class="ion-align-items-center ion-justify-content-between">
+                            <div class="flex ion-align-items-center">
+                                <ion-icon name="layers" size="large" color="medium"></ion-icon>
+                                <div class="ion-text-uppercase ion-padding-start ion-color-secondary">
+                                    Add product
+                                </div>
+                            </div>
+
+                            <ion-row class="ion-align-items-center">
+                                <ion-button color="secondary" fill="clear" class="ion-margin-start">
+                                    <ion-icon slot="start" name="return-up-back" class="ion-margin-end"></ion-icon>
+                                    Back to products
+                                </ion-button>
+                            </ion-row>
+                        </ion-row>
+                    </div>
+
+                    <ion-card class="ion-padding ion-margin">
+                        <div class="tree-view">
+                            <ul>
+                                <li>
+                    
+                                    <div class="tree-view__starting-point">
+                                        <div class="pin"></div>
+                                        <div class="tree-view__infor">
+                                            <h4 class="tree-view__title">Initial title</h4>
+                                            <p class="tree-view__subtitle">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam, quaerat.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <ul>
+                                        <li><a href="#" data-title="Add the description for the box content here."><img src="images/box.svg" alt=""></a>
+                                            <ul>
+                                                <li><a href="#" data-title="Add the description for the box content here."><img src="images/box.svg" alt=""><span></span></a>
+                                                    <ul>
+                                                        <li class="horizontal-line"><a href="#" data-title="Add the description for the box content here."><img src="images/box.svg" alt=""></a><span></span></li>
+                                                        <li><a href="#" data-title="Add the description for the box content here."><img src="images/box.svg" alt=""></a></li>
+                                                    </ul>
+                                                </li>
+                                                <li><a href="#" data-title="Add the description for the box content here."><img src="images/box.svg" alt=""></a>
+                                                    <ul>
+                                                        <li class="horizontal-line"><a href="#" data-title="Add the description for the box content here."><img src="images/box.svg" alt=""></a><span></span></li>
+                                                        <li><a href="#" data-title="Add the description for the box content here."><img src="images/box.svg" alt=""></a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </ion-card>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ion-content>
+</ion-app>
+</body>
+</html>
