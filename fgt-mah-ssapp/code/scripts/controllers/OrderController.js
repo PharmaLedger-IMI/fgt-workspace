@@ -19,7 +19,7 @@ export default class OrderController extends LocalizedController {
 
         const wizard = require('wizard');
         const {Order} = wizard.Model;
-        self._updateStatuses(Order)
+        self._updateStatuses(Order);
 
         const participantManager = wizard.Managers.getParticipantManager();
         self.issuedOrderManager = wizard.Managers.getIssuedOrderManager(participantManager);

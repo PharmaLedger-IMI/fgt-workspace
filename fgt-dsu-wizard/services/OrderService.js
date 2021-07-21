@@ -106,11 +106,7 @@ function OrderService(domain, strategy) {
     }
 
     const validateUpdate = function(orderFromSSI, updatedOrder, callback){
-        if (!(utils.isEqual(orderFromSSI, updatedOrder, "status", "orderLines")
-            && orderFromSSI.orderLines.every((ol, i) => {
-                const updated = updatedOrder.orderLines[i];
-                return utils.isEqual(ol, updated, "status") && updated.status === updatedOrder.status;
-            })))
+        if (!utils.isEqual(orderFromSSI, updatedOrder, "status", "orderLines", "shipmentSSI"))
             return callback('invalid update');
         return callback();
     }

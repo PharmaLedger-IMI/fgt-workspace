@@ -19,8 +19,8 @@ const isEqual = (a, b,...propsToIgnore) => {
     if (!a || !b || (typeof a !== 'object' && typeof b !== 'object')) return a === b;
     if (a === null || a === undefined || b === null || b === undefined) return false;
     if (a.prototype !== b.prototype) return false;
-    let keys = Object.keys(a);
-    if (keys.length !== Object.keys(b).length) return false;
+    let keys = Object.keys(a).filter(k => propsToIgnore.indexOf(k) === -1);
+    if (keys.length !== Object.keys(b).filter(k => propsToIgnore.indexOf(k) === -1).length) return false;
     return keys.every(k => propsToIgnore.indexOf(k) !== -1 || isEqual(a[k], b[k], ...propsToIgnore));
 };
 

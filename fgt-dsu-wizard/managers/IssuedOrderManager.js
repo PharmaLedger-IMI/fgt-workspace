@@ -165,10 +165,7 @@ class IssuedOrderManager extends OrderManager {
                     return self._err(`Could not update Order:\n${err.message}`, err, callback);
                 console.log(`Order Status for Issued Order ${key} updated to ${order.status}`);
                 if (order.status !== OrderStatus.CONFIRMED){
-                    self.refreshController({
-                        mode: 'issued',
-                        order: order
-                    });
+                    self.refreshController(order);
                     return callback();
                 }
 
