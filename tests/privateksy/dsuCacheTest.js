@@ -85,8 +85,14 @@ const updateMockOrderDSU = function(shipmentSSI, orderSSI, callback){
         orderDSU.listMountedDSUs('/', (err, mounts) => {
             if (err)
                 return callback(err);
+
+            mounts = mounts.reduce((accum, m) => {
+                accum[m.path] = m.identifier;
+                return accum;
+            }, {});
+
             if (mounts[SHIPMENT_PATH.substring(1)]) {
-                if (mounts[SHIPMENT_PATH.substring(1)].identifier !== shipmentSSI)
+                if (mounts[SHIPMENT_PATH.substring(1)] !== shipmentSSI)
                     return callback(`KeySIS do not match/already existing`);
                 return callback();
             }
@@ -127,7 +133,7 @@ const testStatus = function(orderSSI, expectedStatus, callback){
             } catch (e) {
                 return callback(e);
             }
-            console.log(`Order DSU. status ${orderStatus}`);
+            console.log(`Order DSU. status ${orderStatus} vs ${expectedStatus}`);
             try {
                 assert.true(expectedStatus === orderStatus);
             } catch (e) {

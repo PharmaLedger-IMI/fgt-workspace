@@ -72,7 +72,6 @@ const updateShipmentStatus = function(shipmentSSI, newStatus, callback){
             if (err)
                 return callback(err);
 
-
             mounts = mounts.reduce((accum, m) => {
                 accum[m.path] = m.identifier;
                 return accum;
@@ -85,7 +84,7 @@ const updateShipmentStatus = function(shipmentSSI, newStatus, callback){
             let keySSI;
             try {
                 console.log(`Identifier to be parsed: ${mounts[STATUS_PATH.substring(1)]}`)
-                keySSI = keyssi.parse(mounts[STATUS_PATH.substring(1)].identifier);
+                keySSI = keyssi.parse(mounts[STATUS_PATH.substring(1)]);
             } catch (e) {
                 return callback(e.message);
             }
