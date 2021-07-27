@@ -2,6 +2,7 @@ const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const OrderManager = require("./OrderManager");
 const {Order, OrderStatus, ShipmentStatus} = require('../model');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
+const utils = require('../services').utils
 
 /**
  * Issued Order Manager Class - concrete OrderManager for issuedOrders.
@@ -226,21 +227,25 @@ class IssuedOrderManager extends OrderManager {
 
         const self = this;
 
-        self.getOne(key, (err, record) => {
+        self.getOne(key, false,(err, record) => {
             if (err)
                 return callback(err);
             super.update(key, order, (err, updatedOrder, dsu) => {
                 if (err)
                     return callback(err);
-                const sReadSSIStr = utils._getKeySSISpace().parse(record.value).derive().getIdentifier();
-                self.sendMessage(order.senderId, DB.receivedOrders, sReadSSIStr, (err) => {
-                    if (err)
-                        return self._err(`Could not sent message to ${order.orderId} with ${DB.receivedOrders}`, err, callback);
-                    console.log("Message sent to "+order.senderId+", "+DB.receivedOrders+", "+sReadSSIStr);
-                    callback(undefined, updatedOrder, dsu);
-                });
+                const sReadSSIStr = utils.getKeySSISpace().parse(record).derive().getIdentifier();
+                self.sendMessagesAsync(order, sReadSSIStr);
+                callback(undefined, updatedOrder, dsu);
             });
         });
+    }
+
+    sendMessagesAsync(order, orderSSI){
+        const self = this;
+        self.sendMessage(order.senderId, DB.receivedOrders, orderSSI, (err) =>
+            self._messageCallback(err ?
+                `Could not sent message to ${order.orderId} with ${DB.receivedOrders}` :
+                "Message sent to "+order.senderId+", "+DB.receivedOrders+", "+orderSSI));
     }
 
     /**

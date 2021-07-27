@@ -42,7 +42,7 @@ function OrderService(domain, strategy) {
     /**
      * Resolves the DSU and loads the Order object with all its properties, mutable or not
      * @param {KeySSI} keySSI
-     * @param {function(err, Order?, Archive?)} callback
+     * @param {function(err?, Order?, Archive?, KeySSI?)} callback
      */
     this.get = function(keySSI, callback){
         Utils.getResolver().loadDSU(keySSI, (err, dsu) => {
@@ -55,7 +55,7 @@ function OrderService(domain, strategy) {
                 try {
                     order = JSON.parse(data);
                 } catch (e) {
-                    return callback(`Could not parse order in DSU ${keySSI.getIdentifier()}`);
+                    return callback(`Could not parse order in DSU ${keySSI}`);
                 }
                 order = new Order(order.orderId, order.requesterId, order.senderId, order.shipToAddress, order.status, order.orderLines);
                 dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
@@ -67,7 +67,7 @@ function OrderService(domain, strategy) {
                         return callback(`unable to parse Order status: ${status}`);
                     }
                     if (order.status === OrderStatus.CREATED)
-                        return callback(undefined, order, dsu);
+                        return callback(undefined, order, dsu, keySSI);
                     dsu.readFile(`${SHIPMENT_PATH}${INFO_PATH}`, (err, data) => {
                         if (err || !data)
                             return callback(undefined, order, dsu);
@@ -78,7 +78,7 @@ function OrderService(domain, strategy) {
                             return callback(e);
                         }
                         order.shipmentId = shipment.shipmentId;
-                        callback(undefined, order, dsu);
+                        callback(undefined, order, dsu, keySSI);
                     });
                 });
             });

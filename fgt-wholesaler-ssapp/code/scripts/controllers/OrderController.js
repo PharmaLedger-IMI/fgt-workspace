@@ -26,6 +26,8 @@ export default class OrderController extends LocalizedController {
         self.issuedOrderManager.bindController(self);
         self.orderEl = self.querySelector('managed-order');
 
+        self.orderEl.updateDirectory();
+
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
@@ -45,10 +47,6 @@ export default class OrderController extends LocalizedController {
                 self.model.orderLines = JSON.stringify(state && state.orderLines ? [...state.orderLines] : []);
             }
         });
-
-        self.on(EVENT_SSAPP_HAS_LOADED, async () => {
-            await self.orderEl.updateDirectory();
-        }, {capture: true});
 
         self.on(EVENT_ACTION, async (evt) => {
             evt.preventDefault();

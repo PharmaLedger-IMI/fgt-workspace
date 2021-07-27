@@ -278,10 +278,8 @@ function ShipmentService(domain, strategy) {
                     if (!mounts[STATUS_MOUNT_PATH])
                         return callback(`Could not find status mount`);
                     dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
-                        if (err){
-                            console.log(err.stack)
+                        if (err)
                             return callback(err);
-                        }
 
                         try{
                             status = JSON.parse(status);

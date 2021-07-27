@@ -48,7 +48,7 @@ class OrderManager extends Manager {
     /**
      * Util function that loads a OrderDSU and reads its information
      * @param {string|KeySSI} keySSI
-     * @param {function(err, Order, Archive)} callback
+     * @param {function(err, Order, Archive, KeySSI)} callback
      * @protected
      * @override
      */

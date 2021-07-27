@@ -98,7 +98,7 @@ class IssuedShipmentManager extends ShipmentManager {
             const receivedOrderManager = getReceivedOrderManager(self.participantManager);
                 const receivedOrderKey = receivedOrderManager._genCompostKey(shipment.requesterId, orderId);
 
-            receivedOrderManager.getOne(receivedOrderKey, false, (err, orderSSI) => {
+            receivedOrderManager.getOne(receivedOrderKey, true, (err, order, orderDSU, orderSSI) => {
                 if (err)
                     return self._err(`Could not retrieve received order ${orderId}`, err, callback);
                 self.shipmentService.create(shipment, orderSSI, (err, keySSI, shipmentLinesSSIs) => {
@@ -115,6 +115,15 @@ class IssuedShipmentManager extends ShipmentManager {
                         self.sendMessagesAsync(shipment, shipmentLinesSSIs, aKey);
                         callback(undefined, keySSI, path);
                     });
+                    // order.shipmentId = shipment.shipmentId;
+                    // receivedOrderManager.update(receivedOrderKey, order, (err) => {
+                    //     if (err)
+                    //         return self._err(`Could not update Order with shipment Id`, err, callback);
+                    //     console.log(`Order updated with shipment Id ${shipment.shipmentId}`);
+                    //     const aKey = keySSI.getIdentifier();
+                    //     self.sendMessagesAsync(shipment, shipmentLinesSSIs, aKey);
+                    //     callback(undefined, keySSI, path);
+                    // });
                 });
             });
         }
@@ -247,6 +256,32 @@ class IssuedShipmentManager extends ShipmentManager {
                 console.log(e);
             }
             callback(undefined, updatedShipment, keySSI);
+        });
+    }
+
+    updateByOrder(shipmentId, order, callback){
+        const shipmentKey = this._genCompostKey(order.requesterId, shipmentId);
+        const self = this;
+        self.getOne(shipmentKey, false, (err, record) => {
+            if (err)
+                return self._err(`Could not get Shipment to update`, err, callback);
+            self._getDSUInfo(record, (err, shipment) => {
+                if (err)
+                    return self._err(`Unable to read shipment DSU`, err, callback);
+                shipment.status = order.status
+                self.shipmentService.update(record, shipment, (err, updatedShipment) => {
+                    if (err)
+                        return self._err(`Could not update shipment dsu`, err, callback);
+                    self.updateRecord(shipmentKey, self._indexItem(shipmentKey, updatedShipment, record), (err) => {
+                        if (err)
+                            return self._err(`Could not update shipment record`, err, callback);
+                        self.refreshController({
+                            mode: 'issued',
+                            shipment: updatedShipment
+                        });
+                    });
+                });
+            });
         });
     }
 }

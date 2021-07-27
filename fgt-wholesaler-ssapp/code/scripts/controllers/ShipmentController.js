@@ -26,6 +26,8 @@ export default class ShipmentController extends LocalizedController{
 
         let self = this;
 
+        self.shipmentEl.updateDirectory();
+
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
@@ -51,10 +53,6 @@ export default class ShipmentController extends LocalizedController{
                 self.mode = 'issued';
                 self.order = '{}';
             }
-        }, {capture: true});
-
-        self.on(EVENT_SSAPP_HAS_LOADED, async () => {
-            await self.shipmentEl.updateDirectory();
         }, {capture: true});
 
         self.on(EVENT_ACTION, async (evt) => {

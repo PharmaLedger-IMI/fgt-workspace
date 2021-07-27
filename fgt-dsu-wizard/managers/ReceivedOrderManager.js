@@ -39,6 +39,7 @@ class ReceivedOrderManager extends OrderManager {
                 callback(undefined, manager);
         });
         this.stockManager = getStockManager(participantManager);
+        this.participantManager = participantManager;
     }
 
 
@@ -137,7 +138,27 @@ class ReceivedOrderManager extends OrderManager {
             if (!orderId)
                 return callback("ReceivedOrder doest not have an orderId. Skipping record.");
 
-            self.insertRecord(self._genCompostKey(orderObj.requesterId, orderId), self._indexItem(orderId, orderObj, orderSReadSSIStr), callback);
+            const dbKey = self._genCompostKey(orderObj.requesterId, orderId);
+
+            self.getOne(dbKey,  false, (err, record) => {
+                if (err){
+                    console.log(`Received new Order: `, orderObj);
+                    return self.insertRecord(dbKey, self._indexItem(orderId, orderObj, orderSReadSSIStr), callback);
+                }
+                console.log(`Updating order`)
+                self.updateRecord(dbKey, self._indexItem(orderId, orderObj, orderSReadSSIStr), (err) => {
+                    if (err)
+                        return self._err(`Could not update order`, err, callback);
+                    if (!orderObj.shipmentId)
+                        return callback(`Missing shipment Id`);
+                    const getIssuedShipmentManager = require('./IssuedShipmentManager');
+                    getIssuedShipmentManager(self.participantManager, (err, issuedShipmentManager) => {
+                        if (err)
+                            return self._err(`could not get issued shipment manager`, err, callback);
+                        issuedShipmentManager.updateByOrder(orderObj.shipmentId, orderObj, callback);
+                    });
+                });
+            });
         });
     };
 }
