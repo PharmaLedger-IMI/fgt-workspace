@@ -211,7 +211,7 @@ const ManagedOrder = class {
     this.sendAction.emit({
       action: evt.detail,
       props: {
-        order: this.order,
+        order: new Order(this.order.orderId, this.order.requesterId, this.order.senderId, this.order.shipToAddress, this.order.status, this.order.orderLines.slice()),
         newStatus: evt.detail
       }
     });

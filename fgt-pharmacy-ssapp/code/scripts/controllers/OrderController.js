@@ -19,12 +19,14 @@ export default class OrderController extends LocalizedController {
 
         const wizard = require('wizard');
         const {Order} = wizard.Model;
-        self._updateStatuses(Order)
+        self._updateStatuses(Order);
 
         const participantManager = wizard.Managers.getParticipantManager();
         self.issuedOrderManager = wizard.Managers.getIssuedOrderManager(participantManager);
         self.issuedOrderManager.bindController(self);
         self.orderEl = self.querySelector('managed-order');
+
+        self.orderEl.updateDirectory();
 
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
@@ -45,10 +47,6 @@ export default class OrderController extends LocalizedController {
                 self.model.orderLines = JSON.stringify(state && state.orderLines ? [...state.orderLines] : []);
             }
         });
-
-        self.on(EVENT_SSAPP_HAS_LOADED, async () => {
-            await self.orderEl.updateDirectory();
-        }, {capture: true});
 
         self.on(EVENT_ACTION, async (evt) => {
             evt.preventDefault();

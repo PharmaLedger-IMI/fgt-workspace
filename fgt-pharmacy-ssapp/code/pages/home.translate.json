@@ -74,8 +74,11 @@
     },
     "manage": {
       "title": "Manage Shipment",
+      "status": "Shipment Status:",
+      "update": "Update Shipment Status:",
+      "no-update": "The Shipment Status Cannot be Updated.",
       "confirm": {
-        "message": "Please confirm Shipment update",
+        "message": "Please confirm Shipment status update from {0} to {1}",
         "buttons": {
           "ok": "Confirm",
           "cancel": "Cancel"
@@ -104,7 +107,57 @@
     "back": "Back",
     "status": "Shipment Status:",
     "scan": "Scan Product",
-    "scan-code": "Scan Shipment Code"
+    "scan-code": "Scan Shipment Code",
+    "statuses": {
+      "created": {
+        "action": "Create Shipment",
+        "label": "Created",
+        "color": "success",
+        "paths": []
+      },
+      "rejected": {
+        "action": "Reject Shipment",
+        "label": "Rejected",
+        "color": "danger",
+        "paths": []
+      },
+      "hold": {
+        "action": "Mark as 'On Hold'",
+        "label": "On Hold",
+        "color": "warning",
+        "paths": []
+      },
+      "pickup": {
+        "action": "Mark as 'For Pickup'",
+        "label": "For Pickup",
+        "color": "secondary",
+        "paths": []
+      },
+      "transit": {
+        "action": "Mark as 'In Transit'",
+        "label": "In Transit",
+        "color": "primary",
+        "paths": []
+      },
+      "delivered": {
+        "action": "Deliver Shipment",
+        "label": "Delivered",
+        "color": "tertiary",
+        "paths": []
+      },
+      "received": {
+        "action": "Receive Shipment",
+        "label": "Received",
+        "color": "tertiary",
+        "paths": []
+      },
+      "confirmed": {
+        "action": "Confirm Shipment",
+        "label": "Confirmed",
+        "color": "success",
+        "paths": []
+      }
+    }
   },
   "order": {
     "create": {
@@ -137,8 +190,10 @@
     "manage": {
       "title": "Manage Order",
       "status": "Order Status:",
+      "update": "Update Order Status:",
+      "no-update": "The Order Status Cannot be Updated.",
       "confirm": {
-        "message": "Please confirm Order update",
+        "message": "Please confirm Order status update from {0} to {1}",
         "buttons": {
           "ok": "Confirm",
           "cancel": "Cancel"
@@ -153,7 +208,63 @@
       }
     },
     "back": "Back to Orders",
-    "scan": "Scan Product"
+    "scan": "Scan Product",
+    "statuses": {
+      "created": {
+        "action": "Create Shipment",
+        "label": "Created",
+        "color": "secondary",
+        "paths": []
+      },
+      "acknowledged": {
+        "action": "Acknowledge Shipment",
+        "label": "Acknowledged",
+        "color": "success",
+        "paths": []
+      },
+      "rejected": {
+        "action": "Reject Shipment",
+        "label": "Rejected",
+        "color": "danger",
+        "paths": []
+      },
+      "hold": {
+        "action": "Mark as 'On Hold'",
+        "label": "On Hold",
+        "color": "warning",
+        "paths": []
+      },
+      "pickup": {
+        "action": "Mark as 'For Pickup'",
+        "label": "For Pickup",
+        "color": "secondary",
+        "paths": []
+      },
+      "transit": {
+        "action": "Mark as 'In Transit'",
+        "label": "In Transit",
+        "color": "primary",
+        "paths": []
+      },
+      "delivered": {
+        "action": "Deliver Shipment",
+        "label": "Delivered",
+        "color": "tertiary",
+        "paths": []
+      },
+      "received": {
+        "action": "Receive Shipment",
+        "label": "Received",
+        "color": "tertiary",
+        "paths": []
+      },
+      "confirmed": {
+        "action": "Confirm Shipment",
+        "label": "Confirmed",
+        "color": "success",
+        "paths": []
+      }
+    }
   },
   "stock": {
     "title": "Stocks",

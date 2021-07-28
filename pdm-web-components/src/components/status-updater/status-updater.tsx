@@ -18,7 +18,7 @@ export class StatusUpdater {
   @Event()
   statusUpdateEvent: EventEmitter<string>;
 
-  @Prop({attribute: "current-state", mutable: true, reflect: true}) currentState: string;
+  @Prop({attribute: "current-state", mutable: true}) currentState: string;
 
   @Prop({attribute: "state-json"}) statesJSON: any;
 
