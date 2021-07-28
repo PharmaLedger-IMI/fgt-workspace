@@ -83,7 +83,7 @@ export default class OrderController extends LocalizedController {
         if (errors)
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
 
-        const alert = await self.showConfirm('manage.confirm', order.status, newStatus);
+        const alert = await self.showConfirm('manage.confirm', oldStatus, newStatus);
 
         const {role} = await alert.onDidDismiss();
 
@@ -144,8 +144,8 @@ export default class OrderController extends LocalizedController {
         });
     }
 
-    async showConfirm(action = 'create.confirm'){
-        return super.showConfirm(this.translate(`${action}.message`),
+    async showConfirm(action = 'create.confirm', ...args){
+        return super.showConfirm(this.translate(`${action}.message`, ...args),
             this.translate(`${action}.buttons.ok`),
             this.translate(`${action}.buttons.cancel`));
     }

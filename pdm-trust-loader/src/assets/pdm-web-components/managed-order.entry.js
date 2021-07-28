@@ -208,10 +208,12 @@ const ManagedOrder = class {
   async update(evt) {
     evt.preventDefault();
     evt.stopImmediatePropagation();
+    const order = new Order(this.order.orderId, this.order.requesterId, this.order.senderId, this.order.shipToAddress, this.order.status, this.order.orderLines.slice());
+    order.shipmentId = this.order.shipmentId;
     this.sendAction.emit({
       action: evt.detail,
       props: {
-        order: new Order(this.order.orderId, this.order.requesterId, this.order.senderId, this.order.shipToAddress, this.order.status, this.order.orderLines.slice()),
+        order: order,
         newStatus: evt.detail
       }
     });
