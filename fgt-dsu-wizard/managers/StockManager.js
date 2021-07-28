@@ -1,4 +1,4 @@
-const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS} = require('../constants');
+const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const {functionCallIterator} = require('../services').utils;
 const Stock = require('../model/Stock');
@@ -29,6 +29,20 @@ class StockManager extends Manager{
     constructor(participantManager, serialization, callback) {
         super(participantManager, DB.stock, ['name', 'gtin', 'manufName'], callback);
         this.serialization = serialization;
+        this.productService = undefined;
+        this.batchService = undefined;
+    }
+
+    _getProduct(gtin, callback){
+        if (!this.productService)
+            this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
+        this.productService.getDeterministic(gtin, callback);
+    }
+
+    _getBatch(gtin, batch, callback){
+        if (!this.batchService)
+            this.batchService = new (require('../services/BatchService'))(ANCHORING_DOMAIN);
+        this.batchService.getDeterministic(gtin, batch, callback)
     }
 
     /**
@@ -90,11 +104,30 @@ class StockManager extends Manager{
             if (err){
                 if (batch.quantity < 0)
                     return callback(`Trying to reduce from an unexisting stock`);
-                if (typeof product === 'string')
-                    return callback(`Must provide a product when adding to stock`)
-                const newStock = new Stock(product);
-                newStock.batches = [batch];
-                return self.create(gtin, newStock, callback);
+
+                const cb = function(product){
+                    const newStock = new Stock(product);
+                    self._getBatch(product.gtin, batch.batchNumber, (err, batchFromDSU) => {
+                        if (err)
+                            return callback(err);
+                        batch = new Batch({
+                            batchNumber: batchFromDSU.batchNumber,
+                            expiry: batchFromDSU.expiry,
+                            serialNumbers: batch.serialNumbers,
+                            quantity: batch.quantity,
+                            batchStatus: batchFromDSU.batchStatus
+                        })
+                        newStock.batches = [batch];
+                        return self.create(gtin, newStock, callback);
+                    });
+                }
+
+                if (typeof product !== 'string')
+                    return cb(product);
+
+                return self._getProduct(product, (err, product) => err
+                    ? callback(err)
+                    : cb(product));
             }
 
             const sb = stock.batches.find(b => b.batchNumber === batch.batchNumber);

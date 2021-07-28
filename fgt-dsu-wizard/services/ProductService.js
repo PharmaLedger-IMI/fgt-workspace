@@ -23,6 +23,11 @@ function ProductService(domain, strategy){
         return keyGenFunction(keyGenData, domain);
     }
 
+    this.getDeterministic = function(gtin, callback){
+        const key = this.generateKey(gtin);
+        this.get(key, callback);
+    }
+
     /**
      * Resolves the DSU and loads the Product object with all its properties, mutable or not
      * @param {KeySSI} keySSI

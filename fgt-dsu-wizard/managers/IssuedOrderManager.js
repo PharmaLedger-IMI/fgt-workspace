@@ -1,6 +1,6 @@
-const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
+const { DB, DEFAULT_QUERY_OPTIONS, SHIPMENT_PATH, INFO_PATH } = require('../constants');
 const OrderManager = require("./OrderManager");
-const {Order, OrderStatus, ShipmentStatus} = require('../model');
+const {Order, OrderStatus, ShipmentStatus, Batch} = require('../model');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const utils = require('../services').utils
 
@@ -165,48 +165,8 @@ class IssuedOrderManager extends OrderManager {
                 if (err)
                     return self._err(`Could not update Order:\n${err.message}`, err, callback);
                 console.log(`Order Status for Issued Order ${key} updated to ${order.status}`);
-                if (order.status !== OrderStatus.CONFIRMED){
-                    self.refreshController(order);
-                    return callback();
-                }
-
-                Manager.prototype._getDSUInfo.call(self, shipmentSSI, (err, shipment) => {
-                    if (err)
-                        return self._err(`Could not read shipment info`, err, callback);
-
-                    const gtinIterator = function(gtins, batchesObj, callback){
-                        const gtin = gtins.shift();
-                        if (!gtin)
-                            return callback();
-                        if (!(gtin in batchesObj))
-                            return callback(`gtins not found in batches`);
-                        const batches = batchesObj[gtin];
-                        self.stockManager.manageAll(gtin,  batches, (err, added) => {
-                            if (err)
-                                return self._err(`Could not update Stock`, err, callback);
-                            gtinIterator(gtins, batchesObj, callback);
-                        })
-                    }
-
-                    const gtins = shipment.shipmentLines.map(sl => sl.gtin);
-                    const batchesObj = shipment.shipmentLines.reduce((accum, sl) => {
-                        accum[sl.gtin] = accum[sl.gtin] || [];
-                        accum[sl.gtin].push(new Batch({
-                            batchNumber: sl.batch,
-                            quantity: sl.quantity,
-                            serialNumbers: sl.serialNumbers
-                        }))
-                        return accum;
-                    }, {});
-
-                    gtinIterator(gtins, batchesObj, (err) => {
-                        if (err)
-                            return self._err(`Could not update stock info`, err, callback);
-                        console.log(`Shipment updated after Stock confirmation`);
-                        self.refreshController();
-                        callback();
-                    });
-                });
+                self.refreshController(order);
+                return callback();
             });
         });
     }
@@ -233,9 +193,60 @@ class IssuedOrderManager extends OrderManager {
             super.update(key, order, (err, updatedOrder, dsu) => {
                 if (err)
                     return callback(err);
-                const sReadSSIStr = utils.getKeySSISpace().parse(record).derive().getIdentifier();
-                self.sendMessagesAsync(order, sReadSSIStr);
-                callback(undefined, updatedOrder, dsu);
+
+                const sendMessages = function(){
+                    const sReadSSIStr = utils.getKeySSISpace().parse(record).derive().getIdentifier();
+                    self.sendMessagesAsync(order, sReadSSIStr);
+                    callback(undefined, updatedOrder, dsu);
+                }
+
+                if (order.status !== OrderStatus.CONFIRMED)
+                    return sendMessages();
+
+                // Get all the shipmentLines from the shipment so we can add it to the stock
+                dsu.readFile(`${SHIPMENT_PATH}${INFO_PATH}`, (err, data) => {
+                    if (err)
+                        return self._err(`Could not get ShipmentLines SSI`, err, callback);
+                    let shipment;
+                    try {
+                        shipment = JSON.parse(data);
+                    } catch (e) {
+                        return callback(e);
+                    }
+                    const gtins = shipment.shipmentLines.map(sl => sl.gtin);
+                    const batchesToAdd = shipment.shipmentLines.reduce((accum, sl) => {
+                        accum[sl.gtin] = accum[sl.gtin] || [];
+                        accum[sl.gtin].push(new Batch({
+                            batchNumber: sl.batch,
+                            quantity: sl.quantity,
+                            serialNumbers: sl.serialNumbers
+                        }))
+                        return accum;
+                    }, {});
+
+                    const result = {};
+
+                    const gtinIterator = function(gtins, batchObj, callback){
+                        const gtin = gtins.shift();
+                        if (!gtin)
+                            return callback(undefined, result);
+                        const batches = batchObj[gtin];
+                        self.stockManager.manageAll(gtin, batches, (err, newStocks) => {
+                            if (err)
+                                return callback(err);
+                            result[gtin] = result[gtin] || [];
+                            result[gtin].push(newStocks);
+                            gtinIterator(gtins, batchObj, callback);
+                        });
+                    }
+
+                    gtinIterator(gtins.slice(), batchesToAdd, (err, result) => {
+                        if (err)
+                            return self._err(`Could not update Stock`, err, callback);
+                        console.log(`Stocks updated`, result);
+                        sendMessages();
+                    })
+                });
             });
         });
     }

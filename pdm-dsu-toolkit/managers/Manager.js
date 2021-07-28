@@ -119,6 +119,8 @@ class Manager{
         }
         baseManager.cacheManager(this);
 
+        this._getManager = baseManager.getManager.bind(baseManager);
+
         if (this.indexes && callback){
             this._indexTable(...this.indexes, (err) => {
                 if (err)

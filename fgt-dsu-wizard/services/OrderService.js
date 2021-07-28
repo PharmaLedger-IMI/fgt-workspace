@@ -45,7 +45,7 @@ function OrderService(domain, strategy) {
      * @param {function(err?, Order?, Archive?, KeySSI?)} callback
      */
     this.get = function(keySSI, callback){
-        Utils.getResolver().loadDSU(keySSI, (err, dsu) => {
+        Utils.getResolver().loadDSU(keySSI, {skipCache: true}, (err, dsu) => {
             if (err)
                 return callback(err);
             dsu.readFile(INFO_PATH, (err, data) => {

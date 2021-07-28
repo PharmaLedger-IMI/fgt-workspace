@@ -23,6 +23,11 @@ function BatchService(domain, strategy){
         return keyGenFunction(keyGenData, domain);
     }
 
+    this.getDeterministic = function(gtin, batchNumber, callback){
+        const key = this.generateKey(gtin, batchNumber);
+        this.get(key, callback);
+    }
+
     /**
      * Resolves the DSU and loads the Batch object with all its properties, mutable or not
      * @param {KeySSI} keySSI

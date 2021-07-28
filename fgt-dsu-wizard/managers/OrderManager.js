@@ -97,10 +97,14 @@ class OrderManager extends Manager {
         self.getRecord(key, (err, record) => {
             if (err)
                 return self._err(`Unable to retrieve record with key ${key} from table ${self._getTableName()}`, err, callback);
-            self.orderService.update(record.value, newOrder, (err, updatedOrder) => {
+            self.orderService.update(record.value, newOrder, (err, updatedOrder, orderDsu) => {
                 if (err)
                     return self._err(`Could not Update Order DSU`, err, callback);
-                self.updateRecord(key, self._indexItem(key, updatedOrder, record.value), callback);
+                self.updateRecord(key, self._indexItem(key, updatedOrder, record.value), (err) => {
+                    if (err)
+                        return callback(err);
+                    callback(undefined, updatedOrder, orderDsu);
+                });
             });
         });
     }

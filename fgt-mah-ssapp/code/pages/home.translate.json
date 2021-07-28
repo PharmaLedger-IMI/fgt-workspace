@@ -309,7 +309,7 @@
         "color": "tertiary",
         "paths": []
       },
-      "confirm": {
+      "confirmed": {
         "action": "Confirm Shipment",
         "label": "Confirmed",
         "color": "success",
@@ -416,7 +416,7 @@
         "color": "tertiary",
         "paths": []
       },
-      "confirm": {
+      "confirmed": {
         "action": "Confirm Shipment",
         "label": "Confirmed",
         "color": "success",

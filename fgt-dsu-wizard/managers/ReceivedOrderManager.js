@@ -161,6 +161,23 @@ class ReceivedOrderManager extends OrderManager {
             });
         });
     };
+
+    /**
+     * updates an item
+     *
+     * @param {string} [key] key is optional so child classes can override them
+     * @param {Order} order
+     * @param {function(err, Order?, Archive?)} callback
+     */
+    update(key, order, callback){
+        if (!callback){
+            callback = order;
+            order = key;
+            key = this._genCompostKey(order.requesterId, order.orderId);
+        }
+
+        super.update(key, order, callback);
+    }
 }
 
 

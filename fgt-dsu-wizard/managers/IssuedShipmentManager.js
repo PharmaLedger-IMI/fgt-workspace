@@ -115,15 +115,6 @@ class IssuedShipmentManager extends ShipmentManager {
                         self.sendMessagesAsync(shipment, shipmentLinesSSIs, aKey);
                         callback(undefined, keySSI, path);
                     });
-                    // order.shipmentId = shipment.shipmentId;
-                    // receivedOrderManager.update(receivedOrderKey, order, (err) => {
-                    //     if (err)
-                    //         return self._err(`Could not update Order with shipment Id`, err, callback);
-                    //     console.log(`Order updated with shipment Id ${shipment.shipmentId}`);
-                    //     const aKey = keySSI.getIdentifier();
-                    //     self.sendMessagesAsync(shipment, shipmentLinesSSIs, aKey);
-                    //     callback(undefined, keySSI, path);
-                    // });
                 });
             });
         }
@@ -269,12 +260,14 @@ class IssuedShipmentManager extends ShipmentManager {
                 if (err)
                     return self._err(`Unable to read shipment DSU`, err, callback);
                 shipment.status = order.status
-                self.shipmentService.update(record, shipment, (err, updatedShipment) => {
+                self.shipmentService.update(record, shipment, (err, updatedShipment, dsu, orderId, shipmentLinesSSIs) => {
                     if (err)
                         return self._err(`Could not update shipment dsu`, err, callback);
                     self.updateRecord(shipmentKey, self._indexItem(shipmentKey, updatedShipment, record), (err) => {
                         if (err)
                             return self._err(`Could not update shipment record`, err, callback);
+                        self.sendShipmentLinesToMAH([...shipment.shipmentLines], [...shipmentLinesSSIs], (err) =>
+                            self._messageCallback( err ? `Could not transmit shipmentLines to The manufacturers` : 'Lines Notice sent to Manufacturers'));
                         self.refreshController({
                             mode: 'issued',
                             shipment: updatedShipment

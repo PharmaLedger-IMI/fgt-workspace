@@ -19,7 +19,7 @@ class Batch {
     batchStatus
 
     /**
-     * @param {Batch} batch
+     * @param {Batch | {}} batch
      * @constructor
      */
     constructor(batch) {

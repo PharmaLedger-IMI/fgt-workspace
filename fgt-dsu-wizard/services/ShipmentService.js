@@ -277,23 +277,10 @@ function ShipmentService(domain, strategy) {
                         return callback(err);
                     if (!mounts[STATUS_MOUNT_PATH])
                         return callback(`Could not find status mount`);
-                    dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
+                    statusService.update(mounts[STATUS_MOUNT_PATH], shipment.status, shipment.senderId, (err) => {
                         if (err)
                             return callback(err);
-
-                        try{
-                            status = JSON.parse(status);
-                        } catch (e){
-                            return callback(e);
-                        }
-                        err = shipment.validate(status);
-                        if (err)
-                            return callback(err);
-                        statusService.update(mounts[STATUS_MOUNT_PATH], shipment.status, shipment.senderId, (err) => {
-                            if (err)
-                                return callback(err);
-                            self.get(keySSI, callback);
-                        });
+                        self.get(keySSI, callback);
                     });
                 });
             });
