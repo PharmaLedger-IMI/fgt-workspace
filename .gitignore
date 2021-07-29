@@ -75,7 +75,7 @@ pdm-trust-loader/src/webcardinal
 pdm-trust-loader/src/bundles
 pdm-trust-loader/src/capacitor.js
 pdm-trust-loader/src/assets/ionic-core
-pdm-trust-loader/src/assets/pdm-web-components
+pdm-trust-loader/src/assets/pdm-web-components/*
 pdm-trust-loader/src/assets/skin.css
 pdm-trust-loader/src/swPwa*
 pdm-trust-loader/src/swBoot.js

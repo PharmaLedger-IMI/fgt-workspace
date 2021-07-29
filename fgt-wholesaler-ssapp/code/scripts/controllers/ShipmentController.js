@@ -131,7 +131,7 @@ export default class ShipmentController extends LocalizedController{
             if (errors)
                 return self.showErrorToast(self.translate(`create.error.invalid`, errors.join('\n')));
 
-            const alert = await self.showConfirm('create.confirm', shipment.requesterId);
+            const alert = await self.showConfirm('create.confirm', confirmedShipment.requesterId);
 
             const {role} = await alert.onDidDismiss();
 
@@ -146,12 +146,12 @@ export default class ShipmentController extends LocalizedController{
                 self.showErrorToast(msg);
             }
 
-            self.issuedShipmentManager.create(orderId, shipment,  async (err, keySSI, dbPath) => {
+            self.issuedShipmentManager.create(orderId, confirmedShipment,  async (err, keySSI, dbPath) => {
                 if (err)
                     return sendError(self.translate('create.error.error'));
                 self.showToast(self.translate('create.success'));
                 self.model.mode = 'issued';
-                self.model.shipmentRef = `${shipment.requesterId}-${shipment.shipmentId}`;
+                self.model.shipmentRef = `${confirmedShipment.requesterId}-${confirmedShipment.shipmentId}`;
                 await loader.dismiss();
             });
         });

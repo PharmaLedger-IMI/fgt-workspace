@@ -19,7 +19,7 @@ const {Order} = require('../model');
  *
  * @param {ParticipantManager} participantManager
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
- * @class IssuedOrderManager
+ * @class ReceivedOrderManager
  * @extends OrderManager
  * @memberOf Managers
  */

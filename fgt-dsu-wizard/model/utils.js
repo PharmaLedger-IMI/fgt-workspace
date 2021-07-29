@@ -72,14 +72,14 @@ const confirmWithStock = function(stockManager, shipment, stockObj, callback){
     stockIterator(stockObj.slice(), undefined, (err, result) => {
         if (err || !result)
             return callback(err ? err : `Could not retrieve batches from stock`);
-
+        const self = this;
         shipment.shipmentLines = shipment.shipmentLines.reduce((accum,s) => {
             result[s.gtin].forEach(b => {
                 accum.push(new ShipmentLine({
                     gtin: s.gtin,
                     batch: b.batchNumber,
                     quantity: b.getQuantity(),
-                    serialNumbers: b.serialNumbers,
+                    serialNumbers: self.serialization && self.aggregation ? b.serialNumbers : undefined,
                     senderId: shipment.senderId,
                     requesterId: shipment.requesterId,
                     status: shipment.status

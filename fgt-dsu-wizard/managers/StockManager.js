@@ -26,9 +26,10 @@ const StockStatus = require('../model/StockStatus');
  * @memberOf Managers
  */
 class StockManager extends Manager{
-    constructor(participantManager, serialization, callback) {
-        super(participantManager, DB.stock, ['name', 'gtin', 'manufName'], callback);
+    constructor(participantManager, serialization, aggregation, callback) {
+        super(participantManager, DB.stock, ['name', 'gtin', 'manufName'], callback || aggregation);
         this.serialization = serialization;
+        this.aggregation = callback ? aggregation : false;
         this.productService = undefined;
         this.batchService = undefined;
     }
@@ -166,7 +167,7 @@ class StockManager extends Manager{
             if (err)
                 return self._err(`Could not perform manage all on Stock`, err, callback);
             results = Object.keys(results).reduce((accum, key) => {
-                accum[key] = results[key][0];
+                accum[key] = results[key][0][0];
                 return accum;
             }, {})
             callback(undefined, results);

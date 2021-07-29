@@ -129,9 +129,14 @@ class IssuedShipmentManager extends ShipmentManager {
             self.stockManager.manageAll(gtin,  batches, (err, removed) => {
                 if (err)
                     return self._err(`Could not update Stock`, err, callback);
-                if (self.stockManager.serialization)
-                    shipment.shipmentLines.forEach(sl => {
+                if (self.stockManager.serialization && self.stockManager.aggregation)
+                    shipment.shipmentLines.filter(sl => sl.gtin === gtin && Object.keys(removed).indexOf(sl.batch) !== -1).forEach(sl => {
                         sl.serialNumbers = removed[sl.batch];
+                    });
+                else
+                    shipment.shipmentLines = shipment.shipmentLines.map(sl => {
+                        sl.serialNumbers = undefined;
+                        return sl;
                     });
                 gtinIterator(gtins, batchesObj, callback);
             })
