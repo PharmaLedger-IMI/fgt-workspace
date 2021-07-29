@@ -1,8 +1,8 @@
 import { r as registerInstance, e as createEvent, h, f as Host, g as getElement } from './index-d0e12a29.js';
 import { H as HostElement } from './index-3dd6e8f7.js';
-import { w as wizard } from './WizardService-a462b2bc.js';
-import { W as WebManagerService } from './WebManagerService-e3623754.js';
-import { a as getDirectoryProducts, c as getDirectoryRequesters, e as getProductPopOver, d as getSingleInputPopOver } from './popOverUtils-13db4611.js';
+import { w as wizard } from './WizardService-462ec42a.js';
+import { W as WebManagerService } from './WebManagerService-82558d63.js';
+import { a as getDirectoryProducts, c as getDirectoryRequesters, e as getProductPopOver, d as getSingleInputPopOver } from './popOverUtils-ecb17d72.js';
 
 const managedShipmentCss = ":host{display:block}managed-shipment{--color:var(--ion-color-primary-contrast)}managed-shipment ion-item ion-grid{width:100%}ion-card-title{color:var(--ion-color-primary)}ion-card-subtitle{color:var(--ion-color-secondary)}ion-item.selected{--color:var(--ion-color-success)}ion-item.unnecessary{--color:red}";
 

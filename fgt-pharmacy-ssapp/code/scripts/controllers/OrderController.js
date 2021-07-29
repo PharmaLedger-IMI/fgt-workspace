@@ -42,8 +42,8 @@ export default class OrderController extends LocalizedController {
                 self.model.orderRef = newRef;
 
             } else {
-                self.model.orderRef = '';
                 self.mode = 'issued';
+                self.model.orderRef = '';
                 self.model.orderLines = JSON.stringify(state && state.orderLines ? [...state.orderLines] : []);
             }
         });

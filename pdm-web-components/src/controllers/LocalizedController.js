@@ -1,7 +1,16 @@
 import {EVENT_SSAPP_HAS_LOADED, EVENT_SEND_ERROR, EVENT_SEND_MESSAGE, EVENT_REFRESH, EVENT_NAVIGATE_TAB, CSS, BUTTON_ROLES} from "../constants/events";
+import WebController from "./WebController";
 
-const {WebcController} = WebCardinal.controllers;
+let BaseController;
+try {
+  const {WebcController} = WebCardinal.controllers;
+  BaseController = WebcController;
+} catch (e) {
+  BaseController = WebController;
+}
+
 import wizard from '../services/WizardService';
+
 
 /**
  * Master Controller to provide access to the Localization features provided by WebCardinal.
@@ -21,7 +30,7 @@ import wizard from '../services/WizardService';
  * @extends WebcController
  * @abstract
  */
-export default class LocalizedController extends WebcController {
+export default class LocalizedController extends BaseController {
 
   /**
    * Should return the initialized model for the controller when needed.

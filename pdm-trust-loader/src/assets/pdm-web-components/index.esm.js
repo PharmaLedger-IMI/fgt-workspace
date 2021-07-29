@@ -1,5 +1,5 @@
-import { w as wizard } from './WizardService-a462b2bc.js';
-import { W as WebManagerService } from './WebManagerService-e3623754.js';
+import { w as wizard } from './WizardService-462ec42a.js';
+import { W as WebManagerService } from './WebManagerService-82558d63.js';
 
 const EVENT_CONFIG_GET_CORE_TYPE = 'webcardinal:config:getCoreType';
 const EVENT_CONFIG_GET_DOCS_SOURCE = 'webcardinal:config:getDocsSource';
@@ -96,7 +96,24 @@ const BUTTON_ROLES = {
  */
 const SIDE_MENU_CLASS_SELECTOR = ".side-menu menu-tab-button";
 
-const {WebcController} = WebCardinal.controllers;
+class WebController{
+  constructor(...args){
+    console.log(`Called constructor of Mock Controller with args:`, ...args);
+  }
+
+  on(...args){
+    console.log(`Called ON on the mock Controller with args:`, ...args);
+  }
+}
+
+let BaseController;
+try {
+  const {WebcController} = WebCardinal.controllers;
+  BaseController = WebcController;
+} catch (e) {
+  BaseController = WebController;
+}
+
 
 /**
  * Master Controller to provide access to the Localization features provided by WebCardinal.
@@ -116,7 +133,7 @@ const {WebcController} = WebCardinal.controllers;
  * @extends WebcController
  * @abstract
  */
-class LocalizedController extends WebcController {
+class LocalizedController extends BaseController {
 
   /**
    * Should return the initialized model for the controller when needed.

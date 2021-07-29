@@ -4,7 +4,14 @@
  */
 
 
-let wizardCache;
+let wizardCache = {
+  Constants: {},
+  Model: {},
+  Services: {
+    WebcLocaleService: {},
+  },
+  Managers: {}
+};
 
 let wizard;
 
@@ -13,8 +20,12 @@ if (!wizard){
     // @ts-ignore
     wizardCache = require('wizard');
   } catch (e){
-    // @ts-ignore
-    wizardCache = require('toolkit'); // fallback for the loader
+    try{
+      // @ts-ignore
+      wizardCache = require('toolkit'); // fallback for the loader
+    } catch (e){
+      console.log(`Could not find Wizard in environment`);
+    }
   }
 }
 

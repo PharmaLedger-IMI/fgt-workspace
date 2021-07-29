@@ -1,6 +1,6 @@
 import { r as registerInstance, e as createEvent, h, f as Host, g as getElement } from './index-d0e12a29.js';
-import { W as WebManagerService } from './WebManagerService-e3623754.js';
-import { w as wizard } from './WizardService-a462b2bc.js';
+import { W as WebManagerService } from './WebManagerService-82558d63.js';
+import { w as wizard } from './WizardService-462ec42a.js';
 import { H as HostElement } from './index-3dd6e8f7.js';
 
 const managedShipmentListItemCss = ":host{display:block}ion-item.main-item{animation:1s linear fadein}@keyframes fadein{from{opacity:0}to{opacity:1}}";
