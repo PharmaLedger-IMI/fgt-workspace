@@ -25,6 +25,29 @@
 | `ssapp-send-error`   | Through this event errors are passed                    | `CustomEvent<any>` |
 
 
+## Methods
+
+### `reset() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `submit(name?: string) => Promise<boolean>`
+
+
+
+#### Returns
+
+Type: `Promise<boolean>`
+
+
+
+
 ## Dependencies
 
 ### Depends on

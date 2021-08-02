@@ -27,6 +27,7 @@
                     <div data-if="@identified">
                         <ion-list class="side-menu">
                             <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard"></menu-tab-button>
+                            <menu-tab-button icon-name="bag-add" label="@menu.sale" tab="tab-sale"></menu-tab-button>
                             <menu-tab-button icon-name="reader" label="@menu.issuedOrders" tab="tab-issued-orders"></menu-tab-button>
                             <menu-tab-button icon-name="map" label="@menu.receivedShipments" tab="tab-received-shipments"></menu-tab-button>
                             <menu-tab-button icon-name="stats-chart" label="@menu.stock" tab="tab-stock"></menu-tab-button>
@@ -39,6 +40,14 @@
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <div data-if="@identified">
                                     <webc-template template="dashboard" disable-container></webc-template>
+                                </div>
+                            </ion-content>
+                        </ion-tab>
+
+                        <ion-tab tab="tab-sale">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <div data-if="@identified">
+                                    <webc-template template="sale" disable-container></webc-template>
                                 </div>
                             </ion-content>
                         </ion-tab>
@@ -84,6 +93,7 @@
                         <div slot="bottom" data-if="@identified">
                             <ion-tab-bar slot="bottom" class="ion-hide-lg-up">
                                 <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>
+                                <menu-tab-button icon-name="bag-add" label="@menu.sale" tab="tab-sale" mode="bar"></menu-tab-button>
                                 <menu-tab-button icon-name="reader" label="@menu.issuedOrders" tab="tab-issued-orders" mode="bar"></menu-tab-button>
                                 <menu-tab-button icon-name="map" label="@menu.receivedShipments" tab="tab-received-shipments" mode="bar"></menu-tab-button>
                                 <menu-tab-button icon-name="stats-chart" label="@menu.stock" tab="tab-stock" mode="bar"></menu-tab-button>

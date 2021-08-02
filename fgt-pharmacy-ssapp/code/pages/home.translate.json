@@ -24,7 +24,8 @@
     "dashboard": "Dashboard",
     "issuedOrders": "Issued Orders",
     "receivedShipments": "Received Shipments",
-    "stock": "Stock"
+    "stock": "Stock",
+    "sale": "Sell"
   },
   "errors": {
     "register": "Unable to register",
@@ -265,6 +266,54 @@
         "paths": []
       }
     }
+  },
+  "sale": {
+    "create": {
+      "title": "Sell products",
+      "product": "Please select or scan a product:",
+      "selectedProduct": "Selected Products:",
+      "quantity": "Quantity:",
+      "confirm": {
+        "message": "Please confirm Sale",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Issuing Sale. Please wait...",
+      "success": "Sale performed!",
+      "buttons": {
+        "create": "Issue Sale",
+        "clear": "Clear"
+      },
+      "error": {
+        "bind": "Could not bind participant to Order",
+        "invalid": "Invalid Order: ",
+        "error": "Could not create new Order: "
+      }
+    },
+    "manage": {
+      "title": "Manage Order",
+      "status": "Order Status:",
+      "update": "Update Order Status:",
+      "no-update": "The Order Status Cannot be Updated.",
+      "confirm": {
+        "message": "Please confirm Order status update from {0} to {1}",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Updating Order. Please wait...",
+      "success": "Order Successfully updated",
+      "error": {
+        "bind": "Could not bind participant to order",
+        "invalid": "Invalid Order: ",
+        "error": "Could not update Order: "
+      }
+    },
+    "back": "Back to Sales",
+    "scan": "Scan Product"
   },
   "stock": {
     "title": "Stocks",

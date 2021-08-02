@@ -1,8 +1,8 @@
-import {Component, Host, h, Element, Event, EventEmitter, Prop, State, Watch} from '@stencil/core';
+import {Component, Host, h, Element, Event, EventEmitter, Prop, State, Watch, Method} from '@stencil/core';
 import {HostElement} from "../../decorators";
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 
-const INPUT_SELECTOR = "'ion-input, ion-textarea, ion-range, ion-checkbox, ion-radio, ion-select, ion-datetime'";
+const INPUT_SELECTOR = "ion-input, ion-textarea, ion-range, ion-checkbox, ion-radio, ion-select, ion-datetime";
 
 @Component({
   tag: 'form-validate-submit',
@@ -50,8 +50,8 @@ export class FormValidateSubmit {
 
   @Prop({attribute: 'form-json'}) formJSON: string = '{}';
   @Prop({attribute: 'loader-type'}) loaderType: string = SUPPORTED_LOADERS.circles;
-  @Prop({attribute: 'lines'}) lines: 'none' | 'inset' | 'full' | undefined = 'inset';
-  @Prop({attribute: 'label-position'}) labelPosition: "fixed" | "floating" | "stacked" | undefined = 'floating';
+  @Prop({attribute: 'lines'}) lines: 'none' | 'inset' | 'full' = 'inset';
+  @Prop({attribute: 'label-position'}) labelPosition: "fixed" | "floating" | "stacked" = 'floating';
   @Prop({attribute: 'enable-custom-validation'}) customValidation: boolean = false;
 
   @State() form: {
@@ -93,16 +93,13 @@ export class FormValidateSubmit {
     console.log(this.form);
   }
 
-  private onReset(evt){
-    evt.preventDefault()
-    evt.stopImmediatePropagation();
+  @Method()
+  async reset(){
     this.element.querySelectorAll(INPUT_SELECTOR).forEach(input => input.value = '');
   }
 
-  private onSubmit(evt, name?: string){
-    evt.preventDefault();
-    evt.stopImmediatePropagation();
-
+  @Method()
+  async submit(name?: string){
     if (!name)
       name = this.element.querySelector('ion-button.primary-button').name;
 
@@ -118,7 +115,19 @@ export class FormValidateSubmit {
     this.sendAction.emit({
       action: name,
       form: output
-    })
+    });
+  }
+
+  private async onReset(evt){
+    evt.preventDefault()
+    evt.stopImmediatePropagation();
+    await this.reset()
+  }
+
+  private async onSubmit(evt, name?: string){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    await this.submit(name);
   }
 
   private getButtons(){

@@ -18,6 +18,7 @@ module.exports = {
     Wholesaler: require('./Wholesaler'),
     Validations: require('../../pdm-dsu-toolkit/model/Validations'),
     Utils: require('../../pdm-dsu-toolkit/model/Utils'),
+    Sale: require('./Sale'),
     Stock: require('./Stock'),
     StockStatus: require('./StockStatus'),
     DirectoryEntry: require('./DirectoryEntry').DirectoryEntry,

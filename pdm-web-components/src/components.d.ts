@@ -53,9 +53,11 @@ export namespace Components {
     interface FormValidateSubmit {
         "customValidation": boolean;
         "formJSON": string;
-        "labelPosition": "fixed" | "floating" | "stacked" | undefined;
-        "lines": 'none' | 'inset' | 'full' | undefined;
+        "labelPosition": "fixed" | "floating" | "stacked";
+        "lines": 'none' | 'inset' | 'full';
         "loaderType": string;
+        "reset": () => Promise<void>;
+        "submit": (name?: string) => Promise<boolean>;
     }
     interface GenericChip {
         "chipLabel": string;
@@ -121,6 +123,10 @@ export namespace Components {
         "serialString": string;
         "statusString": string;
         "statuses": any;
+    }
+    interface ManagedIndividualProductListItem {
+        "gtinBatchSerial": string;
+        "refresh": (newValue?: any) => Promise<void>;
     }
     interface ManagedOrder {
         "availableString": string;
@@ -268,6 +274,18 @@ export namespace Components {
         "gtin": string;
         "refresh": () => Promise<void>;
     }
+    interface ManagedStockProductInput {
+        "directoryString": string;
+        "disabled": boolean;
+        "labelPosition": "fixed" | "floating" | "stacked";
+        "lines": 'none' | 'inset' | 'full';
+        "name": string;
+        "productsCodeString": string;
+        "productsString": string;
+        "quantityString": string;
+        "required": boolean;
+        "updateDirectory": (gtin?: string) => Promise<void>;
+    }
     interface MenuTabButton {
         "badge"?: number;
         "iconName"?: string;
@@ -375,6 +393,21 @@ export namespace Components {
         "timeout"?: number;
         "updateStatus": (evt: any) => Promise<void>;
     }
+    interface SaleScreen {
+        "backString": string;
+        "clearString": string;
+        "createString": string;
+        "directoryString": string;
+        "manageString": string;
+        "productString": string;
+        "quantityString": string;
+        "refresh": () => Promise<void>;
+        "saleRef"?: string;
+        "scanString": string;
+        "selectedProductString": string;
+        "titleString": string;
+        "updateDirectory": () => Promise<void>;
+    }
     interface SimpleManagedProductItem {
         "gtin": string;
         "refresh": () => Promise<void>;
@@ -458,6 +491,12 @@ declare global {
         prototype: HTMLManagedIndividualProductElement;
         new (): HTMLManagedIndividualProductElement;
     };
+    interface HTMLManagedIndividualProductListItemElement extends Components.ManagedIndividualProductListItem, HTMLStencilElement {
+    }
+    var HTMLManagedIndividualProductListItemElement: {
+        prototype: HTMLManagedIndividualProductListItemElement;
+        new (): HTMLManagedIndividualProductListItemElement;
+    };
     interface HTMLManagedOrderElement extends Components.ManagedOrder, HTMLStencilElement {
     }
     var HTMLManagedOrderElement: {
@@ -518,6 +557,12 @@ declare global {
         prototype: HTMLManagedStockListItemElement;
         new (): HTMLManagedStockListItemElement;
     };
+    interface HTMLManagedStockProductInputElement extends Components.ManagedStockProductInput, HTMLStencilElement {
+    }
+    var HTMLManagedStockProductInputElement: {
+        prototype: HTMLManagedStockProductInputElement;
+        new (): HTMLManagedStockProductInputElement;
+    };
     interface HTMLMenuTabButtonElement extends Components.MenuTabButton, HTMLStencilElement {
     }
     var HTMLMenuTabButtonElement: {
@@ -566,6 +611,12 @@ declare global {
         prototype: HTMLPdmSsappLoaderElement;
         new (): HTMLPdmSsappLoaderElement;
     };
+    interface HTMLSaleScreenElement extends Components.SaleScreen, HTMLStencilElement {
+    }
+    var HTMLSaleScreenElement: {
+        prototype: HTMLSaleScreenElement;
+        new (): HTMLSaleScreenElement;
+    };
     interface HTMLSimpleManagedProductItemElement extends Components.SimpleManagedProductItem, HTMLStencilElement {
     }
     var HTMLSimpleManagedProductItemElement: {
@@ -602,6 +653,7 @@ declare global {
         "managed-batch": HTMLManagedBatchElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-individual-product": HTMLManagedIndividualProductElement;
+        "managed-individual-product-list-item": HTMLManagedIndividualProductListItemElement;
         "managed-order": HTMLManagedOrderElement;
         "managed-order-list-item": HTMLManagedOrderListItemElement;
         "managed-orderline-list-item": HTMLManagedOrderlineListItemElement;
@@ -612,6 +664,7 @@ declare global {
         "managed-shipment-list-item": HTMLManagedShipmentListItemElement;
         "managed-shipmentline-list-item": HTMLManagedShipmentlineListItemElement;
         "managed-stock-list-item": HTMLManagedStockListItemElement;
+        "managed-stock-product-input": HTMLManagedStockProductInputElement;
         "menu-tab-button": HTMLMenuTabButtonElement;
         "more-chip": HTMLMoreChipElement;
         "multi-spinner": HTMLMultiSpinnerElement;
@@ -620,6 +673,7 @@ declare global {
         "pdm-ion-table": HTMLPdmIonTableElement;
         "pdm-item-organizer": HTMLPdmItemOrganizerElement;
         "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
+        "sale-screen": HTMLSaleScreenElement;
         "simple-managed-product-item": HTMLSimpleManagedProductItemElement;
         "slide-in-board": HTMLSlideInBoardElement;
         "status-badge": HTMLStatusBadgeElement;
@@ -675,8 +729,8 @@ declare namespace LocalJSX {
     interface FormValidateSubmit {
         "customValidation"?: boolean;
         "formJSON"?: string;
-        "labelPosition"?: "fixed" | "floating" | "stacked" | undefined;
-        "lines"?: 'none' | 'inset' | 'full' | undefined;
+        "labelPosition"?: "fixed" | "floating" | "stacked";
+        "lines"?: 'none' | 'inset' | 'full';
         "loaderType"?: string;
         /**
           * Through this event action requests are made
@@ -791,6 +845,17 @@ declare namespace LocalJSX {
         "serialString"?: string;
         "statusString"?: string;
         "statuses"?: any;
+    }
+    interface ManagedIndividualProductListItem {
+        "gtinBatchSerial"?: string;
+        /**
+          * Through this event action requests are made
+         */
+        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
     }
     interface ManagedOrder {
         "availableString"?: string;
@@ -1012,6 +1077,21 @@ declare namespace LocalJSX {
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
     }
+    interface ManagedStockProductInput {
+        "directoryString"?: string;
+        "disabled"?: boolean;
+        "labelPosition"?: "fixed" | "floating" | "stacked";
+        "lines"?: 'none' | 'inset' | 'full';
+        "name"?: string;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "productsCodeString"?: string;
+        "productsString"?: string;
+        "quantityString"?: string;
+        "required"?: boolean;
+    }
     interface MenuTabButton {
         "badge"?: number;
         "iconName"?: string;
@@ -1132,6 +1212,28 @@ declare namespace LocalJSX {
         "loader"?: string;
         "timeout"?: number;
     }
+    interface SaleScreen {
+        "backString"?: string;
+        "clearString"?: string;
+        "createString"?: string;
+        "directoryString"?: string;
+        "manageString"?: string;
+        /**
+          * Through this event action requests are made
+         */
+        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "productString"?: string;
+        "quantityString"?: string;
+        "saleRef"?: string;
+        "scanString"?: string;
+        "selectedProductString"?: string;
+        "titleString"?: string;
+    }
     interface SimpleManagedProductItem {
         "gtin"?: string;
         /**
@@ -1170,6 +1272,7 @@ declare namespace LocalJSX {
         "managed-batch": ManagedBatch;
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-individual-product": ManagedIndividualProduct;
+        "managed-individual-product-list-item": ManagedIndividualProductListItem;
         "managed-order": ManagedOrder;
         "managed-order-list-item": ManagedOrderListItem;
         "managed-orderline-list-item": ManagedOrderlineListItem;
@@ -1180,6 +1283,7 @@ declare namespace LocalJSX {
         "managed-shipment-list-item": ManagedShipmentListItem;
         "managed-shipmentline-list-item": ManagedShipmentlineListItem;
         "managed-stock-list-item": ManagedStockListItem;
+        "managed-stock-product-input": ManagedStockProductInput;
         "menu-tab-button": MenuTabButton;
         "more-chip": MoreChip;
         "multi-spinner": MultiSpinner;
@@ -1188,6 +1292,7 @@ declare namespace LocalJSX {
         "pdm-ion-table": PdmIonTable;
         "pdm-item-organizer": PdmItemOrganizer;
         "pdm-ssapp-loader": PdmSsappLoader;
+        "sale-screen": SaleScreen;
         "simple-managed-product-item": SimpleManagedProductItem;
         "slide-in-board": SlideInBoard;
         "status-badge": StatusBadge;
@@ -1209,6 +1314,7 @@ declare module "@stencil/core" {
             "managed-batch": LocalJSX.ManagedBatch & JSXBase.HTMLAttributes<HTMLManagedBatchElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-individual-product": LocalJSX.ManagedIndividualProduct & JSXBase.HTMLAttributes<HTMLManagedIndividualProductElement>;
+            "managed-individual-product-list-item": LocalJSX.ManagedIndividualProductListItem & JSXBase.HTMLAttributes<HTMLManagedIndividualProductListItemElement>;
             "managed-order": LocalJSX.ManagedOrder & JSXBase.HTMLAttributes<HTMLManagedOrderElement>;
             "managed-order-list-item": LocalJSX.ManagedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedOrderListItemElement>;
             "managed-orderline-list-item": LocalJSX.ManagedOrderlineListItem & JSXBase.HTMLAttributes<HTMLManagedOrderlineListItemElement>;
@@ -1219,6 +1325,7 @@ declare module "@stencil/core" {
             "managed-shipment-list-item": LocalJSX.ManagedShipmentListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentListItemElement>;
             "managed-shipmentline-list-item": LocalJSX.ManagedShipmentlineListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentlineListItemElement>;
             "managed-stock-list-item": LocalJSX.ManagedStockListItem & JSXBase.HTMLAttributes<HTMLManagedStockListItemElement>;
+            "managed-stock-product-input": LocalJSX.ManagedStockProductInput & JSXBase.HTMLAttributes<HTMLManagedStockProductInputElement>;
             "menu-tab-button": LocalJSX.MenuTabButton & JSXBase.HTMLAttributes<HTMLMenuTabButtonElement>;
             "more-chip": LocalJSX.MoreChip & JSXBase.HTMLAttributes<HTMLMoreChipElement>;
             "multi-spinner": LocalJSX.MultiSpinner & JSXBase.HTMLAttributes<HTMLMultiSpinnerElement>;
@@ -1227,6 +1334,7 @@ declare module "@stencil/core" {
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "pdm-item-organizer": LocalJSX.PdmItemOrganizer & JSXBase.HTMLAttributes<HTMLPdmItemOrganizerElement>;
             "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;
+            "sale-screen": LocalJSX.SaleScreen & JSXBase.HTMLAttributes<HTMLSaleScreenElement>;
             "simple-managed-product-item": LocalJSX.SimpleManagedProductItem & JSXBase.HTMLAttributes<HTMLSimpleManagedProductItemElement>;
             "slide-in-board": LocalJSX.SlideInBoard & JSXBase.HTMLAttributes<HTMLSlideInBoardElement>;
             "status-badge": LocalJSX.StatusBadge & JSXBase.HTMLAttributes<HTMLStatusBadgeElement>;

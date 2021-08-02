@@ -5,9 +5,11 @@ const IndividualProductStatus = require('./IndividualProductStatus');
  * @memberOf Model
  */
 class IndividualProduct {
+    name;
     gtin;
     batchNumber;
     serialNumber;
+    expiry;
     status;
 
     /**

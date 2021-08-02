@@ -65,7 +65,8 @@ const DB = {
     orderLines: 'orderLines',
     shipmentLines: 'shipmentLines',
     individualProduct: 'individualProduct',
-    directory: 'directory'
+    directory: 'directory',
+    sales: 'sales'
 }
 
 /**

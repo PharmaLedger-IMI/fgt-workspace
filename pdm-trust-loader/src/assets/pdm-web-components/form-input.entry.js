@@ -1,54 +1,7 @@
 import { r as registerInstance, h, f as Host, g as getElement } from './index-d0e12a29.js';
 import { H as HostElement } from './index-3dd6e8f7.js';
-import { w as wizard } from './WizardService-462ec42a.js';
-
-const { Registry: Registry$1, Validator, Validators } = wizard.Model.Validations.Validators;
-const { INPUT_FIELD_PREFIX: INPUT_FIELD_PREFIX$1 } = wizard.Constants;
-/**
- * @namespace Validations
- * @memberOf Services
- */
-/**
- * Handles equality validation between fields
- * @class EqualityValidator
- * @extends Validator
- * @memberOf Validations
- */
-class EqualityValidator extends Validator {
-  /**
-   * @param {string} errorMessage
-   * @constructor
-   */
-  constructor(errorMessage = "This field must be equal to field {0}!") {
-    super("equality", errorMessage);
-  }
-  /**
-   * returns the error message, or nothing if is valid
-   * @param value the value
-   * @param {string} fieldName the pattern to validate
-   * @return {string | undefined} the errors or nothing
-   */
-  hasErrors(value, fieldName) {
-    const el = document.body.querySelector(`input[name="${INPUT_FIELD_PREFIX$1}${fieldName}"]`);
-    if (!el)
-      return console.log(`Could not find field ${fieldName} to perform equality validation. Assuming valid`);
-    if (el.value !== value)
-      return this.errorMessage;
-  }
-}
-Registry$1.register(EqualityValidator);
-/**
- * Validation service
- * Provides form validation for the front end
- * @memberOf Validations
- */
-const ValidationService = {
-  Registry: Registry$1,
-  Validators: Object.assign({}, Validators, {
-    EqualityValidator: EqualityValidator
-  }),
-  INPUT_FIELD_PREFIX: INPUT_FIELD_PREFIX$1
-};
+import { V as ValidationService } from './ValidationService-102fb81f.js';
+import './WizardService-462ec42a.js';
 
 const formInputCss = ":host{display:block}ion-item.form-input-invalid{}ion-item.form-input-invalid>ion-label{--color:var(--ion-color-danger-shade)}";
 

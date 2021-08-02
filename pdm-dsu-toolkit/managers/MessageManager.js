@@ -95,6 +95,7 @@ class MessageManager extends Manager{
             this._listeners[api] = [];
         this._listeners[api].push(onNewApiMsgListener);
         const self = this;
+        console.log(`registering a new listener on ${api}`);
         self.getAll(true, {
             query: [
                 `api like /${api}/g`
