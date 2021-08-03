@@ -33,12 +33,12 @@ export class ManagedIndividualProduct implements CreateManageView{
    * Through this event navigation requests to tabs are made
    */
   @Event({
-    eventName: 'ssapp-navigate-tab',
+    eventName: 'ssapp-back-navigate',
     bubbles: true,
     composed: true,
     cancelable: true,
   })
-  sendNavigateTab: EventEmitter;
+  sendNavigateBack: EventEmitter;
 
   /**
    * Through this event action requests are made
@@ -57,11 +57,8 @@ export class ManagedIndividualProduct implements CreateManageView{
       console.log(`Product Component: ${message}`, err);
   }
 
-  private navigateToTab(tab: string,  props: any){
-    const event = this.sendNavigateTab.emit({
-      tab: tab,
-      props: props
-    });
+  private navigateToTab(){
+    const event = this.sendNavigateBack.emit();
     if (!event.defaultPrevented)
       console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
@@ -167,7 +164,8 @@ export class ManagedIndividualProduct implements CreateManageView{
   navigateBack(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.navigateToTab('tab-dashboard', {});
+    // this.navigateToTab('tab-dashboard', {});
+    this.navigateToTab();
   }
 
   create(evt){

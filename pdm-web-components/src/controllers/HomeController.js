@@ -1,6 +1,16 @@
 import LocalizedController from "./LocalizedController";
-import {EVENT_SSAPP_HAS_LOADED, EVENT_SSAPP_STATUS_UPDATE, EVENT_REFRESH, EVENT_NAVIGATE_TAB, SIDE_MENU_CLASS_SELECTOR, EVENT_ION_TABS_WILL_CHANGE, EVENT_SELECT} from '../constants/events'
-import {WebManagerService} from '../services/WebManagerService'
+import {
+  EVENT_SSAPP_HAS_LOADED,
+  EVENT_SSAPP_STATUS_UPDATE,
+  EVENT_REFRESH,
+  EVENT_NAVIGATE_TAB,
+  SIDE_MENU_CLASS_SELECTOR,
+  EVENT_ION_TABS_WILL_CHANGE,
+  EVENT_SELECT,
+  EVENT_BACK_NAVIGATE
+} from '../constants/events'
+import {WebManagerService} from '../services/WebManagerService';
+import {HistoryNavigator} from "../utils/HistoryNavigator";
 
 /**
  * Main Controller For the SSApp Architecture. Should be instantiated like so:
@@ -35,6 +45,7 @@ export default class HomeController extends LocalizedController {
         this.model.addExpression('identified', () => {
             return !!this.model.participant.id;
         }, "participant");
+      this.historyNavigator = new HistoryNavigator({tab: 'tab-dashboard', props: {}}, 10);
         const self = this;
         self._updateLoading(this.model.loading.loading.status, this.model.loading.loading.progress)
 
@@ -64,6 +75,14 @@ export default class HomeController extends LocalizedController {
           evt.stopImmediatePropagation();
           self._navigateToTab.call(self, evt.detail);
         });
+
+        this.on(EVENT_BACK_NAVIGATE, (evt) => {
+          const navProps = this.historyNavigator.goBack();
+          evt.preventDefault();
+          evt.stopImmediatePropagation();
+          self._navigateToTab.call(self, navProps);
+        });
+
 
         const participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, false, (err, pManager) => {
             if (err)
@@ -95,6 +114,7 @@ export default class HomeController extends LocalizedController {
         console.log(`A tab navigation request was received, but no ion-tabs could be found...`)
         return;
       }
+      this.historyNavigator.addToHistory(props);
       self.setState(props.props);
       el.select(props.tab);
     }
