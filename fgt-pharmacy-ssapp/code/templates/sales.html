@@ -1,0 +1,15 @@
+<webc-container controller="SalesController">
+    <pdm-ion-table
+            table-title="@title"
+            item-reference="sale-ref"
+            paginated="true"
+            manager="SaleManager"
+            icon-name="stats-chart"
+            item-type="managed-sale-list-item"
+            items-per-page="10">
+        <ion-button slot="buttons" fill="solid" color="secondary" data-tag="new-sale">
+            {{ @buttons.new-sale }}
+            <ion-icon slot="end" name="add-circle"></ion-icon>
+        </ion-button>
+    </pdm-ion-table>
+</webc-container>

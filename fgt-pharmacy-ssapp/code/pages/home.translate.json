@@ -25,7 +25,8 @@
     "issuedOrders": "Issued Orders",
     "receivedShipments": "Received Shipments",
     "stock": "Stock",
-    "sale": "Sell"
+    "sale": "Sell",
+    "sales": "Sales"
   },
   "errors": {
     "register": "Unable to register",
@@ -314,6 +315,13 @@
     },
     "back": "Back to Sales",
     "scan": "Scan Product"
+  },
+  "sales": {
+    "title": "Issued Sales",
+    "none": "No sales issued...",
+    "buttons": {
+      "new-sale": "New Sale"
+    }
   },
   "stock": {
     "title": "Stocks",

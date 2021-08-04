@@ -1,3 +1,5 @@
+const ShipmentLineStatus = require('./ShipmentLineStatus');
+
 /**
  * @class ShipmentLine
  * @memberOf Model
@@ -46,7 +48,7 @@ class ShipmentLine{
         if (!this.gtin)
             errors.push('gtin is required.');
 
-        if (!this.requesterId)
+        if (!this.requesterId && [ShipmentLineStatus.DISPENSED, ShipmentLineStatus.ADMINISTERED].indexOf(this.status) === -1)
             errors.push('Ordering partner ID is required.');
 
         if (!this.senderId)

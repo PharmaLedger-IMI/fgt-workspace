@@ -1,0 +1,7 @@
+:host {
+  display: inherit;
+}
+
+batch-chip{
+  --color-step: var(--ion-color-primary);
+}

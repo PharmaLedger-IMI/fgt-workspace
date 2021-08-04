@@ -104,7 +104,7 @@ export class ManagedBatchListItem {
   async refresh(newValue?){
     if(newValue && newValue.startsWith('@'))
       return;
-    if (!newValue)
+    if (!newValue && (!this.gtinBatchSerial || this.gtinBatchSerial.startsWith('@')))
       return;
 
     const props = this.gtinBatchSerial.split('-');
@@ -112,7 +112,7 @@ export class ManagedBatchListItem {
     this.individualProduct = new IndividualProduct({
       gtin: props[0],
       batchNumber: props[1],
-      serialNumber: props[1]
+      serialNumber: props[2]
     });
 
     await this.loadProduct();
@@ -120,38 +120,43 @@ export class ManagedBatchListItem {
 
   addLabel(){
     const self = this;
+    if (!self.individualProduct)
+      return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>)
+
+    const getNameLabel = function(){
+      return self.individualProduct.name;
+    }
+
+    const getGtinLabel = function(){
+      return self.individualProduct.gtin;
+    }
 
     const getBatchNumberLabel = function(){
       return self.individualProduct.batchNumber;
     }
 
-    const getExpiryLabel = function(){
-      if (!self.individualProduct || !self.individualProduct.expiry)
-        return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>)
-      return self.individualProduct.expiry;
-    }
-
     return(
       <ion-label slot="label" color="secondary">
-        {getBatchNumberLabel()}
-        <span class="ion-padding-start">{getExpiryLabel()}</span>
+        {getGtinLabel()}
+        <span class="ion-padding-start">{getNameLabel()}</span>
+        <span class="ion-padding-start">{getBatchNumberLabel()}</span>
+        {/*<span class="ion-padding-start">{getExpiryLabel()}</span>*/}
       </ion-label>)
   }
 
-  addSerialsNumbers(){
+  addSerialsNumber(){
     if (!this.individualProduct || !this.individualProduct.serialNumber)
       return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
     return (
-      <generic-chip chipl-label={this.individualProduct.serialNumber}></generic-chip>
+      <generic-chip slot="content" chip-label={this.individualProduct.serialNumber}></generic-chip>
     )
   }
 
   addButtons(){
     let self = this;
-
+    if (!self.individualProduct)
+      return;
     const getButton = function(slot, color, icon, handler){
-      if (!self.individualProduct)
-        return;
       return (
         <ion-button slot={slot} color={color} fill="clear" onClick={handler}>
           <ion-icon size="large" slot="icon-only" name={icon}></ion-icon>
@@ -176,7 +181,7 @@ export class ManagedBatchListItem {
       <Host>
         <list-item-layout>
           {this.addLabel()}
-          {this.addSerialsNumbers()}
+          {this.addSerialsNumber()}
           {...this.addButtons()}
         </list-item-layout>
       </Host>

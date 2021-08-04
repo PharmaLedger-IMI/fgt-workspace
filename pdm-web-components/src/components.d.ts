@@ -124,6 +124,13 @@ export namespace Components {
         "statusString": string;
         "statuses": any;
     }
+    interface ManagedIndividualProductChip {
+        "batchNumber": string;
+        "expiry": string;
+        "expiryThreshold"?: number;
+        "gtin": string;
+        "serials": string;
+    }
     interface ManagedIndividualProductListItem {
         "gtinBatchSerial": string;
         "refresh": (newValue?: any) => Promise<void>;
@@ -216,6 +223,25 @@ export namespace Components {
         "gtin": string;
         "refresh": () => Promise<void>;
     }
+    interface ManagedSale {
+        "backString": string;
+        "clearString": string;
+        "createString": string;
+        "directoryString": string;
+        "manageString": string;
+        "productString": string;
+        "quantityString": string;
+        "refresh": () => Promise<void>;
+        "saleRef"?: string;
+        "scanString": string;
+        "selectedProductString": string;
+        "titleString": string;
+        "updateDirectory": () => Promise<void>;
+    }
+    interface ManagedSaleListItem {
+        "refresh": () => Promise<void>;
+        "saleRef": string;
+    }
     interface ManagedShipment {
         "availableString": string;
         "backString": string;
@@ -285,6 +311,7 @@ export namespace Components {
         "quantityString": string;
         "required": boolean;
         "updateDirectory": (gtin?: string) => Promise<void>;
+        "value": string;
     }
     interface MenuTabButton {
         "badge"?: number;
@@ -300,6 +327,7 @@ export namespace Components {
         "color": string;
         "float": boolean;
         "iconName": string;
+        "label": string;
     }
     interface MultiSpinner {
         "type"?: string;
@@ -373,7 +401,7 @@ export namespace Components {
          */
         "componentProps": string;
         /**
-          * The number of items to display (minimum is 1), defaults to 3
+          * The number of items to display (minimum is 0), defaults to 3
          */
         "displayCount": number;
         /**
@@ -384,6 +412,8 @@ export namespace Components {
           * If the component does not generate an ion-item (so it can be handled by an ion-list) this must be set to false
          */
         "isItem": boolean;
+        "moreIcon": string;
+        "moreLabel": string;
         "orientation": "between" | "end" | "evenly" | "around" | "center" | "start";
         "singleLine": boolean;
     }
@@ -392,21 +422,6 @@ export namespace Components {
         "markAsLoaded": () => Promise<void>;
         "timeout"?: number;
         "updateStatus": (evt: any) => Promise<void>;
-    }
-    interface SaleScreen {
-        "backString": string;
-        "clearString": string;
-        "createString": string;
-        "directoryString": string;
-        "manageString": string;
-        "productString": string;
-        "quantityString": string;
-        "refresh": () => Promise<void>;
-        "saleRef"?: string;
-        "scanString": string;
-        "selectedProductString": string;
-        "titleString": string;
-        "updateDirectory": () => Promise<void>;
     }
     interface SimpleManagedProductItem {
         "gtin": string;
@@ -491,6 +506,12 @@ declare global {
         prototype: HTMLManagedIndividualProductElement;
         new (): HTMLManagedIndividualProductElement;
     };
+    interface HTMLManagedIndividualProductChipElement extends Components.ManagedIndividualProductChip, HTMLStencilElement {
+    }
+    var HTMLManagedIndividualProductChipElement: {
+        prototype: HTMLManagedIndividualProductChipElement;
+        new (): HTMLManagedIndividualProductChipElement;
+    };
     interface HTMLManagedIndividualProductListItemElement extends Components.ManagedIndividualProductListItem, HTMLStencilElement {
     }
     var HTMLManagedIndividualProductListItemElement: {
@@ -532,6 +553,18 @@ declare global {
     var HTMLManagedProductListItemElement: {
         prototype: HTMLManagedProductListItemElement;
         new (): HTMLManagedProductListItemElement;
+    };
+    interface HTMLManagedSaleElement extends Components.ManagedSale, HTMLStencilElement {
+    }
+    var HTMLManagedSaleElement: {
+        prototype: HTMLManagedSaleElement;
+        new (): HTMLManagedSaleElement;
+    };
+    interface HTMLManagedSaleListItemElement extends Components.ManagedSaleListItem, HTMLStencilElement {
+    }
+    var HTMLManagedSaleListItemElement: {
+        prototype: HTMLManagedSaleListItemElement;
+        new (): HTMLManagedSaleListItemElement;
     };
     interface HTMLManagedShipmentElement extends Components.ManagedShipment, HTMLStencilElement {
     }
@@ -611,12 +644,6 @@ declare global {
         prototype: HTMLPdmSsappLoaderElement;
         new (): HTMLPdmSsappLoaderElement;
     };
-    interface HTMLSaleScreenElement extends Components.SaleScreen, HTMLStencilElement {
-    }
-    var HTMLSaleScreenElement: {
-        prototype: HTMLSaleScreenElement;
-        new (): HTMLSaleScreenElement;
-    };
     interface HTMLSimpleManagedProductItemElement extends Components.SimpleManagedProductItem, HTMLStencilElement {
     }
     var HTMLSimpleManagedProductItemElement: {
@@ -653,6 +680,7 @@ declare global {
         "managed-batch": HTMLManagedBatchElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-individual-product": HTMLManagedIndividualProductElement;
+        "managed-individual-product-chip": HTMLManagedIndividualProductChipElement;
         "managed-individual-product-list-item": HTMLManagedIndividualProductListItemElement;
         "managed-order": HTMLManagedOrderElement;
         "managed-order-list-item": HTMLManagedOrderListItemElement;
@@ -660,6 +688,8 @@ declare global {
         "managed-orderline-stock-chip": HTMLManagedOrderlineStockChipElement;
         "managed-product": HTMLManagedProductElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
+        "managed-sale": HTMLManagedSaleElement;
+        "managed-sale-list-item": HTMLManagedSaleListItemElement;
         "managed-shipment": HTMLManagedShipmentElement;
         "managed-shipment-list-item": HTMLManagedShipmentListItemElement;
         "managed-shipmentline-list-item": HTMLManagedShipmentlineListItemElement;
@@ -673,7 +703,6 @@ declare global {
         "pdm-ion-table": HTMLPdmIonTableElement;
         "pdm-item-organizer": HTMLPdmItemOrganizerElement;
         "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
-        "sale-screen": HTMLSaleScreenElement;
         "simple-managed-product-item": HTMLSimpleManagedProductItemElement;
         "slide-in-board": HTMLSlideInBoardElement;
         "status-badge": HTMLStatusBadgeElement;
@@ -846,6 +875,14 @@ declare namespace LocalJSX {
         "statusString"?: string;
         "statuses"?: any;
     }
+    interface ManagedIndividualProductChip {
+        "batchNumber"?: string;
+        "expiry"?: string;
+        "expiryThreshold"?: number;
+        "gtin"?: string;
+        "onSelectEvent"?: (event: CustomEvent<string>) => void;
+        "serials"?: string;
+    }
     interface ManagedIndividualProductListItem {
         "gtinBatchSerial"?: string;
         /**
@@ -989,6 +1026,39 @@ declare namespace LocalJSX {
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
     }
+    interface ManagedSale {
+        "backString"?: string;
+        "clearString"?: string;
+        "createString"?: string;
+        "directoryString"?: string;
+        "manageString"?: string;
+        /**
+          * Through this event action requests are made
+         */
+        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "productString"?: string;
+        "quantityString"?: string;
+        "saleRef"?: string;
+        "scanString"?: string;
+        "selectedProductString"?: string;
+        "titleString"?: string;
+    }
+    interface ManagedSaleListItem {
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "saleRef"?: string;
+    }
     interface ManagedShipment {
         "availableString"?: string;
         "backString"?: string;
@@ -1091,6 +1161,7 @@ declare namespace LocalJSX {
         "productsString"?: string;
         "quantityString"?: string;
         "required"?: boolean;
+        "value"?: string;
     }
     interface MenuTabButton {
         "badge"?: number;
@@ -1110,6 +1181,7 @@ declare namespace LocalJSX {
         "color"?: string;
         "float"?: boolean;
         "iconName"?: string;
+        "label"?: string;
         /**
           * Through this event the clickEvent is passed
          */
@@ -1193,7 +1265,7 @@ declare namespace LocalJSX {
          */
         "componentProps"?: string;
         /**
-          * The number of items to display (minimum is 1), defaults to 3
+          * The number of items to display (minimum is 0), defaults to 3
          */
         "displayCount"?: number;
         /**
@@ -1204,6 +1276,8 @@ declare namespace LocalJSX {
           * If the component does not generate an ion-item (so it can be handled by an ion-list) this must be set to false
          */
         "isItem"?: boolean;
+        "moreIcon"?: string;
+        "moreLabel"?: string;
         "onSelectEvent"?: (event: CustomEvent<string>) => void;
         "orientation"?: "between" | "end" | "evenly" | "around" | "center" | "start";
         "singleLine"?: boolean;
@@ -1211,28 +1285,6 @@ declare namespace LocalJSX {
     interface PdmSsappLoader {
         "loader"?: string;
         "timeout"?: number;
-    }
-    interface SaleScreen {
-        "backString"?: string;
-        "clearString"?: string;
-        "createString"?: string;
-        "directoryString"?: string;
-        "manageString"?: string;
-        /**
-          * Through this event action requests are made
-         */
-        "onSsapp-action"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event navigation requests to tabs are made
-         */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
-        "productString"?: string;
-        "quantityString"?: string;
-        "saleRef"?: string;
-        "scanString"?: string;
-        "selectedProductString"?: string;
-        "titleString"?: string;
     }
     interface SimpleManagedProductItem {
         "gtin"?: string;
@@ -1272,6 +1324,7 @@ declare namespace LocalJSX {
         "managed-batch": ManagedBatch;
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-individual-product": ManagedIndividualProduct;
+        "managed-individual-product-chip": ManagedIndividualProductChip;
         "managed-individual-product-list-item": ManagedIndividualProductListItem;
         "managed-order": ManagedOrder;
         "managed-order-list-item": ManagedOrderListItem;
@@ -1279,6 +1332,8 @@ declare namespace LocalJSX {
         "managed-orderline-stock-chip": ManagedOrderlineStockChip;
         "managed-product": ManagedProduct;
         "managed-product-list-item": ManagedProductListItem;
+        "managed-sale": ManagedSale;
+        "managed-sale-list-item": ManagedSaleListItem;
         "managed-shipment": ManagedShipment;
         "managed-shipment-list-item": ManagedShipmentListItem;
         "managed-shipmentline-list-item": ManagedShipmentlineListItem;
@@ -1292,7 +1347,6 @@ declare namespace LocalJSX {
         "pdm-ion-table": PdmIonTable;
         "pdm-item-organizer": PdmItemOrganizer;
         "pdm-ssapp-loader": PdmSsappLoader;
-        "sale-screen": SaleScreen;
         "simple-managed-product-item": SimpleManagedProductItem;
         "slide-in-board": SlideInBoard;
         "status-badge": StatusBadge;
@@ -1314,6 +1368,7 @@ declare module "@stencil/core" {
             "managed-batch": LocalJSX.ManagedBatch & JSXBase.HTMLAttributes<HTMLManagedBatchElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-individual-product": LocalJSX.ManagedIndividualProduct & JSXBase.HTMLAttributes<HTMLManagedIndividualProductElement>;
+            "managed-individual-product-chip": LocalJSX.ManagedIndividualProductChip & JSXBase.HTMLAttributes<HTMLManagedIndividualProductChipElement>;
             "managed-individual-product-list-item": LocalJSX.ManagedIndividualProductListItem & JSXBase.HTMLAttributes<HTMLManagedIndividualProductListItemElement>;
             "managed-order": LocalJSX.ManagedOrder & JSXBase.HTMLAttributes<HTMLManagedOrderElement>;
             "managed-order-list-item": LocalJSX.ManagedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedOrderListItemElement>;
@@ -1321,6 +1376,8 @@ declare module "@stencil/core" {
             "managed-orderline-stock-chip": LocalJSX.ManagedOrderlineStockChip & JSXBase.HTMLAttributes<HTMLManagedOrderlineStockChipElement>;
             "managed-product": LocalJSX.ManagedProduct & JSXBase.HTMLAttributes<HTMLManagedProductElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
+            "managed-sale": LocalJSX.ManagedSale & JSXBase.HTMLAttributes<HTMLManagedSaleElement>;
+            "managed-sale-list-item": LocalJSX.ManagedSaleListItem & JSXBase.HTMLAttributes<HTMLManagedSaleListItemElement>;
             "managed-shipment": LocalJSX.ManagedShipment & JSXBase.HTMLAttributes<HTMLManagedShipmentElement>;
             "managed-shipment-list-item": LocalJSX.ManagedShipmentListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentListItemElement>;
             "managed-shipmentline-list-item": LocalJSX.ManagedShipmentlineListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentlineListItemElement>;
@@ -1334,7 +1391,6 @@ declare module "@stencil/core" {
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "pdm-item-organizer": LocalJSX.PdmItemOrganizer & JSXBase.HTMLAttributes<HTMLPdmItemOrganizerElement>;
             "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;
-            "sale-screen": LocalJSX.SaleScreen & JSXBase.HTMLAttributes<HTMLSaleScreenElement>;
             "simple-managed-product-item": LocalJSX.SimpleManagedProductItem & JSXBase.HTMLAttributes<HTMLSimpleManagedProductItemElement>;
             "slide-in-board": LocalJSX.SlideInBoard & JSXBase.HTMLAttributes<HTMLSlideInBoardElement>;
             "status-badge": LocalJSX.StatusBadge & JSXBase.HTMLAttributes<HTMLStatusBadgeElement>;

@@ -65,14 +65,14 @@ Type: `Promise<void>`
 ### Graph
 ```mermaid
 graph TD;
-  sale-screen --> managed-stock-product-input
-  sale-screen --> create-manage-view-layout
-  sale-screen --> pdm-barcode-scanner-controller
+  managed-sale --> managed-stock-product-input
+  managed-sale --> create-manage-view-layout
+  managed-sale --> pdm-barcode-scanner-controller
   managed-stock-product-input --> managed-individual-product-list-item
   managed-individual-product-list-item --> multi-spinner
   managed-individual-product-list-item --> generic-chip
   managed-individual-product-list-item --> list-item-layout
-  style sale-screen fill:#f9f,stroke:#333,stroke-width:4px
+  style managed-sale fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

@@ -61,15 +61,15 @@ Type: `Promise<any>`
 ### Used by
 
  - [managed-order](../managed-order)
+ - [managed-sale](../managed-sale)
  - [managed-shipment](../managed-shipment)
- - [sale-screen](../sale-screen)
 
 ### Graph
 ```mermaid
 graph TD;
   managed-order --> pdm-barcode-scanner-controller
+  managed-sale --> pdm-barcode-scanner-controller
   managed-shipment --> pdm-barcode-scanner-controller
-  sale-screen --> pdm-barcode-scanner-controller
   style pdm-barcode-scanner-controller fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

@@ -1,10 +1,10 @@
 import { newSpecPage } from '@stencil/core/testing';
-import { SaleScreen } from '../sale-screen';
+import { ManagedSale } from '../sale-screen';
 
 describe('sale-screen', () => {
   it('renders', async () => {
     const page = await newSpecPage({
-      components: [SaleScreen],
+      components: [ManagedSale],
       html: `<sale-screen></sale-screen>`,
     });
     expect(page.root).toEqualHtml(`

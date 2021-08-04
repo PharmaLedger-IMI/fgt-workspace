@@ -13,6 +13,7 @@ module.exports = {
     StatusService: require("./StatusService"),
     ProductService: require("./ProductService"),
     BatchService: require("./BatchService"),
+    SaleService: require('./SaleService'),
     Strategy: require("../../pdm-dsu-toolkit/services/strategy"),
     IndividualProductService: require('./IndividualProductService'),
     utils: require('../../pdm-dsu-toolkit/services/utils')

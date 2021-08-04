@@ -18,6 +18,7 @@
 | `productsString`     | `products-string`      |             | `string`                             | `'Products:'`     |
 | `quantityString`     | `quantity-string`      |             | `string`                             | `'Quantity:'`     |
 | `required`           | `required`             |             | `boolean`                            | `false`           |
+| `value`              | `value`                |             | `string`                             | `'[]'`            |
 
 
 ## Events
@@ -44,7 +45,7 @@ Type: `Promise<void>`
 
 ### Used by
 
- - [sale-screen](../sale-screen)
+ - [managed-sale](../managed-sale)
 
 ### Depends on
 
@@ -57,7 +58,7 @@ graph TD;
   managed-individual-product-list-item --> multi-spinner
   managed-individual-product-list-item --> generic-chip
   managed-individual-product-list-item --> list-item-layout
-  sale-screen --> managed-stock-product-input
+  managed-sale --> managed-stock-product-input
   style managed-stock-product-input fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

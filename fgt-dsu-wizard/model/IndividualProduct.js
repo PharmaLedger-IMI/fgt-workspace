@@ -9,6 +9,7 @@ class IndividualProduct {
     gtin;
     batchNumber;
     serialNumber;
+    manufName;
     expiry;
     status;
 
@@ -41,6 +42,9 @@ class IndividualProduct {
 
         if (!this.serialNumber)
             errors.push('Serial Number is required.');
+
+        if (!this.manufName)
+            errors.push('Manufacturer Name is required');
 
         if (!this.status)
             errors.push('Serial Number is required.');

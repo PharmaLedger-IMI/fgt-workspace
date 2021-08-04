@@ -25,6 +25,8 @@ export class MoreChip {
 
   @Prop({attribute: 'icon-name'}) iconName: string = "ellipsis-horizontal";
 
+  @Prop({attribute: 'label'}) label: string = undefined;
+
   @Prop({attribute: "color"}) color: string = 'medium';
 
   @Prop({attribute: "float-more-button"}) float: boolean = false;
@@ -41,18 +43,27 @@ export class MoreChip {
   }
 
   private getButton(){
+    const self = this;
+    const getIconOrLabel = function(){
+      if (self.label)
+        return self.label;
+      return (
+        <ion-icon name={self.iconName}></ion-icon>
+      )
+    }
+
     if (this.float)
       return (
         <ion-fab vertical="top" horizontal="end">
           <ion-fab-button fill="solid" size="small" color={this.color} onClick={(evt) => this.sendShowMoreEvent(evt)}>
-            <ion-icon name={this.iconName}></ion-icon>
+            {getIconOrLabel()}
           </ion-fab-button>
         </ion-fab>
       )
 
     return (
       <ion-button fill="clear" size="small" color={this.color} onClick={(evt) => this.sendShowMoreEvent(evt)}>
-        <ion-icon slot="icon-only" name={this.iconName}></ion-icon>
+        {getIconOrLabel()}
       </ion-button>
     )
   }

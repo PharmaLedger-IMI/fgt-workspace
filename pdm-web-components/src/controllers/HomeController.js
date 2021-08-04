@@ -65,22 +65,26 @@ export default class HomeController extends LocalizedController {
           self._navigateToTab.call(self, evt.detail);
         });
 
-        const participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, false, (err, pManager) => {
-            if (err)
-                console.log(`Failed Participant Manager Initialization`);
-            else
-                console.log(`Participant manager initialized`);
-            self.participantManager = pManager;
-            self._updateLoading(this.model.loading.loaded.status, this.model.loading.loaded.progress);
-          // Give UI some time to breathe and render stuff (including our animation)
-            setTimeout(() => {
-              WebManagerService.registerRepository(self.participantManager);
-              console.log("Home controller initialized");
-              self._testParticipant();
-            }, Math.floor(Math.random() * 100));
+        self.onTagClick('logout', () => {
+          window.location.reload();
         });
 
-        participantManager.setController(this);
+        const participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, false, (err, pManager) => {
+              if (err)
+                  console.log(`Failed Participant Manager Initialization`);
+              else
+                  console.log(`Participant manager initialized`);
+              self.participantManager = pManager;
+              self._updateLoading(this.model.loading.loaded.status, this.model.loading.loaded.progress);
+            // Give UI some time to breathe and render stuff (including our animation)
+              setTimeout(() => {
+                WebManagerService.registerRepository(self.participantManager);
+                console.log("Home controller initialized");
+                self._testParticipant();
+              }, Math.floor(Math.random() * 100));
+          });
+
+          participantManager.setController(this);
     }
 
   /**

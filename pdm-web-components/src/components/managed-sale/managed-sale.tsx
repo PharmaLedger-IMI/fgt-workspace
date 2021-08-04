@@ -4,14 +4,14 @@ import {HostElement} from "../../decorators";
 import {WebManager} from "../../services/WebManagerService";
 import wizard from '../../services/WizardService';
 
-const {Sale, IndividualProduct} = wizard.Model;
+const {Sale} = wizard.Model;
 
 @Component({
-  tag: 'sale-screen',
-  styleUrl: 'sale-screen.css',
+  tag: 'managed-sale',
+  styleUrl: 'managed-sale.css',
   shadow: false,
 })
-export class SaleScreen {
+export class ManagedSale {
 
   @HostElement() host: HTMLElement;
 
@@ -126,11 +126,25 @@ export class SaleScreen {
 
   @Listen('ssapp-action')
   async create(evt){
+    if (evt.detail && evt.detail.action)
+      return;
+
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.sendAction.emit(new Sale({
-      productList: this.products.map(p => new IndividualProduct(p))
-    }));
+
+    let sale;
+    try {
+      sale = new Sale({
+        productList: JSON.parse(evt.detail.sale)
+      });
+    } catch (e) {
+      return this.sendError(`Could not parse sale`, e);
+    }
+
+    this.sendAction.emit({
+      action: "create",
+      sale: sale
+    });
   }
 
   private isCreate(){

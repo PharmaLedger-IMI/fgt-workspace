@@ -20,7 +20,7 @@ export default class SaleController extends LocalizedController {
         const participantManager = wizard.Managers.getParticipantManager();
         self.saleManager = wizard.Managers.getSaleManager(participantManager);
         self.saleManager.bindController(self);
-        self.saleEl = self.querySelector('sale-screen');
+        self.saleEl = self.querySelector('managed-sale');
 
         self.saleEl.updateDirectory();
 
@@ -52,6 +52,8 @@ export default class SaleController extends LocalizedController {
      */
     async _handleIssueSale(sale) {
         let self = this;
+        sale.id = sale.id || Date.now();
+        sale.sellerId = self.saleManager.getIdentity().id;
         if (sale.validate())
             return this.showErrorToast(this.translate(`create.error.invalid`));
 

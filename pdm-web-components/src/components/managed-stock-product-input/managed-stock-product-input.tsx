@@ -1,4 +1,4 @@
-import {Component, Host, h, Prop, State, Element, Event, EventEmitter, Listen, Method} from '@stencil/core';
+import {Component, Host, h, Prop, State, Element, Event, EventEmitter, Listen, Method, Watch} from '@stencil/core';
 import {WebManager, WebManagerService} from "../../services/WebManagerService";
 import {HostElement} from "../../decorators";
 import {getProductPopOver} from "../../utils/popOverUtils";
@@ -36,7 +36,9 @@ export class ManagedStockProductInput {
 
   @Prop({attribute: 'name'}) name: string;
   @Prop({attribute: 'required'}) required: boolean = false;
-  @Prop({attribute: 'disabled'}) disabled: boolean = false;
+  @Prop({attribute: 'disabled', mutable: true, reflect: true}) disabled: boolean = false;
+
+  @Prop({attribute: 'value', mutable: true, reflect: true}) value: string = '[]';
 
   @Prop({attribute: 'lines'}) lines: 'none' | 'inset' | 'full'  = 'inset';
   @Prop({attribute: 'label-position'}) labelPosition: "fixed" | "floating" | "stacked" = 'floating';
@@ -56,8 +58,6 @@ export class ManagedStockProductInput {
   @State() stock?: string[] = undefined;
 
   @State() currentGtin?: string = undefined;
-
-  @State() result: string = "[]";
 
   async componentWillLoad(){
     if (!this.host.isConnected)
@@ -90,13 +90,7 @@ export class ManagedStockProductInput {
     const self = this;
 
     const _addProduct = function(p){
-      const product = new IndividualProduct({
-        gtin: p.gtin,
-        batchNumber: p.batchNumber,
-        serialNumber: p.serialNumber,
-        expiry: p.expiry,
-        status: p.status
-      });
+      const product = new IndividualProduct(p);
 
       const previousProducts: (typeof IndividualProduct)[] = self.products || [];
       self.products = [...previousProducts, product];
@@ -111,7 +105,7 @@ export class ManagedStockProductInput {
       if (stock.getQuantity() < 1)
         return self.sendError(`The current stock for ${gtin} is not enough for ${gtin} items`);
       const sortedBatches = stock.batches.filter(b => b.getQuantity() > 0).sort((a, b) => {
-        return b.expiry.getTime() - a.expiry.getTime();
+        return a.expiry.getTime() - b.expiry.getTime();
       });
 
       let batch = sortedBatches[0];
@@ -120,6 +114,8 @@ export class ManagedStockProductInput {
       const __addProduct = function(){
         return _addProduct({
           gtin: gtin,
+          name: stock.name,
+          manufName: stock.manufName,
           batchNumber: batch.batchNumber,
           serialNumber: serial,
           expiry: batch.expiry,
@@ -136,13 +132,39 @@ export class ManagedStockProductInput {
       }
 
       // @ts-ignore
-      self.batchManager.getOne(gtin,batch.batchNumber, true, (err, batch: typeof Batch) => {
+      self.batchManager.getOne(`${gtin}-${batch.batchNumber}`, true, (err, batch: typeof Batch) => {
         if (err)
           return self.sendError(`Could not retrieve batch information for ${gtin}'s ${batch.batchNumber}`, err);
-        serial = batch.serialNumbers[0];
+        if (!self.products || !self.products.length){
+          serial = batch.serialNumbers[0];
+        } else {
+          const previousSerials = self.products.filter(p => p.gtin === gtin && p.batchNumber === batch.batchNumber)
+            .reduce((accum, p) => {
+              accum.push(p.serialNumber);
+              return accum;
+            }, []);
+
+          for (let i = 0; i < batch.serialNumbers.length; i++){
+            const tempSerial = batch.serialNumbers[0];
+            if (previousSerials.indexOf(tempSerial) !== -1)
+              continue;
+            serial = tempSerial;
+            break;
+          }
+        }
+
         __addProduct();
       });
     });
+  }
+
+  @Watch('products')
+  async updateResult(newValue){
+    if (!newValue || !newValue.length){
+      this.value = "[]";
+      return;
+    }
+    this.value = JSON.stringify(newValue);
   }
 
   @Method()
@@ -215,42 +237,14 @@ export class ManagedStockProductInput {
     )
   }
 
-  // private getQuantityInput(){
-  //   return (
-  //     <ion-item lines="none">
-  //       <ion-label position="stacked">{this.quantityString}</ion-label>
-  //       <ion-grid>
-  //         <ion-row>
-  //           <ion-col size="10">
-  //             <ion-range id="input-quantity-range" name="" min={0} max={Math.max(this.currentQuantity || 0, 100)}
-  //                        pin={true} value={this.currentQuantity || 0} color="secondary">
-  //               <ion-button slot="start" fill="clear" color="secondary"
-  //                           onClick={() => this.currentQuantity--}>
-  //                 <ion-icon color="secondary" slot="icon-only" name="remove-circle"></ion-icon>
-  //               </ion-button>
-  //               <ion-button slot="end" fill="clear" color="secondary"
-  //                           onClick={() => this.currentQuantity++}>
-  //                 <ion-icon slot="icon-only" name="add-circle"></ion-icon>
-  //               </ion-button>
-  //             </ion-range>
-  //           </ion-col>
-  //           <ion-col size="2" class="ion-padding-left">
-  //             <ion-input id="input-quantity" name="" type="number" value={this.currentQuantity || 1}></ion-input>
-  //           </ion-col>
-  //         </ion-row>
-  //       </ion-grid>
-  //       <ion-button slot="end" size="large" fill="clear" color="success"
-  //                   disabled={!this.currentGtin || !this.currentQuantity} onClick={this.addProduct.bind(this)}>
-  //         <ion-icon slot="icon-only" name="add-circle"></ion-icon>
-  //       </ion-button>
-  //     </ion-item>
-  //   )
-  // }
-
   private getProductsDisplay(){
+    if (!this.products)
+      return (
+        <ion-label>No Products Selected</ion-label>
+      );
     return (
       <ion-list>
-        {this.products.map(ip => <managed-individual-product-list-item gtin-btach-serial={`${ip.gtin}-${ip.batchNumber}-${ip.serialNumber}`}></managed-individual-product-list-item>)}
+        {this.products.map(ip => <managed-individual-product-list-item gtin-batch-serial={`${ip.gtin}-${ip.batchNumber}-${ip.serialNumber}`}></managed-individual-product-list-item>)}
       </ion-list>
 
     )
@@ -258,7 +252,7 @@ export class ManagedStockProductInput {
 
   private getInputElement(){
     return (
-      <input name={this.name} required={this.required} hidden={true} value={this.result}></input>
+      <input name={this.name} required={this.required} hidden={true} value={this.value}></input>
     )
   }
 
@@ -266,10 +260,9 @@ export class ManagedStockProductInput {
     return (
       <Host>
         {this.getProductInput()}
-        {this.getProductsDisplay()}
         {this.getInputElement()}
+        {this.getProductsDisplay()}
       </Host>
     );
   }
-
 }

@@ -1,5 +1,4 @@
-const {generateProductName, generateGtin, validateGtin, calculateGtinCheckSum, generateBatchNumber, generateRandomInt, genDate} = require('../../bin/environment/utils');
-const {isEqual} = require('../../pdm-dsu-toolkit/model/Utils');
+const {isEqual, generateGtin, genDate, generateProductName, generateBatchNumber, generateRandomInt, validateGtin, calculateGtinCheckSum, generate2DMatrixCode, getRandom} = require('../../pdm-dsu-toolkit/model/Utils');
 const ShipmentLine = require('./ShipmentLine');
 const Shipment = require('./Shipment');
 const Batch = require('./Batch');
@@ -93,16 +92,9 @@ const confirmWithStock = function(stockManager, shipment, stockObj, callback){
 }
 
 
-
-
-
-
-
-
-
-
-
 module.exports ={
+    getRandom,
+    generate2DMatrixCode,
     generateProductName,
     generateGtin,
     validateGtin,

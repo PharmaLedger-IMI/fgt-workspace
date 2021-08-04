@@ -7,6 +7,7 @@ const IndividualProduct = require('./IndividualProduct');
  */
 class Sale {
     id = undefined;
+    sellerId = undefined;
     productList = [];
 
     /**
@@ -23,11 +24,20 @@ class Sale {
             this.productList = this.productList.map(p => new IndividualProduct(p));
     }
 
-    validate() {
+    validate(isSingle = false) {
         if (!this.id)
             return "missing id";
         if (!this.productList || !this.productList.length)
             return 'No products';
+        if (isSingle && !this.getSingleManufName())
+            return "All product must belong to the same manufacturer";
+    }
+
+    getSingleManufName(){
+        const manufs = new Set(this.productList.map(p => p.manufName));
+        if (manufs.size !== 1)
+            return;
+        return [...manufs][0];
     }
 }
 
