@@ -114,7 +114,8 @@ export default class HomeController extends LocalizedController {
         console.log(`A tab navigation request was received, but no ion-tabs could be found...`)
         return;
       }
-      this.historyNavigator.addToHistory(props);
+      const {previousTab} = this.historyNavigator.addToHistory(props);
+      props.props = Object.assign(props.props || {}, {previousTab});
       self.setState(props.props);
       el.select(props.tab);
     }

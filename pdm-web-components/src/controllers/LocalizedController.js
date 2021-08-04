@@ -362,6 +362,21 @@ export default class LocalizedController extends BaseController {
     super.on(eventName, handler, options);
   }
 
+  static tabs ={
+    'tab-dashboard': 'Dashboard',
+    'tab-order"': 'Order',
+    'tab-received-orders': 'Received Orders',
+    'tab-issued-orders': 'Issued Orders',
+    'tab-issued-shipments': 'Issued Shipments',
+    'tab-received-shipments': 'Incoming Shipments',
+    'tab-stock': 'Stock',
+    'tab-shipment': 'Shipment',
+    'tab-products': 'Products',
+    'tab-batches': 'Batches',
+    'tab-shipment-lines': 'Shipment Lines',
+    'tab-individual-product': 'Product',
+}
+
   /**
    *
    * @param {boolean} [bindMessageHandlers] defaults to false. binds (or not) the error handler to the controller

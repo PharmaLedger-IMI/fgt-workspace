@@ -144,7 +144,7 @@
       "remaining": "Remaining:",
       "order-missing": "Order missing"
     },
-    "back": "Back",
+    "back": "Back to {0}",
     "status": "Shipment Status:",
     "scan": "Scan Product",
     "scan-code": "Scan Shipment Code",
@@ -247,7 +247,7 @@
         "error": "Could not update Order: "
       }
     },
-    "back": "Back to Orders",
+    "back": "Back to {0}",
     "scan": "Scan Product",
     "statuses": {
       "created": {

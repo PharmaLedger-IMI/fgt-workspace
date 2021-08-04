@@ -34,6 +34,7 @@ export default class ShipmentController extends LocalizedController{
             self.model.identity = self.issuedShipmentManager.getIdentity();
 
             const state = evt.detail;
+            self.model.back = this.translate('back', LocalizedController.tabs[state.previousTab]);
             if (state && state.mode) {
                 self.model.mode = state.mode;
                 if (state.order){
