@@ -77,10 +77,10 @@ export default class HomeController extends LocalizedController {
         });
 
         this.on(EVENT_BACK_NAVIGATE, (evt) => {
-          const navProps = this.historyNavigator.goBack();
+          const previousTabProps = this.historyNavigator.getPreviousTab();
           evt.preventDefault();
           evt.stopImmediatePropagation();
-          self._navigateToTab.call(self, navProps);
+          self._navigateToTab.call(self, previousTabProps);
         });
 
 

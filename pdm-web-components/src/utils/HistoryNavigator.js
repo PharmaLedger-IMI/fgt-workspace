@@ -27,7 +27,7 @@ export class HistoryNavigator {
     };
   }
 
-  goBack() {
+  getPreviousTab() {
     this.#previous = this.#history.pop() || this.homepage;
     return this.#previous;
   }
