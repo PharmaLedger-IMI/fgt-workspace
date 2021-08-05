@@ -66,7 +66,8 @@ const DB = {
     shipmentLines: 'shipmentLines',
     individualProduct: 'individualProduct',
     directory: 'directory',
-    sales: 'sales'
+    sales: 'sales',
+    receipts: 'receipts'
 }
 
 /**

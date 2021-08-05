@@ -2,6 +2,7 @@ const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../con
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Sale = require('../model/Sale');
 const Batch = require('../model/Batch');
+const utils = require('../services').utils;
 
 /**
  * Stock Manager Class
@@ -182,7 +183,17 @@ class SaleManager extends Manager{
                 if (err)
                     return callback(err);
                 accumulator[mah] = keySSIs;
-                self.sendMessage(mah, DB.sales, JSON.stringify(keySSIs), err =>
+                const keySSISpace = utils.getKeySSISpace();
+
+                let readSSIs;
+
+                try {
+                    readSSIs = keySSIs.map(k => keySSISpace.parse(k).derive())
+                } catch(e) {
+                    return callback(`Invalid keys found`);
+                }
+
+                self.sendMessage(mah, DB.receipts, readSSIs, err =>
                     self._messageCallback(err ? `Could not send message` : `Message to Mah ${mah} sent with sales`));
                 createAndNotifyIterator(mahs, accumulator, callback);
             });

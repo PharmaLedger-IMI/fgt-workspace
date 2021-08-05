@@ -23,6 +23,7 @@ module.exports = {
     StockStatus: require('./StockStatus'),
     DirectoryEntry: require('./DirectoryEntry').DirectoryEntry,
     ROLE: require('./DirectoryEntry').ROLE,
+    Receipt: require('./Receipt'),
     ShipmentCode: require('./ShipmentCode'),
     TrackingCode: require('./TrackingCode'),
     IndividualProduct: require('./IndividualProduct'),

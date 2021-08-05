@@ -62,7 +62,7 @@ export class ManagedSale {
       console.log(`Tab Navigation request seems to have been ignored by all components...`);
   }
 
-  @Prop({attribute: 'sale-ref', mutable: true, reflect: true}) saleRef?: string = undefined;
+  @Prop({attribute: 'sale-ref', mutable: true}) saleRef?: string = undefined;
 
   // strings
   @Prop({attribute: "create-title-string"}) titleString: string = "Title String";

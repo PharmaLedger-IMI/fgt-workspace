@@ -5,8 +5,7 @@ export default class SaleController extends LocalizedController {
 
     initializeModel = () => ({
         identity: {},
-        saleRef: '',
-        sale: "{}"
+        saleRef: ''
     });
 
     constructor(...args) {
