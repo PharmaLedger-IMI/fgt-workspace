@@ -111,7 +111,7 @@
         }
       }
     },
-    "back": "Back to Products",
+    "back": "Back to {0}",
     "scan": "Scan Product",
     "error": {
       "bind": "Could not bind participant to Product",
@@ -182,7 +182,7 @@
     "manage": {
       "title": "Manage Batch"
     },
-    "back": "Back to Product",
+    "back": "Back to {0}",
     "error": {
       "bind": "Could not bind Product to Batch",
       "invalid": "Invalid Batch:\n",
@@ -262,7 +262,7 @@
       "remaining": "Remaining:",
       "order-missing": "Order missing"
     },
-    "back": "Back",
+    "back": "Back to {0}",
     "status": "Shipment Status:",
     "scan": "Scan Product",
     "scan-code": "Scan Shipment Code",
@@ -365,7 +365,7 @@
         "error": "Could not update Order: "
       }
     },
-    "back": "Back to Orders",
+    "back": "Back to {0}",
     "scan": "Scan Product",
     "statuses": {
       "created": {
@@ -480,7 +480,7 @@
         "error": "Could not update: "
       }
     },
-    "back": "Back to Products",
+    "back": "Back to {0}",
     "statuses": {
       "commissioned": {
         "action": "Commission Product",
