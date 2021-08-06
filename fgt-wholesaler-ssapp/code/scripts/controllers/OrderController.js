@@ -1,4 +1,4 @@
-import { LocalizedController, EVENT_REFRESH, EVENT_ACTION, EVENT_SSAPP_HAS_LOADED, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
+import { LocalizedController, HistoryNavigator, EVENT_REFRESH, EVENT_ACTION, EVENT_SSAPP_HAS_LOADED, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
 const {OrderStatus} = require('wizard').Model;
 
 

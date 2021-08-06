@@ -10,7 +10,7 @@ import {
   EVENT_BACK_NAVIGATE
 } from '../constants/events'
 import {WebManagerService} from '../services/WebManagerService';
-import {HistoryNavigator} from "../utils/HistoryNavigator";
+import HistoryNavigator from "../utils/HistoryNavigator";
 
 /**
  * Main Controller For the SSApp Architecture. Should be instantiated like so:
