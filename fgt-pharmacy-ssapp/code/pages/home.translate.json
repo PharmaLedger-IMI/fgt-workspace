@@ -43,6 +43,7 @@
     }
   },
   "shipment": {
+    "title": "Shipments",
     "create": {
       "title": "Create Shipment",
       "from": "Shipment from:",
@@ -93,6 +94,7 @@
       }
     },
     "stock": {
+      "title": "Stock",
       "stock": "Stock:",
       "no-stock": "No Stock for selected Product",
       "reset-all": "Reset All",
@@ -160,6 +162,7 @@
     }
   },
   "order": {
+    "title": "Orders",
     "create": {
       "title": "Create Order",
       "from": "Order from:",
@@ -271,7 +274,7 @@
     "none": "No products in stock..."
   },
   "dashboard": {
-    "title": "This is a Dashboard",
+    "title": "Dashboard",
     "none": "There are no pending orders"
   }
 }

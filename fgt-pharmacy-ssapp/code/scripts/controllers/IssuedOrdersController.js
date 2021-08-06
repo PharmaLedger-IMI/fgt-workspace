@@ -1,4 +1,4 @@
-import { LocalizedController, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
+import { LocalizedController, HistoryNavigator, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
 
 /**
  * List all the orders, and allows the creation of new orders.
@@ -17,6 +17,9 @@ export default class IssuedOrdersController extends LocalizedController {
         const participantManager = wizard.Managers.getParticipantManager();
         this.issuedOrderManager = wizard.Managers.getIssuedOrderManager(participantManager);
         this.table = this.element.querySelector('pdm-ion-table');
+        HistoryNavigator.registerTab({
+            'tab-issued-orders': this.translate('title')
+        })
 
         let self = this;
         // the HomeController takes care of sending refresh events for each tab.
