@@ -438,6 +438,9 @@ export namespace Components {
         "statesJSON": any;
         "updateString"?: string;
     }
+    interface TreeView {
+        "objectTree": object;
+    }
 }
 declare global {
     interface HTMLBarcodeGeneratorElement extends Components.BarcodeGenerator, HTMLStencilElement {
@@ -668,6 +671,12 @@ declare global {
         prototype: HTMLStatusUpdaterElement;
         new (): HTMLStatusUpdaterElement;
     };
+    interface HTMLTreeViewElement extends Components.TreeView, HTMLStencilElement {
+    }
+    var HTMLTreeViewElement: {
+        prototype: HTMLTreeViewElement;
+        new (): HTMLTreeViewElement;
+    };
     interface HTMLElementTagNameMap {
         "barcode-generator": HTMLBarcodeGeneratorElement;
         "batch-chip": HTMLBatchChipElement;
@@ -707,6 +716,7 @@ declare global {
         "slide-in-board": HTMLSlideInBoardElement;
         "status-badge": HTMLStatusBadgeElement;
         "status-updater": HTMLStatusUpdaterElement;
+        "tree-view": HTMLTreeViewElement;
     }
 }
 declare namespace LocalJSX {
@@ -1312,6 +1322,9 @@ declare namespace LocalJSX {
         "statesJSON"?: any;
         "updateString"?: string;
     }
+    interface TreeView {
+        "objectTree"?: object;
+    }
     interface IntrinsicElements {
         "barcode-generator": BarcodeGenerator;
         "batch-chip": BatchChip;
@@ -1351,6 +1364,7 @@ declare namespace LocalJSX {
         "slide-in-board": SlideInBoard;
         "status-badge": StatusBadge;
         "status-updater": StatusUpdater;
+        "tree-view": TreeView;
     }
 }
 export { LocalJSX as JSX };
@@ -1395,6 +1409,7 @@ declare module "@stencil/core" {
             "slide-in-board": LocalJSX.SlideInBoard & JSXBase.HTMLAttributes<HTMLSlideInBoardElement>;
             "status-badge": LocalJSX.StatusBadge & JSXBase.HTMLAttributes<HTMLStatusBadgeElement>;
             "status-updater": LocalJSX.StatusUpdater & JSXBase.HTMLAttributes<HTMLStatusUpdaterElement>;
+            "tree-view": LocalJSX.TreeView & JSXBase.HTMLAttributes<HTMLTreeViewElement>;
         }
     }
 }

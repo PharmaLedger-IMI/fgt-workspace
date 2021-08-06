@@ -1,0 +1,318 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap");
+
+:host {
+  display: block;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  background-color: #F9FBFC;
+  color: #111;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+}
+
+.traceability {
+  margin-top: 2em;
+}
+.traceability .traceability__container {
+  margin: 0 auto;
+  width: 1200px;
+}
+.traceability .traceability__container .traceability__top {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.traceability .traceability__container .traceability__top .traceability__top-pin {
+  display: inline-block;
+  height: 23px;
+  width: 23px;
+  border-radius: 50% 50% 50% 0;
+  background-color: #113458;
+  transform: rotate(-45deg);
+  position: relative;
+  margin-bottom: 1em;
+}
+.traceability .traceability__container .traceability__top .traceability__top-pin:before {
+  content: "";
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  background-color: #F9FBFC;
+  position: absolute;
+  top: calc(80% - 10px);
+  left: calc(76% - 10px);
+}
+.traceability .traceability__container .traceability__top .traceability__top-pin:after {
+  content: "";
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  border: 2px solid #113458;
+  position: absolute;
+  left: -15px;
+  bottom: -15px;
+  animation: locate 2s ease-out infinite;
+}
+@keyframes locate {
+  from {
+    transform: perspective(30px) rotateY(60deg) rotateX(40deg) scale(0.7);
+  }
+  to {
+    transform: perspective(40px) rotateY(60deg) rotateX(40deg) scale(1);
+    opacity: 0.1;
+  }
+}
+.traceability .traceability__container .traceability__top .traceability__top-group {
+  text-align: center;
+}
+.traceability .traceability__container .traceability__top .traceability__top-group .traceability__top-title {
+  font-size: 18px;
+  color: #113458;
+}
+.traceability .traceability__container .traceability__top .traceability__top-group .traceability__top-subtitle {
+  font-size: 14px;
+  color: #8899AB;
+  width: 300px !important;
+  margin: 0 auto;
+  white-space: initial;
+}
+.traceability .traceability__container .traceability__top .traceability__top-box {
+  margin-top: 1em;
+  padding: 0.9em 1.3em 0.1em;
+  background-color: white;
+  border: 1px solid rgba(189, 202, 223, 0.8);
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+  transition: 0.2s ease-in-out;
+}
+.traceability .traceability__container .traceability__top .traceability__top-box::before {
+  content: attr(data-title);
+  position: absolute;
+  text-align: left;
+  width: 200px;
+  background-color: #113458;
+  color: white;
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 10px;
+  border-radius: 8px;
+  left: calc(100% + 10px);
+  top: 0;
+  opacity: 0;
+  transition: 0.2s ease-in-out;
+  transform: translateY(-10px);
+  z-index: 4;
+  visibility: hidden;
+  white-space: initial;
+}
+.traceability .traceability__container .traceability__top .traceability__top-box:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-2px);
+}
+.traceability .traceability__container .traceability__top .traceability__top-box::after {
+  content: "";
+  position: absolute;
+  display: inline-block;
+  height: 20px;
+  width: 1px;
+  bottom: -30%;
+  left: 50%;
+  background-color: rgba(189, 202, 223, 0.8);
+  z-index: -1;
+}
+.traceability .traceability__container .traceability__top .traceability__top-box .traceability__top-box-img {
+  background: white url("data:image/svg+xml,%3Csvg width='24' height='26' viewBox='0 0 24 26' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M22.6666 6.0169C22.7014 5.99658 22.7303 5.96748 22.7504 5.93251C22.7705 5.89754 22.7811 5.85791 22.7811 5.81758C22.7811 5.77725 22.7705 5.73763 22.7504 5.70266C22.7303 5.66768 22.7014 5.63859 22.6666 5.61826L13.855 0.498848C13.2912 0.172045 12.6511 -6.10352e-05 11.9994 -6.10352e-05C11.3477 -6.10352e-05 10.7076 0.172045 10.1438 0.498848L1.33396 5.61826C1.29912 5.63859 1.27022 5.66768 1.25014 5.70266C1.23005 5.73763 1.21948 5.77725 1.21948 5.81758C1.21948 5.85791 1.23005 5.89754 1.25014 5.93251C1.27022 5.96748 1.29912 5.99658 1.33396 6.0169L11.8843 12.2232C11.9198 12.2441 11.9602 12.2551 12.0014 12.2551C12.0426 12.2551 12.083 12.2441 12.1185 12.2232L22.6666 6.0169Z' fill='%23113458'/%3E%3Cpath d='M0.346168 7.58668C0.310975 7.56636 0.271042 7.55569 0.230405 7.55576C0.189768 7.55582 0.149869 7.56662 0.114742 7.58705C0.0796155 7.60748 0.050507 7.63682 0.0303598 7.67212C0.0102126 7.70741 -0.000258744 7.74739 4.8566e-06 7.78803V17.8204C0.000875862 18.3039 0.128298 18.7787 0.369599 19.1976C0.610899 19.6165 0.95767 19.965 1.37542 20.2083L10.731 25.8179C10.7661 25.8382 10.8059 25.8488 10.8464 25.8488C10.8869 25.8488 10.9266 25.8382 10.9617 25.818C10.9968 25.7977 11.0259 25.7686 11.0462 25.7336C11.0665 25.6985 11.0772 25.6588 11.0772 25.6183V13.9786C11.0772 13.9381 11.0665 13.8984 11.0462 13.8633C11.026 13.8283 10.9969 13.7992 10.9618 13.7789L0.346168 7.58668Z' fill='%23113458'/%3E%3Cpath d='M12.9226 14.0189V25.6153C12.9226 25.6558 12.9333 25.6956 12.9536 25.7306C12.9739 25.7657 13.003 25.7948 13.0381 25.815C13.0732 25.8352 13.113 25.8459 13.1534 25.8459C13.1939 25.8459 13.2337 25.8352 13.2688 25.815L22.6238 20.2054C23.0413 19.9624 23.3879 19.6144 23.6293 19.196C23.8706 18.7776 23.9984 18.3034 23.9998 17.8203V7.78796C23.9997 7.74752 23.9889 7.70783 23.9686 7.67286C23.9483 7.63789 23.9191 7.60887 23.8841 7.58871C23.849 7.56856 23.8093 7.55796 23.7688 7.558C23.7284 7.55803 23.6887 7.5687 23.6537 7.58892L13.038 13.8198C13.003 13.84 12.974 13.869 12.9537 13.904C12.9335 13.9389 12.9227 13.9785 12.9226 14.0189Z' fill='%23113458'/%3E%3C/svg%3E%0A") no-repeat center;
+  width: 24px;
+  height: 26px;
+  transition: 0.2s ease-in-out;
+}
+.traceability .traceability__container .traceability__middle {
+  margin-top: 1.2em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.traceability .traceability__container .traceability__middle .traceability__middle-boxes {
+  margin-top: -1px;
+}
+.traceability .traceability__container .traceability__middle .traceability__middle-boxes .traceability__middle-boxes-line {
+  display: block;
+  width: calc(100% - 64px);
+  margin: 0 auto;
+  height: 1px;
+  background-color: rgba(189, 202, 223, 0.8);
+}
+.traceability .traceability__container .traceability__middle .traceability__middle-boxes .traceability__middle-boxes-items {
+  margin: 1.1em 0;
+  display: flex;
+  gap: 0 1em;
+}
+.traceability .traceability__container .traceability__middle .traceability__middle-boxes .traceability__middle-boxes-items .traceability__middle-box-all {
+  position: relative;
+}
+.traceability .traceability__container .traceability__middle .traceability__middle-boxes .traceability__middle-boxes-items .traceability__middle-box-all .traceability__middle-box {
+  padding: 1.2em;
+  background-color: white;
+  border: 1px solid rgba(189, 202, 223, 0.8);
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+}
+.traceability .traceability__container .traceability__middle .traceability__middle-boxes .traceability__middle-boxes-items .traceability__middle-box-all .traceability__middle-box::after {
+  content: "";
+  position: absolute;
+  display: inline-block;
+  height: 20px;
+  width: 1px;
+  top: -30%;
+  left: 50%;
+  background-color: rgba(189, 202, 223, 0.8);
+  z-index: -1;
+}
+.traceability .traceability__container .traceability__middle .traceability__middle-boxes .traceability__middle-boxes-items .traceability__middle-box-all .traceability__middle-box::before {
+  content: "";
+  position: absolute;
+  display: inline-block;
+  height: 20px;
+  width: 1px;
+  bottom: -30%;
+  left: 50%;
+  background-color: rgba(189, 202, 223, 0.8);
+  z-index: -1;
+}
+.traceability .traceability__container .traceability__middle .traceability__middle-boxes .traceability__middle-boxes-items .traceability__middle-box-all .traceability__middle-box .traceability__middle-box-img {
+  /* Encode svg: https://yoksel.github.io/url-encoder/ */
+  background: center no-repeat url("data:image/svg+xml,%3Csvg width='24' height='26' viewBox='0 0 24 26' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M22.6666 6.0169C22.7014 5.99658 22.7303 5.96748 22.7504 5.93251C22.7705 5.89754 22.7811 5.85791 22.7811 5.81758C22.7811 5.77725 22.7705 5.73763 22.7504 5.70266C22.7303 5.66768 22.7014 5.63859 22.6666 5.61826L13.855 0.498848C13.2912 0.172045 12.6511 -6.10352e-05 11.9994 -6.10352e-05C11.3477 -6.10352e-05 10.7076 0.172045 10.1438 0.498848L1.33396 5.61826C1.29912 5.63859 1.27022 5.66768 1.25014 5.70266C1.23005 5.73763 1.21948 5.77725 1.21948 5.81758C1.21948 5.85791 1.23005 5.89754 1.25014 5.93251C1.27022 5.96748 1.29912 5.99658 1.33396 6.0169L11.8843 12.2232C11.9198 12.2441 11.9602 12.2551 12.0014 12.2551C12.0426 12.2551 12.083 12.2441 12.1185 12.2232L22.6666 6.0169Z' fill='%23113458'/%3E%3Cpath d='M0.346168 7.58668C0.310975 7.56636 0.271042 7.55569 0.230405 7.55576C0.189768 7.55582 0.149869 7.56662 0.114742 7.58705C0.0796155 7.60748 0.050507 7.63682 0.0303598 7.67212C0.0102126 7.70741 -0.000258744 7.74739 4.8566e-06 7.78803V17.8204C0.000875862 18.3039 0.128298 18.7787 0.369599 19.1976C0.610899 19.6165 0.95767 19.965 1.37542 20.2083L10.731 25.8179C10.7661 25.8382 10.8059 25.8488 10.8464 25.8488C10.8869 25.8488 10.9266 25.8382 10.9617 25.818C10.9968 25.7977 11.0259 25.7686 11.0462 25.7336C11.0665 25.6985 11.0772 25.6588 11.0772 25.6183V13.9786C11.0772 13.9381 11.0665 13.8984 11.0462 13.8633C11.026 13.8283 10.9969 13.7992 10.9618 13.7789L0.346168 7.58668Z' fill='%23113458'/%3E%3Cpath d='M12.9226 14.0189V25.6153C12.9226 25.6558 12.9333 25.6956 12.9536 25.7306C12.9739 25.7657 13.003 25.7948 13.0381 25.815C13.0732 25.8352 13.113 25.8459 13.1534 25.8459C13.1939 25.8459 13.2337 25.8352 13.2688 25.815L22.6238 20.2054C23.0413 19.9624 23.3879 19.6144 23.6293 19.196C23.8706 18.7776 23.9984 18.3034 23.9998 17.8203V7.78796C23.9997 7.74752 23.9889 7.70783 23.9686 7.67286C23.9483 7.63789 23.9191 7.60887 23.8841 7.58871C23.849 7.56856 23.8093 7.55796 23.7688 7.558C23.7284 7.55803 23.6887 7.5687 23.6537 7.58892L13.038 13.8198C13.003 13.84 12.974 13.869 12.9537 13.904C12.9335 13.9389 12.9227 13.9785 12.9226 14.0189Z' fill='%23113458'/%3E%3C/svg%3E%0A");
+  width: 24px;
+  height: 26px;
+  transition: 0.2s ease-in-out;
+}
+.traceability .traceability__container .traceability__middle .traceability__middle-boxes .traceability__middle-boxes-items .traceability__middle-box-all::before {
+  content: attr(data-title);
+  position: absolute;
+  text-align: left;
+  width: 200px;
+  background-color: #113458;
+  color: white;
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 10px;
+  border-radius: 8px;
+  left: calc(100% + 10px);
+  top: 0;
+  opacity: 0;
+  transition: 0.2s ease-in-out;
+  transform: translateY(-10px);
+  z-index: 4;
+  visibility: hidden;
+  white-space: initial;
+}
+.traceability .traceability__container .traceability__middle .traceability__middle-boxes .traceability__middle-boxes-items .traceability__middle-box-all:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-2px);
+}
+.traceability .traceability__container .traceability__middle .traceability__middle-boxes .traceability__middle-boxes-items .track .traceability__middle-box {
+  background-color: #113458;
+  border: 1px solid #113458;
+}
+.traceability .traceability__container .traceability__middle .traceability__middle-boxes .traceability__middle-boxes-items .track .traceability__middle-box .traceability__middle-box-img {
+  background: center no-repeat url("data:image/svg+xml,%3Csvg width='24' height='26' viewBox='0 0 24 26' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0)'%3E%3Cpath d='M22.6666 6.0169C22.7014 5.99658 22.7303 5.96748 22.7504 5.93251C22.7705 5.89754 22.7811 5.85791 22.7811 5.81758C22.7811 5.77725 22.7705 5.73763 22.7504 5.70266C22.7303 5.66768 22.7014 5.63859 22.6666 5.61826L13.855 0.498848C13.2912 0.172045 12.6511 -6.10352e-05 11.9994 -6.10352e-05C11.3477 -6.10352e-05 10.7076 0.172045 10.1438 0.498848L1.33396 5.61826C1.29912 5.63859 1.27022 5.66768 1.25014 5.70266C1.23005 5.73763 1.21948 5.77725 1.21948 5.81758C1.21948 5.85791 1.23005 5.89754 1.25014 5.93251C1.27022 5.96748 1.29912 5.99658 1.33396 6.0169L11.8843 12.2232C11.9198 12.2441 11.9602 12.2551 12.0014 12.2551C12.0426 12.2551 12.083 12.2441 12.1185 12.2232L22.6666 6.0169Z' fill='white'/%3E%3Cpath d='M0.346168 7.58668C0.310975 7.56636 0.271042 7.55569 0.230405 7.55576C0.189768 7.55582 0.149869 7.56662 0.114742 7.58705C0.0796155 7.60748 0.050507 7.63682 0.0303598 7.67212C0.0102126 7.70741 -0.000258744 7.74739 4.85657e-06 7.78803V17.8204C0.000875862 18.3039 0.128298 18.7787 0.369599 19.1976C0.610899 19.6165 0.95767 19.965 1.37542 20.2083L10.731 25.8179C10.7661 25.8382 10.8059 25.8488 10.8464 25.8488C10.8869 25.8488 10.9266 25.8382 10.9617 25.818C10.9968 25.7977 11.0259 25.7686 11.0462 25.7336C11.0665 25.6985 11.0772 25.6588 11.0772 25.6183V13.9786C11.0772 13.9381 11.0665 13.8984 11.0462 13.8633C11.026 13.8283 10.9969 13.7992 10.9618 13.7789L0.346168 7.58668Z' fill='white'/%3E%3Cpath d='M12.9226 14.0189V25.6153C12.9226 25.6558 12.9333 25.6956 12.9536 25.7306C12.9739 25.7657 13.003 25.7948 13.0381 25.815C13.0732 25.8352 13.113 25.8459 13.1534 25.8459C13.1939 25.8459 13.2337 25.8352 13.2688 25.815L22.6238 20.2054C23.0413 19.9624 23.3879 19.6144 23.6293 19.196C23.8706 18.7776 23.9984 18.3034 23.9998 17.8203V7.78796C23.9997 7.74752 23.9889 7.70783 23.9686 7.67286C23.9483 7.63789 23.9191 7.60887 23.8841 7.58871C23.849 7.56856 23.8093 7.55796 23.7688 7.558C23.7284 7.55803 23.6887 7.5687 23.6537 7.58892L13.038 13.8198C13.003 13.84 12.974 13.869 12.9537 13.904C12.9335 13.9389 12.9227 13.9785 12.9226 14.0189Z' fill='white'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0'%3E%3Crect width='24' height='26' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E%0A");
+}
+.traceability .traceability__container .traceability__bottom {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.traceability .traceability__container .traceability__bottom .traceability__middle-box-all {
+  position: relative;
+}
+.traceability .traceability__container .traceability__bottom .traceability__middle-box-all .traceability__middle-box {
+  padding: 1.2em;
+  background-color: white;
+  border: 1px solid rgba(189, 202, 223, 0.8);
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+}
+.traceability .traceability__container .traceability__bottom .traceability__middle-box-all .traceability__middle-box::after {
+  content: "";
+  position: absolute;
+  display: inline-block;
+  height: 20px;
+  width: 1px;
+  top: -30%;
+  left: 50%;
+  background-color: rgba(189, 202, 223, 0.8);
+  z-index: -1;
+}
+.traceability .traceability__container .traceability__bottom .traceability__middle-box-all .traceability__middle-box .traceability__middle-box-img {
+  /* Encode svg: https://yoksel.github.io/url-encoder/ */
+  background: center no-repeat url("data:image/svg+xml,%3Csvg width='24' height='26' viewBox='0 0 24 26' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M22.6666 6.0169C22.7014 5.99658 22.7303 5.96748 22.7504 5.93251C22.7705 5.89754 22.7811 5.85791 22.7811 5.81758C22.7811 5.77725 22.7705 5.73763 22.7504 5.70266C22.7303 5.66768 22.7014 5.63859 22.6666 5.61826L13.855 0.498848C13.2912 0.172045 12.6511 -6.10352e-05 11.9994 -6.10352e-05C11.3477 -6.10352e-05 10.7076 0.172045 10.1438 0.498848L1.33396 5.61826C1.29912 5.63859 1.27022 5.66768 1.25014 5.70266C1.23005 5.73763 1.21948 5.77725 1.21948 5.81758C1.21948 5.85791 1.23005 5.89754 1.25014 5.93251C1.27022 5.96748 1.29912 5.99658 1.33396 6.0169L11.8843 12.2232C11.9198 12.2441 11.9602 12.2551 12.0014 12.2551C12.0426 12.2551 12.083 12.2441 12.1185 12.2232L22.6666 6.0169Z' fill='%23113458'/%3E%3Cpath d='M0.346168 7.58668C0.310975 7.56636 0.271042 7.55569 0.230405 7.55576C0.189768 7.55582 0.149869 7.56662 0.114742 7.58705C0.0796155 7.60748 0.050507 7.63682 0.0303598 7.67212C0.0102126 7.70741 -0.000258744 7.74739 4.8566e-06 7.78803V17.8204C0.000875862 18.3039 0.128298 18.7787 0.369599 19.1976C0.610899 19.6165 0.95767 19.965 1.37542 20.2083L10.731 25.8179C10.7661 25.8382 10.8059 25.8488 10.8464 25.8488C10.8869 25.8488 10.9266 25.8382 10.9617 25.818C10.9968 25.7977 11.0259 25.7686 11.0462 25.7336C11.0665 25.6985 11.0772 25.6588 11.0772 25.6183V13.9786C11.0772 13.9381 11.0665 13.8984 11.0462 13.8633C11.026 13.8283 10.9969 13.7992 10.9618 13.7789L0.346168 7.58668Z' fill='%23113458'/%3E%3Cpath d='M12.9226 14.0189V25.6153C12.9226 25.6558 12.9333 25.6956 12.9536 25.7306C12.9739 25.7657 13.003 25.7948 13.0381 25.815C13.0732 25.8352 13.113 25.8459 13.1534 25.8459C13.1939 25.8459 13.2337 25.8352 13.2688 25.815L22.6238 20.2054C23.0413 19.9624 23.3879 19.6144 23.6293 19.196C23.8706 18.7776 23.9984 18.3034 23.9998 17.8203V7.78796C23.9997 7.74752 23.9889 7.70783 23.9686 7.67286C23.9483 7.63789 23.9191 7.60887 23.8841 7.58871C23.849 7.56856 23.8093 7.55796 23.7688 7.558C23.7284 7.55803 23.6887 7.5687 23.6537 7.58892L13.038 13.8198C13.003 13.84 12.974 13.869 12.9537 13.904C12.9335 13.9389 12.9227 13.9785 12.9226 14.0189Z' fill='%23113458'/%3E%3C/svg%3E%0A");
+  width: 24px;
+  height: 26px;
+  transition: 0.2s ease-in-out;
+}
+.traceability .traceability__container .traceability__bottom .traceability__middle-box-all::before {
+  content: attr(data-title);
+  position: absolute;
+  text-align: left;
+  width: 200px;
+  background-color: #113458;
+  color: white;
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 10px;
+  border-radius: 8px;
+  left: calc(100% + 10px);
+  top: 0;
+  opacity: 0;
+  transition: 0.2s ease-in-out;
+  transform: translateY(-10px);
+  z-index: 4;
+  visibility: hidden;
+  white-space: initial;
+}
+.traceability .traceability__container .traceability__bottom .traceability__middle-box-all:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-2px);
+}
+.traceability .traceability__container .traceability__bottom .track .traceability__middle-box {
+  background-color: #113458;
+  border: 1px solid #113458;
+}
+.traceability .traceability__container .traceability__bottom .track .traceability__middle-box .traceability__middle-box-img {
+  /* Encode svg: https://yoksel.github.io/url-encoder/ */
+  background: center no-repeat url("data:image/svg+xml,%3Csvg width='24' height='26' viewBox='0 0 24 26' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0)'%3E%3Cpath d='M22.6666 6.0169C22.7014 5.99658 22.7303 5.96748 22.7504 5.93251C22.7705 5.89754 22.7811 5.85791 22.7811 5.81758C22.7811 5.77725 22.7705 5.73763 22.7504 5.70266C22.7303 5.66768 22.7014 5.63859 22.6666 5.61826L13.855 0.498848C13.2912 0.172045 12.6511 -6.10352e-05 11.9994 -6.10352e-05C11.3477 -6.10352e-05 10.7076 0.172045 10.1438 0.498848L1.33396 5.61826C1.29912 5.63859 1.27022 5.66768 1.25014 5.70266C1.23005 5.73763 1.21948 5.77725 1.21948 5.81758C1.21948 5.85791 1.23005 5.89754 1.25014 5.93251C1.27022 5.96748 1.29912 5.99658 1.33396 6.0169L11.8843 12.2232C11.9198 12.2441 11.9602 12.2551 12.0014 12.2551C12.0426 12.2551 12.083 12.2441 12.1185 12.2232L22.6666 6.0169Z' fill='white'/%3E%3Cpath d='M0.346168 7.58668C0.310975 7.56636 0.271042 7.55569 0.230405 7.55576C0.189768 7.55582 0.149869 7.56662 0.114742 7.58705C0.0796155 7.60748 0.050507 7.63682 0.0303598 7.67212C0.0102126 7.70741 -0.000258744 7.74739 4.85657e-06 7.78803V17.8204C0.000875862 18.3039 0.128298 18.7787 0.369599 19.1976C0.610899 19.6165 0.95767 19.965 1.37542 20.2083L10.731 25.8179C10.7661 25.8382 10.8059 25.8488 10.8464 25.8488C10.8869 25.8488 10.9266 25.8382 10.9617 25.818C10.9968 25.7977 11.0259 25.7686 11.0462 25.7336C11.0665 25.6985 11.0772 25.6588 11.0772 25.6183V13.9786C11.0772 13.9381 11.0665 13.8984 11.0462 13.8633C11.026 13.8283 10.9969 13.7992 10.9618 13.7789L0.346168 7.58668Z' fill='white'/%3E%3Cpath d='M12.9226 14.0189V25.6153C12.9226 25.6558 12.9333 25.6956 12.9536 25.7306C12.9739 25.7657 13.003 25.7948 13.0381 25.815C13.0732 25.8352 13.113 25.8459 13.1534 25.8459C13.1939 25.8459 13.2337 25.8352 13.2688 25.815L22.6238 20.2054C23.0413 19.9624 23.3879 19.6144 23.6293 19.196C23.8706 18.7776 23.9984 18.3034 23.9998 17.8203V7.78796C23.9997 7.74752 23.9889 7.70783 23.9686 7.67286C23.9483 7.63789 23.9191 7.60887 23.8841 7.58871C23.849 7.56856 23.8093 7.55796 23.7688 7.558C23.7284 7.55803 23.6887 7.5687 23.6537 7.58892L13.038 13.8198C13.003 13.84 12.974 13.869 12.9537 13.904C12.9335 13.9389 12.9227 13.9785 12.9226 14.0189Z' fill='white'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0'%3E%3Crect width='24' height='26' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E%0A");
+}
+.traceability .traceability__container .traceability__bottom .traceability__bottom-group {
+  margin-top: 1em;
+  text-align: center;
+}
+.traceability .traceability__container .traceability__bottom .traceability__bottom-group .traceability__bottom-title {
+  font-size: 18px;
+  color: #113458;
+}
+.traceability .traceability__container .traceability__bottom .traceability__bottom-group .traceability__bottom-subtitle {
+  font-size: 14px;
+  color: #8899AB;
+  width: 300px !important;
+  margin: 0 auto;
+  white-space: initial;
+}
