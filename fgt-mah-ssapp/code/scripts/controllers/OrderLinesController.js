@@ -1,4 +1,4 @@
-import { LocalizedController, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
+import {LocalizedController, HistoryNavigator, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
 
 /**
  * Controls Application Flow
@@ -21,6 +21,9 @@ export default class OrderLinesController extends LocalizedController {
         this.orderLineManager.bindController(this);
 
         this.model = this.initializeModel();
+        HistoryNavigator.registerTab({
+            'tab-order-lines': this.translate('title')
+        })
 
         let self = this;
         self.on(EVENT_REFRESH, (evt) => {

@@ -1,4 +1,4 @@
-import { LocalizedController, EVENT_REFRESH, EVENT_ACTION, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
+import { LocalizedController, HistoryNavigator, EVENT_REFRESH, EVENT_ACTION, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
 
 /**
  * Controls Application Flow
@@ -25,6 +25,9 @@ export default class ProductController extends LocalizedController {
         const participantManager = wizard.Managers.getParticipantManager();
         this.productManager = wizard.Managers.getProductManager(participantManager);
         this.productEl = this.element.querySelector('managed-product');
+        HistoryNavigator.registerTab({
+            'tab-product': self.translate('title')
+        })
 
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
@@ -32,7 +35,7 @@ export default class ProductController extends LocalizedController {
             self.model.manufId = self.productManager.getIdentity().id;
 
             const state = evt.detail;
-            self.model.back = this.translate('back', LocalizedController.tabs[state.previousTab]);
+            self.model.back = this.translate('back', state.previousTab.label);
             if (state && state.gtin){
                 if (state.gtin === self.model.gtinRef)
                     return self.productEl.refresh();

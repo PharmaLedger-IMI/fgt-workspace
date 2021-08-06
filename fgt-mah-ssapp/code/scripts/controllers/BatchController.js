@@ -1,4 +1,4 @@
-import {LocalizedController, EVENT_REFRESH, EVENT_ACTION, BUTTON_ROLES} from "../../assets/pdm-web-components/index.esm.js";
+import {LocalizedController, HistoryNavigator, EVENT_REFRESH, EVENT_ACTION, BUTTON_ROLES} from "../../assets/pdm-web-components/index.esm.js";
 
 /**
  * Controls Application Flow
@@ -25,12 +25,15 @@ export default class BatchController extends LocalizedController {
         this.batchManager = wizard.Managers.getBatchManager(participantManager);
         this.productmanager = wizard.Managers.getProductManager(participantManager);
         this.batchEl = this.element.querySelector('managed-batch');
+        HistoryNavigator.registerTab({
+            'tab-batch': this.translate('title')
+        })
 
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
             const state = evt.detail;
-            self.model.back = this.translate('back', LocalizedController.tabs[state.previousTab]);
+            self.model.back = this.translate('back', state.previousTab.label);
             if (state && state.gtin){
                 const gtinRef = state.gtin + (state.batchNumber ? `-${state.batchNumber}` : '');
                 if (self.model.gtinBatch === gtinRef)

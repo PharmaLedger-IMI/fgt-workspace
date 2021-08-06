@@ -45,6 +45,7 @@
     }
   },
   "product": {
+    "title": "Product",
     "create": {
       "title": "Create a Product",
       "name": {
@@ -132,6 +133,7 @@
     }
   },
   "batch": {
+    "title": "Batch",
     "create": {
       "title": "Create a Batch",
       "batchNumber": {
@@ -201,6 +203,7 @@
     "none": "No shipments issued..."
   },
   "shipment": {
+    "title": "Shipments",
     "create": {
       "title": "Create Shipment",
       "from": "Shipment from:",
@@ -318,6 +321,7 @@
     }
   },
   "order": {
+    "title": "Order",
     "create": {
       "title": "Create Order",
       "from": "Order from:",
@@ -456,6 +460,7 @@
     "none": "No products in stock..."
   },
   "individualProduct": {
+    "title": "Product",
     "manage": {
       "title": "Manage Single Product",
       "status": "Status:",

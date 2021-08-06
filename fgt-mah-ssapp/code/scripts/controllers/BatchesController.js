@@ -1,4 +1,4 @@
-import {LocalizedController, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
+import {LocalizedController, HistoryNavigator, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
 const Batch = require('wizard').Model.Batch;
 
 /**
@@ -22,6 +22,9 @@ export default class BatchesController extends LocalizedController {
         this.model = this.initializeModel();
         this.participantManager = wizard.Managers.getParticipantManager();
         this.batchManager = wizard.Managers.getBatchManager(this.participantManager);
+        HistoryNavigator.registerTab({
+            'tab-batch': this.translate('title')
+        })
 
         let self = this;
 
