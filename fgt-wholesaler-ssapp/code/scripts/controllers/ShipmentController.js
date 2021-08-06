@@ -1,4 +1,11 @@
-import { LocalizedController, EVENT_REFRESH, EVENT_SSAPP_HAS_LOADED, EVENT_ACTION, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
+import {
+    LocalizedController,
+    EVENT_REFRESH,
+    EVENT_SSAPP_HAS_LOADED,
+    EVENT_ACTION,
+    BUTTON_ROLES,
+    HistoryNavigator
+} from "../../assets/pdm-web-components/index.esm.js";
 const {ShipmentLine, utils, Shipment, ShipmentStatus} = require('wizard').Model;
 
 export default class ShipmentController extends LocalizedController{
@@ -23,6 +30,9 @@ export default class ShipmentController extends LocalizedController{
         this.receivedShipmentManager.bindController(this);
         this.stockManager = wizard.Managers.getStockManager(participantManager);
         this.shipmentEl = this.element.querySelector('managed-shipment');
+        HistoryNavigator.registerTab({
+            'tab-shipment': this.translate('title')
+        })
 
         let self = this;
 
@@ -34,7 +44,7 @@ export default class ShipmentController extends LocalizedController{
             self.model.identity = self.issuedShipmentManager.getIdentity();
 
             const state = evt.detail;
-            self.model.back = this.translate('back', LocalizedController.tabs[state.previousTab]);
+            self.model.back = this.translate('back', state.previousTab.label);
             if (state && state.mode) {
                 self.model.mode = state.mode;
                 if (state.order){

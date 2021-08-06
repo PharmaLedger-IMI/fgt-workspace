@@ -83,6 +83,7 @@
     }
   },
   "shipment": {
+    "title": "Shipment",
     "create": {
       "title": "Create Shipment",
       "from": "Shipment from:",
@@ -200,6 +201,7 @@
     }
   },
   "order": {
+    "title": "Order",
     "create": {
       "title": "Create Order",
       "from": "Order from:",
@@ -311,7 +313,7 @@
     "none": "No products in stock..."
   },
   "dashboard": {
-    "title": "This is a Dashboard",
+    "title": "Dashboard",
     "none": "There are no pending orders"
   }
 }
