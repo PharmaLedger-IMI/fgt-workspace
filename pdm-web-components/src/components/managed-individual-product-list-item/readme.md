@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property          | Attribute           | Description | Type     | Default     |
-| ----------------- | ------------------- | ----------- | -------- | ----------- |
-| `gtinBatchSerial` | `gtin-batch-serial` |             | `string` | `undefined` |
+| Property          | Attribute           | Description | Type      | Default     |
+| ----------------- | ------------------- | ----------- | --------- | ----------- |
+| `gtinBatchSerial` | `gtin-batch-serial` |             | `string`  | `undefined` |
+| `showCloseButton` | `show-close-button` |             | `boolean` | `true`      |
 
 
 ## Events

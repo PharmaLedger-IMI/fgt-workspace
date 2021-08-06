@@ -1,4 +1,5 @@
 const Sale = require('./Sale');
+const IndividualReceipt = require('./IndividualReceipt');
 
 /**
  * @class Receipt
@@ -11,6 +12,9 @@ class Receipt extends Sale{
      */
     constructor(receipt) {
         super(receipt);
+
+        if (this.productList)
+            this.productList = this.productList.map(p => new IndividualReceipt(p));
     }
 }
 

@@ -1,6 +1,7 @@
 const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Receipt = require('../model/Receipt');
+const IndividualReceipt = require('../model/IndividualReceipt');
 
 /**
  * Stock Manager Class
@@ -53,76 +54,86 @@ class ReceiptManager extends Manager{
         if (!record){
             record = item;
             item = key;
-            key = item.id;
+            key = this._genCompostKey(item);
         }
-        return Object.assign(record, {
-            value: record,
-            products: record.productList
-                .map(ip => `${ip.gtin}-${ip.batchNumber}-${ip.serialNumber}`)
-                .join(',')})
+        return Object.assign(item, {
+            value: record
+           })
     }
 
-    _genCompostKey(receipt){
-        return `${receipt.senderId}-${receipt.id}`;
+    _genCompostKey(individualReceipt){
+        return `${individualReceipt.gtin}-${individualReceipt.batchNumber}-${individualReceipt.serialNumber}`;
     }
 
     _getDSUInfo(keySSI, callback){
-        this.saleService.get(keySSI, callback);
+        const self = this;
+        this.saleService.get(keySSI, (err, sale) => {
+            if (err)
+                return self._err(`Unable to read Sale DSU ${keySSI}`, err, callback);
+            callback(undefined, new Receipt(sale));
+        });
     }
 
     _processMessageRecord(message, callback) {
         let self = this;
-        if (!message || typeof message !== "string")
+        if (!message || !Array.isArray(message))
             return callback(`Message ${message} does not have  non-empty string with keySSI. Skipping record.`);
 
-        let products;
-        try {
-            products = JSON.parse(message);
-        } catch (e) {
-            products = [message];
-        }
+        const receipts = message;
 
         const lines = [];
 
-        const productsIterator = function(linesCopy, callback){
-            const lineSSI = linesCopy.shift();
-            if (!lineSSI)
+        const receiptIterator = function(receiptsCopy, callback){
+            const receiptSSI = receiptsCopy.shift();
+            if (!receiptSSI)
                 return callback(undefined, lines);
-            self._getDSUInfo(lineSSI, (err, shipmentLine, shipmentLineDsu) => {
+            self._getDSUInfo(receiptSSI, (err, receipt) => {
                 if (err) {
-                    console.log(`Could not read DSU from message keySSI in record ${message}. Skipping record.`);
-                    return callback();
-                }
-                const compostKey = self._genCompostKey(shipmentLine.requesterId, shipmentLine.senderId, shipmentLine.gtin, shipmentLine.createdOn);
-
-                const cb = function(err){
-                    if (err)
-                        return self._err(`Could not insert/update record for ShipmentLine ${compostKey}`, err, callback);
-                    productsIterator(linesCopy, callback);
+                    console.log(`Could not read DSU from Receipt keySSI in record ${message}. Skipping record.`);
+                    return callback(err);
                 }
 
-                self.getRecord(compostKey,  (err, record) => {
-                    if (!err){
-                        console.log(`Received ShipmentLine`, shipmentLine);
-                        return self.insertRecord(compostKey, self._indexItem(undefined, shipmentLine, lineSSI), cb);
+                const individualReceiptIterator = function(indReceiptCopy, accumulator, callback){
+                    if (!callback){
+                        callback = accumulator;
+                        accumulator = [];
                     }
-                    console.log(`Updating ShipmentLine`, shipmentLine);
-                    self.updateRecord(compostKey, self._indexItem(undefined, shipmentLine, lineSSI), cb);
-                });
+                    const indReceipt = indReceiptCopy.shift();
+                    if (!indReceipt)
+                        return callback(undefined, accumulator);
+
+                    const compostKey = self._genCompostKey(indReceipt);
+                    self.getRecord(compostKey, (err) => {
+                        if (!err){
+                            console.log()
+                            return callback(`There is already an entry for this individual product ${compostKey}, and all sales are final!`);
+                        }
+
+                        self.insertRecord(compostKey, self._indexItem(compostKey, indReceipt, receiptSSI), (err) => {
+                            if (err)
+                                return self._err(`Could not insert new Individual Receipt ${compostKey} in the db`, err, callback);
+                            accumulator.push(compostKey);
+                            console.log(`New Individual Receipt added: ${compostKey}`);
+                            individualReceiptIterator(indReceiptCopy, accumulator, callback);
+                        });
+                    });
+                }
+
+                individualReceiptIterator(receipt.productList.slice(), callback);
             });
         }
 
-        productsIterator(products.slice(), (err, newLines) => {
+        receiptIterator(receipts.slice(), (err, newIndividualReceipts) => {
             if (err)
                 return self._err(`Could not register all receipts`, err, callback);
-            console.log(`Receipts successfully registered: ${JSON.stringify(newLines)}`);
-            callback(undefined, lines);
+            console.log(`Receipts successfully registered: ${JSON.stringify(newIndividualReceipts)}`);
+            callback(undefined, newIndividualReceipts);
         });
     };
 
     /**
      * Creates a {@link Sale} entry
-     * @param {Sale} receipt
+     * @param {IndividualReceipt} receipt
      * @param {function(err, keySSI, string)} callback where the string is the mount path relative to the main DSU
      */
     create(receipt, callback) {
@@ -132,7 +143,7 @@ class ReceiptManager extends Manager{
     /**
      * updates a product from the list
      * @param {string|number} [id] the table key
-     * @param {Receipt} newReceipt
+     * @param {IndividualReceipt} newReceipt
      * @param {function(err, Sale?)} callback
      * @override
      */
@@ -144,7 +155,7 @@ class ReceiptManager extends Manager{
      * reads ssi for that gtin in the db. loads is and reads the info at '/info'
      * @param {string} id
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
-     * @param {function(err, Receipt|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
+     * @param {function(err, IndividualReceipt|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
      * @override
      */
     getOne(id, readDSU,  callback) {
@@ -157,8 +168,8 @@ class ReceiptManager extends Manager{
             if (err)
                 return self._err(`Could not load record with key ${id} on table ${self._getTableName()}`, err, callback);
             if (!readDSU)
-                return callback(undefined, new Receipt(receipt));
-            self._getDSUInfo(receipt.value, callback)
+                return callback(undefined, receipt.pk);
+            callback(undefined, new IndividualReceipt(receipt));
         });
     }
 
@@ -202,13 +213,8 @@ class ReceiptManager extends Manager{
             if (err)
                 return self._err(`Could not perform query`, err, callback);
             if (!readDSU)
-                return callback(undefined, records.map(Receipt));
-            self._iterator(records.map(r => r.value), self._getDSUInfo.bind(self), (err, result) => {
-                if (err)
-                    return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
-                console.log(`Parsed ${result.length} ${self._getTableName()}s`);
-                callback(undefined, result);
-            });
+                return callback(undefined, records.map(r => r.pk));
+            callback(undefined, records.map( r => new IndividualReceipt(r)));
         });
     }
 }

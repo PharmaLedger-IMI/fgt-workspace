@@ -19510,15 +19510,15 @@ function bwipp_datamatrix() {
                     $1.isC(); //#17436
                     if ($k[--$j]) { //#17436
                         var _AO = $k[--$j]; //#17436
-                        $k[$j++] = $f(_AO + 0.66666667); //#17436
+                        $k[$j++] = $f(_AO + 0.6666667); //#17436
                     } else { //#17436
                         $1.isEA(); //#17436
                         if ($k[--$j]) { //#17436
                             var _AQ = $k[--$j]; //#17436
-                            $k[$j++] = $f(_AQ + 2.66666667); //#17436
+                            $k[$j++] = $f(_AQ + 2.6666667); //#17436
                         } else { //#17436
                             var _AR = $k[--$j]; //#17436
-                            $k[$j++] = $f(_AR + 1.33333334); //#17436
+                            $k[$j++] = $f(_AR + 1.3333334); //#17436
                         } //#17436
                     } //#17436
                     var _AS = $k[--$j]; //#17436
@@ -19528,15 +19528,15 @@ function bwipp_datamatrix() {
                     $1.isT(); //#17437
                     if ($k[--$j]) { //#17437
                         var _AW = $k[--$j]; //#17437
-                        $k[$j++] = $f(_AW + 0.66666667); //#17437
+                        $k[$j++] = $f(_AW + 0.6666667); //#17437
                     } else { //#17437
                         $1.isEA(); //#17437
                         if ($k[--$j]) { //#17437
                             var _AY = $k[--$j]; //#17437
-                            $k[$j++] = $f(_AY + 2.66666667); //#17437
+                            $k[$j++] = $f(_AY + 2.6666667); //#17437
                         } else { //#17437
                             var _AZ = $k[--$j]; //#17437
-                            $k[$j++] = $f(_AZ + 1.33333334); //#17437
+                            $k[$j++] = $f(_AZ + 1.3333334); //#17437
                         } //#17437
                     } //#17437
                     var _Aa = $k[--$j]; //#17437
@@ -19546,15 +19546,15 @@ function bwipp_datamatrix() {
                     $1.isX(); //#17438
                     if ($k[--$j]) { //#17438
                         var _Ae = $k[--$j]; //#17438
-                        $k[$j++] = $f(_Ae + 0.66666667); //#17438
+                        $k[$j++] = $f(_Ae + 0.6666667); //#17438
                     } else { //#17438
                         $1.isEA(); //#17438
                         if ($k[--$j]) { //#17438
                             var _Ag = $k[--$j]; //#17438
-                            $k[$j++] = $f(_Ag + 4.33333334); //#17438
+                            $k[$j++] = $f(_Ag + 4.3333334); //#17438
                         } else { //#17438
                             var _Ah = $k[--$j]; //#17438
-                            $k[$j++] = $f(_Ah + 3.33333334); //#17438
+                            $k[$j++] = $f(_Ah + 3.3333334); //#17438
                         } //#17438
                     } //#17438
                     var _Ai = $k[--$j]; //#17438
@@ -25439,15 +25439,15 @@ function bwipp_codeone() {
                     $1.isC(); //#21587
                     if ($k[--$j]) { //#21587
                         var _9S = $k[--$j]; //#21587
-                        $k[$j++] = $f(_9S + 0.66666667); //#21587
+                        $k[$j++] = $f(_9S + 0.6666667); //#21587
                     } else { //#21587
                         $1.isEA(); //#21587
                         if ($k[--$j]) { //#21587
                             var _9U = $k[--$j]; //#21587
-                            $k[$j++] = $f(_9U + 2.66666667); //#21587
+                            $k[$j++] = $f(_9U + 2.6666667); //#21587
                         } else { //#21587
                             var _9V = $k[--$j]; //#21587
-                            $k[$j++] = $f(_9V + 1.33333334); //#21587
+                            $k[$j++] = $f(_9V + 1.3333334); //#21587
                         } //#21587
                     } //#21587
                     var _9W = $k[--$j]; //#21587
@@ -25457,15 +25457,15 @@ function bwipp_codeone() {
                     $1.isT(); //#21588
                     if ($k[--$j]) { //#21588
                         var _9a = $k[--$j]; //#21588
-                        $k[$j++] = $f(_9a + 0.66666667); //#21588
+                        $k[$j++] = $f(_9a + 0.6666667); //#21588
                     } else { //#21588
                         $1.isEA(); //#21588
                         if ($k[--$j]) { //#21588
                             var _9c = $k[--$j]; //#21588
-                            $k[$j++] = $f(_9c + 2.66666667); //#21588
+                            $k[$j++] = $f(_9c + 2.6666667); //#21588
                         } else { //#21588
                             var _9d = $k[--$j]; //#21588
-                            $k[$j++] = $f(_9d + 1.33333334); //#21588
+                            $k[$j++] = $f(_9d + 1.3333334); //#21588
                         } //#21588
                     } //#21588
                     var _9e = $k[--$j]; //#21588
@@ -25475,15 +25475,15 @@ function bwipp_codeone() {
                     $1.isX(); //#21589
                     if ($k[--$j]) { //#21589
                         var _9i = $k[--$j]; //#21589
-                        $k[$j++] = $f(_9i + 0.66666667); //#21589
+                        $k[$j++] = $f(_9i + 0.6666667); //#21589
                     } else { //#21589
                         $1.isEA(); //#21589
                         if ($k[--$j]) { //#21589
                             var _9k = $k[--$j]; //#21589
-                            $k[$j++] = $f(_9k + 4.33333334); //#21589
+                            $k[$j++] = $f(_9k + 4.3333334); //#21589
                         } else { //#21589
                             var _9l = $k[--$j]; //#21589
-                            $k[$j++] = $f(_9l + 3.33333334); //#21589
+                            $k[$j++] = $f(_9l + 3.3333334); //#21589
                         } //#21589
                     } //#21589
                     var _9m = $k[--$j]; //#21589
@@ -35461,6 +35461,7 @@ BWIPJS.prototype.reset = function() {
 	this.g_path	= [];		// current path
 	this.g_font	= null;		// current font object
 	this.g_rgb  = [0,0,0];	// current color (black)
+    this.g_clip = false;    // clip region active
 };
 BWIPJS.prototype.save = function() {
 	// clone all g_ properties
@@ -35493,7 +35494,13 @@ BWIPJS.prototype.restore = function() {
 	if (!this.gstk.length) {
 		throw new Error('grestore: stack underflow');
 	}
-	var ctx = this.gstk.pop();
+	var ctx  = this.gstk.pop();
+    var self = this;
+    if (this.g_clip && !ctx.g_clip) {
+        this.cmds.push(function() {
+                self.drawing.unclip();
+            });
+    }
 	for (var id in ctx) {
 		this[id] = ctx[id];
 	}
@@ -35571,6 +35578,10 @@ BWIPJS.prototype.setcolor = function(s) {
 		var b = round((1-y) * (1-k) * 255);
 		this.g_rgb = [ r, g, b ];
 	}
+};
+// Used only by swissqrcode
+BWIPJS.prototype.setrgbcolor = function(r,g,b) {
+    this.g_rgb = [ r, g, b ];
 };
 // Returns the current rgb values as a 'RRGGBB'
 BWIPJS.prototype.getRGB = function() {
@@ -35906,6 +35917,27 @@ BWIPJS.prototype.fill = function() {
 		self.drawing.fill(rgb);
 	});
 };
+BWIPJS.prototype.clip = function() {
+	var path = this.g_path;
+	this.g_path = [];
+    this.g_clip = true;
+
+	var self = this;
+	this.cmds.push(function() {
+        var polys = [];
+		for (var i = 0; i < path.length; i++) {
+			var a = path[i];
+			if (a.op == 'p') {
+				var pts = a.poly;
+				self.transform(pts);
+                polys.push(pts);
+			} else {
+                throw new Error('clip: only polygon regions supported');
+			}
+		}
+		self.drawing.clip(polys);
+	});
+};
 
 // The pix array is in standard (not y-inverted postscript) orientation.
 BWIPJS.prototype.maxicode = function(pix) {
@@ -36096,11 +36128,18 @@ function DrawingBuiltin(opts) {
 	var gs_dx, gs_dy;			// x,y translate (padding)
 	var gs_r, gs_g, gs_b;		// rgb
 	var gs_xymap;				// even-odd edge map
+    var gs_xyclip;              // clip region map (similar to xymap)
 
 	return {
 		// Ensure compliant bar codes by always using integer scaling factors.
 		scale : function(sx, sy) {
-			return [ (sx|0)||1, (sy|0)||1 ];
+            // swissqrcode requires clipping and drawing that are not scaled to the
+            // the barcode module size.
+            if (opts.bcid == 'swissqrcode') {
+                return [ sx, sy ];
+            } else {
+			    return [ (sx|0)||1, (sy|0)||1 ];
+            }
 		},
 
 		// Measure text.  This and scale() are the only drawing primitives that
@@ -36171,6 +36210,7 @@ function DrawingBuiltin(opts) {
 			gs_dy = padt;
 			gs_xymap = [];
 			gs_xymap.min = Infinity;
+            gs_xyclip = null;
 			gs_r = gs_g = gs_b = 0;
 
 			// Get the rgba image from the constructor
@@ -36217,8 +36257,8 @@ function DrawingBuiltin(opts) {
 		},
 
 		// Polygons are used to draw the connected regions in a 2d barcode.
-		// These will always be unstroked, filled, non-intersecting,
-		// orthogonal shapes.
+		// These will always be unstroked, filled, orthogonal shapes.
+        // 
 		// You will see a series of polygon() calls, followed by a fill().
 		polygon : function(pts) {
 			var npts = pts.length;
@@ -36289,10 +36329,10 @@ function DrawingBuiltin(opts) {
 		hexagon : function(pts, rgb) {
 			var x = pts[0][0]|0;
 			var y = pts[0][1]|0;
-			var qh = pts[1][1] - pts[0][1];		// height of triangle (quarter height)
-			var vh = pts[2][1] - pts[1][1] - 1;	// height of vertical side
-			var xl = pts[2][0];					// left side
-			var xr = pts[4][0];					// right side
+			var qh = (pts[1][1] - pts[0][1])|0;		// height of triangle (quarter height)
+			var vh = (pts[2][1] - pts[1][1] - 1)|0;	// height of vertical side
+			var xl = (pts[2][0])|0;					// left side
+			var xr = (pts[4][0])|0;					// right side
 
 			gs_r = parseInt(rgb.substr(0,2), 16);
 			gs_g = parseInt(rgb.substr(2,2), 16);
@@ -36315,7 +36355,7 @@ function DrawingBuiltin(opts) {
 		// to create the bullseye rings.  dotcode issues all of its ellipses then a
 		// fill().
 		ellipse : function(x, y, rx, ry, ccw) {
-			drawEllipse(x-rx, y-ry, x+rx, y+ry, ccw);
+			drawEllipse((x-rx)|0, (y-ry)|0, (x+rx)|0, (y+ry)|0, ccw);
 		},
 		// PostScript's default fill rule is even-odd.
 		fill : function(rgb) {
@@ -36327,6 +36367,30 @@ function DrawingBuiltin(opts) {
 			gs_xymap = [];
 			gs_xymap.min = Infinity;
 		},
+        // Currently only used by swissqrcode.  The `polys` area is an array of
+        // arrays of points.  Each array of points is identical to the `pts`
+        // parameter passed to polygon().  The clipping rule, like the fill rule,
+        // uses even-odd logic.
+        clip : function(polys) {
+            if (!gs_xyclip) {
+                gs_xyclip = [];
+                gs_xyclip.min = Infinity;
+            }
+            // Swap out the xymap for the clip map so addPoint() works on it.
+            var xymap = gs_xymap;
+            gs_xymap = gs_xyclip;
+
+            // Now just use the polygon() logic to fill in the clipping regions.
+            for (var i = 0, l = polys.length; i < l; i++) {
+                this.polygon(polys[i]);
+            }
+
+            // Restore
+            gs_xymap = xymap;
+        },
+        unclip : function() {
+            gs_xyclip = null;
+        },
 		// Draw text with optional inter-character spacing.  `y` is the baseline.
 		// font is an object with properties { name, width, height, dx }
 		// width and height are the font cell size.
@@ -36374,6 +36438,9 @@ function DrawingBuiltin(opts) {
 	// - canvas style, which is true RGBA
 	// - PNG style, which has a one-byte "filter code" prefixing each row.
 	function set(x, y, a) {
+        if (gs_xyclip && clipped(x, y)) {
+            return;
+        }
 		// translate/rotate
 		x += gs_dx;
 		y += gs_dy;
@@ -36504,6 +36571,30 @@ function DrawingBuiltin(opts) {
 				e[y] = x;
 			}
 		}
+	}
+
+    // Returns true if outside the clipping region.
+	function clipped(x, y) {
+        var pts = gs_xyclip[y];
+        if (!pts) {
+            return true;
+        }
+        if (!pts.sorted) {
+			pts.sort(function(a, b) { return a - b; });
+            pts.sorted = true;
+        }
+
+        var wn = false;
+        for (var n = 0, npts = pts.length; n < npts; n++) {
+            var xn = pts[n];
+            if (xn > x) {
+                return !wn; 
+            } else if (xn == x) {
+                return wn;
+            }
+            wn = !wn;
+		}
+        return true;
 	}
 
 	// Returns 1 if clockwise, -1 if ccw.
@@ -38658,7 +38749,7 @@ FontLib.loadFont("OCR-B", 96, 100, "AAEAAAAPAIAAAwBwRkZUTXxHn14AADmUAAAAHEdERUYA
         toCanvas:ToCanvas, render:Render, raw:ToRaw,
         fixupOptions:FixupOptions,
         loadFont:FontLib.loadFont,
-        BWIPJS_VERSION:'3.0.2 (2021-07-16)',
+        BWIPJS_VERSION:'3.0.4 (2021-08-05)',
         BWIPP_VERSION:BWIPP_VERSION,
         // Internals
         BWIPJS:BWIPJS, STBTT:STBTT, FontLib:FontLib,

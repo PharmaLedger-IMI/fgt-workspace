@@ -60,6 +60,8 @@ export class ManagedBatchListItem {
 
   @Prop({attribute: 'gtin-batch-serial'}) gtinBatchSerial: string;
 
+  @Prop({attribute: 'show-close-button'}) showCloseButton: boolean = true
+
   private batchManager: WebManager = undefined;
   private productManager: WebManager = undefined;
 
@@ -144,6 +146,14 @@ export class ManagedBatchListItem {
       </ion-label>)
   }
 
+  addBatch(){
+    if (!this.individualProduct || !this.individualProduct.status)
+      return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
+    return (
+      <ion-badge>{this.individualProduct.status}</ion-badge>
+    )
+  }
+
   addSerialsNumber(){
     if (!this.individualProduct || !this.individualProduct.serialNumber)
       return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
@@ -165,15 +175,17 @@ export class ManagedBatchListItem {
     }
 
     const {gtin, batchNumber, expiry, serialNumber} = self.individualProduct;
-    return [
+    const result = [
       getButton("buttons", "medium", "barcode", (evt) => getBarCodePopOver({
         type: "gs1datamatrix",
         size: "32",
         scale: "6",
         data: utils.generate2DMatrixCode(gtin, batchNumber, expiry, serialNumber)
       }, evt)),
-      getButton("buttons", "danger", "close-circle", (evt) => self.sendAction(evt, 'remove'))
-    ]
+    ];
+    if (self.showCloseButton)
+      result.push(getButton("buttons", "danger", "close-circle", (evt) => self.sendAction(evt, 'remove')))
+    return result;
   }
 
   render() {

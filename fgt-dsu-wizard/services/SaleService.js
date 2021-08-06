@@ -28,24 +28,14 @@ function SaleService(domain, strategy){
             dsu.readFile(INFO_PATH, (err, data) => {
                 if (err)
                     return callback(err);
-                let shipmentLine;
+                let sale;
                 try{
-                    shipmentLine = new ShipmentLine(JSON.parse(data));
+                    sale = new Sale(JSON.parse(data));
                 } catch (e){
                     return callback(`Could not parse ShipmentLine in DSU ${keySSI}`);
                 }
 
-                utils.getMounts(dsu, '/', STATUS_MOUNT_PATH,  (err, mounts) => {
-                    if (err || !mounts[STATUS_MOUNT_PATH])
-                        return callback(`Could not find status mount`);
-                    console.log(`Loading status for ShipmentLine SSI ${keySSI} with status SSI ${mounts[STATUS_MOUNT_PATH]}`)
-                    statusService.get(mounts[STATUS_MOUNT_PATH], (err, status) => {
-                        if (err)
-                            return callback(err);
-                        shipmentLine.status = status;
-                        callback(undefined, shipmentLine);
-                    });
-                });
+                callback(undefined, sale);
             });
         });
     }

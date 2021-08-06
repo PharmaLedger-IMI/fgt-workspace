@@ -125,7 +125,7 @@ export class ManagedBatchListItem {
     const getExpiryLabel = function(){
       if (!self.batch || !self.batch.expiry)
         return (<ion-skeleton-text animated></ion-skeleton-text>)
-      return self.batch.expiry
+      return self.batch.expiry.toLocaleDateString();
     }
 
     return(
