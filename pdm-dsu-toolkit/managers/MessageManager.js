@@ -51,7 +51,7 @@ class MessageManager extends Manager{
         this._listeners = {};
         this.timer = undefined;
         this.getOwnDID((err, didDoc) => err
-            ? createOpenDSUErrorWrapper(`Could not get Own DID`, err)
+            ? console.log(`Could not get Own DID`, err)
             : self._startMessageListener(didDoc));
     }
 
@@ -69,12 +69,25 @@ class MessageManager extends Manager{
             if (err)
                 return _err(`Could not save message to inbox`, err, callback);
             console.log(`Message ${JSON.stringify(message)} saved to table ${self._getTableName()} on DID ${self.didString}`);
-            if (api in self._listeners) {
-                console.log(`Found ${self._listeners[api].length} listeners for the ${api} message api`)
-                self._listeners[api].forEach(apiListener => {
-                    apiListener(message);
+            if (!(api in self._listeners)) {
+                console.log(`No listeners registered for ${api} messages.`);
+                return callback();
+            }
+
+            console.log(`Found ${self._listeners[api].length} listeners for the ${api} message api`);
+
+            const listenerIterator = function(listeners, callback){
+                const listener = listeners.shift();
+                if (!listener)
+                    return callback();
+                listener(message, (err) => {
+                    if (err)
+                        console.log(`Error processing Api ${api}`, err);
+                    listenerIterator(listeners, callback);
                 });
             }
+
+            listenerIterator(self._listeners[api].slice(), callback);
         });
     }
 

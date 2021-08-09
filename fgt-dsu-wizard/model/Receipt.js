@@ -14,7 +14,9 @@ class Receipt extends Sale{
         super(receipt);
 
         if (this.productList)
-            this.productList = this.productList.map(p => new IndividualReceipt(p));
+            this.productList = this.productList.map(p => {
+                return new IndividualReceipt(Object.assign(p, {sellerId: this.sellerId}));
+            });
     }
 }
 

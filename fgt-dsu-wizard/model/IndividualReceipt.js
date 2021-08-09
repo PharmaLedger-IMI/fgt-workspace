@@ -1,10 +1,12 @@
 const IndividualProduct = require('./IndividualProduct');
 
 /**
- * @class FinalProduct
+ * @class IndividualProduct
  * @memberOf Model
  */
 class IndividualReceipt extends IndividualProduct{
+
+    sellerId;
 
     /**
      *
@@ -13,6 +15,10 @@ class IndividualReceipt extends IndividualProduct{
      */
     constructor(individualReceipt) {
        super(individualReceipt);
+        if (typeof individualReceipt !== undefined)
+            for (let prop in individualReceipt)
+                if (individualReceipt.hasOwnProperty(prop))
+                    this[prop] = individualReceipt[prop];
     }
 }
 

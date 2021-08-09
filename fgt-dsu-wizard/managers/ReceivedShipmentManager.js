@@ -36,11 +36,10 @@ class ReceivedShipmentManager extends ShipmentManager {
                 else
                     manager.issuedOrderManager = issuedOrderManager;
 
-                manager.registerMessageListener((message) => {
+                manager.registerMessageListener((message, cb) => {
                     manager.processMessageRecord(message, (err) => {
-                        if (err)
-                            console.log(`Could not process message: ${err}`);
                         manager.refreshController();
+                        cb(err);
                     });
                 });
 

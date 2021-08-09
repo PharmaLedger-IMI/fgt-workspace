@@ -25,14 +25,13 @@ const IndividualReceipt = require('../model/IndividualReceipt');
  */
 class ReceiptManager extends Manager{
     constructor(participantManager, callback) {
-        super(participantManager, DB.receipts, ['id', 'products', 'sellerId'],  (err, manager) => {
+        super(participantManager, DB.receipts, ['batchNumber', 'gtin', 'sellerId', 'serialNumber', 'manufName', 'status'],  (err, manager) => {
             if (err)
                 return callback ? callback(err) : console.log(err);
-            manager.registerMessageListener((message) => {
+            manager.registerMessageListener((message, cb) => {
                 manager.processMessageRecord(message, (err) => {
-                    if (err)
-                        console.log(`Could not process message: ${err}`);
                     manager.refreshController();
+                    cb(err);
                 });
             });
             if (callback)
