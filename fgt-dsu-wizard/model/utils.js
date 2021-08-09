@@ -2,6 +2,7 @@ const {isEqual, generateGtin, genDate, generateProductName, generateBatchNumber,
 const ShipmentLine = require('./ShipmentLine');
 const Shipment = require('./Shipment');
 const Batch = require('./Batch');
+const ROLE = require('./DirectoryEntry').ROLE;
 
 /**
  * Confirms the existence os the selected batches for each shipmentLine and returns the appropriate object
@@ -91,6 +92,53 @@ const confirmWithStock = function(stockManager, shipment, stockObj, callback){
     })
 }
 
+/**
+ * Retrieves all the products from the provided directory manager
+ * @param {DirectoryManager} directoryManager
+ * @param {function(err, string[])} callback
+ * @memberOf PopOver
+ */
+function getDirectoryProducts(directoryManager, callback){
+    const options = {
+        query: [`role == ${ROLE.PRODUCT}`]
+    }
+    directoryManager.getAll(false, options, (err, gtins) => err
+        ? callback(err)
+        : callback(undefined, gtins));
+}
+
+/**
+ * Retrieves all the suppliers from the provided directory manager
+ * @param {DirectoryManager} directoryManager
+ * @param {function(err, string[])} callback
+ * @memberOf PopOver
+ */
+function getDirectorySuppliers(directoryManager, callback){
+    const options = {
+        query: [`role like /${ROLE.MAH}|${ROLE.WHS}/g`]
+    }
+
+    directoryManager.getAll(false, options, (err, suppliers) => err
+        ? callback(err)
+        : callback(undefined, suppliers));
+}
+
+/**
+ * Retrieves all the requesters from the provided directory manager
+ * @param {DirectoryManager} directoryManager
+ * @param {function(err, string[])} callback
+ * @memberOf PopOver
+ */
+function getDirectoryRequesters(directoryManager, callback){
+    const options = {
+        query: [`role like /${ROLE.PHA}|${ROLE.WHS}/g`]
+    }
+
+    directoryManager.getAll(false, options, (err, requesters) => err
+        ? callback(err)
+        : callback(undefined, requesters));
+}
+
 
 module.exports ={
     getRandom,
@@ -103,5 +151,8 @@ module.exports ={
     generateRandomInt,
     genDate,
     confirmWithStock,
+    getDirectorySuppliers,
+    getDirectoryRequesters,
+    getDirectoryProducts,
     isEqual
 }
