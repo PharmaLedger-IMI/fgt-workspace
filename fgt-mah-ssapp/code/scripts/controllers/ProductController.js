@@ -35,7 +35,7 @@ export default class ProductController extends LocalizedController {
             self.model.manufId = self.productManager.getIdentity().id;
 
             const state = evt.detail;
-            const label = !!state.previousTab ? state.previousTab.label : HistoryNavigator.getTabLabel(state.tab);
+            const label = !!state.previousTab ? state.previousTab.label : HistoryNavigator.lastPreviousTab.label;
             self.model.back = this.translate('back', label);
             if (state && state.gtin){
                 if (state.gtin === self.model.gtinRef)

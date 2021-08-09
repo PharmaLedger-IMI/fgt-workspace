@@ -5,6 +5,7 @@ export default class HistoryNavigator {
   private previousTabKeeper: Tab = {tab: ''};
   private _currentTab: Tab = {tab: ''};
 
+  private static lastPreviousTab: Tab;
   private static registeredTabs: RegisteredTab = {};
 
   private get currentTab(): Tab {
@@ -19,13 +20,16 @@ export default class HistoryNavigator {
   }
 
   private get previousTab(): Tab {
-    return this.history[this.history.length - 1] || this.homeTab;
+    const previous = this.history[this.history.length - 1] || this.homeTab;
+    HistoryNavigator.lastPreviousTab = previous;
+    return previous;
   }
 
   constructor(homeTab: Tab, cacheLimit: number = 10) {
     const homeTabLabel = {...homeTab, label: HistoryNavigator.getTabLabel(homeTab.tab) || 'Home'};
     this.currentTab = homeTabLabel;
     this.homeTab = homeTabLabel;
+    HistoryNavigator.lastPreviousTab = homeTabLabel;
     this.cacheLimit = cacheLimit;
   }
 
