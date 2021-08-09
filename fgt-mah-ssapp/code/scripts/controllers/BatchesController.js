@@ -23,7 +23,7 @@ export default class BatchesController extends LocalizedController {
         this.participantManager = wizard.Managers.getParticipantManager();
         this.batchManager = wizard.Managers.getBatchManager(this.participantManager);
         HistoryNavigator.registerTab({
-            'tab-batch': this.translate('title')
+            'tab-batches': this.translate('title')
         })
 
         let self = this;

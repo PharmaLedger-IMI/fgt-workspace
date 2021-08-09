@@ -1,71 +1,80 @@
 export default class HistoryNavigator {
-  public homepage: TabProps = {tab: ''};
-  private currentTab: TabProps = {tab: ''};
-  private previousTab: TabProps = {tab: ''};
-  private history: TabProps[] = [];
+  public homeTab: Tab = {tab: ''};
   public cacheLimit = 10;
-  private static tabs: TabLabel = {};
+  private history: Tab[] = [];
+  private previousTabKeeper: Tab = {tab: ''};
+  private _currentTab: Tab = {tab: ''};
 
-  constructor(homepage: TabProps, cacheLimit: number = 10) {
-    this.currentTab = homepage;
-    this.homepage = homepage;
+  private static registeredTabs: RegisteredTab = {};
+
+  private get currentTab(): Tab {
+    return {
+      ...this._currentTab,
+      label: HistoryNavigator.getTabLabel(this._currentTab.tab)
+    }
+  }
+
+  private set currentTab(tab: Tab) {
+    this._currentTab = tab;
+  }
+
+  private get previousTab(): Tab {
+    return this.history[this.history.length - 1] || this.homeTab;
+  }
+
+  constructor(homeTab: Tab, cacheLimit: number = 10) {
+    const homeTabLabel = {...homeTab, label: HistoryNavigator.getTabLabel(homeTab.tab) || 'Home'};
+    this.currentTab = homeTabLabel;
+    this.homeTab = homeTabLabel;
     this.cacheLimit = cacheLimit;
   }
 
-  addToHistory(props: TabProps): TabState {
-    if (props.tab !== this.currentTab.tab && props.tab !== this.previousTab?.tab) {
+  addToHistory(props: Tab): TabState {
+    if (props.tab !== this.currentTab.tab && props.tab !== this.previousTabKeeper.tab) {
       if (this.history.length >= this.cacheLimit) {
         this.history.shift()
       }
       this.history.push(this.currentTab);
-      this.previousTab = this.currentTab;
     }
     this.currentTab = props;
-    console.log('## HistoryNavigator.addToHistory $currentTab=', this.currentTab, ' $history=', this.history);
+    console.log('## HistoryNavigator.addToHistory $currentTab=', this.currentTab, ' $history=', this.history, ' $previous', this.previousTab);
 
     return {
-      currentTab: {
-        ...this.currentTab,
-        label: HistoryNavigator.getTabLabel(this.currentTab.tab)
-      },
-      previousTab: {
-        ...this.previousTab,
-        label: HistoryNavigator.getTabLabel(this.previousTab.tab)
-      }
-    };
+      currentTab: this.currentTab,
+      previousTab: this.previousTab
+    }
   }
 
-  getPreviousTab(): TabProps {
-    this.previousTab = this.history.pop() || this.homepage;
-    this.currentTab = this.previousTab;
-    return this.previousTab;
+  getPreviousTab(): Tab {
+    const previousTab = this.history.pop() || this.homeTab;
+    this.previousTabKeeper = previousTab;
+    // console.log('## HistoryNavigator.getPreviousTab previousTab=', previousTab);
+    return previousTab;
   }
 
-  static getTabLabel(label: string) {
-    return HistoryNavigator.tabs[label] || '';
-  }
-
-  static registerTab(tab: TabLabel) {
-    this.tabs = {...this.tabs, ...tab}
+  static registerTab(tab: RegisteredTab) {
+    this.registeredTabs = {...this.registeredTabs, ...tab}
     console.log('## HistoryNavigator.registerTab tab=', tab);
   }
+
+  static getTabLabel(label: string): string {
+    return HistoryNavigator.registeredTabs[label] || '';
+  }
 }
 
-
-export interface TabProps {
+export interface Tab {
   tab: string;
   props?: any;
-}
-
-export interface TabPropsLabel extends TabProps {
-  label: string;
+  label?: string;
 }
 
 export interface TabState {
-  previousTab: TabPropsLabel;
-  currentTab: TabPropsLabel
+  previousTab: Tab;
+  currentTab: Tab
 }
 
-export interface TabLabel {
+export interface RegisteredTab {
+  // key  -> HTML tab identification (e.g.: tab-received-orders))
+  // value -> Tab name (e.g.: Received Orders)
   [key: string]: string;
 }

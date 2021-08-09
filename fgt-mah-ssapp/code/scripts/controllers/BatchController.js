@@ -33,7 +33,8 @@ export default class BatchController extends LocalizedController {
             evt.preventDefault();
             evt.stopImmediatePropagation();
             const state = evt.detail;
-            self.model.back = this.translate('back', state.previousTab.label);
+            const label = !!state.previousTab ? state.previousTab.label : HistoryNavigator.getTabLabel(state.tab);
+            self.model.back = this.translate('back', label);
             if (state && state.gtin){
                 const gtinRef = state.gtin + (state.batchNumber ? `-${state.batchNumber}` : '');
                 if (self.model.gtinBatch === gtinRef)

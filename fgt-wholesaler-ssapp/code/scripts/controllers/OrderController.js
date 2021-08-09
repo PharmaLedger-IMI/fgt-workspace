@@ -37,7 +37,8 @@ export default class OrderController extends LocalizedController {
             self.model.identity = self.issuedOrderManager.getIdentity();
 
             const state = evt.detail;
-            self.model.back = this.translate('back', state.previousTab.label);
+            const label = !!state.previousTab ? state.previousTab.label : HistoryNavigator.getTabLabel(state.tab);
+            self.model.back = this.translate('back', label);
             if (state && state.mode && state.order) {
                 self.model.mode = state.mode;
                 const newRef = `${state.mode === 'issued' ? state.order.senderId : state.order.requesterId}-${state.order.orderId}`;
