@@ -14,7 +14,7 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
         r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
   return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-const INPUT_SELECTOR = "'ion-input, ion-textarea, ion-range, ion-checkbox, ion-radio, ion-select, ion-datetime'";
+const INPUT_SELECTOR = "ion-input, ion-textarea, ion-range, ion-checkbox, ion-radio, ion-select, ion-datetime";
 const FormValidateSubmit = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
@@ -48,14 +48,10 @@ const FormValidateSubmit = class {
     this.form = JSON.parse(newVal);
     console.log(this.form);
   }
-  onReset(evt) {
-    evt.preventDefault();
-    evt.stopImmediatePropagation();
+  async reset() {
     this.element.querySelectorAll(INPUT_SELECTOR).forEach(input => input.value = '');
   }
-  onSubmit(evt, name) {
-    evt.preventDefault();
-    evt.stopImmediatePropagation();
+  async submit(name) {
     if (!name)
       name = this.element.querySelector('ion-button.primary-button').name;
     if (!this.formEl.checkValidity())
@@ -69,6 +65,16 @@ const FormValidateSubmit = class {
       action: name,
       form: output
     });
+  }
+  async onReset(evt) {
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    await this.reset();
+  }
+  async onSubmit(evt, name) {
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    await this.submit(name);
   }
   getButtons() {
     if (!this.form)

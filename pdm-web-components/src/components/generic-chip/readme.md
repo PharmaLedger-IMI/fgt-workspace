@@ -26,12 +26,16 @@
 ### Used by
 
  - [batch-chip](../batch-chip)
+ - [managed-individual-product-chip](../managed-individual-product-chip)
+ - [managed-individual-product-list-item](../managed-individual-product-list-item)
  - [managed-orderline-stock-chip](../managed-orderline-stock-chip)
 
 ### Graph
 ```mermaid
 graph TD;
   batch-chip --> generic-chip
+  managed-individual-product-chip --> generic-chip
+  managed-individual-product-list-item --> generic-chip
   managed-orderline-stock-chip --> generic-chip
   style generic-chip fill:#f9f,stroke:#333,stroke-width:4px
 ```

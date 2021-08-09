@@ -18,7 +18,7 @@ export class PdmItemOrganizer {
   selectEvent: EventEmitter<string>
 
   /**
-   * The number of items to display (minimum is 1), defaults to 3
+   * The number of items to display (minimum is 0), defaults to 3
    */
   @Prop({attribute: "display-count", mutable: true}) displayCount: number = 3;
   /**
@@ -37,6 +37,10 @@ export class PdmItemOrganizer {
   @Prop({attribute: "orientation", mutable: true}) orientation: "between" | "end" | "evenly" | "around" | "center" | "start" = "end";
 
   @Prop({attribute: "single-line", mutable: true}) singleLine: boolean = true;
+
+  @Prop({attribute: "more-label"}) moreLabel: string = undefined;
+
+  @Prop({attribute: "more-icon"}) moreIcon: string = "ellipsis-horizontal";
 
   /**
    * If the component does not generate an ion-item (so it can be handled by an ion-list)
@@ -160,11 +164,24 @@ export class PdmItemOrganizer {
     const toDisplay = Math.max(this.displayCount, 0) - 1;
     const result = this.parsedProps.filter((props,i) => !!props && i <= toDisplay).map(props => this.getComponentJSX(props));
 
-    if (this.singleLine){
+    if (this.singleLine || this.displayCount < 0){
       const operation = this.orientation === "end" || this.singleLine ? result.unshift.bind(result) : result.push.bind(result);
-      operation((<more-chip float-more-button={!this.singleLine}></more-chip>));
+      operation(<more-chip float-more-button={!this.singleLine} label={this.moreLabel || ""} icon-name={this.moreIcon || ""}></more-chip>);
     }
     return result;
+  }
+
+  private selectRenderMode(){
+    if (this.displayCount >= 0)
+      return (
+        <div class={`ion-padding-horizontal ${this.singleLine ? "flex " : "flex-break "}ion-justify-content-${this.orientation} ion-align-items-center`}>
+          {...this.getFilteredComponents()}
+        </div>
+      )
+
+    return (
+      this.getFilteredComponents()[0]
+    )
   }
 
   render() {
@@ -172,9 +189,7 @@ export class PdmItemOrganizer {
       return;
     return (
       <Host>
-        <div class={`ion-padding-horizontal ${this.singleLine ? "flex " : "flex-break "}ion-justify-content-${this.orientation} ion-align-items-center`}>
-          {...this.getFilteredComponents()}
-        </div>
+        {this.selectRenderMode()}
       </Host>
     );
   }

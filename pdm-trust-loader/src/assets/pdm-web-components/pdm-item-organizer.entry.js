@@ -19,7 +19,7 @@ const PdmItemOrganizer = class {
     registerInstance(this, hostRef);
     this.selectEvent = createEvent(this, "selectEvent", 7);
     /**
-     * The number of items to display (minimum is 1), defaults to 3
+     * The number of items to display (minimum is 0), defaults to 3
      */
     this.displayCount = 3;
     /**
@@ -36,6 +36,8 @@ const PdmItemOrganizer = class {
     this.idProp = undefined;
     this.orientation = "end";
     this.singleLine = true;
+    this.moreLabel = undefined;
+    this.moreIcon = "ellipsis-horizontal";
     /**
      * If the component does not generate an ion-item (so it can be handled by an ion-list)
      * this must be set to false
@@ -142,16 +144,21 @@ const PdmItemOrganizer = class {
       return this.parsedProps.map(props => this.getComponentJSX(props));
     const toDisplay = Math.max(this.displayCount, 0) - 1;
     const result = this.parsedProps.filter((props, i) => !!props && i <= toDisplay).map(props => this.getComponentJSX(props));
-    if (this.singleLine) {
+    if (this.singleLine || this.displayCount < 0) {
       const operation = this.orientation === "end" || this.singleLine ? result.unshift.bind(result) : result.push.bind(result);
-      operation((h("more-chip", { "float-more-button": !this.singleLine })));
+      operation(h("more-chip", { "float-more-button": !this.singleLine, label: this.moreLabel || "", "icon-name": this.moreIcon || "" }));
     }
     return result;
+  }
+  selectRenderMode() {
+    if (this.displayCount >= 0)
+      return (h("div", { class: `ion-padding-horizontal ${this.singleLine ? "flex " : "flex-break "}ion-justify-content-${this.orientation} ion-align-items-center` }, this.getFilteredComponents()));
+    return (this.getFilteredComponents()[0]);
   }
   render() {
     if (!this.host.isConnected)
       return;
-    return (h(Host, null, h("div", { class: `ion-padding-horizontal ${this.singleLine ? "flex " : "flex-break "}ion-justify-content-${this.orientation} ion-align-items-center` }, this.getFilteredComponents())));
+    return (h(Host, null, this.selectRenderMode()));
   }
   get element() { return getElement(this); }
   static get watchers() { return {

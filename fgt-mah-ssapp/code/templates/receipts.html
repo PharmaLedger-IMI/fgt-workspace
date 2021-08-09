@@ -1,0 +1,12 @@
+<webc-container controller="ReceiptsController">
+    <pdm-ion-table
+            table-title="@title"
+            item-reference="gtin-batch-serial"
+            paginated="true"
+            manager="ReceiptManager"
+            icon-name="bag"
+            item-type="managed-individual-product-list-item"
+            item-props="show-close-button:false"
+            items-per-page="10">
+    </pdm-ion-table>
+</webc-container>

@@ -25,11 +25,10 @@ class ShipmentLineManager extends Manager {
         super(participantManager, DB.shipmentLines, ['gtin', 'createdOn', 'batch', 'requesterId', 'senderId'], (err, manager) => {
             if (err)
                 return callback ? callback(err) : console.log(err);
-            manager.registerMessageListener((message) => {
+            manager.registerMessageListener((message, cb) => {
                 manager.processMessageRecord(message, (err) => {
-                    if (err)
-                        console.log(`Could not process message: ${err}`);
                     manager.refreshController();
+                    cb(err);
                 });
             });
             if (callback)

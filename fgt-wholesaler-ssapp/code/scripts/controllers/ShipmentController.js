@@ -49,7 +49,10 @@ export default class ShipmentController extends LocalizedController{
             if (state && state.mode) {
                 self.model.mode = state.mode;
                 if (state.order){
-                    self.model.order = JSON.stringify(state.order);
+                    const newOrder = JSON.stringify(state.order);
+                    if (self.model.order === newOrder)
+                        return self.shipmentEl.refresh();
+                    self.model.order = newOrder;
                     self.model.shipmentRef = '';
                     return;
                 }

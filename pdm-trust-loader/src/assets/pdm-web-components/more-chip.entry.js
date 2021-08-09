@@ -18,6 +18,7 @@ const MoreChip = class {
     registerInstance(this, hostRef);
     this.showMoreEvent = createEvent(this, "ssapp-show-more", 7);
     this.iconName = "ellipsis-horizontal";
+    this.label = undefined;
     this.color = 'medium';
     this.float = false;
   }
@@ -31,9 +32,15 @@ const MoreChip = class {
     this.showMoreEvent.emit(evt);
   }
   getButton() {
+    const self = this;
+    const getIconOrLabel = function () {
+      if (self.label)
+        return self.label;
+      return (h("ion-icon", { name: self.iconName }));
+    };
     if (this.float)
-      return (h("ion-fab", { vertical: "top", horizontal: "end" }, h("ion-fab-button", { fill: "solid", size: "small", color: this.color, onClick: (evt) => this.sendShowMoreEvent(evt) }, h("ion-icon", { name: this.iconName }))));
-    return (h("ion-button", { fill: "clear", size: "small", color: this.color, onClick: (evt) => this.sendShowMoreEvent(evt) }, h("ion-icon", { slot: "icon-only", name: this.iconName })));
+      return (h("ion-fab", { vertical: "top", horizontal: "end" }, h("ion-fab-button", { fill: "solid", size: "small", color: this.color, onClick: (evt) => this.sendShowMoreEvent(evt) }, getIconOrLabel())));
+    return (h("ion-button", { fill: "clear", size: "small", color: this.color, onClick: (evt) => this.sendShowMoreEvent(evt) }, getIconOrLabel()));
   }
   render() {
     if (!this.host.isConnected)

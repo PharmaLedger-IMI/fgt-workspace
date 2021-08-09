@@ -92,7 +92,7 @@ const CreateManageViewLayout = class {
     }, {});
   }
   getIonInputs() {
-    return this.element.querySelector('form').querySelectorAll('ion-input, ion-textarea, ion-range, ion-checkbox, ion-radio, ion-select');
+    return this.element.querySelector('form').querySelectorAll('ion-input, ion-textarea, ion-range, ion-checkbox, ion-radio, ion-select, managed-stock-product-input');
   }
   getHeader() {
     return [

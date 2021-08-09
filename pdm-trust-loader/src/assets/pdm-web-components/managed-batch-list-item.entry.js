@@ -91,7 +91,7 @@ const ManagedBatchListItem = class {
     const getExpiryLabel = function () {
       if (!self.batch || !self.batch.expiry)
         return (h("ion-skeleton-text", { animated: true }));
-      return self.batch.expiry;
+      return self.batch.expiry.toLocaleDateString();
     };
     return (h("ion-label", { slot: "label", color: "secondary" }, getBatchNumberLabel(), h("span", { class: "ion-padding-start" }, getExpiryLabel())));
   }

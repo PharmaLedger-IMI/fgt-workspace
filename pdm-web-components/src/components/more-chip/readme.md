@@ -12,6 +12,7 @@
 | `color`    | `color`             |             | `string`  | `'medium'`              |
 | `float`    | `float-more-button` |             | `boolean` | `false`                 |
 | `iconName` | `icon-name`         |             | `string`  | `"ellipsis-horizontal"` |
+| `label`    | `label`             |             | `string`  | `undefined`             |
 
 
 ## Events

@@ -35,6 +35,8 @@
     "@ionic/cli": "^6.16.1",
     "@ionic/core": "^5.6.7",
     "@stencil/core": "^2.5.2",
+    "@types/jest": "^26.0.24",
+    "jest": "^27.0.6",
     "jsdoc": "^3.6.6",
     "markdown-include": "^0.4.3",
     "octopus": "git+https://github.com/PrivateSky/octopus.git#1.0"

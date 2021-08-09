@@ -27,7 +27,8 @@
     "shipmentLines": "Shipment Lines",
     "issuedShipments": "Shipments",
     "receivedOrders": "Orders",
-    "stock": "Stock"
+    "stock": "Stock",
+    "receipts" : "Receipts"
   },
   "dashboard": {
     "welcome": "This is a Dashboard"
@@ -518,6 +519,10 @@
         "paths": []
       }
     }
+  },
+  "receipts": {
+    "title": "Receipts",
+    "none": "No receipts issued..."
   },
   "scan": {
     "title": "Please Scan your pack",

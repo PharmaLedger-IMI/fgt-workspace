@@ -32,9 +32,7 @@ function genDate(offsetFromToday){
     date.setDate(date.getDate() + offsetFromToday);
     return date;
 }
-/**
- * @memberOf Utils
- */
+
 function generateGtin(){
     function pad(n, width, padding) {
         padding = padding || '0';
@@ -42,7 +40,44 @@ function generateGtin(){
         return n.length >= width ? n : new Array(width - n.length + 1).join(padding) + n;
     }
 
-    return pad(Math.floor(Math.random() * 999999999999), 12);
+    const beforeChecksum = pad(Math.floor(Math.random() * 9999999999999), 13); // has to be 13. the checksum is the 4th digit
+    const checksum = calculateGtinCheckSum(beforeChecksum);
+    return `${beforeChecksum}${checksum}`;
+}
+
+function validateGtin(gtin){
+    gtin = gtin + '';
+    if (!gtin.match(/\d{14}/g))
+        return false
+    const digits = gtin.splice(0, 13);
+    const checksum = calculateGtinCheckSum(digits);
+    return parseInt(checksum) === parseInt(gtin.charAt(13));
+}
+
+// https://www.gs1.org/services/how-calculate-check-digit-manually
+function calculateGtinCheckSum(digits){
+    digits = '' + digits;
+    if (digits.length !== 13)
+        throw new Error(`needs to received 13 digits`);
+    const multiplier = [3,1,3,1,3,1,3,1,3,1,3,1,3];
+    let sum = 0;
+    try {
+        // multiply each digit for its multiplier according to the table
+        for (let i = 0; i < 13; i++)
+            sum += parseInt(digits.charAt(i)) * multiplier[i];
+
+        // Find the nearest equal or higher multiple of ten
+        const remainder = sum % 10;
+        let nearest;
+        if (remainder  === 0)
+            nearest = sum;
+        else
+            nearest = sum - remainder + 10;
+
+        return nearest - sum;
+    } catch (e){
+        throw new Error(`Did this received numbers? ${e}`);
+    }
 }
 /**
  * @memberOf Utils
@@ -192,6 +227,8 @@ module.exports = {
     generateProductName,
     generateBatchNumber,
     generateGtin,
+    validateGtin,
+    calculateGtinCheckSum,
     generateRandomInt,
     stringFormat,
     getRandom,

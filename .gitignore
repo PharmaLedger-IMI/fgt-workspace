@@ -20,6 +20,8 @@ apihub-root/seedsBackup
 apihub-root/credentials.json
 cardinal
 
+yarn.lock
+
 documentation/bin/draw.io.path
 !ddocumentation/bin/resources/drawings/*.md
 documentation/drawings/*.xml
