@@ -153,7 +153,7 @@ const setupSingleTraceability = function(actors, callback){
         if (!mah)
             return callback();
         console.log(`now setting up MAH with key ${mah.ssi}`);
-        setup(APPS.MAH, mah,
+        setup(conf, APPS.MAH, mah,
             mah.credentials.products || getProducts(),
             mah.credentials.batches || undefined, (err) => err
                 ? callback(err)
@@ -165,7 +165,7 @@ const setupSingleTraceability = function(actors, callback){
         if (!wholesaler)
             return callback();
         console.log(`now setting up Wholesaler with key ${wholesaler.ssi}`);
-        setup(APPS.WHOLESALER, wholesaler,
+        setup(conf, APPS.WHOLESALER, wholesaler,
             [], (err) => err
                 ? callback(err)
                 : setupWholesalerIterator(wholesalersCopy, products, batches, callback));
@@ -176,7 +176,7 @@ const setupSingleTraceability = function(actors, callback){
         if (!pharmacy)
             return callback();
         console.log(`now setting up Pharmacy with key ${pharmacy.ssi}`);
-        setup(APPS.PHARMACY, pharmacy, products,
+        setup(conf, APPS.PHARMACY, pharmacy, products,
             wholesalers, [], (err) => err
                 ? callback(err)
                 : setupPharmacyIterator(pharmaciesCopy, products, batches, wholesalers, callback));
