@@ -129,8 +129,7 @@ function fullfillOrder(participantManager, order, stocks, callback){
             return new ShipmentLine({
                 gtin: ol.gtin,
                 batch: b.batchNumber,
-                quantity: b.getQuantity(),
-                serialNumbers: b.serialNumbers,
+                quantity: ol.quantity,
                 senderId: identity.id,
                 requesterId: ol.requesterId,
                 status: ShipmentStatus.CREATED
