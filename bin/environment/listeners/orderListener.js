@@ -1,4 +1,3 @@
-const {ReceivedOrderManager, IssuedOrderManager, IssuedShipmentManager, DirectoryManager, StockManager} = require('../../../fgt-dsu-wizard/managers');
 const ModelUtils = require('../../../fgt-dsu-wizard/model/utils');
 const {ANCHORING_DOMAIN} = require('../../../fgt-dsu-wizard/constants');
 const ROLE = require('../../../fgt-dsu-wizard/model/DirectoryEntry').ROLE;
@@ -8,6 +7,8 @@ const OrderStatus = require('../../../fgt-dsu-wizard/model/OrderStatus');
 const OrderLine = require('../../../fgt-dsu-wizard/model/OrderLine');
 const ShipmentLine = require('../../../fgt-dsu-wizard/model/ShipmentLine');
 const ShipmentStatus = require('../../../fgt-dsu-wizard/model/ShipmentStatus');
+
+const submitEvent = require('./eventHandler');
 
 const shipmentStatusUpdater = function(issuedShipmentManager, shipment, timeout, callback){
     const identity = issuedShipmentManager.getIdentity();
@@ -22,10 +23,12 @@ const shipmentStatusUpdater = function(issuedShipmentManager, shipment, timeout,
     console.log(`${identity.id} - Updating Shipment ${shipment.shipmentId}'s status to ${possibleStatus[0]} in ${timeout} miliseconds`);
     setTimeout(() => {
         shipment.status = possibleStatus[0];
+        submitEvent()
         issuedShipmentManager.update(shipment, (err, updatedShipment) => {
             if (err)
                 return callback(err);
             console.log(`${identity.id} - Shipment ${updatedShipment.orderId}'s updated to ${updatedShipment.status}`);
+            submitEvent()
             shipmentStatusUpdater(issuedShipmentManager, updatedShipment, timeout, callback);
         });
     }, timeout)
@@ -87,6 +90,7 @@ function forwardOrder(participantManager, order, role, callback){
                 issueOrder(participantManager, splitOrder, mah, (err, orderSSI) => {
                     if (err)
                         return callback(err);
+                    submitEvent();
                     console.log(`Order issued to ${mah} with SSI: ${orderSSI}\n`, splitOrder);
                     accumulator.push(orderSSI);
                     orderRequestIterator(mahs, accumulator, callback);
@@ -111,7 +115,7 @@ function issueOrder(participantManager, order, senderId, callback){
     const boundOrder = new Order(Date.now(), identity.id, senderId, identity.address, OrderStatus.CREATED, order.orderLines.map(ol => {
         return new OrderLine(ol.gtin, ol.quantity, identity.id, senderId, OrderStatus.CREATED);
     }));
-
+    submitEvent();
     issuedOrderManager.create(boundOrder, callback);
 }
 
@@ -139,7 +143,7 @@ function fullfillOrder(participantManager, order, stocks, callback){
     }, []);
 
     const shipment = new Shipment(Date.now(), order.requesterId, identity.id, order.shipToAddress, ShipmentStatus.CREATED, shipmentLines)
-
+    submitEvent();
     issuedShipmentManager.create(order.orderId, shipment, callback);
 }
 

@@ -8,7 +8,7 @@ const getReceivedShipmentManager = require("../../fgt-dsu-wizard/managers/Receiv
 const getIssuedShipmentManager = require("../../fgt-dsu-wizard/managers/IssuedShipmentManager");
 const { getIssuedOrderManager, getParticipantManager, getReceivedOrderManager, getStockManager } = require('../../fgt-dsu-wizard/managers');
 const { impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
-
+const submitEvent = require('./listeners/eventHandler');
 const { APPS } = require('./credentials/credentials3');
 const {ROLE} = require("../../fgt-dsu-wizard/model/DirectoryEntry");
 
@@ -90,6 +90,7 @@ const attachLogic = function(participantManager, conf, callback){
         const shipmentListener = require('./listeners/shipmentListener')(participantManager, ROLE.WHS, conf.statusUpdateTimeout);
         const receivedShipmentManager = participantManager.getManager("ReceivedShipmentManager");
         receivedShipmentManager.registerMessageListener(shipmentListener);
+        submitEvent(conf);
     } catch (e) {
         return callback(e);
     }

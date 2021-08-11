@@ -1,8 +1,7 @@
-const {IssuedOrderManager, ReceivedShipmentManager} = require('../../../fgt-dsu-wizard/managers');
 const Order = require('../../../fgt-dsu-wizard/model/Order');
 const OrderStatus = require('../../../fgt-dsu-wizard/model/OrderStatus');
 const ShipmentStatus = require('../../../fgt-dsu-wizard/model/ShipmentStatus');
-
+const submitEvent = require('./eventHandler');
 
 const orderStatusUpdater = function(issuedOrderManager, order, timeout, callback){
     const identity = issuedOrderManager.getIdentity();
@@ -17,10 +16,12 @@ const orderStatusUpdater = function(issuedOrderManager, order, timeout, callback
     console.log(`${identity.id} - Updating Order ${order.orderId}'s status to ${possibleStatus[0]} in ${timeout} miliseconds`);
     setTimeout(() => {
         order.status = possibleStatus[0];
+        submitEvent();
         issuedOrderManager.update(order, (err, updatedOrder) => {
             if (err)
                 return callback(err);
             console.log(`${identity.id} - Order ${updatedOrder.orderId}'s updated to ${updatedOrder.status}`);
+            submitEvent();
             orderStatusUpdater(issuedOrderManager, updatedOrder, timeout, callback);
         });
     }, timeout)
