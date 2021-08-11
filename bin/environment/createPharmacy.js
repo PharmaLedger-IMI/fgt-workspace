@@ -10,6 +10,7 @@ const { Order, OrderLine } = require('../../fgt-dsu-wizard/model');
 const { generateRandomInt, impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 
 const { APPS } = require('./credentials/credentials3');
+const {ROLE} = require("../../fgt-dsu-wizard/model/DirectoryEntry");
 
 const defaultOps = {
     app: "fgt-pharmacy-wallet",
@@ -131,14 +132,37 @@ const issueOrders = function(products, wholesalers, stocksObj, issuedOrderManage
     });
 }
 
-const setup = function (participantManager, products, wholesalers, stocks, callback) {
+const attachLogic = function(participantManager, conf, callback){
+    if (!conf.attachLogic)
+        return callback();
+    try{
+        const orderListener = require('./listeners/orderListener')(participantManager, ROLE.PHA, conf.statusUpdateTimeout);
+        const receivedOrderManager = participantManager.getManager("ReceivedOrderManager");
+        receivedOrderManager.registerMessageListener(orderListener);
+
+        const shipmentListener = require('./listeners/shipmentListener')(participantManager, ROLE.PHA, conf.statusUpdateTimeout);
+        const receivedShipmentManager = participantManager.getManager("ReceivedShipmentManager");
+        receivedShipmentManager.registerMessageListener(shipmentListener);
+    } catch (e) {
+        return callback(e);
+    }
+
+    callback();
+}
+
+
+const setup = function (conf, participantManager, products, wholesalers, stocks, callback) {
     setupStock(participantManager, stocks, (err, stocksObj) => {
         if (err)
             return callback(err);
         setupManager(participantManager, (err) => {
             if (err)
                 return callback(err);
-            issueOrders(products, wholesalers, stocksObj, getIssuedOrderManager(participantManager), callback);
+            attachLogic(participantManager, conf, (err) => {
+                if (err)
+                    return callback(err);
+                issueOrders(products, wholesalers, stocksObj, getIssuedOrderManager(participantManager), callback);
+            });
         });
     });
 };

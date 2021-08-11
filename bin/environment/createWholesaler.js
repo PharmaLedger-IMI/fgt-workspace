@@ -10,6 +10,7 @@ const { getIssuedOrderManager, getParticipantManager, getReceivedOrderManager, g
 const { impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 
 const { APPS } = require('./credentials/credentials3');
+const {ROLE} = require("../../fgt-dsu-wizard/model/DirectoryEntry");
 
 const defaultOps = {
     app: "fgt-wholesaler-wallet",
@@ -78,14 +79,36 @@ const setupStock = function(participantManager, stocks, callback){
     });
 }
 
-const setup = function(participantManager, stocks, callback){
+const attachLogic = function(participantManager, conf, callback){
+    if (!conf.attachLogic)
+        return callback();
+    try {
+        const orderListener = require('./listeners/orderListener')(participantManager, ROLE.WHS, conf.statusUpdateTimeout);
+        const receivedOrderManager = participantManager.getManager("ReceivedOrderManager");
+        receivedOrderManager.registerMessageListener(orderListener);
+
+        const shipmentListener = require('./listeners/shipmentListener')(participantManager, ROLE.WHS, conf.statusUpdateTimeout);
+        const receivedShipmentManager = participantManager.getManager("ReceivedShipmentManager");
+        receivedShipmentManager.registerMessageListener(shipmentListener);
+    } catch (e) {
+        return callback(e);
+    }
+
+    callback();
+}
+
+const setup = function(conf, participantManager, stocks, callback){
     setupStock(participantManager, stocks, (err, stocksObj) => {
         if (err)
             return callback(err);
         setupManager(participantManager, (err) => {
             if (err)
                 return callback(err);
-            callback(undefined, stocksObj);
+            attachLogic(participantManager, conf, (err) => {
+                if (err)
+                    return callback(err);
+                callback(undefined, stocksObj);
+            });
         });
     })
 }

@@ -7,6 +7,9 @@ const dt = require('./../../pdm-dsu-toolkit/services/dt');
 const getIssuedShipmentManager = require("../../fgt-dsu-wizard/managers/IssuedShipmentManager");
 const { getParticipantManager, getProductManager, getBatchManager, getOrderLineManager, getShipmentLineManager, getStockManager, getReceivedOrderManager, getReceivedShipmentManager} = require('../../fgt-dsu-wizard/managers');
 const { impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
+const ROLE = require('../../fgt-dsu-wizard/model/DirectoryEntry').ROLE;
+const ReceivedOrderManager = require('../../fgt-dsu-wizard/managers/ReceivedOrderManager');
+
 
 const { APPS } = require('./credentials/credentials3');
 
@@ -120,7 +123,21 @@ const setupManager = function(participantManager, callback){
     });
 }
 
-const setup = function(participantManager, products, batches, callback){
+const attachLogic = function(participantManager, conf, callback){
+    if (!conf.attachLogic)
+        return callback();
+    try{
+        const receivedOrderListener = require('./listeners/orderListener')(participantManager, ROLE.MAH, conf.statusUpdateTimeout);
+        const receivedOrderManager = participantManager.getManager("ReceivedOrderManager");
+        receivedOrderManager.registerMessageListener(receivedOrderListener);
+    } catch (e) {
+        return callback(e);
+    }
+
+    callback();
+}
+
+const setup = function(conf, participantManager, products, batches, callback){
     const db = participantManager.db;
     if (!db)
         return callback(`database is not initialized`);
@@ -149,7 +166,11 @@ const setup = function(participantManager, products, batches, callback){
                     if (err)
                         return newCallback(err);
                     console.log(`Updates to db committed`);
-                    callback(undefined, productsObj, batchesObj);
+                    attachLogic(participantManager, conf, (err) => {
+                        if (err)
+                            return callback(err);
+                        callback(undefined, productsObj, batchesObj);
+                    })
                 });
             });
         });

@@ -120,7 +120,7 @@ class MessageManager extends Manager{
                 return console.log(`No Stashed Messages Stored for ${api}...`);
             console.log(`${messages.length} Stashed Messages found for manager ${api}`);
             messages.forEach(m => onNewApiMsgListener(m));
-        })
+        });
     }
 
     /**

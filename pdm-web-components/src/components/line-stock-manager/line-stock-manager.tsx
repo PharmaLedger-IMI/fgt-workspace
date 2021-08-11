@@ -11,7 +11,7 @@ const ItemClasses = {
   finished: 'finished'
 }
 
-const {Stock, Batch} = wizard.Model;
+const {Stock, utils} = wizard.Model;
 
 @Component({
   tag: 'line-stock-manager',
@@ -242,47 +242,11 @@ export class LineStockManager {
     if (productStock.length !== 1)
       return self.sendError(`More than one stock reference received. should be impossible`);
 
-    const result = productStock[0].stock ? productStock[0].stock.batches.sort((b1, b2) => {
-      const date1 = new Date(b1.expiry).getTime();
-      const date2 = new Date(b2.expiry).getTime();
-      return date1 - date2;
-    }) : [];
+    const result = productStock[0].stock ? utils.sortBatchesByExpiration(productStock[0].stock.batches) : [];
 
-    self.shipmentLines[gtin] = self.splitStockByQuantity(result, gtin);
+    // self.shipmentLines[gtin] = self.splitStockByQuantity(result, gtin);
+    self.shipmentLines[gtin] = utils.splitStockByQuantity(result, self.result.filter(r => r.orderLine.gtin === gtin)[0].orderLine.quantity);
     return self.shipmentLines[gtin];
-  }
-
-  private splitStockByQuantity(stock: any, gtin){
-    const self = this;
-    let accum = 0;
-    const result = {
-      selected: [],
-      divided: undefined,
-      remaining: []
-    };
-    const requiredQuantity = self.result.filter(r => r.orderLine.gtin === gtin)[0].orderLine.quantity
-    stock.forEach(batch => {
-      if (accum >= requiredQuantity){
-        result.remaining.push(batch);
-        // @ts-ignore
-      } else if (accum + batch.quantity > requiredQuantity) {
-        const batch1 = new Batch(batch);
-        const batch2 = new Batch(batch);
-        batch1.quantity = requiredQuantity - accum;
-        // @ts-ignore
-        batch2.quantity = batch.quantity - batch1.quantity;
-        result.selected.push(batch1);
-        result.divided = batch2
-      } else if(accum + batch.quantity === requiredQuantity){
-        result.selected.push(batch)
-      } else {
-        result.selected.push(batch);
-      }
-      // @ts-ignore
-      accum += batch.quantity;
-    });
-
-    return result;
   }
 
   private getAvailableStock(){

@@ -13,7 +13,9 @@ const defaultOps = {
     serialQuantity: 100,
     expiryOffset: 100,
     trueStock: false,                           // makes stock managers actually remove products from available for others down the line,
-    exportCredentials: false                    // export credentials for use in the Api-hubs front page
+    exportCredentials: false,                   // export credentials for use in the Api-hubs front page
+    attachLogic: false,                         // attaches listeners to the proper managers to replicate business logic
+    statusUpdateTimeout: 1500                   // When attachLogic is true, sets the timeout between status updates
 }
 
 const printResults = function (results, callback) {
