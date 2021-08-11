@@ -30,13 +30,13 @@ function receivedShipmentListener(participantManager, timeout = 1000){
     return function(message, callback){
         const receivedShipmentManager = participantManager.getManager("ReceivedShipmentManager");
         const identity = receivedShipmentManager.getIdentity();
-        receivedShipmentManager._getDSUInfo(message, (err, receivedShipment) => {
+        receivedShipmentManager._getDSUInfo(message.message, (err, receivedShipment) => {
             if (err)
                 return callback(err);
 
             if (receivedShipment.status !== ShipmentStatus.DELIVERED){
                 console.log(`${identity.id} - Skipping already handled Shipment ${receivedShipment.shipmentId} from ${receivedShipment.senderId}`);
-                return callback();
+                return callback(undefined, message);
             }
 
             const issuedOrderManager = participantManager.getManager("IssuedOrderManager");

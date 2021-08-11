@@ -207,7 +207,7 @@ class MessageManager extends Manager{
             self._startMessageListener(did);
             self._receiveMessage(message, (err, message) => {
                 if (err)
-                    return console.log(createOpenDSUErrorWrapper(`Failed to receive message`, err));
+                    return console.log(`Failed to receive message`, err);
                 console.log(`Message received ${message}`);
             });
         });
@@ -225,8 +225,6 @@ class MessageManager extends Manager{
             : callback(undefined, didDoc));
     }
 }
-
-let messageManager;
 
 /**
  * @param {BaseManager} baseManager  only required the first time, if not forced

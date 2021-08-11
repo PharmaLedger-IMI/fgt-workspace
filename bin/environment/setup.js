@@ -61,7 +61,9 @@ create(conf, (err, results) => {
         exportCredentials(results, (err) => {
             if (err)
                 throw err;
-            process.exit(0);
+            if (!conf.attachLogic)
+                process.exit(0);
+            console.log(`Process Left Hanging for message exchange reasons. When you stop seeing output for more than ${conf.statusUpdateTimeout} its safe to close to process`);
         });
     });
 });

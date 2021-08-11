@@ -127,7 +127,7 @@ const issueOrders = function(products, wholesalers, stocksObj, issuedOrderManage
     let receivedShipments = [];
 
     // 20 orders on first wholesaler
-    _createManyIssuedOrders(2, issuedOrderManager, products, wholesaler0, issuedOrders, receivedShipments, (err) => {
+    _createManyIssuedOrders(1, issuedOrderManager, products, wholesaler0, issuedOrders, receivedShipments, (err) => {
         callback(err, issuedOrders, receivedShipments, stocksObj);
     });
 }

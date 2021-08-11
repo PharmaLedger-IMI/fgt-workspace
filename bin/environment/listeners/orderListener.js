@@ -120,7 +120,7 @@ function fullfillOrder(participantManager, order, stocks, callback){
     const identity = issuedShipmentManager.getIdentity();
 
     const selectFromStock = function(gtin, quantity){
-        const productSortedBatches = utils.sortBatchesByExpiration(stocks[gtin].batches);
+        const productSortedBatches = ModelUtils.sortBatchesByExpiration(stocks[gtin].batches);
         return ModelUtils.splitStockByQuantity(productSortedBatches, quantity).selected;
     }
 
@@ -136,6 +136,7 @@ function fullfillOrder(participantManager, order, stocks, callback){
                 status: ShipmentStatus.CREATED
             });
         }));
+        return accum;
     }, []);
 
     const shipment = new Shipment(Date.now(), order.requesterId, identity.id, order.shipToAddress, ShipmentStatus.CREATED, shipmentLines)
@@ -148,19 +149,19 @@ function receivedOrderListener(participantManager, role, timeout = 1000){
         const receivedOrderManager = participantManager.getManager("ReceivedOrderManager");
         const stockManager = participantManager.stockManager;
         const identity = receivedOrderManager.getIdentity();
-        receivedOrderManager._getDSUInfo(message, (err, receivedOrder) => {
+        receivedOrderManager._getDSUInfo(message.message, (err, receivedOrder) => {
             if (err)
                 return callback(err);
 
             if (receivedOrder.status !== OrderStatus.CREATED){
                 console.log(`${identity.id} - Skipping already handled Order ${receivedOrder.orderId} from ${receivedOrder.requesterId}`);
-                return callback();
+                return callback(undefined, message);
             }
 
             const confirmStockIterator = function(products, accumulator, callback){
                 if (!callback){
                     callback = accumulator;
-                    accumulator = [];
+                    accumulator = {};
                 }
 
                 const product = products.shift();
@@ -170,7 +171,8 @@ function receivedOrderListener(participantManager, role, timeout = 1000){
                 stockManager.getOne(gtin, (err, stock) => {
                     if (err || !stock || !stock.getQuantity() || stock.getQuantity() < quantity)
                         return callback(`not enough of ${gtin}. needed ${quantity}`);
-                    confirmStockIterator(products, callback);
+                    accumulator[stock.gtin] = stock;
+                    confirmStockIterator(products, accumulator, callback);
                 });
             }
 
