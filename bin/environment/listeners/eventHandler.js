@@ -13,7 +13,7 @@ function submitEvent(conf){
     }
 
     setInterval(() => {
-        if (Date.now() - timeOfLastEvent > 10 * conf.statusUpdateTimeout){
+        if (Date.now() - timeOfLastEvent > 5 * conf.statusUpdateTimeout){
             console.log(`The Blockchain seems to be silent... Going to end the process...`);
             process.exit(0);
         }
