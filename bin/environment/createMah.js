@@ -126,7 +126,7 @@ const attachLogic = function(participantManager, conf, callback){
     if (!conf.attachLogic)
         return callback();
     try{
-        const receivedOrderListener = require('./listeners/orderListener')(participantManager, ROLE.MAH, conf.statusUpdateTimeout);
+        const receivedOrderListener = require('./listeners/orderListener').orderListener(participantManager, ROLE.MAH, conf.statusUpdateTimeout);
         const receivedOrderManager = participantManager.getManager("ReceivedOrderManager");
         receivedOrderManager.registerMessageListener(receivedOrderListener);
         submitEvent(conf);

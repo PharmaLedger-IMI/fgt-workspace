@@ -22,6 +22,8 @@ const shipmentStatusUpdater = function(issuedShipmentManager, shipment, timeout,
         return callback(`More that one status allowed...`);
     console.log(`${identity.id} - Updating Shipment ${shipment.shipmentId}'s status to ${possibleStatus[0]} in ${timeout} miliseconds`);
     setTimeout(() => {
+        console.log(`\n${identity.id} - NOW UPDATING SHIPMENT STATUS FROM ${shipment.status} to ${possibleStatus[0]}\n`)
+
         shipment.status = possibleStatus[0];
         submitEvent()
         issuedShipmentManager.update(shipment, (err, updatedShipment) => {
@@ -29,6 +31,9 @@ const shipmentStatusUpdater = function(issuedShipmentManager, shipment, timeout,
                 return callback(err);
             console.log(`${identity.id} - Shipment ${updatedShipment.orderId}'s updated to ${updatedShipment.status}`);
             submitEvent()
+            // Debug
+            if (identity.id.startsWith('WHS'))
+                console.log(`\n${identity.id} - UPDATED SHIPMENT STATUS to ${updatedShipment.status}\n`)
             shipmentStatusUpdater(issuedShipmentManager, updatedShipment, timeout, callback);
         });
     }, timeout)
@@ -119,7 +124,7 @@ function issueOrder(participantManager, order, senderId, callback){
     issuedOrderManager.create(boundOrder, callback);
 }
 
-function fullfillOrder(participantManager, order, stocks, callback){
+function createShipment(participantManager, order, stocks, callback){
     const issuedShipmentManager = participantManager.getManager("IssuedShipmentManager");
     const identity = issuedShipmentManager.getIdentity();
 
@@ -147,10 +152,51 @@ function fullfillOrder(participantManager, order, stocks, callback){
     issuedShipmentManager.create(order.orderId, shipment, callback);
 }
 
-function receivedOrderListener(participantManager, role, timeout = 1000){
+function fulFillOrder(participantManager, receivedOrder, role, timeout, useForward, callback){
+    if (!callback){
+        callback = useForward;
+        useForward = true;
+    }
+    const confirmStockIterator = function(products, accumulator, callback){
+        if (!callback){
+            callback = accumulator;
+            accumulator = {};
+        }
+        const stockManager = participantManager.getManager("StockManager");
+        const product = products.shift();
+        if (!product)
+            return callback(undefined, accumulator);
+        const [gtin, quantity] = product;
+        stockManager.getOne(gtin, (err, stock) => {
+            if (err || !stock || !stock.getQuantity() || stock.getQuantity() < quantity)
+                return callback(`not enough of ${gtin}. needed ${quantity}`);
+            accumulator[stock.gtin] = stock;
+            confirmStockIterator(products, accumulator, callback);
+        });
+    }
+
+    confirmStockIterator(receivedOrder.orderLines.map(ol => [ol.gtin, ol.quantity]), (err, stocks) => {
+        if (err){
+            console.log(`missing stock: `, err);
+            return useForward ? forwardOrder(participantManager, receivedOrder, role, callback) : callback(err);
+        }
+        console.log(`Stock confirmed for order:`, receivedOrder);
+        createShipment(participantManager, receivedOrder, stocks, (err, shipmentSSI) => {
+            if (err)
+                return callback(err);
+            const issuedShipmentManager = participantManager.getManager("IssuedShipmentManager");
+            issuedShipmentManager._getDSUInfo(shipmentSSI, (err, shipment) => {
+                if (err)
+                    return callback(err);
+                shipmentStatusUpdater(issuedShipmentManager, shipment, timeout, callback);
+            });
+        });
+    });
+}
+
+function orderListener(participantManager, role, timeout = 1000){
     return function(message, callback){
         const receivedOrderManager = participantManager.getManager("ReceivedOrderManager");
-        const stockManager = participantManager.stockManager;
         const identity = receivedOrderManager.getIdentity();
         receivedOrderManager._getDSUInfo(message.message, (err, receivedOrder) => {
             if (err)
@@ -161,43 +207,12 @@ function receivedOrderListener(participantManager, role, timeout = 1000){
                 return callback(undefined, message);
             }
 
-            const confirmStockIterator = function(products, accumulator, callback){
-                if (!callback){
-                    callback = accumulator;
-                    accumulator = {};
-                }
-
-                const product = products.shift();
-                if (!product)
-                    return callback(undefined, accumulator);
-                const [gtin, quantity] = product;
-                stockManager.getOne(gtin, (err, stock) => {
-                    if (err || !stock || !stock.getQuantity() || stock.getQuantity() < quantity)
-                        return callback(`not enough of ${gtin}. needed ${quantity}`);
-                    accumulator[stock.gtin] = stock;
-                    confirmStockIterator(products, accumulator, callback);
-                });
-            }
-
-            confirmStockIterator(receivedOrder.orderLines.map(ol => [ol.gtin, ol.quantity]), (err, stocks) => {
-                if (err){
-                    console.log(`missing stock: `, err);
-                    return forwardOrder(participantManager, receivedOrder, role, callback);
-                }
-                console.log(`Stock confirmed for order:`, receivedOrder);
-                fullfillOrder(participantManager, receivedOrder, stocks, (err, shipmentSSI) => {
-                    if (err)
-                        return callback(err);
-                    const issuedShipmentManager = participantManager.getManager("IssuedShipmentManager");
-                    issuedShipmentManager._getDSUInfo(shipmentSSI, (err, shipment) => {
-                        if (err)
-                            return callback(err);
-                        shipmentStatusUpdater(issuedShipmentManager, shipment, timeout, callback);
-                    })
-                });
-            });
+            fulFillOrder(participantManager, receivedOrder, role, timeout, callback);
         });
     }
 }
 
-module.exports = receivedOrderListener;
+module.exports = {
+    orderListener,
+    fulFillOrder
+};

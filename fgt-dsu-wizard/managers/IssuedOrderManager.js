@@ -270,7 +270,7 @@ class IssuedOrderManager extends OrderManager {
             if (err) {
                 return callback(err);
             }
-            let orderId = (new Date()).toISOString(); // TODO sequential unique numbering ? It should comes from the ERP anyway.
+            let orderId = Date.now(); // TODO sequential unique numbering ? It should comes from the ERP anyway.
             let requesterId = participant.id;
             let senderId = '';
             let shipToAddress = participant.address;

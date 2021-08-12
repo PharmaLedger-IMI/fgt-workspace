@@ -2,14 +2,17 @@ const Order = require('../../../fgt-dsu-wizard/model/Order');
 const OrderStatus = require('../../../fgt-dsu-wizard/model/OrderStatus');
 const ShipmentStatus = require('../../../fgt-dsu-wizard/model/ShipmentStatus');
 const submitEvent = require('./eventHandler');
+const {fulFillOrder} = require('./orderListener');
 
-const orderStatusUpdater = function(issuedOrderManager, order, timeout, callback){
-    const identity = issuedOrderManager.getIdentity();
+const orderStatusUpdater = function(participantManager, order, timeout, callback){
+    const identity = participantManager.getIdentity();
     const possibleStatus = Order.getAllowedStatusUpdates(order.status).filter(os => os !== OrderStatus.REJECTED);
     if (!possibleStatus || !possibleStatus.length){
         console.log(`${identity.id} - Order ${order.orderId} has no possible status updates`);
         return callback();
     }
+
+    const issuedOrderManager = participantManager.getManager("IssuedOrderManager");
 
     if (possibleStatus.length > 1)
         return callback(`More that one status allowed...`);
@@ -22,12 +25,37 @@ const orderStatusUpdater = function(issuedOrderManager, order, timeout, callback
                 return callback(err);
             console.log(`${identity.id} - Order ${updatedOrder.orderId}'s updated to ${updatedOrder.status}`);
             submitEvent();
-            orderStatusUpdater(issuedOrderManager, updatedOrder, timeout, callback);
+            if (updatedOrder.status !== OrderStatus.CONFIRMED)
+                return orderStatusUpdater(participantManager, updatedOrder, timeout, callback);
+            matchIssuedToReceivedOrder(participantManager, updatedOrder, timeout, callback);
         });
-    }, timeout)
+    }, timeout);
 }
 
-function receivedShipmentListener(participantManager, timeout = 1000){
+const matchIssuedToReceivedOrder = function(participantManager, order, timeout, callback){
+    const identity = participantManager.getIdentity();
+    const receivedOrderManager = participantManager.getManager("ReceivedOrderManager");
+    submitEvent()
+    receivedOrderManager.getAll(true, (err, orders) => {
+        if (err)
+            return callback(err);
+        const quantityByGtin = order.orderLines.reduce((accum, ol) => {
+            accum[ol.gtin] = ol.quantity;
+            return accum;}, {})
+        const matching = orders.find(ol => {
+            return ol.orderLines.every(ol => ol.gtin in quantityByGtin && quantityByGtin[ol.gtin] === ol.quantity);
+        });
+        if (!matching){
+            console.log(`${identity.id} - Could not find a matching received order to fulfill. No matter. must be an end point`);
+            return callback();
+        }
+        setTimeout(() => {
+            fulFillOrder(participantManager, matching, undefined, timeout, false, callback);
+        }, timeout);
+    });
+}
+
+function shipmentListener(participantManager, timeout = 1000){
     return function(message, callback){
         const receivedShipmentManager = participantManager.getManager("ReceivedShipmentManager");
         const identity = receivedShipmentManager.getIdentity();
@@ -46,10 +74,12 @@ function receivedShipmentListener(participantManager, timeout = 1000){
                 if (err)
                     return callback(err);
 
-                orderStatusUpdater(issuedOrderManager, order, timeout, callback);
+                orderStatusUpdater(participantManager, order, timeout, callback);
             });
         });
     }
 }
 
-module.exports = receivedShipmentListener;
+module.exports = {
+    shipmentListener: shipmentListener
+};
