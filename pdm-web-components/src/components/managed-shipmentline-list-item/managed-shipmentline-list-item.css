@@ -7,17 +7,6 @@ ion-item.main-item{
   animation: 1s linear fadein;
 }
 
-managed-shipmentline-list-item ion-skeleton-text.label-batch{
-  width: 20%;
-}
-
-managed-shipmentline-list-item ion-skeleton-text.label-quantity{
-  width: 15%;
-}
-
-managed-shipmentline-list-item ion-skeleton-text.label-status{
-  width: 15%;
-}
 
 @keyframes fadein {
   from {
