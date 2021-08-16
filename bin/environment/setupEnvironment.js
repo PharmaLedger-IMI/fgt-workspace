@@ -8,6 +8,8 @@ const { getDummyWholesalers } = require('./credentials/credentials3');
 
 const { ROLE } = require('../../fgt-dsu-wizard/model/DirectoryEntry');
 
+const submitEvent = require('./listeners/eventHandler');
+
 const results = {};
 results[APPS.MAH] = [];
 results[APPS.WHOLESALER] = [];
@@ -221,7 +223,11 @@ const setupSingleTraceability = function(actors, callback){
                     setupDirectories(actors, allProductsBackup, (err) => {
                         if (err)
                             return callback(err);
-                        returnResults(callback);
+                        if (!conf.attachLogic)
+                            return returnResults(callback);
+                        submitEvent(conf, (err) => {
+                            return callback(undefined, results);
+                        });
                     })
                 });
             });
@@ -240,8 +246,6 @@ const setupDirectories = function(actors, allProducts, callback){
                 return ROLE.MAH;
             case APPS.PHARMACY:
                 return ROLE.PHA;
-            case APPS.FACTORY:
-                return ROLE.FAC;
             default:
                 throw new Error(`Invalid Role`);
         }

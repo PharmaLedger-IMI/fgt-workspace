@@ -49,6 +49,8 @@ const matchIssuedToReceivedOrder = function(participantManager, order, timeout, 
             console.log(`${identity.id} - Could not find a matching received order to fulfill. No matter. must be an end point`);
             return callback();
         }
+
+        console.log(`${identity.id} - Found and order that needs Fulfilling that matches the one that just arrived:`, matching, order);
         setTimeout(() => {
             fulFillOrder(participantManager, matching, undefined, timeout, false, callback);
         }, timeout);

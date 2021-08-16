@@ -15,7 +15,7 @@ const defaultOps = {
     trueStock: false,                           // makes stock managers actually remove products from available for others down the line,
     exportCredentials: false,                   // export credentials for use in the Api-hubs front page
     attachLogic: false,                         // attaches listeners to the proper managers to replicate business logic
-    statusUpdateTimeout: 10000                   // When attachLogic is true, sets the timeout between status updates
+    statusUpdateTimeout: 5000                   // When attachLogic is true, sets the timeout between status updates
 }
 
 const printResults = function (results, callback) {
@@ -61,9 +61,7 @@ try {
             exportCredentials(results, (err) => {
                 if (err)
                     throw err;
-                if (!conf.attachLogic)
-                    process.exit(0);
-                console.log(`Process Left Hanging for message exchange reasons. When you stop seeing output for more than ${conf.statusUpdateTimeout} its safe to close to process`);
+                process.exit(0);
             });
         });
     });

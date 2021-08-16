@@ -17,6 +17,14 @@ const shipmentStatusUpdater = function(issuedShipmentManager, shipment, timeout,
         console.log(`${identity.id} - Shipment ${shipment.shipmentId} has no possible status updates`);
         return callback();
     }
+    //
+    // // Debug
+    // if (identity.id.startsWith('WHS')){
+    //     console.log(`${identity.id} - Interrupting status update`);
+    //
+    //
+    //     return callback();
+    // }
 
     if (possibleStatus.length > 1)
         return callback(`More that one status allowed...`);
@@ -30,11 +38,12 @@ const shipmentStatusUpdater = function(issuedShipmentManager, shipment, timeout,
             if (err)
                 return callback(err);
             console.log(`${identity.id} - Shipment ${updatedShipment.orderId}'s updated to ${updatedShipment.status}`);
-            submitEvent()
-            // Debug
-            if (identity.id.startsWith('WHS'))
-                console.log(`\n${identity.id} - UPDATED SHIPMENT STATUS to ${updatedShipment.status}\n`)
-            shipmentStatusUpdater(issuedShipmentManager, updatedShipment, timeout, callback);
+
+            console.log(`\n${identity.id} - UPDATED SHIPMENT STATUS to ${updatedShipment.status}\n`);
+            setTimeout(() => {
+                submitEvent()
+                shipmentStatusUpdater(issuedShipmentManager, updatedShipment, timeout, callback);
+            }, timeout)
         });
     }, timeout)
 }
