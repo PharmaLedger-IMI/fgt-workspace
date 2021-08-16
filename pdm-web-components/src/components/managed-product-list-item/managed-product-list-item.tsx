@@ -126,10 +126,20 @@ export class ManagedProductListItem {
     }
 
     return(
-      <ion-label slot="label" color="secondary">
-        {getGtinLabel()}
-        <span class="ion-padding-start">{getNameLabel()}</span>
-      </ion-label>)
+      <ion-row slot="label" class="ion-align-items-center">
+        <ion-col class="ion-padding-start" size="auto">
+          <ion-label color="secondary">
+            {getGtinLabel()}
+          </ion-label>
+        </ion-col >
+
+        <ion-col class="ion-padding-start" size="auto">
+          <ion-label color="secondary">
+            {getNameLabel()}
+          </ion-label>
+        </ion-col>
+      </ion-row>
+    )
   }
 
   addBatches(){
@@ -144,6 +154,7 @@ export class ManagedProductListItem {
                           })))}
                           id-prop="gtin-batch"
                           is-ion-item="false"
+                          more-chips-position="start"
                           orientation={this.getOrientation()}
                           onSelectEvent={this.triggerSelect.bind(this)}></pdm-item-organizer>
     )

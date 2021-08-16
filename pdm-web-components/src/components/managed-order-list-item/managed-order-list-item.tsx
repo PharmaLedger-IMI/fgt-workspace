@@ -132,6 +132,7 @@ export class ManagedOrderListItem {
                           id-prop="gtin"
                           is-ion-item="false"
                           display-count="3"
+                          display-count-divider="200"
                           orientation={this.getOrientation()}
                           onSelectEvent={(evt) => {
                             evt.preventDefault();
