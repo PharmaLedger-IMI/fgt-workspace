@@ -90,6 +90,8 @@ export class ManagedBatch implements CreateManageView{
 
   private layoutComponent = undefined;
 
+  private addSerialNumberInput!: HTMLInputElement;
+
   async componentWillLoad(){
     if (!this.host.isConnected)
       return;
@@ -196,9 +198,10 @@ export class ManagedBatch implements CreateManageView{
     )
   }
 
-  private addSerialNumbers(){
-    const newSerials = this.layoutComponent.getInput('serialNumbers').value.split(',');
-    this.serialsNumbers = [...this.serialsNumbers, ...newSerials];
+  private addSerialNumbers() {
+    let inputValue = this.addSerialNumberInput.value;
+    this.serialsNumbers = [...this.serialsNumbers, ...inputValue.split(',')];
+    this.addSerialNumberInput.value = '';
   }
 
   private getInputs(){
@@ -260,6 +263,7 @@ export class ManagedBatch implements CreateManageView{
         <ion-label position="floating">{self.serialsString}</ion-label>
         <ion-input name="input-serialNumbers" required={true} pattern="^[\d,]+$"
                    placeholder={self.serialsPlaceholderString}
+                   ref={(el) => this.addSerialNumberInput = el as HTMLInputElement}
         ></ion-input>
         {getAddSerialsButton()}
       </ion-item>
