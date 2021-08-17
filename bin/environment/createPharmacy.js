@@ -5,7 +5,7 @@ const path = require('path');
 require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
 const dt = require('../../pdm-dsu-toolkit/services/dt');
 const getReceivedOrderManager = require("../../fgt-dsu-wizard/managers/ReceivedOrderManager");
-const { getParticipantManager, getIssuedOrderManager, getStockManager, getReceivedShipmentManager } = require('../../fgt-dsu-wizard/managers');
+const { getParticipantManager, getIssuedOrderManager, getStockManager, getReceivedShipmentManager, getSaleManager } = require('../../fgt-dsu-wizard/managers');
 const { Order, OrderLine } = require('../../fgt-dsu-wizard/model');
 const { generateRandomInt, impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 const submitEvent = require('./listeners/eventHandler');
@@ -108,7 +108,11 @@ const setupManager = function(participantManager, callback){
                 getReceivedOrderManager(participantManager, (err, receivedOrderManager) => {
                     if (err)
                         return callback(err);
-                    callback();
+                    getSaleManager(participantManager, (err) => {
+                        if (err)
+                            return callback(err);
+                        callback();
+                    });
                 });
             });
         });
