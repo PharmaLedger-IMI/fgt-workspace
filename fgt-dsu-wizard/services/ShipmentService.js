@@ -269,7 +269,7 @@ function ShipmentService(domain, strategy) {
         const self = this;
         if (isSimple) {
             keySSI = utils.getKeySSISpace().parse(keySSI);
-            utils.getResolver().loadDSU(keySSI, (err, dsu) => {
+            utils.getResolver().loadDSU(keySSI, {skipCache: true}, (err, dsu) => {
                 if (err)
                     return callback(err);
                 utils.getMounts(dsu, '/', STATUS_MOUNT_PATH,  (err, mounts) => {

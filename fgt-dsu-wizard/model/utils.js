@@ -139,6 +139,41 @@ function getDirectoryRequesters(directoryManager, callback){
         : callback(undefined, requesters));
 }
 
+function sortBatchesByExpiration(batches){
+    return batches.sort((b1, b2) => {
+        const date1 = new Date(b1.expiry).getTime();
+        const date2 = new Date(b2.expiry).getTime();
+        return date1 - date2;
+    });
+}
+
+function splitStockByQuantity(batches, requiredQuantity){
+    let accum = 0;
+    const result = {
+        selected: [],
+        divided: undefined,
+        remaining: []
+    };
+    batches.forEach(batch => {
+        if (accum >= requiredQuantity){
+            result.remaining.push(batch);
+        } else if (accum + batch.quantity > requiredQuantity) {
+            const batch1 = new Batch(batch);
+            const batch2 = new Batch(batch);
+            batch1.quantity = requiredQuantity - accum;
+            batch2.quantity = batch.quantity - batch1.quantity;
+            result.selected.push(batch1);
+            result.divided = batch2
+        } else if(accum + batch.quantity === requiredQuantity){
+            result.selected.push(batch)
+        } else {
+            result.selected.push(batch);
+        }
+        accum += batch.quantity;
+    });
+
+    return result;
+}
 
 module.exports ={
     getRandom,
@@ -154,5 +189,7 @@ module.exports ={
     getDirectorySuppliers,
     getDirectoryRequesters,
     getDirectoryProducts,
+    sortBatchesByExpiration,
+    splitStockByQuantity,
     isEqual
 }

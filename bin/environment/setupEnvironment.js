@@ -8,6 +8,8 @@ const { getDummyWholesalers } = require('./credentials/credentials3');
 
 const { ROLE } = require('../../fgt-dsu-wizard/model/DirectoryEntry');
 
+const submitEvent = require('./listeners/eventHandler');
+
 const results = {};
 results[APPS.MAH] = [];
 results[APPS.WHOLESALER] = [];
@@ -64,7 +66,7 @@ const setupFullEnvironment = function(actors, callback){
         if (!mah)
             return callback();
         console.log(`now setting up MAH with key ${mah.ssi}`);
-        setup(APPS.MAH, mah,
+        setup(conf, APPS.MAH, mah,
             mah.credentials.products || getProducts(),
             mah.credentials.batches || undefined, (err) => err
                 ? callback(err)
@@ -76,7 +78,7 @@ const setupFullEnvironment = function(actors, callback){
         if (!wholesaler)
             return callback();
         console.log(`now setting up Wholesaler with key ${wholesaler.ssi}`);
-        setup(APPS.WHOLESALER, wholesaler,
+        setup(conf, APPS.WHOLESALER, wholesaler,
             wholesaler.credentials.stock || getStockFromProductsAndBatchesObj(80, conf.trueStock, products, batches), (err) => err
                 ? callback(err)
                 : setupWholesalerIterator(wholesalersCopy, products, batches, callback));
@@ -87,7 +89,7 @@ const setupFullEnvironment = function(actors, callback){
         if (!pharmacy)
             return callback();
         console.log(`now setting up Pharmacy with key ${pharmacy.ssi}`);
-        setup(APPS.PHARMACY, pharmacy, products,
+        setup(conf, APPS.PHARMACY, pharmacy, products,
             wholesalers, pharmacy.credentials.stock || getStockFromProductsAndBatchesObj(20, conf.trueStock, products, batches), (err) => err
                 ? callback(err)
                 : setupPharmacyIterator(pharmaciesCopy, products, batches, wholesalers, callback));
@@ -153,7 +155,7 @@ const setupSingleTraceability = function(actors, callback){
         if (!mah)
             return callback();
         console.log(`now setting up MAH with key ${mah.ssi}`);
-        setup(APPS.MAH, mah,
+        setup(conf, APPS.MAH, mah,
             mah.credentials.products || getProducts(),
             mah.credentials.batches || undefined, (err) => err
                 ? callback(err)
@@ -165,7 +167,7 @@ const setupSingleTraceability = function(actors, callback){
         if (!wholesaler)
             return callback();
         console.log(`now setting up Wholesaler with key ${wholesaler.ssi}`);
-        setup(APPS.WHOLESALER, wholesaler,
+        setup(conf, APPS.WHOLESALER, wholesaler,
             [], (err) => err
                 ? callback(err)
                 : setupWholesalerIterator(wholesalersCopy, products, batches, callback));
@@ -176,7 +178,7 @@ const setupSingleTraceability = function(actors, callback){
         if (!pharmacy)
             return callback();
         console.log(`now setting up Pharmacy with key ${pharmacy.ssi}`);
-        setup(APPS.PHARMACY, pharmacy, products,
+        setup(conf, APPS.PHARMACY, pharmacy, products,
             wholesalers, [], (err) => err
                 ? callback(err)
                 : setupPharmacyIterator(pharmaciesCopy, products, batches, wholesalers, callback));
@@ -221,7 +223,11 @@ const setupSingleTraceability = function(actors, callback){
                     setupDirectories(actors, allProductsBackup, (err) => {
                         if (err)
                             return callback(err);
-                        returnResults(callback);
+                        if (!conf.attachLogic)
+                            return returnResults(callback);
+                        submitEvent(conf, (err) => {
+                            return callback(undefined, results);
+                        });
                     })
                 });
             });
@@ -240,8 +246,6 @@ const setupDirectories = function(actors, allProducts, callback){
                 return ROLE.MAH;
             case APPS.PHARMACY:
                 return ROLE.PHA;
-            case APPS.FACTORY:
-                return ROLE.FAC;
             default:
                 throw new Error(`Invalid Role`);
         }
@@ -356,7 +360,7 @@ const returnResults = function(callback){
     callback(undefined, results);
 }
 
-const setup = function(type, result, ...args){
+const setup = function(conf, type, result, ...args){
     const callback = args.pop();
 
     const cb = function(ssi, type){
@@ -374,16 +378,7 @@ const setup = function(type, result, ...args){
         case APPS.MAH:
             products = args.shift() || getProducts();
             batches = args.shift();
-            return require('./createMah').setup(result.manager, products, batches, cb(result.ssi, APPS.MAH));
-        case APPS.FACTORY:
-            if (args.length === 1){
-                stocks = args.shift();
-            } else {
-                products = args.shift() || getProducts();
-                batches = args.shift();
-                stocks = getStockFromProductsAndBatchesObj(products, batches);
-            }
-            return require('./createWholesaler').setup(result.manager, stocks , cb(result.ssi, APPS.FACTORY));
+            return require('./createMah').setup(conf, result.manager, products, batches, cb(result.ssi, APPS.MAH));
         case APPS.WHOLESALER:
             if (args.length === 1){
                 stocks = args.shift();
@@ -392,12 +387,12 @@ const setup = function(type, result, ...args){
                 batches = args.shift();
                 stocks = getStockFromProductsAndBatchesObj(products, batches);
             }
-            return require('./createWholesaler').setup(result.manager, stocks , cb(result.ssi, APPS.WHOLESALER));
+            return require('./createWholesaler').setup(conf, result.manager, stocks , cb(result.ssi, APPS.WHOLESALER));
         case APPS.PHARMACY:
             products = args.shift() || getProducts();
             const wholesalers = args.shift() || getDummyWholesalers();
             stocks = args.shift() || getStockFromProductsAndBatchesObj(products);
-            return require('./createPharmacy').setup(result.manager, products, wholesalers, stocks, cb(result.ssi, APPS.PHARMACY));
+            return require('./createPharmacy').setup(conf, result.manager, products, wholesalers, stocks, cb(result.ssi, APPS.PHARMACY));
         default:
             callback(`unsupported config: ${type}`);
     }
@@ -437,8 +432,6 @@ const create = function(config, credentials, callback){
     switch(app){
         case APPS.MAH:
             return require('./createMah').create(credentials, cb(APPS.MAH));
-        case APPS.FACTORY:
-            return require('./createWholesaler').create(credentials, cb(APPS.FACTORY));
         case APPS.WHOLESALER:
             return require('./createWholesaler').create(credentials, cb(APPS.WHOLESALER));
         case APPS.PHARMACY:
