@@ -3,11 +3,8 @@
  * @memberOf Utils
  */
 
-
-import {WebManager} from "../services/WebManagerService";
 import wizard from '../services/WizardService';
-const {ROLE} = wizard.Model;
-
+const {getDirectorySuppliers, getDirectoryRequesters, getDirectoryProducts} = wizard.Model.utils;
 
 /**
  *
@@ -219,49 +216,4 @@ export async function getProductPopOver(evt, products: string[]): Promise<any>{
   return popover;
 }
 
-/**
- * Retrieves all the products from the provided directory manager
- * @param {DirectoryManager} directoryManager
- * @param {function(err, string[])} callback
- * @memberOf PopOver
- */
-export function getDirectoryProducts(directoryManager: WebManager, callback){
-  const options = {
-    query: [`role == ${ROLE.PRODUCT}`]
-  }
-  directoryManager.getAll(false, options, (err, gtins) => err
-    ? callback(err)
-    : callback(undefined, gtins));
-}
-
-/**
- * Retrieves all the suppliers from the provided directory manager
- * @param {DirectoryManager} directoryManager
- * @param {function(err, string[])} callback
- * @memberOf PopOver
- */
-export function getDirectorySuppliers(directoryManager: WebManager, callback){
-  const options = {
-    query: [`role like /${ROLE.MAH}|${ROLE.WHS}/g`]
-  }
-
-  directoryManager.getAll(false, options, (err, suppliers) => err
-    ? callback(err)
-    : callback(undefined, suppliers));
-}
-
-/**
- * Retrieves all the requesters from the provided directory manager
- * @param {DirectoryManager} directoryManager
- * @param {function(err, string[])} callback
- * @memberOf PopOver
- */
-export function getDirectoryRequesters(directoryManager: WebManager, callback){
-  const options = {
-    query: [`role like /${ROLE.PHA}|${ROLE.WHS}/g`]
-  }
-
-  directoryManager.getAll(false, options, (err, requesters) => err
-    ? callback(err)
-    : callback(undefined, requesters));
-}
+export {getDirectoryProducts, getDirectorySuppliers, getDirectoryRequesters};

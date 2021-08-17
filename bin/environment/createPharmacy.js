@@ -5,11 +5,12 @@ const path = require('path');
 require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
 const dt = require('../../pdm-dsu-toolkit/services/dt');
 const getReceivedOrderManager = require("../../fgt-dsu-wizard/managers/ReceivedOrderManager");
-const { getParticipantManager, getIssuedOrderManager, getStockManager, getReceivedShipmentManager } = require('../../fgt-dsu-wizard/managers');
+const { getParticipantManager, getIssuedOrderManager, getStockManager, getReceivedShipmentManager, getSaleManager } = require('../../fgt-dsu-wizard/managers');
 const { Order, OrderLine } = require('../../fgt-dsu-wizard/model');
 const { generateRandomInt, impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
-
+const submitEvent = require('./listeners/eventHandler');
 const { APPS } = require('./credentials/credentials3');
+const {ROLE} = require("../../fgt-dsu-wizard/model/DirectoryEntry");
 
 const defaultOps = {
     app: "fgt-pharmacy-wallet",
@@ -107,7 +108,11 @@ const setupManager = function(participantManager, callback){
                 getReceivedOrderManager(participantManager, (err, receivedOrderManager) => {
                     if (err)
                         return callback(err);
-                    callback();
+                    getSaleManager(participantManager, (err) => {
+                        if (err)
+                            return callback(err);
+                        callback();
+                    });
                 });
             });
         });
@@ -126,19 +131,43 @@ const issueOrders = function(products, wholesalers, stocksObj, issuedOrderManage
     let receivedShipments = [];
 
     // 20 orders on first wholesaler
-    _createManyIssuedOrders(2, issuedOrderManager, products, wholesaler0, issuedOrders, receivedShipments, (err) => {
+    _createManyIssuedOrders(1, issuedOrderManager, products, wholesaler0, issuedOrders, receivedShipments, (err) => {
         callback(err, issuedOrders, receivedShipments, stocksObj);
     });
 }
 
-const setup = function (participantManager, products, wholesalers, stocks, callback) {
+const attachLogic = function(participantManager, conf, callback){
+    if (!conf.attachLogic)
+        return callback();
+    try{
+        const orderListener = require('./listeners/orderListener').orderListener(participantManager, ROLE.PHA, conf.statusUpdateTimeout);
+        const receivedOrderManager = participantManager.getManager("ReceivedOrderManager");
+        receivedOrderManager.registerMessageListener(orderListener);
+
+        const shipmentListener = require('./listeners/shipmentListener').shipmentListener(participantManager, ROLE.PHA, conf.statusUpdateTimeout);
+        const receivedShipmentManager = participantManager.getManager("ReceivedShipmentManager");
+        receivedShipmentManager.registerMessageListener(shipmentListener);
+        submitEvent(conf);
+    } catch (e) {
+        return callback(e);
+    }
+
+    callback();
+}
+
+
+const setup = function (conf, participantManager, products, wholesalers, stocks, callback) {
     setupStock(participantManager, stocks, (err, stocksObj) => {
         if (err)
             return callback(err);
         setupManager(participantManager, (err) => {
             if (err)
                 return callback(err);
-            issueOrders(products, wholesalers, stocksObj, getIssuedOrderManager(participantManager), callback);
+            attachLogic(participantManager, conf, (err) => {
+                if (err)
+                    return callback(err);
+                issueOrders(products, wholesalers, stocksObj, getIssuedOrderManager(participantManager), callback);
+            });
         });
     });
 };

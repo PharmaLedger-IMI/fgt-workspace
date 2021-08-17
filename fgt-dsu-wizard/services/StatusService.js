@@ -119,50 +119,58 @@ function StatusService(domain, strategy){
 
         if (isSimple){
             keySSI = utils.getKeySSISpace().parse(keySSI);
-            utils.getResolver().loadDSU(keySSI.getIdentifier(), (err, dsu) => {
+            utils.getResolver().loadDSU(keySSI.getIdentifier(), {skipCache: true}, (err, dsu) => {
                 if (err)
                     return callback(err);
-
-                dsu.readFile(INFO_PATH, (err, prevStatus) => {
+                dsu.getKeySSIAsObject((err, newKeySSI) => {
                     if (err)
                         return callback(err);
-                    try{
-                        prevStatus = JSON.parse(prevStatus);
-                    } catch (e){
-                        return callback(e);
-                    }
-
-                    dsu.writeFile(INFO_PATH, data, (err) => {
+                    dsu.readFile(INFO_PATH, (err, prevStatus) => {
                         if (err)
                             return callback(err);
-
-                        const returnFunc = function(err){
-                            if (err)
-                                return callback(err);
-                            dsu.getKeySSIAsObject((err, keySSI) => {
-                                if (err)
-                                    return callback(err);
-                                callback(undefined, keySSI);
-                            });
+                        try{
+                            prevStatus = JSON.parse(prevStatus);
+                        } catch (e){
+                            return callback(e);
                         }
 
-                        let log = createLog(id, prevStatus, status);
-
-                        dsu.readFile(LOG_PATH, (err, data) => {
-                            if (err)
+                        dsu.writeFile(INFO_PATH, data, (err) => {
+                            if (err){
+                                console.log(newKeySSI.getTypeName(), newKeySSI.getIdentifier(), data)
                                 return callback(err);
-                            try {
-                                data = JSON.parse(data);
-                            } catch (e){
-                                return callback(e);
                             }
-                            if (!Array.isArray(data))
-                                return callback(`Invalid log data`);
-                            return dsu.writeFile(LOG_PATH, JSON.stringify([...data, log]), returnFunc);
-                        });
-                    });
 
-                });
+
+                            const returnFunc = function(err){
+                                if (err)
+                                    return callback(err);
+                                dsu.getKeySSIAsObject((err, keySSI) => {
+                                    if (err)
+                                        return callback(err);
+                                    callback(undefined, keySSI);
+                                });
+                            }
+
+                            let log = createLog(id, prevStatus, status);
+
+                            dsu.readFile(LOG_PATH, (err, data) => {
+                                if (err)
+                                    return callback(err);
+                                try {
+                                    data = JSON.parse(data);
+                                } catch (e){
+                                    return callback(e);
+                                }
+                                if (!Array.isArray(data))
+                                    return callback(`Invalid log data`);
+                                return dsu.writeFile(LOG_PATH, JSON.stringify([...data, log]), returnFunc);
+                            });
+                        });
+
+                    });
+                })
+
+
 
             });
         } else {
