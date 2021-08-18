@@ -26,7 +26,9 @@ export default class IndividualProductController extends LocalizedController{
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            const {gtin,batchNumber, serialNumber} = evt.detail;
+            const {gtin,batchNumber, serialNumber, previousTab} = evt.detail;
+            const label = !!previousTab ? previousTab.label : HistoryNavigator.getPreviousTab().label;
+            self.model.back = this.translate('back', label);
             const ref = `${gtin}-${batchNumber}-${serialNumber}`;
             if (ref === self.model.individualRef)
                 return self.productEl.refresh();
