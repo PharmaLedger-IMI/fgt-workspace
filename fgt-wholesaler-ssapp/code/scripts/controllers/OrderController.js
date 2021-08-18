@@ -1,4 +1,4 @@
-import { LocalizedController, EVENT_REFRESH, EVENT_ACTION, EVENT_SSAPP_HAS_LOADED, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
+import { LocalizedController, HistoryNavigator ,EVENT_REFRESH, EVENT_ACTION, EVENT_SSAPP_HAS_LOADED, BUTTON_ROLES } from "../../assets/pdm-web-components/index.esm.js";
 const {OrderStatus} = require('wizard').Model;
 
 
@@ -25,6 +25,9 @@ export default class OrderController extends LocalizedController {
         self.issuedOrderManager = wizard.Managers.getIssuedOrderManager(participantManager);
         self.issuedOrderManager.bindController(self);
         self.orderEl = self.querySelector('managed-order');
+        HistoryNavigator.registerTab({
+            'tab-order': this.translate('title')
+        })
 
         self.orderEl.updateDirectory();
 
@@ -34,6 +37,8 @@ export default class OrderController extends LocalizedController {
             self.model.identity = self.issuedOrderManager.getIdentity();
 
             const state = evt.detail;
+            const label = !!state.previousTab ? state.previousTab.label : HistoryNavigator.getPreviousTab().label;
+            self.model.back = this.translate('back', label);
             if (state && state.mode && state.order) {
                 self.model.mode = state.mode;
                 const newRef = `${state.mode === 'issued' ? state.order.senderId : state.order.requesterId}-${state.order.orderId}`;

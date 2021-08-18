@@ -180,7 +180,7 @@ export class ManagedBatchListItem {
         type: "gs1datamatrix",
         size: "32",
         scale: "6",
-        data: utils.generate2DMatrixCode(gtin, batchNumber, expiry, serialNumber)
+        data: utils.generate2DMatrixCode(gtin, batchNumber, expiry.valueOf(), serialNumber)
       }, evt)),
     ];
     if (self.showCloseButton)

@@ -167,6 +167,13 @@ export class ManagedStockProductInput {
     this.value = JSON.stringify(newValue);
   }
 
+  @Watch('value')
+  async updateValue(newValue){
+    if (!newValue || newValue === "[]")
+      if (this.products && this.products.length)
+        this.products = [];
+  }
+
   @Method()
   async updateDirectory(gtin = ''){
     const self = this;

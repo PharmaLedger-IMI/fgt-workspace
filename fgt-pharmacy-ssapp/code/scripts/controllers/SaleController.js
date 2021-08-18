@@ -75,7 +75,7 @@ export default class SaleController extends LocalizedController {
             if (err)
                 return sendError(self.translate('create.error.error'));
             self.showToast(self.translate('create.success'));
-            self.model.saleRef = sale.id;
+            self.saleEl.reset();
             await loader.dismiss();
         });
     }

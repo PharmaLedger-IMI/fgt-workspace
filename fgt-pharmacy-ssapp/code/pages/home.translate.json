@@ -45,6 +45,7 @@
     }
   },
   "shipment": {
+    "title": "Shipments",
     "create": {
       "title": "Create Shipment",
       "from": "Shipment from:",
@@ -95,6 +96,7 @@
       }
     },
     "stock": {
+      "title": "Stock",
       "stock": "Stock:",
       "no-stock": "No Stock for selected Product",
       "reset-all": "Reset All",
@@ -106,7 +108,7 @@
       "remaining": "Remaining:",
       "order-missing": "Order missing"
     },
-    "back": "Back",
+    "back": "Back to {0}",
     "status": "Shipment Status:",
     "scan": "Scan Product",
     "scan-code": "Scan Shipment Code",
@@ -162,6 +164,7 @@
     }
   },
   "order": {
+    "title": "Orders",
     "create": {
       "title": "Create Order",
       "from": "Order from:",
@@ -209,7 +212,7 @@
         "error": "Could not update Order: "
       }
     },
-    "back": "Back to Orders",
+    "back": "Back to {0}",
     "scan": "Scan Product",
     "statuses": {
       "created": {
@@ -328,7 +331,7 @@
     "none": "No products in stock..."
   },
   "dashboard": {
-    "title": "This is a Dashboard",
+    "title": "Dashboard",
     "none": "There are no pending orders"
   }
 }

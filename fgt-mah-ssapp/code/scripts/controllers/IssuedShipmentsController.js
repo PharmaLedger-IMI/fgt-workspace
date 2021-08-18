@@ -1,4 +1,4 @@
-import { LocalizedController, EVENT_REFRESH } from "../../assets/pdm-web-components/index.esm.js";
+import { LocalizedController, HistoryNavigator, EVENT_REFRESH } from "../../assets/pdm-web-components/index.esm.js";
 
 /**
  * List all the Issued Shipments
@@ -13,6 +13,9 @@ export default class IssuedShipmentsController extends LocalizedController {
         const wizard = require('wizard');
         const participantManager = wizard.Managers.getParticipantManager();
         this.issuedShipmentManager = wizard.Managers.getIssuedShipmentManager(participantManager);
+        HistoryNavigator.registerTab({
+            'tab-issued-shipments': this.translate('title')
+        })
 
         let self = this;
         // the HomeController takes care of sending refresh events for each tab.

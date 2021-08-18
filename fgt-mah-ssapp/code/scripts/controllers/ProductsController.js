@@ -1,4 +1,4 @@
-import { LocalizedController, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
+import { LocalizedController, HistoryNavigator, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
 
 /**
  * Controls Application Flow
@@ -20,6 +20,9 @@ export default class ProductsController extends LocalizedController {
         this.productManager = wizard.Managers.getProductManager(this.participantManager);
 
         this.model = this.initializeModel();
+        HistoryNavigator.registerTab({
+            'tab-products': this.translate('title')
+        })
 
         let self = this;
         self.onTagEvent('add-product', 'click', () => {
