@@ -67,7 +67,8 @@ const DB = {
     individualProduct: 'individualProduct',
     directory: 'directory',
     sales: 'sales',
-    receipts: 'receipts'
+    receipts: 'receipts',
+    traceability: 'traceability'
 }
 
 /**

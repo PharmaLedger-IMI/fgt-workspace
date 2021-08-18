@@ -42,7 +42,7 @@ export class GenericChip {
           <div class="badges-div ion-align-items-center ion-justify-content-between">
             <slot name="badges"></slot>
           </div>
-          <div class={`${this.hideButtons ? "button-div " : "flex "}ion-align-items-center ion-justify-content-between`} >
+          <div class={`${this.hideButtons ? "button-div" : "flex"} ion-align-items-center ion-justify-content-between`} >
             <slot name="buttons"></slot>
           </div>
         </ion-chip>
