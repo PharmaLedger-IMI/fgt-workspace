@@ -112,11 +112,22 @@ export class ManagedOrderListItem {
       return self.order.requesterId;
     }
 
+    const buildLabelElement = (props: any) =>{
+      return (
+        <ion-col className="ion-padding-start" size="auto">
+          <ion-label color="secondary">
+            {props}
+          </ion-label>
+        </ion-col>
+      )
+    }
+    
     return(
-      <ion-label slot="label" color="secondary">
-        {getOrderIdLabel()}
-        <span class="ion-padding-start">{getRequesterIdLabel()}</span>
-      </ion-label>)
+      <ion-row  slot="label" className="ion-align-items-center">
+        {buildLabelElement(getOrderIdLabel())}
+        {buildLabelElement(getRequesterIdLabel())}
+      </ion-row>
+    )
   }
 
   addOrderLines() {
