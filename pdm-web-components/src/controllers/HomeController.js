@@ -77,10 +77,10 @@ export default class HomeController extends LocalizedController {
         });
 
         this.on(EVENT_BACK_NAVIGATE, (evt) => {
-          const previousTabProps = this.historyNavigator.getPreviousTab();
+          const previousTab = this.historyNavigator.getBackToPreviousTab();
           evt.preventDefault();
           evt.stopImmediatePropagation();
-          self._navigateToTab.call(self, previousTabProps);
+          self._navigateToTab.call(self, previousTab);
         });
 
 
@@ -119,7 +119,7 @@ export default class HomeController extends LocalizedController {
         return;
       }
       const {previousTab} = this.historyNavigator.addToHistory(props);
-      props.props = Object.assign(props.props || {}, {previousTab});
+      props = Object.assign(props || {}, {previousTab});
       self.setState(props.props);
       el.select(props.tab);
     }
