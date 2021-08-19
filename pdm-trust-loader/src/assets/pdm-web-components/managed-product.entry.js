@@ -2,7 +2,7 @@ import { r as registerInstance, e as createEvent, h, f as Host, g as getElement 
 import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-462ec42a.js';
 import { W as WebManagerService } from './WebManagerService-82558d63.js';
-import { g as getBarCodePopOver } from './popOverUtils-ecb17d72.js';
+import { g as getBarCodePopOver } from './popOverUtils-51c5e404.js';
 
 const managedProductCss = ":host{display:block}";
 
@@ -22,7 +22,7 @@ const ManagedProduct = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
     this.sendErrorEvent = createEvent(this, "ssapp-send-error", 7);
-    this.sendNavigateTab = createEvent(this, "ssapp-navigate-tab", 7);
+    this.sendNavigateBack = createEvent(this, "ssapp-back-navigate", 7);
     this.sendCreateAction = createEvent(this, "ssapp-action", 7);
     this.gtin = undefined;
     this.manufName = undefined;
@@ -48,11 +48,8 @@ const ManagedProduct = class {
     if (!event.defaultPrevented || err)
       console.log(`Product Component: ${message}`, err);
   }
-  navigateToTab(tab, props) {
-    const event = this.sendNavigateTab.emit({
-      tab: tab,
-      props: props
-    });
+  navigateToTab() {
+    const event = this.sendNavigateBack.emit();
     if (!event.defaultPrevented)
       console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
@@ -89,7 +86,8 @@ const ManagedProduct = class {
   navigateBack(evt) {
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.navigateToTab('tab-products', {});
+    // this.navigateToTab('tab-products', {});
+    this.navigateToTab();
   }
   create(evt) {
     evt.preventDefault();
@@ -147,10 +145,8 @@ const ManagedProduct = class {
   getManage() {
     if (this.isCreate())
       return;
-    return (h("pdm-ion-table", { "table-title": this.batchesTitle + ` ${this.gtin}`, "item-reference": "gtin-batch", query: this.gtin, "auto-load": true, canQuery: false, paginated: true, manager: "BatchManager", "icon-name": "stats-chart", "item-type": "managed-batch-list-item", "items-per-page": "5" }, h("ion-button", { slot: "buttons", color: "secondary", fill: "solid", onClick: () => this.navigateToTab('tab-batch', {
-        gtin: this.gtin,
-        batchNumber: undefined
-      }) }, this.batchesAddButton, h("ion-icon", { slot: "end", name: "add-circle" }))));
+    // this.navigateToTab(tab-batch', { gtin: this.gtin, batchNumber: undefined })
+    return (h("pdm-ion-table", { "table-title": this.batchesTitle + ` ${this.gtin}`, "item-reference": "gtin-batch", query: this.gtin, "auto-load": true, canQuery: false, paginated: true, manager: "BatchManager", "icon-name": "stats-chart", "item-type": "managed-batch-list-item", "items-per-page": "5" }, h("ion-button", { slot: "buttons", color: "secondary", fill: "solid", onClick: () => this.navigateToTab() }, this.batchesAddButton, h("ion-icon", { slot: "end", name: "add-circle" }))));
   }
   getPostCreate() {
     if (this.isCreate())

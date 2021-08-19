@@ -29,11 +29,37 @@ class RequestCache {
     }
 }
 
+const convertForJson = function(startNode, endNode){
+    startNode = Object.assign({}, startNode);
+    endNode = Object.assign({}, endNode);
+
+    const nodeIterator = function(node, accumulator = {}){
+        node.children = node.children || [];
+        node.parents = node.parents || [];
+
+        node.parents.reduce((accum, n) => nodeIterator(n, accum), accumulator);
+
+        node.children = node.children.map(n => n.id);
+        node.parents = node.parents.map(n => n.id);
+        accumulator[node.id] = accumulator[node.id] || node;
+        return accumulator;
+    }
+
+    const nodeList = nodeIterator(startNode);
+
+    return {
+        startNode: startNode,
+        endNode: endNode,
+        nodeList: nodeList
+    }
+}
+
 class TrackMessage {
     id;
     action;
     message;
     requesterId;
+    error;
 
     constructor(trackMessage){
         if (typeof trackMessage !== undefined)
@@ -79,6 +105,8 @@ class TraceabilityManager extends Manager{
                     cb(err);
                 });
             });
+            if (callback)
+                callback(undefined, manager);
         });
         this.participantManager = participantManager;
         this.requestCache = new RequestCache();
@@ -86,20 +114,19 @@ class TraceabilityManager extends Manager{
 
     _processMessageRecord(message, callback) {
         let self = this;
-        if (!message || typeof message !== "string")
-            return callback(`Message ${message} does not have  non-empty string with keySSI. Skipping record.`);
+        if (!message)
+            return callback(`No message received. Skipping record.`);
 
         try {
-            message = new TrackMessage(JSON.parse(message));
+            message = new TrackMessage(message);
         } catch (e) {
             return callback(e);
         }
 
         switch (message.action){
             case ACTION.REQUEST:
-                return self._trackObj(message.message, (err, startNode, endNode) => err
-                        ? callback(err)
-                        : self._replyToMessage(message.id, message.requesterId, endNode, callback));
+                return self._trackObj(message.message, (err, startNode, endNode) =>
+                        self._replyToMessage(message.id, message.requesterId, startNode, endNode, err, self._messageCallback));
             case ACTION.RESPONSE:
                 let cb;
                 try {
@@ -107,7 +134,7 @@ class TraceabilityManager extends Manager{
                 } catch (e) {
                     return callback(e);
                 }
-                cb(undefined, message.message);
+                cb(message.error, message.message.startNode, message.message.endNode, message.message.nodeList);
                 return callback();
             default:
                 return callback(`Invalid Action request received: ${message.action}`);
@@ -130,14 +157,20 @@ class TraceabilityManager extends Manager{
         });
     }
 
-    _replyToMessage(requestId, requesterId, endNode, callback){
+
+
+    _replyToMessage(requestId, requesterId, startNode, endNode, error, callback){
         const self = this;
+
+        const simpleMessage = convertForJson(startNode, endNode)
+
         const reply = new TrackMessage({
             id: requestId,
             action: ACTION.RESPONSE,
-            message: endNode
+            message: simpleMessage,
+            error: error
         })
-        self.sendMessage(requesterId, JSON.stringify(reply), callback);
+        self.sendMessage(requesterId, reply, callback);
     }
 
     _getProduct(gtin, callback){
@@ -167,7 +200,7 @@ class TraceabilityManager extends Manager{
 
     /**
      * @param {IndividualProduct} obj
-     * @param {function(err?, Node?)} callback
+     * @param {function(err?, Node?, Node?)} callback
      * @override
      */
     getOne(obj,  callback) {
@@ -176,19 +209,16 @@ class TraceabilityManager extends Manager{
             return callback(`Invalid Object Provided`);
         const identity = self.getIdentity();
         if (identity.id === obj.manufName)
-            return self._trackObj(obj, (err, startNode, endNode) => {
-                if (err)
-                    return callback(err);
-                callback(undefined, endNode);
-            });
+            return self._trackObj(obj, callback);
 
         const message = new TrackMessage({
+            id: identity.id + Date.now(),
             action: ACTION.REQUEST,
             message: obj,
             requesterId: identity.id
         });
         self.requestCache.submitRequest(message.id, callback);
-        self.sendMessage(obj.manufName, JSON.stringify(message), self._messageCallback)
+        self.sendMessage(obj.manufName, message, self._messageCallback)
     }
 
     /**

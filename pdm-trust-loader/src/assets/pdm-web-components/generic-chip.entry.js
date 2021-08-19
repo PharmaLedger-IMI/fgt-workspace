@@ -19,6 +19,7 @@ const GenericChip = class {
     this.selectEvent = createEvent(this, "selectEvent", 3);
     this.chipLabel = undefined;
     this.outline = true;
+    this.hideButtons = true;
     this.color = "secondary";
   }
   async componentWillLoad() {
@@ -29,7 +30,7 @@ const GenericChip = class {
     this.selectEvent.emit(this.chipLabel);
   }
   render() {
-    return (h(Host, null, h("ion-chip", { outline: this.outline, color: this.color, onClick: () => this.triggerSelect() }, h("ion-label", { class: "ion-padding-horizontal" }, this.chipLabel), h("div", { class: "badges-div ion-align-items-center ion-justify-content-between" }, h("slot", { name: "badges" })), h("div", { class: "button-div ion-align-items-center ion-justify-content-between" }, h("slot", { name: "buttons" })))));
+    return (h(Host, null, h("ion-chip", { outline: this.outline, color: this.color, onClick: () => this.triggerSelect() }, h("ion-label", { class: "ion-padding-horizontal" }, this.chipLabel), h("div", { class: "badges-div ion-align-items-center ion-justify-content-between" }, h("slot", { name: "badges" })), h("div", { class: `${this.hideButtons ? "button-div" : "flex"} ion-align-items-center ion-justify-content-between` }, h("slot", { name: "buttons" })))));
   }
   get element() { return getElement(this); }
 };

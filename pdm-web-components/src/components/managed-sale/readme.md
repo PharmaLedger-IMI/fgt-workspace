@@ -43,6 +43,16 @@ Type: `Promise<void>`
 
 
 
+### `reset() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `updateDirectory() => Promise<void>`
 
 

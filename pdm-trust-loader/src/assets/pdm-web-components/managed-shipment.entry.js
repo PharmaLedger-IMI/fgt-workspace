@@ -2,7 +2,7 @@ import { r as registerInstance, e as createEvent, h, f as Host, g as getElement 
 import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-462ec42a.js';
 import { W as WebManagerService } from './WebManagerService-82558d63.js';
-import { a as getDirectoryProducts, c as getDirectoryRequesters, e as getProductPopOver, d as getSingleInputPopOver } from './popOverUtils-ecb17d72.js';
+import { a as getDirectoryProducts, c as getDirectoryRequesters, e as getProductPopOver, d as getSingleInputPopOver } from './popOverUtils-51c5e404.js';
 
 const managedShipmentCss = ":host{display:block}managed-shipment{--color:var(--ion-color-primary-contrast)}managed-shipment ion-item ion-grid{width:100%}ion-card-title{color:var(--ion-color-primary)}ion-card-subtitle{color:var(--ion-color-secondary)}ion-item.selected{--color:var(--ion-color-success)}ion-item.unnecessary{--color:red}";
 
@@ -25,7 +25,7 @@ const ManagedShipment = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
     this.sendErrorEvent = createEvent(this, "ssapp-send-error", 7);
-    this.sendNavigateTab = createEvent(this, "ssapp-navigate-tab", 7);
+    this.sendNavigateBack = createEvent(this, "ssapp-back-navigate", 7);
     this.sendAction = createEvent(this, "ssapp-action", 7);
     this.orderJSON = undefined;
     this.shipmentType = SHIPMENT_TYPE.ISSUED;
@@ -81,11 +81,8 @@ const ManagedShipment = class {
     if (!event.defaultPrevented || err)
       console.log(`Product Component: ${message}`, err);
   }
-  navigateToTab(tab, props) {
-    const event = this.sendNavigateTab.emit({
-      tab: tab,
-      props: props
-    });
+  navigateToTab() {
+    const event = this.sendNavigateBack.emit();
     if (!event.defaultPrevented)
       console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
@@ -196,7 +193,8 @@ const ManagedShipment = class {
   navigateBack(evt) {
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.navigateToTab(`tab-${this.getType()}-shipments`, {});
+    // this.navigateToTab(`tab-${this.getType()}-shipments`, {});
+    this.navigateToTab();
   }
   async create(evt) {
     evt.preventDefault();

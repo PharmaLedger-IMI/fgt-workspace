@@ -123,7 +123,7 @@ function TraceabilityService(shipmentLineManager, receiptManager){
 
         receiptManager.getOne(productKey, true, (err, product) => {
             if (err)
-                return callback(err);
+                return callback(`No information available`);
             const endNode = new Node({
                 id: idTracker.getNext(),
                 title: product.sellerId,

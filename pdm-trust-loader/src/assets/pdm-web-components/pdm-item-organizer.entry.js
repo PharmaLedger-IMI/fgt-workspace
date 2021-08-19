@@ -19,9 +19,11 @@ const PdmItemOrganizer = class {
     registerInstance(this, hostRef);
     this.selectEvent = createEvent(this, "selectEvent", 7);
     /**
-     * The number of items to display (minimum is 0), defaults to 3
+     * display-count": The number of items to display (minimum is 0), defaults to 3
+     * display-count-divider: separate/break content into corresponding value
      */
     this.displayCount = 3;
+    this.displayCountDivider = 170;
     /**
      * the Tag for the component to be rendered
      */
@@ -43,12 +45,9 @@ const PdmItemOrganizer = class {
      * this must be set to false
      */
     this.isItem = true;
+    this.moreChipsPosition = this.orientation === "end" || this.singleLine ? "start" : "end";
     this.parsedProps = undefined;
-  }
-  async componentWillLoad() {
-    if (!this.host.isConnected)
-      return;
-    this.updateParsedProps(this.componentProps);
+    this._displayCount = this.displayCount;
   }
   updateParsedProps(newProps) {
     if (!newProps)
@@ -61,6 +60,9 @@ const PdmItemOrganizer = class {
         console.log("could not parse props");
         this.parsedProps = undefined;
       }
+  }
+  async windowResizeListener() {
+    this.calculateDisplayCount(this.element.offsetWidth, this.displayCountDivider);
   }
   definePopOverContent() {
     const self = this;
@@ -109,7 +111,7 @@ const PdmItemOrganizer = class {
       animated: true,
       backdropDismiss: true,
       componentProps: {
-        displayCount: this.displayCount,
+        displayCount: this._displayCount,
         parsedProps: this.parsedProps,
         componentName: this.componentName,
         isItem: this.isItem
@@ -140,20 +142,39 @@ const PdmItemOrganizer = class {
   getFilteredComponents() {
     if (!this.parsedProps || !this.parsedProps.length)
       return [];
-    if (this.parsedProps.length <= this.displayCount)
+    if (this.parsedProps.length <= this._displayCount)
       return this.parsedProps.map(props => this.getComponentJSX(props));
-    const toDisplay = Math.max(this.displayCount, 0) - 1;
+    const toDisplay = Math.max(this._displayCount, 0) - 1;
     const result = this.parsedProps.filter((props, i) => !!props && i <= toDisplay).map(props => this.getComponentJSX(props));
-    if (this.singleLine || this.displayCount < 0) {
-      const operation = this.orientation === "end" || this.singleLine ? result.unshift.bind(result) : result.push.bind(result);
+    if (this.singleLine || this._displayCount < 0) {
+      const operation = this.moreChipsPosition === "start" ? result.unshift.bind(result) : result.push.bind(result);
       operation(h("more-chip", { "float-more-button": !this.singleLine, label: this.moreLabel || "", "icon-name": this.moreIcon || "" }));
     }
     return result;
   }
   selectRenderMode() {
-    if (this.displayCount >= 0)
-      return (h("div", { class: `ion-padding-horizontal ${this.singleLine ? "flex " : "flex-break "}ion-justify-content-${this.orientation} ion-align-items-center` }, this.getFilteredComponents()));
+    if (this._displayCount >= 0) {
+      return (h("ion-row", { class: `${this.singleLine ? "flex " : "flex-break "} ion-justify-content-${this.orientation} ion-align-items-end` }, h("ion-col", { size: "auto" }, this.getFilteredComponents())));
+    }
     return (this.getFilteredComponents()[0]);
+  }
+  calculateDisplayCount(width, divider) {
+    const calc = width > 0 ? Math.trunc(width / divider) : this._displayCount;
+    if (this._displayCount !== calc) {
+      this._displayCount = calc;
+    }
+  }
+  async componentWillLoad() {
+    if (!this.host.isConnected)
+      return;
+    this.updateParsedProps(this.componentProps);
+    const checkElementSize = () => {
+      if (!this.element.offsetWidth && !this.element.offsetHeight) {
+        return requestAnimationFrame(checkElementSize);
+      }
+      this.calculateDisplayCount(this.element.offsetWidth, this.displayCountDivider);
+    };
+    checkElementSize();
   }
   render() {
     if (!this.host.isConnected)

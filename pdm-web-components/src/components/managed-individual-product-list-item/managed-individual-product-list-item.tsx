@@ -41,6 +41,17 @@ export class ManagedBatchListItem {
   })
   sendActionEvent: EventEmitter;
 
+  /**
+   * Through this event tracking requests are made
+   */
+  @Event({
+    eventName: 'fgt-track-request',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  sendTrackingRequestEvent: EventEmitter;
+
   private sendError(message: string, err?: object){
     const event = this.sendErrorEvent.emit(message);
     if (!event.defaultPrevented || err)
@@ -182,6 +193,11 @@ export class ManagedBatchListItem {
         scale: "6",
         data: utils.generate2DMatrixCode(gtin, batchNumber, expiry.valueOf(), serialNumber)
       }, evt)),
+      getButton("buttons", "secondary", "share-social", (evt) => {
+        evt.preventDefault();
+        evt.stopImmediatePropagation();
+        self.sendTrackingRequestEvent.emit(new IndividualProduct(self.individualProduct));
+      })
     ];
     if (self.showCloseButton)
       result.push(getButton("buttons", "danger", "close-circle", (evt) => self.sendAction(evt, 'remove')))

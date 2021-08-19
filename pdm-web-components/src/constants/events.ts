@@ -78,7 +78,6 @@ export const EVENT_ION_TABS_WILL_CHANGE = "ionTabsWillChange";
  * @memberOf Constants
  */
 export const EVENT_BACK_NAVIGATE = 'ssapp-back-navigate';
-
 /**
  * CSS constants
  * @memberOf Constants

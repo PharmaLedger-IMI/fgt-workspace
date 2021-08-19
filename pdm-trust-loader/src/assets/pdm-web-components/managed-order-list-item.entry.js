@@ -2,7 +2,7 @@ import { r as registerInstance, e as createEvent, h, f as Host, g as getElement 
 import { W as WebManagerService } from './WebManagerService-82558d63.js';
 import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-462ec42a.js';
-import { g as getBarCodePopOver } from './popOverUtils-ecb17d72.js';
+import { g as getBarCodePopOver } from './popOverUtils-51c5e404.js';
 
 const managedOrderListItemCss = ":host{display:block}ion-item.main-item{animation:1s linear fadein}@keyframes fadein{from{opacity:0}to{opacity:1}}";
 
@@ -78,7 +78,10 @@ const ManagedOrderListItem = class {
         return (h("ion-skeleton-text", { animated: true }));
       return self.order.requesterId;
     };
-    return (h("ion-label", { slot: "label", color: "secondary" }, getOrderIdLabel(), h("span", { class: "ion-padding-start" }, getRequesterIdLabel())));
+    const buildLabelElement = (props) => {
+      return (h("ion-col", { className: "ion-padding-start", size: "auto" }, h("ion-label", { color: "secondary" }, props)));
+    };
+    return (h("ion-row", { slot: "label", className: "ion-align-items-center" }, buildLabelElement(getOrderIdLabel()), buildLabelElement(getRequesterIdLabel())));
   }
   addOrderLines() {
     if (!this.order || !this.order.orderLines)
@@ -87,7 +90,7 @@ const ManagedOrderListItem = class {
         "gtin": ol.gtin,
         "quantity": ol.quantity,
         "mode": "detail"
-      }))), "id-prop": "gtin", "is-ion-item": "false", "display-count": "3", orientation: this.getOrientation(), onSelectEvent: (evt) => {
+      }))), "id-prop": "gtin", "is-ion-item": "false", "display-count": "3", "display-count-divider": "200", orientation: this.getOrientation(), onSelectEvent: (evt) => {
         evt.preventDefault();
         evt.stopImmediatePropagation();
         console.log(`Selected ${evt.detail}`);

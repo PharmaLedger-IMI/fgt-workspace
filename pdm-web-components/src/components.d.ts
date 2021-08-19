@@ -62,6 +62,7 @@ export namespace Components {
     interface GenericChip {
         "chipLabel": string;
         "color"?: string;
+        "hideButtons"?: boolean;
         "outline"?: boolean;
     }
     interface LineStockManager {
@@ -233,6 +234,7 @@ export namespace Components {
         "productString": string;
         "quantityString": string;
         "refresh": () => Promise<void>;
+        "reset": () => Promise<void>;
         "saleRef"?: string;
         "scanString": string;
         "selectedProductString": string;
@@ -402,9 +404,10 @@ export namespace Components {
          */
         "componentProps": string;
         /**
-          * The number of items to display (minimum is 0), defaults to 3
+          * display-count": The number of items to display (minimum is 0), defaults to 3 display-count-divider: separate/break content into corresponding value
          */
         "displayCount": number;
+        "displayCountDivider": number;
         /**
           * The identifying prop to be return upon click (must exist in the supplied {@link componentProps}
          */
@@ -413,6 +416,7 @@ export namespace Components {
           * If the component does not generate an ion-item (so it can be handled by an ion-list) this must be set to false
          */
         "isItem": boolean;
+        "moreChipsPosition": "start" | "end";
         "moreIcon": string;
         "moreLabel": string;
         "orientation": "between" | "end" | "evenly" | "around" | "center" | "start";
@@ -438,6 +442,16 @@ export namespace Components {
         "noUpdateString"?: string;
         "statesJSON": any;
         "updateString"?: string;
+    }
+    interface TrackedSerialChip {
+        "color"?: string;
+        "outline"?: boolean;
+        "reference": string;
+    }
+    interface TrackingPopOver {
+        "dismiss": () => Promise<void>;
+        "present": (props: any) => Promise<void>;
+        "trackingTitle"?: string;
     }
     interface TreeView {
         "objectTree": object;
@@ -672,6 +686,18 @@ declare global {
         prototype: HTMLStatusUpdaterElement;
         new (): HTMLStatusUpdaterElement;
     };
+    interface HTMLTrackedSerialChipElement extends Components.TrackedSerialChip, HTMLStencilElement {
+    }
+    var HTMLTrackedSerialChipElement: {
+        prototype: HTMLTrackedSerialChipElement;
+        new (): HTMLTrackedSerialChipElement;
+    };
+    interface HTMLTrackingPopOverElement extends Components.TrackingPopOver, HTMLStencilElement {
+    }
+    var HTMLTrackingPopOverElement: {
+        prototype: HTMLTrackingPopOverElement;
+        new (): HTMLTrackingPopOverElement;
+    };
     interface HTMLTreeViewElement extends Components.TreeView, HTMLStencilElement {
     }
     var HTMLTreeViewElement: {
@@ -717,6 +743,8 @@ declare global {
         "slide-in-board": HTMLSlideInBoardElement;
         "status-badge": HTMLStatusBadgeElement;
         "status-updater": HTMLStatusUpdaterElement;
+        "tracked-serial-chip": HTMLTrackedSerialChipElement;
+        "tracking-pop-over": HTMLTrackingPopOverElement;
         "tree-view": HTMLTreeViewElement;
     }
 }
@@ -788,6 +816,7 @@ declare namespace LocalJSX {
     interface GenericChip {
         "chipLabel"?: string;
         "color"?: string;
+        "hideButtons"?: boolean;
         "onSelectEvent"?: (event: CustomEvent<string>) => void;
         "outline"?: boolean;
     }
@@ -841,7 +870,7 @@ declare namespace LocalJSX {
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
@@ -877,7 +906,7 @@ declare namespace LocalJSX {
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
@@ -896,6 +925,10 @@ declare namespace LocalJSX {
     }
     interface ManagedIndividualProductListItem {
         "gtinBatchSerial"?: string;
+        /**
+          * Through this event tracking requests are made
+         */
+        "onFgt-track-request"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event action requests are made
          */
@@ -929,7 +962,7 @@ declare namespace LocalJSX {
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
@@ -1019,7 +1052,7 @@ declare namespace LocalJSX {
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
@@ -1090,7 +1123,7 @@ declare namespace LocalJSX {
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
@@ -1277,9 +1310,10 @@ declare namespace LocalJSX {
          */
         "componentProps"?: string;
         /**
-          * The number of items to display (minimum is 0), defaults to 3
+          * display-count": The number of items to display (minimum is 0), defaults to 3 display-count-divider: separate/break content into corresponding value
          */
         "displayCount"?: number;
+        "displayCountDivider"?: number;
         /**
           * The identifying prop to be return upon click (must exist in the supplied {@link componentProps}
          */
@@ -1288,6 +1322,7 @@ declare namespace LocalJSX {
           * If the component does not generate an ion-item (so it can be handled by an ion-list) this must be set to false
          */
         "isItem"?: boolean;
+        "moreChipsPosition"?: "start" | "end";
         "moreIcon"?: string;
         "moreLabel"?: string;
         "onSelectEvent"?: (event: CustomEvent<string>) => void;
@@ -1323,6 +1358,18 @@ declare namespace LocalJSX {
         "onStatusUpdateEvent"?: (event: CustomEvent<string>) => void;
         "statesJSON"?: any;
         "updateString"?: string;
+    }
+    interface TrackedSerialChip {
+        "color"?: string;
+        /**
+          * Through this event tracking requests are made
+         */
+        "onFgt-track-request"?: (event: CustomEvent<any>) => void;
+        "outline"?: boolean;
+        "reference"?: string;
+    }
+    interface TrackingPopOver {
+        "trackingTitle"?: string;
     }
     interface TreeView {
         "objectTree"?: object;
@@ -1366,6 +1413,8 @@ declare namespace LocalJSX {
         "slide-in-board": SlideInBoard;
         "status-badge": StatusBadge;
         "status-updater": StatusUpdater;
+        "tracked-serial-chip": TrackedSerialChip;
+        "tracking-pop-over": TrackingPopOver;
         "tree-view": TreeView;
     }
 }
@@ -1411,6 +1460,8 @@ declare module "@stencil/core" {
             "slide-in-board": LocalJSX.SlideInBoard & JSXBase.HTMLAttributes<HTMLSlideInBoardElement>;
             "status-badge": LocalJSX.StatusBadge & JSXBase.HTMLAttributes<HTMLStatusBadgeElement>;
             "status-updater": LocalJSX.StatusUpdater & JSXBase.HTMLAttributes<HTMLStatusUpdaterElement>;
+            "tracked-serial-chip": LocalJSX.TrackedSerialChip & JSXBase.HTMLAttributes<HTMLTrackedSerialChipElement>;
+            "tracking-pop-over": LocalJSX.TrackingPopOver & JSXBase.HTMLAttributes<HTMLTrackingPopOverElement>;
             "tree-view": LocalJSX.TreeView & JSXBase.HTMLAttributes<HTMLTreeViewElement>;
         }
     }

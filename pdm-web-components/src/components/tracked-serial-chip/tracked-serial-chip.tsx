@@ -2,7 +2,7 @@ import {Component, Host, h, Prop, Event, EventEmitter} from '@stencil/core';
 import {getBarCodePopOver} from "../../utils/popOverUtils";
 import wizard from "../../services/WizardService";
 
-const {utils} = wizard.Model;
+const {utils, IndividualProduct} = wizard.Model;
 
 @Component({
   tag: 'tracked-serial-chip',
@@ -17,21 +17,26 @@ export class TrackedSerialChip {
 
   @Prop({attribute: "color"}) color?: string = "secondary";
 
+  /**
+   * Through this event tracking requests are made
+   */
   @Event({
-    eventName: 'ssapp-action',
+    eventName: 'fgt-track-request',
     bubbles: true,
     composed: true,
     cancelable: true,
   })
-  sendAction: EventEmitter;
+  sendTrackingRequestEvent: EventEmitter;
 
   private triggerTrack(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.sendAction.emit({
-      action: 'track',
-      reference: this.splitReference()
-    });
+    const ref = this.splitReference();
+    this.sendTrackingRequestEvent.emit(new IndividualProduct({
+      gtin: ref.gtin,
+      batchNumber: ref.batch,
+      serialNumber: ref.serial
+    }));
   }
 
   private splitReference(){

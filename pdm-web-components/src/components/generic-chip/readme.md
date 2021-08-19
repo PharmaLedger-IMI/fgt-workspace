@@ -7,11 +7,12 @@
 
 ## Properties
 
-| Property    | Attribute    | Description | Type      | Default       |
-| ----------- | ------------ | ----------- | --------- | ------------- |
-| `chipLabel` | `chip-label` |             | `string`  | `undefined`   |
-| `color`     | `color`      |             | `string`  | `"secondary"` |
-| `outline`   | `outline`    |             | `boolean` | `true`        |
+| Property      | Attribute      | Description | Type      | Default       |
+| ------------- | -------------- | ----------- | --------- | ------------- |
+| `chipLabel`   | `chip-label`   |             | `string`  | `undefined`   |
+| `color`       | `color`        |             | `string`  | `"secondary"` |
+| `hideButtons` | `hide-buttons` |             | `boolean` | `true`        |
+| `outline`     | `outline`      |             | `boolean` | `true`        |
 
 
 ## Events
@@ -29,6 +30,7 @@
  - [managed-individual-product-chip](../managed-individual-product-chip)
  - [managed-individual-product-list-item](../managed-individual-product-list-item)
  - [managed-orderline-stock-chip](../managed-orderline-stock-chip)
+ - [tracked-serial-chip](../tracked-serial-chip)
 
 ### Graph
 ```mermaid
@@ -37,6 +39,7 @@ graph TD;
   managed-individual-product-chip --> generic-chip
   managed-individual-product-list-item --> generic-chip
   managed-orderline-stock-chip --> generic-chip
+  tracked-serial-chip --> generic-chip
   style generic-chip fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

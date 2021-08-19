@@ -19,6 +19,13 @@
       "progress": 100
     }
   },
+  "tracking": {
+    "title": "Traceability for Product {0}, Batch {1}{2}",
+    "serial": ", serial {0}",
+    "loading": "Calculating Supply Chain for {0}",
+    "success": "Traceability Calculated",
+    "error": "Could not get Supply Chain:\n{0}"
+  },
   "welcome": "Welcome back",
   "menu": {
     "dashboard": "Dashboard",

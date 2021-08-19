@@ -16,9 +16,9 @@
 
 ## Events
 
-| Event          | Description | Type               |
-| -------------- | ----------- | ------------------ |
-| `ssapp-action` |             | `CustomEvent<any>` |
+| Event               | Description                                   | Type               |
+| ------------------- | --------------------------------------------- | ------------------ |
+| `fgt-track-request` | Through this event tracking requests are made | `CustomEvent<any>` |
 
 
 ## Dependencies

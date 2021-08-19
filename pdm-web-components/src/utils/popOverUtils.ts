@@ -216,4 +216,84 @@ export async function getProductPopOver(evt, products: string[]): Promise<any>{
   return popover;
 }
 
+const TRACKING_VIEW_MODAL = 'tracking-view-modal';
+
+function defineTrackingViewModal(){
+
+  if (!!customElements.get(TRACKING_VIEW_MODAL))
+    return;
+
+  customElements.define(TRACKING_VIEW_MODAL, class extends HTMLElement{
+    connectedCallback() {
+      const contentEl = this;
+      const modalElement: any = contentEl.closest('ion-popover');
+      const title = modalElement.componentProps && modalElement.componentProps.title ? modalElement.componentProps.title : "Tracking";
+      this.innerHTML = `
+<ion-header>
+  <ion-toolbar>
+    <ion-icon slot="start" class="ion-padding-horizontal" name="social-share"></ion-icon>
+    <ion-title>${title}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button id="dismiss-modal">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <tree-view></tree-view>
+</ion-content>`;
+
+      const dismissButton = this.querySelector('#dismiss-modal');
+      dismissButton.addEventListener('click', () => {
+        modalElement.dismiss();
+      });
+
+      const treeView = this.querySelector('tree-view');
+      treeView.objectTree = modalElement.componentProps.tree;
+    }
+  });
+}
+
+export function nodeToTree(startNode: any, endNode: any){
+
+  const fromNode = function(node){
+    return {
+      id: node.id,
+      title: node.title,
+      subtitle: endNode.subtitle || "This is a subtitle",
+      description: endNode.description || "This is a description"
+    }
+  }
+
+  const levelIterator = function(node){
+    return [node];
+  }
+
+  return {
+    header: fromNode(endNode),
+    footer: fromNode(startNode),
+    body: levelIterator(endNode)
+  }
+}
+
+export async function getTrackingModal(props: {title: string, startNode: any, endNode: any}){
+  defineTrackingViewModal();
+  const trackModal: any = document.createElement('ion-modal');
+  trackModal.id = `tracking-modal`;
+  trackModal.component = TRACKING_VIEW_MODAL;
+  trackModal.cssClass = 'traceability-viewer';
+  trackModal.animated = true;
+  trackModal.showBackdrop = true;
+  trackModal.backdropDismiss = true;
+  trackModal.swipeToClose = true;
+  trackModal.componentProps = {
+    title: props.title,
+    tree: nodeToTree(props.startNode, this.props.endNode)
+  };
+  document.body.appendChild(trackModal);
+  await trackModal.present();
+  return trackModal;
+}
+
 export {getDirectoryProducts, getDirectorySuppliers, getDirectoryRequesters};

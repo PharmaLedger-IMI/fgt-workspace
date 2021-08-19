@@ -74,6 +74,11 @@ const EVENT_ACTION = 'ssapp-action';
  */
 const EVENT_ION_TABS_WILL_CHANGE = "ionTabsWillChange";
 /**
+ * Browser history navigation event
+ * @memberOf Constants
+ */
+const EVENT_BACK_NAVIGATE = 'ssapp-back-navigate';
+/**
  * CSS constants
  * @memberOf Constants
  */
@@ -465,6 +470,21 @@ class LocalizedController extends BaseController {
     super.on(eventName, handler, options);
   }
 
+  static tabs ={
+    'tab-dashboard': 'Dashboard',
+    'tab-order"': 'Order',
+    'tab-received-orders': 'Received Orders',
+    'tab-issued-orders': 'Issued Orders',
+    'tab-issued-shipments': 'Issued Shipments',
+    'tab-received-shipments': 'Incoming Shipments',
+    'tab-stock': 'Stock',
+    'tab-shipment': 'Shipment',
+    'tab-products': 'Products',
+    'tab-batches': 'Batches',
+    'tab-shipment-lines': 'Shipment Lines',
+    'tab-individual-product': 'Product',
+}
+
   /**
    *
    * @param {boolean} [bindMessageHandlers] defaults to false. binds (or not) the error handler to the controller
@@ -485,6 +505,60 @@ class LocalizedController extends BaseController {
     }
   }
 }
+
+/**
+ * @memberOf Utils
+ */
+class HistoryNavigator {
+  constructor(homeTab, cacheLimit = 10) {
+    this.history = [];
+    this.homeTab = homeTab;
+    this._currentTab = homeTab;
+    this.cacheLimit = cacheLimit;
+  }
+  get _currentTab() {
+    return Object.assign(Object.assign({}, this.currentTab), { label: HistoryNavigator.getTabLabel(this.currentTab.tab) });
+  }
+  set _currentTab(tabProps) {
+    const { tab, props } = tabProps;
+    this.currentTab = { tab, props };
+  }
+  get _previousTab() {
+    const previousTab = this.history[this.history.length - 1] || this.homeTab;
+    const previousTabLabel = Object.assign(Object.assign({}, previousTab), { label: HistoryNavigator.getTabLabel(previousTab.tab) });
+    HistoryNavigator.previousTab = previousTabLabel;
+    return previousTabLabel;
+  }
+  addToHistory(props) {
+    if (props.tab !== this.currentTab.tab) {
+      if (this.history.length >= this.cacheLimit) {
+        this.history.shift();
+      }
+      this.history.push(this.currentTab);
+    }
+    this._currentTab = props;
+    return {
+      currentTab: this._currentTab,
+      previousTab: this._previousTab
+    };
+  }
+  getBackToPreviousTab() {
+    this._currentTab = this.history.pop();
+    return this._currentTab;
+  }
+  static registerTab(tab) {
+    this.registeredTabs = Object.assign(this.registeredTabs, tab);
+    console.log('## HistoryNavigator.registerTab tab=', tab);
+  }
+  static getTabLabel(label) {
+    return HistoryNavigator.registeredTabs[label] || '';
+  }
+  static getPreviousTab() {
+    return HistoryNavigator.previousTab;
+  }
+}
+HistoryNavigator.registeredTabs = {};
+HistoryNavigator.previousTab = { tab: '' };
 
 /**
  * Main Controller For the SSApp Architecture. Should be instantiated like so:
@@ -519,6 +593,7 @@ class HomeController extends LocalizedController {
         this.model.addExpression('identified', () => {
             return !!this.model.participant.id;
         }, "participant");
+      this.historyNavigator = new HistoryNavigator({tab: 'tab-dashboard', props: {}}, 10);
         const self = this;
         self._updateLoading(this.model.loading.loading.status, this.model.loading.loading.progress);
 
@@ -549,9 +624,13 @@ class HomeController extends LocalizedController {
           self._navigateToTab.call(self, evt.detail);
         });
 
-        self.onTagClick('logout', () => {
-          window.location.reload();
+        this.on(EVENT_BACK_NAVIGATE, (evt) => {
+          const previousTab = this.historyNavigator.getBackToPreviousTab();
+          evt.preventDefault();
+          evt.stopImmediatePropagation();
+          self._navigateToTab.call(self, previousTab);
         });
+
 
         const participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, false, (err, pManager) => {
               if (err)
@@ -568,7 +647,11 @@ class HomeController extends LocalizedController {
               }, Math.floor(Math.random() * 100));
           });
 
-          participantManager.setController(this);
+        self.onTagClick('logout', () => {
+          location.reload();
+        });
+
+        participantManager.setController(this);
     }
 
   /**
@@ -583,6 +666,8 @@ class HomeController extends LocalizedController {
         console.log(`A tab navigation request was received, but no ion-tabs could be found...`);
         return;
       }
+      const {previousTab} = this.historyNavigator.addToHistory(props);
+      props = Object.assign(props || {}, {previousTab});
       self.setState(props.props);
       el.select(props.tab);
     }
@@ -645,4 +730,4 @@ class HomeController extends LocalizedController {
  * @namespace pdm-web-components
  */
 
-export { BUTTON_ROLES, CSS, EVENT_ACTION, EVENT_CONFIG_GET_CORE_TYPE, EVENT_CONFIG_GET_DOCS_SOURCE, EVENT_CONFIG_GET_IDENTITY, EVENT_CONFIG_GET_LOG_LEVEL, EVENT_CONFIG_GET_ROUTING, EVENT_ION_TABS_WILL_CHANGE, EVENT_MODEL_GET, EVENT_NAVIGATE_TAB, EVENT_REFRESH, EVENT_ROUTING_GET, EVENT_SELECT, EVENT_SEND_ERROR, EVENT_SEND_MESSAGE, EVENT_SHOW_MORE, EVENT_SSAPP_HAS_LOADED, EVENT_SSAPP_STATUS_UPDATE, EVENT_TAGS_GET, EVENT_TRANSLATION_MODEL_GET, HomeController, LocalizedController, SIDE_MENU_CLASS_SELECTOR };
+export { BUTTON_ROLES, CSS, EVENT_ACTION, EVENT_BACK_NAVIGATE, EVENT_CONFIG_GET_CORE_TYPE, EVENT_CONFIG_GET_DOCS_SOURCE, EVENT_CONFIG_GET_IDENTITY, EVENT_CONFIG_GET_LOG_LEVEL, EVENT_CONFIG_GET_ROUTING, EVENT_ION_TABS_WILL_CHANGE, EVENT_MODEL_GET, EVENT_NAVIGATE_TAB, EVENT_REFRESH, EVENT_ROUTING_GET, EVENT_SELECT, EVENT_SEND_ERROR, EVENT_SEND_MESSAGE, EVENT_SHOW_MORE, EVENT_SSAPP_HAS_LOADED, EVENT_SSAPP_STATUS_UPDATE, EVENT_TAGS_GET, EVENT_TRANSLATION_MODEL_GET, HistoryNavigator, HomeController, LocalizedController, SIDE_MENU_CLASS_SELECTOR };
