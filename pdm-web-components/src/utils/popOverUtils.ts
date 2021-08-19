@@ -227,11 +227,13 @@ function defineTrackingViewModal(){
     connectedCallback() {
       const contentEl = this;
       const modalElement: any = contentEl.closest('ion-modal');
+      modalElement.style.setProperty('--max-height', '90%');
+      modalElement.style.setProperty('--max-width', '90%');
       const title = modalElement.componentProps && modalElement.componentProps.title ? modalElement.componentProps.title : "Tracking";
       this.innerHTML = `
 <ion-header>
   <ion-toolbar>
-    <ion-icon slot="start" class="ion-padding-horizontal" name="social-share"></ion-icon>
+    <ion-icon slot="start" class="ion-padding-horizontal" name="share-social"></ion-icon>
     <ion-title>${title}</ion-title>
     <ion-buttons slot="end">
       <ion-button id="dismiss-modal">

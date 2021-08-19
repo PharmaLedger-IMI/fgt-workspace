@@ -52,7 +52,11 @@ class ParticipantManager extends BaseManager{
     setController(controller) {
         const self = this;
         super.setController(controller);
-        controller.on(EVENTS.TRACK.REQUEST, async (evt) => {
+
+        // We use the body because popovers are attached to the doc, not the element
+        const listenerElement = controller.element.closest('body');
+
+        listenerElement.addEventListener(EVENTS.TRACK.REQUEST, async (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
 
@@ -89,7 +93,8 @@ class ParticipantManager extends BaseManager{
                 evt.target.dispatchEvent(event);
             });
         });
-        controller.on(EVENTS.TRACK.RESPONSE, async (evt) => {
+
+        listenerElement.addEventListener(EVENTS.TRACK.RESPONSE, async (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
             const popOver = controller.element.querySelector('tracking-pop-over');
@@ -97,6 +102,52 @@ class ParticipantManager extends BaseManager{
                 return console.log(`Could not find display element for traceability tree`);
             await popOver.present(evt.detail);
         });
+        //
+        // controller.on(EVENTS.TRACK.REQUEST, async (evt) => {
+        //     evt.preventDefault();
+        //     evt.stopImmediatePropagation();
+        //
+        //     const product = evt.detail;
+        //
+        //     const loader = controller._getLoader(controller.translate('tracking.loading',
+        //         product.gtin + controller.translate('tracking.serial', product.serialNumber)));
+        //
+        //     await loader.present();
+        //
+        //     const sendError = async function(msg, err){
+        //         await loader.dismiss();
+        //         controller.showErrorToast(controller.translate('loading.error', err), err);
+        //     }
+        //
+        //     self.traceabilityManager.getOne(product, async (err, startNode, endNode, nodeList) => {
+        //         if (err)
+        //             return await sendError(`Could not perform tracking...`, err);
+        //         controller.showToast(controller.translate('tracking.success'));
+        //         const event = new Event(EVENTS.TRACK.RESPONSE, {
+        //             bubbles: true,
+        //             cancelable: true
+        //         });
+        //         event.detail = {
+        //             title: controller.translate('tracking.title',
+        //                 product.gtin,
+        //                 product.batchNumber,
+        //                 controller.translate("tracking.serial", product.serialNumber) || ""),
+        //             startNode: startNode,
+        //             endNode: endNode,
+        //             nodeList: nodeList
+        //         }
+        //         await loader.dismiss();
+        //         evt.target.dispatchEvent(event);
+        //     });
+        // });
+        // controller.on(EVENTS.TRACK.RESPONSE, async (evt) => {
+        //     evt.preventDefault();
+        //     evt.stopImmediatePropagation();
+        //     const popOver = controller.element.querySelector('tracking-pop-over');
+        //     if (!popOver)
+        //         return console.log(`Could not find display element for traceability tree`);
+        //     await popOver.present(evt.detail);
+        // });
     }
 
     /**

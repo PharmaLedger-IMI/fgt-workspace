@@ -251,7 +251,7 @@ export class ManagedStockProductInput {
       );
     return (
       <ion-list>
-        {this.products.map(ip => <managed-individual-product-list-item gtin-batch-serial={`${ip.gtin}-${ip.batchNumber}-${ip.serialNumber}`}></managed-individual-product-list-item>)}
+        {this.products.map(ip => <managed-individual-product-list-item gtin-batch-serial={`${ip.gtin}-${ip.batchNumber}-${ip.serialNumber}`} show-track-button ="false"></managed-individual-product-list-item>)}
       </ion-list>
 
     )

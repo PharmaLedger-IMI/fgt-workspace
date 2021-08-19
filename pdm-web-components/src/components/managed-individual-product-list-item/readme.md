@@ -11,6 +11,7 @@
 | ----------------- | ------------------- | ----------- | --------- | ----------- |
 | `gtinBatchSerial` | `gtin-batch-serial` |             | `string`  | `undefined` |
 | `showCloseButton` | `show-close-button` |             | `boolean` | `true`      |
+| `showTrackButton` | `show-track-button` |             | `boolean` | `true`      |
 
 
 ## Events

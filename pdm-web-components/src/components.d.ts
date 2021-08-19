@@ -88,6 +88,7 @@ export namespace Components {
     interface ListItemLayout {
         "color": string;
         "cssClass": string;
+        "labelCol": number;
         "lines": 'none' | 'inset' | 'full';
         "orientation": "start" | "end";
     }
@@ -136,6 +137,7 @@ export namespace Components {
         "gtinBatchSerial": string;
         "refresh": (newValue?: any) => Promise<void>;
         "showCloseButton": boolean;
+        "showTrackButton": boolean;
     }
     interface ManagedOrder {
         "availableString": string;
@@ -851,6 +853,7 @@ declare namespace LocalJSX {
     interface ListItemLayout {
         "color"?: string;
         "cssClass"?: string;
+        "labelCol"?: number;
         "lines"?: 'none' | 'inset' | 'full';
         "orientation"?: "start" | "end";
     }
@@ -938,6 +941,7 @@ declare namespace LocalJSX {
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "showCloseButton"?: boolean;
+        "showTrackButton"?: boolean;
     }
     interface ManagedOrder {
         "availableString"?: string;

@@ -11,6 +11,7 @@
 | ------------- | ------------- | ----------- | ----------------------------- | --------------------- |
 | `color`       | `color`       |             | `string`                      | `"light"`             |
 | `cssClass`    | `class`       |             | `string`                      | `"ion-margin-bottom"` |
+| `labelCol`    | `label-col`   |             | `number`                      | `4`                   |
 | `lines`       | `lines`       |             | `"full" \| "inset" \| "none"` | `"none"`              |
 | `orientation` | `orientation` |             | `"end" \| "start"`            | `"end"`               |
 

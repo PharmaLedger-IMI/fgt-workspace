@@ -82,6 +82,8 @@ export class ManagedBatchListItem {
 
   @Prop({attribute: 'show-close-button'}) showCloseButton: boolean = true
 
+  @Prop({attribute: 'show-track-button'}) showTrackButton: boolean = true
+
   private batchManager: WebManager = undefined;
   private productManager: WebManager = undefined;
 
@@ -212,7 +214,7 @@ export class ManagedBatchListItem {
   render() {
     return (
       <Host>
-        <list-item-layout>
+        <list-item-layout label-col="7">
           {this.addLabel()}
           {this.addSerialsNumber()}
           {...this.addButtons()}

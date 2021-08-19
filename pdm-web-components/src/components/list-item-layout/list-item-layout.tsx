@@ -21,6 +21,8 @@ export class ListItemLayout {
 
   @Prop({attribute: "color"}) color: string = "light";
 
+  @Prop({attribute: "label-col"}) labelCol: number = 4;
+
   @State() currentBreakpoint = ionBreakpoints.lg + '';
 
   // @ts-ignore
@@ -73,12 +75,12 @@ export class ListItemLayout {
           </div>
           <ion-grid>
             <ion-row>
-              <ion-col col-12 col-sm size-lg="4">
+              <ion-col col-12 col-sm size-lg={this.labelCol}>
                 <div>
                   <slot name="label"></slot>
                 </div>
               </ion-col>
-              <ion-col col-12 col-sm align-self-end size-lg="8">
+              <ion-col col-12 col-sm align-self-end size-lg={12 - this.labelCol}>
                 <div class={`flex ${this.getAdjustment()}`}>
                   <slot name="content" ></slot>
                 </div>
