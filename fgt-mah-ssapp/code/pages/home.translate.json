@@ -19,6 +19,13 @@
       "progress": 100
     }
   },
+  "tracking": {
+    "title": "Traceability for Product {0}, Batch {1}{2}",
+    "serial": ", serial {0}",
+    "loading": "Calculating Supply Chain for {0}",
+    "success": "Traceability Calculated",
+    "error": "Could not get Supply Chain:\n{0}"
+  },
   "menu": {
     "dashboard": "Dashboard",
     "products": "Products",
@@ -31,6 +38,7 @@
     "receipts" : "Receipts"
   },
   "dashboard": {
+    "title": "Dashboard",
     "welcome": "This is a Dashboard"
   },
   "products": {
@@ -46,6 +54,7 @@
     }
   },
   "product": {
+    "title": "Product",
     "create": {
       "title": "Create a Product",
       "name": {
@@ -112,7 +121,7 @@
         }
       }
     },
-    "back": "Back to Products",
+    "back": "Back to {0}",
     "scan": "Scan Product",
     "error": {
       "bind": "Could not bind participant to Product",
@@ -133,6 +142,7 @@
     }
   },
   "batch": {
+    "title": "Batch",
     "create": {
       "title": "Create a Batch",
       "batchNumber": {
@@ -183,7 +193,7 @@
     "manage": {
       "title": "Manage Batch"
     },
-    "back": "Back to Product",
+    "back": "Back to {0}",
     "error": {
       "bind": "Could not bind Product to Batch",
       "invalid": "Invalid Batch:\n",
@@ -202,6 +212,7 @@
     "none": "No shipments issued..."
   },
   "shipment": {
+    "title": "Shipments",
     "create": {
       "title": "Create Shipment",
       "from": "Shipment from:",
@@ -263,7 +274,7 @@
       "remaining": "Remaining:",
       "order-missing": "Order missing"
     },
-    "back": "Back",
+    "back": "Back to {0}",
     "status": "Shipment Status:",
     "scan": "Scan Product",
     "scan-code": "Scan Shipment Code",
@@ -319,6 +330,7 @@
     }
   },
   "order": {
+    "title": "Order",
     "create": {
       "title": "Create Order",
       "from": "Order from:",
@@ -366,7 +378,7 @@
         "error": "Could not update Order: "
       }
     },
-    "back": "Back to Orders",
+    "back": "Back to {0}",
     "scan": "Scan Product",
     "statuses": {
       "created": {
@@ -457,6 +469,7 @@
     "none": "No products in stock..."
   },
   "individualProduct": {
+    "title": "Product",
     "manage": {
       "title": "Manage Single Product",
       "status": "Status:",
@@ -481,7 +494,7 @@
         "error": "Could not update: "
       }
     },
-    "back": "Back to Products",
+    "back": "Back to {0}",
     "statuses": {
       "commissioned": {
         "action": "Commission Product",

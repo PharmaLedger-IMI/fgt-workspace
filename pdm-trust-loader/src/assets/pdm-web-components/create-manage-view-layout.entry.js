@@ -131,7 +131,7 @@ const CreateManageViewLayout = class {
     return inputEl.closest('ion-input');
   }
   async clear() {
-    const clearButtonEl = this.element.querySelector(`form ion-button[type="clear"]`);
+    const clearButtonEl = Array.prototype.find.call(this.element.querySelectorAll(`form ion-button`), (b) => !!b.shadowRoot.querySelector('button[type="reset"]'));
     clearButtonEl.click();
   }
   getManageContent() {

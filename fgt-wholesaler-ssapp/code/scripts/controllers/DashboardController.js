@@ -1,4 +1,4 @@
-import { LocalizedController } from "../../assets/pdm-web-components/index.esm.js";
+import {HistoryNavigator, LocalizedController} from "../../assets/pdm-web-components/index.esm.js";
 
 export default class DashboardController extends LocalizedController {
 
@@ -8,6 +8,9 @@ export default class DashboardController extends LocalizedController {
         super(false, ...args);
         super.bindLocale(this, "dashboard");
         this.model = this.initializeModel();
+        HistoryNavigator.registerTab({
+            'tab-dashboard': this.translate('title')
+        })
         console.log('DashboardController Initialized');
     }
 }

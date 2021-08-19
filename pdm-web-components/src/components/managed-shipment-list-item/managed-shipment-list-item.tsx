@@ -114,11 +114,22 @@ export class ManagedShipmentListItem{
       return attribute;
     }
 
+    const buildLabelElement = (props: any) =>{
+      return (
+        <ion-col className="ion-padding-start" size="auto">
+          <ion-label color="secondary">
+            {props}
+          </ion-label>
+        </ion-col>
+      )
+    }
+
     return(
-      <ion-label slot="label" color="secondary">
-        {getShipmentId()}
-        <span class="ion-padding-start">{getIdLabel()}</span>
-      </ion-label>)
+      <ion-row  slot="label" className="ion-align-items-center">
+        {buildLabelElement(getShipmentId())}
+        {buildLabelElement(getIdLabel())}
+      </ion-row>
+    )
   }
 
   private addShipmentLines() {

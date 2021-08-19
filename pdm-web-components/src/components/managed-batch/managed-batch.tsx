@@ -34,12 +34,12 @@ export class ManagedBatch implements CreateManageView{
    * Through this event navigation requests to tabs are made
    */
   @Event({
-    eventName: 'ssapp-navigate-tab',
+    eventName: 'ssapp-back-navigate',
     bubbles: true,
     composed: true,
     cancelable: true,
   })
-  sendNavigateTab: EventEmitter;
+  sendNavigateBack: EventEmitter;
 
   /**
    * Through this event action requests are made
@@ -58,11 +58,8 @@ export class ManagedBatch implements CreateManageView{
       console.log(`Batch Component: ${message}`, err);
   }
 
-  private navigateToTab(tab: string,  props: any){
-    const event = this.sendNavigateTab.emit({
-      tab: tab,
-      props: props
-    });
+  private navigateToTab(){
+    const event = this.sendNavigateBack.emit();
     if (!event.defaultPrevented)
       console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
@@ -89,6 +86,8 @@ export class ManagedBatch implements CreateManageView{
   @State() serialsNumbers: string[] = undefined;
 
   private layoutComponent = undefined;
+
+  private addSerialNumberInput!: HTMLInputElement;
 
   async componentWillLoad(){
     if (!this.host.isConnected)
@@ -146,7 +145,8 @@ export class ManagedBatch implements CreateManageView{
   navigateBack(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.navigateToTab('tab-product', {gtin: this.getGtinBatch().gtin});
+    // this.navigateToTab('tab-product', {gtin: this.getGtinBatch().gtin});
+    this.navigateToTab();
   }
 
   create(evt){
@@ -171,12 +171,9 @@ export class ManagedBatch implements CreateManageView{
     evt.preventDefault();
     evt.stopImmediatePropagation();
     console.log(`Selected ${evt.detail}`);
-    const {gtin, batchNumber} = this.getGtinBatch();
-    this.navigateToTab('tab-individual-product', {
-      gtin: gtin,
-      batchNumber: batchNumber,
-      serialNumber: evt.detail
-    })
+    // const {gtin, batchNumber} = this.getGtinBatch();
+    // this.navigateToTab('tab-individual-product', { gtin: gtin, batchNumber: batchNumber,  serialNumber: evt.detail})
+    this.navigateToTab()
   }
 
   private getSerials(){
@@ -196,9 +193,10 @@ export class ManagedBatch implements CreateManageView{
     )
   }
 
-  private addSerialNumbers(){
-    const newSerials = this.layoutComponent.getInput('serialNumbers').value.split(',');
-    this.serialsNumbers = [...this.serialsNumbers, ...newSerials];
+  private addSerialNumbers() {
+    let inputValue = this.addSerialNumberInput.value;
+    this.serialsNumbers = [...this.serialsNumbers, ...inputValue.split(',')];
+    this.addSerialNumberInput.value = '';
   }
 
   private getInputs(){
@@ -260,6 +258,7 @@ export class ManagedBatch implements CreateManageView{
         <ion-label position="floating">{self.serialsString}</ion-label>
         <ion-input name="input-serialNumbers" required={true} pattern="^[\d,]+$"
                    placeholder={self.serialsPlaceholderString}
+                   ref={(el) => this.addSerialNumberInput = el as HTMLInputElement}
         ></ion-input>
         {getAddSerialsButton()}
       </ion-item>

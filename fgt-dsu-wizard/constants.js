@@ -67,7 +67,8 @@ const DB = {
     individualProduct: 'individualProduct',
     directory: 'directory',
     sales: 'sales',
-    receipts: 'receipts'
+    receipts: 'receipts',
+    traceability: 'traceability'
 }
 
 /**
@@ -76,6 +77,13 @@ const DB = {
  * @memberOf Constants
  */
 const DEFAULT_QUERY_OPTIONS = require('../pdm-dsu-toolkit/constants').DEFAULT_QUERY_OPTIONS;
+
+const EVENTS = {
+    TRACK: {
+        REQUEST: 'fgt-track-request',
+        RESPONSE: 'fgt-track-response'
+    }
+}
 
 module.exports = {
     STATUS_MOUNT_PATH,
@@ -103,5 +111,6 @@ module.exports = {
     LINES_PATH,
     ORDER_MOUNT_PATH,
     INPUT_FIELD_PREFIX,
+    EVENTS,
     SHIPMENT_PATH
 }

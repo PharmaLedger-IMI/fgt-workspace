@@ -1,4 +1,5 @@
 const BaseManager = require('../../pdm-dsu-toolkit/managers/BaseManager');
+const {EVENTS} = require('../constants');
 
 /**
  * Participant Manager Class - Extension of Base Manager
@@ -34,13 +35,54 @@ class ParticipantManager extends BaseManager{
                     if (err)
                         return callback(err);
                     manager.stockManager = stockManager;
-                    callback(undefined, manager);
+                    require('./TraceabilityManager')(this, (err, traceabilityManager) => {
+                        if (err)
+                            return callback(err);
+                        manager.traceabilityManager = traceabilityManager;
+                        callback(undefined, manager);
+                    });
                 });
             });
         });
-        this.directoryManager = undefined;
-        this.stockManager = undefined;
+        this.directoryManager = this.directoryManager || undefined;
+        this.stockManager = this.stockManager || undefined;
+        this.traceabilityManager = this.traceabilityManager || undefined;
     };
+
+    setController(controller) {
+        const self = this;
+        super.setController(controller);
+        controller.on(EVENTS.TRACK.REQUEST, async (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            const loader = controller._getLoader(controller.translate('tracking.loading'));
+            await loader.present();
+
+            const sendError = async function(msg, err){
+                await loader.dismiss();
+                controller.showErrorToast(controller.translate('loading.error', err), err);
+            }
+
+            const product = evt.detail;
+
+            self.traceabilityManager.getOne(product, async (err, startNode, endNode) => {
+                if (err)
+                    return await sendError(`Could not perform tracking...`, err);
+                controller.showToast(controller.translate('tracking.success'));
+                const event = new Event(EVENTS.TRACK.RESPONSE);
+                event.detail = {
+                    title: controller.translate('loading.title',
+                        product.gtin,
+                        product.batchNumber,
+                        controller.translate("loading.serial", product.serialNumber) || ""),
+                    startNode: startNode,
+                    endNode: endNode
+                }
+                await loader.dismiss();
+                controller.element.dispatchEvent(event);
+            });
+        });
+    }
 
     /**
      * Must return the string to be used to generate the DID

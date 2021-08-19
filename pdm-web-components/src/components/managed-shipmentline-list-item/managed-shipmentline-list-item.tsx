@@ -174,13 +174,24 @@ export class ManagedOrderlineListItem {
 
   addDetails(){
     const props = this.getPropsFromKey();
-    return [
-      <ion-label slot="content" color="secondary" class="ion-float-left">
-        {props.requesterId}
-        <span class="ion-padding-start">{props.senderId}</span>
-      </ion-label>,
-      this.addSerials()
-    ]
+    const buildLabelElement = (props) => {
+      return (
+        <ion-col>
+          <ion-label color="secondary">
+            {props}
+          </ion-label>
+        </ion-col>
+      )
+    }
+
+    return (
+      <ion-col slot="content" size-md="4" size-lg="3">
+        <ion-row className="ion-align-items-center">
+          {buildLabelElement(props.requesterId)}
+          {buildLabelElement(props.senderId)}
+        </ion-row>
+      </ion-col>
+    )
   }
 
   addLabel(){
@@ -205,13 +216,26 @@ export class ManagedOrderlineListItem {
       return (<ion-badge>{self.line.status}</ion-badge>);
     }
 
+    const buildLabelElement = (props: any) =>{
+      return (
+        <ion-col className="ion-padding-start" size="auto">
+          <ion-label color="secondary">
+            {props}
+          </ion-label>
+        </ion-col>
+      )
+    }
+
     return(
-      <ion-label slot="label" color="secondary">
-        {props.gtin}
-        <span class="ion-padding-start">{getBatchLabel()}</span>
-        <span class="ion-padding-start">{getQuantityLabel()}</span>
-        <span class="ion-padding-start">{getStatusLabel()}</span>
-      </ion-label>)
+      <ion-col  slot="label" size="3">
+        <ion-row class="ion-align-items-center">
+          {buildLabelElement(props.gtin)}
+          {buildLabelElement(getBatchLabel())}
+          {buildLabelElement(getQuantityLabel())}
+          {buildLabelElement(getStatusLabel())}
+        </ion-row>
+      </ion-col>
+    )
   }
 
   private getOrientation(){
@@ -249,7 +273,8 @@ export class ManagedOrderlineListItem {
       <Host>
         <list-item-layout>
           {this.addLabel()}
-          {...this.addDetails()}
+          {this.addDetails()}
+          {this.addSerials()}
           {this.addButtons()}
         </list-item-layout>
       </Host>

@@ -56,7 +56,7 @@ const ListItemLayout = class {
   render() {
     if (!this.host.isConnected)
       return;
-    return (h(Host, null, h("ion-item", { class: `main-item${this.cssClass ? this.cssClass : ''}`, lines: this.lines, color: this.color }, h("div", { slot: "start" }, h("slot", { name: "start" })), h("ion-grid", null, h("ion-row", null, h("ion-col", { size: "12", "size-lg": "5" }, h("div", null, h("slot", { name: "label" }))), h("ion-col", { size: "12", "size-lg": "7" }, h("div", { class: `flex ${this.getAdjustment()}` }, h("slot", { name: "content" }))))), h("div", { slot: "end" }, h("slot", { name: "buttons" })))));
+    return (h(Host, null, h("ion-item", { class: `main-item${this.cssClass ? this.cssClass : ''}`, lines: this.lines, color: this.color }, h("div", { slot: "start" }, h("slot", { name: "start" })), h("ion-grid", null, h("ion-row", null, h("ion-col", { "col-12": true, "col-sm": true, "size-lg": "4" }, h("div", null, h("slot", { name: "label" }))), h("ion-col", { "col-12": true, "col-sm": true, "align-self-end": true, "size-lg": "8" }, h("div", { class: `flex ${this.getAdjustment()}` }, h("slot", { name: "content" }))))), h("div", { slot: "end" }, h("slot", { name: "buttons" })))));
   }
   get element() { return getElement(this); }
 };

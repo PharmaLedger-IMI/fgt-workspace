@@ -80,7 +80,10 @@ const ManagedShipmentListItem = class {
         return (h("ion-skeleton-text", { animated: true }));
       return attribute;
     };
-    return (h("ion-label", { slot: "label", color: "secondary" }, getShipmentId(), h("span", { class: "ion-padding-start" }, getIdLabel())));
+    const buildLabelElement = (props) => {
+      return (h("ion-col", { className: "ion-padding-start", size: "auto" }, h("ion-label", { color: "secondary" }, props)));
+    };
+    return (h("ion-row", { slot: "label", className: "ion-align-items-center" }, buildLabelElement(getShipmentId()), buildLabelElement(getIdLabel())));
   }
   addShipmentLines() {
     if (!this.shipment || !this.shipment.shipmentLines)

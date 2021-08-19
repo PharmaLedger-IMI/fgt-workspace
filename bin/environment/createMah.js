@@ -5,7 +5,7 @@ const path = require('path');
 require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
 const dt = require('./../../pdm-dsu-toolkit/services/dt');
 const getIssuedShipmentManager = require("../../fgt-dsu-wizard/managers/IssuedShipmentManager");
-const { getParticipantManager, getProductManager, getBatchManager, getOrderLineManager, getShipmentLineManager, getStockManager, getReceivedOrderManager, getReceivedShipmentManager} = require('../../fgt-dsu-wizard/managers');
+const { getParticipantManager, getProductManager, getBatchManager, getOrderLineManager, getShipmentLineManager, getStockManager, getReceivedOrderManager, getReceiptManager} = require('../../fgt-dsu-wizard/managers');
 const { impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 const ROLE = require('../../fgt-dsu-wizard/model/DirectoryEntry').ROLE;
 const submitEvent = require('./listeners/eventHandler');
@@ -115,7 +115,11 @@ const setupManager = function(participantManager, callback){
                 getShipmentLineManager(participantManager, (err, shipmentLineManager) => {
                     if (err)
                         return callback(err);
-                    callback();
+                    getReceiptManager(participantManager, (err) => {
+                        if (err)
+                            return callback(err);
+                        callback();
+                    });
                 });
             });
         });

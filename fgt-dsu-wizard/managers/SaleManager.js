@@ -188,7 +188,7 @@ class SaleManager extends Manager{
                 let readSSIs;
 
                 try {
-                    readSSIs = keySSIs.map(k => keySSISpace.parse(k).derive())
+                    readSSIs = keySSIs.map(k => keySSISpace.parse(k).derive().getIdentifier())
                 } catch(e) {
                     return callback(`Invalid keys found`);
                 }

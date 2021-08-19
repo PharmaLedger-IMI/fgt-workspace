@@ -1,5 +1,3 @@
-const utils = require('../../pdm-dsu-toolkit/services/utils');
-
 class Node {
     id = '';
     title = '';
@@ -23,13 +21,16 @@ class Node {
  */
 function TraceabilityService(shipmentLineManager, receiptManager){
 
-    function IdTracker(gtin, batch){
-        let count = 0;
-        this.gtin = gtin;
-        this.batch = batch;
+    class IdTracker{
+        count = 0;
 
-        this.getNext = function(){
-            return ++ count;
+        constructor(gtin, batch) {
+            this.gtin = gtin;
+            this.batch = batch;
+        }
+
+        getNext(){
+            return ++this.count;
         }
     }
 
@@ -38,8 +39,8 @@ function TraceabilityService(shipmentLineManager, receiptManager){
             query: [
                 '__timestamp > 0',
                 `gtin == ${tracker.gtin}`,
-                `batchNumber == ${tracker.batch}`
-                `requesterId == ${node.id}`
+                `batch == ${tracker.batch}`,
+                `requesterId == ${node.title}`
             ],
             sort: 'dsc'
         }, (err, shipmentLines) => {
@@ -57,6 +58,28 @@ function TraceabilityService(shipmentLineManager, receiptManager){
 
     const trackFromNode = function(node, tracker, callback){
 
+        const nodePool = {};
+        let lastNode = undefined;
+
+        const addToPool = function(node){
+            if (node.title in nodePool){
+                const n = nodePool[node];
+                n.children = n.children || [];
+                n.parents = n.parents || [];
+                nodePool[node.title].children.push(...(node.children || []));
+                nodePool[node.title].parents.push(...(node.parents || []));
+                return nodePool[node.title];
+            }
+
+            if (!node.parents || !node.parents.length)
+                lastNode = node;
+
+            nodePool[node.title] = node;
+            return node;
+        }
+
+        addToPool(node)
+
         const nodeIterator = function(nodes, callback){
             const node = nodes.shift();
             if (!node)
@@ -68,41 +91,30 @@ function TraceabilityService(shipmentLineManager, receiptManager){
                 if (!parentNodes || !parentNodes.length)
                     return nodeIterator(nodes, callback);
 
-                const parentNodeIterator = function(parentNodesCopy, callback){
-                    const parentNode = parentNodesCopy.shift();
-                    if (!parentNode)
-                        return callback();
-                    nodeIterator(parentNode.parents.slice(), (err) => {
-                        if (err)
-                            return callback(err);
-                        callback();
-                    });
-                }
-
-                node.parents = parentNodes;
-                parentNodes.forEach(pn => {
+                parentNodes = parentNodes.map(pn => {
                     pn.children = pn.children || [];
                     pn.children.push(node);
+                    return addToPool(pn);
                 });
 
-                parentNodeIterator(parentNodes.slice(), (err) => {
-                    if (err)
-                        return callback(err);
-                    nodeIterator(nodes, callback);
-                });
+                node.parents = parentNodes;
+
+                nodeIterator(parentNodes.slice(), callback);
             });
         }
+
         nodeIterator([node], (err) => {
             if (err)
                 return callback(err);
-            callback(undefined, node);
+
+            callback(undefined, node, lastNode);
         });
     }
 
     /**
      *
      * @param {IndividualProduct} product
-     * @param {function(err?, )} callback
+     * @param {function(err?, Node?, Node?)} callback
      */
     this.fromProduct = function(product, callback){
         const {gtin, batchNumber, serialNumber} = product;
@@ -111,17 +123,17 @@ function TraceabilityService(shipmentLineManager, receiptManager){
 
         receiptManager.getOne(productKey, true, (err, product) => {
             if (err)
-                return callback(err);
+                return callback(`No information available`);
             const endNode = new Node({
                 id: idTracker.getNext(),
                 title: product.sellerId,
                 description: 'This is a description'
             });
 
-            trackFromNode(endNode, idTracker,(err, startNode) => {
+            trackFromNode(endNode, idTracker,(err, startNode, endNode) => {
                 if (err)
                     return callback(err);
-                callback(undefined, startNode);
+                callback(undefined, startNode, endNode);
             });
         });
     }

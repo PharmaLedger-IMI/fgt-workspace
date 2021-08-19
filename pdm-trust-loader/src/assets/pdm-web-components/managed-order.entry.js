@@ -2,7 +2,7 @@ import { r as registerInstance, e as createEvent, h, f as Host, g as getElement 
 import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-462ec42a.js';
 import { W as WebManagerService } from './WebManagerService-82558d63.js';
-import { a as getDirectoryProducts, b as getDirectorySuppliers, c as getDirectoryRequesters, d as getSingleInputPopOver, e as getProductPopOver } from './popOverUtils-ecb17d72.js';
+import { a as getDirectoryProducts, b as getDirectorySuppliers, c as getDirectoryRequesters, d as getSingleInputPopOver, e as getProductPopOver } from './popOverUtils-51c5e404.js';
 
 const managedOrderCss = ":host{display:block}managed-order{--color:var(--ion-color-primary-contrast)}managed-order ion-item ion-grid{width:100%}.product-select .select-interface-option{color:var(--ion-color-secondary)}ion-select.supplier-select::part(placeholder){color:var(--ion-color-secondary)}ion-select.supplier-select::part(text){color:var(--ion-color-primary)}ion-select.supplier-select::part(icon){color:var(--ion-color-primary)}ion-card-title{color:var(--ion-color-primary)}ion-card-subtitle{color:var(--ion-color-secondary)}ion-item.selected{--color:var(--ion-color-success)}ion-item.unnecessary{--color:red}";
 
@@ -25,7 +25,7 @@ const ManagedOrder = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
     this.sendErrorEvent = createEvent(this, "ssapp-send-error", 7);
-    this.sendNavigateTab = createEvent(this, "ssapp-navigate-tab", 7);
+    this.sendNavigateBack = createEvent(this, "ssapp-back-navigate", 7);
     this.sendAction = createEvent(this, "ssapp-action", 7);
     this.orderType = ORDER_TYPE.ISSUED;
     // strings
@@ -85,11 +85,8 @@ const ManagedOrder = class {
     if (!event.defaultPrevented || err)
       console.log(`Product Component: ${message}`, err);
   }
-  navigateToTab(tab, props) {
-    const event = this.sendNavigateTab.emit({
-      tab: tab,
-      props: props
-    });
+  navigateToTab() {
+    const event = this.sendNavigateBack.emit();
     if (!event.defaultPrevented)
       console.log(`Tab Navigation request seems to have been ignored by all components...`);
   }
@@ -195,7 +192,7 @@ const ManagedOrder = class {
   navigateBack(evt) {
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.navigateToTab(`tab-${this.getType()}-orders`, {});
+    this.navigateToTab();
   }
   async create(evt) {
     evt.preventDefault();

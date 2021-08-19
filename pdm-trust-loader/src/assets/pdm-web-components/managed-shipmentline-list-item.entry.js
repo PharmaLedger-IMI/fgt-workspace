@@ -3,9 +3,9 @@ import { W as WebManagerService } from './WebManagerService-82558d63.js';
 import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-462ec42a.js';
 import { S as SUPPORTED_LOADERS } from './supported-loader-4cd02ac2.js';
-import { g as getBarCodePopOver } from './popOverUtils-ecb17d72.js';
+import { g as getBarCodePopOver } from './popOverUtils-51c5e404.js';
 
-const managedShipmentlineListItemCss = ":host{display:block}ion-item.main-item{animation:1s linear fadein}managed-shipmentline-list-item ion-skeleton-text.label-batch{width:20%}managed-shipmentline-list-item ion-skeleton-text.label-quantity{width:15%}managed-shipmentline-list-item ion-skeleton-text.label-status{width:15%}@keyframes fadein{from{opacity:0}to{opacity:1}}";
+const managedShipmentlineListItemCss = ":host{display:block}ion-item.main-item{animation:1s linear fadein}@keyframes fadein{from{opacity:0}to{opacity:1}}";
 
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
   var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -121,10 +121,10 @@ const ManagedOrderlineListItem = class {
   }
   addDetails() {
     const props = this.getPropsFromKey();
-    return [
-      h("ion-label", { slot: "content", color: "secondary", class: "ion-float-left" }, props.requesterId, h("span", { class: "ion-padding-start" }, props.senderId)),
-      this.addSerials()
-    ];
+    const buildLabelElement = (props) => {
+      return (h("ion-col", null, h("ion-label", { color: "secondary" }, props)));
+    };
+    return (h("ion-col", { slot: "content", "size-md": "4", "size-lg": "3" }, h("ion-row", { className: "ion-align-items-center" }, buildLabelElement(props.requesterId), buildLabelElement(props.senderId))));
   }
   addLabel() {
     const props = this.getPropsFromKey();
@@ -144,7 +144,10 @@ const ManagedOrderlineListItem = class {
         return (h("ion-skeleton-text", { animated: true, className: "label-status" }));
       return (h("ion-badge", null, self.line.status));
     };
-    return (h("ion-label", { slot: "label", color: "secondary" }, props.gtin, h("span", { class: "ion-padding-start" }, getBatchLabel()), h("span", { class: "ion-padding-start" }, getQuantityLabel()), h("span", { class: "ion-padding-start" }, getStatusLabel())));
+    const buildLabelElement = (props) => {
+      return (h("ion-col", { className: "ion-padding-start", size: "auto" }, h("ion-label", { color: "secondary" }, props)));
+    };
+    return (h("ion-col", { slot: "label", size: "3" }, h("ion-row", { class: "ion-align-items-center" }, buildLabelElement(props.gtin), buildLabelElement(getBatchLabel()), buildLabelElement(getQuantityLabel()), buildLabelElement(getStatusLabel()))));
   }
   getOrientation() {
     const layout = this.element.querySelector('list-item-layout');
@@ -169,7 +172,7 @@ const ManagedOrderlineListItem = class {
   render() {
     if (!this.host.isConnected)
       return;
-    return (h(Host, null, h("list-item-layout", null, this.addLabel(), this.addDetails(), this.addButtons())));
+    return (h(Host, null, h("list-item-layout", null, this.addLabel(), this.addDetails(), this.addSerials(), this.addButtons())));
   }
   get element() { return getElement(this); }
   static get watchers() { return {

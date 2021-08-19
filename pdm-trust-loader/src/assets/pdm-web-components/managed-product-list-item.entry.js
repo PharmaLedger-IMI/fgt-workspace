@@ -1,5 +1,5 @@
 import { r as registerInstance, e as createEvent, h, f as Host, g as getElement } from './index-d0e12a29.js';
-import { g as getBarCodePopOver } from './popOverUtils-ecb17d72.js';
+import { g as getBarCodePopOver } from './popOverUtils-51c5e404.js';
 import { W as WebManagerService } from './WebManagerService-82558d63.js';
 import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-462ec42a.js';
@@ -93,7 +93,7 @@ const ManagedProductListItem = class {
         return (h("ion-skeleton-text", { animated: true }));
       return self.product.name;
     };
-    return (h("ion-label", { slot: "label", color: "secondary" }, getGtinLabel(), h("span", { class: "ion-padding-start" }, getNameLabel())));
+    return (h("ion-row", { slot: "label", class: "ion-align-items-center" }, h("ion-col", { class: "ion-padding-start", size: "auto" }, h("ion-label", { color: "secondary" }, getGtinLabel())), h("ion-col", { class: "ion-padding-start", size: "auto" }, h("ion-label", { color: "secondary" }, getNameLabel()))));
   }
   addBatches() {
     if (!this.product || !this.batches)
@@ -102,7 +102,7 @@ const ManagedProductListItem = class {
         "gtin-batch": gtinBatch,
         "mode": "detail",
         "loader-type": SUPPORTED_LOADERS.bubblingSmall
-      }))), "id-prop": "gtin-batch", "is-ion-item": "false", orientation: this.getOrientation(), onSelectEvent: this.triggerSelect.bind(this) }));
+      }))), "id-prop": "gtin-batch", "is-ion-item": "false", "more-chips-position": "start", orientation: this.getOrientation(), onSelectEvent: this.triggerSelect.bind(this) }));
   }
   getOrientation() {
     const layoutEl = this.element.querySelector('list-item-layout');

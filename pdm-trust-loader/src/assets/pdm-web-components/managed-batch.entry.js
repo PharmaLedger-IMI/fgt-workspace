@@ -2,7 +2,7 @@ import { r as registerInstance, e as createEvent, h, f as Host, g as getElement 
 import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-462ec42a.js';
 import { W as WebManagerService } from './WebManagerService-82558d63.js';
-import { g as getBarCodePopOver } from './popOverUtils-ecb17d72.js';
+import { g as getBarCodePopOver } from './popOverUtils-51c5e404.js';
 
 const managedBatchCss = ":host{display:block}";
 
@@ -22,7 +22,7 @@ const ManagedBatch = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
     this.sendErrorEvent = createEvent(this, "ssapp-send-error", 7);
-    this.sendNavigateTab = createEvent(this, "ssapp-navigate-tab", 7);
+    this.sendNavigateBack = createEvent(this, "ssapp-back-navigate", 7);
     this.sendCreateAction = createEvent(this, "ssapp-action", 7);
     this.gtinRef = undefined;
     // strings
@@ -46,11 +46,8 @@ const ManagedBatch = class {
     if (!event.defaultPrevented || err)
       console.log(`Batch Component: ${message}`, err);
   }
-  navigateToTab(tab, props) {
-    const event = this.sendNavigateTab.emit({
-      tab: tab,
-      props: props
-    });
+  navigateToTab() {
+    const event = this.sendNavigateBack.emit();
     if (!event.defaultPrevented)
       console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
@@ -98,7 +95,8 @@ const ManagedBatch = class {
   navigateBack(evt) {
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.navigateToTab('tab-product', { gtin: this.getGtinBatch().gtin });
+    // this.navigateToTab('tab-product', {gtin: this.getGtinBatch().gtin});
+    this.navigateToTab();
   }
   create(evt) {
     evt.preventDefault();
@@ -119,12 +117,9 @@ const ManagedBatch = class {
     evt.preventDefault();
     evt.stopImmediatePropagation();
     console.log(`Selected ${evt.detail}`);
-    const { gtin, batchNumber } = this.getGtinBatch();
-    this.navigateToTab('tab-individual-product', {
-      gtin: gtin,
-      batchNumber: batchNumber,
-      serialNumber: evt.detail
-    });
+    // const {gtin, batchNumber} = this.getGtinBatch();
+    // this.navigateToTab('tab-individual-product', { gtin: gtin, batchNumber: batchNumber,  serialNumber: evt.detail})
+    this.navigateToTab();
   }
   getSerials() {
     if (!this.serialsNumbers)
@@ -134,8 +129,9 @@ const ManagedBatch = class {
       }))), "id-prop": "chip-label", "is-ion-item": false, "display-count": 25, "single-line": "false", onSelectEvent: this.triggerSelect.bind(this) }));
   }
   addSerialNumbers() {
-    const newSerials = this.layoutComponent.getInput('serialNumbers').value.split(',');
-    this.serialsNumbers = [...this.serialsNumbers, ...newSerials];
+    let inputValue = this.addSerialNumberInput.value;
+    this.serialsNumbers = [...this.serialsNumbers, ...inputValue.split(',')];
+    this.addSerialNumberInput.value = '';
   }
   getInputs() {
     const self = this;
@@ -166,7 +162,7 @@ const ManagedBatch = class {
     return [
       h("ion-item", { class: "ion-margin-top" }, h("ion-label", { position: "floating" }, self.batchNumberString), h("ion-input", { name: "input-batchNumber", required: true, maxlength: 30, disabled: !isCreate, value: isCreate ? '' : (self.batch ? self.batch.batchNumber : '') }), isCreate ? getRandomBatchNumberButton() : getBarCodeButton()),
       h("ion-item", null, h("ion-label", { position: "floating" }, self.expiryString), h("ion-input", { type: "date", name: "input-expiry", min: formatDate(new Date()), required: true, disabled: !isCreate, placeholder: self.expiryPlaceholderString, value: isCreate ? '' : (self.batch ? formatDate(new Date(self.batch.expiry)) : '') })),
-      h("ion-item", null, h("ion-label", { position: "floating" }, self.serialsString), h("ion-input", { name: "input-serialNumbers", required: true, pattern: "^[\\d,]+$", placeholder: self.serialsPlaceholderString }), getAddSerialsButton())
+      h("ion-item", null, h("ion-label", { position: "floating" }, self.serialsString), h("ion-input", { name: "input-serialNumbers", required: true, pattern: "^[\\d,]+$", placeholder: self.serialsPlaceholderString, ref: (el) => this.addSerialNumberInput = el }), getAddSerialsButton())
     ];
   }
   getCreate() {

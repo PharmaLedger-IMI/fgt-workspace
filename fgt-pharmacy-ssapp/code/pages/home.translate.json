@@ -19,6 +19,13 @@
       "progress": 100
     }
   },
+  "tracking": {
+    "title": "Traceability for Product {0}, Batch {1}{2}",
+    "serial": ", serial {0}",
+    "loading": "Calculating Supply Chain for {0}",
+    "success": "Traceability Calculated",
+    "error": "Could not get Supply Chain:\n{0}"
+  },
   "welcome": "Welcome back",
   "menu": {
     "dashboard": "Dashboard",
@@ -45,6 +52,7 @@
     }
   },
   "shipment": {
+    "title": "Shipments",
     "create": {
       "title": "Create Shipment",
       "from": "Shipment from:",
@@ -95,6 +103,7 @@
       }
     },
     "stock": {
+      "title": "Stock",
       "stock": "Stock:",
       "no-stock": "No Stock for selected Product",
       "reset-all": "Reset All",
@@ -106,7 +115,7 @@
       "remaining": "Remaining:",
       "order-missing": "Order missing"
     },
-    "back": "Back",
+    "back": "Back to {0}",
     "status": "Shipment Status:",
     "scan": "Scan Product",
     "scan-code": "Scan Shipment Code",
@@ -162,6 +171,7 @@
     }
   },
   "order": {
+    "title": "Orders",
     "create": {
       "title": "Create Order",
       "from": "Order from:",
@@ -209,7 +219,7 @@
         "error": "Could not update Order: "
       }
     },
-    "back": "Back to Orders",
+    "back": "Back to {0}",
     "scan": "Scan Product",
     "statuses": {
       "created": {
@@ -328,7 +338,7 @@
     "none": "No products in stock..."
   },
   "dashboard": {
-    "title": "This is a Dashboard",
+    "title": "Dashboard",
     "none": "There are no pending orders"
   }
 }

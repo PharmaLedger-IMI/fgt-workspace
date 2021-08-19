@@ -16,6 +16,8 @@ export class GenericChip {
 
   @Prop({attribute: "outline"}) outline?: boolean = true;
 
+  @Prop({attribute: "hide-buttons"}) hideButtons?: boolean = true;
+
   @Prop({attribute: "color"}) color?: string = "secondary";
 
   @Event({
@@ -40,7 +42,7 @@ export class GenericChip {
           <div class="badges-div ion-align-items-center ion-justify-content-between">
             <slot name="badges"></slot>
           </div>
-          <div class="button-div ion-align-items-center ion-justify-content-between">
+          <div class={`${this.hideButtons ? "button-div" : "flex"} ion-align-items-center ion-justify-content-between`} >
             <slot name="buttons"></slot>
           </div>
         </ion-chip>

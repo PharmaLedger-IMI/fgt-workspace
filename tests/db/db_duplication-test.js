@@ -18,16 +18,25 @@ const testOpts = {
 }
 
 const cb = function(err, ...results){
-    if (err)
-        throw err;
+    if (err){
+        console.error(err)
+        process.exit(1);
+    }
     console.log(`Results:`, ...results);
     process.exit(0)
 }
 
-
 create(testOpts, (err, results) => {
     if (err)
         return cb(err);
-    cb(undefined, results);
+    const pharmacyManager = results['fgt-pharmacy-wallet'][0].manager;
 
+    const issuedOrderManager = pharmacyManager.getManager("IssuedOrderManager");
+    issuedOrderManager.getAll(true, (err, issuedOrders) => {
+        if (err)
+            return cb(err);
+        if (issuedOrders.length > 1)
+            return cb(`Invalid Order Quantity. There can be only one! -|---- ----|-`);
+        cb(undefined, issuedOrders);
+    });
 });

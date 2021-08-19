@@ -1,4 +1,4 @@
-import { LocalizedController, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
+import { LocalizedController, HistoryNavigator, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
 
 /**
  * Controls Application Flow
@@ -21,6 +21,9 @@ export default class ShipmentLinesController extends LocalizedController {
         this.participantManager = wizard.Managers.getParticipantManager();
         this.shipmentLineManager = wizard.Managers.getShipmentLineManager(this.participantManager);
         this.shipmentLineManager.bindController(this);
+        HistoryNavigator.registerTab({
+            'tab-shipmentLines': this.translate('title')
+        })
 
         this.table = this.element.querySelector('pdm-ion-table');
 

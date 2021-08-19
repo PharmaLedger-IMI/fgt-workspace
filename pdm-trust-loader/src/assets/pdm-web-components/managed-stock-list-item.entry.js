@@ -3,7 +3,7 @@ import { W as WebManagerService } from './WebManagerService-82558d63.js';
 import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-462ec42a.js';
 import { S as SUPPORTED_LOADERS } from './supported-loader-4cd02ac2.js';
-import { g as getBarCodePopOver } from './popOverUtils-ecb17d72.js';
+import { g as getBarCodePopOver } from './popOverUtils-51c5e404.js';
 
 const managedStockListItemCss = ":host{display:block}ion-item.main-item{animation:1s linear fadein}@keyframes fadein{from{opacity:0}to{opacity:1}}";
 
@@ -91,7 +91,7 @@ const ManagedProductListItem = class {
         "quantity": (new Batch(batch)).getQuantity(),
         "mode": "detail",
         "loader-type": SUPPORTED_LOADERS.bubblingSmall
-      }))), "id-prop": "gtin-batch", "is-ion-item": "false", "display-count": "2", orientation: this.getOrientation(), onSelectEvent: (evt) => {
+      }))), "id-prop": "gtin-batch", "is-ion-item": "false", "display-count": "2", "display-count-divider": "230", "more-chips-position": "start", orientation: this.getOrientation(), onSelectEvent: (evt) => {
         evt.preventDefault();
         evt.stopImmediatePropagation();
         console.log(`Selected ${evt.detail}`);

@@ -59,9 +59,9 @@ export class ManagedIndividualProductChip {
 
   private renderSerials(){
     return (
-      <pdm-item-organizer slot="buttons" component-name="generic-chip"
+      <pdm-item-organizer slot="buttons" component-name="tracked-serial-chip"
                           component-props={JSON.stringify(this.serialNumbers.map(serial => ({
-                            "chip-label": serial
+                            "reference": `${this.gtin}-${this.batchNumber}-${serial}-${this.expiry}`
                           })))}
                           display-count="-1"
                           id-prop="chip-label"
@@ -97,7 +97,7 @@ export class ManagedIndividualProductChip {
     return (
       <Host>
         <generic-chip chip-label={this.gtin} outline={true} color="secondary"
-                      onSelectEvent={this.triggerSelect.bind(this)}>
+                      onSelectEvent={this.triggerSelect.bind(this)} hide-buttons="false">
           {this.renderBatchInfo()}
           {this.renderSerials()}
         </generic-chip>

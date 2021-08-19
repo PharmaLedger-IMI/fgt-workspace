@@ -15,7 +15,8 @@ const defaultOps = {
     trueStock: false,                           // makes stock managers actually remove products from available for others down the line,
     exportCredentials: false,                   // export credentials for use in the Api-hubs front page
     attachLogic: false,                         // attaches listeners to the proper managers to replicate business logic
-    statusUpdateTimeout: 5000                   // When attachLogic is true, sets the timeout between status updates
+    statusUpdateTimeout: 5000,                  // When attachLogic is true, sets the timeout between status updates
+    timeoutMultiplier: 5                        // If attach logic is true, will wait x times the status update timeout until it ends the process
 }
 
 const printResults = function (results, callback) {

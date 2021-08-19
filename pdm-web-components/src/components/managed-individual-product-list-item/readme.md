@@ -15,10 +15,11 @@
 
 ## Events
 
-| Event              | Description                                 | Type               |
-| ------------------ | ------------------------------------------- | ------------------ |
-| `ssapp-action`     | Through this event action requests are made | `CustomEvent<any>` |
-| `ssapp-send-error` | Through this event errors are passed        | `CustomEvent<any>` |
+| Event               | Description                                   | Type               |
+| ------------------- | --------------------------------------------- | ------------------ |
+| `fgt-track-request` | Through this event tracking requests are made | `CustomEvent<any>` |
+| `ssapp-action`      | Through this event action requests are made   | `CustomEvent<any>` |
+| `ssapp-send-error`  | Through this event errors are passed          | `CustomEvent<any>` |
 
 
 ## Methods

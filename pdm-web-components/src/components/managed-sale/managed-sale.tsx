@@ -124,6 +124,11 @@ export class ManagedSale {
     await this.loadSale();
   }
 
+  @Method()
+  async reset(){
+    this.element.querySelector("create-manage-view-layout").clear();
+  }
+
   @Listen('ssapp-action')
   async create(evt){
     if (evt.detail && evt.detail.action)
