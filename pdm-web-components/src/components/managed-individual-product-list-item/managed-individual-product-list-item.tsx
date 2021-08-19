@@ -82,6 +82,8 @@ export class ManagedBatchListItem {
 
   @Prop({attribute: 'show-close-button'}) showCloseButton: boolean = true
 
+  @Prop({attribute: 'show-track-button'}) showTrackButton: boolean = true
+
   private batchManager: WebManager = undefined;
   private productManager: WebManager = undefined;
 

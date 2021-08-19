@@ -137,6 +137,7 @@ export namespace Components {
         "gtinBatchSerial": string;
         "refresh": (newValue?: any) => Promise<void>;
         "showCloseButton": boolean;
+        "showTrackButton": boolean;
     }
     interface ManagedOrder {
         "availableString": string;
@@ -940,6 +941,7 @@ declare namespace LocalJSX {
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "showCloseButton"?: boolean;
+        "showTrackButton"?: boolean;
     }
     interface ManagedOrder {
         "availableString"?: string;
