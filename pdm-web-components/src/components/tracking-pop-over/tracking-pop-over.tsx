@@ -35,7 +35,7 @@ export class TrackingPopOver {
   async present(props){
     const self = this;
     this.modal = await getTrackingModal(props);
-    this.modal.onDidDismiss = () => self.modal = undefined;
+    this.modal.onDidDismiss(() => self.modal = undefined);
   }
 
   @Method()

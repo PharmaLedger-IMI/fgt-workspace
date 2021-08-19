@@ -2,7 +2,7 @@ import { r as registerInstance, e as createEvent, h, f as Host, g as getElement 
 import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-462ec42a.js';
 import { W as WebManagerService } from './WebManagerService-82558d63.js';
-import { g as getBarCodePopOver } from './popOverUtils-42d18ac5.js';
+import { g as getBarCodePopOver } from './popOverUtils-3797059d.js';
 
 const managedBatchCss = ":host{display:block}";
 
