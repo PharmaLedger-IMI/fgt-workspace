@@ -203,9 +203,10 @@ export class ManagedBatchListItem {
         size: "32",
         scale: "6",
         data: utils.generate2DMatrixCode(gtin, batchNumber, expiry.valueOf(), serialNumber)
-      }, evt)),
-      getButton("buttons", "secondary", "share-social", self.triggerTrack.bind(self))
+      }, evt))
     ];
+    if (self.showTrackButton)
+      result.push(getButton("buttons", "secondary", "share-social", self.triggerTrack.bind(self)));
     if (self.showCloseButton)
       result.push(getButton("buttons", "danger", "close-circle", (evt) => self.sendAction(evt, 'remove')))
     return result;
