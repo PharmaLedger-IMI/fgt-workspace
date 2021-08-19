@@ -667,7 +667,7 @@ class HomeController extends LocalizedController {
         return;
       }
       const {previousTab} = this.historyNavigator.addToHistory(props);
-      props = Object.assign(props || {}, {previousTab});
+      props.props = Object.assign(props.props || {}, {previousTab});
       self.setState(props.props);
       el.select(props.tab);
     }

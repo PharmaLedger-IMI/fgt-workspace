@@ -3,7 +3,7 @@ import { W as WebManagerService } from './WebManagerService-82558d63.js';
 import { H as HostElement } from './index-3dd6e8f7.js';
 import { w as wizard } from './WizardService-462ec42a.js';
 import { S as SUPPORTED_LOADERS } from './supported-loader-4cd02ac2.js';
-import { g as getBarCodePopOver } from './popOverUtils-51c5e404.js';
+import { g as getBarCodePopOver } from './popOverUtils-42d18ac5.js';
 
 const managedBatchListItemCss = ":host{display:block}ion-item.main-item{animation:1s linear fadein}@keyframes fadein{from{opacity:0}to{opacity:1}}";
 

@@ -55,7 +55,12 @@ class ParticipantManager extends BaseManager{
         controller.on(EVENTS.TRACK.REQUEST, async (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            const loader = controller._getLoader(controller.translate('tracking.loading'));
+
+            const product = evt.detail;
+
+            const loader = controller._getLoader(controller.translate('tracking.loading',
+                product.gtin + controller.translate('tracking.serial', product.serialNumber)));
+
             await loader.present();
 
             const sendError = async function(msg, err){
@@ -63,24 +68,34 @@ class ParticipantManager extends BaseManager{
                 controller.showErrorToast(controller.translate('loading.error', err), err);
             }
 
-            const product = evt.detail;
-
-            self.traceabilityManager.getOne(product, async (err, startNode, endNode) => {
+            self.traceabilityManager.getOne(product, async (err, startNode, endNode, nodeList) => {
                 if (err)
                     return await sendError(`Could not perform tracking...`, err);
                 controller.showToast(controller.translate('tracking.success'));
-                const event = new Event(EVENTS.TRACK.RESPONSE);
+                const event = new Event(EVENTS.TRACK.RESPONSE, {
+                    bubbles: true,
+                    cancelable: true
+                });
                 event.detail = {
-                    title: controller.translate('loading.title',
+                    title: controller.translate('tracking.title',
                         product.gtin,
                         product.batchNumber,
-                        controller.translate("loading.serial", product.serialNumber) || ""),
+                        controller.translate("tracking.serial", product.serialNumber) || ""),
                     startNode: startNode,
-                    endNode: endNode
+                    endNode: endNode,
+                    nodeList: nodeList
                 }
                 await loader.dismiss();
-                controller.element.dispatchEvent(event);
+                evt.target.dispatchEvent(event);
             });
+        });
+        controller.on(EVENTS.TRACK.RESPONSE, async (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            const popOver = controller.element.querySelector('tracking-pop-over');
+            if (!popOver)
+                return console.log(`Could not find display element for traceability tree`);
+            await popOver.present(evt.detail);
         });
     }
 

@@ -43,16 +43,28 @@ class Message{
  */
 class MessageManager extends Manager{
     constructor(baseManager, didString, callback){
-        super(baseManager, MESSAGE_TABLE, ['api'], callback);
-        this.w3cDID = require('opendsu').loadApi('w3cdid');
-        this.didString = didString;
-        this.did = undefined;
-        let self = this;
-        this._listeners = {};
-        this.timer = undefined;
-        this.getOwnDID((err, didDoc) => err
-            ? console.log(`Could not get Own DID`, err)
-            : self._startMessageListener(didDoc));
+        super(baseManager, MESSAGE_TABLE, ['api'], (err, manager) => {
+            if (err)
+                return callback(err);
+
+            manager.w3cDID = require('opendsu').loadApi('w3cdid');
+            manager.didString = didString;
+            manager.did = undefined;
+            manager._listeners = {};
+            manager.timer = undefined;
+
+            manager.getOwnDID((err, didDoc) => err
+                ? console.log(`Could not get Own DID`, err)
+                : manager._startMessageListener(didDoc));
+
+            if (callback)
+                callback(undefined, manager);
+        });
+        this.w3cDID = this.w3cDID || require('opendsu').loadApi('w3cdid');
+        this.didString = this.didString || didString;
+        this.did = this.did || undefined;
+        this._listeners = this._listeners || {};
+        this.timer = this.timer || undefined;
     }
 
     shutdown(){

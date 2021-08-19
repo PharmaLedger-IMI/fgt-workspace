@@ -125,8 +125,8 @@ class TraceabilityManager extends Manager{
 
         switch (message.action){
             case ACTION.REQUEST:
-                return self._trackObj(message.message, (err, startNode, endNode) =>
-                        self._replyToMessage(message.id, message.requesterId, startNode, endNode, err, self._messageCallback));
+                return self._trackObj(message.message, (err, startNode, endNode, nodeList) =>
+                        self._replyToMessage(message.id, message.requesterId, startNode, endNode, nodeList, err, self._messageCallback));
             case ACTION.RESPONSE:
                 let cb;
                 try {
@@ -153,21 +153,24 @@ class TraceabilityManager extends Manager{
             if (err)
                 return callback(err);
             console.log(`Tracking for product ${obj.gtin}, batch ${obj.batchNumber} and Serial ${obj.serialNumber} complete. Start and end Nodes:`, startNode, endNode);
-            callback(undefined, startNode, endNode);
+            const message = convertForJson(startNode, endNode);
+            callback(undefined, message.startNode, message.endNode, message.nodeList);
         });
     }
 
 
 
-    _replyToMessage(requestId, requesterId, startNode, endNode, error, callback){
+    _replyToMessage(requestId, requesterId, startNode, endNode, nodeList, error, callback){
         const self = this;
-
-        const simpleMessage = convertForJson(startNode, endNode)
 
         const reply = new TrackMessage({
             id: requestId,
             action: ACTION.RESPONSE,
-            message: simpleMessage,
+            message: {
+                startNode: startNode,
+                endNode: endNode,
+                nodeList: nodeList
+            },
             error: error
         })
         self.sendMessage(requesterId, reply, callback);
@@ -207,7 +210,17 @@ class TraceabilityManager extends Manager{
         let self = this;
         if (!(obj instanceof IndividualProduct))
             return callback(`Invalid Object Provided`);
+
+        if (!obj.manufName)
+            return self._getProduct(obj.gtin, (err, p) => {
+                if (err)
+                    return callback(err);
+                obj.manufName = p.manufName;
+                self.getOne(obj, callback);
+            });
+
         const identity = self.getIdentity();
+
         if (identity.id === obj.manufName)
             return self._trackObj(obj, callback);
 

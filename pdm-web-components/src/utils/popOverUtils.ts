@@ -226,7 +226,7 @@ function defineTrackingViewModal(){
   customElements.define(TRACKING_VIEW_MODAL, class extends HTMLElement{
     connectedCallback() {
       const contentEl = this;
-      const modalElement: any = contentEl.closest('ion-popover');
+      const modalElement: any = contentEl.closest('ion-modal');
       const title = modalElement.componentProps && modalElement.componentProps.title ? modalElement.componentProps.title : "Tracking";
       this.innerHTML = `
 <ion-header>
@@ -255,7 +255,7 @@ function defineTrackingViewModal(){
   });
 }
 
-export function nodeToTree(startNode: any, endNode: any){
+export function nodeToTree(startNode: any, endNode: any, nodeList: {}){
 
   const fromNode = function(node){
     return {
@@ -266,8 +266,23 @@ export function nodeToTree(startNode: any, endNode: any){
     }
   }
 
-  const levelIterator = function(node){
-    return [node];
+  const levelIterator = function(parentNode, accumulator = []){
+    accumulator.push(parentNode.children.filter(n => n !== startNode.id).map(n => {
+      return {
+        title: nodeList[n.id].title,
+        id: nodeList[n.id].id,
+        parentId: parentNode.id
+      }
+    }));
+
+    const subAccum = parentNode.children.reduce((accum, n) =>  {
+      accum.push(...levelIterator(nodeList[n.id || n]));
+      return accum;
+    }, []);
+
+    accumulator.push(...subAccum);
+
+    return accumulator;
   }
 
   return {
@@ -277,7 +292,7 @@ export function nodeToTree(startNode: any, endNode: any){
   }
 }
 
-export async function getTrackingModal(props: {title: string, startNode: any, endNode: any}){
+export async function getTrackingModal(props: {title: string, startNode: any, endNode: any, nodeList: {}}){
   defineTrackingViewModal();
   const trackModal: any = document.createElement('ion-modal');
   trackModal.id = `tracking-modal`;
@@ -289,7 +304,7 @@ export async function getTrackingModal(props: {title: string, startNode: any, en
   trackModal.swipeToClose = true;
   trackModal.componentProps = {
     title: props.title,
-    tree: nodeToTree(props.startNode, this.props.endNode)
+    tree: nodeToTree(props.startNode, props.endNode, props.nodeList)
   };
   document.body.appendChild(trackModal);
   await trackModal.present();
