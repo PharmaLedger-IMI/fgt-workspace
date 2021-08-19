@@ -101,6 +101,21 @@ class StockManager extends Manager{
 
         const gtin = product.gtin || product;
 
+        const getBatch = function(gtin, batch, callback){
+            self._getBatch(gtin, batch.batchNumber, (err, batchFromDSU) => {
+                if (err)
+                    return callback(err);
+                batch = new Batch({
+                    batchNumber: batchFromDSU.batchNumber,
+                    expiry: batchFromDSU.expiry,
+                    serialNumbers: batch.serialNumbers,
+                    quantity: batch.quantity,
+                    batchStatus: batchFromDSU.batchStatus
+                })
+                callback(undefined, batch);
+            });
+        }
+
         self.getOne(gtin, true, (err, stock) => {
             if (err){
                 if (batch.quantity < 0)
@@ -108,17 +123,10 @@ class StockManager extends Manager{
 
                 const cb = function(product){
                     const newStock = new Stock(product);
-                    self._getBatch(product.gtin, batch.batchNumber, (err, batchFromDSU) => {
+                    getBatch(product.gtin, batch, (err, mergedBatch) => {
                         if (err)
                             return callback(err);
-                        batch = new Batch({
-                            batchNumber: batchFromDSU.batchNumber,
-                            expiry: batchFromDSU.expiry,
-                            serialNumbers: batch.serialNumbers,
-                            quantity: batch.quantity,
-                            batchStatus: batchFromDSU.batchStatus
-                        })
-                        newStock.batches = [batch];
+                        newStock.batches = [mergedBatch];
                         return self.create(gtin, newStock, callback);
                     });
                 }
@@ -131,27 +139,41 @@ class StockManager extends Manager{
                     : cb(product));
             }
 
-            const sb = stock.batches.find(b => b.batchNumber === batch.batchNumber);
-
-            let serials;
-            if (!sb){
-                if (batch.getQuantity() < 0)
-                    return callback(`Given a negative amount on a unexisting stock`);
-                stock.batches.push(batch);
-                console.log(`Added batch ${batch.batchNumber} with ${batch.serialNumbers ? batch.serialNumbers.length : batch.getQuantity()} items`);
-            } else {
-                const newQuantity = sb.getQuantity()  + batch.getQuantity() ;
-                if (newQuantity < 0)
-                    return callback(`Illegal quantity. Not enough Stock. requested ${batch.getQuantity() } of ${sb.getQuantity() }`);
-                serials = sb.manage(batch.getQuantity() , this.serialization);
-            }
-
-            self.update(gtin, stock, (err) => {
+            getBatch(gtin, batch, (err, updatedBatch) => {
                 if (err)
-                    return self._err(`Could not manage stock for ${gtin}: ${err.message}`, err, callback);
-                console.log(`Updated Stock for ${gtin} batch ${batch.batchNumber}. ${self.serialization && serials ? serials.join(', ') : ''}`);
-                callback(undefined, serials || batch.serialNumbers || batch.quantity);
+                    return callback(err);
+
+                const sb = stock.batches.map((b,i) => ({batch: b, index: i})).find(b => b.batch.batchNumber === batch.batchNumber);
+
+                let serials;
+                if (!sb){
+                    if (batch.getQuantity() < 0)
+                        return callback(`Given a negative amount on a unnexisting stock`);
+                    stock.batches.push(updatedBatch);
+                    console.log(`Added batch ${updatedBatch.batchNumber} with ${updatedBatch.serialNumbers ? updatedBatch.serialNumbers.length : updatedBatch.getQuantity()} items`);
+                } else {
+                    const newQuantity = sb.batch.getQuantity() + updatedBatch.getQuantity() ;
+                    if (newQuantity < 0)
+                        return callback(`Illegal quantity. Not enough Stock. requested ${batch.getQuantity() } of ${sb.batch.getQuantity() }`);
+                    serials = sb.batch.manage(updatedBatch.getQuantity(), this.serialization);
+                    stock.batches[sb.index] = new Batch({
+                        batchNumber: updatedBatch.batchNumber,
+                        expiry: updatedBatch.expiry,
+                        batchStatus: updatedBatch.status,
+                        quantity: sb.batch.getQuantity(),
+                        serialNumbers: sb.batch.serialNumbers
+                    });
+                }
+
+                self.update(gtin, stock, (err) => {
+                    if (err)
+                        return self._err(`Could not manage stock for ${gtin}: ${err.message}`, err, callback);
+                    console.log(`Updated Stock for ${gtin} batch ${batch.batchNumber}. ${self.serialization && serials ? serials.join(', ') : ''}`);
+                    callback(undefined, serials || batch.serialNumbers || batch.quantity);
+                });
             });
+
+
         });
     }
 

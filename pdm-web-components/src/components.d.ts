@@ -88,6 +88,7 @@ export namespace Components {
     interface ListItemLayout {
         "color": string;
         "cssClass": string;
+        "labelCol": number;
         "lines": 'none' | 'inset' | 'full';
         "orientation": "start" | "end";
     }
@@ -851,6 +852,7 @@ declare namespace LocalJSX {
     interface ListItemLayout {
         "color"?: string;
         "cssClass"?: string;
+        "labelCol"?: number;
         "lines"?: 'none' | 'inset' | 'full';
         "orientation"?: "start" | "end";
     }

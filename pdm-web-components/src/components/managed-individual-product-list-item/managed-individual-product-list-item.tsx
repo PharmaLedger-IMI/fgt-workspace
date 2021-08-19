@@ -212,7 +212,7 @@ export class ManagedBatchListItem {
   render() {
     return (
       <Host>
-        <list-item-layout>
+        <list-item-layout label-col="7">
           {this.addLabel()}
           {this.addSerialsNumber()}
           {...this.addButtons()}
