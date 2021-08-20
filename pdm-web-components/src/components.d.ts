@@ -871,9 +871,13 @@ declare namespace LocalJSX {
          */
         "onSsapp-action"?: (event: CustomEvent<any>) => void;
         /**
-          * Through this event navigation requests to tabs are made
+          * Through this event back navigation requests are made
          */
         "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
@@ -907,9 +911,13 @@ declare namespace LocalJSX {
          */
         "onSsapp-action"?: (event: CustomEvent<any>) => void;
         /**
-          * Through this event navigation requests to tabs are made
+          * Through this event back navigation requests are made
          */
         "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
@@ -964,9 +972,13 @@ declare namespace LocalJSX {
          */
         "onSsapp-action"?: (event: CustomEvent<any>) => void;
         /**
-          * Through this event navigation requests to tabs are made
+          * Through this event back navigation requests are made
          */
         "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
@@ -1054,9 +1066,13 @@ declare namespace LocalJSX {
          */
         "onSsapp-action"?: (event: CustomEvent<any>) => void;
         /**
-          * Through this event navigation requests to tabs are made
+          * Through this event back navigation requests are made
          */
         "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
@@ -1085,6 +1101,10 @@ declare namespace LocalJSX {
           * Through this event action requests are made
          */
         "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event back navigation requests are made
+         */
+        "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event navigation requests to tabs are made
          */
@@ -1125,9 +1145,13 @@ declare namespace LocalJSX {
          */
         "onSsapp-action"?: (event: CustomEvent<any>) => void;
         /**
-          * Through this event navigation requests to tabs are made
+          * Through this event back navigation requests are made
          */
         "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */

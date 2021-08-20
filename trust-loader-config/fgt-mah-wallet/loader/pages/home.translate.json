@@ -26,7 +26,7 @@
         "props": {
           "type": "text",
           "placeholder": "Please enter Registered Name here...",
-          "value": "PDM the MAH",
+          "value": "",
           "required": true,
           "inputmode": "text"
         },
@@ -60,7 +60,7 @@
         "props": {
           "type": "email",
           "placeholder": "Please enter your email here...",
-          "value": "mah@pdmfc.com",
+          "value": "",
           "required": true,
           "inputmode": "email"
         },
@@ -75,31 +75,6 @@
         }
       },
       {
-        "name": "tin",
-        "element": "ion-input",
-        "label": "Registered TIN (Tax Identification Number):",
-        "public": true,
-        "props": {
-          "type": "number",
-          "subtype": "tin",
-          "placeholder": "Enter your TIN (Tax Identification Number)...",
-          "value": 5000000000,
-          "min": 1,
-          "max": 9999999999,
-          "required": true,
-          "inputmode": "numeric"
-        },
-        "validation": {
-          "required": {
-            "error": "Your Tin identification Number is mandatory"
-          },
-          "tin": {
-            "args": [],
-            "error": "That is not a valid TIN"
-          }
-        }
-      },
-      {
         "name": "address",
         "element": "ion-input",
         "label": "Address:",
@@ -110,7 +85,7 @@
           "minlength": "10",
           "cols": 20,
           "rows": 1,
-          "value": "New York, USA",
+          "value": "",
           "required": true,
           "inputmode": "text"
         },

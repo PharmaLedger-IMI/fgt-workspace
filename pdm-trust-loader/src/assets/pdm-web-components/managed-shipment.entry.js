@@ -25,6 +25,7 @@ const ManagedShipment = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
     this.sendErrorEvent = createEvent(this, "ssapp-send-error", 7);
+    this.sendNavigateTab = createEvent(this, "ssapp-navigate-tab", 7);
     this.sendNavigateBack = createEvent(this, "ssapp-back-navigate", 7);
     this.sendAction = createEvent(this, "ssapp-action", 7);
     this.orderJSON = undefined;
@@ -81,8 +82,11 @@ const ManagedShipment = class {
     if (!event.defaultPrevented || err)
       console.log(`Product Component: ${message}`, err);
   }
-  navigateToTab() {
-    const event = this.sendNavigateBack.emit();
+  navigateToTab(tab, props) {
+    const event = this.sendNavigateTab.emit({
+      tab: tab,
+      props: props
+    });
     if (!event.defaultPrevented)
       console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
@@ -193,8 +197,9 @@ const ManagedShipment = class {
   navigateBack(evt) {
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    // this.navigateToTab(`tab-${this.getType()}-shipments`, {});
-    this.navigateToTab();
+    const event = this.sendNavigateBack.emit();
+    if (!event.defaultPrevented)
+      console.log(`Tab Navigation request seems to have been ignored by all components...`);
   }
   async create(evt) {
     evt.preventDefault();

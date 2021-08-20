@@ -11,12 +11,7 @@ const generateWholesalerCredentials = function(id) {
             "required": true
         },
         "email": {
-            "secret": "wholesaler@pdmfc.com",
-            "public": true,
-            "required": true
-        },
-        "tin": {
-            "secret": 5000000000,
+            "secret": "wholesaler@whs.pharmaledger.com",
             "public": true,
             "required": true
         },
@@ -53,11 +48,6 @@ const generatePharmacyCredentials = function(id) {
             "public": true,
             "required": true
         },
-        "tin": {
-            "secret": 5000000000,
-            "public": true,
-            "required": true
-        },
         "address": {
             "required": true,
             "public": true,
@@ -91,11 +81,6 @@ const generateMAHCredentials = function(id) {
             "public": true,
             "required": true
         },
-        "tin": {
-            "secret": 5000000000,
-            "public": true,
-            "required": true
-        },
         "address": {
             "required": true,
             "public": true,
@@ -119,6 +104,7 @@ const APPS = {
     MULTIPLE: 'multiple',                   // instantiates a Multiple connected Actors
     SINGLE: 'single',                       // instantiates a One of each actors, connected
     SIMPLE_TRACEABILITY: 'traceability',    // instantiates a Single Env where an extra WHOLESALER (prefix FAC) will have all stock from all products/batches for each MAH, so we can simulate que consecutive shipments, orders, etc
+    TEST: 'test',                           // instantiates a the TEst Env
     PROD: 'prod'                            // instantiates a the Production Env
 }
 

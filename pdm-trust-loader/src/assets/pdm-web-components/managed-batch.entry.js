@@ -22,6 +22,7 @@ const ManagedBatch = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
     this.sendErrorEvent = createEvent(this, "ssapp-send-error", 7);
+    this.sendNavigateTab = createEvent(this, "ssapp-navigate-tab", 7);
     this.sendNavigateBack = createEvent(this, "ssapp-back-navigate", 7);
     this.sendCreateAction = createEvent(this, "ssapp-action", 7);
     this.gtinRef = undefined;
@@ -46,8 +47,11 @@ const ManagedBatch = class {
     if (!event.defaultPrevented || err)
       console.log(`Batch Component: ${message}`, err);
   }
-  navigateToTab() {
-    const event = this.sendNavigateBack.emit();
+  navigateToTab(tab, props) {
+    const event = this.sendNavigateTab.emit({
+      tab: tab,
+      props: props
+    });
     if (!event.defaultPrevented)
       console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
@@ -95,8 +99,9 @@ const ManagedBatch = class {
   navigateBack(evt) {
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    // this.navigateToTab('tab-product', {gtin: this.getGtinBatch().gtin});
-    this.navigateToTab();
+    const event = this.sendNavigateBack.emit();
+    if (!event.defaultPrevented)
+      console.log(`Tab Navigation request seems to have been ignored by all components...`);
   }
   create(evt) {
     evt.preventDefault();
@@ -117,9 +122,8 @@ const ManagedBatch = class {
     evt.preventDefault();
     evt.stopImmediatePropagation();
     console.log(`Selected ${evt.detail}`);
-    // const {gtin, batchNumber} = this.getGtinBatch();
-    // this.navigateToTab('tab-individual-product', { gtin: gtin, batchNumber: batchNumber,  serialNumber: evt.detail})
-    this.navigateToTab();
+    const { gtin, batchNumber } = this.getGtinBatch();
+    this.navigateToTab('tab-individual-product', { gtin: gtin, batchNumber: batchNumber, serialNumber: evt.detail });
   }
   getSerials() {
     if (!this.serialsNumbers)

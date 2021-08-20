@@ -5,6 +5,7 @@ const { APPS, getCredentials } = require('./credentials/credentials3');
 const getProducts = require('./products/productsRandom');
 const { getStockFromProductsAndBatchesObj, getFullStockFromProductsAndBatchesObj } = require('./stocks/stocksRandomFromProducts');
 const { getDummyWholesalers } = require('./credentials/credentials3');
+const {MSD, PFIZER, generatePharmacyCredentials, generateWholesalerCredentials} = require('./credentials/credentialsTests');
 
 const { ROLE } = require('../../fgt-dsu-wizard/model/DirectoryEntry');
 
@@ -33,9 +34,26 @@ const getMultiple = () => {
 
 const getProd = () => {
     const MULTIPLE = {};
-    MULTIPLE[APPS.MAH] = [getCredentials(APPS.MAH, 'merkl')];
-    MULTIPLE[APPS.WHOLESALER] = [];
-    MULTIPLE[APPS.PHARMACY] = [];
+    MULTIPLE[APPS.MAH] = [PFIZER, MSD];
+    MULTIPLE[APPS.WHOLESALER] = [generateWholesalerCredentials(), generateWholesalerCredentials(), generateWholesalerCredentials(), generateWholesalerCredentials()];
+    MULTIPLE[APPS.PHARMACY] = [generatePharmacyCredentials(), generatePharmacyCredentials(), generatePharmacyCredentials(), generatePharmacyCredentials(), generatePharmacyCredentials(), generatePharmacyCredentials()];
+    return MULTIPLE;
+}
+
+const getTest = () => {
+    const MULTIPLE = {};
+    MULTIPLE[APPS.MAH] = [PFIZER, MSD];
+    MULTIPLE[APPS.WHOLESALER] = [
+        generateWholesalerCredentials(undefined, "PDM the Wholesaler", "wholesaler@pdmfc.com", "London, England"),
+        generateWholesalerCredentials(undefined, "PDM the Wholesaler", "wholesaler@pdmfc.com", "London, England"),
+        generateWholesalerCredentials(undefined, "PDM the Wholesaler", "wholesaler@pdmfc.com", "London, England")
+    ];
+    MULTIPLE[APPS.PHARMACY] = [
+        generatePharmacyCredentials(undefined, "PDM the Pharmacy", "pharmacy@pdmfc.com", "Avenida da Liberdade, Lisboa, Portugal"),
+        generatePharmacyCredentials(undefined, "PDM the Pharmacy", "pharmacy@pdmfc.com", "Avenida da Liberdade, Lisboa, Portugal"),
+        generatePharmacyCredentials(undefined, "PDM the Pharmacy", "pharmacy@pdmfc.com", "Avenida da Liberdade, Lisboa, Portugal"),
+        generatePharmacyCredentials(undefined, "PDM the Pharmacy", "pharmacy@pdmfc.com", "Avenida da Liberdade, Lisboa, Portugal")
+    ];
     return MULTIPLE;
 }
 
@@ -442,6 +460,8 @@ const create = function(config, credentials, callback){
             return setupFullEnvironment(getMultiple(), callback);
         case APPS.SIMPLE_TRACEABILITY:
             return setupSingleTraceability(getSingle(), callback);
+        case APPS.TEST:
+            return setupSingleTraceability(getTest(), callback);
         case APPS.PROD:
             return setupFullEnvironment(getProd(), callback);
         default:

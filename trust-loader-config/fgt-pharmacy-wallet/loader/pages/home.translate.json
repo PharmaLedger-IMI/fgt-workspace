@@ -75,31 +75,6 @@
         }
       },
       {
-        "name": "tin",
-        "element": "ion-input",
-        "label": "Registered TIN (Tax Identification Number):",
-        "public": true,
-        "props": {
-          "type": "number",
-          "subtype": "tin",
-          "placeholder": "Enter your TIN (Tax Identification Number)...",
-          "value": 5000000000,
-          "min": 1,
-          "max": 9999999999,
-          "required": true,
-          "inputmode": "numeric"
-        },
-        "validation": {
-          "required": {
-            "error": "Your Tin identification Number is mandatory"
-          },
-          "tin": {
-            "args": [],
-            "error": "That is not a valid TIN"
-          }
-        }
-      },
-      {
         "name": "address",
         "element": "ion-input",
         "label": "Address:",

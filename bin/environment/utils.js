@@ -66,11 +66,10 @@ function generateProductName() {
     return name.join('');
 }
 
-function generateBatchNumber(){
+function generateBatchNumber(length = 6){
     const chars = 'ABCDEFGHIJKLMNOPQRSUVWXYZ';
     const numbers = '1234567890';
     const options = [chars, numbers];
-    const length = 6;
     const batchNumber = []
     for (let i = 0 ; i < length; i++){
         const slot = Math.floor(Math.random() * 2);
