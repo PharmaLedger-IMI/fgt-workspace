@@ -47,7 +47,8 @@
 | Event                 | Description                                             | Type               |
 | --------------------- | ------------------------------------------------------- | ------------------ |
 | `ssapp-action`        | Through this event action requests are made             | `CustomEvent<any>` |
-| `ssapp-back-navigate` | Through this event navigation requests to tabs are made | `CustomEvent<any>` |
+| `ssapp-back-navigate` | Through this event back navigation requests are made    | `CustomEvent<any>` |
+| `ssapp-navigate-tab`  | Through this event navigation requests to tabs are made | `CustomEvent<any>` |
 | `ssapp-send-error`    | Through this event errors are passed                    | `CustomEvent<any>` |
 
 

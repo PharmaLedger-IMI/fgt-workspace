@@ -34,6 +34,17 @@ export class ManagedProduct implements CreateManageView{
    * Through this event navigation requests to tabs are made
    */
   @Event({
+    eventName: 'ssapp-navigate-tab',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  sendNavigateTab: EventEmitter;
+
+  /**
+   * Through this event back navigation requests are made
+   */
+  @Event({
     eventName: 'ssapp-back-navigate',
     bubbles: true,
     composed: true,
@@ -58,8 +69,11 @@ export class ManagedProduct implements CreateManageView{
       console.log(`Product Component: ${message}`, err);
   }
 
-  private navigateToTab(){
-    const event = this.sendNavigateBack.emit();
+  private navigateToTab(tab: string,  props: any){
+    const event = this.sendNavigateTab.emit({
+      tab: tab,
+      props: props
+    });
     if (!event.defaultPrevented)
       console.log(`Tab Navigation request seems to have been ignored byt all components...`);
   }
@@ -133,8 +147,9 @@ export class ManagedProduct implements CreateManageView{
   navigateBack(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    // this.navigateToTab('tab-products', {});
-    this.navigateToTab();
+    const event = this.sendNavigateBack.emit();
+    if (!event.defaultPrevented)
+      console.log(`Tab Navigation request seems to have been ignored by all components...`);
   }
 
   create(evt){
@@ -230,7 +245,6 @@ export class ManagedProduct implements CreateManageView{
   getManage() {
     if (this.isCreate())
       return;
-    // this.navigateToTab(tab-batch', { gtin: this.gtin, batchNumber: undefined })
     return (
       <pdm-ion-table table-title={this.batchesTitle + ` ${this.gtin}`}
                      item-reference="gtin-batch"
@@ -242,7 +256,12 @@ export class ManagedProduct implements CreateManageView{
                      icon-name="stats-chart"
                      item-type="managed-batch-list-item"
                      items-per-page="5">
-        <ion-button slot="buttons" color="secondary" fill="solid" onClick={() => this.navigateToTab()}>
+        <ion-button slot="buttons" color="secondary" fill="solid"
+                    onClick={() => this.navigateToTab('tab-batch', {
+                      gtin: this.gtin,
+                      batchNumber: undefined
+                    })}
+        >
           {this.batchesAddButton}
           <ion-icon slot="end" name="add-circle"></ion-icon>
         </ion-button>
