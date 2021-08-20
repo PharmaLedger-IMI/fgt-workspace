@@ -37,6 +37,17 @@ export class ManagedSale {
   sendNavigateTab: EventEmitter;
 
   /**
+   * Through this event back navigation requests are made
+   */
+  @Event({
+    eventName: 'ssapp-back-navigate',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  sendNavigateBack: EventEmitter;
+
+  /**
    * Through this event action requests are made
    */
   @Event({
@@ -194,7 +205,9 @@ export class ManagedSale {
   navigateBack(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.navigateToTab(`tab-sales`, {});
+    const event = this.sendNavigateBack.emit();
+    if (!event.defaultPrevented)
+      console.log(`Tab Navigation request seems to have been ignored by all components...`);
   }
 
   render() {
