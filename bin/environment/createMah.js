@@ -181,9 +181,16 @@ const setup = function(conf, participantManager, products, batches, callback){
     });
 }
 
-const create = function(credentials,  callback) {
+const trimCredentials = function(credentials){
+    const creds = Object.assign({}, credentials);
+    delete creds.products;
+    delete creds.batches;
+    return creds;
+}
 
-    instantiateSSApp(APPS.MAH, conf.pathToApps, dt, credentials, (err, walletSSI, walletDSU, credentials) => {
+const create = function(credentials,  callback) {
+    const trimmedCreds = trimCredentials(credentials);
+    instantiateSSApp(APPS.MAH, conf.pathToApps, dt, trimmedCreds, (err, walletSSI, walletDSU, credentials) => {
         if (err)
             throw err;
         const dsuStorage = impersonateDSUStorage(walletDSU.getWritableDSU());
@@ -191,7 +198,7 @@ const create = function(credentials,  callback) {
             if (err)
                 throw err;
             console.log(`${conf.app} instantiated\ncredentials:`);
-            console.log(credentials);
+            console.log(trimCredentials(credentials));
             console.log(`ID: ${credentials.id.secret}`);
             console.log(`SSI: ${walletSSI}`);
             callback(undefined, credentials, walletSSI, participantManager);

@@ -26,7 +26,7 @@
         "props": {
           "type": "text",
           "placeholder": "Please enter Registered Name here...",
-          "value": "",
+          "value": "PDM the MAH",
           "required": true,
           "inputmode": "text"
         },
@@ -60,7 +60,7 @@
         "props": {
           "type": "email",
           "placeholder": "Please enter your email here...",
-          "value": "",
+          "value": "mah@pdmfc.com",
           "required": true,
           "inputmode": "email"
         },
@@ -85,7 +85,7 @@
           "minlength": "10",
           "cols": 20,
           "rows": 1,
-          "value": "",
+          "value": "New York, USA",
           "required": true,
           "inputmode": "text"
         },
