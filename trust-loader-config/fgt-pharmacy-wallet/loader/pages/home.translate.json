@@ -60,7 +60,7 @@
         "props": {
           "type": "email",
           "placeholder": "Please enter your email here...",
-          "value": "pharmacy@pdmfc.com",
+          "value": "pharmacy@pha.pharmaledger.com",
           "required": true,
           "inputmode": "email"
         },

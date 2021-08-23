@@ -60,7 +60,7 @@
         "props": {
           "type": "email",
           "placeholder": "Please enter your email here...",
-          "value": "wholesaler@pdmfc.com",
+          "value": "wholesaler@whs.pharmaledger.com",
           "required": true,
           "inputmode": "email"
         },

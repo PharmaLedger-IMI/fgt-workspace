@@ -44,7 +44,7 @@ const generatePharmacyCredentials = function(id) {
             "required": true
         },
         "email": {
-            "secret": "pharmacy@pdmfc.com",
+            "secret": "pharmacy@pha.pharmaledger.com",
             "public": true,
             "required": true
         },
@@ -77,7 +77,7 @@ const generateMAHCredentials = function(id) {
             "required": true
         },
         "email": {
-            "secret": "mah@pdmfc.com",
+            "secret": "mah@mah.pharmaledger.com",
             "public": true,
             "required": true
         },
