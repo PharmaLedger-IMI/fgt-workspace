@@ -18,7 +18,7 @@ RUN cd $TARGET_FOLDER_NAME && \
 #ADD config/ssl_certs /$TARGET_FOLDER_NAME/apihub-root/external-volume/config/ssl/server.key
 
 RUN cd $TARGET_FOLDER_NAME && \
-    echo 'npm run server & \n sleep 1m \n npm run build-all \n npm run environment-test \n tail -f /dev/null' >> startup-script.sh
+    echo 'npm run server & \n sleep 1m \n npm run build-all \n npm run environment-trace \n tail -f /dev/null' >> startup-script.sh
 RUN cd $TARGET_FOLDER_NAME && cat startup-script.sh
 
 EXPOSE 8080/tcp
