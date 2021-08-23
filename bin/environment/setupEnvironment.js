@@ -5,7 +5,7 @@ const { APPS, getCredentials } = require('./credentials/credentials3');
 const getProducts = require('./products/productsRandom');
 const { getStockFromProductsAndBatchesObj, getFullStockFromProductsAndBatchesObj } = require('./stocks/stocksRandomFromProducts');
 const { getDummyWholesalers } = require('./credentials/credentials3');
-const {MSD, PFIZER, generatePharmacyCredentials, generateWholesalerCredentials} = require('./credentials/credentialsTests');
+const {MSD, PFIZER, ROCHE, generatePharmacyCredentials, generateWholesalerCredentials} = require('./credentials/credentialsTests');
 
 const { ROLE } = require('../../fgt-dsu-wizard/model/DirectoryEntry');
 
@@ -34,7 +34,7 @@ const getMultiple = () => {
 
 const getProd = () => {
     const MULTIPLE = {};
-    MULTIPLE[APPS.MAH] = [PFIZER, MSD];
+    MULTIPLE[APPS.MAH] = [PFIZER, MSD, ROCHE];
     MULTIPLE[APPS.WHOLESALER] = [generateWholesalerCredentials(), generateWholesalerCredentials(), generateWholesalerCredentials(), generateWholesalerCredentials()];
     MULTIPLE[APPS.PHARMACY] = [generatePharmacyCredentials(), generatePharmacyCredentials(), generatePharmacyCredentials(), generatePharmacyCredentials(), generatePharmacyCredentials(), generatePharmacyCredentials()];
     return MULTIPLE;
@@ -42,7 +42,7 @@ const getProd = () => {
 
 const getTest = () => {
     const MULTIPLE = {};
-    MULTIPLE[APPS.MAH] = [PFIZER, MSD];
+    MULTIPLE[APPS.MAH] = [PFIZER, MSD, ROCHE];
     MULTIPLE[APPS.WHOLESALER] = [
         generateWholesalerCredentials(undefined, "PDM the Wholesaler", "wholesaler@pdmfc.com", "London, England"),
         generateWholesalerCredentials(undefined, "PDM the Wholesaler", "wholesaler@pdmfc.com", "London, England"),

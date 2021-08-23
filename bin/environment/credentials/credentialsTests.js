@@ -104,6 +104,41 @@ const PFIZER =  {
 PFIZER.products = getPfizerProducts(PFIZER.id.secret);
 PFIZER.batches = getPfizerBatches();
 
+const ROCHE =  {
+    "name": {
+        "secret": "F. Hoffmann-La Roche AG",
+        "public": true,
+        "required": true
+    },
+    "id": {
+        "secret": `MAH116267986`,
+        "public": true,
+        "required": true
+    },
+    "email": {
+        "secret": "roche@mah.pharmaledger.com",
+        "public": true,
+        "required": true
+    },
+    "address": {
+        "required": true,
+        "public": true,
+        "secret": "Basel, Switzerland"
+    },
+    "pass": {
+        "required": true,
+        "secret": "This1sSuchAS3curePassw0rd"
+    },
+    "passrepeat": {
+        "required": true,
+        "secret": "This1sSuchAS3curePassw0rd"
+    }
+}
+
+PFIZER.products = getPfizerProducts(PFIZER.id.secret);
+PFIZER.batches = getPfizerBatches();
+
+
 const MSD =  {
     "name": {
         "secret": "Merck & Co., Inc.",
@@ -208,5 +243,6 @@ module.exports = {
     generateWholesalerCredentials,
     generatePharmacyCredentials,
     MSD,
-    PFIZER
+    PFIZER,
+    ROCHE
 }

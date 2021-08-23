@@ -50,7 +50,45 @@ const getPfizerProducts = function(manufName = "MAH135315170"){
     return mergeManufInfo(PfizerProducts, manufName);
 }
 
+const RocheProducts = [
+    {
+        gtin: '07613326021746',
+        name: 'Perjeta',
+        description: '420MG/14ML 1VIAL'
+    },
+    {
+        gtin: '07613326022279',
+        name: 'Roactem',
+        description: '400MG/20ML 1VIAL IV'
+    },
+    {
+        gtin: '07613326015547',
+        name: 'Madopar',
+        description: '200/50MG 30TABL'
+    },
+    {
+        gtin: '07613326021647',
+        name: 'Rocaltro',
+        description: '0.25MCG 30CAPS PT'
+    },
+    {
+        gtin: '08470006506035',
+        name: 'Avastin',
+        description: '400MG/16ML 1VIAL'
+    },
+    {
+        gtin: '08470007710226',
+        name: 'Cellcept',
+        description: '1000MG/5ML 175SYRD'
+    }
+];
+
+const getRocheProducts = function(manufName = "MAH116267986"){
+    return mergeManufInfo(RocheProducts, manufName);
+}
+
 module.exports = {
     getPfizerProducts,
-    getMSDProducts
+    getMSDProducts,
+    getRocheProducts
 }

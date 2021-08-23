@@ -122,6 +122,51 @@ const PFIZER_BATCHES = {
     ]
 }
 
+const ROCHE_BATCHES = {
+    '07613326021746': [
+        {
+            batchNumber: "H0513H03",
+            quantity: 8,
+            expiry: "30/04/2023"
+        }
+    ],
+    '07613326022279': [
+        {
+            batchNumber: "B4016H39",
+            quantity: 5,
+            expiry: "30/09/2023"
+        }
+    ],
+    '07613326015547': [
+        {
+            batchNumber: "E0678E1",
+            quantity: 50,
+            expiry: "31/03/2024"
+        }
+    ],
+    '07613326021647': [
+        {
+            batchNumber: "B2333B01",
+            quantity: 30,
+            expiry: "30/04/2023"
+        }
+    ],
+    '08470006506035': [
+        {
+            batchNumber: "N7475H04",
+            quantity: 10,
+            expiry: "30/06/2022"
+        }
+    ],
+    '08470007710226': [
+        {
+            batchNumber: "N1575B01",
+            quantity: 10,
+            expiry: "31/10/2022"
+        }
+    ]
+}
+
 const fillBatchDetails = function(batchesObj){
     return Object.keys(batchesObj).reduce((accum, gtin) => {
         accum[gtin] = batchesObj[gtin].map(b => new Batch(Object.assign(b, {
@@ -140,7 +185,12 @@ const getPfizerBatches = function(){
     return fillBatchDetails(PFIZER_BATCHES);
 }
 
+const getRocheBatches = function(){
+    return fillBatchDetails(ROCHE_BATCHES);
+}
+
 module.exports = {
     getMSDBatches,
-    getPfizerBatches
+    getPfizerBatches,
+    getRocheBatches
 }

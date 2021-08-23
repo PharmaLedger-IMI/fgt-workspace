@@ -20,39 +20,43 @@ const defaultOps = {
     timeoutMultiplier: 5                        // If attach logic is true, will wait x times the status update timeout until it ends the process
 }
 
+const conf = argParser(defaultOps, process.argv);
+
+const parseResult = function(results){
+    return Object.keys(Object.keys(results).map(key => {
+        return {
+            type: key,
+            created: results[key].length ? results[key].map(p => {
+                const relevant = {
+                    id: p.credentials.id.secret,
+                    ssi: p.ssi
+                };
+                if ([APPS.TEST].indexOf(conf.app) !== -1){
+                    relevant['name'] = p.credentials.name.secret;
+                    relevant['email'] = p.credentials.email.secret;
+                    relevant['address'] = p.credentials.address.secret;
+                }
+            }) : 'none'
+        };
+    }))
+}
+
 const printResults = function (results, callback) {
     console.log(`Environment set for ${conf.app}`);
     // console.log(`Results:\n${JSON.stringify(results, jsonStringifyReplacer, 2)}`);
     console.log(`Ids per Participant:`);
-    console.log(JSON.stringify(Object.keys(results).map(key => {
-        return {
-            type: key,
-            created: results[key].length ? results[key].map(p => ({
-                id: p.credentials.id.secret,
-                ssi: p.ssi
-            })) : 'none'
-        };
-    }), undefined, 2))
+    console.log(JSON.stringify(parseResult(results), undefined, 2))
     callback();
 }
 
 const exportCredentials = function(results, callback){
     if (!conf.exportCredentials)
         return callback();
-    require('fs').writeFile('../../apihub-root/credentials.json', JSON.stringify(Object.keys(results).map(key => {
-        return {
-            type: key,
-            created: results[key].length ? results[key].map(p => ({
-                id: p.credentials.id.secret,
-                ssi: p.ssi
-            })) : 'none'
-        };
-    }), undefined, 2), (err) => err
+    require('fs').writeFile('../../apihub-root/credentials.json', JSON.stringify(parseResult(results), undefined, 2), (err) => err
         ? callback(`Could not export Credentials`)
         : callback());
 }
 
-const conf = argParser(defaultOps, process.argv);
 try {
     create(conf, (err, results) => {
         if (err)
