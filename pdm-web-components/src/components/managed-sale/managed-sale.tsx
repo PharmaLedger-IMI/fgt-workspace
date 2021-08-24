@@ -26,17 +26,6 @@ export class ManagedSale {
   sendErrorEvent: EventEmitter;
 
   /**
-   * Through this event navigation requests to tabs are made
-   */
-  @Event({
-    eventName: 'ssapp-navigate-tab',
-    bubbles: true,
-    composed: true,
-    cancelable: true,
-  })
-  sendNavigateTab: EventEmitter;
-
-  /**
    * Through this event back navigation requests are made
    */
   @Event({
@@ -62,15 +51,6 @@ export class ManagedSale {
     const event = this.sendErrorEvent.emit(message);
     if (!event.defaultPrevented || err)
       console.log(`Product Component: ${message}`, err);
-  }
-
-  private navigateToTab(tab: string,  props: any){
-    const event = this.sendNavigateTab.emit({
-      tab: tab,
-      props: props
-    });
-    if (!event.defaultPrevented)
-      console.log(`Tab Navigation request seems to have been ignored by all components...`);
   }
 
   @Prop({attribute: 'sale-ref', mutable: true}) saleRef?: string = undefined;
