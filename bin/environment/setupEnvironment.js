@@ -40,18 +40,21 @@ const getProd = () => {
     return MULTIPLE;
 }
 
+getFakeTest = () => {
+    const SINGLE = {}
+    SINGLE[APPS.MAH] = [getCredentials(APPS.MAH), getCredentials(APPS.MAH)];
+    SINGLE[APPS.WHOLESALER] = [getCredentials(APPS.WHOLESALER)];
+    SINGLE[APPS.PHARMACY] = [getCredentials(APPS.PHARMACY)];
+    return SINGLE;
+}
+
 const getTest = () => {
     const MULTIPLE = {};
     MULTIPLE[APPS.MAH] = [PFIZER, MSD, ROCHE];
     MULTIPLE[APPS.WHOLESALER] = [
-        generateWholesalerCredentials(undefined, "PDM the Wholesaler", "wholesaler@pdmfc.com", "London, England"),
-        generateWholesalerCredentials(undefined, "PDM the Wholesaler", "wholesaler@pdmfc.com", "London, England"),
         generateWholesalerCredentials(undefined, "PDM the Wholesaler", "wholesaler@pdmfc.com", "London, England")
     ];
     MULTIPLE[APPS.PHARMACY] = [
-        generatePharmacyCredentials(undefined, "PDM the Pharmacy", "pharmacy@pdmfc.com", "Avenida da Liberdade, Lisboa, Portugal"),
-        generatePharmacyCredentials(undefined, "PDM the Pharmacy", "pharmacy@pdmfc.com", "Avenida da Liberdade, Lisboa, Portugal"),
-        generatePharmacyCredentials(undefined, "PDM the Pharmacy", "pharmacy@pdmfc.com", "Avenida da Liberdade, Lisboa, Portugal"),
         generatePharmacyCredentials(undefined, "PDM the Pharmacy", "pharmacy@pdmfc.com", "Avenida da Liberdade, Lisboa, Portugal")
     ];
     return MULTIPLE;
@@ -441,7 +444,7 @@ const create = function(config, credentials, callback){
                 ssi: ssi,
                 manager: manager
             };
-            results[type] = result[type] || [];
+            results[type] = results[type] || [];
             results[type].push(result);
             return shouldSetup ? setup(type, result, callback) : callback(undefined, result);
         }
@@ -459,7 +462,7 @@ const create = function(config, credentials, callback){
         case APPS.MULTIPLE:
             return setupFullEnvironment(getMultiple(), callback);
         case APPS.SIMPLE_TRACEABILITY:
-            return setupSingleTraceability(getSingle(), callback);
+            return setupSingleTraceability(getFakeTest(), callback);
         case APPS.TEST:
             return setupSingleTraceability(getTest(), callback);
         case APPS.PROD:

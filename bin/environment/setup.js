@@ -23,7 +23,7 @@ const defaultOps = {
 const conf = argParser(defaultOps, process.argv);
 
 const parseResult = function(results){
-    return Object.keys(Object.keys(results).map(key => {
+    return Object.keys(results).map(key => {
         return {
             type: key,
             created: results[key].length ? results[key].map(p => {
@@ -31,14 +31,15 @@ const parseResult = function(results){
                     id: p.credentials.id.secret,
                     ssi: p.ssi
                 };
-                if ([APPS.TEST].indexOf(conf.app) !== -1){
+                if ([APPS.TEST, APPS.SIMPLE_TRACEABILITY].indexOf(conf.app) !== -1){
                     relevant['name'] = p.credentials.name.secret;
                     relevant['email'] = p.credentials.email.secret;
                     relevant['address'] = p.credentials.address.secret;
                 }
+                return relevant;
             }) : 'none'
         };
-    }))
+    })
 }
 
 const printResults = function (results, callback) {

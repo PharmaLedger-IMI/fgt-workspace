@@ -11,6 +11,7 @@ const { generateRandomInt, impersonateDSUStorage, argParser, instantiateSSApp } 
 const submitEvent = require('./listeners/eventHandler');
 const { APPS } = require('./credentials/credentials3');
 const {ROLE} = require("../../fgt-dsu-wizard/model/DirectoryEntry");
+const orderInitiator = require('./listeners/orderInitiator');
 
 const defaultOps = {
     app: "fgt-pharmacy-wallet",
@@ -19,43 +20,6 @@ const defaultOps = {
 }
 
 let conf = argParser(defaultOps, process.argv);
-
-
-// aux functions
-const _createIssuedOrder = function (issuedOrderManager, products, wholesaler, callback) {
-    issuedOrderManager.newBlank((err, order) => {
-        if (err)
-            return callback(err);
-        order.senderId = wholesaler.id.secret;
-        // random number of order lines, one for each gtin
-        const randomProductIndex = generateRandomInt(1, products.length); // there must be at least 1 product
-        for (let productIndex = 0 ; productIndex < randomProductIndex ; productIndex++) {
-            const product = products[productIndex];
-            const quantity = generateRandomInt(1, 10);
-            const orderLine = new OrderLine(product.gtin, quantity, order.requesterId, order.senderId);
-            order.orderLines.push(orderLine);
-        }
-        //console.log("Creating order", order);
-        issuedOrderManager.create(order, (err, keySSI) => {
-            if (err)
-                return callback(err);
-            callback(undefined, order);
-        });
-    });
-};
-
-const _createManyIssuedOrders = function (countdown, issuedOrderManager, products, wholesaler, issuedOrders, receivedShipments, callback) {
-    if (countdown > 0) {
-        _createIssuedOrder(issuedOrderManager, products, wholesaler, (err, order) => {
-            if (err)
-                return callback(err);
-            issuedOrders.push(order);
-            _createManyIssuedOrders(countdown-1, issuedOrderManager, products, wholesaler, issuedOrders, receivedShipments, callback);
-        });
-    } else {
-        callback(undefined, issuedOrders, receivedShipments);
-    }
-};
 
 const setupStock = function(participantManager, stocks, callback){
     if (!callback){
@@ -119,23 +83,6 @@ const setupManager = function(participantManager, callback){
     });
 }
 
-const issueOrders = function(products, wholesalers, stocksObj, issuedOrderManager, callback){
-    if (products.length <=0)
-        return callback("Products has zero length.");
-    if (wholesalers.length <=0)
-        return callback("Wholesalers has zero length.");
-
-    const wholesaler0 = wholesalers[0];
-
-    let issuedOrders = [];
-    let receivedShipments = [];
-
-    // 20 orders on first wholesaler
-    _createManyIssuedOrders(1, issuedOrderManager, products, wholesaler0, issuedOrders, receivedShipments, (err) => {
-        callback(err, issuedOrders, receivedShipments, stocksObj);
-    });
-}
-
 const attachLogic = function(participantManager, conf, callback){
     if (!conf.attachLogic)
         return callback();
@@ -163,10 +110,10 @@ const setup = function (conf, participantManager, products, wholesalers, stocks,
         setupManager(participantManager, (err) => {
             if (err)
                 return callback(err);
-            attachLogic(participantManager, conf, (err) => {
+            attachLogic(participantManager, conf,  (err) => {
                 if (err)
                     return callback(err);
-                issueOrders(products, wholesalers, stocksObj, getIssuedOrderManager(participantManager), callback);
+                orderInitiator(conf, participantManager, products, stocksObj, wholesalers, callback);
             });
         });
     });

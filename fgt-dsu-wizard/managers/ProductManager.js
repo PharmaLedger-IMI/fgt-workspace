@@ -100,7 +100,7 @@ class ProductManager extends Manager {
                 return self._err(`Could not bind mah to product`, err, callback);
             self.productService.create(product, (err, keySSI) => {
                 if (err)
-                    return self._err(`Could not create product DSU for ${product}`, err, callback);
+                    return self._err(`Could not create product DSU for ${JSON.stringify(product, undefined, 2)}`, err, callback);
                 const record = keySSI.getIdentifier();
                 self.insertRecord(gtin, self._indexItem(gtin, product, record), (err) => {
                     if (err)
