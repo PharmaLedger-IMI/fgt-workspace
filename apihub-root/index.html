@@ -82,7 +82,7 @@
             </ul>
             <p>For each participant change only the <span style="font-weight: bold;">Id</span>. All the other credentials remain the same.</p>
             <p>To view the contents of each Participant SSApp, use the <span style="font-weight: bold;">Id</span> to LOGIN, and the keySSI to explore DSU details in the <img src="assets/images/cube.png" style="height: 1em;"><a href="/dsu-explorer/loader/" target="_blank">DSU Explorer</a> (using +Add, Receive Dossier, choosing a name for it, and then "Enter Dossier SEED" to enter the keySSI). (Note that keySSIs are <span style="font-weight: bold;">private secrets</span>, unless you share them.)</p>
-            <table>
+            <table id="credentials-table" style="width: 100%;">
                 <tr>
                     <th></th>
                     <th>Marketing Authorization Holder</th>
@@ -217,26 +217,71 @@
                 return accum;
             }, {});
 
-            document.getElementById('id-mah').innerText = byWallet['fgt-mah-wallet'][0].id;
-            document.getElementById('id-whs').innerText = byWallet['fgt-wholesaler-wallet'][0].id;
-            document.getElementById('id-pha').innerText = byWallet['fgt-pharmacy-wallet'][0].id;
+            if (!credentials.find(c => c.type ==='fgt-mah-wallet').created.every(c => c.name)){
+                document.getElementById('id-mah').innerText = byWallet['fgt-mah-wallet'][0].id;
+                document.getElementById('id-whs').innerText = byWallet['fgt-wholesaler-wallet'][0].id;
+                document.getElementById('id-pha').innerText = byWallet['fgt-pharmacy-wallet'][0].id;
 
-            document.getElementById('key-mah').innerText = byWallet['fgt-mah-wallet'][0].ssi;
-            document.getElementById('key-whs').innerText = byWallet['fgt-wholesaler-wallet'][0].ssi;
-            document.getElementById('key-pha').innerText = byWallet['fgt-pharmacy-wallet'][0].ssi;
+                document.getElementById('key-mah').innerText = byWallet['fgt-mah-wallet'][0].ssi;
+                document.getElementById('key-whs').innerText = byWallet['fgt-wholesaler-wallet'][0].ssi;
+                document.getElementById('key-pha').innerText = byWallet['fgt-pharmacy-wallet'][0].ssi;
 
-            document.getElementById('credentials').style.display = "block";
+                document.getElementById('credentials').style.display = "block";
+            } else {
+
+                const getParticipant = function(credentials, needOpenTr = false){
+                    return `
+        ${needOpenTr ? '<tr>' : ''}
+        <td style="border-style: solid;">${credentials.name}</td>
+        <td style="border-style: solid;">${credentials.id}</td>
+        <td style="border-style: solid;">${credentials.email}</td>
+        <td style="border-style: solid;">${credentials.address}</td>
+        </tr>
+        <tr>
+        <th style="border-style: solid;">KeySSI:</th>
+        <td style="border-style: solid;" colspan="3">${credentials.ssi}</td>
+        </tr>
+                    `
+                }
+
+                const getCategory = function(category, credentials){
+                    return `
+        <tr>
+        <th style="border-style: solid;" rowspan=${2 * credentials.created.length}>${credentials.type}</th>
+        ${credentials.created.map((c, i) => getParticipant(c, i !== 0)).join('\n')}
+        `
+                };
+
+                const getHeader = function(){
+                    return `
+<tr>
+    <th>Wallet</th>
+    <th>Name</th>
+    <th>Id</th>
+    <th>Email</th>
+    <th>Address</th>
+</tr>
+`;
+                }
+
+                document.getElementById('credentials-table').innerHTML = `\
+                ${getHeader()}
+                ${Object.keys(credentials).map(key => getCategory(key, credentials[key])).join('\n')}
+                `
+                document.getElementById('credentials').style.display = "block";
+
+            }
         }
 
         const getCredentials = function(){
-            const credentialsFile = new XMLHttpRequest();
-            credentialsFile.open("GET", './credentials.json', true);
-            credentialsFile.send();
-            credentialsFile.onreadystatechange = function() {
-                if (credentialsFile.readyState === 4 && credentialsFile.status === 200)
-                    displayCredentials(JSON.parse(credentialsFile.responseText));
+                const credentialsFile = new XMLHttpRequest();
+                credentialsFile.open("GET", './credentials.json', true);
+                credentialsFile.send();
+                credentialsFile.onreadystatechange = function() {
+                    if (credentialsFile.readyState === 4 && credentialsFile.status === 200)
+                        displayCredentials(JSON.parse(credentialsFile.responseText));
+                }
             }
-        }
 
         getCredentials();
     </script>
