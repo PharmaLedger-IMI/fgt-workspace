@@ -1,3 +1,6 @@
+const getProducts = require('../products/productsRandom');
+const getBatches = require('../batches/batchesRandom');
+
 const generateWholesalerCredentials = function(id) {
     return {
         "name": {
@@ -64,8 +67,8 @@ const generatePharmacyCredentials = function(id) {
     }
 };
 
-const generateMAHCredentials = function(id) {
-    return {
+const generateMAHCredentials = function(id, includeProducts = false) {
+    const creds = {
         "name": {
             "secret": "PDM the MAH",
             "public": true,
@@ -95,6 +98,14 @@ const generateMAHCredentials = function(id) {
             "secret": "This1sSuchAS3curePassw0rd"
         }
     }
+    if (includeProducts){
+        creds.products = getProducts();
+        creds.batches = creds.products.reduce((ac, p) => {
+            ac[p.gtin] = getBatches()
+            return ac;
+        }, {})
+    }
+    return creds;
 };
 
 const APPS = {
@@ -121,14 +132,14 @@ const getDummyWholesalers = function(count){
     return result;
 }
 
-const getCredentials = function(type, reference){
+const getCredentials = function(type, reference, includeProducts = false){
     if (typeof reference === 'string')
         return PROD[type][reference];
     switch (type){
         case APPS.WHOLESALER:
             return generateWholesalerCredentials(Math.floor(Math.random() * 999999999));
         case APPS.MAH:
-            return generateMAHCredentials(Math.floor(Math.random() * 999999999));
+            return generateMAHCredentials(Math.floor(Math.random() * 999999999), includeProducts);
         case APPS.PHARMACY:
             return generatePharmacyCredentials(Math.floor(Math.random() * 999999999));
         default:

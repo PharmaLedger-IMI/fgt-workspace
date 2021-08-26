@@ -190,16 +190,16 @@ const trimCredentials = function(credentials){
 
 const create = function(credentials,  callback) {
     const trimmedCreds = trimCredentials(credentials);
-    instantiateSSApp(APPS.MAH, conf.pathToApps, dt, trimmedCreds, (err, walletSSI, walletDSU, credentials) => {
+    instantiateSSApp(APPS.MAH, conf.pathToApps, dt, trimmedCreds, (err, walletSSI, walletDSU, confirmedCredentials) => {
         if (err)
-            throw err;
+            return callback(err);
         const dsuStorage = impersonateDSUStorage(walletDSU.getWritableDSU());
         getParticipantManager(dsuStorage, true, (err, participantManager) => {
             if (err)
-                throw err;
+                return callback(err);
             console.log(`${conf.app} instantiated\ncredentials:`);
-            console.log(trimCredentials(credentials));
-            console.log(`ID: ${credentials.id.secret}`);
+            console.log(confirmedCredentials);
+            console.log(`ID: ${confirmedCredentials.id.secret}`);
             console.log(`SSI: ${walletSSI}`);
             callback(undefined, credentials, walletSSI, participantManager);
         });

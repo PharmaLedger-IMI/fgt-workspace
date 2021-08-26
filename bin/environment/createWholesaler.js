@@ -117,11 +117,11 @@ const setup = function(conf, participantManager, stocks, callback){
 const create = function(credentials, callback){
     instantiateSSApp(APPS.WHOLESALER, conf.pathToApps, dt, credentials, (err, walletSSI, walletDSU, credentials) => {
         if (err)
-            throw err;
+            return callback(err);
         const dsuStorage = impersonateDSUStorage(walletDSU.getWritableDSU());
         getParticipantManager(dsuStorage, true, (err, participantManager) => {
             if (err)
-                throw err;
+                return callback(err);
 
             console.log(`${conf.app} instantiated\ncredentials:`);
             console.log(credentials)

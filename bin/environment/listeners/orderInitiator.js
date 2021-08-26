@@ -81,6 +81,8 @@ const orderInitiator = function(conf, participantManager, products, stocksObj, w
     switch(conf.app){
         case APPS.SIMPLE_TRACEABILITY:
             return singleOrderPerWholesaler(issuedOrderManager, wholesalers, productStrategyRandom, products, callback);
+        case APPS.TEST:
+
         default:
             console.error(`NOT IMPLEMENTED`);
             return callback()

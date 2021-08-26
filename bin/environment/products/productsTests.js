@@ -23,7 +23,7 @@ const MSDProducts = [
         description: '100MG/ML 10X2ML VIAL ESP/IRL'
     },
     {
-        gtin: '00191778005295',
+        gtin: '00191778001693',
         name: 'Gardasil 9',
         description: '0.5ML 1DOSE SYR L68'
     },

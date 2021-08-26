@@ -42,7 +42,7 @@ const getProd = () => {
 
 getFakeTest = () => {
     const SINGLE = {}
-    SINGLE[APPS.MAH] = [getCredentials(APPS.MAH), getCredentials(APPS.MAH)];
+    SINGLE[APPS.MAH] = [getCredentials(APPS.MAH, undefined, true), getCredentials(APPS.MAH, undefined, true)];
     SINGLE[APPS.WHOLESALER] = [getCredentials(APPS.WHOLESALER)];
     SINGLE[APPS.PHARMACY] = [getCredentials(APPS.PHARMACY)];
     return SINGLE;
