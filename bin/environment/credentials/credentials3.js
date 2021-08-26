@@ -101,7 +101,7 @@ const generateMAHCredentials = function(id, includeProducts = false) {
     if (includeProducts){
         creds.products = getProducts();
         creds.batches = creds.products.reduce((ac, p) => {
-            ac[p.gtin] = getBatches()
+            ac[p.gtin] = getBatches(2, 3000, 100, true)
             return ac;
         }, {})
     }

@@ -43,6 +43,19 @@ const productStrategyRandom = function(products){
     }
 }
 
+const getTensQuantities = function(){
+    const possibleQuantities = [20, 30, 40, 50, 60];
+    return possibleQuantities[Math.floor(Math.random() * possibleQuantities.length)];
+}
+
+const productStrategyAll = function(products){
+    const selected = products.slice();
+    return {
+        products: selected,
+        quantities: selected.map(_ => getTensQuantities())
+    }
+}
+
 const singleOrderPerWholesaler = function(issuedOrderManager, wholesalers, productStrategy, products, callback){
     const wholesalerIterator = function(whss, accum, callback){
         if (!callback){
@@ -80,9 +93,9 @@ const orderInitiator = function(conf, participantManager, products, stocksObj, w
 
     switch(conf.app){
         case APPS.SIMPLE_TRACEABILITY:
-            return singleOrderPerWholesaler(issuedOrderManager, wholesalers, productStrategyRandom, products, callback);
+            return singleOrderPerWholesaler(issuedOrderManager, wholesalers, productStrategyAll, products, callback);
         case APPS.TEST:
-
+            return singleOrderPerWholesaler(issuedOrderManager, wholesalers, productStrategyAll, products, callback);
         default:
             console.error(`NOT IMPLEMENTED`);
             return callback()

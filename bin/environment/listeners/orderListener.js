@@ -17,14 +17,6 @@ const shipmentStatusUpdater = function(issuedShipmentManager, shipment, timeout,
         console.log(`${identity.id} - Shipment ${shipment.shipmentId} has no possible status updates`);
         return callback();
     }
-    //
-    // // Debug
-    // if (identity.id.startsWith('WHS')){
-    //     console.log(`${identity.id} - Interrupting status update`);
-    //
-    //
-    //     return callback();
-    // }
 
     if (possibleStatus.length > 1)
         return callback(`More that one status allowed...`);
@@ -97,7 +89,7 @@ function forwardOrder(participantManager, order, role, callback){
                 if (!mah)
                     return callback(undefined, accumulator);
 
-                const splitOrder = Object.assign(order, {
+                const splitOrder = Object.assign(new Order(), order, {
                     orderLines: order.orderLines.filter(ol => gtinsPerMah[mah].indexOf(ol.gtin) !== -1)
                 });
 
