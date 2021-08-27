@@ -90,7 +90,6 @@ const attachLogic = function(participantManager, conf, callback){
         const shipmentListener = require('./listeners/shipmentListener').shipmentListener(participantManager, ROLE.WHS, conf.statusUpdateTimeout);
         const receivedShipmentManager = participantManager.getManager("ReceivedShipmentManager");
         receivedShipmentManager.registerMessageListener(shipmentListener);
-        submitEvent(conf);
     } catch (e) {
         return callback(e);
     }

@@ -46,8 +46,8 @@ const productStrategyRandom = function(products){
 const getTensQuantities = function(gtin, batches){
     const maxQuantity = batches[gtin].reduce((ac, b) => ac + b.getQuantity(), 0);
 
-    const quantityToRequest = Math.max(Math.ceil((maxQuantity / 1000) / 10) * 10, 1);
-    return quantityToRequest
+    const quantityToRequest = Math.max((Math.ceil((maxQuantity / 100) * 10) / 10), 1);
+    return Math.floor(quantityToRequest);
 }
 
 const productStrategyAll = function(products, batches){

@@ -52,10 +52,10 @@ const getTest = () => {
     const MULTIPLE = {};
     MULTIPLE[APPS.MAH] = [PFIZER, MSD, ROCHE];
     MULTIPLE[APPS.WHOLESALER] = [
-        generateWholesalerCredentials(undefined, "PDM the Wholesaler", "wholesaler@pdmfc.com", "London, England")
+        generateWholesalerCredentials(undefined, "PDM the Wholesaler", undefined, "London, England")
     ];
     MULTIPLE[APPS.PHARMACY] = [
-        generatePharmacyCredentials(undefined, "PDM the Pharmacy", "pharmacy@pdmfc.com", "Avenida da Liberdade, Lisboa, Portugal")
+        generatePharmacyCredentials(undefined, "PDM the Pharmacy", undefined, "Avenida da Liberdade, Lisboa, Portugal")
     ];
     return MULTIPLE;
 }
@@ -212,6 +212,8 @@ const setupSingleTraceability = function(actors, callback){
     createIterator(actorsCopy, (err) => {
         if (err)
             return callback(err);
+
+
         setupMAHIterator(results[APPS.MAH].slice(), (err) => {
             if (err)
                 return callback(err);
@@ -233,23 +235,24 @@ const setupSingleTraceability = function(actors, callback){
                 });
                 return acc;
             }, {});
-
-
-            setupWholesalerIterator(results[APPS.WHOLESALER].slice(), allProducts, allBatchesObj, (err) => {
+            setupDirectories(actors, allProductsBackup, (err) => {
                 if (err)
-                    return callback (err);
-                setupPharmacyIterator(results[APPS.PHARMACY].slice(), allProductsBackup, allBatchesObj, results[APPS.WHOLESALER].map(w => w.credentials), (err) => {
+                    return callback(err);
+                setupWholesalerIterator(results[APPS.WHOLESALER].slice(), allProducts, allBatchesObj, (err) => {
                     if (err)
-                        return callback(err);
-                    setupDirectories(actors, allProductsBackup, (err) => {
+                        return callback (err);
+
+                    if (conf.attachLogic)
+                        submitEvent(conf, (err) => {
+                            return callback(undefined, results);
+                        });
+
+                    setupPharmacyIterator(results[APPS.PHARMACY].slice(), allProductsBackup, allBatchesObj, results[APPS.WHOLESALER].map(w => w.credentials), (err) => {
                         if (err)
                             return callback(err);
                         if (!conf.attachLogic)
                             return returnResults(callback);
-                        submitEvent(conf, (err) => {
-                            return callback(undefined, results);
-                        });
-                    })
+                    });
                 });
             });
         });

@@ -80,7 +80,7 @@ const setupManager = function(participantManager, callback){
     });
 }
 
-const attachLogic = function(participantManager, conf, callback){
+const attachLogic = function(participantManager, conf, products, batches, wholesalers, stocksObj, callback){
     if (!conf.attachLogic)
         return callback();
     try{
@@ -107,7 +107,7 @@ const setup = function (conf, participantManager, products, batches, wholesalers
         setupManager(participantManager, (err) => {
             if (err)
                 return callback(err);
-            attachLogic(participantManager, conf,  (err) => {
+            attachLogic(participantManager, conf,  products, batches, wholesalers, stocks, (err) => {
                 if (err)
                     return callback(err);
                 orderInitiator(conf, participantManager, products, stocksObj, batches, wholesalers, callback);

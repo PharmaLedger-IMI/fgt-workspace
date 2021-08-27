@@ -95,7 +95,7 @@ function forwardOrder(participantManager, order, role, callback){
 
                 const increasedQuantityOrder = Object.assign(new Order(), splitOrder, {
                     orderLines: splitOrder.orderLines.map(ol => {
-                        ol.quantity = 5 * ol.quantity;
+                        ol.quantity = 4 * ol.quantity;
                         return ol;
                     })
                 })
@@ -122,7 +122,12 @@ function forwardOrder(participantManager, order, role, callback){
 }
 
 function issueOrder(participantManager, order, senderId, callback){
-    const issuedOrderManager = participantManager.getManager("IssuedOrderManager");
+    let issuedOrderManager;
+    try {
+        issuedOrderManager = participantManager.getManager("IssuedOrderManager");
+    } catch (e) {
+        return callback(e)
+    }
     const identity = issuedOrderManager.getIdentity();
 
     const boundOrder = new Order(Date.now(), identity.id, senderId, identity.address, OrderStatus.CREATED, order.orderLines.map(ol => {
