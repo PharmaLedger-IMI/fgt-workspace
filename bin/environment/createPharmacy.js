@@ -27,35 +27,32 @@ const setupStock = function(participantManager, stocks, callback){
         stocks = undefined;
     }
 
-    getStockManager(participantManager, true, (err, stockManager) => {
-        if (err)
-            return callback(err);
+    const stockManager = participantManager.getManager("StockManager");
 
-        stocks = stocks || require('./stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj(20);
+    stocks = stocks || require('./stocks/stocksRandomFromProducts').getStockFromProductsAndBatchesObj(20);
 
-        const stockIterator = function(stocksCopy){
-            const stock = stocksCopy.shift();
-            if (!stock){
-                console.log(`${stocks.length} stock created`);
-                return callback(undefined, stocks);
-            }
-            stockManager.create(stock, (err, keySSI, path) => {
-                if (err)
-                    return callback(err);
-                stockIterator(stocksCopy, callback);
-            });
+    const stockIterator = function(stocksCopy){
+        const stock = stocksCopy.shift();
+        if (!stock){
+            console.log(`${stocks.length} stock created`);
+            return callback(undefined, stocks);
         }
-
-        stockIterator(stocks.slice(), (err, stocksObj) => {
+        stockManager.create(stock, (err, keySSI, path) => {
             if (err)
                 return callback(err);
-            const output = [];
-            Object.keys(stocksObj).forEach(gtin => {
-                output.push(`The following batches per gtin have been created:\nGtin: ${gtin}\nBatches: ${stocksObj[gtin].join(', ')}`);
-            });
-            console.log(output.join('\n'));
-            callback(undefined, stocksObj);
-        })
+            stockIterator(stocksCopy, callback);
+        });
+    }
+
+    stockIterator(stocks.slice(), (err, stocksObj) => {
+        if (err)
+            return callback(err);
+        const output = [];
+        Object.keys(stocksObj).forEach(gtin => {
+            output.push(`The following batches per gtin have been created:\nGtin: ${gtin}\nBatches: ${stocksObj[gtin].join(', ')}`);
+        });
+        console.log(output.join('\n'));
+        callback(undefined, stocksObj);
     });
 }
 
@@ -103,7 +100,7 @@ const attachLogic = function(participantManager, conf, callback){
 }
 
 
-const setup = function (conf, participantManager, products, wholesalers, stocks, callback) {
+const setup = function (conf, participantManager, products, batches, wholesalers, stocks, callback) {
     setupStock(participantManager, stocks, (err, stocksObj) => {
         if (err)
             return callback(err);
@@ -113,7 +110,7 @@ const setup = function (conf, participantManager, products, wholesalers, stocks,
             attachLogic(participantManager, conf,  (err) => {
                 if (err)
                     return callback(err);
-                orderInitiator(conf, participantManager, products, stocksObj, wholesalers, callback);
+                orderInitiator(conf, participantManager, products, stocksObj, batches, wholesalers, callback);
             });
         });
     });

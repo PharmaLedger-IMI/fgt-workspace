@@ -93,7 +93,14 @@ function forwardOrder(participantManager, order, role, callback){
                     orderLines: order.orderLines.filter(ol => gtinsPerMah[mah].indexOf(ol.gtin) !== -1)
                 });
 
-                issueOrder(participantManager, splitOrder, mah, (err, orderSSI) => {
+                const increasedQuantityOrder = Object.assign(new Order(), splitOrder, {
+                    orderLines: splitOrder.orderLines.map(ol => {
+                        ol.quantity = 5 * ol.quantity;
+                        return ol;
+                    })
+                })
+
+                issueOrder(participantManager, increasedQuantityOrder, mah, (err, orderSSI) => {
                     if (err)
                         return callback(err);
                     submitEvent();

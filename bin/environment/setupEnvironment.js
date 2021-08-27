@@ -199,7 +199,7 @@ const setupSingleTraceability = function(actors, callback){
         if (!pharmacy)
             return callback();
         console.log(`now setting up Pharmacy with key ${pharmacy.ssi}`);
-        setup(conf, APPS.PHARMACY, pharmacy, products,
+        setup(conf, APPS.PHARMACY, pharmacy, products, batches,
             wholesalers, [], (err) => err
                 ? callback(err)
                 : setupPharmacyIterator(pharmaciesCopy, products, batches, wholesalers, callback));
@@ -411,9 +411,10 @@ const setup = function(conf, type, result, ...args){
             return require('./createWholesaler').setup(conf, result.manager, stocks , cb(result.ssi, APPS.WHOLESALER));
         case APPS.PHARMACY:
             products = args.shift() || getProducts();
+            batches = args.shift();
             const wholesalers = args.shift() || getDummyWholesalers();
             stocks = args.shift() || getStockFromProductsAndBatchesObj(products);
-            return require('./createPharmacy').setup(conf, result.manager, products, wholesalers, stocks, cb(result.ssi, APPS.PHARMACY));
+            return require('./createPharmacy').setup(conf, result.manager, products, batches, wholesalers, stocks, cb(result.ssi, APPS.PHARMACY));
         default:
             callback(`unsupported config: ${type}`);
     }

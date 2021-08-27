@@ -43,20 +43,22 @@ const productStrategyRandom = function(products){
     }
 }
 
-const getTensQuantities = function(){
-    const possibleQuantities = [20, 30, 40, 50, 60];
-    return possibleQuantities[Math.floor(Math.random() * possibleQuantities.length)];
+const getTensQuantities = function(gtin, batches){
+    const maxQuantity = batches[gtin].reduce((ac, b) => ac + b.getQuantity(), 0);
+
+    const quantityToRequest = Math.max(Math.ceil((maxQuantity / 1000) / 10) * 10, 1);
+    return quantityToRequest
 }
 
-const productStrategyAll = function(products){
+const productStrategyAll = function(products, batches){
     const selected = products.slice();
     return {
         products: selected,
-        quantities: selected.map(_ => getTensQuantities())
+        quantities: selected.map(p => getTensQuantities(p.gtin, batches))
     }
 }
 
-const singleOrderPerWholesaler = function(issuedOrderManager, wholesalers, productStrategy, products, callback){
+const singleOrderPerWholesaler = function(issuedOrderManager, wholesalers, productStrategy, products, batches, callback){
     const wholesalerIterator = function(whss, accum, callback){
         if (!callback){
             callback = accum;
@@ -65,7 +67,7 @@ const singleOrderPerWholesaler = function(issuedOrderManager, wholesalers, produ
         const whs = whss.shift();
         if (!whs)
             return callback();
-        const selectedProducts = productStrategy(products);
+        const selectedProducts = productStrategy(products, batches);
         issueOrder(issuedOrderManager, whs.id.secret, selectedProducts.products, selectedProducts.quantities, (err, order) => {
             if (err)
                 return callback(err);
@@ -77,7 +79,7 @@ const singleOrderPerWholesaler = function(issuedOrderManager, wholesalers, produ
     wholesalerIterator(wholesalers.slice(), callback)
 }
 
-const orderInitiator = function(conf, participantManager, products, stocksObj, wholesalers, callback){
+const orderInitiator = function(conf, participantManager, products, stocksObj, batches, wholesalers, callback){
     if (products.length <=0)
         return callback("Products has zero length.");
     if (wholesalers.length <=0)
@@ -93,9 +95,9 @@ const orderInitiator = function(conf, participantManager, products, stocksObj, w
 
     switch(conf.app){
         case APPS.SIMPLE_TRACEABILITY:
-            return singleOrderPerWholesaler(issuedOrderManager, wholesalers, productStrategyAll, products, callback);
+            return singleOrderPerWholesaler(issuedOrderManager, wholesalers, productStrategyAll, products, batches, callback);
         case APPS.TEST:
-            return singleOrderPerWholesaler(issuedOrderManager, wholesalers, productStrategyAll, products, callback);
+            return singleOrderPerWholesaler(issuedOrderManager, wholesalers, productStrategyAll, products, batches, callback);
         default:
             console.error(`NOT IMPLEMENTED`);
             return callback()
