@@ -275,7 +275,7 @@ class StockManager extends Manager{
                 return self._err(`Could not perform query`, err, callback);
             if (!readDSU)
                 return callback(undefined, records.map(r => r.pk));
-            callback(undefined, records);
+            callback(undefined, records.map(r => new Stock(r)));
         });
     }
 

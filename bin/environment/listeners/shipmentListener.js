@@ -27,9 +27,43 @@ const orderStatusUpdater = function(participantManager, order, timeout, callback
             submitEvent();
             if (updatedOrder.status !== OrderStatus.CONFIRMED)
                 return orderStatusUpdater(participantManager, updatedOrder, timeout, callback);
-            matchIssuedToReceivedOrder(participantManager, updatedOrder, timeout, callback);
+            findOrderToFulfill(participantManager, updatedOrder, timeout, callback);
         });
     }, timeout);
+}
+
+const findOrderToFulfill = function(participantManager, receivedOrder, timeout, callback){
+    const identity = participantManager.getIdentity();
+    const receivedOrderManager = participantManager.getManager("ReceivedOrderManager");
+    const stockManager = participantManager.getManager('StockManager');
+    submitEvent()
+    receivedOrderManager.getAll(true, (err, orders) => {
+        if (err)
+            return callback(err);
+        stockManager.getAll(true, (err, stocks) => {
+            if (err)
+                return callback(err);
+
+            const order = orders.find((order) => {
+                return order.orderLines.every(ol => {
+                    const stock = stocks.find(s => s.gtin === ol.gtin);
+                    return stock && stock.getQuantity() >= ol.quantity;
+                });
+            });
+
+            if (!order){
+                console.log(`${identity.id} - Could not find an order to fullfill after receiving`, receivedOrder);
+                return callback();
+            }
+
+            console.log(`${identity.id} - Found and order that needs Fulfilling that matches the one that just arrived:`, order, receivedOrder);
+            setTimeout(() => {
+                fulFillOrder(participantManager, order, undefined, timeout, false, callback);
+            }, timeout);
+
+        });
+    });
+
 }
 
 const matchIssuedToReceivedOrder = function(participantManager, order, timeout, callback){
