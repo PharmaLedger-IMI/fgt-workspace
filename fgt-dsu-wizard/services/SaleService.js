@@ -58,8 +58,7 @@ function SaleService(domain, strategy){
         let keyGenData = {
             data: [
                 sale.id,
-                sale.senderId,
-                sale.manufName
+                sale.sellerId
             ]
         }
 
@@ -85,8 +84,7 @@ function SaleService(domain, strategy){
                     endpoint: endpoint,
                     data: [
                         sale.id,
-                        sale.senderId,
-                        sale.manufName
+                        sale.sellerId
                     ]
                 }
             }
