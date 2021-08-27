@@ -1,6 +1,6 @@
 const {generateBatchNumber} = require('./../utils')
-const {getPfizerProducts, getMSDProducts} = require('../products/productsTests');
-const {getPfizerBatches, getMSDBatches} = require('../batches/batchesTests');
+const {getPfizerProducts, getMSDProducts, getRocheProducts} = require('../products/productsTests');
+const {getPfizerBatches, getMSDBatches, getRocheBatches} = require('../batches/batchesTests');
 
 
 const CITY_LIST = [
@@ -135,8 +135,8 @@ const ROCHE =  {
     }
 }
 
-PFIZER.products = getPfizerProducts(PFIZER.id.secret);
-PFIZER.batches = getPfizerBatches();
+ROCHE.products = getRocheProducts(ROCHE.id.secret);
+ROCHE.batches = getRocheBatches();
 
 
 const MSD =  {

@@ -8,58 +8,58 @@ const MSD_BATCHES = {
         {
             batchNumber: "R034995",
             quantity: 3542,
-            expiry: "31/08/2021"
+            expiry: "2021/08/31"
         },
         {
             batchNumber: "S002961",
             quantity: 2692,
-            expiry: "31/10/2021"
+            expiry: "2021/10/31"
         },
         {
             batchNumber: "S006749",
             quantity: 4042,
-            expiry: "31/11/2021"
+            expiry: "2021/11/31"
         }
     ],
     "00191778005295": [
         {
             batchNumber: "U002114",
             quantity: 44776,
-            expiry: "31/08/2023"
+            expiry: "2023/08/31"
         },
         {
             batchNumber: "U008604",
             quantity: 46070,
-            expiry: "31/10/2023"
+            expiry: "2023/10/31"
         }
     ],
     "00191778020380": [
         {
             batchNumber: "U002872",
             quantity: 11167,
-            expiry: "31/07/2023"
+            expiry: "2023/07/31"
         },
         {
             batchNumber: "U011610",
             quantity: 8205,
-            expiry: "31/10/2023"
+            expiry: "2023/10/31"
         },
         {
             batchNumber: "U018760",
             quantity: 12694,
-            expiry: "30/11/2023"
+            expiry: "2023/11/30"
         }
     ],
     "00191778001693": [
         {
             batchNumber: "T039771",
             quantity: 153816,
-            expiry: "31/07/2023"
+            expiry: "2023/07/31"
         },
         {
             batchNumber: "U011389",
             quantity: 162355,
-            expiry: "31/10/2023"
+            expiry: "2023/10/31"
         }
     ]
 }
@@ -69,55 +69,55 @@ const PFIZER_BATCHES = {
         {
             batchNumber: "DIF1",
             quantity: 5000,
-            expiry: "01/01/2023"
+            expiry: "2023/01/01"
         },
         {
             batchNumber: "DIF2",
             quantity: 3000,
-            expiry: "01/05/2023"
+            expiry: "2023/05/01"
         },
         {
             batchNumber: "DIF3",
             quantity: 1500,
-            expiry: "01/07/2023"
+            expiry: "2023/07/01"
         },
         {
             batchNumber: "DIF4",
             quantity: 8000,
-            expiry: "01/09/2023"
+            expiry: "2023/09/01"
         },
         {
             batchNumber: "DIF5",
             quantity: 4500,
-            expiry: "01/01/2024"
+            expiry: "2024/01/01"
         }
     ],
     "05415062336861": [
         {
             batchNumber: "DP1",
             quantity: 200,
-            expiry: "01/01/2023"
+            expiry: "2023/01/01"
         },
         {
             batchNumber: "DP2",
             quantity: 600,
-            expiry: "01/05/2023"
+            expiry: "2023/05/01"
 
         },
         {
             batchNumber: "DP3",
             quantity: 1000,
-            expiry: "01/07/2023"
+            expiry: "2023/07/01"
         },
         {
             batchNumber: "DP4",
             quantity: 300,
-            expiry: "01/09/2023"
+            expiry: "2023/09/01"
         },
         {
             batchNumber: "DP5",
             quantity: 2000,
-            expiry: "01/01/2024"
+            expiry: "2024/01/01"
         }
     ]
 }
@@ -127,49 +127,49 @@ const ROCHE_BATCHES = {
         {
             batchNumber: "H0513H03",
             quantity: 8,
-            expiry: "30/04/2023"
+            expiry: "2023/04/30"
         }
     ],
     '07613326022279': [
         {
             batchNumber: "B4016H39",
             quantity: 5,
-            expiry: "30/09/2023"
+            expiry: "2023/09/30"
         }
     ],
     '07613326015547': [
         {
             batchNumber: "E0678E1",
             quantity: 50,
-            expiry: "31/03/2024"
+            expiry: "2024/03/31"
         }
     ],
     '07613326021647': [
         {
             batchNumber: "B2333B01",
             quantity: 30,
-            expiry: "30/04/2023"
+            expiry: "2023/04/30"
         }
     ],
     '08470006506035': [
         {
             batchNumber: "N7475H04",
             quantity: 10,
-            expiry: "30/06/2022"
+            expiry: "2022/06/30"
         }
     ],
     '08470007710226': [
         {
             batchNumber: "N1575B01",
             quantity: 10,
-            expiry: "31/10/2022"
+            expiry: "2022/10/31"
         }
     ]
 }
 
 const fillBatchDetails = function(batchesObj){
     return Object.keys(batchesObj).reduce((accum, gtin) => {
-        accum[gtin] = batchesObj[gtin].map(b => new Batch(Object.assign(b, {
+        accum[gtin] = batchesObj[gtin].map(b => new Batch(Object.assign({}, b, {
             serialNumbers: Array.from((new Array(b.quantity)).keys()).map((_) => generateGtin()),
             batchStatus: BatchStatus.COMMISSIONED
         })));
