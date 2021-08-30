@@ -24,11 +24,10 @@
 
 ## Events
 
-| Event                 | Description                                          | Type               |
-| --------------------- | ---------------------------------------------------- | ------------------ |
-| `ssapp-action`        | Through this event action requests are made          | `CustomEvent<any>` |
-| `ssapp-back-navigate` | Through this event back navigation requests are made | `CustomEvent<any>` |
-| `ssapp-send-error`    |                                                      | `CustomEvent<any>` |
+| Event              | Description                                 | Type               |
+| ------------------ | ------------------------------------------- | ------------------ |
+| `ssapp-action`     | Through this event action requests are made | `CustomEvent<any>` |
+| `ssapp-send-error` |                                             | `CustomEvent<any>` |
 
 
 ## Methods
@@ -82,6 +81,7 @@ graph TD;
   managed-individual-product-list-item --> multi-spinner
   managed-individual-product-list-item --> generic-chip
   managed-individual-product-list-item --> list-item-layout
+  create-manage-view-layout --> back-button
   style managed-sale fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

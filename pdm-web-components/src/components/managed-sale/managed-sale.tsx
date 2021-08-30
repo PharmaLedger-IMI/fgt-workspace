@@ -26,17 +26,6 @@ export class ManagedSale {
   sendErrorEvent: EventEmitter;
 
   /**
-   * Through this event back navigation requests are made
-   */
-  @Event({
-    eventName: 'ssapp-back-navigate',
-    bubbles: true,
-    composed: true,
-    cancelable: true,
-  })
-  sendNavigateBack: EventEmitter;
-
-  /**
    * Through this event action requests are made
    */
   @Event({
@@ -182,14 +171,6 @@ export class ManagedSale {
   private getView() {
   }
 
-  navigateBack(evt){
-    evt.preventDefault();
-    evt.stopImmediatePropagation();
-    const event = this.sendNavigateBack.emit();
-    if (!event.defaultPrevented)
-      console.log(`Tab Navigation request seems to have been ignored by all components...`);
-  }
-
   render() {
     return (
       <Host>
@@ -200,7 +181,6 @@ export class ManagedSale {
                                    clear-string={this.clearString}
                                    icon-name="layers"
                                    is-create={this.isCreate()}
-                                   onGoBackEvent={(evt) => this.navigateBack(evt)}
                                    onCreateEvent={(evt) => this.create(evt)}>
           <div slot="create">
             {this.getCreate()}

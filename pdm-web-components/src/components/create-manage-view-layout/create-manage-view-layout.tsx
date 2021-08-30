@@ -18,9 +18,6 @@ export class CreateManageViewLayout {
   @Event()
   createEvent: EventEmitter<{}>;
 
-  @Event()
-  goBackEvent: EventEmitter;
-
   @Prop({attribute: "is-create", mutable: true, reflect: true}) isCreate: boolean = true;
   @Prop({attribute: "break-point"}) breakpoint: string = "lg-4-3";
 
@@ -66,13 +63,6 @@ export class CreateManageViewLayout {
     return props;
   }
 
-
-  private goBack(evt){
-    evt.preventDefault();
-    evt.stopImmediatePropagation();
-    this.goBackEvent.emit();
-  }
-
   private create(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
@@ -114,10 +104,7 @@ export class CreateManageViewLayout {
         </ion-label>
       </div>,
       <ion-row class="ion-align-items-center">
-        <ion-button color="secondary" fill="clear" class="ion-margin-start" onClick={this.goBack.bind(this)}>
-          <ion-icon slot="start" name="return-up-back" class="ion-margin-end"></ion-icon>
-          {this.backString}
-        </ion-button>
+        <back-button label={this.backString}> </back-button>
       </ion-row>
     ]
   }

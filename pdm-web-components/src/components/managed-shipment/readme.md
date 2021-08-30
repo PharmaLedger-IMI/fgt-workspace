@@ -44,11 +44,10 @@
 
 ## Events
 
-| Event                 | Description                                          | Type               |
-| --------------------- | ---------------------------------------------------- | ------------------ |
-| `ssapp-action`        | Through this event action requests are made          | `CustomEvent<any>` |
-| `ssapp-back-navigate` | Through this event back navigation requests are made | `CustomEvent<any>` |
-| `ssapp-send-error`    | Through this event errors are passed                 | `CustomEvent<any>` |
+| Event              | Description                                 | Type               |
+| ------------------ | ------------------------------------------- | ------------------ |
+| `ssapp-action`     | Through this event action requests are made | `CustomEvent<any>` |
+| `ssapp-send-error` | Through this event errors are passed        | `CustomEvent<any>` |
 
 
 ## Methods
@@ -107,6 +106,7 @@ graph TD;
   batch-chip --> generic-chip
   managed-orderline-stock-chip --> generic-chip
   pdm-item-organizer --> more-chip
+  create-manage-view-layout --> back-button
   style managed-shipment fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

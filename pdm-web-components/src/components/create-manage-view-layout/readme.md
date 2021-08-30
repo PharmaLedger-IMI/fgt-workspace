@@ -21,10 +21,9 @@
 
 ## Events
 
-| Event         | Description | Type               |
-| ------------- | ----------- | ------------------ |
-| `createEvent` |             | `CustomEvent<{}>`  |
-| `goBackEvent` |             | `CustomEvent<any>` |
+| Event         | Description | Type              |
+| ------------- | ----------- | ----------------- |
+| `createEvent` |             | `CustomEvent<{}>` |
 
 
 ## Methods
@@ -61,9 +60,14 @@ Type: `Promise<any>`
  - [managed-sale](../managed-sale)
  - [managed-shipment](../managed-shipment)
 
+### Depends on
+
+- [back-button](../back-button)
+
 ### Graph
 ```mermaid
 graph TD;
+  create-manage-view-layout --> back-button
   managed-batch --> create-manage-view-layout
   managed-individual-product --> create-manage-view-layout
   managed-order --> create-manage-view-layout

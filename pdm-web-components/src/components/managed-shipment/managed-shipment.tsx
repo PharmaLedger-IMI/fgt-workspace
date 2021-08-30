@@ -40,17 +40,6 @@ export class ManagedShipment implements CreateManageView{
   sendErrorEvent: EventEmitter;
 
   /**
-   * Through this event back navigation requests are made
-   */
-  @Event({
-    eventName: 'ssapp-back-navigate',
-    bubbles: true,
-    composed: true,
-    cancelable: true,
-  })
-  sendNavigateBack: EventEmitter;
-
-  /**
    * Through this event action requests are made
    */
   @Event({
@@ -257,14 +246,6 @@ export class ManagedShipment implements CreateManageView{
 
   private getStockManagerEl(){
     return this.element.querySelector('line-stock-manager');
-  }
-
-  navigateBack(evt){
-    evt.preventDefault();
-    evt.stopImmediatePropagation();
-    const event = this.sendNavigateBack.emit();
-    if (!event.defaultPrevented)
-      console.log(`Tab Navigation request seems to have been ignored by all components...`);
   }
 
   async create(evt){
@@ -644,7 +625,6 @@ export class ManagedShipment implements CreateManageView{
                                    clear-string={this.clearString}
                                    icon-name="layers"
                                    is-create={this.isCreate()}
-                                   onGoBackEvent={(evt) => this.navigateBack(evt)}
                                    onCreateEvent={(evt) => this.create(evt)}>
           <div slot="create">
             {...this.getCreate()}

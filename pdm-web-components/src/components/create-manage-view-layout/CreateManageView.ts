@@ -9,7 +9,6 @@ export default interface CreateManageView {
 
   refresh(newVal?, oldVal?): void;
 
-  navigateBack(evt): void;
   getCreate();
   getPostCreate();
   getManage();

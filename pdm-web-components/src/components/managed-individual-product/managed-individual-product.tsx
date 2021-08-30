@@ -30,17 +30,6 @@ export class ManagedIndividualProduct implements CreateManageView{
   sendErrorEvent: EventEmitter;
 
   /**
-   * Through this event back navigation requests are made
-   */
-  @Event({
-    eventName: 'ssapp-back-navigate',
-    bubbles: true,
-    composed: true,
-    cancelable: true,
-  })
-  sendNavigateBack: EventEmitter;
-
-  /**
    * Through this event action requests are made
    */
   @Event({
@@ -155,14 +144,6 @@ export class ManagedIndividualProduct implements CreateManageView{
 
   }
 
-  navigateBack(evt){
-    evt.preventDefault();
-    evt.stopImmediatePropagation();
-    const event = this.sendNavigateBack.emit();
-    if (!event.defaultPrevented)
-      console.log(`Tab Navigation request seems to have been ignored by all components...`);
-  }
-
   create(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
@@ -273,8 +254,7 @@ export class ManagedIndividualProduct implements CreateManageView{
                                    back-string={this.backString}
                                    break-point="xl-6"
                                    icon-name="layers"
-                                   is-create={false}
-                                   onGoBackEvent={(evt) => this.navigateBack(evt)}>
+                                   is-create={false}>
           <div slot="create">
             {...this.getCreate()}
           </div>

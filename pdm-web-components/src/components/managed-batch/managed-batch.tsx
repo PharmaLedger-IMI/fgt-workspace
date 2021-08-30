@@ -42,17 +42,6 @@ export class ManagedBatch implements CreateManageView{
   sendNavigateTab: EventEmitter;
 
   /**
-   * Through this event back navigation requests are made
-   */
-  @Event({
-    eventName: 'ssapp-back-navigate',
-    bubbles: true,
-    composed: true,
-    cancelable: true,
-  })
-  sendNavigateBack: EventEmitter;
-
-  /**
    * Through this event action requests are made
    */
   @Event({
@@ -154,14 +143,6 @@ export class ManagedBatch implements CreateManageView{
   @Method()
   async reset(){
 
-  }
-
-  navigateBack(evt){
-    evt.preventDefault();
-    evt.stopImmediatePropagation();
-    const event = this.sendNavigateBack.emit();
-    if (!event.defaultPrevented)
-      console.log(`Tab Navigation request seems to have been ignored by all components...`);
   }
 
   create(evt){
@@ -313,7 +294,6 @@ export class ManagedBatch implements CreateManageView{
                                    icon-name="layers"
                                    break-point="xl-4"
                                    is-create={this.isCreate()}
-                                   onGoBackEvent={(evt) => this.navigateBack(evt)}
                                    onCreateEvent={(evt) => this.create(evt)}>
           <div slot="create">
             {...this.getCreate()}
