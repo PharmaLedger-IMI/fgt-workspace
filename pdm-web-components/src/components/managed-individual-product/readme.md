@@ -66,6 +66,7 @@ Type: `Promise<void>`
 graph TD;
   managed-individual-product --> status-updater
   managed-individual-product --> create-manage-view-layout
+  status-updater --> status-updater-button
   style managed-individual-product fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

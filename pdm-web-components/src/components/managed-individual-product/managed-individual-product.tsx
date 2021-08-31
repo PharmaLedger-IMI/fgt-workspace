@@ -173,11 +173,12 @@ export class ManagedIndividualProduct implements CreateManageView{
   async update(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
+    const { status } = evt.detail;
     this.sendAction.emit({
       action: evt.detail,
       props:{
         individualProduct: this.individualProduct,
-        newStatus: evt.detail
+        newStatus: status,
       }
     });
   }

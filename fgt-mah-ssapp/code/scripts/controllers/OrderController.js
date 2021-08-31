@@ -68,8 +68,8 @@ export default class OrderController extends LocalizedController {
                 case OrderStatus.CREATED:
                     return await self._handleCreateOrder.call(self, props);
                 default:
-                    const {newStatus, order} = props;
-                    return await self._handleUpdateOrderStatus.call(self, order, newStatus);
+                    const {newStatus, order, popupOptions} = props;
+                    return await self._handleUpdateOrderStatus.call(self, order, newStatus, popupOptions);
             }
         });
 
@@ -86,7 +86,7 @@ export default class OrderController extends LocalizedController {
         }, obj);
     }
 
-    async _handleUpdateOrderStatus(order, newStatus){
+    async _handleUpdateOrderStatus(order, newStatus, popupOptions = {}){
         const self = this;
 
         const oldStatus = order.status;
@@ -95,7 +95,8 @@ export default class OrderController extends LocalizedController {
         if (errors)
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
 
-        const alert = await self.showConfirm('manage.confirm', oldStatus, newStatus);
+        const popupCallback = (evt) => order._status = { status: order.status, detail: evt.notes}
+        const alert = await self._showPopup('manage.confirm', popupOptions, popupCallback, oldStatus, newStatus);
 
         const {role} = await alert.onDidDismiss();
 
@@ -160,5 +161,14 @@ export default class OrderController extends LocalizedController {
         return super.showConfirm(this.translate(`${action}.message`, ...args),
             this.translate(`${action}.buttons.ok`),
             this.translate(`${action}.buttons.cancel`));
+    }
+
+    async _showPopup(message = 'create.confirm', popupOptions, callback, ...args){
+        return super.showPopup({
+            message: this.translate(`${message}.message`, ...args),
+            confirmButtonLabel: this.translate(`${message}.buttons.ok`),
+            cancelButtonLabel: this.translate(`${message}.buttons.cancel`),
+            options: popupOptions
+        }, callback);
     }
 }

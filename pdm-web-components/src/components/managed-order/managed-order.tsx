@@ -282,14 +282,15 @@ export class ManagedOrder implements CreateManageView{
   async update(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-
+    const { status, popupOptions } = evt.detail;
     const order = new Order(this.order.orderId, this.order.requesterId, this.order.senderId, this.order.shipToAddress, this.order.status, this.order.orderLines.slice());
     order.shipmentId = this.order.shipmentId;
     this.sendAction.emit({
       action: evt.detail,
       props:{
         order: order,
-        newStatus: evt.detail
+        newStatus: status,
+        popupOptions
       }
     });
   }

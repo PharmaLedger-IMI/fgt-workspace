@@ -18,9 +18,9 @@
 
 ## Events
 
-| Event               | Description                                 | Type                  |
-| ------------------- | ------------------------------------------- | --------------------- |
-| `statusUpdateEvent` | Through this event action requests are made | `CustomEvent<string>` |
+| Event               | Description                                 | Type               |
+| ------------------- | ------------------------------------------- | ------------------ |
+| `statusUpdateEvent` | Through this event action requests are made | `CustomEvent<any>` |
 
 
 ## Dependencies
@@ -31,9 +31,14 @@
  - [managed-order](../managed-order)
  - [managed-shipment](../managed-shipment)
 
+### Depends on
+
+- [status-updater-button](../status-updater-button)
+
 ### Graph
 ```mermaid
 graph TD;
+  status-updater --> status-updater-button
   managed-individual-product --> status-updater
   managed-order --> status-updater
   managed-shipment --> status-updater

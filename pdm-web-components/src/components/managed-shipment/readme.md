@@ -107,6 +107,7 @@ graph TD;
   batch-chip --> generic-chip
   managed-orderline-stock-chip --> generic-chip
   pdm-item-organizer --> more-chip
+  status-updater --> status-updater-button
   style managed-shipment fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
