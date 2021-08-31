@@ -58,6 +58,7 @@ function OrderService(domain, strategy) {
                     return callback(`Could not parse order in DSU ${keySSI}`);
                 }
                 order = new Order(order.orderId, order.requesterId, order.senderId, order.shipToAddress, order.status, order.orderLines);
+                console.log('## OrderService.get order=', order);
                 dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
                     if (err)
                         return callback(`could not retrieve orderLine status`);
@@ -137,7 +138,7 @@ function OrderService(domain, strategy) {
                         return callback(err);
                     if (!mounts[STATUS_MOUNT_PATH])
                         return callback(`Could not find status mount`);
-                    statusService.update(mounts[STATUS_MOUNT_PATH], order.status, order.requesterId, (err) => {
+                    statusService.update(mounts[STATUS_MOUNT_PATH], order._status, order.requesterId, (err) => {
                         if (err)
                             return callback(err);
 
@@ -164,7 +165,7 @@ function OrderService(domain, strategy) {
     let createOrderStatus = function (id, status, callback) {
         if (typeof status === 'function') {
             callback = status;
-            status = OrderStatus.CREATED;
+            status = { status: OrderStatus.CREATED };
         }
         statusService.create(status, id, (err, keySSI) => {
             if (err)

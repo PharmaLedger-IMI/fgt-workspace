@@ -11,9 +11,17 @@ class Shipment {
     senderId;
     shipToAddress;
     shipFromAddress;
-    status;
+    _status;
     shipmentLines;
     code;
+
+    get status() {
+        return this._status.status;
+    }
+
+    set status(newStatus) {
+        this._status = this.castStatus(newStatus);
+    }
 
     /**
      *
@@ -30,7 +38,7 @@ class Shipment {
         this.requesterId = requesterId;
         this.senderId = senderId;
         this.shipToAddress = shipToAddress;
-        this.status = status || ShipmentStatus.CREATED;
+        this._status = this.castStatus(status);
         this.shipmentLines = shipmentLines ? shipmentLines.map(sl => new ShipmentLine(sl)) : [];
     }
 
@@ -73,6 +81,24 @@ class Shipment {
             errors.push(`Status update from ${oldStatus} to ${this.status} is not allowed`);
 
         return errors.length === 0 ? undefined : errors;
+    }
+
+    castStatus(newStatus) {
+        if (!!!newStatus) {
+            return {
+                status: ShipmentStatus.CREATED,
+                detail: `Shipment ${ShipmentStatus.CREATED}`
+            };
+        } else {
+            if (typeof newStatus === 'string') {
+                return { status: newStatus, detail: undefined }
+            }
+            const { status, detail } = newStatus;
+            return {
+                status: status || ShipmentStatus.CREATED,
+                detail
+            }
+        }
     }
 
 

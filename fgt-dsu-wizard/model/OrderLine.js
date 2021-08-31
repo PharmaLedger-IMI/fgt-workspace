@@ -1,4 +1,6 @@
- /**
+const OrderStatus = require('./OrderStatus');
+
+/**
  * @class OrderLine
  * @memberOf Model
  */
@@ -7,7 +9,15 @@ class OrderLine{
     quantity;
     requesterId;
     senderId;
-    status;
+    _status;
+
+    get status() {
+        return this._status.status;
+    }
+
+    set status(newStatus) {
+        this._status = this.castStatus(newStatus);
+    }
 
     /**
      * @param gtin
@@ -22,7 +32,7 @@ class OrderLine{
         this.quantity = quantity;
         this.requesterId = requesterId;
         this.senderId = senderId;
-        this.status = status;
+        this._status = this.castStatus(status);
     }
 
     /**
@@ -47,6 +57,24 @@ class OrderLine{
         }
 
         return errors.length === 0 ? undefined : errors;
+    }
+
+    castStatus(newStatus) {
+        if (!!!newStatus) {
+            return {
+                status: OrderStatus.CREATED,
+                detail: `OrderLine ${OrderStatus.CREATED}`
+            };
+        } else {
+            if (typeof newStatus === 'string') {
+                return { status: newStatus, detail: undefined }
+            }
+            const { status, detail } = newStatus;
+            return {
+                status: status || OrderStatus.CREATED,
+                detail
+            }
+        }
     }
 }
 

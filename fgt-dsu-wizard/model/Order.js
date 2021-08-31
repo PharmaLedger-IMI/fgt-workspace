@@ -13,9 +13,17 @@ class Order {
     requesterId;
     senderId;
     shipToAddress;
-    status;
+    _status;
     orderLines;
     shipmentId;
+
+    get status() {
+        return this._status.status;
+    }
+
+    set status(newStatus) {
+        this._status = this.castStatus(newStatus);
+    }
 
     /**
      * @param orderId
@@ -31,7 +39,7 @@ class Order {
         this.requesterId = requesterId;
         this.senderId = senderId;
         this.shipToAddress = shipToAddress;
-        this.status = status || OrderStatus.CREATED;
+        this._status = this.castStatus(status);
         this.orderLines = orderLines ? orderLines.map(sl => new OrderLine(sl.gtin, sl.quantity, sl.requesterId, sl.senderId, this.status)) : [];
     }
 
@@ -74,6 +82,24 @@ class Order {
             errors.push(`Status update from ${oldStatus} to ${this.status} is not allowed`);
 
         return errors.length === 0 ? undefined : errors;
+    }
+
+    castStatus(newStatus) {
+        if (!!!newStatus) {
+            return {
+                status: OrderStatus.CREATED,
+                detail: `Shipment ${OrderStatus.CREATED}`
+            };
+        } else {
+            if (typeof newStatus === 'string') {
+                return { status: newStatus, detail: undefined }
+            }
+            const { status, detail } = newStatus;
+            return {
+                status: status || OrderStatus.CREATED,
+                detail
+            }
+        }
     }
 
     static getAllowedStatusUpdates(status){

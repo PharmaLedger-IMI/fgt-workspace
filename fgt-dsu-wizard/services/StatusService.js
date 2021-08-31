@@ -21,8 +21,17 @@ function StatusService(domain, strategy){
         return utils.getResolver().createDSU;
     }
 
-    let createLog = function(id, prevStatus, status){
-         return `${id} ${prevStatus ? `updated status from ${prevStatus} to ${status}.` : `set status to ${status}`}`;
+    let createLog = function(id, prevStatus, _status){
+        let log;
+        if (prevStatus) {
+            const { status, detail } = prevStatus;
+            log = `${id}  updated status from ${prevStatus.status} to ${_status.status}.`;
+            return { status: status, detail, log};
+        } else {
+            const s = (typeof _status === 'undefined') ? _status : _status.status;
+            log = `${id} set status to ${s}`;
+            return { status: s, log};
+        }
     }
 
     /**
@@ -45,11 +54,14 @@ function StatusService(domain, strategy){
                     return callback(`Could not parse status in DSU ${keySSI.getIdentifier()}`);
                 }
 
+                console.log('@@ StatusService.get status=', status);
+
                 dsu.readFile(LOG_PATH, (err, log) => {
                     if (err)
                         return callback(err);
                     try {
                         log = JSON.parse(log);
+                        console.log('@@ StatusService.get log=', log);
                     } catch (e){
                         return callback(e);
                     }

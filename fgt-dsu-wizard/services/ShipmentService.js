@@ -74,6 +74,7 @@ function ShipmentService(domain, strategy) {
                 }
 
                 shipment = new Shipment(shipment.shipmentId, shipment.requesterId, shipment.senderId, shipment.shipToAddress, shipment.status, shipment.shipmentLines);
+                console.log('## ShipmentService.get shipment=', shipment);
 
                 utils.getMounts(dsu, '/', STATUS_MOUNT_PATH, ORDER_MOUNT_PATH, (err, mounts) => {
                     if (err)
@@ -144,10 +145,10 @@ function ShipmentService(domain, strategy) {
      * @param {ShipmentStatus} [status]: defaults to ShipmentStatus.CREATED
      * @param {function(err, keySSI, orderLinesSSI)} callback
      */
-    let createShipmentStatus = function (id,status,  callback) {
+    let createShipmentStatus = function (id, status,  callback) {
         if (typeof status === 'function') {
             callback = status;
-            status = ShipmentStatus.CREATED;
+            status = { status: ShipmentStatus.CREATED };
         }
         statusService.create(status, id, (err, keySSI) => {
             if (err)
@@ -277,7 +278,7 @@ function ShipmentService(domain, strategy) {
                         return callback(err);
                     if (!mounts[STATUS_MOUNT_PATH])
                         return callback(`Could not find status mount`);
-                    statusService.update(mounts[STATUS_MOUNT_PATH], shipment.status, shipment.senderId, (err) => {
+                    statusService.update(mounts[STATUS_MOUNT_PATH], shipment._status, shipment.senderId, (err) => {
                         if (err)
                             return callback(err);
                         self.get(keySSI, callback);
