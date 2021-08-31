@@ -224,6 +224,7 @@ export default class LocalizedController extends BaseController {
     alert.animated = options.animated !== false;
     alert.backDropDismiss = options.backDropDismiss !== false;
     alert.buttons = options.buttons;
+    alert.inputs = options.inputs;
 
     document.body.appendChild(alert);
     await alert.present();
@@ -252,6 +253,33 @@ export default class LocalizedController extends BaseController {
         ]
       });
   }
+
+  /**
+  *
+  * @returns {Promise<HTMLElement>}
+  * @param popupOptions: {
+  *   message: string; generic message
+  *   confirmText: string; cancel button label
+  *   cancelText: string; cancel button label
+  *   options: alert ionic options
+  * }
+  */
+async  showPopup(popupOptions, callback = undefined) {
+  let { message, confirmButtonLabel, cancelButtonLabel, options } = popupOptions;
+  const buttons = [{
+    text: cancelButtonLabel || 'Cancel',
+    role: 'cancel',
+  },
+  {
+    text: confirmButtonLabel || 'Ok',
+    role: 'confirm',
+    handler: evt => {
+      if (!!callback) callback(evt);
+    }
+  }];
+  options = Object.assign({buttons}, options || {});
+  return this.showAlert(message, options);
+}
 
 
   /**

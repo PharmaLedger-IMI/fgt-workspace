@@ -16,7 +16,7 @@ export class StatusUpdater {
    * Through this event action requests are made
    */
   @Event()
-  statusUpdateEvent: EventEmitter<string>;
+  statusUpdateEvent: EventEmitter;
 
   @Prop({attribute: "current-state", mutable: true}) currentState: string;
 
@@ -48,27 +48,29 @@ export class StatusUpdater {
   }
 
 
-  private handleStateClick(evt, state){
+  private handleStateClick(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    if (this.states[this.currentState].paths.indexOf(state) === -1)
+    const { status } = evt.detail;
+    if (this.states[this.currentState].paths.indexOf(status) === -1)
       return console.log("Status change not allowed");
-    this.statusUpdateEvent.emit(state);
+    this.statusUpdateEvent.emit(evt.detail);
   }
 
   private renderState(status, state: {action: string, label: string, color?:string, }, passed: boolean, available: boolean, isCurrent: boolean){
     const self = this;
     return (
       <ion-row class="ion-margin-bottom ion-align-items-center ion-justify-content-center">
-        <ion-button disabled={passed || !available || isCurrent}
-                    color={passed && !available ? "medium" : state.color}
-                    size={available ? "large" : (passed ? "small" : "default")}
-                    expand={isCurrent ? "full" : "block"}
-                    onClick={(evt) => self.handleStateClick(evt, status)}>
-          <ion-label>
-            {available ? state.action : state.label}
-          </ion-label>
-        </ion-button>
+        <status-updater-button
+          label={available ? state.action : state.label}
+          status={status}
+          disabled={passed || !available || isCurrent}
+          color={passed && !available ? "medium" : state.color}
+          size={available ? "large" : (passed ? "small" : "default")}
+          expand={isCurrent ? "full" : "block"}
+          shape={isCurrent ? undefined : "round"}
+          onClickUpdaterButton={(evt) => self.handleStateClick(evt)}>
+        </status-updater-button>
       </ion-row>
     )
   }
