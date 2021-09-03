@@ -184,3 +184,17 @@ ion-loading.ssapp-spinner{
 .full-width{
   width: 100%
 }
+
+.row-items {
+  overflow-y: scroll;
+  min-height: 100%;
+  height: 100vh;
+  padding-bottom: 6em;
+}
+
+.mob-menu {
+  overflow-x: scroll;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
