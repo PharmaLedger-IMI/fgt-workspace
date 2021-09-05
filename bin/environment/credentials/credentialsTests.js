@@ -1,6 +1,6 @@
 const {generateBatchNumber} = require('./../utils')
-const {getPfizerProducts, getMSDProducts, getRocheProducts} = require('../products/productsTests');
-const {getPfizerBatches, getMSDBatches, getRocheBatches} = require('../batches/batchesTests');
+const {getPfizerProducts, getMSDProducts, getRocheProducts, getNovoNordiskProducts, getBayerProducts} = require('../products/productsTests');
+const {getPfizerBatches, getMSDBatches, getRocheBatches, getBayerBatches, getNovoNordiskBatches} = require('../batches/batchesTests');
 
 
 const CITY_LIST = [
@@ -173,6 +173,75 @@ const MSD =  {
 MSD.products = getMSDProducts(MSD.id.secret);
 MSD.batches = getMSDBatches();
 
+const BAYER =  {
+    "name": {
+        "secret": "Bayer Corp",
+        "public": true,
+        "required": true
+    },
+    "id": {
+        "secret": `MAH251339219`,
+        "public": true,
+        "required": true
+    },
+    "email": {
+        "secret": "bayer@mah.pharmaledger.com",
+        "public": true,
+        "required": true
+    },
+    "address": {
+        "required": true,
+        "public": true,
+        "secret": "Pittsburg, Pennsylvania"
+    },
+    "pass": {
+        "required": true,
+        "secret": "This1sSuchAS3curePassw0rd"
+    },
+    "passrepeat": {
+        "required": true,
+        "secret": "This1sSuchAS3curePassw0rd"
+    }
+}
+
+BAYER.products = getBayerProducts(BAYER.id.secret);
+BAYER.batches = getBayerBatches();
+
+const NOVO_NORDISK =  {
+    "name": {
+        "secret": "Novo Nordisk A/S",
+        "public": true,
+        "required": true
+    },
+    "id": {
+        "secret": `MAH24256790`,
+        "public": true,
+        "required": true
+    },
+    "email": {
+        "secret": "novo.nordisk@mah.pharmaledger.com",
+        "public": true,
+        "required": true
+    },
+    "address": {
+        "required": true,
+        "public": true,
+        "secret": "Denmark"
+    },
+    "pass": {
+        "required": true,
+        "secret": "This1sSuchAS3curePassw0rd"
+    },
+    "passrepeat": {
+        "required": true,
+        "secret": "This1sSuchAS3curePassw0rd"
+    }
+}
+
+NOVO_NORDISK.products = getNovoNordiskProducts(NOVO_NORDISK.id.secret);
+NOVO_NORDISK.batches = getNovoNordiskBatches();
+
+
 const generateWholesalerCredentials = function(id, name , email, address) {
     return {
         "name": {
@@ -244,5 +313,7 @@ module.exports = {
     generatePharmacyCredentials,
     MSD,
     PFIZER,
-    ROCHE
+    ROCHE,
+    BAYER,
+    NOVO_NORDISK
 }

@@ -167,6 +167,61 @@ const ROCHE_BATCHES = {
     ]
 }
 
+
+const BAYER_BATCHES = {
+    '06770007904242': [
+        {
+            batchNumber: "E03F8",
+            quantity: 1200,
+            expiry: "2022/04/09"
+        },
+        {
+            batchNumber: "E04H7",
+            quantity: 1500,
+            expiry: "2024/05/01"
+        }
+    ],
+    '06815062335321': [
+        {
+            batchNumber: "E08C6",
+            quantity: 1200,
+            expiry: "2023/09/01"
+        },
+        {
+            batchNumber: "E05C1",
+            quantity: 1500,
+            expiry: "2023/02/05"
+        }
+    ]
+}
+
+const NOVO_NORDISK_BATCHES = {
+    '04570007903560': [
+        {
+            batchNumber: "R23011",
+            quantity: 800,
+            expiry: "2023/05/09"
+        },
+        {
+            batchNumber: "R56217",
+            quantity: 450,
+            expiry: "2024/07/01"
+        }
+    ],
+    '08515062336321': [
+        {
+            batchNumber: "R15683",
+            quantity: 700,
+            expiry: "2023/02/01"
+        },
+        {
+            batchNumber: "R94214",
+            quantity: 650,
+            expiry: "2023/08/05"
+        }
+    ]
+}
+
 const fillBatchDetails = function(batchesObj){
     return Object.keys(batchesObj).reduce((accum, gtin) => {
         accum[gtin] = batchesObj[gtin].map(b => new Batch(Object.assign({}, b, {
@@ -189,8 +244,18 @@ const getRocheBatches = function(){
     return fillBatchDetails(ROCHE_BATCHES);
 }
 
+const getBayerBatches = function(){
+    return fillBatchDetails(BAYER_BATCHES);
+}
+
+const getNovoNordiskBatches = function(){
+    return fillBatchDetails(NOVO_NORDISK_BATCHES);
+}
+
 module.exports = {
     getMSDBatches,
     getPfizerBatches,
-    getRocheBatches
+    getRocheBatches,
+    getBayerBatches,
+    getNovoNordiskBatches
 }
