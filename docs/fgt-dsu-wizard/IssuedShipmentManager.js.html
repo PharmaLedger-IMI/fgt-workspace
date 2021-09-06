@@ -1,0 +1,438 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability DSU Wizard Documentation IssuedShipmentManager.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability DSU Wizard Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/epi-workspace/fgt-dsu-wizard.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com"
+                        >
+                            Example Application - Finished Goods Traceability
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Namespaces</h3><ul><li><a href="Managers.html">Managers</a></li><li><a href="Resolvers.html">Resolvers</a></li></ul><h3>Classes</h3><ul><li><a href="Managers.BatchManager.html">BatchManager</a></li><li><a href="Managers.DirectoryManager.html">DirectoryManager</a></li><li><a href="Managers.IndividualProductManager.html">IndividualProductManager</a></li><li><a href="Managers.IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="Managers.IssuedShipmentManager.html">IssuedShipmentManager</a></li><li><a href="Managers.OrderLineManager.html">OrderLineManager</a></li><li><a href="Managers.OrderManager.html">OrderManager</a></li><li><a href="Managers.ParticipantManager.html">ParticipantManager</a></li><li><a href="Managers.ProductManager.html">ProductManager</a></li><li><a href="Managers.ReceiptManager.html">ReceiptManager</a></li><li><a href="Managers.ReceivedOrderManager.html">ReceivedOrderManager</a></li><li><a href="Managers.ReceivedShipmentManager.html">ReceivedShipmentManager</a></li><li><a href="Managers.SaleManager.html">SaleManager</a></li><li><a href="Managers.ShipmentLineManager.html">ShipmentLineManager</a></li><li><a href="Managers.ShipmentManager.html">ShipmentManager</a></li><li><a href="Managers.StockManager.html">StockManager</a></li><li><a href="Managers.TraceabilityManager.html">TraceabilityManager</a></li><li><a href="Resolvers.BatchResolver.html">BatchResolver</a></li><li><a href="Resolvers.ProductResolver.html">ProductResolver</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>IssuedShipmentManager.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
+const ShipmentManager = require("./ShipmentManager");
+const getReceivedOrderManager = require("./ReceivedOrderManager");
+const {Shipment, Order, OrderStatus, ShipmentStatus, Wholesaler, Batch} = require('../model');
+
+
+/**
+ * Issued Shipment Manager Class - concrete ShipmentManager for issuedShipments.
+ *
+ * Manager Classes in this context should do the bridge between the controllers
+ * and the services exposing only the necessary api to the controllers while encapsulating &lt;strong>all&lt;/strong> business logic.
+ *
+ * All Manager Classes should be singletons.
+ *
+ * This complete separation of concerts is very beneficial for 2 reasons:
+ * &lt;ul>
+ *     &lt;li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'&lt;/li>
+ *     &lt;li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)&lt;/li>
+ * &lt;/ul>
+ *
+ * @param {ParticipantManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @class IssuedShipmentManager
+ * @extends Manager
+ * @memberOf Managers
+ */
+class IssuedShipmentManager extends ShipmentManager {
+    constructor(participantManager, callback) {
+        super(participantManager, DB.issuedShipments, ['requesterId'], callback);
+        this.participantManager = participantManager;
+        this.stockManager = participantManager.stockManager;
+    }
+
+    /**
+     * Must wrap the DB entry in an object like:
+     * &lt;pre>
+     *     {
+     *         index1: ...
+     *         index2: ...
+     *         value: item
+     *     }
+     * &lt;/pre>
+     * so the DB can be queried by each of the indexes and still allow for lazy loading
+     * @param {string} [key]
+     * @param {Shipment} item
+     * @param {string|object} record
+     * @return {object} the indexed object to be stored in the db
+     * @protected
+     * @override
+     */
+    _indexItem(key, item, record) {
+        if (!record){
+            record = item;
+            item = key;
+            key = undefined;
+        }
+        return {...super._indexItem(key, item, record), requesterId: item.requesterId};
+    }
+
+    /**
+     * Binds the {@link Shipment#shipmentId} to the shipment and fills in participant details;
+     * @param {Shipment} shipment
+     * @param {function(err, Shipment)} callback
+     * @private
+     */
+    _bindParticipant(shipment, callback){
+        shipment.shipmentId = shipment.shipmentId || Date.now();
+
+        let self = this;
+        self.getIdentity((err, wholesaler) => {
+            if (err)
+                return self._err(`Could not retrieve identity`, err, callback);
+            wholesaler = new Wholesaler(wholesaler);
+            shipment.senderId = wholesaler.id;
+            shipment.shipFromAddress = wholesaler.originAddress || wholesaler.address;
+            shipment.shipmentLines = shipment.shipmentLines.map(sl => {
+                sl.senderId = wholesaler.id;
+                sl.status = shipment.status;
+                return sl;
+            })
+            callback(undefined, shipment);
+        });
+    }
+
+
+    /**
+     * Creates a {@link Shipment} dsu
+     * @param {string} orderId the id to the received order that generates the shipment
+     * @param {Shipment} shipment
+     * @param {function(err, KeySSI, dbPath)} callback where the dbPath follows a "tableName/shipmentId" template.
+     * @override
+     */
+    create(orderId, shipment, callback) {
+        let self = this;
+
+
+        const createInner = function(callback){
+            const receivedOrderManager = getReceivedOrderManager(self.participantManager);
+                const receivedOrderKey = receivedOrderManager._genCompostKey(shipment.requesterId, orderId);
+
+            receivedOrderManager.getOne(receivedOrderKey, true, (err, order, orderDSU, orderSSI) => {
+                if (err)
+                    return self._err(`Could not retrieve received order ${orderId}`, err, callback);
+                self.shipmentService.create(shipment, orderSSI, (err, keySSI, shipmentLinesSSIs) => {
+                    if (err)
+                        return self._err(`Could not create product DSU for ${shipment}`, err, callback);
+                    const record = keySSI.getIdentifier();
+                    console.log("Shipment SSI=" + record);
+                    self.insertRecord(self._genCompostKey(shipment.requesterId, shipment.shipmentId), self._indexItem(shipment, record), (err) => {
+                        if (err)
+                            return self._err(`Could not insert record with shipmentId ${shipment.shipmentId} on table ${self.tableName}`, err, callback);
+                        const path = `${self.tableName}/${shipment.shipmentId}`;
+                        console.log(`Shipment ${shipment.shipmentId} created stored at DB '${path}'`);
+                        const aKey = keySSI.getIdentifier();
+                        self.sendMessagesAsync(shipment, shipmentLinesSSIs, aKey);
+                        callback(undefined, keySSI, path);
+                    });
+                });
+            });
+        }
+
+        const gtinIterator = function(gtins, batchesObj, callback){
+            const gtin = gtins.shift();
+            if (!gtin)
+                return callback();
+            if (!(gtin in batchesObj))
+                return callback(`gtins not found in batches`);
+            const batches = batchesObj[gtin];
+            self.stockManager.manageAll(gtin,  batches, (err, removed) => {
+                if (err)
+                    return self._err(`Could not update Stock`, err, callback);
+                if (self.stockManager.serialization &amp;&amp; self.stockManager.aggregation)
+                    shipment.shipmentLines.filter(sl => sl.gtin === gtin &amp;&amp; Object.keys(removed).indexOf(sl.batch) !== -1).forEach(sl => {
+                        sl.serialNumbers = removed[sl.batch];
+                    });
+                else
+                    shipment.shipmentLines = shipment.shipmentLines.map(sl => {
+                        sl.serialNumbers = undefined;
+                        return sl;
+                    });
+                gtinIterator(gtins, batchesObj, callback);
+            })
+        }
+
+        const gtins = shipment.shipmentLines.map(sl => sl.gtin);
+        const batchesObj = shipment.shipmentLines.reduce((accum, sl) => {
+            accum[sl.gtin] = accum[sl.gtin] || [];
+            accum[sl.gtin].push(new Batch({
+                batchNumber: sl.batch,
+                quantity: (-1) * sl.quantity
+            }))
+            return accum;
+        }, {});
+
+
+        gtinIterator(gtins, batchesObj, (err) => {
+            if (err)
+                return self._err(`Could not retrieve info from stock`, err, callback);
+            console.log(`Shipment updated after Stock confirmation`);
+            createInner((err, keySSI, path) => {
+                if (err)
+                    return self._err(`Could not create Shipment`, err, callback);
+                console.log(`Shipment ${shipment.shipmentId} created!`);
+                callback(undefined, keySSI, path);
+            })
+        });
+    }
+
+    sendMessagesAsync(shipment, shipmentLinesSSIs, aKey){
+        if (!aKey){
+            aKey = shipmentLinesSSIs;
+            shipmentLinesSSIs = undefined;
+        }
+
+        const self = this;
+        self.sendMessage(shipment.requesterId, DB.receivedShipments, aKey, (err) =>
+            self._messageCallback(err ? `Could not sent message to ${shipment.shipmentId} with ${DB.receivedShipments}: ${err}` : err,
+                `Message sent to ${shipment.requesterId}, ${DB.receivedShipments}, ${aKey}`));
+        if (shipmentLinesSSIs)
+            self.sendShipmentLinesToMAH([...shipment.shipmentLines], [...shipmentLinesSSIs], (err) =>
+                self._messageCallback( err ? `Could not transmit shipmentLines to The manufacturers` : 'Lines Notice sent to Manufacturers'));
+    }
+
+    /**
+     *
+     * @param err
+     * @param message
+     * @protected
+     * @override
+     */
+    _messageCallback(err, message) {
+        super._messageCallback(err, message);
+    }
+
+    /**
+     * Lists all issued orders.
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
+     * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
+     * @param {function(err, Order[])} callback
+     */
+    getAll(readDSU, options, callback) {
+        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS);
+
+        if (!callback) {
+            if (!options) {
+                callback = readDSU;
+                options = defaultOptions();
+                readDSU = true;
+            }
+            if (typeof readDSU === 'boolean') {
+                callback = options;
+                options = defaultOptions();
+            }
+            if (typeof readDSU === 'object') {
+                callback = options;
+                options = readDSU;
+                readDSU = true;
+            }
+        }
+
+        options = options || defaultOptions();
+
+        let self = this;
+        super.getAll(readDSU, options, (err, result) => {
+            if (err)
+                return self._err(`Could not parse IssuedShipments ${JSON.stringify(result)}`, err, callback);
+            console.log(`Parsed ${result.length} shipments`);
+            callback(undefined, result);
+        });
+    }
+
+    /**
+     * updates an Issued Shipment
+     *
+     * @param {string} [key] key is optional so child classes can override them
+     * @param {Shipment} shipment
+     * @param {function(err, Shipment?, Archive?)} callback
+     */
+    update(key, shipment, callback){
+        if (!callback){
+            callback = shipment;
+            shipment = key;
+            key = this._genCompostKey(shipment.requesterId, shipment.shipmentId);
+        }
+        const self = this;
+        super.update(key, shipment, (err, updatedShipment, keySSI, orderId, linesSSIs) => {
+            if (err)
+                return self._err(`Could not update Shipment`, err, callback);
+            try {
+                self.sendMessagesAsync(updatedShipment, linesSSIs, keySSI);
+            } catch (e) {
+                console.log(e);
+            }
+            callback(undefined, updatedShipment, keySSI);
+        });
+    }
+
+    updateByOrder(shipmentId, order, callback){
+        const shipmentKey = this._genCompostKey(order.requesterId, shipmentId);
+        const self = this;
+        self.getOne(shipmentKey, false, (err, record) => {
+            if (err)
+                return self._err(`Could not get Shipment to update`, err, callback);
+            self._getDSUInfo(record, (err, shipment) => {
+                if (err)
+                    return self._err(`Unable to read shipment DSU`, err, callback);
+                shipment.status = order.status
+                self.shipmentService.update(record, shipment, (err, updatedShipment, dsu, orderId, shipmentLinesSSIs) => {
+                    if (err)
+                        return self._err(`Could not update shipment dsu`, err, callback);
+                    self.updateRecord(shipmentKey, self._indexItem(shipmentKey, updatedShipment, record), (err) => {
+                        if (err)
+                            return self._err(`Could not update shipment record`, err, callback);
+                        self.sendShipmentLinesToMAH([...shipment.shipmentLines], [...shipmentLinesSSIs], (err) =>
+                            self._messageCallback( err ? `Could not transmit shipmentLines to The manufacturers` : 'Lines Notice sent to Manufacturers'));
+                        self.refreshController({
+                            mode: 'issued',
+                            shipment: updatedShipment
+                        });
+                    });
+                });
+            });
+        });
+    }
+}
+
+/**
+ * @param {ParticipantManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @returns {IssuedShipmentManager}
+ * @memberOf Managers
+ */
+const getIssuedShipmentManager = function (participantManager,  callback) {
+    let manager;
+    try {
+        manager = participantManager.getManager(IssuedShipmentManager);
+        if (callback)
+            return callback(undefined, manager);
+    } catch (e){
+        manager = new IssuedShipmentManager(participantManager, callback);
+    }
+
+    return manager;
+}
+
+module.exports = getIssuedShipmentManager;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

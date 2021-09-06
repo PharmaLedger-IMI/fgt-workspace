@@ -1,0 +1,326 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability DSU Wizard Documentation utils.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability DSU Wizard Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/epi-workspace/fgt-dsu-wizard.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com"
+                        >
+                            Example Application - Finished Goods Traceability
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Namespaces</h3><ul><li><a href="Model.html">Model</a></li></ul><h3>Classes</h3><ul><li><a href="Batch.html">Batch</a></li><li><a href="DirectoryEntry.html">DirectoryEntry</a></li><li><a href="IndividualProduct.html">IndividualProduct</a></li><li><a href="IndividualReceipt.html">IndividualReceipt</a></li><li><a href="MAH.html">MAH</a></li><li><a href="Model.Batch.html">Batch</a></li><li><a href="Model.DirectoryEntry.html">DirectoryEntry</a></li><li><a href="Model.FinalProduct.html">FinalProduct</a></li><li><a href="Model.IndividualProduct.html">IndividualProduct</a></li><li><a href="Model.MAH.html">MAH</a></li><li><a href="Model.Order.html">Order</a></li><li><a href="Model.OrderLine.html">OrderLine</a></li><li><a href="Model.Participant.html">Participant</a></li><li><a href="Model.Pharmacy.html">Pharmacy</a></li><li><a href="Model.Product.html">Product</a></li><li><a href="Model.Receipt.html">Receipt</a></li><li><a href="Model.Sale.html">Sale</a></li><li><a href="Model.Shipment.html">Shipment</a></li><li><a href="Model.ShipmentCode.html">ShipmentCode</a></li><li><a href="Model.ShipmentLine.html">ShipmentLine</a></li><li><a href="Model.Stock.html">Stock</a></li><li><a href="Model.TrackingCode.html">TrackingCode</a></li><li><a href="Model.Wholesaler.html">Wholesaler</a></li><li><a href="Order.html">Order</a></li><li><a href="OrderLine.html">OrderLine</a></li><li><a href="Participant.html">Participant</a></li><li><a href="Pharmacy.html">Pharmacy</a></li><li><a href="Product.html">Product</a></li><li><a href="Receipt.html">Receipt</a></li><li><a href="Sale.html">Sale</a></li><li><a href="Shipment.html">Shipment</a></li><li><a href="ShipmentCode.html">ShipmentCode</a></li><li><a href="ShipmentLine.html">ShipmentLine</a></li><li><a href="Stock.html">Stock</a></li><li><a href="TrackingCode.html">TrackingCode</a></li><li><a href="Wholesaler.html">Wholesaler</a></li></ul><h3>Global</h3><ul><li><a href="global.html#confirmWithStock">confirmWithStock</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>utils.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const {isEqual, generateGtin, genDate, generateProductName, generateBatchNumber, generateRandomInt, validateGtin, calculateGtinCheckSum, generate2DMatrixCode, getRandom} = require('../../pdm-dsu-toolkit/model/Utils');
+const ShipmentLine = require('./ShipmentLine');
+const Shipment = require('./Shipment');
+const Batch = require('./Batch');
+const ROLE = require('./DirectoryEntry').ROLE;
+
+/**
+ * Confirms the existence os the selected batches for each shipmentLine and returns the appropriate object
+ * for {@link StockManager#manage} method
+ * @param {StockManager} stockManager
+ * @param {Shipment} shipment
+ * @param {{}} stockObj
+ * @param {function(err, batches?)} callback
+ */
+const confirmWithStock = function(stockManager, shipment, stockObj, callback){
+
+    const stockIterator = function(stocksCopy, result, callback){
+        const stockObj = stocksCopy.shift();
+        if (!stockObj)
+            return callback(undefined, result);
+
+        const {orderLine, stock} = stockObj;
+        const {batches} = stock;
+        let {gtin, quantity} = orderLine;
+
+        stockManager.getOne(gtin, true, (err, currentStock) => {
+            if (err)
+                return callback(`No stock found for product ${gtin}`);
+            const currentBatches = currentStock.batches;
+
+            let errorMessage = undefined;
+
+            if (!batches.every(b => {
+                if (!quantity)
+                    return true;
+                const current = currentBatches.find(cb => cb.batchNumber === b.batchNumber);
+                if (!current){
+                    errorMessage = `Batch ${b.batchNumber} not found in stock for product ${gtin}`;
+                    return false;
+                }
+                result = result || {};
+                result[gtin] = result[gtin] || [];
+
+                const resultBatch = new Batch(b);
+                if (stockManager.serialization){
+                    resultBatch.serialNumbers = resultBatch.serialNumbers.splice(0, Math.min(quantity, b.getQuantity()));
+                    resultBatch.quantity = resultBatch.getQuantity();
+                } else {
+                    resultBatch.serialNumbers = undefined;
+                    resultBatch.quantity = Math.min(quantity, b.getQuantity());
+                }
+
+                result[gtin].push(resultBatch);
+                quantity -= resultBatch.getQuantity();
+                return true;
+            })){
+                return callback(errorMessage);
+            }
+
+            const resultQuantity = result[gtin].reduce((accum, b) => {
+                accum += b.getQuantity();
+                return accum;
+            }, 0);
+
+            if (resultQuantity &lt; quantity)
+                return callback(`Not enough stock for orderline of ${quantity} of product ${gtin}`);
+
+            stockIterator(stocksCopy, result, callback);
+        });
+    }
+
+    stockIterator(stockObj.slice(), undefined, (err, result) => {
+        if (err || !result)
+            return callback(err ? err : `Could not retrieve batches from stock`);
+        const self = this;
+        shipment.shipmentLines = shipment.shipmentLines.reduce((accum,s) => {
+            result[s.gtin].forEach(b => {
+                accum.push(new ShipmentLine({
+                    gtin: s.gtin,
+                    batch: b.batchNumber,
+                    quantity: b.getQuantity(),
+                    serialNumbers: self.serialization &amp;&amp; self.aggregation ? b.serialNumbers : undefined,
+                    senderId: shipment.senderId,
+                    requesterId: shipment.requesterId,
+                    status: shipment.status
+                }))
+            });
+            return accum;
+        }, [])
+
+        callback(undefined, shipment);
+    })
+}
+
+/**
+ * Retrieves all the products from the provided directory manager
+ * @param {DirectoryManager} directoryManager
+ * @param {function(err, string[])} callback
+ * @memberOf PopOver
+ */
+function getDirectoryProducts(directoryManager, callback){
+    const options = {
+        query: [`role == ${ROLE.PRODUCT}`]
+    }
+    directoryManager.getAll(false, options, (err, gtins) => err
+        ? callback(err)
+        : callback(undefined, gtins));
+}
+
+/**
+ * Retrieves all the suppliers from the provided directory manager
+ * @param {DirectoryManager} directoryManager
+ * @param {function(err, string[])} callback
+ * @memberOf PopOver
+ */
+function getDirectorySuppliers(directoryManager, callback){
+    const options = {
+        query: [`role like /${ROLE.MAH}|${ROLE.WHS}/g`]
+    }
+
+    directoryManager.getAll(false, options, (err, suppliers) => err
+        ? callback(err)
+        : callback(undefined, suppliers));
+}
+
+/**
+ * Retrieves all the requesters from the provided directory manager
+ * @param {DirectoryManager} directoryManager
+ * @param {function(err, string[])} callback
+ * @memberOf PopOver
+ */
+function getDirectoryRequesters(directoryManager, callback){
+    const options = {
+        query: [`role like /${ROLE.PHA}|${ROLE.WHS}/g`]
+    }
+
+    directoryManager.getAll(false, options, (err, requesters) => err
+        ? callback(err)
+        : callback(undefined, requesters));
+}
+
+function sortBatchesByExpiration(batches){
+    return batches.sort((b1, b2) => {
+        const date1 = new Date(b1.expiry).getTime();
+        const date2 = new Date(b2.expiry).getTime();
+        return date1 - date2;
+    });
+}
+
+function splitStockByQuantity(batches, requiredQuantity){
+    let accum = 0;
+    const result = {
+        selected: [],
+        divided: undefined,
+        remaining: []
+    };
+    batches.forEach(batch => {
+        if (accum >= requiredQuantity){
+            result.remaining.push(batch);
+        } else if (accum + batch.quantity > requiredQuantity) {
+            const batch1 = new Batch(batch);
+            const batch2 = new Batch(batch);
+            batch1.quantity = requiredQuantity - accum;
+            batch2.quantity = batch.quantity - batch1.quantity;
+            result.selected.push(batch1);
+            result.divided = batch2
+        } else if(accum + batch.quantity === requiredQuantity){
+            result.selected.push(batch)
+        } else {
+            result.selected.push(batch);
+        }
+        accum += batch.quantity;
+    });
+
+    return result;
+}
+
+module.exports ={
+    getRandom,
+    generate2DMatrixCode,
+    generateProductName,
+    generateGtin,
+    validateGtin,
+    calculateGtinCheckSum,
+    generateBatchNumber,
+    generateRandomInt,
+    genDate,
+    confirmWithStock,
+    getDirectorySuppliers,
+    getDirectoryRequesters,
+    getDirectoryProducts,
+    sortBatchesByExpiration,
+    splitStockByQuantity,
+    isEqual
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

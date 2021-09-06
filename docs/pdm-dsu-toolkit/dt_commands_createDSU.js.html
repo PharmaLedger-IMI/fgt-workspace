@@ -1,0 +1,351 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDM&FC's OpenDSU Toolkit Documentation dt/commands/createDSU.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">PDM&FC's OpenDSU Toolkit Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/epi-workspace/pdm-dsu-toolkit.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com"
+                        >
+                            Example Application - Finished Goods Traceability
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Namespaces</h3><ul><li><a href="Commands.Registry.html">Registry</a></li><li><a href="Commands.utils.html">utils</a></li><li><a href="dt.Commands.html">Commands</a></li><li><a href="Services.html">Services</a></li><li><a href="Services.dt.html">dt</a></li><li><a href="Services.Locale.html">Locale</a></li><li><a href="Services.Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="Commands.AddFileCommand.html">AddFileCommand</a></li><li><a href="Commands.AddFolderCommand.html">AddFolderCommand</a></li><li><a href="Commands.Command.html">Command</a></li><li><a href="Commands.CreateDSUCommand.html">CreateDSUCommand</a></li><li><a href="Commands.CreateFileCommand.html">CreateFileCommand</a></li><li><a href="Commands.DefineCommand.html">DefineCommand</a></li><li><a href="Commands.DeleteCommand.html">DeleteCommand</a></li><li><a href="Commands.DeriveCommand.html">DeriveCommand</a></li><li><a href="Commands.EndWithCommand.html">EndWithCommand</a></li><li><a href="Commands.GenDBCommand.html">GenDBCommand</a></li><li><a href="Commands.GenKeyCommand.html">GenKeyCommand</a></li><li><a href="Commands.GetIdentifierCommand.html">GetIdentifierCommand</a></li><li><a href="Commands.MountCommand.html">MountCommand</a></li><li><a href="Commands.ObjToArrayCommand.html">ObjToArrayCommand</a></li><li><a href="Commands.ReadFileCommand.html">ReadFileCommand</a></li><li><a href="Commands.VarStore.html">VarStore</a></li><li><a href="Commands.WithCommand.html">WithCommand</a></li><li><a href="dt.AppBuilderService.html">AppBuilderService</a></li><li><a href="dt.DossierBuilder.html">DossierBuilder</a></li><li><a href="Services.DSUService.html">DSUService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_loadLocale">_loadLocale</a></li><li><a href="global.html#buildDossier">buildDossier</a></li><li><a href="global.html#buildSSApp">buildSSApp</a></li><li><a href="global.html#buildWallet">buildWallet</a></li><li><a href="global.html#clone">clone</a></li><li><a href="global.html#getByPage">getByPage</a></li><li><a href="global.html#getFile">getFile</a></li><li><a href="global.html#getFolderContentAsJSON">getFolderContentAsJSON</a></li><li><a href="global.html#getInfo">getInfo</a></li><li><a href="global.html#getMounts">getMounts</a></li><li><a href="global.html#resolver">resolver</a></li><li><a href="global.html#WebComponentService">WebComponentService</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>dt/commands/createDSU.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const Command = require('./Command');
+const { _err, _getResolver, DSU_TYPE, KEY_TYPE } = require('./utils');
+const genKey = require('./genKey');
+
+/**
+ * @param {DSU_TYPE} dsuType
+ * @return {KEY_TYPE}
+ * @function _getKeyType
+ * @memberOf Commands
+ * @private
+ */
+const _getKeyType = function(dsuType){
+    switch (dsuType){
+        case DSU_TYPE.CONST:
+            return KEY_TYPE.ARRAY;
+        case DSU_TYPE.WALLET:
+            return KEY_TYPE.WALLET;
+        case DSU_TYPE.SEED:
+            return KEY_TYPE.SEED;
+        default:
+            throw new Error(`Unsupported DSU Type`);
+    }
+}
+
+
+/**
+ * Creates an Arrays SSI off a secret list
+ *
+ * Adds options.hint to hit if available
+ * @param {string[]} arg
+ * @param {function(err, KeySSI)} callback
+ * @memberOf Commands
+ * @private
+ */
+_createSSI = function(varStore, arg, callback){
+    const argToArray = (arg) => {
+        return `${arg.type} ${arg.domain} ${typeof arg.args === 'string' ? arg.args : JSON.stringify(arg.hint ? {
+            hint: arg.hint,
+            args: arg.args
+        } : arg.args)}`.split(/\s+/);
+    }
+    new genKey(varStore).execute(argToArray(arg), callback);
+}
+
+
+/**
+ * Creates a DSU of an ArraySSI
+ * @param {string[]} arg
+ * @param {object} opts DSU Creation Options
+ * @param {function(err, Archive)} callback
+ * @memberOf Commands
+ * @private
+ */
+_createWalletDSU = function(varStore, arg, opts, callback){
+    _createSSI(varStore, arg, (err, keySSI) => {
+        _getResolver().createDSUForExistingSSI(keySSI, opts, (err, dsu) => {
+            if (err)
+                return _err(`Could not create wallet DSU`, err, callback);
+            callback(undefined, dsu);
+        });
+    });
+}
+
+/**
+ * Creates a DSU of an ArraySSI
+ * @param {string[]} arg String for Seed SSI
+ * @param {object} opts DSU Creation Options
+ * @param {function(err, Archive)} callback
+ * @memberOf Commands
+ * @private
+ */
+_createDSU = function(varStore, arg, opts, callback){
+    _createSSI(varStore, arg, (err, keySSI) => {
+        _getResolver().createDSU(keySSI, opts, (err, dsu) => {
+            if (err)
+                return _err(`Could not create DSU`, err, callback);
+            callback(undefined, dsu);
+        });
+    });
+}
+
+/**
+ * Creates a DSU of an ArraySSI
+ * @param {string[]} arg
+ * @param {object} opts DSU Creation Options
+ * @param {function(err, Archive)} callback
+ * @memberOf Commands
+ * @private
+ */
+_createConstDSU = function(varStore, arg,opts , callback){
+    _createSSI(varStore, arg, (err, keySSI) => {
+        _getResolver().createDSUForExistingSSI(keySSI, opts, (err, dsu) => {
+            if (err)
+                return _err(`Could not create const DSU`, err, callback);
+            callback(undefined, dsu);
+        });
+    });
+}
+
+/**
+ *
+ * @param isConst
+ * @param isWallet
+ * @return {Commands._createWalletDSU|Commands._createConstDSU|Commands._createDSU}
+ * @private
+ * @memberOf Commands
+ */
+_getDSUFactory = function(isConst, isWallet){
+    return isConst ? (isWallet ? _createWalletDSU : _createConstDSU) : _createDSU;
+}
+
+/**
+ * creates a new DSU of the provided type and with the provided key gen arguments
+ *
+ * Analog to OpenDSU's Resolver createDSU method
+ *
+ * Command syntax:
+ *
+ * &lt;pre>
+ *     createdsu type domain args
+ * &lt;/pre>
+ *
+ * args:
+ *  - type: 'array' | 'seed'
+ *  - domain: the anchoring domain
+ *  - args: string|string[] stringified
+ *
+ *  * Source object:
+ *  - any;
+ *
+ * @class CreateDSUCommand
+ * @extends Command
+ * @memberOf Commands
+ */
+class CreateDSUCommand extends Command{
+    constructor(varStore, source) {
+        super(varStore, source, false);
+    }
+
+    /**
+     * @param {string[]|string} command the command split into words
+     * @param {string[]} next discarded
+     * @param {function(err, string|object)} [callback] discarded
+     * @return {string|object} the command argument
+     * &lt;pre>
+     *     {
+     *         type: (...),
+     *         domain: (..)
+     *         args: {string[]|object},
+     *     }
+     * &lt;/pre>
+     * @protected
+     */
+    _parseCommand(command, next, callback){
+        if (!callback){
+            callback = next;
+            next = undefined;
+        }
+        try {
+            let arg = {
+                dsuType: command.shift(),
+                domain: command.shift(),
+                args: command.length === 1 ? command[0] : JSON.parse(command.join(' '))
+            }
+            arg.type = _getKeyType(arg.dsuType);
+            if (typeof arg.args === 'object' &amp;&amp; arg.args.args){
+                arg.hint = arg.args.hint;
+                arg.args = arg.args.args;
+            }
+            callback(undefined, arg)
+        } catch (e){
+            _err(`could not parse json ${command}`, e, callback);
+        }
+    }
+
+    /**
+     * Copies a file, from disk or another DSU
+     * @param {object} arg
+     * &lt;pre>
+     *     {
+     *         from: (...),
+     *         to: (..)
+     *     }
+     * &lt;/pre>
+     * @param {Archive} bar
+     * @param {object} options
+     * @param {function(err, Archive)} callback
+     * @protected
+     */
+    _runCommand(arg, bar, options, callback) {
+        if(!callback){
+            callback = options;
+            options = bar;
+            bar = undefined;
+        }
+        if (typeof options === 'function'){
+            callback = options;
+            options = undefined;
+        }
+        const cb = function(err, dsu){
+            if (err)
+                return _err(`Could not create DSU with ${JSON.stringify(arg)}`, err, callback);
+            console.log(`${arg.dsuType} DSU created`);
+            callback(undefined, dsu);
+        }
+
+        switch (arg.dsuType){
+            case DSU_TYPE.SEED:
+                return _createDSU(this.varStore, arg, cb)
+            case DSU_TYPE.CONST:
+                return _createConstDSU(this.varStore, arg, cb);
+            case DSU_TYPE.WALLET:
+                return _createWalletDSU(this.varStore, arg, cb);
+            default:
+                callback(`Unsupported key type`);
+        }
+    }
+}
+
+module.exports = CreateDSUCommand;</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>
