@@ -1,10 +1,12 @@
 const Order = require('../../../fgt-dsu-wizard/model/Order');
+const Sale = require('../../../fgt-dsu-wizard/model/Sale');
+const IndividualProduct = require('../../../fgt-dsu-wizard/model/IndividualProduct');
 const OrderStatus = require('../../../fgt-dsu-wizard/model/OrderStatus');
 const ShipmentStatus = require('../../../fgt-dsu-wizard/model/ShipmentStatus');
 const submitEvent = require('./eventHandler');
 const {fulFillOrder} = require('./orderListener');
 
-const orderStatusUpdater = function(participantManager, order, timeout, callback){
+const orderStatusUpdater = function(participantManager, order, batches, timeout, callback){
     const identity = participantManager.getIdentity();
     const possibleStatus = Order.getAllowedStatusUpdates(order.status).filter(os => os !== OrderStatus.REJECTED);
     if (!possibleStatus || !possibleStatus.length){
@@ -26,10 +28,62 @@ const orderStatusUpdater = function(participantManager, order, timeout, callback
             console.log(`${identity.id} - Order ${updatedOrder.orderId}'s updated to ${updatedOrder.status}`);
             submitEvent();
             if (updatedOrder.status !== OrderStatus.CONFIRMED)
-                return orderStatusUpdater(participantManager, updatedOrder, timeout, callback);
-            findOrderToFulfill(participantManager, updatedOrder, timeout, callback);
+                return orderStatusUpdater(participantManager, updatedOrder, batches, timeout, callback);
+            if (!identity.id.startsWith('PHA'))
+                return findOrderToFulfill(participantManager, updatedOrder, timeout, callback);
+            issueSale(participantManager, order, batches, timeout, callback);
         });
     }, timeout);
+}
+
+const issueSale = function(participantManager, order, batches, timeout, callback){
+    const saleManager = participantManager.getManager("SaleManager");
+    const identity = saleManager.getIdentity();
+
+    const stockManager = participantManager.getManager("StockManager");
+
+    stockManager.getAll({
+        query: [`gtin like /${order.orderLines.map(ol => ol.gtin).join('|')}/g`]
+    }, (err, stocks) => {
+        if (err)
+            return callback(err);
+
+        const sale = new Sale({
+            id: Date.now(),
+            sellerId: identity.id,
+            productList: stocks.map(stock => {
+                const batch = stock.batches[0];
+                if (!batch)
+                    return callback(`No batch in stock`);
+                const dsuBatch = batches[stock.gtin].find(b => b.batchNumber === batch.batchNumber);
+                if (!dsuBatch)
+                    return callback("can not find serial for batch");
+                const serialNumber = dsuBatch.serialNumbers[0];
+                return new IndividualProduct({
+                    name: stock.name,
+                    gtin: stock.gtin,
+                    batchNumber: batch.batchNumber,
+                    manufName: stock.manufName,
+                    expiry: batch.expiry,
+                    status: batch.status,
+                    serialNumber: serialNumber
+                });
+            })
+        });
+
+        submitEvent()
+
+        setTimeout(() => {
+            submitEvent();
+            saleManager.create(sale, (err) => {
+                if (err)
+                    return callback(err);
+                console.log(`New Sale issued:`, sale);
+                submitEvent();
+                callback(undefined, sale);
+            });
+        }, timeout);
+    });
 }
 
 const findOrderToFulfill = function(participantManager, receivedOrder, timeout, callback){
@@ -91,7 +145,7 @@ const matchIssuedToReceivedOrder = function(participantManager, order, timeout, 
     });
 }
 
-function shipmentListener(participantManager, timeout = 1000){
+function shipmentListener(participantManager, batches, timeout = 1000){
     return function(message, callback){
         const receivedShipmentManager = participantManager.getManager("ReceivedShipmentManager");
         const identity = receivedShipmentManager.getIdentity();
@@ -110,7 +164,7 @@ function shipmentListener(participantManager, timeout = 1000){
                 if (err)
                     return callback(err);
 
-                orderStatusUpdater(participantManager, order, timeout, callback);
+                orderStatusUpdater(participantManager, order, batches, timeout, callback);
             });
         });
     }
