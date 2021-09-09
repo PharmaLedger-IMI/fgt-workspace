@@ -87,8 +87,45 @@ const getRocheProducts = function(manufName = "MAH116267986"){
     return mergeManufInfo(RocheProducts, manufName);
 }
 
+const BayerProducts = [
+    {
+        gtin: '06770007904242',
+        name: 'Betaferon',
+        description: 'description'
+    },
+    {
+        gtin: '06815062335321',
+        name: 'Adalat',
+        description: 'description'
+    }
+];
+
+const getBayerProducts = function(manufName = "MAH251339219"){
+    return mergeManufInfo(BayerProducts, manufName);
+}
+
+const NovoNordiskProducts = [
+    {
+        gtin: '04570007903560',
+        name: 'Novolin',
+        description: 'description'
+    },
+    {
+        gtin: '08515062336321',
+        name: 'Fiasp',
+        description: 'description'
+    }
+];
+
+const getNovoNordiskProducts = function(manufName = "MAH24256790"){
+    return mergeManufInfo(NovoNordiskProducts, manufName);
+}
+
+
 module.exports = {
     getPfizerProducts,
     getMSDProducts,
-    getRocheProducts
+    getRocheProducts,
+    getBayerProducts,
+    getNovoNordiskProducts
 }

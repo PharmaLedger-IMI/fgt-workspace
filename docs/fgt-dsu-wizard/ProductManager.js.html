@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability DSU Wizard Documentation ProductManager.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability DSU Wizard Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/epi-workspace/fgt-dsu-wizard.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com"
+                        >
+                            Example Application - Finished Goods Traceability
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Namespaces</h3><ul><li><a href="Managers.html">Managers</a></li><li><a href="Resolvers.html">Resolvers</a></li></ul><h3>Classes</h3><ul><li><a href="Managers.BatchManager.html">BatchManager</a></li><li><a href="Managers.DirectoryManager.html">DirectoryManager</a></li><li><a href="Managers.IndividualProductManager.html">IndividualProductManager</a></li><li><a href="Managers.IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="Managers.IssuedShipmentManager.html">IssuedShipmentManager</a></li><li><a href="Managers.OrderLineManager.html">OrderLineManager</a></li><li><a href="Managers.OrderManager.html">OrderManager</a></li><li><a href="Managers.ParticipantManager.html">ParticipantManager</a></li><li><a href="Managers.ProductManager.html">ProductManager</a></li><li><a href="Managers.ReceiptManager.html">ReceiptManager</a></li><li><a href="Managers.ReceivedOrderManager.html">ReceivedOrderManager</a></li><li><a href="Managers.ReceivedShipmentManager.html">ReceivedShipmentManager</a></li><li><a href="Managers.SaleManager.html">SaleManager</a></li><li><a href="Managers.ShipmentLineManager.html">ShipmentLineManager</a></li><li><a href="Managers.ShipmentManager.html">ShipmentManager</a></li><li><a href="Managers.StockManager.html">StockManager</a></li><li><a href="Managers.TraceabilityManager.html">TraceabilityManager</a></li><li><a href="Resolvers.BatchResolver.html">BatchResolver</a></li><li><a href="Resolvers.ProductResolver.html">ProductResolver</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>ProductManager.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const {INFO_PATH, ANCHORING_DOMAIN, DB, DEFAULT_QUERY_OPTIONS} = require('../constants');
+const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
+const Product = require('../model/Product');
+
+
+/**
+ * Product Manager Class
+ *
+ * Manager Classes in this context should do the bridge between the controllers
+ * and the services exposing only the necessary api to the controllers while encapsulating &lt;strong>all&lt;/strong> business logic.
+ *
+ * All Manager Classes should be singletons.
+ *
+ * This complete separation of concerts is very beneficial for 2 reasons:
+ * &lt;ul>
+ *     &lt;li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'&lt;/li>
+ *     &lt;li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)&lt;/li>
+ * &lt;/ul>
+ *
+ * @param {ParticipantManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @class ProductManager
+ * @extends Manager
+ * @memberOf Managers
+ */
+class ProductManager extends Manager {
+    constructor(participantManager, callback) {
+        super(participantManager, DB.products, ['gtin'], callback);
+        this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
+    }
+
+    /**
+     * Binds the {@link Product#manufName} to the Product
+     * @param {Product} product
+     * @param {function(err, Product)} callback
+     * @private
+     */
+    _bindParticipant(product, callback){
+        let self = this;
+        self.getIdentity((err, mah) => {
+            if (err)
+                return self._err(`Could not retrieve identity`, err, callback);
+            product.manufName = mah.id;
+            callback(undefined, product);
+        });
+    }
+
+    /**
+     * Must wrap the entry in an object like:
+     * &lt;pre>
+     *     {
+     *         index1: ...
+     *         index2: ...
+     *         value: item
+     *     }
+     * &lt;/pre>
+     * so the DB can be queried by each of the indexes and still allow for lazy loading
+     * @param {string} key
+     * @param {Product} item
+     * @param {string|object} record
+     * @return {object} the indexed object to be stored in the db
+     * @protected
+     * @override
+     */
+    _indexItem(key, item, record){
+        return {
+            gtin: key,
+            name: item.name,
+            value: record
+        }
+    };
+
+    /**
+     * Util function that loads a ProductDSU and reads its information
+     * @param {string|KeySSI} keySSI
+     * @param {function(err, Product, Archive)} callback
+     * @protected
+     * @override
+     */
+    _getDSUInfo(keySSI, callback){
+        return this.productService.get(keySSI, callback);
+    }
+
+    /**
+     * Creates a {@link Product} dsu
+     * @param {string|number} [gtin] the table key
+     * @param {Product} product
+     * @param {function(err, keySSI, string)} callback where the string is the mount path relative to the main DSU
+     * @override
+     */
+    create(gtin, product, callback) {
+        if (!callback){
+            callback = product;
+            product = gtin;
+            gtin = product.gtin;
+        }
+        let self = this;
+        self._bindParticipant(product, (err, product) => {
+            if (err)
+                return self._err(`Could not bind mah to product`, err, callback);
+            self.productService.create(product, (err, keySSI) => {
+                if (err)
+                    return self._err(`Could not create product DSU for ${JSON.stringify(product, undefined, 2)}`, err, callback);
+                const record = keySSI.getIdentifier();
+                self.insertRecord(gtin, self._indexItem(gtin, product, record), (err) => {
+                    if (err)
+                        return self._err(`Could not inset record with gtin ${gtin} on table ${self.tableName}`, err, callback);
+                    const path =`${self.tableName}/${gtin}`;
+                    console.log(`Product ${gtin} created stored at '${path}'`);
+                    callback(undefined, keySSI, path);
+                });
+            });
+        });
+    }
+
+    /**
+     * reads ssi for that gtin in the db. loads is and reads the info at '/info'
+     * @param {string} gtin
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
+     * @param {function(err, Product|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
+     * @override
+     */
+    getOne(gtin, readDSU,  callback) {
+        super.getOne(gtin, readDSU, callback);
+    }
+
+    /**
+     * Removes a product from the list (does not delete/invalidate DSU, simply 'forgets' the reference)
+     * @param {string|number} gtin
+     * @param {function(err)} callback
+     * @override
+     */
+    remove(gtin, callback) {
+        super.remove(gtin, callback);
+    }
+
+    /**
+     * updates a product from the list
+     * @param {string|number} [gtin] the table key
+     * @param {Product} newProduct
+     * @param {function(err, Product, Archive)} callback
+     * @override
+     */
+    update(gtin, newProduct, callback){
+        if (!callback){
+            callback = newProduct;
+            newProduct = gtin;
+            gtin = newProduct.gtin;
+        }
+        let self = this;
+
+        super.update(gtin, newProduct, (err, storedData, dsu) => {
+            if (err)
+                return self._err(`Could not update product with gtin ${gtin}`, err, callback);
+            console.log(`Product ${gtin} updated`);
+            callback(undefined, newProduct, dsu)
+        });
+    }
+
+
+    /**
+     * Lists all registered items according to query options provided
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
+     * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
+     * @param {function(err, object[])} callback
+     * @override
+     */
+    getAll(readDSU, options, callback){
+        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
+            query: ['__timestamp > 0'],
+            sort: "dsc"
+        });
+
+        if (!callback){
+            if (!options){
+                callback = readDSU;
+                options = defaultOptions();
+                readDSU = true;
+            }
+            if (typeof readDSU === 'boolean'){
+                callback = options;
+                options = defaultOptions();
+            }
+            if (typeof readDSU === 'object'){
+                callback = options;
+                options = readDSU;
+                readDSU = true;
+            }
+        }
+
+        options = options || defaultOptions();
+
+        super.getAll(readDSU, options, callback);
+    }
+
+    /**
+     * Converts the text typed in a general text box into the query for the db
+     * Subclasses should override this
+     * @param {string} keyword
+     * @return {string[]} query
+     * @protected
+     */
+    _keywordToQuery(keyword){
+        keyword = keyword || '.*';
+        return [`gtin like /${keyword}/g`];
+    }
+
+    /**
+     *
+     * @param model
+     * @returns {Product}
+     * @override
+     */
+    fromModel(model){
+        return new Product(super.fromModel(model));
+    }
+}
+
+/**
+ * @param {ParticipantManager} [participantManager] only required the first time, if not forced
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @returns {ProductManager}
+ * @memberOf Managers
+ */
+const getProductManager = function (participantManager, callback) {
+    let manager;
+    try {
+        manager = participantManager.getManager(ProductManager);
+        if (callback)
+            return callback(undefined, manager);
+    } catch (e){
+        manager = new ProductManager(participantManager, callback);
+    }
+
+    return manager;
+}
+
+module.exports = getProductManager;</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

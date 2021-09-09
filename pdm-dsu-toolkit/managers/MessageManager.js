@@ -163,7 +163,6 @@ class MessageManager extends Manager{
      * @param {string} [tableName] defaults to MESSAGE_TABLE
      * @param {object} message. Must have a key property.
      * @param {function(err)} callback 
-     * @returns 
      */
     deleteMessage(tableName, message, callback) {
         if (!callback){

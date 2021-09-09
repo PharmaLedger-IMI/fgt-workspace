@@ -84,11 +84,11 @@ const attachLogic = function(participantManager, conf, products, batches, wholes
     if (!conf.attachLogic)
         return callback();
     try{
-        const orderListener = require('./listeners/orderListener').orderListener(participantManager, ROLE.PHA, conf.statusUpdateTimeout);
+        const orderListener = require('./listeners/orderListener').orderListener(participantManager, conf.statusUpdateTimeout);
         const receivedOrderManager = participantManager.getManager("ReceivedOrderManager");
         receivedOrderManager.registerMessageListener(orderListener);
 
-        const shipmentListener = require('./listeners/shipmentListener').shipmentListener(participantManager, ROLE.PHA, conf.statusUpdateTimeout);
+        const shipmentListener = require('./listeners/shipmentListener').shipmentListener(participantManager, batches, conf.statusUpdateTimeout);
         const receivedShipmentManager = participantManager.getManager("ReceivedShipmentManager");
         receivedShipmentManager.registerMessageListener(shipmentListener);
         submitEvent(conf);

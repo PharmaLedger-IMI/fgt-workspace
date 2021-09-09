@@ -109,7 +109,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import {LocalizedController, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
+            <pre class="prettyprint source linenums"><code>import {LocalizedController, HistoryNavigator, EVENT_REFRESH} from "../../assets/pdm-web-components/index.esm.js";
 const Batch = require('wizard').Model.Batch;
 
 /**
@@ -133,6 +133,9 @@ export default class BatchesController extends LocalizedController {
         this.model = this.initializeModel();
         this.participantManager = wizard.Managers.getParticipantManager();
         this.batchManager = wizard.Managers.getBatchManager(this.participantManager);
+        HistoryNavigator.registerTab({
+            'tab-batches': this.translate('title')
+        })
 
         let self = this;
 

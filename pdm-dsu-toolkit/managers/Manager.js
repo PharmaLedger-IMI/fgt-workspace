@@ -411,7 +411,7 @@ class Manager{
      * Wrapper around OpenDSU's error wrapper
      * @param {string} message
      * @param {err} err
-     * @param {function(err, ..*)} callback
+     * @param {function(err, ...args)} callback
      * @protected
      * @see _err
      */

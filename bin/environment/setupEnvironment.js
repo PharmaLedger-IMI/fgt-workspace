@@ -5,7 +5,7 @@ const { APPS, getCredentials } = require('./credentials/credentials3');
 const getProducts = require('./products/productsRandom');
 const { getStockFromProductsAndBatchesObj, getFullStockFromProductsAndBatchesObj } = require('./stocks/stocksRandomFromProducts');
 const { getDummyWholesalers } = require('./credentials/credentials3');
-const {MSD, PFIZER, ROCHE, generatePharmacyCredentials, generateWholesalerCredentials} = require('./credentials/credentialsTests');
+const {MSD, PFIZER, ROCHE, BAYER, NOVO_NORDISK, generatePharmacyCredentials, generateWholesalerCredentials} = require('./credentials/credentialsTests');
 
 const { ROLE } = require('../../fgt-dsu-wizard/model/DirectoryEntry');
 
@@ -50,7 +50,7 @@ getFakeTest = () => {
 
 const getTest = () => {
     const MULTIPLE = {};
-    MULTIPLE[APPS.MAH] = [PFIZER, MSD, ROCHE];
+    MULTIPLE[APPS.MAH] = [PFIZER, MSD, ROCHE, BAYER, NOVO_NORDISK];
     MULTIPLE[APPS.WHOLESALER] = [
         generateWholesalerCredentials(undefined, "PDM the Wholesaler", undefined, "London, England")
     ];

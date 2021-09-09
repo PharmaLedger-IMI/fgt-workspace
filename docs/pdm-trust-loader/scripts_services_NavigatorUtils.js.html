@@ -407,7 +407,11 @@ const NavigatorUtils = function(env){
                 });
 
             setInterval(() => {
-                wb.update();
+                try {
+                    wb.update();
+                } catch (e){
+                    console.log(`Could not update workbox`, e)
+                }
             }, 60 * 1000);
         });
     }

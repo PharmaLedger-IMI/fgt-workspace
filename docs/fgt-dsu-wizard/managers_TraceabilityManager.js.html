@@ -1,0 +1,400 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability DSU Wizard Documentation managers/TraceabilityManager.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability DSU Wizard Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/epi-workspace/fgt-dsu-wizard.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com"
+                        >
+                            Example Application - Finished Goods Traceability
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Namespaces</h3><ul><li><a href="Commands.html">Commands</a></li><li><a href="Constants.html">Constants</a></li><li><a href="Managers.html">Managers</a></li><li><a href="Model.html">Model</a></li><li><a href="module-fgt-dsu-wizard-Server.html">Server</a></li><li><a href="Resolvers.html">Resolvers</a></li><li><a href="Services.html">Services</a></li></ul><h3>Classes</h3><ul><li><a href="Batch.html">Batch</a></li><li><a href="DirectoryEntry.html">DirectoryEntry</a></li><li><a href="IndividualProduct.html">IndividualProduct</a></li><li><a href="IndividualReceipt.html">IndividualReceipt</a></li><li><a href="MAH.html">MAH</a></li><li><a href="Managers.BatchManager.html">BatchManager</a></li><li><a href="Managers.DirectoryManager.html">DirectoryManager</a></li><li><a href="Managers.IndividualProductManager.html">IndividualProductManager</a></li><li><a href="Managers.IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="Managers.IssuedShipmentManager.html">IssuedShipmentManager</a></li><li><a href="Managers.OrderLineManager.html">OrderLineManager</a></li><li><a href="Managers.OrderManager.html">OrderManager</a></li><li><a href="Managers.ParticipantManager.html">ParticipantManager</a></li><li><a href="Managers.ProductManager.html">ProductManager</a></li><li><a href="Managers.ReceiptManager.html">ReceiptManager</a></li><li><a href="Managers.ReceivedOrderManager.html">ReceivedOrderManager</a></li><li><a href="Managers.ReceivedShipmentManager.html">ReceivedShipmentManager</a></li><li><a href="Managers.SaleManager.html">SaleManager</a></li><li><a href="Managers.ShipmentLineManager.html">ShipmentLineManager</a></li><li><a href="Managers.ShipmentManager.html">ShipmentManager</a></li><li><a href="Managers.StockManager.html">StockManager</a></li><li><a href="Managers.TraceabilityManager.html">TraceabilityManager</a></li><li><a href="Model.Batch.html">Batch</a></li><li><a href="Model.DirectoryEntry.html">DirectoryEntry</a></li><li><a href="Model.FinalProduct.html">FinalProduct</a></li><li><a href="Model.IndividualProduct.html">IndividualProduct</a></li><li><a href="Model.MAH.html">MAH</a></li><li><a href="Model.Order.html">Order</a></li><li><a href="Model.OrderLine.html">OrderLine</a></li><li><a href="Model.Participant.html">Participant</a></li><li><a href="Model.Pharmacy.html">Pharmacy</a></li><li><a href="Model.Product.html">Product</a></li><li><a href="Model.Receipt.html">Receipt</a></li><li><a href="Model.Sale.html">Sale</a></li><li><a href="Model.Shipment.html">Shipment</a></li><li><a href="Model.ShipmentCode.html">ShipmentCode</a></li><li><a href="Model.ShipmentLine.html">ShipmentLine</a></li><li><a href="Model.Stock.html">Stock</a></li><li><a href="Model.TrackingCode.html">TrackingCode</a></li><li><a href="Model.Wholesaler.html">Wholesaler</a></li><li><a href="Order.html">Order</a></li><li><a href="OrderLine.html">OrderLine</a></li><li><a href="Participant.html">Participant</a></li><li><a href="Pharmacy.html">Pharmacy</a></li><li><a href="Product.html">Product</a></li><li><a href="Receipt.html">Receipt</a></li><li><a href="Resolvers.BatchResolver.html">BatchResolver</a></li><li><a href="Resolvers.ProductResolver.html">ProductResolver</a></li><li><a href="Sale.html">Sale</a></li><li><a href="Shipment.html">Shipment</a></li><li><a href="ShipmentCode.html">ShipmentCode</a></li><li><a href="ShipmentLine.html">ShipmentLine</a></li><li><a href="Stock.html">Stock</a></li><li><a href="TrackingCode.html">TrackingCode</a></li><li><a href="Wholesaler.html">Wholesaler</a></li></ul><h3>Global</h3><ul><li><a href="global.html#confirmWithStock">confirmWithStock</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#fromProduct">fromProduct</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#update">update</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>managers/TraceabilityManager.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../constants');
+const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
+const {functionCallIterator} = require('../services').utils;
+const TraceabilityService = require('../services/TraceabilityService');
+const IndividualProduct = require('../model/IndividualProduct');
+const Batch = require('../model/Batch');
+
+const ACTION = {
+    REQUEST: 'request',
+    RESPONSE: 'response'
+}
+
+class RequestCache {
+    cache = {};
+
+    submitRequest(id, callback){
+        if (id in this.cache)
+            return callback(`Id already Exists!`);
+        this.cache[id] = callback;
+        console.log(`Tracking request ${id} submitted`);
+    }
+
+    getRequest(id){
+        if (!(id in this.cache))
+            throw new Error(`Id does not exist in cache!`);
+        const cb = this.cache[id];
+        delete this.cache[id];
+        return cb;
+    }
+}
+
+const convertForJson = function(startNode, endNode){
+    startNode = Object.assign({}, startNode);
+    endNode = Object.assign({}, endNode);
+
+    const nodeIterator = function(node, accumulator = {}){
+        node.children = node.children || [];
+        node.parents = node.parents || [];
+
+        node.parents.reduce((accum, n) => nodeIterator(n, accum), accumulator);
+
+        node.children = node.children.map(n => n.id);
+        node.parents = node.parents.map(n => n.id);
+        accumulator[node.id] = accumulator[node.id] || node;
+        return accumulator;
+    }
+
+    const nodeList = nodeIterator(startNode);
+
+    return {
+        startNode: startNode,
+        endNode: endNode,
+        nodeList: nodeList
+    }
+}
+
+class TrackMessage {
+    id;
+    action;
+    message;
+    requesterId;
+    error;
+
+    constructor(trackMessage){
+        if (typeof trackMessage !== undefined)
+            for (let prop in trackMessage)
+                if (trackMessage.hasOwnProperty(prop))
+                    this[prop] = trackMessage[prop];
+        if (!this.action || !this.message)
+            throw new Error(`Needs id, action and message`);
+        if (this.action === ACTION.REQUEST &amp;&amp; !this.id)
+            this.id = Date.now();
+        if (this.action === ACTION.REQUEST &amp;&amp; !this.requesterId)
+            throw new Error("Needs a requester Id for that action");
+    }
+}
+
+/**
+ * Stock Manager Class
+ *
+ * Manager Classes in this context should do the bridge between the controllers
+ * and the services exposing only the necessary api to the controllers while encapsulating &lt;strong>all&lt;/strong> business logic.
+ *
+ * All Manager Classes should be singletons.
+ *
+ * This complete separation of concerts is very beneficial for 2 reasons:
+ * &lt;ul>
+ *     &lt;li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'&lt;/li>
+ *     &lt;li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)&lt;/li>
+ * &lt;/ul>
+ *
+ * @param {ParticipantManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @class TraceabilityManager
+ * @extends Manager
+ * @memberOf Managers
+ */
+class TraceabilityManager extends Manager{
+    constructor(participantManager, callback) {
+        super(participantManager, DB.traceability, [], (err, manager) => {
+            if (err)
+                return callback ? callback(err) : console.log(err);
+            manager.registerMessageListener((message, cb) => {
+                manager.processMessageRecord(message, (err) => {
+                    cb(err);
+                });
+            });
+            if (callback)
+                callback(undefined, manager);
+        });
+        this.participantManager = participantManager;
+        this.requestCache = new RequestCache();
+    }
+
+    _processMessageRecord(message, callback) {
+        let self = this;
+        if (!message)
+            return callback(`No message received. Skipping record.`);
+
+        try {
+            message = new TrackMessage(message);
+        } catch (e) {
+            return callback(e);
+        }
+
+        switch (message.action){
+            case ACTION.REQUEST:
+                return self._trackObj(message.message, (err, startNode, endNode, nodeList) =>
+                        self._replyToMessage(message.id, message.requesterId, startNode, endNode, nodeList, err, self._messageCallback));
+            case ACTION.RESPONSE:
+                let cb;
+                try {
+                    cb = self.requestCache.getRequest(message.id);
+                } catch (e) {
+                    return callback(e);
+                }
+                cb(message.error, message.message.startNode, message.message.endNode, message.message.nodeList);
+                return callback();
+            default:
+                return callback(`Invalid Action request received: ${message.action}`);
+        }
+    };
+
+    _trackObj(obj, callback){
+        try {
+            this.shipmentLineManager = this.shipmentLineManager || this.participantManager.getManager("ShipmentLineManager");
+            this.receiptManager = this.receiptManager || this.participantManager.getManager("ReceiptManager");
+        } catch (e) {
+            return callback(e);
+        }
+        const tracker = new TraceabilityService(this.shipmentLineManager, this.receiptManager);
+        tracker.fromProduct(obj, (err, startNode, endNode) => {
+            if (err)
+                return callback(err);
+            console.log(`Tracking for product ${obj.gtin}, batch ${obj.batchNumber} and Serial ${obj.serialNumber} complete. Start and end Nodes:`, startNode, endNode);
+            const message = convertForJson(startNode, endNode);
+            callback(undefined, message.startNode, message.endNode, message.nodeList);
+        });
+    }
+
+
+
+    _replyToMessage(requestId, requesterId, startNode, endNode, nodeList, error, callback){
+        const self = this;
+
+        const reply = new TrackMessage({
+            id: requestId,
+            action: ACTION.RESPONSE,
+            message: {
+                startNode: startNode,
+                endNode: endNode,
+                nodeList: nodeList
+            },
+            error: error
+        })
+        self.sendMessage(requesterId, reply, callback);
+    }
+
+    _getProduct(gtin, callback){
+        if (!this.productService)
+            this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
+        this.productService.getDeterministic(gtin, callback);
+    }
+
+    /**
+     * @param {string} key
+     * @param {*} obj
+     * @param {function(err?, keySSI?, string?)} callback where the string is the mount path relative to the main DSU
+     */
+    create(key, obj, callback) {
+        callback(`Traceability cannot be created`);
+    }
+
+    /**
+     * @param {string|number} [key] the table key
+     * @param {{}} obj
+     * @param {function(err?, Stock?)} callback
+     * @override
+     */
+    update(key, obj, callback){
+        callback(`Traceability cannot be updated`);
+    }
+
+    /**
+     * @param {IndividualProduct} obj
+     * @param {function(err?, Node?, Node?)} callback
+     * @override
+     */
+    getOne(obj,  callback) {
+        let self = this;
+        if (!(obj instanceof IndividualProduct))
+            return callback(`Invalid Object Provided`);
+
+        if (!obj.manufName)
+            return self._getProduct(obj.gtin, (err, p) => {
+                if (err)
+                    return callback(err);
+                obj.manufName = p.manufName;
+                self.getOne(obj, callback);
+            });
+
+        const identity = self.getIdentity();
+
+        if (identity.id === obj.manufName)
+            return self._trackObj(obj, callback);
+
+        const message = new TrackMessage({
+            id: identity.id + Date.now(),
+            action: ACTION.REQUEST,
+            message: obj,
+            requesterId: identity.id
+        });
+        self.requestCache.submitRequest(message.id, callback);
+        self.sendMessage(obj.manufName, message, self._messageCallback)
+    }
+
+    /**
+     * Lists all registered items according to query options provided
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
+     * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
+     * @param {function(err?, object[]?)} callback
+     * @override
+     */
+    getAll(readDSU, options, callback){
+        callback(`Not the way tracking works`);
+    }
+}
+
+
+/**
+ * @param {ParticipantManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @returns {TraceabilityManager}
+ * @memberOf Managers
+ */
+const getTraceabilityManager = function (participantManager, callback) {
+    let manager;
+    try {
+        manager = participantManager.getManager(TraceabilityManager);
+        if (callback)
+            return callback(undefined, manager);
+    } catch (e){
+        manager = new TraceabilityManager(participantManager, callback);
+    }
+
+    return manager;
+}
+
+module.exports = getTraceabilityManager;</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>
