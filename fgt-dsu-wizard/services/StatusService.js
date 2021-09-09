@@ -117,7 +117,12 @@ function StatusService(domain, strategy){
      * @return {string} keySSI
      */
     this.create = function(status, id, callback){
-        status = parseStatus(status, id);
+        if (!callback){
+            callback = id;
+            id = undefined
+        } else {
+            status = parseStatus(status, id);
+        }
 
         if (isSimple){
             let keyGenFunction = require('../commands/setStatusSSI').createStatusSSI;
@@ -148,8 +153,15 @@ function StatusService(domain, strategy){
     };
 
     this.update = function(keySSI, status, id, callback){
-        const self  =this;
-        status = parseStatus(status, id);
+        const self = this;
+
+        if (!callback){
+            callback = id;
+            id = undefined
+        } else {
+            status = parseStatus(status, id);
+        }
+
         let data = JSON.stringify(status);
 
         if (isSimple){

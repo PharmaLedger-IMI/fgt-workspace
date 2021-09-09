@@ -1,6 +1,6 @@
 const utils = require('../../pdm-dsu-toolkit/services/utils');
 
-const {STATUS_MOUNT_PATH, INFO_PATH} = require('../constants');
+const {STATUS_MOUNT_PATH, INFO_PATH, ORDER_MOUNT_PATH} = require('../constants');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
@@ -12,6 +12,7 @@ function OrderLineService(domain, strategy){
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");
     const OrderLine = require('../model').OrderLine;
     const endpoint = 'orderline';
+    const statusService = new (require('./StatusService'))(domain, strategy);
 
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
@@ -19,31 +20,31 @@ function OrderLineService(domain, strategy){
     /**
      * Resolves the DSU and loads the OrderLine object with all its properties, mutable or not
      * @param {KeySSI} keySSI
-     * @param {function(err, OrderLine)} callback
+     * @param {function(err, .OrderLine)} callback
      */
     this.get = function(keySSI, callback){
         utils.getResolver().loadDSU(keySSI, (err, dsu) => {
             if (err)
                 return callback(err);
-            dsu.readFile(INFO_PATH, (err, data) => {
+            dsu.readFile(INFO_PATH, (err, orderLine) => {
                 if (err)
                     return callback(err);
-                try{
-                    const orderLine = JSON.parse(data);
-                    dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
-                        if (err)
-                            return callback(`could not retrieve orderLine status`);
-                        try{
-                            orderLine.status = JSON.parse(status);
-                            callback(undefined, orderLine);
-                        } catch (e) {
-                            callback(`unable to parse OrderLine status: ${data.toString()}`);
-                        }
-                    });
-                } catch (e){
-                    callback(`Could not parse orderLine in DSU ${keySSI.getIdentifier()}`);
+                try {
+                    orderLine = JSON.parse(orderLine);
+                } catch (e) {
+                    return callback(`Could not parse orderLine in DSU ${keySSI.getIdentifier()}`);
                 }
-            })
+                utils.getMounts(dsu, '/', STATUS_MOUNT_PATH, (err, mounts) => {
+                    if (err)
+                        return callback(err);
+                    statusService.get(mounts[STATUS_MOUNT_PATH], (err, status) => {
+                        if (err)
+                            return callback(err);
+                        orderLine.status = status;
+                        callback(undefined, new OrderLine(orderLine))
+                    })
+                });
+            });
         });
     }
 

@@ -1,6 +1,6 @@
 const utils = require('../../pdm-dsu-toolkit/services/utils');
 const {STATUS_MOUNT_PATH, INFO_PATH, LINES_PATH, ORDER_MOUNT_PATH} = require('../constants');
-const {Shipment, ShipmentStatus} = require('../model');
+const {Shipment, ShipmentStatus, Status} = require('../model');
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
@@ -142,13 +142,13 @@ function ShipmentService(domain, strategy) {
     /**
      * Creates the original OrderStatus DSU
      * @param {string} id the id for the operation
-     * @param {ShipmentStatus} [status]: defaults to ShipmentStatus.CREATED
+     * @param {string} [status]: defaults to ShipmentStatus.CREATED
      * @param {function(err, keySSI, orderLinesSSI)} callback
      */
     let createShipmentStatus = function (id, status,  callback) {
         if (typeof status === 'function') {
             callback = status;
-            status = { status: ShipmentStatus.CREATED };
+            status = ShipmentStatus.CREATED;
         }
         statusService.create(status, id, (err, keySSI) => {
             if (err)
@@ -278,7 +278,7 @@ function ShipmentService(domain, strategy) {
                         return callback(err);
                     if (!mounts[STATUS_MOUNT_PATH])
                         return callback(`Could not find status mount`);
-                    statusService.update(mounts[STATUS_MOUNT_PATH], shipment._status, shipment.senderId, (err) => {
+                    statusService.update(mounts[STATUS_MOUNT_PATH], shipment.status, shipment.senderId, (err) => {
                         if (err)
                             return callback(err);
                         self.get(keySSI, callback);

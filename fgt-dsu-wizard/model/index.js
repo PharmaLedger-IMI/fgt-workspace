@@ -25,6 +25,7 @@ module.exports = {
     ROLE: require('./DirectoryEntry').ROLE,
     Receipt: require('./Receipt'),
     ShipmentCode: require('./ShipmentCode'),
+    Status: require('./Status'),
     TrackingCode: require('./TrackingCode'),
     IndividualProduct: require('./IndividualProduct'),
     IndividualProductStatus: require('./IndividualProductStatus'),
