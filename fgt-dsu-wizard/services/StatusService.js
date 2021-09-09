@@ -1,5 +1,6 @@
 const utils = require('../../pdm-dsu-toolkit/services/utils');
-const {INFO_PATH, LOG_PATH} = require('../constants');
+const {INFO_PATH, LOG_PATH, EXTRA_INFO_PATH} = require('../constants');
+const Status = require('../model/Status');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
@@ -37,7 +38,7 @@ function StatusService(domain, strategy){
     /**
      * Resolves the DSU and loads the status object with all its properties, mutable or not
      * @param {KeySSI} keySSI
-     * @param {function(err, Shipment, Archive)} callback
+     * @param {function(err, Status, Archive)} callback
      */
     this.get = function(keySSI, callback){
         utils.getResolver().loadDSU(keySSI, (err, dsu) => {
@@ -67,23 +68,56 @@ function StatusService(domain, strategy){
                     }
                     if (!Array.isArray(log))
                         return callback(`Invalid log data`);
-                    callback(undefined, status, log, dsu);
+
+                    const returnFunc = function(extraInfo){
+                        const status = new Status({
+                            status: status,
+                            log: log,
+                            extraInfo: extraInfo
+                        });
+                        return callback(undefined, status, dsu);
+                    }
+
+                    dsu.readFile(EXTRA_INFO_PATH, (err, extraInfo) => {
+                        if (err)
+                            returnFunc();
+                        try{
+                            extraInfo = JSON.parse(extraInfo);
+                        } catch(e){
+                            return callback(e);
+                        }
+                        returnFunc(extraInfo);
+                    });
                 });
             });
         });
     }
 
+    const createStatus = function(status, id, oldStatus){
+        let log = createLog(id, oldStatus, status);
+        return new Status({
+            status: status,
+            log: [log]
+        });
+    }
+
+    const parseStatus = function(status, id, oldStatus){
+        if (typeof status === 'string')
+            return createStatus(status, id, oldStatus);
+        if (status instanceof Status)
+            return status;
+        return new Status(status);
+    }
+
     /**
      * Creates aC Status DSU
-     * @param {OrderStatus|ShipmentStatus} status
+     * @param {OrderStatus|ShipmentStatus|Status} status
      * @param {String} id the sender id
      * @param {function} callback
      * @return {string} keySSI
      */
     this.create = function(status, id, callback){
-
-        let data = JSON.stringify(status);
-        let log = createLog(id, undefined, status);
+        status = parseStatus(status, id);
 
         if (isSimple){
             let keyGenFunction = require('../commands/setStatusSSI').createStatusSSI;
@@ -91,7 +125,7 @@ function StatusService(domain, strategy){
             selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);
-                dsu.writeFile(INFO_PATH, data, (err) => {
+                dsu.writeFile(INFO_PATH, JSON.stringify(status.status), (err) => {
                     if (err)
                         return callback(err);
 
@@ -105,19 +139,7 @@ function StatusService(domain, strategy){
                         });
                     }
 
-                    dsu.readFile(LOG_PATH, (err, data) => {
-                        if (err)
-                            return dsu.writeFile(LOG_PATH, JSON.stringify([log]), returnFunc);
-                        try {
-                            data = JSON.parse(data);
-                        } catch (e){
-                            return callback(e);
-                        }
-                        if (!Array.isArray(data))
-                            return callback(`Invalid log data`);
-                        return dsu.writeFile(LOG_PATH, JSON.stringify([...data, log]), returnFunc);
-                    })
-
+                    dsu.writeFile(LOG_PATH, JSON.stringify(status.log), returnFunc);
                 });
             });
         } else {
@@ -126,7 +148,8 @@ function StatusService(domain, strategy){
     };
 
     this.update = function(keySSI, status, id, callback){
-
+        const self  =this;
+        status = parseStatus(status, id);
         let data = JSON.stringify(status);
 
         if (isSimple){
@@ -141,14 +164,14 @@ function StatusService(domain, strategy){
                         if (err)
                             return callback(err);
                         try{
-                            prevStatus = JSON.parse(prevStatus);
+                            prevStatus = JSON.parse(prevStatus).status;
                         } catch (e){
                             return callback(e);
                         }
 
-                        dsu.writeFile(INFO_PATH, data, (err) => {
+                        dsu.writeFile(INFO_PATH, JSON.stringify(status.status), (err) => {
                             if (err){
-                                console.log(newKeySSI.getTypeName(), newKeySSI.getIdentifier(), data)
+                                console.log(newKeySSI.getTypeName(), newKeySSI.getIdentifier(), data);
                                 return callback(err);
                             }
 
@@ -159,7 +182,7 @@ function StatusService(domain, strategy){
                                 dsu.getKeySSIAsObject((err, keySSI) => {
                                     if (err)
                                         return callback(err);
-                                    callback(undefined, keySSI);
+                                    self.get(keySSI, callback);
                                 });
                             }
 
@@ -175,15 +198,31 @@ function StatusService(domain, strategy){
                                 }
                                 if (!Array.isArray(data))
                                     return callback(`Invalid log data`);
-                                return dsu.writeFile(LOG_PATH, JSON.stringify([...data, log]), returnFunc);
+                                dsu.writeFile(LOG_PATH, JSON.stringify([...data, log]), (err) => {
+                                    if (err)
+                                        return callback(err);
+                                    dsu.readFile(EXTRA_INFO_PATH, (err, extraInfo) => {
+                                        if (err)
+                                            return callback(err);
+                                        try {
+                                            extraInfo = JSON.parse(extraInfo);
+                                        } catch (e){
+                                            return callback(e);
+                                        }
+                                        if (!extraInfo && !status.extraInfo)
+                                            return returnFunc();
+
+                                        if (!extraInfo)
+                                            extraInfo = {};
+                                        extraInfo = Object.assign({}, extraInfo, status.extraInfo);
+
+                                        dsu.writeFile(EXTRA_INFO_PATH, JSON.stringify(extraInfo), returnFunc);
+                                    });
+                                });
                             });
                         });
-
                     });
-                })
-
-
-
+                });
             });
         } else {
             return callback(`Not implemented`);

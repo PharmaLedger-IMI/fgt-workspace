@@ -22,6 +22,7 @@ const INBOX_RECEIVED_SHIPMENTS_PROP = 'receivedShipments';
 const INFO_PATH = require('../pdm-dsu-toolkit/constants').INFO_PATH;
 const INPUT_FIELD_PREFIX = require('../pdm-dsu-toolkit/constants').INPUT_FIELD_PREFIX;
 const LOG_PATH = '/log';
+const EXTRA_INFO_PATH = '/extra';
 const ISSUED_ORDERS_MOUNT_PATH = "/issuedOrders";
 const INBOX_ORDER_LINES_PATH = '/orderLines';
 const PARTICIPANT_MOUNT_PATH = require('../pdm-dsu-toolkit/constants').PARTICIPANT_MOUNT_PATH;
