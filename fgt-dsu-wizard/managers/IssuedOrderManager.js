@@ -200,7 +200,7 @@ class IssuedOrderManager extends OrderManager {
                     callback(undefined, updatedOrder, dsu);
                 }
 
-                if (order.status !== OrderStatus.CONFIRMED)
+                if (order.status.status !== OrderStatus.CONFIRMED)
                     return sendMessages();
 
                 // Get all the shipmentLines from the shipment so we can add it to the stock

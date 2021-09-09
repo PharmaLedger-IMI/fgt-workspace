@@ -8,7 +8,7 @@ const {fulFillOrder} = require('./orderListener');
 
 const orderStatusUpdater = function(participantManager, order, batches, timeout, callback){
     const identity = participantManager.getIdentity();
-    const possibleStatus = Order.getAllowedStatusUpdates(order.status).filter(os => os !== OrderStatus.REJECTED);
+    const possibleStatus = Order.getAllowedStatusUpdates(order.status.status).filter(os => os !== OrderStatus.REJECTED);
     if (!possibleStatus || !possibleStatus.length){
         console.log(`${identity.id} - Order ${order.orderId} has no possible status updates`);
         return callback();
@@ -20,14 +20,14 @@ const orderStatusUpdater = function(participantManager, order, batches, timeout,
         return callback(`More that one status allowed...`);
     console.log(`${identity.id} - Updating Order ${order.orderId}'s status to ${possibleStatus[0]} in ${timeout} miliseconds`);
     setTimeout(() => {
-        order.status = possibleStatus[0];
+        order.status.status = possibleStatus[0];
         submitEvent();
         issuedOrderManager.update(order, (err, updatedOrder) => {
             if (err)
                 return callback(err);
-            console.log(`${identity.id} - Order ${updatedOrder.orderId}'s updated to ${updatedOrder.status}`);
+            console.log(`${identity.id} - Order ${updatedOrder.orderId}'s updated to ${updatedOrder.status.status}`);
             submitEvent();
-            if (updatedOrder.status !== OrderStatus.CONFIRMED)
+            if (updatedOrder.status.status !== OrderStatus.CONFIRMED)
                 return orderStatusUpdater(participantManager, updatedOrder, batches, timeout, callback);
             if (!identity.id.startsWith('PHA'))
                 return findOrderToFulfill(participantManager, updatedOrder, timeout, callback);
@@ -153,7 +153,7 @@ function shipmentListener(participantManager, batches, timeout = 1000){
             if (err)
                 return callback(err);
 
-            if (receivedShipment.status !== ShipmentStatus.DELIVERED){
+            if (receivedShipment.status.status !== ShipmentStatus.DELIVERED){
                 console.log(`${identity.id} - Skipping already handled Shipment ${receivedShipment.shipmentId} from ${receivedShipment.senderId}`);
                 return callback(undefined, message);
             }

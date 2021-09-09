@@ -151,6 +151,8 @@ function StatusService(domain, strategy){
         if (!callback){
             callback = id;
             id = undefined
+        } else {
+            status = parseStatus(status, id);
         }
 
         let data = JSON.stringify(status);
@@ -172,9 +174,17 @@ function StatusService(domain, strategy){
                             return callback(e);
                         }
 
-                        status.status = parseStatus(status, id, prevStatus);
+                        status = parseStatus(status, id, prevStatus);
 
-                        dsu.writeFile(INFO_PATH, JSON.stringify(status.status), (err) => {
+                        let stringified;
+                        try{
+                            stringified = JSON.stringify(status.status);
+                        } catch (e){
+                            console.log(e)
+                        }
+
+
+                        dsu.writeFile(INFO_PATH, stringified, (err) => {
                             if (err){
                                 console.log(newKeySSI.getTypeName(), newKeySSI.getIdentifier(), data);
                                 return callback(err);

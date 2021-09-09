@@ -91,7 +91,7 @@ class MessageManager extends Manager{
             const listenerIterator = function(listeners, callback){
                 const listener = listeners.shift();
                 if (!listener)
-                    return callback();
+                    return callback(undefined, message);
                 listener(message, (err) => {
                     if (err)
                         console.log(`Error processing Api ${api}`, err);

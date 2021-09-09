@@ -226,7 +226,7 @@ const NOVO_NORDISK =  {
     "address": {
         "required": true,
         "public": true,
-        "secret": "Denmark"
+        "secret": "Bagsvaerd, Denmark"
     },
     "pass": {
         "required": true,
