@@ -11,16 +11,8 @@ class ShipmentLine{
     serialNumbers;
     senderId;
     requesterId;
-    _status;
+    status;
     createdOn
-
-    get status() {
-        return this._status.status;
-    }
-
-    set status(newStatus) {
-        this._status = this.castStatus(newStatus);
-    }
 
     /**
      *
@@ -69,24 +61,6 @@ class ShipmentLine{
             errors.push('status is required.');
 
         return errors.length === 0 ? undefined : errors;
-    }
-
-    castStatus(newStatus) {
-        if (!!!newStatus) {
-            return {
-                status: ShipmentLineStatus.CREATED,
-                detail: `ShipmentLine ${ShipmentLineStatus.CREATED}`
-            };
-        } else {
-            if (typeof newStatus === 'string') {
-                return { status: newStatus, detail: undefined }
-            }
-            const { status, detail } = newStatus;
-            return {
-                status: status || ShipmentLineStatus.CREATED,
-                detail
-            }
-        }
     }
 }
 

@@ -9,15 +9,7 @@ class OrderLine{
     quantity;
     requesterId;
     senderId;
-    _status;
-
-    get status() {
-        return this._status.status;
-    }
-
-    set status(newStatus) {
-        this._status = this.castStatus(newStatus);
-    }
+    status;
 
     /**
      * @param gtin
@@ -32,7 +24,7 @@ class OrderLine{
         this.quantity = quantity;
         this.requesterId = requesterId;
         this.senderId = senderId;
-        this._status = this.castStatus(status);
+        this.status = status;
     }
 
     /**
@@ -57,24 +49,6 @@ class OrderLine{
         }
 
         return errors.length === 0 ? undefined : errors;
-    }
-
-    castStatus(newStatus) {
-        if (!!!newStatus) {
-            return {
-                status: OrderStatus.CREATED,
-                detail: `OrderLine ${OrderStatus.CREATED}`
-            };
-        } else {
-            if (typeof newStatus === 'string') {
-                return { status: newStatus, detail: undefined }
-            }
-            const { status, detail } = newStatus;
-            return {
-                status: status || OrderStatus.CREATED,
-                detail
-            }
-        }
     }
 }
 
