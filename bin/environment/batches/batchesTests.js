@@ -222,6 +222,45 @@ const NOVO_NORDISK_BATCHES = {
     ]
 }
 
+const GSK_BATCHES = {
+    '05054626551625': [
+        {
+            batchNumber: "DB1",
+            quantity: 200,
+            expiry: "2022/10/31"
+        },
+        {
+            batchNumber: "DB4",
+            quantity: 350,
+            expiry: "2022/12/01"
+        }
+    ],
+    '05054626551632': [
+        {
+            batchNumber: "DB2",
+            quantity: 250,
+            expiry: "2022/08/31"
+        },
+        {
+            batchNumber: "DB5",
+            quantity: 225,
+            expiry: "2022/07/31"
+        }
+    ],
+    '05054626551649': [
+        {
+            batchNumber: "DB3",
+            quantity: 300,
+            expiry: "2022/08/31"
+        },
+        {
+            batchNumber: "DB6",
+            quantity: 325,
+            expiry: "2022/05/31"
+        }
+    ]
+}
+
 const fillBatchDetails = function(batchesObj){
     return Object.keys(batchesObj).reduce((accum, gtin) => {
         accum[gtin] = batchesObj[gtin].map(b => new Batch(Object.assign({}, b, {
@@ -252,10 +291,15 @@ const getNovoNordiskBatches = function(){
     return fillBatchDetails(NOVO_NORDISK_BATCHES);
 }
 
+const getGskBatches = function(){
+    return fillBatchDetails(GSK_BATCHES);
+}
+
 module.exports = {
     getMSDBatches,
     getPfizerBatches,
     getRocheBatches,
     getBayerBatches,
-    getNovoNordiskBatches
+    getNovoNordiskBatches,
+    getGskBatches
 }
