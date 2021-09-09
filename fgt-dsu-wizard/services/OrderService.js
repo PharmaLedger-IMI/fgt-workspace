@@ -1,5 +1,7 @@
 const Utils = require('../../pdm-dsu-toolkit/services/utils');
-const {STATUS_MOUNT_PATH, INFO_PATH, SHIPMENT_PATH} = require('../constants');
+const {STATUS_MOUNT_PATH, INFO_PATH, SHIPMENT_PATH, ORDER_MOUNT_PATH} = require('../constants');
+const {OrderStatus} = require("../model");
+
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
@@ -59,27 +61,28 @@ function OrderService(domain, strategy) {
                 }
                 order = new Order(order.orderId, order.requesterId, order.senderId, order.shipToAddress, order.status, order.orderLines);
                 console.log('## OrderService.get order=', order);
-                dsu.readFile(`${STATUS_MOUNT_PATH}${INFO_PATH}`, (err, status) => {
+                Utils.getMounts(dsu, '/', STATUS_MOUNT_PATH, (err, mounts) => {
                     if (err)
-                        return callback(`could not retrieve orderLine status`);
-                    try {
-                        order.status = JSON.parse(status);
-                    } catch (e) {
-                        return callback(`unable to parse Order status: ${status}`);
-                    }
-                    if (order.status === OrderStatus.CREATED)
-                        return callback(undefined, order, dsu, keySSI);
-                    dsu.readFile(`${SHIPMENT_PATH}${INFO_PATH}`, (err, data) => {
-                        if (err || !data)
-                            return callback(undefined, order, dsu);
-                        let shipment;
-                        try {
-                            shipment = JSON.parse(data);
-                        } catch (e) {
-                            return callback(e);
-                        }
-                        order.shipmentId = shipment.shipmentId;
-                        callback(undefined, order, dsu, keySSI);
+                        return callback(err);
+                    statusService.get(mounts[STATUS_MOUNT_PATH], (err, status) => {
+                        if (err)
+                            return callback(err);
+                        order.status = status;
+
+                        if (order.status.status === OrderStatus.CREATED)
+                            return callback(undefined, order, dsu, keySSI);
+                        dsu.readFile(`${SHIPMENT_PATH}${INFO_PATH}`, (err, data) => {
+                            if (err || !data)
+                                return callback(undefined, order, dsu);
+                            let shipment;
+                            try {
+                                shipment = JSON.parse(data);
+                            } catch (e) {
+                                return callback(e);
+                            }
+                            order.shipmentId = shipment.shipmentId;
+                            callback(undefined, order, dsu, keySSI);
+                        });
                     });
                 });
             });
@@ -138,7 +141,7 @@ function OrderService(domain, strategy) {
                         return callback(err);
                     if (!mounts[STATUS_MOUNT_PATH])
                         return callback(`Could not find status mount`);
-                    statusService.update(mounts[STATUS_MOUNT_PATH], order._status, order.requesterId, (err) => {
+                    statusService.update(mounts[STATUS_MOUNT_PATH], order.status, order.requesterId, (err) => {
                         if (err)
                             return callback(err);
 
@@ -165,7 +168,7 @@ function OrderService(domain, strategy) {
     let createOrderStatus = function (id, status, callback) {
         if (typeof status === 'function') {
             callback = status;
-            status = { status: OrderStatus.CREATED };
+            status = OrderStatus.CREATED;
         }
         statusService.create(status, id, (err, keySSI) => {
             if (err)
