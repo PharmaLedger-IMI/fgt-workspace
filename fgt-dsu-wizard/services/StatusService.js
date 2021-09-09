@@ -22,17 +22,10 @@ function StatusService(domain, strategy){
         return utils.getResolver().createDSU;
     }
 
-    let createLog = function(id, prevStatus, _status){
-        let log;
-        if (prevStatus) {
-            const { status, detail } = prevStatus;
-            log = `${id}  updated status from ${prevStatus.status} to ${_status.status}.`;
-            return { status: status, detail, log};
-        } else {
-            const s = (typeof _status === 'undefined') ? _status : _status.status;
-            log = `${id} set status to ${s}`;
-            return { status: s, log};
-        }
+    let createLog = function(id, prevStatus, status){
+        return prevStatus
+                ? `${id} updated status from ${prevStatus.status || prevStatus} to ${status.status || status}.`
+                : `${id} set status to ${status.status || status}`;
     }
 
     /**
@@ -70,17 +63,17 @@ function StatusService(domain, strategy){
                         return callback(`Invalid log data`);
 
                     const returnFunc = function(extraInfo){
-                        const status = new Status({
+                        const _status = new Status({
                             status: status,
                             log: log,
                             extraInfo: extraInfo
                         });
-                        return callback(undefined, status, dsu);
+                        return callback(undefined, _status, dsu);
                     }
 
                     dsu.readFile(EXTRA_INFO_PATH, (err, extraInfo) => {
-                        if (err)
-                            returnFunc();
+                        if (err || !extraInfo)
+                            return returnFunc();
                         try{
                             extraInfo = JSON.parse(extraInfo);
                         } catch(e){
@@ -158,8 +151,6 @@ function StatusService(domain, strategy){
         if (!callback){
             callback = id;
             id = undefined
-        } else {
-            status = parseStatus(status, id);
         }
 
         let data = JSON.stringify(status);
@@ -180,6 +171,8 @@ function StatusService(domain, strategy){
                         } catch (e){
                             return callback(e);
                         }
+
+                        status.status = parseStatus(status, id, prevStatus);
 
                         dsu.writeFile(INFO_PATH, JSON.stringify(status.status), (err) => {
                             if (err){
@@ -215,13 +208,16 @@ function StatusService(domain, strategy){
                                         return callback(err);
                                     dsu.readFile(EXTRA_INFO_PATH, (err, extraInfo) => {
                                         if (err)
-                                            return callback(err);
-                                        try {
-                                            extraInfo = JSON.parse(extraInfo);
-                                        } catch (e){
-                                            return callback(e);
+                                            extraInfo = undefined;
+                                        else {
+                                            try {
+                                                extraInfo = JSON.parse(extraInfo);
+                                            } catch (e){
+                                                return callback(e);
+                                            }
                                         }
-                                        if (!extraInfo && !status.extraInfo)
+
+                                        if (!extraInfo || !status.extraInfo)
                                             return returnFunc();
 
                                         if (!extraInfo)

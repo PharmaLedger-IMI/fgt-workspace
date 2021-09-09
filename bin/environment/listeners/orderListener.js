@@ -12,7 +12,7 @@ const submitEvent = require('./eventHandler');
 
 const shipmentStatusUpdater = function(issuedShipmentManager, shipment, timeout, callback){
     const identity = issuedShipmentManager.getIdentity();
-    const possibleStatus = Shipment.getAllowedStatusUpdates(shipment.status).filter(os => [ShipmentStatus.REJECTED, ShipmentStatus.ON_HOLD].indexOf(os) === -1);
+    const possibleStatus = Shipment.getAllowedStatusUpdates(shipment.status.status).filter(os => [ShipmentStatus.REJECTED, ShipmentStatus.ON_HOLD].indexOf(os) === -1);
     if (!possibleStatus || !possibleStatus.length){
         console.log(`${identity.id} - Shipment ${shipment.shipmentId} has no possible status updates`);
         return callback();
@@ -24,14 +24,14 @@ const shipmentStatusUpdater = function(issuedShipmentManager, shipment, timeout,
     setTimeout(() => {
         console.log(`\n${identity.id} - NOW UPDATING SHIPMENT STATUS FROM ${shipment.status} to ${possibleStatus[0]}\n`)
 
-        shipment.status = possibleStatus[0];
+        shipment.status.status = possibleStatus[0];
         submitEvent()
         issuedShipmentManager.update(shipment, (err, updatedShipment) => {
             if (err)
                 return callback(err);
-            console.log(`${identity.id} - Shipment ${updatedShipment.orderId}'s updated to ${updatedShipment.status}`);
+            console.log(`${identity.id} - Shipment ${updatedShipment.orderId}'s updated to ${updatedShipment.status.status}`);
 
-            console.log(`\n${identity.id} - UPDATED SHIPMENT STATUS to ${updatedShipment.status}\n`);
+            console.log(`\n${identity.id} - UPDATED SHIPMENT STATUS to ${updatedShipment.status.status}\n`);
             setTimeout(() => {
                 submitEvent()
                 shipmentStatusUpdater(issuedShipmentManager, updatedShipment, timeout, callback);
@@ -215,7 +215,7 @@ function orderListener(participantManager, role, timeout = 1000){
             if (err)
                 return callback(err);
 
-            if (receivedOrder.status !== OrderStatus.CREATED){
+            if (receivedOrder.status.status !== OrderStatus.CREATED){
                 console.log(`${identity.id} - Skipping already handled Order ${receivedOrder.orderId} from ${receivedOrder.requesterId}`);
                 return callback(undefined, message);
             }

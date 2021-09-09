@@ -158,7 +158,7 @@ class IssuedOrderManager extends OrderManager {
         self.getOne(key, true, (err, order) => {
             if (err)
                 return self._err(`Could not load Order`, err, callback);
-            order.status = getOrderStatusByShipment(shipment.status);
+            order.status = getOrderStatusByShipment(shipment.status.status);
             console.log(`Order Status for Issued Order ${key} to be updated to to ${order.status}`);
             order.shipmentSSI = shipmentSSI;
             super.update(key, order, (err) => {

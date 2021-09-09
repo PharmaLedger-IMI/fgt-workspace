@@ -188,7 +188,7 @@ function OrderService(domain, strategy) {
                 if (err)
                     return callback(err);
                 console.log("Order /info ", JSON.stringify(order));
-                createOrderStatus(order.requesterId, (err, statusSSI) => {
+                createOrderStatus(order.requesterId, order.status,(err, statusSSI) => {
                     if (err)
                         return callback(err);
                     // Mount must take string version of keyssi

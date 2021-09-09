@@ -22,7 +22,7 @@ const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
  */
 class ShipmentLineManager extends Manager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.shipmentLines, ['gtin', 'createdOn', 'batch', 'requesterId', 'senderId'], (err, manager) => {
+        super(participantManager, DB.shipmentLines, ['gtin', 'createdOn', 'batch', 'status', 'requesterId', 'senderId'], (err, manager) => {
             if (err)
                 return callback ? callback(err) : console.log(err);
             manager.registerMessageListener((message, cb) => {
@@ -83,6 +83,7 @@ class ShipmentLineManager extends Manager {
             gtin: item.gtin,
             createdOn: item.createdOn,
             batch: item.batch,
+            status: item.status.status,
             requesterId: item.requesterId,
             senderId: item.senderId,
             value: record

@@ -69,7 +69,7 @@ class ShipmentManager extends Manager {
         }
         return {
             shipmentId: item.shipmentId,
-            status: item.status,
+            status: item.status.status,
             products: item.shipmentLines.map(ol => ol.gtin).join(','),
             batches: item.shipmentLines.map(ol => ol.batch).join(','),
             value: record

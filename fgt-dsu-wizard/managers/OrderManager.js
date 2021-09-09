@@ -76,7 +76,7 @@ class OrderManager extends Manager {
     _indexItem(key, item, record) {
         return {
             orderId: item.orderId,
-            status: item.status,
+            status: item.status.status,
             products: item.orderLines.map(ol => ol.gtin).join(','),
             value: record
         }

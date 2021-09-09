@@ -445,6 +445,20 @@ export namespace Components {
         "statesJSON": any;
         "updateString"?: string;
     }
+    interface StatusUpdaterButton {
+        "addDetailPlaceholder": string;
+        "buttonCssClass": string;
+        "color": string;
+        "disabled": boolean;
+        "expand": string;
+        "fill": string;
+        "label": string;
+        "shape": string;
+        "showAddDetail": boolean;
+        "size": string;
+        "status": string;
+        "strong": boolean;
+    }
     interface TrackedSerialChip {
         "color"?: string;
         "outline"?: boolean;
@@ -688,6 +702,12 @@ declare global {
         prototype: HTMLStatusUpdaterElement;
         new (): HTMLStatusUpdaterElement;
     };
+    interface HTMLStatusUpdaterButtonElement extends Components.StatusUpdaterButton, HTMLStencilElement {
+    }
+    var HTMLStatusUpdaterButtonElement: {
+        prototype: HTMLStatusUpdaterButtonElement;
+        new (): HTMLStatusUpdaterButtonElement;
+    };
     interface HTMLTrackedSerialChipElement extends Components.TrackedSerialChip, HTMLStencilElement {
     }
     var HTMLTrackedSerialChipElement: {
@@ -745,6 +765,7 @@ declare global {
         "slide-in-board": HTMLSlideInBoardElement;
         "status-badge": HTMLStatusBadgeElement;
         "status-updater": HTMLStatusUpdaterElement;
+        "status-updater-button": HTMLStatusUpdaterButtonElement;
         "tracked-serial-chip": HTMLTrackedSerialChipElement;
         "tracking-pop-over": HTMLTrackingPopOverElement;
         "tree-view": HTMLTreeViewElement;
@@ -915,10 +936,6 @@ declare namespace LocalJSX {
          */
         "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
         /**
-          * Through this event navigation requests to tabs are made
-         */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
-        /**
           * Through this event errors are passed
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
@@ -975,10 +992,6 @@ declare namespace LocalJSX {
           * Through this event back navigation requests are made
          */
         "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event navigation requests to tabs are made
-         */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
@@ -1105,10 +1118,6 @@ declare namespace LocalJSX {
           * Through this event back navigation requests are made
          */
         "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event navigation requests to tabs are made
-         */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "productString"?: string;
         "quantityString"?: string;
@@ -1148,10 +1157,6 @@ declare namespace LocalJSX {
           * Through this event back navigation requests are made
          */
         "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event navigation requests to tabs are made
-         */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
@@ -1383,9 +1388,24 @@ declare namespace LocalJSX {
         /**
           * Through this event action requests are made
          */
-        "onStatusUpdateEvent"?: (event: CustomEvent<string>) => void;
+        "onStatusUpdateEvent"?: (event: CustomEvent<any>) => void;
         "statesJSON"?: any;
         "updateString"?: string;
+    }
+    interface StatusUpdaterButton {
+        "addDetailPlaceholder"?: string;
+        "buttonCssClass"?: string;
+        "color"?: string;
+        "disabled"?: boolean;
+        "expand"?: string;
+        "fill"?: string;
+        "label"?: string;
+        "onClickUpdaterButton"?: (event: CustomEvent<any>) => void;
+        "shape"?: string;
+        "showAddDetail"?: boolean;
+        "size"?: string;
+        "status"?: string;
+        "strong"?: boolean;
     }
     interface TrackedSerialChip {
         "color"?: string;
@@ -1441,6 +1461,7 @@ declare namespace LocalJSX {
         "slide-in-board": SlideInBoard;
         "status-badge": StatusBadge;
         "status-updater": StatusUpdater;
+        "status-updater-button": StatusUpdaterButton;
         "tracked-serial-chip": TrackedSerialChip;
         "tracking-pop-over": TrackingPopOver;
         "tree-view": TreeView;
@@ -1488,6 +1509,7 @@ declare module "@stencil/core" {
             "slide-in-board": LocalJSX.SlideInBoard & JSXBase.HTMLAttributes<HTMLSlideInBoardElement>;
             "status-badge": LocalJSX.StatusBadge & JSXBase.HTMLAttributes<HTMLStatusBadgeElement>;
             "status-updater": LocalJSX.StatusUpdater & JSXBase.HTMLAttributes<HTMLStatusUpdaterElement>;
+            "status-updater-button": LocalJSX.StatusUpdaterButton & JSXBase.HTMLAttributes<HTMLStatusUpdaterButtonElement>;
             "tracked-serial-chip": LocalJSX.TrackedSerialChip & JSXBase.HTMLAttributes<HTMLTrackedSerialChipElement>;
             "tracking-pop-over": LocalJSX.TrackingPopOver & JSXBase.HTMLAttributes<HTMLTrackingPopOverElement>;
             "tree-view": LocalJSX.TreeView & JSXBase.HTMLAttributes<HTMLTreeViewElement>;
