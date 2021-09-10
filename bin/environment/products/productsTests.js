@@ -143,6 +143,23 @@ const getGskProducts = function(manufName = "MAH239820839"){
     return mergeManufInfo(GskProducts, manufName);
 }
 
+const TakedaProducts = [
+    {
+        gtin: '09870007904172',
+        name: 'Azilsartan',
+        description: 'description'
+    },
+    {
+        gtin: '06515062342189',
+        name: 'Bortezomib',
+        description: 'description'
+    }
+];
+
+const getTakedaProducts = function(manufName = "MAH134013710"){
+    return mergeManufInfo(TakedaProducts, manufName);
+}
+
 
 module.exports = {
     getPfizerProducts,
@@ -150,5 +167,6 @@ module.exports = {
     getRocheProducts,
     getBayerProducts,
     getNovoNordiskProducts,
-    getGskProducts
+    getGskProducts,
+    getTakedaProducts
 }

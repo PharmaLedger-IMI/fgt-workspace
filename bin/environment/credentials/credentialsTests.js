@@ -1,6 +1,6 @@
 const {generateBatchNumber} = require('./../utils')
-const {getPfizerProducts, getMSDProducts, getRocheProducts, getNovoNordiskProducts, getBayerProducts, getGskProducts} = require('../products/productsTests');
-const {getPfizerBatches, getMSDBatches, getRocheBatches, getBayerBatches, getNovoNordiskBatches, getGskBatches} = require('../batches/batchesTests');
+const {getPfizerProducts, getMSDProducts, getRocheProducts, getNovoNordiskProducts, getBayerProducts, getGskProducts, getTakedaProducts} = require('../products/productsTests');
+const {getPfizerBatches, getMSDBatches, getRocheBatches, getBayerBatches, getNovoNordiskBatches, getGskBatches, getTakedaBatches} = require('../batches/batchesTests');
 
 
 const CITY_LIST = [
@@ -277,6 +277,42 @@ GSK.products = getGskProducts(GSK.id.secret);
 GSK.batches = getGskBatches();
 
 
+const TAKEDA =  {
+    "name": {
+        "secret": "Takeda Pharmaceuticals",
+        "public": true,
+        "required": true
+    },
+    "id": {
+        "secret": `MAH134013710`,
+        "public": true,
+        "required": true
+    },
+    "email": {
+        "secret": "taked@mah.pharmaledger.com",
+        "public": true,
+        "required": true
+    },
+    "address": {
+        "required": true,
+        "public": true,
+        "secret": "Illinois, USA"
+    },
+    "pass": {
+        "required": true,
+        "secret": "This1sSuchAS3curePassw0rd"
+    },
+    "passrepeat": {
+        "required": true,
+        "secret": "This1sSuchAS3curePassw0rd"
+    }
+}
+
+TAKEDA.products = getTakedaProducts(TAKEDA.id.secret);
+TAKEDA.batches = getTakedaBatches();
+
+
+
 const generateWholesalerCredentials = function(id, name , email, address) {
     return {
         "name": {
@@ -351,5 +387,6 @@ module.exports = {
     ROCHE,
     BAYER,
     NOVO_NORDISK,
-    GSK
+    GSK,
+    TAKEDA
 }
