@@ -287,7 +287,7 @@ export class ManagedShipment implements CreateManageView{
     this.sendAction.emit({
       action: evt.detail,
       props: {
-        shipment: new Shipment(this.shipment.shipmentId, this.shipment.requesterId, this.shipment.senderId,  this.shipment.shipToAddress, this.shipment.status.status, this.shipment.shipmentLines.slice()),
+        shipment: new Shipment(this.shipment.shipmentId, this.shipment.requesterId, this.shipment.senderId,  this.shipment.shipToAddress, this.shipment.status, this.shipment.shipmentLines.slice()),
         newStatus: status,
         popupOptions
       }

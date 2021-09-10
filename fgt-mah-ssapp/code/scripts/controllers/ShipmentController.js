@@ -92,7 +92,7 @@ export default class ShipmentController extends LocalizedController{
     async _handleUpdateShipmentStatus(shipment, newStatus, popupOptions = {}){
         const self = this;
         const oldStatus = shipment.status.status;
-        shipment.status.status = newStatus;
+        shipment.status['status'] = newStatus;
         const errors = shipment.validate(oldStatus);
         if (errors)
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));

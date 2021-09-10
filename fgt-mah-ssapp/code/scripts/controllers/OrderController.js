@@ -90,7 +90,7 @@ export default class OrderController extends LocalizedController {
         const self = this;
 
         const oldStatus = order.status.status;
-        order.status.status = newStatus;
+        order.status['status'] = newStatus;
         const errors = order.validate(oldStatus);
         if (errors)
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
