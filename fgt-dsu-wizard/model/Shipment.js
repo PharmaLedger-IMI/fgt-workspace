@@ -30,7 +30,7 @@ class Shipment {
         this.requesterId = requesterId;
         this.senderId = senderId;
         this.shipToAddress = shipToAddress;
-        this.status = status;
+        this.status = status || ShipmentStatus.CREATED;
         this.shipmentLines = shipmentLines ? shipmentLines.map(sl => new ShipmentLine(sl)) : [];
     }
 
