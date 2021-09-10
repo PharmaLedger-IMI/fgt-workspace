@@ -287,7 +287,11 @@ class Manager{
                 return self._err(`Record processing failed: ${JSON.stringify(record)}`, err, callback);
             // and then delete message after processing.
             console.log("Going to delete messages's record", record);
-            self.deleteMessage(record, callback);
+            self.deleteMessage(record, (err) => {
+                if (err)
+                    console.log(`Could not delete message. THis usually means there are two instances of this Application running and might cause problems with data integrity`);
+                callback(undefined);
+            });
         });
     };
 
