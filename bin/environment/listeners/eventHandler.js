@@ -18,9 +18,9 @@ function submitEvent(conf, callback){
     const idInterval = setInterval(() => {
         if (Date.now() - timeOfLastEvent > conf.timeoutMultiplier * conf.statusUpdateTimeout){
             clearInterval(idInterval);
+            console.log(`### The Blockchain seems to be silent... Going to end the process...`);
             if (cb)
                 return cb();
-            console.log(`The Blockchain seems to be silent... Going to end the process...`);
             process.exit(0);
         }
     }, 500); //will try every half second after the first call to see if the time since the last event is 10 times the status update timeout
