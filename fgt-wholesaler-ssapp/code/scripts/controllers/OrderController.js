@@ -83,12 +83,11 @@ export default class OrderController extends LocalizedController {
         const self = this;
 
         const oldStatus = order.status.status;
-        order.status = newStatus;
+        order.status['status'] = newStatus;
         const errors = order.validate(oldStatus);
         if (errors)
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
 
-        // const alert = await self.showConfirm('manage.confirm', oldStatus, newStatus);
         const popupCallback = (evt) => order.status['extraInfo'] = evt.extraInfo;
         const alert = await self._showPopup('manage.confirm', popupOptions, popupCallback, oldStatus, newStatus);
 
@@ -155,5 +154,14 @@ export default class OrderController extends LocalizedController {
         return super.showConfirm(this.translate(`${action}.message`, ...args),
             this.translate(`${action}.buttons.ok`),
             this.translate(`${action}.buttons.cancel`));
+    }
+
+    async _showPopup(message = 'create.confirm', popupOptions, callback, ...args){
+        return super.showPopup({
+            message: this.translate(`${message}.message`, ...args),
+            confirmButtonLabel: this.translate(`${message}.buttons.ok`),
+            cancelButtonLabel: this.translate(`${message}.buttons.cancel`),
+            options: popupOptions
+        }, callback);
     }
 }

@@ -73,8 +73,8 @@ export default class ShipmentController extends LocalizedController{
                     const {stock, orderId} = props;
                     return await self._handleCreateShipment.call(self, shipment, stock, orderId);
                 default:
-                    const {newStatus} = props;
-                    return await self._handleUpdateShipmentStatus.call(self, shipment, newStatus);
+                    const {newStatus, popupOptions} = props;
+                    return await self._handleUpdateShipmentStatus.call(self, shipment, newStatus, popupOptions);
             }
         });
     }
@@ -89,15 +89,16 @@ export default class ShipmentController extends LocalizedController{
         }, obj);
     }
 
-    async _handleUpdateShipmentStatus(shipment, newStatus){
+    async _handleUpdateShipmentStatus(shipment, newStatus, popupOptions){
         const self = this;
-        const oldStatus = shipment.status;
-        shipment.status = newStatus;
+        const oldStatus = shipment.status.status;
+        shipment.status['status'] = newStatus;
         const errors = shipment.validate(oldStatus);
         if (errors)
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
 
-        const alert = await self.showConfirm('manage.confirm', oldStatus, newStatus);
+        const popupCallback = (evt) => shipment.status['extraInfo'] = evt.extraInfo;
+        const alert = await self._showPopup('manage.confirm', popupOptions, popupCallback, oldStatus, newStatus);
 
         const {role} = await alert.onDidDismiss();
 
@@ -169,5 +170,14 @@ export default class ShipmentController extends LocalizedController{
         return super.showConfirm(this.translate(`${action}.message`, ...args),
             this.translate(`${action}.buttons.ok`),
             this.translate(`${action}.buttons.cancel`));
+    }
+
+    async _showPopup(message = 'create.confirm', popupOptions, callback, ...args){
+        return super.showPopup({
+            message: this.translate(`${message}.message`, ...args),
+            confirmButtonLabel: this.translate(`${message}.buttons.ok`),
+            cancelButtonLabel: this.translate(`${message}.buttons.cancel`),
+            options: popupOptions
+        }, callback);
     }
 }
