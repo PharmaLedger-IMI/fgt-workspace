@@ -915,10 +915,6 @@ declare namespace LocalJSX {
          */
         "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
         /**
-          * Through this event navigation requests to tabs are made
-         */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
-        /**
           * Through this event errors are passed
          */
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
@@ -975,10 +971,6 @@ declare namespace LocalJSX {
           * Through this event back navigation requests are made
          */
         "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event navigation requests to tabs are made
-         */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
@@ -1105,10 +1097,6 @@ declare namespace LocalJSX {
           * Through this event back navigation requests are made
          */
         "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event navigation requests to tabs are made
-         */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "productString"?: string;
         "quantityString"?: string;
@@ -1148,10 +1136,6 @@ declare namespace LocalJSX {
           * Through this event back navigation requests are made
          */
         "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event navigation requests to tabs are made
-         */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
