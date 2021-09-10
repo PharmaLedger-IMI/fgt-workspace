@@ -60,11 +60,13 @@ const productStrategyAll = function(wholesaler, products, batches){
 
 const productStrategyAllButTakeda = function(wholesaler, products, batches){
 
-    const identity = wholesaler.er.id.secret;
+    const takedaID = '134013710';
 
-    const isTakeda = identity.endsWith('TAKEDA');
+    const identity = wholesaler.id.secret;
 
-    const selected = products.filter(p => isTakeda ? p.manufName.endsWith('TAKEDA') : !p.manufName.endsWith('TAKEDA'));
+    const isTakeda = identity.endsWith(takedaID);
+
+    const selected = products.filter(p => isTakeda ? p.manufName.endsWith(takedaID) : !p.manufName.endsWith(takedaID));
     return {
         products: selected,
         quantities: selected.map(p => getTensQuantities(p.gtin, batches))
