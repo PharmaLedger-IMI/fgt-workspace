@@ -121,11 +121,34 @@ const getNovoNordiskProducts = function(manufName = "MAH24256790"){
     return mergeManufInfo(NovoNordiskProducts, manufName);
 }
 
+const GskProducts = [
+    {
+        gtin: '05054626551625',
+        name: 'Benlysta',
+        description: '120MGX1 FD INJ ES/PT'
+    },
+    {
+        gtin: '05054626551632',
+        name: 'Rx ACNE/ANTIBACTERIALS TOTAL',
+        description: 'description'
+    },
+    {
+        gtin: '05054626551649',
+        name: 'Ventolin',
+        description: 'description'
+    }
+];
+
+const getGskProducts = function(manufName = "MAH239820839"){
+    return mergeManufInfo(GskProducts, manufName);
+}
+
 
 module.exports = {
     getPfizerProducts,
     getMSDProducts,
     getRocheProducts,
     getBayerProducts,
-    getNovoNordiskProducts
+    getNovoNordiskProducts,
+    getGskProducts
 }
