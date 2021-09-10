@@ -227,13 +227,10 @@ function StatusService(domain, strategy){
                                             }
                                         }
 
-                                        if (!extraInfo || !status.extraInfo)
+                                        if (!status.extraInfo)
                                             return returnFunc();
 
-                                        if (!extraInfo)
-                                            extraInfo = {};
-                                        extraInfo = Object.assign({}, extraInfo, status.extraInfo);
-
+                                        extraInfo = `${extraInfo || ''}${extraInfo ? '. ' : ''}${status.extraInfo}`; // Object.assign({}, extraInfo, status.extraInfo);
                                         dsu.writeFile(EXTRA_INFO_PATH, JSON.stringify(extraInfo), returnFunc);
                                     });
                                 });

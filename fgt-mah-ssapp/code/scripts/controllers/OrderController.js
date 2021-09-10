@@ -95,7 +95,7 @@ export default class OrderController extends LocalizedController {
         if (errors)
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
 
-        const popupCallback = (evt) => order.status.extraInfo = evt.extraInfo;
+        const popupCallback = (evt) => order.status['extraInfo'] = evt.extraInfo;
         const alert = await self._showPopup('manage.confirm', popupOptions, popupCallback, oldStatus, newStatus);
 
         const {role} = await alert.onDidDismiss();

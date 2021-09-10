@@ -97,7 +97,7 @@ export default class ShipmentController extends LocalizedController{
         if (errors)
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
 
-        const popupCallback = (evt) => shipment.status.extraInfo = evt.extraInfo;
+        const popupCallback = (evt) => shipment.status['extraInfo'] = evt.extraInfo;
         const alert = await self._showPopup('manage.confirm', popupOptions, popupCallback, oldStatus, newStatus);
 
         const {role} = await alert.onDidDismiss();
