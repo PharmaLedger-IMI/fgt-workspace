@@ -172,7 +172,7 @@ export class ManagedBatchListItem {
     if (!this.individualProduct || !this.individualProduct.status)
       return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
     return (
-      <ion-badge>{this.individualProduct.status}</ion-badge>
+      <ion-badge>{this.individualProduct.status.status}</ion-badge>
     )
   }
 

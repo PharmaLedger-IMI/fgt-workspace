@@ -225,7 +225,7 @@ export class ManagedShipment implements CreateManageView{
       this.order = undefined;
     else {
       this.order = new Order(order.orderId, order.requesterId,
-        order.senderId, order.shipToAddress, order.status,
+        order.senderId, order.shipToAddress, order.status.status,
         order.orderLines.map(ol => new OrderLine(ol.gtin, ol.quantity, ol.requesterId, ol.senderId)));
       this.lines = [...this.order.orderLines];
     }
@@ -287,7 +287,7 @@ export class ManagedShipment implements CreateManageView{
     this.sendAction.emit({
       action: evt.detail,
       props: {
-        shipment: new Shipment(this.shipment.shipmentId, this.shipment.requesterId, this.shipment.senderId,  this.shipment.shipToAddress, this.shipment.status, this.shipment.shipmentLines.slice()),
+        shipment: new Shipment(this.shipment.shipmentId, this.shipment.requesterId, this.shipment.senderId,  this.shipment.shipToAddress, this.shipment.status.status, this.shipment.shipmentLines.slice()),
         newStatus: status,
         popupOptions
       }
@@ -476,7 +476,7 @@ export class ManagedShipment implements CreateManageView{
       const getBadge = function(){
         if (!self.shipment)
           return (<ion-skeleton-text animated></ion-skeleton-text>)
-        return (<ion-badge class="ion-padding-horizontal">{self.shipment.status}</ion-badge>)
+        return (<ion-badge class="ion-padding-horizontal">{self.shipment.status.status}</ion-badge>)
       }
       return (
         <ion-item lines="none">
@@ -622,7 +622,7 @@ export class ManagedShipment implements CreateManageView{
           </ion-col>
           <ion-col size="12" size-lg="6">
             <status-updater state-json={JSON.stringify(self.statuses)}
-                            current-state={self.shipment.status}
+                            current-state={self.shipment.status.status}
                             onStatusUpdateEvent={self.update.bind(self)}>
             </status-updater>
           </ion-col>

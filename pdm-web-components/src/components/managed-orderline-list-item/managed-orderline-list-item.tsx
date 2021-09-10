@@ -224,11 +224,11 @@ export class ManagedOrderlineListItem {
     const self = this;
 
     const getStatusBadge = function(){
-      if (!self.line || !self.line.status)
+      if (!self.line || !self.line.status.status)
         return (<multi-loader class="ion-float-start" type={SUPPORTED_LOADERS.bubblingSmall}></multi-loader>)
 
       const getColorByStatus = function(){
-        switch (self.line.status){
+        switch (self.line.status.status){
           case OrderStatus.REJECTED:
             return 'danger';
           case OrderStatus.On_HOLD:
@@ -246,7 +246,7 @@ export class ManagedOrderlineListItem {
         }
       }
 
-      return (<ion-badge color={getColorByStatus()} class="ion-padding-horizontal ion-text-uppercase">{self.line.status}</ion-badge>)
+      return (<ion-badge color={getColorByStatus()} class="ion-padding-horizontal ion-text-uppercase">{self.line.status.status}</ion-badge>)
     }
 
     const getQuantityBadge = function() {

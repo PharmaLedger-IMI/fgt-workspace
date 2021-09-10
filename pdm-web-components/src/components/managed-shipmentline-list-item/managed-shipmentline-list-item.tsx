@@ -213,7 +213,7 @@ export class ManagedOrderlineListItem {
     const getStatusLabel = function(){
       if (!self.line)
         return (<ion-skeleton-text animated className="label-status"></ion-skeleton-text>)
-      return (<ion-badge>{self.line.status}</ion-badge>);
+      return (<ion-badge>{self.line.status.status}</ion-badge>);
     }
 
     const buildLabelElement = (props: any) =>{

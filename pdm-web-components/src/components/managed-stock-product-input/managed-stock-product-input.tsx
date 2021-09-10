@@ -119,7 +119,7 @@ export class ManagedStockProductInput {
           batchNumber: batch.batchNumber,
           serialNumber: serial,
           expiry: batch.expiry,
-          status: batch.status
+          status: batch.status.status
         });
       }
 
