@@ -222,6 +222,73 @@ const NOVO_NORDISK_BATCHES = {
     ]
 }
 
+const GSK_BATCHES = {
+    '05054626551625': [
+        {
+            batchNumber: "DB1",
+            quantity: 200,
+            expiry: "2022/10/31"
+        },
+        {
+            batchNumber: "DB4",
+            quantity: 350,
+            expiry: "2022/08/31"
+        }
+    ],
+    '05054626551632': [
+        {
+            batchNumber: "DB2",
+            quantity: 250,
+            expiry: "2022/12/01"
+        },
+        {
+            batchNumber: "DB5",
+            quantity: 225,
+            expiry: "2022/07/31"
+        }
+    ],
+    '05054626551649': [
+        {
+            batchNumber: "DB3",
+            quantity: 300,
+            expiry: "2022/08/31"
+        },
+        {
+            batchNumber: "DB6",
+            quantity: 325,
+            expiry: "2022/05/31"
+        }
+    ]
+}
+
+
+const TAKEDA_BATCHES = {
+    '09870007904172': [
+        {
+            batchNumber: "R23011",
+            quantity: 1400,
+            expiry: "2023/05/31"
+        },
+        {
+            batchNumber: "R56217",
+            quantity: 1450,
+            expiry: "2024/08/01"
+        }
+    ],
+    '06515062342189': [
+        {
+            batchNumber: "R15683",
+            quantity: 1700,
+            expiry: "2023/03/01"
+        },
+        {
+            batchNumber: "R94214",
+            quantity: 1650,
+            expiry: "2023/08/31"
+        }
+    ]
+}
+
 const fillBatchDetails = function(batchesObj){
     return Object.keys(batchesObj).reduce((accum, gtin) => {
         accum[gtin] = batchesObj[gtin].map(b => new Batch(Object.assign({}, b, {
@@ -252,10 +319,20 @@ const getNovoNordiskBatches = function(){
     return fillBatchDetails(NOVO_NORDISK_BATCHES);
 }
 
+const getGskBatches = function(){
+    return fillBatchDetails(GSK_BATCHES);
+}
+
+const getTakedaBatches = function(){
+    return fillBatchDetails(TAKEDA_BATCHES);
+}
+
 module.exports = {
     getMSDBatches,
     getPfizerBatches,
     getRocheBatches,
     getBayerBatches,
-    getNovoNordiskBatches
+    getNovoNordiskBatches,
+    getGskBatches,
+    getTakedaBatches
 }

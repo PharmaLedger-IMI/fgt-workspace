@@ -50,8 +50,23 @@ const getTensQuantities = function(gtin, batches){
     return Math.floor(quantityToRequest);
 }
 
-const productStrategyAll = function(products, batches){
+const productStrategyAll = function(wholesaler, products, batches){
     const selected = products.slice();
+    return {
+        products: selected,
+        quantities: selected.map(p => getTensQuantities(p.gtin, batches))
+    }
+}
+
+const productStrategyAllButTakeda = function(wholesaler, products, batches){
+
+    const takedaID = '134013710';
+
+    const identity = wholesaler.id.secret;
+
+    const isTakeda = identity.endsWith(takedaID);
+
+    const selected = products.filter(p => isTakeda ? p.manufName.endsWith(takedaID) : !p.manufName.endsWith(takedaID));
     return {
         products: selected,
         quantities: selected.map(p => getTensQuantities(p.gtin, batches))
@@ -67,7 +82,8 @@ const singleOrderPerWholesaler = function(issuedOrderManager, wholesalers, produ
         const whs = whss.shift();
         if (!whs)
             return callback();
-        const selectedProducts = productStrategy(products, batches);
+
+        const selectedProducts = productStrategy(whs, products, batches);
         issueOrder(issuedOrderManager, whs.id.secret, selectedProducts.products, selectedProducts.quantities, (err, order) => {
             if (err)
                 return callback(err);
@@ -97,7 +113,7 @@ const orderInitiator = function(conf, participantManager, products, stocksObj, b
         case APPS.SIMPLE_TRACEABILITY:
             return singleOrderPerWholesaler(issuedOrderManager, wholesalers, productStrategyAll, products, batches, callback);
         case APPS.TEST:
-            return singleOrderPerWholesaler(issuedOrderManager, wholesalers, productStrategyAll, products, batches, callback);
+            return singleOrderPerWholesaler(issuedOrderManager, wholesalers, productStrategyAllButTakeda, products, batches, callback);
         default:
             console.error(`NOT IMPLEMENTED`);
             return callback()
