@@ -159,7 +159,7 @@ class StockManager extends Manager{
                     stock.batches[sb.index] = new Batch({
                         batchNumber: updatedBatch.batchNumber,
                         expiry: updatedBatch.expiry,
-                        batchStatus: updatedBatch.status,
+                        batchStatus: updatedBatch.batchStatus,
                         quantity: sb.batch.getQuantity(),
                         serialNumbers: sb.batch.serialNumbers
                     });

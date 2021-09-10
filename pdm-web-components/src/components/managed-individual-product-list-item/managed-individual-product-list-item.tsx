@@ -117,7 +117,7 @@ export class ManagedBatchListItem {
         self.individualProduct = new IndividualProduct(Object.assign(self.individualProduct, {
           name: product.name,
           expiry: batch.expiry,
-          status: batch.status
+          status: batch.batchStatus
         }));
       });
     });

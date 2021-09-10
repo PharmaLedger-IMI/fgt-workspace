@@ -65,7 +65,7 @@ const issueSale = function(participantManager, order, batches, timeout, callback
                     batchNumber: batch.batchNumber,
                     manufName: stock.manufName,
                     expiry: batch.expiry,
-                    status: batch.status,
+                    status: batch.batchStatus,
                     serialNumber: serialNumber
                 });
             })
