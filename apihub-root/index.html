@@ -109,9 +109,19 @@
         <p><span style="font-weight: bold;">WARNING:</span> Unstable software and environments. Use at your own risk! Data persistence at risk of unexpected reset!</p>
 
         <h2>v0.6.2 Release notes 2021-09-10</h2>
-        <p>New Actors included in the Test Scenarios (GSK and Takeda) - Test Scenarios (<a href="https://upm365.sharepoint.com/sites/PharmaLedger/_layouts/15/Doc.aspx?OR=teams&action=edit&sourcedoc={9D0DED0A-E1F9-4A51-808D-D07E71CC5CF0}" target="_blank">Test Scenarios</a> and <a href="https://upm365.sharepoint.com/sites/PharmaLedger/_layouts/15/Doc.aspx?OR=teams&action=edit&sourcedoc={0BCB2A99-4E8D-4038-9988-9D9BFEAD1F76}" target="_blank">User Guide</a>);</p>
+        <p>New Actors included in the Test Scenarios (GSK and Takeda) - Test Scenarios (<a href="https://upm365.sharepoint.com/sites/PharmaLedger/_layouts/15/Doc.aspx?OR=teams&action=edit&sourcedoc={9D0DED0A-E1F9-4A51-808D-D07E71CC5CF0}" target="_blank">Test Scenarios</a> and <a href="https://upm365.sharepoint.com/sites/PharmaLedger/_layouts/15/Doc.aspx?OR=teams&action=edit&sourcedoc={0BCB2A99-4E8D-4038-9988-9D9BFEAD1F76}" target="_blank">User Guide</a>);
+            <ul>
+                <li>For the Specific Case of Takeda, a 'Mock' MAH was created, with dummy products;</li>
+                <li>The Pharmacy now makes 2 orders originally:
+                    <ul>
+                        <li>One Order with all non 'Takeda' products, made to the generic wholesaler that then relays that order to all non 'Takeda' MAHs;</li>
+                        <li>One Order will all 'Takeda' products, made to the Takeda Wholesaler that then relays to order to the 'Takeda' MAH;</li>
+                    </ul>
+                </li>
+            </ul>
+        </p>
         <p>Shipment and Order Status Updates now allow inputting additional data;</p>
-        <p>Corrected Address for Novo Nordisk;</p>
+        <p>Corrected Address for Novo Nordisk, it is now 'Bagsvaerd, Denmark';</p>
         <p>Small UI improvements;</p>
         <p>Minor bug fixes;</p>
 
