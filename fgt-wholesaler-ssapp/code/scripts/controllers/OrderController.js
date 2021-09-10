@@ -61,8 +61,8 @@ export default class OrderController extends LocalizedController {
                 case OrderStatus.CREATED:
                     return await self._handleCreateOrder.call(self, props);
                 default:
-                    const {newStatus, order} = props;
-                    return await self._handleUpdateOrderStatus.call(self, order, newStatus);
+                    const {newStatus, order, popupOptions } = props;
+                    return await self._handleUpdateOrderStatus.call(self, order, newStatus, popupOptions);
             }
         });
 
@@ -79,16 +79,18 @@ export default class OrderController extends LocalizedController {
         }, obj);
     }
 
-    async _handleUpdateOrderStatus(order, newStatus){
+    async _handleUpdateOrderStatus(order, newStatus, popupOptions){
         const self = this;
 
-        const oldStatus = order.status;
+        const oldStatus = order.status.status;
         order.status = newStatus;
         const errors = order.validate(oldStatus);
         if (errors)
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
 
-        const alert = await self.showConfirm('manage.confirm', oldStatus, newStatus);
+        // const alert = await self.showConfirm('manage.confirm', oldStatus, newStatus);
+        const popupCallback = (evt) => order.status['extraInfo'] = evt.extraInfo;
+        const alert = await self._showPopup('manage.confirm', popupOptions, popupCallback, oldStatus, newStatus);
 
         const {role} = await alert.onDidDismiss();
 

@@ -236,7 +236,7 @@ function ShipmentService(domain, strategy) {
                                     return callback(err);
                                 builder.addFileDataToDossier(LINES_PATH, JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
                                     if (err)
-                                        return ccallback(err);
+                                        return callback(err);
                                     callback();
                                 });
                             });

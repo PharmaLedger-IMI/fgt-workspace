@@ -82,7 +82,7 @@ export default class OrderController extends LocalizedController {
     async _handleUpdateOrderStatus(order, newStatus){
         const self = this;
 
-        const oldStatus = order.status;
+        const oldStatus = order.status.status;
         order.status = newStatus;
         const errors = order.validate(oldStatus);
         if (errors)
