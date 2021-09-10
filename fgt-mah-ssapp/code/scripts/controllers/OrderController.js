@@ -89,13 +89,13 @@ export default class OrderController extends LocalizedController {
     async _handleUpdateOrderStatus(order, newStatus, popupOptions = {}){
         const self = this;
 
-        const oldStatus = order.status;
-        order.status = newStatus;
+        const oldStatus = order.status.status;
+        order.status.status = newStatus;
         const errors = order.validate(oldStatus);
         if (errors)
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
 
-        const popupCallback = (evt) => order._status = { status: order.status, detail: evt.notes}
+        const popupCallback = (evt) => order.status.extraInfo = evt.extraInfo;
         const alert = await self._showPopup('manage.confirm', popupOptions, popupCallback, oldStatus, newStatus);
 
         const {role} = await alert.onDidDismiss();

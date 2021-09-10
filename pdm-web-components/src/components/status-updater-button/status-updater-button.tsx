@@ -25,7 +25,7 @@ export class StatusUpdaterButton {
   @Prop({attribute: 'add-detail-placeholder'}) addDetailPlaceholder: string = 'Add detail (optional)'
   popupOptions = {
     inputs: [
-      {name: 'notes', placeholder: this.addDetailPlaceholder}
+      {name: 'extraInfo', placeholder: this.addDetailPlaceholder}
     ]
   };
 
