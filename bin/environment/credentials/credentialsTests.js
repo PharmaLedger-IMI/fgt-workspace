@@ -289,7 +289,7 @@ const TAKEDA =  {
         "required": true
     },
     "email": {
-        "secret": "taked@mah.pharmaledger.com",
+        "secret": "takeda@mah.pharmaledger.com",
         "public": true,
         "required": true
     },
