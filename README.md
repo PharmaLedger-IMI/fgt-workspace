@@ -212,6 +212,12 @@ Open a new console inside *fgt-workspace* folder and run:
 $ npm run build-all
 ```
 
+#### Step 4: Build Environment (optional).
+
+Open a new console inside *fgt-workspace* folder and run:
+ - For a test environment setup (random data/credentials): ```npm run environment-trace```;
+ - For *THE* test setup (with predefined credentials/data): ```npm run environment-test```;
+
 ### Documentation
 
 To be able to generate the documentation for this project via
