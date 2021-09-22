@@ -104,6 +104,89 @@ export default class HomeController extends LocalizedController {
         })
 
         participantManager.setController(this);
+
+        // Dark Mode: Option 1
+        const dm = document.getElementById('dm');
+        dm.addEventListener('change', () => {
+          document.body.classList.toggle('dark');
+        });
+
+        // Dark Mode: Option 2
+        const darkmodeSwitch = (scheme, autoChange = false) =>
+    {
+        let dark = document.getElementById("dark");
+        let auto = document.getElementById("auto");
+        let light = document.getElementById("light");
+        let selector = document.getElementById("selector");
+
+        switch (scheme)
+        {
+            case 'dark':
+                selector.style.left = 0;
+                selector.style.width = dark.clientWidth + "px";
+                selector.innerHTML = "Dark";
+                selector.style.backgroundColor = "#00345b";
+                break;
+            case 'auto':
+                selector.style.left = dark.clientWidth + "px";
+                selector.style.width = auto.clientWidth + "px";
+                selector.innerHTML = "Auto";
+                selector.style.backgroundColor = "#00345b";
+                break;
+            default:
+                selector.style.left = dark.clientWidth + auto.clientWidth + 1 + "px";
+                selector.style.width = light.clientWidth + "px";
+                selector.innerHTML = "Light";
+                selector.style.backgroundColor = "#00345b";
+        }
+
+        if (scheme === 'auto')
+        {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    
+            toggleDarkTheme(prefersDark.matches, false);
+        }
+        else
+        {
+            if (scheme === 'dark')
+                document.body.classList.add('dark');
+            else
+                document.body.classList.remove('dark');
+        }
+
+          if (!autoChange)
+              localStorage.setItem('dark-mode', scheme);
+          else
+          {
+              let storageDarkMode = localStorage.getItem('dark-mode');
+              if (!storageDarkMode)
+                  localStorage.setItem('dark-mode', scheme);
+          }
+    }
+
+    const toggleDarkTheme = (shouldAdd, callDarkmodeSwitch = true) =>
+    {
+        let storageDarkMode = localStorage.getItem('dark-mode');
+    
+        document.body.classList.toggle('dark', shouldAdd);
+    
+        if (callDarkmodeSwitch)
+            darkmodeSwitch(!storageDarkMode ? 'auto' : storageDarkMode, true);
+    }
+        
+        // Use matchMedia to check the user preference
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+        toggleDarkTheme(prefersDark.matches);
+
+      // Listen for changes to the prefers-color-scheme media query
+      prefersDark.addListener((mediaQuery) => toggleDarkTheme(mediaQuery.matches));
+
+        document.querySelectorAll('[data-darkmode]').forEach((obj) => {
+          let valor = obj.getAttribute('data-darkmode');
+          obj.addEventListener('click', () => darkmodeSwitch(valor));
+      });
+
     }
 
   /**

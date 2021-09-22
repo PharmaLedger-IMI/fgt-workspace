@@ -1,164 +1,203 @@
 <webc-container controller="HomeController" translations="true">
-    <ion-app>
-        <ion-header class="ion-no-border ion-padding-top ion-padding-bottom">
-            <ion-grid>
-                <ion-row class="ion-align-items-center">
-                    <ion-col size-md="1" size-xs="2" class="ion-text-center">
-                        <img src="../assets/images/logo.svg" alt="" width="50">
-                    </ion-col>
-                    <ion-col>
-                        <ion-row class="ion-justify-content-between">
-                            <div class="flex flex-col ion-padding-start top-bar-text">
-                                {{ @participant.name }}
-                                <span>{{ @participant.id }}</span>
+    <!-- <webc-container controller="HomeController" translations="true" onLoad="loadApp()"> -->
+        <ion-app>
+            <ion-header class="ion-no-border ion-padding-top ion-padding-bottom">    
+                <ion-grid>
+                    <ion-row>
+                      <ion-col size-md="1" size-sm="3">
+                        <div class="flex ion-align-items-center ion-justify-content-center">
+                            <img src="../assets/images/logo.svg" alt="" width="50">
+                        </div>
+                      </ion-col>
+                      <ion-col class="flex ion-align-items-center" size-md="2" size-sm="3">
+                        <div class="flex flex-col ion-padding-start top-bar-text">
+                            {{ @participant.name }}
+                            <span>{{ @participant.id }}</span>
+                        </div>
+                      </ion-col>
+                      <ion-col class="flex ion-align-items-center ion-justify-content-end" size-md="9" size-sm="6">
+                        <div class="flex ion-align-items-center">
+    
+                            <!-- Dark mode: Option 1 -->
+                                <div class="mode">
+                                    <div class="mode-group">
+                                        <div id="dark" class="switch dark" data-darkmode="dark">Dark</div>
+                                        <div id="auto" class="switch auto" data-darkmode="auto">Auto</div>
+                                        <div id="light" class="switch light" data-darkmode="light">Light</div>
+                                        <div id="selector" class="selector"></div>
+                                    </div>
+                                </div>
+    
+                            <!-- Dark mode: Option 2 -->
+                            <div class="dm">
+                                <input type="checkbox" class="checkbox" id="dm" />
+                                <label class="label" for="dm">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M21 12.79C20.8427 14.4922 20.2039 16.1144 19.1582 17.4668C18.1126 18.8192 16.7035 19.8458 15.0957 20.4265C13.4879 21.0073 11.748 21.1181 10.0795 20.7461C8.41102 20.3741 6.88299 19.5345 5.67423 18.3258C4.46546 17.117 3.62594 15.589 3.25391 13.9205C2.88188 12.252 2.99272 10.5121 3.57346 8.9043C4.1542 7.29651 5.18083 5.88737 6.53321 4.84175C7.8856 3.79614 9.5078 3.15731 11.21 3C10.2134 4.34827 9.73385 6.00945 9.85853 7.68141C9.98322 9.35338 10.7039 10.9251 11.8894 12.1106C13.0749 13.2961 14.6466 14.0168 16.3186 14.1415C17.9906 14.2662 19.6517 13.7866 21 12.79Z" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 17C14.7614 17 17 14.7614 17 12C17 9.23858 14.7614 7 12 7C9.23858 7 7 9.23858 7 12C7 14.7614 9.23858 17 12 17Z" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M12 1V3" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M12 21V23" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M4.22 4.22L5.64 5.64" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M18.36 18.36L19.78 19.78" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M1 12H3" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M21 12H23" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M4.22 19.78L5.64 18.36" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M18.36 5.64L19.78 4.22" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    <div class="circle"></div>
+                                </label>
                             </div>
+    
                             <ion-button fill="clear" color="secondary" data-tag="logout">
                                 {{ @logout }}
                                 <ion-icon slot="end" name="log-out" class="ion-margin-start"></ion-icon>
                             </ion-button>
-                        </ion-row>
+                        </div>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+            </ion-header>
+    
+            <ion-grid>
+                <ion-row class="full-height">
+                    <ion-col size="1" class="ion-hide-lg-down row-items">
+                        <div data-if="@identified">
+                            <ion-list class="side-menu">
+                                <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard"></menu-tab-button>
+                                <menu-tab-button icon-name="reader" label="@menu.products" tab="tab-products"></menu-tab-button>
+                                <menu-tab-button icon-name="reader" label="@menu.receivedOrders" tab="tab-received-orders"></menu-tab-button>
+                                <menu-tab-button icon-name="map" label="@menu.issuedShipments" tab="tab-issued-shipments"></menu-tab-button>
+                                <menu-tab-button icon-name="podium" label="@menu.stock" tab="tab-stock"></menu-tab-button>
+                                <menu-tab-button icon-name="reader" label="@menu.shipmentLines" tab="tab-shipmentLines"></menu-tab-button>
+                                <menu-tab-button icon-name="bag" label="@menu.receipts" tab="tab-receipts"></menu-tab-button>
+                            </ion-list>
+                        </div>
+                    </ion-col>
+                    <ion-col>
+                        <ion-tabs id="main-content">
+                            <ion-tab tab="tab-dashboard">
+                                <ion-content class="tab-content" overflow-scroll="true">
+                                    <div data-if="@identified">
+                                        <webc-template template="dashboard" disable-container></webc-template>
+                                    </div>
+                                </ion-content>
+                            </ion-tab>
+                            <ion-tab tab="tab-products">
+                                <ion-content class="tab-content" overflow-scroll="true">
+                                    <div data-if="@identified">
+                                        <webc-template template="products" disable-container></webc-template>
+                                    </div>
+                                </ion-content>
+                            </ion-tab>
+    
+                            <ion-tab tab="tab-batches">
+                                <ion-content class="tab-content" overflow-scroll="true">
+                                    <div data-if="@identified">
+                                        <webc-template template="batches" disable-container></webc-template>
+                                    </div>
+                                </ion-content>
+                            </ion-tab>
+                            <ion-tab tab="tab-received-orders">
+                                <ion-content class="tab-content" overflow-scroll="true">
+                                    <div data-if="@identified">
+                                        <webc-template template="receivedOrders" disable-container></webc-template>
+                                    </div>
+                                </ion-content>
+                            </ion-tab>
+    
+                            <ion-tab tab="tab-issued-shipments">
+                                <ion-content class="tab-content" overflow-scroll="true">
+                                    <div data-if="@identified">
+                                        <webc-template template="issuedShipments" disable-container></webc-template>
+                                    </div>
+                                </ion-content>
+                            </ion-tab>
+    
+                            <ion-tab tab="tab-stock">
+                                <ion-content class="tab-content" overflow-scroll="true">
+                                    <div data-if="@identified">
+                                        <webc-template template="stock" disable-container></webc-template>
+                                    </div>
+                                </ion-content>
+                            </ion-tab>
+    
+                            <ion-tab tab="tab-shipmentLines">
+                                <ion-content class="tab-content" overflow-scroll="true">
+                                    <div data-if="@identified">
+                                        <webc-template template="shipmentLines" disable-container></webc-template>
+                                    </div>
+                                </ion-content>
+                            </ion-tab>
+    
+                            <ion-tab tab="tab-receipts">
+                                <ion-content class="tab-content" overflow-scroll="true">
+                                    <div data-if="@identified">
+                                        <webc-template template="receipts" disable-container></webc-template>
+                                    </div>
+                                </ion-content>
+                            </ion-tab>
+    
+                            <!-- Invisible tabs -->
+                            <ion-tab tab="tab-order">
+                                <ion-content class="tab-content" overflow-scroll="true">
+                                    <div data-if="@identified">
+                                        <webc-template template="order" disable-container></webc-template>
+                                    </div>
+                                </ion-content>
+                            </ion-tab>
+    
+                            <ion-tab tab="tab-shipment">
+                                <ion-content class="tab-content" overflow-scroll="true">
+                                    <div data-if="@identified">
+                                        <webc-template template="shipment" disable-container></webc-template>
+                                    </div>
+                                </ion-content>
+                            </ion-tab>
+    
+                            <ion-tab tab="tab-product">
+                                <ion-content class="tab-content" overflow-scroll="true">
+                                    <div data-if="@identified">
+                                        <webc-template template="product" disable-container></webc-template>
+                                    </div>
+                                </ion-content>
+                            </ion-tab>
+    
+                            <ion-tab tab="tab-batch">
+                                <ion-content class="tab-content" overflow-scroll="true">
+                                    <div data-if="@identified">
+                                        <webc-template template="batch" disable-container></webc-template>
+                                    </div>
+                                </ion-content>
+                            </ion-tab>
+    
+                            <ion-tab tab="tab-individual-product">
+                                <ion-content class="tab-content" overflow-scroll="true">
+                                    <div data-if="@identified">
+                                        <webc-template template="individualProduct" disable-container></webc-template>
+                                    </div>
+                                </ion-content>
+                            </ion-tab>
+    
+                            <div slot="bottom" data-if="@identified">
+                                <ion-tab-bar class="ion-hide-lg-up mob-menu">
+                                    <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>
+                                    <menu-tab-button icon-name="reader" label="@menu.products" tab="tab-products" mode="bar"></menu-tab-button>
+                                    <menu-tab-button icon-name="reader" label="@menu.receivedOrders" tab="tab-received-orders" mode="bar"></menu-tab-button>
+                                    <menu-tab-button icon-name="map" label="@menu.issuedShipments" tab="tab-issued-shipments" mode="bar"></menu-tab-button>
+                                    <menu-tab-button icon-name="podium" label="@menu.stock" tab="tab-stock" mode="bar"></menu-tab-button>
+                                    <menu-tab-button icon-name="reader" label="@menu.shipmentLines" tab="tab-shipmentLines" mode="bar"></menu-tab-button>
+                                    <menu-tab-button icon-name="bag" label="@menu.receipts" tab="tab-receipts" mode="bar"></menu-tab-button>
+                                </ion-tab-bar>
+                            </div>
+                        </ion-tabs>
                     </ion-col>
                 </ion-row>
             </ion-grid>
-        </ion-header>
-        <ion-grid>
-            <ion-row class="full-height">
-                <ion-col size="1" class="ion-hide-lg-down row-items">
-                    <div data-if="@identified">
-                        <ion-list class="side-menu">
-                            <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard"></menu-tab-button>
-                            <menu-tab-button icon-name="reader" label="@menu.products" tab="tab-products"></menu-tab-button>
-                            <menu-tab-button icon-name="reader" label="@menu.receivedOrders" tab="tab-received-orders"></menu-tab-button>
-                            <menu-tab-button icon-name="map" label="@menu.issuedShipments" tab="tab-issued-shipments"></menu-tab-button>
-                            <menu-tab-button icon-name="podium" label="@menu.stock" tab="tab-stock"></menu-tab-button>
-                            <menu-tab-button icon-name="reader" label="@menu.shipmentLines" tab="tab-shipmentLines"></menu-tab-button>
-                            <menu-tab-button icon-name="bag" label="@menu.receipts" tab="tab-receipts"></menu-tab-button>
-                        </ion-list>
-                    </div>
-                </ion-col>
-                <ion-col>
-                    <ion-tabs id="main-content">
-                        <ion-tab tab="tab-dashboard">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="dashboard" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-                        <ion-tab tab="tab-products">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="products" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-
-                        <ion-tab tab="tab-batches">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="batches" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-                        <ion-tab tab="tab-received-orders">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="receivedOrders" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-
-                        <ion-tab tab="tab-issued-shipments">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="issuedShipments" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-
-                        <ion-tab tab="tab-stock">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="stock" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-
-                        <ion-tab tab="tab-shipmentLines">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="shipmentLines" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-
-                        <ion-tab tab="tab-receipts">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="receipts" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-
-                        <!-- Invisible tabs -->
-                        <ion-tab tab="tab-order">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="order" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-
-                        <ion-tab tab="tab-shipment">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="shipment" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-
-                        <ion-tab tab="tab-product">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="product" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-
-                        <ion-tab tab="tab-batch">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="batch" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-
-                        <ion-tab tab="tab-individual-product">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="individualProduct" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-
-                        <div slot="bottom" data-if="@identified">
-                            <ion-tab-bar class="ion-hide-lg-up mob-menu">
-                                <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>
-                                <menu-tab-button icon-name="reader" label="@menu.products" tab="tab-products" mode="bar"></menu-tab-button>
-                                <menu-tab-button icon-name="reader" label="@menu.receivedOrders" tab="tab-received-orders" mode="bar"></menu-tab-button>
-                                <menu-tab-button icon-name="map" label="@menu.issuedShipments" tab="tab-issued-shipments" mode="bar"></menu-tab-button>
-                                <menu-tab-button icon-name="podium" label="@menu.stock" tab="tab-stock" mode="bar"></menu-tab-button>
-                                <menu-tab-button icon-name="reader" label="@menu.shipmentLines" tab="tab-shipmentLines" mode="bar"></menu-tab-button>
-                                <menu-tab-button icon-name="bag" label="@menu.receipts" tab="tab-receipts" mode="bar"></menu-tab-button>
-                            </ion-tab-bar>
-                        </div>
-                    </ion-tabs>
-                </ion-col>
-            </ion-row>
-        </ion-grid>
-        <div data-if="@identified">
-            <pdm-barcode-scanner-controller barcode-title="Please scan your pack"></pdm-barcode-scanner-controller>
-            <tracking-pop-over traceability-title="@tracking.title"></tracking-pop-over>
-        </div>
-    </ion-app>
-</webc-container>
+            <div data-if="@identified">
+                <pdm-barcode-scanner-controller barcode-title="Please scan your pack"></pdm-barcode-scanner-controller>
+                <tracking-pop-over traceability-title="@tracking.title"></tracking-pop-over>
+            </div>
+        </ion-app>
+    </webc-container>
