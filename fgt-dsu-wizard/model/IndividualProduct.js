@@ -24,7 +24,14 @@ class IndividualProduct {
                 if (individualProduct.hasOwnProperty(prop))
                     this[prop] = individualProduct[prop];
 
+        if(typeof this.expiry === 'string'){
+
+            this.expiry = new Date(this.expiry);
+
+        }
+        
         this.status = this.status || IndividualProductStatus.COMMISSIONED;
+        
     }
 
     /**
