@@ -92,16 +92,20 @@ export default class OrderController extends LocalizedController {
         const oldStatus = order.status.status;
         order.status['status'] = newStatus;
         const errors = order.validate(oldStatus);
-        if (errors)
+        if (errors) {
+            order.status['status'] = oldStatus; // rollback
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
+        }
 
         const popupCallback = (evt) => order.status['extraInfo'] = evt.extraInfo;
         const alert = await self._showPopup('manage.confirm', popupOptions, popupCallback, oldStatus, newStatus);
 
         const {role} = await alert.onDidDismiss();
 
-        if (BUTTON_ROLES.CONFIRM !== role)
+        if (BUTTON_ROLES.CONFIRM !== role) {
+            order.status['status'] = oldStatus; // rollback
             return console.log(`Order update canceled by clicking ${role}`);
+        }
 
         const loader = self._getLoader(self.translate('manage.loading'));
         await loader.present();

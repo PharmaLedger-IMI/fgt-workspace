@@ -58,15 +58,19 @@ export default class IndividualProductController extends LocalizedController{
         const oldStatus = IndividualProductStatus.COMMISSIONED;
         individualProduct.status = newStatus;
         const errors = individualProduct.validate(oldStatus);
-        if (errors)
+        if (errors) {
+            individualProduct.status = oldStatus; // rollback
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
+        }
 
         const alert = await self.showConfirm('manage.confirm', individualProduct.status, newStatus);
 
         const {role} = await alert.onDidDismiss();
 
-        if (BUTTON_ROLES.CONFIRM !== role)
+        if (BUTTON_ROLES.CONFIRM !== role) {
+            individualProduct.status = oldStatus; // rollback
             return console.log(`Shipment update canceled by clicking ${role}`);
+        }
 
         const loader = self._getLoader(self.translate('manage.loading'));
         await loader.present();

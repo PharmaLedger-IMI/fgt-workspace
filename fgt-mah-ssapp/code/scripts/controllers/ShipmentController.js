@@ -94,16 +94,20 @@ export default class ShipmentController extends LocalizedController{
         const oldStatus = shipment.status.status;
         shipment.status['status'] = newStatus;
         const errors = shipment.validate(oldStatus);
-        if (errors)
+        if (errors) {
+            shipment.status['status'] = oldStatus; // rollback
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
+        }
 
         const popupCallback = (evt) => shipment.status['extraInfo'] = evt.extraInfo;
         const alert = await self._showPopup('manage.confirm', popupOptions, popupCallback, oldStatus, newStatus);
 
         const {role} = await alert.onDidDismiss();
 
-        if (BUTTON_ROLES.CONFIRM !== role)
+        if (BUTTON_ROLES.CONFIRM !== role) {
+            shipment.status['status'] = oldStatus; // rollback
             return console.log(`Shipment update canceled by clicking ${role}`);
+        }
 
         const loader = self._getLoader(self.translate('manage.loading'));
         await loader.present();
