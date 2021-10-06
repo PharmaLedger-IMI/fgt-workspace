@@ -2,7 +2,27 @@ process.env.NO_LOGS = true;
 
 const path = require('path');
 
-require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
+try{
+
+    require('opendsu');
+
+    
+
+}catch(e){
+
+    try{
+
+        require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
+
+    }catch(e1){
+
+        console.log(e1);
+        process.exit(1);
+
+    }
+
+
+}
 const dt = require('./../../pdm-dsu-toolkit/services/dt');
 const getReceivedShipmentManager = require("../../fgt-dsu-wizard/managers/ReceivedShipmentManager");
 const getIssuedShipmentManager = require("../../fgt-dsu-wizard/managers/IssuedShipmentManager");

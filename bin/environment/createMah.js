@@ -2,7 +2,30 @@ process.env.NO_LOGS = true;
 
 const path = require('path');
 
-require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
+
+try{
+
+    require('opendsu');
+
+    
+
+}catch(e){
+
+    console.log(e);
+    try{
+
+        require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
+
+    }catch(e1){
+
+        console.log(e1);
+        process.exit(1);
+
+    }
+
+
+}
+
 const dt = require('./../../pdm-dsu-toolkit/services/dt');
 const getIssuedShipmentManager = require("../../fgt-dsu-wizard/managers/IssuedShipmentManager");
 const { getParticipantManager, getProductManager, getBatchManager, getOrderLineManager, getShipmentLineManager, getStockManager, getReceivedOrderManager, getReceiptManager} = require('../../fgt-dsu-wizard/managers');
@@ -11,6 +34,7 @@ const ROLE = require('../../fgt-dsu-wizard/model/DirectoryEntry').ROLE;
 const submitEvent = require('./listeners/eventHandler');
 
 const { APPS } = require('./credentials/credentials3');
+const { getSystemErrorMap } = require('util');
 
 const defaultOps = {
     app: "fgt-mah-wallet",
