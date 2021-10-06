@@ -2,28 +2,15 @@ process.env.NO_LOGS = true;
 
 const path = require('path');
 
-
 try{
-
     require('opendsu');
-
-    
-
 }catch(e){
-
-    console.log(e);
     try{
-
         require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
-
     }catch(e1){
-
         console.log(e1);
         process.exit(1);
-
     }
-
-
 }
 
 const dt = require('./../../pdm-dsu-toolkit/services/dt');
@@ -211,9 +198,13 @@ const trimCredentials = function(credentials){
     return creds;
 }
 
-const create = function(credentials,  callback) {
+const create = function(credentials,  pathToApps, callback) {
+    if (!callback){
+        callback = pathToApps;
+        pathToApps = undefined;
+    }
     const trimmedCreds = trimCredentials(credentials);
-    instantiateSSApp(APPS.MAH, conf.pathToApps, dt, trimmedCreds, (err, walletSSI, walletDSU, confirmedCredentials) => {
+    instantiateSSApp(APPS.MAH, pathToApps || conf.pathToApps, dt, trimmedCreds, (err, walletSSI, walletDSU, confirmedCredentials) => {
         if (err)
             return callback(err);
         const dsuStorage = impersonateDSUStorage(walletDSU.getWritableDSU());

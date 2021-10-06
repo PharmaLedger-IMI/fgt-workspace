@@ -78,8 +78,7 @@ const getBDNSConfig = function(folder){
 const defaultOps = {
     timeout: 250000,
     fakeServer: true,
-    useCallback: true,
-    pathToApps: "../",
+    useCallback: true
 }
 
 const testOpts = {
@@ -87,6 +86,7 @@ const testOpts = {
     credentials: undefined,                     // allows for the setup of predefined credentials
     products: './products/productsRandom.js',   // allows for pre-generated product data
     batchCount: 11,
+    pathToApps: "../",
     serialQuantity: 100,
     expiryOffset: 100,
     trueStock: true,                           // makes stock managers actually remove products from available for others down the line,

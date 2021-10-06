@@ -457,11 +457,11 @@ const create = function(config, credentials, callback){
 
     switch(app){
         case APPS.MAH:
-            return require('./createMah').create(credentials, cb(APPS.MAH));
+            return require('./createMah').create(credentials, conf.pathToApps, cb(APPS.MAH));
         case APPS.WHOLESALER:
-            return require('./createWholesaler').create(credentials, cb(APPS.WHOLESALER));
+            return require('./createWholesaler').create(credentials, conf.pathToApps, cb(APPS.WHOLESALER));
         case APPS.PHARMACY:
-            return require('./createPharmacy').create(credentials, cb(APPS.PHARMACY));
+            return require('./createPharmacy').create(credentials, conf.pathToApps, cb(APPS.PHARMACY));
         case APPS.SINGLE:
             return setupFullEnvironment(getSingle(), callback);
         case APPS.MULTIPLE:

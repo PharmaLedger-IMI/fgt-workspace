@@ -3,26 +3,16 @@ process.env.NO_LOGS = true;
 const path = require('path');
 
 try{
-
     require('opendsu');
-
-    
-
 }catch(e){
-
     try{
-
         require(path.join('../../privatesky/psknode/bundles', 'openDSU.js'));       // the whole 9 yards, can be replaced if only
-
     }catch(e1){
-
         console.log(e1);
         process.exit(1);
-
     }
-
-
 }
+
 const dt = require('../../pdm-dsu-toolkit/services/dt');
 const getReceivedOrderManager = require("../../fgt-dsu-wizard/managers/ReceivedOrderManager");
 const { getParticipantManager, getIssuedOrderManager, getStockManager, getReceivedShipmentManager, getSaleManager } = require('../../fgt-dsu-wizard/managers');
@@ -136,8 +126,12 @@ const setup = function (conf, participantManager, products, batches, wholesalers
     });
 };
 
-const create = function (credentials, callback) {
-    instantiateSSApp(APPS.PHARMACY, conf.pathToApps, dt, credentials, (err, walletSSI, walletDSU, credentials) => {
+const create = function (credentials,  pathToApps, callback) {
+    if (!callback){
+        callback = pathToApps;
+        pathToApps = undefined;
+    }
+    instantiateSSApp(APPS.PHARMACY, pathToApps || conf.pathToApps, dt, credentials, (err, walletSSI, walletDSU, credentials) => {
         if (err)
             return callback(err);
         const dsuStorage = impersonateDSUStorage(walletDSU.getWritableDSU());
