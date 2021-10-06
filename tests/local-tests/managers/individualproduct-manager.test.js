@@ -6,6 +6,15 @@ process.env.NO_LOGS = true; // Prevents from recording logs.
 
 /*General Dependencies*/
 
+const path = require('path');
+const test_bundles_path = path.join('../../../privatesky/psknode/bundles', 'testsRuntime.js');
+require(test_bundles_path); //mata os testes
+
+const tir = require("../../../privatesky/psknode/tests/util/tir");                // the test server framework
+
+const dc = require("double-check");
+const assert = dc.assert;
+
 const { APPS } = require('../../../bin/environment/credentials/credentials3');
 
 const {create} = require('../../../bin/environment/setupEnvironment');
@@ -13,23 +22,10 @@ const {create} = require('../../../bin/environment/setupEnvironment');
 const Utils = require('../../../pdm-dsu-toolkit/model/Utils');
 const utils = require('../../../fgt-dsu-wizard/model/utils');
 
-const path = require('path');
-const test_bundles_path = path.join('../../../privatesky/psknode/bundles', 'testsRuntime.js'); 
-require(test_bundles_path); //mata os testes
-
-//require('../../../privatesky/psknode/bundles/testsRuntime');
-
-
-
 /*Specific Dependencies*/
 let keySSIList = [];
 
-
 const { IndividualProduct } = require('../../../fgt-dsu-wizard/model');
-
-const { throws } = require('assert');
-const { assert } = require('console');
-
 
 /*Test Options Config*/
 const testOpts = {
@@ -49,11 +45,7 @@ const testOpts = {
 
 /* Tests */
 
-const testSetup = function(err, results){
-
-    if(err){
-        console.log(err);
-    };
+const testSetup = function(results, callback){
 
     console.log(`Actros created: `, results);
 
@@ -153,7 +145,18 @@ const throwError = function (err,message){
 
 /*Create test Environment and Run Tests*/
 
-create(testOpts, testSetup);
+assert.callback('testname', (cb) => {
+    create(testOpts, (err, results) => {
+        if (err)
+            throw err;
+        testSetup(results, (err) => {
+            if (err)
+                throw err;
+            cb();
+        })
+    });
+}, 150000)
+
     
  
 
