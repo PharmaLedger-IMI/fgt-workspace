@@ -36,6 +36,7 @@ let testName = 'IndividualProductManagerTest';
 const Utils = require('../../../pdm-dsu-toolkit/model/Utils');
 const utils = require('../../../fgt-dsu-wizard/model/utils');
 
+const pathToApps = '../../../'
 
 /*
 * Specific dependencies
@@ -77,7 +78,8 @@ const getBDNSConfig = function(folder){
 const defaultOps = {
     timeout: 250000,
     fakeServer: true,
-    useCallback: true
+    useCallback: true,
+    pathToApps: "../",
 }
 
 const testOpts = {
@@ -208,7 +210,7 @@ const runTest = function(callback){
             return cb(err);
     
         };
-
+        console.log('aqui');
         console.log(`Actros created: `, results);
 
         const participantManager = results['fgt-mah-wallet'][0].manager;
@@ -218,14 +220,14 @@ const runTest = function(callback){
 
 
         //Run Create Tests
-        assert.true(createIndividualProductDSU(participantManager, saveKeySSI));
+        createIndividualProductDSU(participantManager);
     
     });
 
 
     console.log('Run complete');
     
-
+    
   
 }
 
