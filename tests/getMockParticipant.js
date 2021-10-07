@@ -1,5 +1,3 @@
-process.exit(0); //to skip the test
-
 const path = require('path');
 
 try{
