@@ -1,52 +1,51 @@
-//process.exit(0); //Uncomment to skip test ...
+//process.exit(0); // Uncommnent to skip test ...
 
-/*Test Variables*/
-
-let keySSIList = [];
-
-/*
-*Test Setup 
-*/
-process.env.NO_LOGS = true; //Prevents from recording logs.
+/*Test Setup*/
+process.env.NO_LOGS = true; // Prevents from recording logs. 
 process.env.PSK_CONFIG_LOCATION = process.cwd();
 
-/*
-* General dependencies
-*/
 
+/*General Dependencies*/
 const path = require('path');
+
 const test_bundles_path = path.join('../../../privatesky/psknode/bundles', 'testsRuntime.js');
 require(test_bundles_path);
-
 const {argParser} = require('../../../bin/environment/utils');
+
+const {getCredentials, APPS} = require('../../../bin/environment/credentials/credentials3')
+
+const {getMockParticipantManager} = require('../../getMockParticipant');
 
 const dc = require("double-check");
 const assert = dc.assert;
-const tir = require('../../../privatesky/psknode/tests/util/tir');
-
-const { APPS } = require('../../../bin/environment/credentials/credentials3'); // Using credentials3 Migth Swap for Test Credentials
-const {create} = require('../../../bin/environment/setupEnvironment'); // Setup environment function
-
-const wizard = require('../../../fgt-dsu-wizard');
-const {Services, Model} = wizard;
+const tir = require("../../../privatesky/psknode/tests/util/tir");
 
 let domain = 'traceability';
-let testName = 'IndividualProductManagerTest';
+let testName = 'IndividualProductManagerTest' // no spaces please. its used as a folder name
 
 const Utils = require('../../../pdm-dsu-toolkit/model/Utils');
 const utils = require('../../../fgt-dsu-wizard/model/utils');
 
-const pathToApps = '../../../'
+/*Specific Dependencies*/
 
 /*
-* Specific dependencies
-*/
+Both Lists contain the individual product or keyssi in the respective order
+1: Random Individual Product One
+2: Random Individual Product Two
+3: Fixed Individual Product One
+4: Random Individual Product Three
+5: FixedIndividual Product Two
+*/ 
 
-const {IndividualProduct} = require('../../../fgt-dsu-wizard/model');
+keySSIList = [];
+individualProductList = [];
 
-/*
-*Test Options Config
-*/
+
+const { IndividualProduct } = require('../../../fgt-dsu-wizard/model');
+const { getIndividualProductManager } = require('../../../fgt-dsu-wizard/managers');
+
+
+/*Fake Server Config*/
 
 const DOMAIN_CONFIG = {
     anchoring: {
@@ -70,10 +69,13 @@ const getBDNSConfig = function(folder){
                 name: domain,
                 config: DOMAIN_CONFIG,
             },
+            {
+                name: 'vault',
+                config: DOMAIN_CONFIG,
+            },
         ],
     }
 }
-
 
 const defaultOps = {
     timeout: 250000,
@@ -81,65 +83,94 @@ const defaultOps = {
     useCallback: true
 }
 
-const testOpts = {
-    app: APPS.SIMPLE_TRACEABILITY,                              // defines the mode of the setup
-    credentials: undefined,                     // allows for the setup of predefined credentials
-    products: './products/productsRandom.js',   // allows for pre-generated product data
-    batchCount: 11,
-    pathToApps: "../",
-    serialQuantity: 100,
-    expiryOffset: 100,
-    trueStock: true,                           // makes stock managers actually remove products from available for others down the line,
-    exportCredentials: false,                   // export credentials for use in the Api-hubs front page
-    attachLogic: true,                         // attaches listeners to the proper managers to replicate business logic
-    statusUpdateTimeout: 5000,                   // When attachLogic is true, sets the timeout between status updates
-    timeoutMultiplier: 5                        // If attach logic is true, will wait x times the status update timeout until it ends the process
-}
-
 const TEST_CONF = argParser(defaultOps, process.argv);
 
-/*Tests*/ 
-//Create a Individual Product DSU
-const createIndividualProductDSU = function (participantManager, callback){
+/*Tests*/
 
-    console.log(`Create Individual Product DSU Test...`);
+const testFullCicle = function(individualProductManager , individualProduct){
 
-    //Individual Product manager
-    let individualProductManager;
+    testCreateProductDSU(individualProductManager, individualProduct, (err, keySSI) =>{
+        if(err)
+            return callback(err);
+        
+        keySSIList.push(keySSI);
+        individualProductList.push(individualProduct);
 
-    try{
+        testGetOneProductDSU(individualProductManager, individualProduct, (err, product) => {
+            if(err)
+                return callback(err)
+        
+            console.log('Product obtain sucessfully with compost key',product);
+            console.log('Comparing product received with product delivered!');
+            assert.true(utils.isEqual(individualProduct,product));
+            assert.true(!!product && typeof product === 'object');
+            
+            
+        })
+})
+};
 
-        console.log('Attempting to get Individual Product Manager...');
-        individualProductManager = participantManager.getManager('IndividualProductManager');
-        console.log('Individual Product Manager sucessfully obtained!', individualProductManager);
 
 
-
-
-    } catch(e) {
-
-
-    }
-
+const testCreateProductDSU = function(individualProductManager, individualProduct, callback){
     
+    console.log('Trying to create Individual Product DSU', individualProduct);
+
+    individualProductManager.create(individualProduct, (err, keySSI) =>{
+
+        if(err) {return callback(err);}; 
+
+        assert.true(!!keySSI && typeof keySSI === 'object');
+
+        console.log(`Individual Product created with SSI: ${keySSI.getIdentifier()}`);
+        callback(undefined, keySSI);
+
+    });
+
 }
 
-/*
-const createBatchDSU = function (participantManager){
+const testGetOneProductDSU = function(individualProductManager, individualProduct, callback){
+    
+    console.log('Trying to get one Individual Product DSU', individualProduct);
+    const readDSU = true;
+    const key = individualProductManager._genCompostKey(individualProduct.gtin, individualProduct.batchNumber, individualProduct.serialNumber);
 
-    createCounter++;
+    individualProductManager.getOne(key ,readDSU, (err, product) =>{
 
-    try{   
+        if(err) {return callback(err);}; 
 
-    }catch(e){
+        console.log(`Individual Product obtained with compost key: ${key}`);
+        callback(undefined, product);
 
-        return cb(e);
+    });
 
-    }
+} 
 
-    //Setup for Create test
+const testGetAll = function(individualProductManager,readDSU, callback){
 
-    const product = new IndividualProduct({
+    console.log(`Trying to read all products from DSU`);
+
+    individualProductManager.getAll(readDSU,(err , result) =>{
+
+        if(err)
+            return callback(err);
+
+        console.log(result);
+        assert.true(!!result && result === 'object');    
+
+        
+        
+        callback(undefined,result);
+
+    });
+}
+
+/*Utilities*/ 
+
+
+const getRandomIndividualProduct = function(){
+    
+    return new IndividualProduct({
 
         name: utils.generateProductName() ,
             gtin: utils.generateGtin(),
@@ -150,86 +181,101 @@ const createBatchDSU = function (participantManager){
 
     });
 
-    const batch = new Batch({
+}
 
-        batchNumber: utils.generateBatchNumber(),
-        expiry: product.expiry,
-        serialNumbers: [product.serialNumber],
-        quantity: 1,
-        
+const getFixedIndividualProduct = function(){
+
+    return new IndividualProduct({
+
+        name: utils.generateProductName() ,
+            gtin: utils.generateGtin(),
+            batchNumber: utils.generateBatchNumber(),
+            serialNumber: Utils.generateSerialNumber(10),
+            manufName:  utils.generateProductName(),
+            expiry:utils.genDate(100), 
 
     });
 
-    batchManager.create(product,batch, cb);
-
-    console.log('Create test Passed');
-
-
-
-};
-
-
-*/
-
-/*
-*Utilities
-*/ 
-const saveKeySSI = function(err, keySSI, callback){
-
-    keySSIList.push(keySSI);
-
 }
 
-const cb = function(err, ...results){
-    
-    if (err) {
-
-        console.log('cb function throws error' , err);
-        throw err;
-
-    };
-        
-    console.log(`Results:`, ...results);
-    process.exit(1)
-}
-
-
-
-/*Run tests*/ 
+/*Run Tests*/
 
 const runTest = function(callback){
+    const mahCredentials = getCredentials(APPS.MAH);
+    const credentials = Object.keys(mahCredentials).reduce((accum, key) => {
+        if (mahCredentials[key].public)
+            accum[key] = mahCredentials[key].secret;
+        return accum;
+    }, {})
+    getMockParticipantManager(domain, credentials, (err, participantManager) => {
+        if (err)
+            return callback(err);
 
-    console.log('entrei');
-
-    /*Create test Environment*/
-
-    create(testOpts, (err, results) => {
-    
-        if(err) {
-    
-            return cb(err);
-    
-        };
-        console.log('aqui');
-        console.log(`Actros created: `, results);
-
-        const participantManager = results['fgt-mah-wallet'][0].manager;
-
-        console.log('Participant Manager Obtained');
         console.log(participantManager);
 
+        //Individual Product Setup
+        const randomIndividualProductOne = getRandomIndividualProduct();
+        const randomIndividualProductTwo = getRandomIndividualProduct();
+        const fixedIndividualProductOne = getFixedIndividualProduct();
+        
+        const randomIndividualProductThree = getRandomIndividualProduct();
+        const fixedIndividualProductTwo = getFixedIndividualProduct();
 
-        //Run Create Tests
-        createIndividualProductDSU(participantManager);
+        //Getting Individual Product Manager
+        const individualProductManager = getIndividualProductManager(participantManager); 
+        console.log(individualProductManager);
+
+        //Test Full cicle
+        //Test One Random Product
+
+        try{
+            testFullCicle(individualProductManager, randomIndividualProductOne);
+            testFullCicle(individualProductManager, randomIndividualProductTwo);
+            testFullCicle(individualProductManager, fixedIndividualProductOne);
+
+        }catch(e){
+
+            console.log('Test Create Failed');
+            console.log(e);
+            process.exit(1);
+
+        }
+        
+        //Test GET ALL
+        //Test One
+
+        try{
+
+            testGetAll(individualProductManager, true , (err, result) =>{
+                if(err)
+                    return callback(err);
+                
+                console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+                console.log(result);
     
+            });
+
+
+        }catch(e){
+
+            console.log('Test Get All Failed');
+            console.log(e);
+            process.exit(1);
+
+        }
+        
+        callback();
+        console.log("Tests Completed Sucessfully");
     });
-
-
-    console.log('Run complete');
     
-    
-  
 }
+
+
+
+
+
+
+
 
 const testFinishCallback = function(callback){
     console.log(`Test ${testName} finished successfully`);
@@ -272,118 +318,3 @@ if (!TEST_CONF.useCallback)
 assert.callback(testName, (testFinished) => {
     launchTest(testFinished);
 }, TEST_CONF.timeout)
-
-
-
-/*
-let createCounter = 0;
-
-
-
-*/
-
-/*
-
-
-*/
-/*Tests*/ 
-/*
-const createBatchDSU = function (participantManager){
-
-    createCounter++;
-
-    console.log(`Create Batch DSU - ${createCounter}`);
-
-    let batchManager;
-
-    try{
-
-        console.log('trying to get batch manager');
-        batchManager = participantManager.getManager('BatchManager');
-        console.log('Batch Manager sucessfully obtained', batchManager);
-
-    }catch(e){
-
-        return cb(e);
-
-    }
-
-    //Setup for Create test
-
-    const product = new IndividualProduct({
-
-        name: utils.generateProductName() ,
-            gtin: utils.generateGtin(),
-            batchNumber: utils.generateBatchNumber(),
-            serialNumber: Utils.generateSerialNumber(10),
-            manufName:  utils.generateProductName(),
-            expiry:utils.genDate(100), 
-
-    });
-
-    const batch = new Batch({
-
-        batchNumber: utils.generateBatchNumber(),
-        expiry: product.expiry,
-        serialNumbers: [product.serialNumber],
-        quantity: 1,
-        
-
-    });
-
-    batchManager.create(product,batch, cb);
-
-    console.log('Create test Passed');
-
-
-
-};
-
-
-*/
-
-
-/*
-const runTest = function(callback){
-*/
-
-
-/*
-
-
-    create(testOpts, (err, results) => {
-    
-        if(err) {
-    
-            return cb(err);
-    
-        };
-        console.log(`Actros created: `, results);
-    
-        const participantManager = results['fgt-mah-wallet'][0].manager;
-    
-        console.log(participantManager);
-        
-        // Create Batch dsu test
-    
-        
-        assert.fail(createBatchDSU(participantManager));
-        assert.true(createBatchDSU(participantManager));
-        createBatchDSU(participantManager);
-        createBatchDSU(participantManager);
-        createBatchDSU(participantManager);
-    
-        
-        
-        
-        
-    
-    
-        
-        console.log('All Tests Completed');
-        process.exit(0);
-    
-    });
-}
-
-*/
