@@ -48,8 +48,25 @@ function impersonateDSUStorage(dsu, valueMap){
         });
     }
 
+    const mountFunc = dsu.listMountedDSUs;
+
+    const listMountedDSUs = function(basePath, callback){
+        mountFunc.call(dsu, basePath, (err, mounts) => {
+            if (err)
+                return callback(err);
+            if (basePath !== '/')
+                return callback(undefined, mounts);
+            mounts.push({
+                path: 'participant',
+                identifier: 'this is a dummy SSI'
+            });
+            callback(undefined, mounts);
+        });
+    }
+
     dsu.getObject = getObject;
     dsu.setObject = setObject;
+    dsu.listMountedDSUs = listMountedDSUs;
     return dsu;
 }
 
@@ -62,6 +79,7 @@ const getRootDSU = function(domain, data, callback){
     const keySpace = utils.getKeySSISpace();
     const resolver = utils.getResolver();
     const rootSSI = keySpace.createTemplateSeedSSI(domain, typeof data === 'string' ? data : data.join(''), undefined, undefined);
+    const participantSSI = keySpace.createTemplateSeedSSI(domain, typeof data === 'string' ? data : data.join(''), undefined, undefined);
 
     const createDBStructure = function(domain, callback){
         const dbSSI = keySpace.createTemplateSeedSSI(domain, 'db', undefined, undefined);
