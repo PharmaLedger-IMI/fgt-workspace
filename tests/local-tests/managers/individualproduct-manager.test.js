@@ -8,7 +8,7 @@ process.env.NO_LOGS = true; // Prevents from recording logs.
 
 const path = require('path');
 const test_bundles_path = path.join('../../../privatesky/psknode/bundles', 'testsRuntime.js');
-require(test_bundles_path); //mata os testes
+require(test_bundles_path); 
 
 const tir = require("../../../privatesky/psknode/tests/util/tir");                // the test server framework
 
@@ -23,9 +23,21 @@ const Utils = require('../../../pdm-dsu-toolkit/model/Utils');
 const utils = require('../../../fgt-dsu-wizard/model/utils');
 
 /*Specific Dependencies*/
-let keySSIList = [];
+
+/*
+Both Lists contain the individual product or keyssi in the respective order
+1: Random Individual Product One
+2: Random Individual Product Two
+3: Fixed Individual Product One
+4: Random Individual Product Three
+5: FixedIndividual Product Two
+*/ 
+
+keySSIList = [];
+individualProductList = [];
 
 const { IndividualProduct } = require('../../../fgt-dsu-wizard/model');
+const { getIndividualProductManager } = require('../../../fgt-dsu-wizard/managers');
 
 /*Test Options Config*/
 const testOpts = {
@@ -45,69 +57,32 @@ const testOpts = {
 
 /* Tests */
 
-const testSetup = function(results, callback){
-
-    console.log(`Actros created: `, results);
-
-
-    //Getting participant manager
-    console.log('Trying to get Participant Manager');
-    const participantManager = getParticipantManager(results);
-    console.log('Participant Manager Obtained');
-    console.log(participantManager);
-
-    //Getting Individual Product Manager
-    const individualProductManager = getIndividualProductManager(participantManager);
-    console.log(individualProductManager);
-
+const testCreateProductDSU = function(individualProductManager, individualProduct, callback){
     
+    console.log('Trying to create Individual Product DSU', individualProduct);
 
+    individualProductManager.create(individualProduct, (err, keySSI) =>{
 
+        if(err) {return callback(err);}; 
 
+        assert.true(!!keySSI && typeof keySSI === 'object');
 
+        console.log(`Individual Product created with SSI: ${keySSI.getIdentifier()}`);
+        callback(undefined, keySSI);
 
-    //Run Tests
-    runTests(individualProductManager);
-
-}
-
-const runTests = function(productManager){
-
-    testCreateProductDSU(productManager);
-
-
-    console.log('Testing finished ...');
-    console.log('Exiting Test');
-    process.exit(0);
+    });
 
 }
 
-const testCreateProductDSU = function(productManager){
-        const product = getIndividualProduct();
-        productManager.create(product,checkErrorOrSaveCreateData);
-}
+const testGetOneProductDSU = function(){}
+
+
 
 
 /*Utilities*/ 
 
-const getParticipantManager = function (results){
-    return results['fgt-mah-wallet'][0].manager;
-}
 
-const getIndividualProductManager = function(participantManager){
-    try{
-        console.log('Trying to get Individual Product Manager');
-        const individualProductManager = participantManager.getManager('ProductManager');
-        console.log('Individual Product Manager Obtained');
-        return individualProductManager;
-    }catch(e){
-        console.log('Error getting Individual Product Manager!');
-        console.log(e);
-        process.exit(1);
-    }
-}
-
-const getIndividualProduct = function(){
+const getRandomIndividualProduct = function(){
     
     return new IndividualProduct({
 
@@ -120,42 +95,113 @@ const getIndividualProduct = function(){
 
     });
 
-
 }
 
-const checkErrorOrSaveCreateData = function(err, keySSI, path){
+const getFixedIndividualProduct = function(){
 
-    if(err){
-        throwError(err, 'Error Creating Product DSU');
-    }
+    return new IndividualProduct({
 
-    let record = {
-        key:keySSI,
-        path: path,
-    };
+        name: utils.generateProductName() ,
+            gtin: utils.generateGtin(),
+            batchNumber: utils.generateBatchNumber(),
+            serialNumber: Utils.generateSerialNumber(10),
+            manufName:  utils.generateProductName(),
+            expiry:utils.genDate(100), 
 
-    keySSIList.push(record);
-}
+    });
 
-const throwError = function (err,message){
-    console.log(message);
-    console.log(err);
-    throw err;
 }
 
 /*Create test Environment and Run Tests*/
 
-assert.callback('testname', (cb) => {
+assert.callback('Individual Product Manager Test', (cb) => {
     create(testOpts, (err, results) => {
         if (err)
             throw err;
-        testSetup(results, (err) => {
-            if (err)
-                throw err;
-            cb();
-        })
+        
+        //Get participant manager
+        console.log(`Actros created: `, results);
+
+        //Individual Product Setup
+        const randomIndividualProductOne = getRandomIndividualProduct();
+        const randomIndividualProductTwo = getRandomIndividualProduct();
+        const fixedIndividualProductOne = getFixedIndividualProduct();
+        
+        const randomIndividualProductThree = getRandomIndividualProduct();
+        const fixedIndividualProductTwo = getFixedIndividualProduct();
+
+
+        //Getting participant manager
+        console.log('Trying to get Participant Manager');
+        const participantManager = results['fgt-mah-wallet'][0].manager;
+        console.log('Participant Manager Obtained');
+        console.log(participantManager);
+
+        //Getting Individual Product Manager
+        const individualProductManager = getIndividualProductManager(participantManager); 
+        //const individualProductManager = getIndividualProductManager(participantManager);
+        console.log(individualProductManager);
+        
+
+        //Test Full cicle
+        //Test One Random Product
+        assert.pass(testCreateProductDSU(individualProductManager, randomIndividualProductOne, (err, keySSI) =>{
+            if(err)
+                return callback(err);
+            
+            keySSIList.push(keySSI);
+            individualProductList.push(randomIndividualProductOne);
+
+        }));
+
+        // //Test Two Random Product
+        // assert.pass(testCreateProductDSU(individualProductManager, randomIndividualProductTwo, (err, keySSI) =>{
+        //     if(err)
+        //         return callback(err);
+            
+        //     keySSIList.push(keySSI);
+        //     individualProductList.push(randomIndividualProductTwo);
+
+        // }));
+
+        // //Test Three Fixed Product
+        // assert.pass(testCreateProductDSU(individualProductManager, fixedIndividualProductOne, (err, keySSI) =>{
+        //     if(err)
+        //         return callback(err);
+            
+        //     keySSIList.push(keySSI);
+        //     individualProductList.push(fixedIndividualProductOne);
+
+        // }));
+
+
+
+
+            //test create
+            //test get all
+            // get one
+            //remove
+            
+
+        
     });
-}, 150000)
+}, 400000);
+
+
+/*
+testCreate(order, orderService, (err, keySSI) => {
+        if (err)
+            return callback(err);
+        testGet(keySSI, order, orderService, (err, orderFromSSI) => {
+            if (err)
+                return callback(err);
+            testUpdate(keySSI, orderFromSSI, orderService, (err) => {
+                if (err)
+                    return callback(err);
+                callback();
+            });
+        });
+    });*/
 
     
  
