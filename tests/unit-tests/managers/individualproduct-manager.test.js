@@ -100,6 +100,8 @@ const testCreateProductDSU = function(individualProductManager, individualProduc
 
 /**
  * use generic names. this is meant as a skeleton for all managers, eg: testGetOne
+ * also look at the proposed aproach below. remember, you are building a skeleton test file. the overall structure should applyt to each manager, but each might require different unit tests
+ *
  * @param individualProductManager
  * @param individualProduct
  * @param callback
@@ -256,6 +258,24 @@ const populateProductList = function(numOfProducts){
     }
 }
 
+
+/***
+ * why not try:
+ * <pre>
+ *     function(manager, test, accumulator, ...args){
+ *         const callback = args.pop();
+ *         ...
+ *     }
+ * </pre>
+ *
+ * this would allow you to use one iterator function only. testCompare would be useless
+ * @param manager
+ * @param productList
+ * @param test
+ * @param accumulator
+ * @param callback
+ * @returns {*}
+ */
 const testIterator = function(manager , productList, test ,accumulator , callback){
     
     const product = productList.shift();
@@ -337,7 +357,10 @@ const runTest = function(callback){
         //Getting Individual Product Manager
         const individualProductManager = getIndividualProductManager(participantManager); 
         console.log(individualProductManager);
-        
+
+
+
+
         //Test create
         testIterator(individualProductManager, individualProductList, testCreateProductDSU, (err, products) => {
             
