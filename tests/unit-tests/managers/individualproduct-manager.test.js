@@ -28,14 +28,6 @@ const utils = require('../../../fgt-dsu-wizard/model/utils');
 
 /*Specific Dependencies*/
 
-/*
-Both Lists contain the individual product or keyssi in the respective order
-1: Random Individual Product One
-2: Random Individual Product Two
-3: Fixed Individual Product One
-4: Random Individual Product Three
-5: FixedIndividual Product Two
-*/ 
 
 compostKeyList = [];
 individualProductList = [];
@@ -164,6 +156,7 @@ const testCompare = function(individualProductManager, productOne, productTwo, c
 
 const testUpdate = function(individualProductManager,individualProduct,callback){
 
+    //no functionality yet
 
 }
 const testRemove = function(individualProductManager,individualProduct,callback){
