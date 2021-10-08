@@ -37,8 +37,10 @@ Both Lists contain the individual product or keyssi in the respective order
 5: FixedIndividual Product Two
 */ 
 
-keySSIList = [];
+compostKeyList = [];
 individualProductList = [];
+individualProductListCopy = [];
+usedIndividualProductList = [];
 
 
 const { IndividualProduct } = require('../../../fgt-dsu-wizard/model');
@@ -78,7 +80,7 @@ const getBDNSConfig = function(folder){
 }
 
 const defaultOps = {
-    timeout: 250000,
+    timeout: 500000000,
     fakeServer: true,
     useCallback: true
 }
@@ -86,31 +88,6 @@ const defaultOps = {
 const TEST_CONF = argParser(defaultOps, process.argv);
 
 /*Tests*/
-
-const testFullCicle = function(individualProductManager , individualProduct){
-
-    testCreateProductDSU(individualProductManager, individualProduct, (err, keySSI) =>{
-        if(err)
-            return callback(err);
-        
-        keySSIList.push(keySSI);
-        individualProductList.push(individualProduct);
-
-        testGetOneProductDSU(individualProductManager, individualProduct, (err, product) => {
-            if(err)
-                return callback(err)
-        
-            console.log('Product obtain sucessfully with compost key',product);
-            console.log('Comparing product received with product delivered!');
-            assert.true(utils.isEqual(individualProduct,product));
-            assert.true(!!product && typeof product === 'object');
-            
-            
-        })
-})
-};
-
-
 
 const testCreateProductDSU = function(individualProductManager, individualProduct, callback){
     
@@ -140,6 +117,10 @@ const testGetOneProductDSU = function(individualProductManager, individualProduc
         if(err) {return callback(err);}; 
 
         console.log(`Individual Product obtained with compost key: ${key}`);
+        console.log('Comparing product received with product delivered!');
+        assert.true(utils.isEqual(individualProduct,product));
+        assert.true(!!product && typeof product === 'object');
+        console.log('Products are equal!');
         callback(undefined, product);
 
     });
@@ -156,7 +137,7 @@ const testGetAll = function(individualProductManager,readDSU, callback){
             return callback(err);
 
         console.log(result);
-        assert.true(!!result && result === 'object');    
+           
 
         
         
@@ -165,10 +146,64 @@ const testGetAll = function(individualProductManager,readDSU, callback){
     });
 }
 
+const testCompare = function(individualProductManager, productOne, productTwo, callback){
+
+    const isEqual = utils.isEqual(productOne,productTwo);
+    console.log(productOne, ' / ', productTwo);
+    
+    if(!isEqual){
+        console.log('Products are not equal!')
+        
+        return callback(err);
+    }
+
+    console.log('Products are equal!');
+    callback(undefined, isEqual);
+
+}
+
+const testUpdate = function(individualProductManager,individualProduct,callback){
+
+
+}
+const testRemove = function(individualProductManager,individualProduct,callback){
+    
+    console.log('Trying to remove one Individual Product DSU', individualProduct);
+    const key = individualProductManager._genCompostKey(individualProduct.gtin, individualProduct.batchNumber, individualProduct.serialNumber);
+
+    individualProductManager.remove(key,(err, something) => {
+        if(err)
+            return callback(err);
+        
+        if(something === undefined){
+            
+            console.log(something, 'Item removed!')
+
+        }
+
+        assert.pass(individualProductManager.getOne(key, (err, product) =>{
+
+            if(err) {
+                
+                return callback(err);}; 
+    
+            
+            callback(undefined, product);
+    
+        }))
+    })
+}
+
+
 /*Utilities*/ 
 
+const catchError = function(err,message){
+    console.log(message);
+    console.log(err);
+    process.exit(1);
+}
 
-const getRandomIndividualProduct = function(){
+const getIndividualProduct = function(){
     
     return new IndividualProduct({
 
@@ -183,18 +218,69 @@ const getRandomIndividualProduct = function(){
 
 }
 
-const getFixedIndividualProduct = function(){
+const populateProductList = function(numOfProducts){
+    for(let i = 0; i < numOfProducts; i++){
 
-    return new IndividualProduct({
+        individualProductList.push(getIndividualProduct());
+    
+    }
+}
 
-        name: utils.generateProductName() ,
-            gtin: utils.generateGtin(),
-            batchNumber: utils.generateBatchNumber(),
-            serialNumber: Utils.generateSerialNumber(10),
-            manufName:  utils.generateProductName(),
-            expiry:utils.genDate(100), 
+const testIterator = function(manager , productList, test ,accumulator , callback){
+    
+    const product = productList.shift();
 
-    });
+    if(!callback){
+        callback = accumulator;
+        accumulator = [];
+    }
+    
+    if(!product){
+        return callback(undefined,accumulator); 
+    }
+
+    accumulator.push(product);
+    let key = manager._genCompostKey(product.gtin, product.batchNumber,product.serialNumber);
+
+    test(manager , product ,(err, result) => {
+
+        testIterator(manager,productList, test, accumulator, callback);
+
+    })
+
+
+}
+
+const testIteratorCompare = function(manager , productList, compareList, test ,accumulator , callback){
+    
+    const product = productList.pop();
+    const compareProduct = compareList.shift();
+
+    if(!callback){
+        callback = accumulator;
+        accumulator = [];
+    }
+
+    if(productList.length !== compareList.length){
+
+        console.log(productList.length , ' / ', compareList.length);
+        return callback(true);
+    
+    }
+    
+    if(!product && !compareProduct){
+        return callback(undefined, accumulator); 
+    }
+
+    accumulator.push(product);
+    let key = manager._genCompostKey(product.gtin, product.batchNumber,product.serialNumber);
+
+    test(manager , product , compareProduct , (err, result) => {
+
+        testIteratorCompare(manager,productList,compareList, test, accumulator, callback);
+
+    })
+
 
 }
 
@@ -213,69 +299,57 @@ const runTest = function(callback){
 
         console.log(participantManager);
 
-        //Individual Product Setup
-        const randomIndividualProductOne = getRandomIndividualProduct();
-        const randomIndividualProductTwo = getRandomIndividualProduct();
-        const fixedIndividualProductOne = getFixedIndividualProduct();
-        
-        const randomIndividualProductThree = getRandomIndividualProduct();
-        const fixedIndividualProductTwo = getFixedIndividualProduct();
+        //Populate product List
+        populateProductList(10); //more than 25 products breaks test
+
+        individualProductListCopy = individualProductList;
 
         //Getting Individual Product Manager
         const individualProductManager = getIndividualProductManager(participantManager); 
         console.log(individualProductManager);
-
-        //Test Full cicle
-        //Test One Random Product
-
-        try{
-            testFullCicle(individualProductManager, randomIndividualProductOne);
-            testFullCicle(individualProductManager, randomIndividualProductTwo);
-            testFullCicle(individualProductManager, fixedIndividualProductOne);
-
-        }catch(e){
-
-            console.log('Test Create Failed');
-            console.log(e);
-            process.exit(1);
-
-        }
         
-        //Test GET ALL
-        //Test One
+        //Test create
+        testIterator(individualProductManager, individualProductList, testCreateProductDSU, (err, products) => {
+            
+            if(err){
+                return callback(err);
+            }
 
-        try{
+            console.log(products);
 
-            testGetAll(individualProductManager, true , (err, result) =>{
-                if(err)
+            //Test get one
+            testIterator(individualProductManager, products, testGetOneProductDSU,(err, products)=> {
+
+                if(err){
                     return callback(err);
-                
-                console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
-                console.log(result);
-    
-            });
+                }
 
+                //Test get all
+                testGetAll(individualProductManager,true,(err,results) => {
 
-        }catch(e){
+                    if(err) 
+                        return callback(err);
 
-            console.log('Test Get All Failed');
-            console.log(e);
-            process.exit(1);
+                    //Compare results with original list using iterator
+                    testIteratorCompare(individualProductManager,products,results,testCompare,(err, products) => {
 
-        }
-        
-        callback();
-        console.log("Tests Completed Sucessfully");
-    });
-    
+                        if(err)
+                            return callback(err);
+
+                        testIterator(individualProductManager,products.slice(0,products.length/2), testRemove,(err , products)=> {
+                            if(err)
+                                return callback(err);
+
+                            console.log("Tests Completed Sucessfully");
+                            callback();
+
+                        })
+                    })
+                })
+            })
+        })      
+    }) 
 }
-
-
-
-
-
-
-
 
 const testFinishCallback = function(callback){
     console.log(`Test ${testName} finished successfully`);
@@ -318,3 +392,6 @@ if (!TEST_CONF.useCallback)
 assert.callback(testName, (testFinished) => {
     launchTest(testFinished);
 }, TEST_CONF.timeout)
+
+
+
