@@ -98,8 +98,45 @@ const testCreateProductDSU = function(individualProductManager, individualProduc
 
 }
 
+/**
+ * use generic names. this is meant as a skeleton for all managers, eg: testGetOne
+ * @param individualProductManager
+ * @param individualProduct
+ * @param callback
+ */
 const testGetOneProductDSU = function(individualProductManager, individualProduct, callback){
-    
+    // const key = individualProductManager._genCompostKey(individualProduct.gtin, individualProduct.batchNumber, individualProduct.serialNumber);
+    //
+    // const run = function(callback){
+    //     individualProductManager.getOne(key, true, (err, product) => {
+    //         if (err)
+    //             return callback(err);
+    //         individualProductManager.getOne(key, false, (err, record) => {
+    //             if (err)
+    //                 return callback(err);
+    //             callback(undefined, product, record);
+    //         });
+    //     });
+    // }
+    //
+    // const testAll = function(product, record, callback){
+    //
+    //     const testProductEquality = function(){
+    //         assert.true(utils.isEqual(individualProduct, product), "Products are not equal"); // i think this method already compares types
+    //     }
+    //
+    //     const testNotReadDSU = function(){
+    //         // in this case the !readDSU returns the KeySSI (this may not be the correct behaviour)
+    //         assert.true(!!record)
+    //     }
+    // }
+    //
+    // run((err, ...args) => {
+    //     if (err)
+    //         return callback(err);
+    //     testAll(...args, callback);
+    // });
+
     console.log('Trying to get one Individual Product DSU', individualProduct);
     const readDSU = true;
     const key = individualProductManager._genCompostKey(individualProduct.gtin, individualProduct.batchNumber, individualProduct.serialNumber);
