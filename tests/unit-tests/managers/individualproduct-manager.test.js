@@ -313,7 +313,7 @@ const testGetAll = function(manager, readDSU, list, callback){
 
     let options = {
         query:['batchNumber == '+ itemList[0].batchNumber],
-        sort: "dsc",
+        sort: "asc",
         limit: undefined,
     }
 
@@ -330,7 +330,18 @@ const testGetAll = function(manager, readDSU, list, callback){
             manager.getAll(readDSU, options, (err, resultsQueryTwo) => {
 
             
-                const filteredResultsTwo = itemList.filter((item) => item.gtin <= 55289538478425);
+                const filteredResultsTwo = itemList.filter((item) => item.gtin <= 55289538478425).sort((a,b) => {
+                    if(a.gtin < b.gtin){
+                        return -1;
+                    }
+                    if(a.gtin > b.gtin){
+                        return 1;
+                    }
+                    if(a.gtin === b.gtin){
+                        return 0;
+                    }
+
+                });
 
                 console.log(resultsQueryTwo);
                 console.log(filteredResultsTwo);
@@ -347,6 +358,8 @@ const testGetAll = function(manager, readDSU, list, callback){
         const testItemRemoved = function (){
            assert.true(utils.isEqual(resultsQueryOne,filteredResultsOne), 'Query doesnt match expected result');
            assert.true(resultsQueryTwo.length,filteredResultsTwo.length, 'Query doesnt match expected result');
+           assert.true(utils.isEqual(resultsQueryTwo,filteredResultsTwo), 'Query doesnt match expected result');
+
            callback(undefined,'complete');
 
         }();
