@@ -35,7 +35,6 @@ individualProductList = [];
 const { IndividualProduct } = require('../../../fgt-dsu-wizard/model');
 const { getIndividualProductManager } = require('../../../fgt-dsu-wizard/managers');
 
-
 /*Fake Server Config*/
 
 const DOMAIN_CONFIG = {
@@ -144,7 +143,6 @@ const testIterator = function(manager, test, itemList, accumulator,...args){
 
     if(!!list){
         const itemTwo = list.pop();
-        console.log('Running test with extra parameter');
 
         test(item , itemTwo ,(err, result) => {
             if(err)
@@ -183,8 +181,11 @@ const testIterator = function(manager, test, itemList, accumulator,...args){
         manager.create(item, (err , keySSI , path) => {
             if(err)
                 return callback(err);
-                callback(undefined, item, keySSI, path);}
-    )};
+
+            callback(undefined, item, keySSI, path);
+                
+        })
+    }                   
 
     const testAll = function(item, keySSI, path, callback){
         
@@ -192,9 +193,11 @@ const testIterator = function(manager, test, itemList, accumulator,...args){
             assert.notNull(keySSI, 'Key SSI is null!');
             assert.notNull(path, 'Path is null!');
 
+            callback(undefined , keySSI);
+
         }();
 
-        callback(undefined , keySSI);
+        
 
           
     };
@@ -222,15 +225,26 @@ const testIterator = function(manager, test, itemList, accumulator,...args){
         manager.getOne(key, true, (err, product) => {
             if(err)
                 return callback(err);
+
+            manager.getOne(key, false, (err, record) => {
+                if(err)
+                    return callback(err);         
+
+                callback(undefined, product, record);
+
+            })
             
-            callback(undefined,product);
         });
     };
 
-    const testAll = function(product, callback){
+    const testAll = function(product, record, callback){
         
         const testProductEquality = function (){
             assert.true(utils.isEqual(item , product), 'Products are not equal!');
+        }();
+
+        const testObtainedRecord = function (){
+            assert.true(!!record, 'Failed to get the record!');
         }();
 
         callback(undefined);
@@ -276,7 +290,6 @@ const testGetAll = function(manager, readDSU, list, callback){
             })
         }();
 
-        callback(undefined, results);
         
     };
 
@@ -287,6 +300,68 @@ const testGetAll = function(manager, readDSU, list, callback){
         testAll(...args, callback);
     });
 }
+
+/**
+ * @param manager // represents the manager being tested
+ * @param itemList // represents the item list you want to get
+ * @param {function(err, product, record)} callback
+ * 
+ */
+
+ const testGetAllWithQueries = function(manager, itemList, callback){
+    const readDSU = true;
+
+    let options = {
+        query:['batchNumber == '+ itemList[0].batchNumber],
+        sort: "dsc",
+        limit: undefined,
+    }
+
+    const run = function(callback){
+
+        manager.getAll(readDSU, options, (err, resultsQueryOne) => {
+            if(err)
+                return callback(err);
+            
+            const filteredResultsOne = itemList.filter((item) => itemList[0].batchNumber === item.batchNumber);
+
+            options.query = ['gtin <= 55289538478425'];
+
+            manager.getAll(readDSU, options, (err, resultsQueryTwo) => {
+
+            
+                const filteredResultsTwo = itemList.filter((item) => item.gtin <= 55289538478425);
+
+                console.log(resultsQueryTwo);
+                console.log(filteredResultsTwo);
+
+
+                callback(undefined, resultsQueryOne, filteredResultsOne, resultsQueryTwo, filteredResultsTwo);
+            })
+          
+        })      
+    };
+
+    const testAll = function(resultsQueryOne, filteredResultsOne, resultsQueryTwo, filteredResultsTwo, callback){
+        
+        const testItemRemoved = function (){
+           assert.true(utils.isEqual(resultsQueryOne,filteredResultsOne), 'Query doesnt match expected result');
+           assert.true(resultsQueryTwo.length,filteredResultsTwo.length, 'Query doesnt match expected result');
+           callback(undefined,'complete');
+
+        }();
+
+        
+
+    };
+
+    run((err, ...args) => {
+        if(err)
+            return callback(err);
+        
+        testAll(...args, callback);
+    });
+};
 
 /**
  * @param manager // represents the manager being tested
@@ -321,7 +396,7 @@ const testGetAll = function(manager, readDSU, list, callback){
             });       
         }();
 
-        callback(undefined);
+    
 
     };
 
@@ -350,10 +425,12 @@ const runTest = function(callback){
 
         //Declare needed variables
         let itemList = [];
+        let queryList = [];
 
 
         //Populate product list
-        populateProductList(5,itemList);
+        populateProductList(10,itemList);
+        populateProductList(10,queryList);
         
 
         //Getting Individual Product Manager
@@ -368,26 +445,44 @@ const runTest = function(callback){
 
             console.log(list);
 
+            //Test get one with iterator
             testIterator(manager, testGetOne, list, (err, newList) => {
 
                 if(err)
                     return callback(err);
 
-                
+                //Test get all
                 testGetAll(manager, true, newList, (err, results) => {
                     if(err)
                         return callback(err);
-
+                    //Test remove with iterator
                     testIterator(manager, testRemove, results,(err) => {
                         if(err)
                             return callback(err);
-                        
-                        callback();
 
+                            //Populate DB for get ALL query tests
+                            testIterator(manager, testCreate, queryList, (err, results) => {
+                                if(err)
+                                    return callback(err);
+
+                                testGetAllWithQueries(manager,results, (err, message) =>{
+                                    if(err)
+                                        return callback(err);
+
+                                    console.log(message);
+
+
+                                    callback();
+                                } )
+                            })
                     })
                 })   
             })
         })
+
+       
+
+
           
     
     
@@ -440,4 +535,6 @@ if (!TEST_CONF.useCallback)
 assert.callback(testName, (testFinished) => {
     launchTest(testFinished);
 }, TEST_CONF.timeout)
+
+
 
