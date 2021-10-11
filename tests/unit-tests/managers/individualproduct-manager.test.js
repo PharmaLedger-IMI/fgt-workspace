@@ -4,6 +4,8 @@
 process.env.NO_LOGS = true; // Prevents from recording logs. 
 process.env.PSK_CONFIG_LOCATION = process.cwd();
 
+const myTimeout = 250000;
+
 
 /*General Dependencies*/
 const path = require('path');
@@ -28,12 +30,7 @@ const utils = require('../../../fgt-dsu-wizard/model/utils');
 
 /*Specific Dependencies*/
 
-
-compostKeyList = [];
 individualProductList = [];
-individualProductListCopy = [];
-usedIndividualProductList = [];
-
 
 const { IndividualProduct } = require('../../../fgt-dsu-wizard/model');
 const { getIndividualProductManager } = require('../../../fgt-dsu-wizard/managers');
@@ -72,169 +69,14 @@ const getBDNSConfig = function(folder){
 }
 
 const defaultOps = {
-    timeout: 500000000,
+    timeout: myTimeout,
     fakeServer: true,
     useCallback: true
 }
 
 const TEST_CONF = argParser(defaultOps, process.argv);
 
-/*Tests*/
-
-const testCreateProductDSU = function(individualProductManager, individualProduct, callback){
-    
-    console.log('Trying to create Individual Product DSU', individualProduct);
-
-    individualProductManager.create(individualProduct, (err, keySSI) =>{
-
-        if(err) {return callback(err);}; 
-
-        assert.true(!!keySSI && typeof keySSI === 'object');
-
-        console.log(`Individual Product created with SSI: ${keySSI.getIdentifier()}`);
-        callback(undefined, keySSI);
-
-    });
-
-}
-
-/**
- * use generic names. this is meant as a skeleton for all managers, eg: testGetOne
- * also look at the proposed aproach below. remember, you are building a skeleton test file. the overall structure should applyt to each manager, but each might require different unit tests
- *
- * @param individualProductManager
- * @param individualProduct
- * @param callback
- */
-const testGetOneProductDSU = function(individualProductManager, individualProduct, callback){
-    // const key = individualProductManager._genCompostKey(individualProduct.gtin, individualProduct.batchNumber, individualProduct.serialNumber);
-    //
-    // const run = function(callback){
-    //     individualProductManager.getOne(key, true, (err, product) => {
-    //         if (err)
-    //             return callback(err);
-    //         individualProductManager.getOne(key, false, (err, record) => {
-    //             if (err)
-    //                 return callback(err);
-    //             callback(undefined, product, record);
-    //         });
-    //     });
-    // }
-    //
-    // const testAll = function(product, record, callback){
-    //
-    //     const testProductEquality = function(){
-    //         assert.true(utils.isEqual(individualProduct, product), "Products are not equal"); // i think this method already compares types
-    //     }
-    //
-    //     const testNotReadDSU = function(){
-    //         // in this case the !readDSU returns the KeySSI (this may not be the correct behaviour)
-    //         assert.true(!!record)
-    //     }
-    // }
-    //
-    // run((err, ...args) => {
-    //     if (err)
-    //         return callback(err);
-    //     testAll(...args, callback);
-    // });
-
-    console.log('Trying to get one Individual Product DSU', individualProduct);
-    const readDSU = true;
-    const key = individualProductManager._genCompostKey(individualProduct.gtin, individualProduct.batchNumber, individualProduct.serialNumber);
-
-    individualProductManager.getOne(key ,readDSU, (err, product) =>{
-
-        if(err) {return callback(err);}; 
-
-        console.log(`Individual Product obtained with compost key: ${key}`);
-        console.log('Comparing product received with product delivered!');
-        assert.true(utils.isEqual(individualProduct,product));
-        assert.true(!!product && typeof product === 'object');
-        console.log('Products are equal!');
-        callback(undefined, product);
-
-    });
-
-} 
-
-const testGetAll = function(individualProductManager,readDSU, callback){
-
-    console.log(`Trying to read all products from DSU`);
-
-    individualProductManager.getAll(readDSU,(err , result) =>{
-
-        if(err)
-            return callback(err);
-
-        console.log(result);
-           
-
-        
-        
-        callback(undefined,result);
-
-    });
-}
-
-const testCompare = function(individualProductManager, productOne, productTwo, callback){
-
-    const isEqual = utils.isEqual(productOne,productTwo);
-    console.log(productOne, ' / ', productTwo);
-    
-    if(!isEqual){
-        console.log('Products are not equal!')
-        
-        return callback(err);
-    }
-
-    console.log('Products are equal!');
-    callback(undefined, isEqual);
-
-}
-
-const testUpdate = function(individualProductManager,individualProduct,callback){
-
-    //no functionality yet
-
-}
-const testRemove = function(individualProductManager,individualProduct,callback){
-    
-    console.log('Trying to remove one Individual Product DSU', individualProduct);
-    const key = individualProductManager._genCompostKey(individualProduct.gtin, individualProduct.batchNumber, individualProduct.serialNumber);
-
-    individualProductManager.remove(key,(err, something) => {
-        if(err)
-            return callback(err);
-        
-        if(something === undefined){
-            
-            console.log(something, 'Item removed!')
-
-        }
-
-        assert.pass(individualProductManager.getOne(key, (err, product) =>{
-
-            if(err) {
-                
-                return callback(err);}; 
-    
-            
-            callback(undefined, product);
-    
-        }))
-    })
-}
-
-
 /*Utilities*/ 
-
-const catchError = function(err,message){
-    console.log(message);
-    console.log(err);
-    process.exit(1);
-}
-
 const getIndividualProduct = function(){
     
     return new IndividualProduct({
@@ -250,25 +92,30 @@ const getIndividualProduct = function(){
 
 }
 
-const populateProductList = function(numOfProducts){
+const populateProductList = function(numOfProducts, list){
+
     for(let i = 0; i < numOfProducts; i++){
 
-        individualProductList.push(getIndividualProduct());
+            list.push(getIndividualProduct());
     
     }
 }
 
+/**
+ * @param itemOne // represents first item
+ * @param ItemTwo  // represents second item
+ * @param {function(err, product, record)} callback
+ */
+
+const compareItems = function(itemOne, itemTwo, callback){
+
+    assert.true(utils.isEqual(itemOne, itemTwo));
+
+    callback(undefined);
+}
 
 /***
- * why not try:
- * <pre>
- *     function(manager, test, accumulator, ...args){
- *         const callback = args.pop();
- *         ...
- *     }
- * </pre>
- *
- * this would allow you to use one iterator function only. testCompare would be useless
+ * 
  * @param manager
  * @param productList
  * @param test
@@ -276,63 +123,215 @@ const populateProductList = function(numOfProducts){
  * @param callback
  * @returns {*}
  */
-const testIterator = function(manager , productList, test ,accumulator , callback){
-    
-    const product = productList.shift();
 
-    if(!callback){
-        callback = accumulator;
+
+const testIterator = function(manager, test, itemList, accumulator,...args){
+    const callback = args.length > 0? args.pop(): accumulator;
+    const list = args.pop();
+
+    if(callback === accumulator){
         accumulator = [];
     }
-    
-    if(!product){
+
+    const item = itemList.shift();
+
+    if(!item){
         return callback(undefined,accumulator); 
     }
 
-    accumulator.push(product);
-    let key = manager._genCompostKey(product.gtin, product.batchNumber,product.serialNumber);
+    accumulator.push(item);
+    let key = manager._genCompostKey(item.gtin, item.batchNumber, item.serialNumber);
 
-    test(manager , product ,(err, result) => {
+    if(!!list){
+        const itemTwo = list.pop();
+        console.log('Running test with extra parameter');
 
-        testIterator(manager,productList, test, accumulator, callback);
+        test(item , itemTwo ,(err, result) => {
+            if(err)
+                return callback(err);
 
-    })
+            testIterator(manager, test, itemList, accumulator, list, callback);
 
+        })
+
+
+    }
+
+    if(!list){
+        test(manager , item ,(err, result) => {
+            if(err)
+                return callback(err);
+
+            testIterator(manager, test, itemList, accumulator, callback);
+
+        })
+    }
 
 }
 
-const testIteratorCompare = function(manager , productList, compareList, test ,accumulator , callback){
-    
-    const product = productList.pop();
-    const compareProduct = compareList.shift();
+/*Tests*/
 
-    if(!callback){
-        callback = accumulator;
-        accumulator = [];
-    }
+/**
+ * @param manager // represents the manager being tested
+ * @param item // represents the item you want to get
+ * @param {function(err, product, record)} callback
+ */
 
-    if(productList.length !== compareList.length){
+ const testCreate = function(manager , item, callback){
 
-        console.log(productList.length , ' / ', compareList.length);
-        return callback(true);
-    
-    }
-    
-    if(!product && !compareProduct){
-        return callback(undefined, accumulator); 
-    }
+    const run = function(callback){
+        manager.create(item, (err , keySSI , path) => {
+            if(err)
+                return callback(err);
+                callback(undefined, item, keySSI, path);}
+    )};
 
-    accumulator.push(product);
-    let key = manager._genCompostKey(product.gtin, product.batchNumber,product.serialNumber);
+    const testAll = function(item, keySSI, path, callback){
+        
+        const testCreateBasic = function(){
+            assert.notNull(keySSI, 'Key SSI is null!');
+            assert.notNull(path, 'Path is null!');
 
-    test(manager , product , compareProduct , (err, result) => {
+        }();
 
-        testIteratorCompare(manager,productList,compareList, test, accumulator, callback);
+        callback(undefined , keySSI);
 
-    })
+          
+    };
 
+    run((err, ...args) => {
+        if(err)
+            return callback(err);
+        
+        testAll(...args, callback);
+    });
 
 }
+
+
+/**
+ * @param manager // represents the manager being tested
+ * @param item // represents the item you want to get
+ * @param {function(err, product, record)} callback
+ */
+
+ const testGetOne = function(manager, item, callback){
+    const key = manager._genCompostKey(item.gtin, item.batchNumber, item.serialNumber);
+
+    const run = function(callback){
+        manager.getOne(key, true, (err, product) => {
+            if(err)
+                return callback(err);
+            
+            callback(undefined,product);
+        });
+    };
+
+    const testAll = function(product, callback){
+        
+        const testProductEquality = function (){
+            assert.true(utils.isEqual(item , product), 'Products are not equal!');
+        }();
+
+        callback(undefined);
+
+    };
+
+    run((err, ...args) => {
+        if(err)
+            return callback(err);
+        
+        testAll(...args, callback);
+    });
+};
+
+/**
+ * @param manager // represents the manager being tested
+ * @param readDSU // represents a boolean
+ * @param list // represents list to compare to get all
+ * @param {function(err, product, record)} callback
+ */
+
+const testGetAll = function(manager, readDSU, list, callback){
+
+    const run = function(callback){
+        manager.getAll(readDSU,(err, results) =>{
+            if(err)
+                return callback(err);
+
+
+            callback(undefined,results);
+        })
+    };
+
+    const testAll = function(results, callback){
+        
+        const testResults = function (){
+            testIterator(manager, compareItems , list,[], results, (err, results) => {
+                if(err)
+                    return  callback(err);
+
+                callback(undefined, results);
+
+            })
+        }();
+
+        callback(undefined, results);
+        
+    };
+
+    run((err, ...args) => {
+        if(err)
+            return callback(err);
+        
+        testAll(...args, callback);
+    });
+}
+
+/**
+ * @param manager // represents the manager being tested
+ * @param item // represents the item you want to get
+ * @param {function(err, product, record)} callback
+ */
+
+ const testRemove = function(manager, item, callback){
+    const key = manager._genCompostKey(item.gtin, item.batchNumber, item.serialNumber);
+
+    const run = function(callback){
+
+        manager.remove(key, (err) => {
+            if(err)
+                return callback(err);
+            
+            callback(undefined, key);
+        })
+        
+    };
+
+    const testAll = function(key, callback){
+        
+        const testItemRemoved = function (){
+            manager.getOne(key, true, (err, product) => {
+                if(!err)
+                    return callback(err);
+                    
+                assert.false(utils.isEqual(item , product), 'Products are not equal!');
+                
+                callback(undefined,product);
+            });       
+        }();
+
+        callback(undefined);
+
+    };
+
+    run((err, ...args) => {
+        if(err)
+            return callback(err);
+        
+        testAll(...args, callback);
+    });
+};
 
 /*Run Tests*/
 
@@ -349,59 +348,55 @@ const runTest = function(callback){
 
         console.log(participantManager);
 
-        //Populate product List
-        populateProductList(10); //more than 25 products breaks test
+        //Declare needed variables
+        let itemList = [];
 
-        individualProductListCopy = individualProductList;
+
+        //Populate product list
+        populateProductList(5,itemList);
+        
 
         //Getting Individual Product Manager
-        const individualProductManager = getIndividualProductManager(participantManager); 
-        console.log(individualProductManager);
+        const manager = getIndividualProductManager(participantManager); 
+        console.log(manager);
 
+        //Test create with iterator and item
+        testIterator(manager, testCreate, itemList,(err, list) => {
 
-
-
-        //Test create
-        testIterator(individualProductManager, individualProductList, testCreateProductDSU, (err, products) => {
-            
-            if(err){
+            if(err)
                 return callback(err);
-            }
 
-            console.log(products);
+            console.log(list);
 
-            //Test get one
-            testIterator(individualProductManager, products, testGetOneProductDSU,(err, products)=> {
+            testIterator(manager, testGetOne, list, (err, newList) => {
 
-                if(err){
+                if(err)
                     return callback(err);
-                }
 
-                //Test get all
-                testGetAll(individualProductManager,true,(err,results) => {
-
-                    if(err) 
+                
+                testGetAll(manager, true, newList, (err, results) => {
+                    if(err)
                         return callback(err);
 
-                    //Compare results with original list using iterator
-                    testIteratorCompare(individualProductManager,products,results,testCompare,(err, products) => {
-
+                    testIterator(manager, testRemove, results,(err) => {
                         if(err)
                             return callback(err);
+                        
+                        callback();
 
-                        testIterator(individualProductManager,products.slice(0,products.length/2), testRemove,(err , products)=> {
-                            if(err)
-                                return callback(err);
-
-                            console.log("Tests Completed Sucessfully");
-                            callback();
-
-                        })
                     })
-                })
+                })   
             })
-        })      
+        })
+          
+    
+    
+    
+    
     }) 
+
+
+
 }
 
 const testFinishCallback = function(callback){
@@ -417,7 +412,7 @@ const launchTest = function(callback){
     const testRunner = function(callback){
         runTest((err) => {
             if (err)
-                return callback(err);
+                throw err;
             testFinishCallback(callback);
         });
     }
@@ -445,6 +440,4 @@ if (!TEST_CONF.useCallback)
 assert.callback(testName, (testFinished) => {
     launchTest(testFinished);
 }, TEST_CONF.timeout)
-
-
 
