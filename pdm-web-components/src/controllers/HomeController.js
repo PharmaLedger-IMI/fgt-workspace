@@ -11,7 +11,6 @@ import {
 } from '../constants/events'
 import {WebManagerService} from '../services/WebManagerService';
 import HistoryNavigator from "../utils/HistoryNavigator";
-
 /**
  * Main Controller For the SSApp Architecture. Should be instantiated like so:
  *
@@ -37,7 +36,6 @@ export default class HomeController extends LocalizedController {
     initializeModel = () => ({
         participant: {}
     });
-
     constructor(...args) {
         super(true, ...args);
         super.bindLocale(this, "");
@@ -48,7 +46,6 @@ export default class HomeController extends LocalizedController {
       this.historyNavigator = new HistoryNavigator({tab: 'tab-dashboard', props: {}}, 10);
         const self = this;
         self._updateLoading(this.model.loading.loading.status, this.model.loading.loading.progress)
-
         this.on(EVENT_ION_TABS_WILL_CHANGE, (evt) => {
             const el = self.element.querySelector(`ion-tab[tab="${evt.detail.tab}"] webc-container`)
               || self.querySelector(`ion-tab[tab="${evt.detail.tab}"] ion-content`);
@@ -67,23 +64,18 @@ export default class HomeController extends LocalizedController {
                 el.dispatchEvent(event)
               });
             }
-
         }, {capture: true});
-
         this.on(EVENT_NAVIGATE_TAB, (evt) => {
           evt.preventDefault();
           evt.stopImmediatePropagation();
           self._navigateToTab.call(self, evt.detail);
         });
-
         this.on(EVENT_BACK_NAVIGATE, (evt) => {
           const previousTab = this.historyNavigator.getBackToPreviousTab();
           evt.preventDefault();
           evt.stopImmediatePropagation();
           self._navigateToTab.call(self, previousTab);
         });
-
-
         const participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, false, (err, pManager) => {
               if (err)
                   console.log(`Failed Participant Manager Initialization`);
@@ -98,95 +90,11 @@ export default class HomeController extends LocalizedController {
                 self._testParticipant();
               }, Math.floor(Math.random() * 100));
           });
-
         self.onTagClick('logout', () => {
           location.reload();
         })
 
         participantManager.setController(this);
-
-        // Dark Mode: Option 1
-        const dm = document.getElementById('dm');
-        dm.addEventListener('change', () => {
-          document.body.classList.toggle('dark');
-        });
-
-        // Dark Mode: Option 2
-        const darkmodeSwitch = (scheme, autoChange = false) =>
-    {
-        let dark = document.getElementById("dark");
-        let auto = document.getElementById("auto");
-        let light = document.getElementById("light");
-        let selector = document.getElementById("selector");
-
-        switch (scheme)
-        {
-            case 'dark':
-                selector.style.left = 0;
-                selector.style.width = dark.clientWidth + "px";
-                selector.innerHTML = "Dark";
-                selector.style.backgroundColor = "#00345b";
-                break;
-            case 'auto':
-                selector.style.left = dark.clientWidth + "px";
-                selector.style.width = auto.clientWidth + "px";
-                selector.innerHTML = "Auto";
-                selector.style.backgroundColor = "#00345b";
-                break;
-            default:
-                selector.style.left = dark.clientWidth + auto.clientWidth + 1 + "px";
-                selector.style.width = light.clientWidth + "px";
-                selector.innerHTML = "Light";
-                selector.style.backgroundColor = "#00345b";
-        }
-
-        if (scheme === 'auto')
-        {
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    
-            toggleDarkTheme(prefersDark.matches, false);
-        }
-        else
-        {
-            if (scheme === 'dark')
-                document.body.classList.add('dark');
-            else
-                document.body.classList.remove('dark');
-        }
-
-          if (!autoChange)
-              localStorage.setItem('dark-mode', scheme);
-          else
-          {
-              let storageDarkMode = localStorage.getItem('dark-mode');
-              if (!storageDarkMode)
-                  localStorage.setItem('dark-mode', scheme);
-          }
-    }
-
-    const toggleDarkTheme = (shouldAdd, callDarkmodeSwitch = true) =>
-    {
-        let storageDarkMode = localStorage.getItem('dark-mode');
-    
-        document.body.classList.toggle('dark', shouldAdd);
-    
-        if (callDarkmodeSwitch)
-            darkmodeSwitch(!storageDarkMode ? 'auto' : storageDarkMode, true);
-    }
-        
-        // Use matchMedia to check the user preference
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-
-        toggleDarkTheme(prefersDark.matches);
-
-      // Listen for changes to the prefers-color-scheme media query
-      prefersDark.addListener((mediaQuery) => toggleDarkTheme(mediaQuery.matches));
-
-        document.querySelectorAll('[data-darkmode]').forEach((obj) => {
-          let valor = obj.getAttribute('data-darkmode');
-          obj.addEventListener('click', () => darkmodeSwitch(valor));
-      });
-
     }
 
   /**
@@ -206,7 +114,6 @@ export default class HomeController extends LocalizedController {
       self.setState(props.props);
       el.select(props.tab);
     }
-
   /**
    * Updates loading status
    * @param status
@@ -221,13 +128,11 @@ export default class HomeController extends LocalizedController {
       }
       if (!status && !progress)
         return this._concludeLoading();
-
       this.send(EVENT_SSAPP_STATUS_UPDATE, {
           status: status,
           progress: progress
         }, {capture: true});
     };
-
   /**
    * Signals the SSApp has finished loading
    * @private
@@ -235,7 +140,6 @@ export default class HomeController extends LocalizedController {
   _concludeLoading(){
       this.send(EVENT_SSAPP_HAS_LOADED, {}, {capture: true});
     }
-
   /**
    * Reads the identity from the DSU
    * @private
@@ -250,12 +154,10 @@ export default class HomeController extends LocalizedController {
               return self.showErrorToast(`Could not retrieve identity. Build process seems to not have worked properly`);
             self._updateLoading(this.model.loading.booted.status, this.model.loading.booted.progress)
             self.model.participant = identity;
-
             // Give UI some time to breathe and render stuff, it needs it this time...
             setTimeout(() => {
               self._concludeLoading();
             }, 500);
-
           });
         }, Math.floor(Math.random() * 100));
     }
