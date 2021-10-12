@@ -206,8 +206,8 @@ class StockManager extends Manager{
     updateAll(gtins, newStocks, callback){
         if (!callback){
             callback = newStocks;
-            newStocks = gtin;
-            gtins = newStock.map(s => s.gtin);
+            newStocks = gtins;
+            gtins = newStocks.map(s => s.gtin);
         }
         let self = this;
         super.updateAll(gtins, newStocks, (err) => {
