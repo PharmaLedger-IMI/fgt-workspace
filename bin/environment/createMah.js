@@ -41,6 +41,23 @@ const setupProducts = function(participantManager, products, batches, callback){
             return callback(err);
         participantManager.productManager = productManager;
         products = products || require('./products/productsRandom')();
+
+        const storage = productManager.getStorage();
+
+        const errCb = function(err){
+            storage.cancelBatch(err2 => {
+                if (err2)
+                    console.log(`Could not cancelBatch over error`, err2);
+                callback(err);
+            });
+        }
+
+        try {
+            storage.beginBatch();
+        } catch (e){
+            return callback(e);
+        }
+
         const iterator = function(productsCopy, callback){
             const product = productsCopy.shift();
             if (!product){
@@ -53,7 +70,16 @@ const setupProducts = function(participantManager, products, batches, callback){
                 iterator(productsCopy, callback);
             });
         }
-        iterator(products.slice(), callback);
+
+        iterator(products.slice(), (err, products) => {
+            if (err)
+                return errCb(err);
+            storage.commitBatch(err => {
+                if (err)
+                    return errCb(err);
+                callback(undefined, products);
+            })
+        });
     });
 }
 
@@ -71,6 +97,22 @@ const setupBatches = function(participantManager, products, batches,  callback){
             }
 
         const batchesObject = {};
+
+        const storage = batchManager.getStorage();
+
+        const errCb = function(err){
+            storage.cancelBatch(err2 => {
+                if (err2)
+                    console.log(`Could not cancelBatch over error`, err2);
+                callback(err);
+            });
+        }
+
+        try {
+            storage.beginBatch();
+        } catch (e){
+            return callback(e);
+        }
 
         const productIterator = function(productsCopy, callback){
             const product = productsCopy.shift();
@@ -102,13 +144,17 @@ const setupBatches = function(participantManager, products, batches,  callback){
 
         productIterator(products.slice(), (err, batchesObj) => {
             if (err)
-                return callback(err);
-            const output = [];
-            Object.keys(batchesObj).forEach(gtin => {
-                output.push(`The following batches per gtin have been created:\nGtin: ${gtin}\nBatches: ${batchesObj[gtin].map(b => b.batchNumber).join(', ')}`);
+                return errCb(err);
+            storage.commitBatch(err => {
+                if (err)
+                    return errCb(err);
+                const output = [];
+                Object.keys(batchesObj).forEach(gtin => {
+                    output.push(`The following batches per gtin have been created:\nGtin: ${gtin}\nBatches: ${batchesObj[gtin].map(b => b.batchNumber).join(', ')}`);
+                });
+                console.log(output.join('\n'));
+                callback(undefined, batchesObj);
             });
-            console.log(output.join('\n'));
-            callback(undefined, batchesObj);
         });
     });
 }
@@ -166,7 +212,7 @@ const setup = function(conf, participantManager, products, batches, callback){
     }
 
     console.log(`Beginning batch operation on database`);
-    db.beginBatch();
+    // db.beginBatch();
     setupProducts(participantManager, products, batches, (err, productsObj) => {
         if (err)
             return newCallback(err);
@@ -176,16 +222,16 @@ const setup = function(conf, participantManager, products, batches, callback){
             setupManager(participantManager, (err) => {
                 if (err)
                     return newCallback(err);
-                db.commitBatch((err) => {
-                    if (err)
-                        return newCallback(err);
+                // db.commitBatch((err) => {
+                //     if (err)
+                //         return newCallback(err);
                     console.log(`Updates to db committed`);
                     attachLogic(participantManager, conf, (err) => {
                         if (err)
                             return callback(err);
                         callback(undefined, productsObj, batchesObj);
                     })
-                });
+                // });
             });
         });
     });

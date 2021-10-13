@@ -284,6 +284,22 @@ const setupDirectories = function(actors, allProducts, callback){
 
         console.log(`Storing actor directory entries for ${actor.credentials.id.secret}`)
 
+        const storage = actor.manager.directoryManager.getStorage();
+
+        const errCb = function(err){
+            storage.cancelBatch(err2 => {
+                if (err2)
+                    console.log(`Could not cancelBatch over error`, err2);
+                callback(err);
+            });
+        }
+
+        try {
+            storage.beginBatch();
+        } catch (e){
+            return callback(e);
+        }
+
         const otherIterator = function(othersCopy, callback){
             const other = othersCopy.shift();
             if (!other)
@@ -297,9 +313,15 @@ const setupDirectories = function(actors, allProducts, callback){
             });
         }
 
-        otherIterator(others.slice(), (err) => err
-            ? callback(err)
-            : actorIterator(actorsCopy, callback));
+        otherIterator(others.slice(), (err) => {
+            if (err)
+                return errCb(err);
+            storage.commitBatch(err => {
+                if (err)
+                    return callback(err);
+                actorIterator(actorsCopy, callback);
+            });
+        });
     }
 
     const doActors = function(callback){
@@ -340,6 +362,22 @@ const setupDirectories = function(actors, allProducts, callback){
 
             console.log(`Storing Product directory entries for ${actor.credentials.id.secret}`)
 
+            const storage = actor.manager.directoryManager.getStorage();
+
+            const errCb = function(err){
+                storage.cancelBatch(err2 => {
+                    if (err2)
+                        console.log(`Could not cancelBatch over error`, err2);
+                    callback(err);
+                });
+            }
+
+            try {
+                storage.beginBatch();
+            } catch (e){
+                return callback(e);
+            }
+
             const productIterator = function(productsCopy, callback){
                 const product = productsCopy.shift();
                 if (!product)
@@ -352,9 +390,16 @@ const setupDirectories = function(actors, allProducts, callback){
                 });
             }
 
-            productIterator(products.slice(), (err) => err
-                ? callback(err)
-                : actorIterator(actorsCopy, callback));
+            productIterator(products.slice(), (err) => {
+                if (err)
+                    return errCb(err);
+
+                storage.commitBatch(err => {
+                    if (err)
+                        return errCb(err);
+                    actorIterator(actorsCopy, callback)
+                })
+            });
         }
 
         actorIterator(results[APPS.WHOLESALER].slice(), ...products, (err) => {

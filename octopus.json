@@ -651,6 +651,23 @@
             ]
         }
     ],
+    "deploy-chain": [
+        {
+            "name":"blockchain-node",
+            "src": "https://Pharmaledger:x_Jp6JwvD4sQFu4cQA3T@gitlab.pdmfc.com/pharmaledger/blockchain-node-workspace.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd blockchain-node && npm install && npm run build-all"
+                }
+            ]
+        }
+    ],
     "install-mobile": [],
     "build-mobile": [],
     "docs":  [

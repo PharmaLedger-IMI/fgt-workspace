@@ -170,9 +170,26 @@ class Manager{
         const callback = props.pop();
         props.push('__timestamp');
         const self = this;
-        self.getStorage().getIndexedFields(self.tableName, (err, indexes) => {
+        const storage = self.getStorage();
+        try{
+            storage.beginBatch();
+        } catch (e){
+            console.log(e)
+
+        }
+
+        const errCb = function(message, err, callback){
+            storage.cancelBatch(err2 => {
+                if (err2)
+                    return self._err(`Could not cancelBatch over error: ${message}`, err2, callback);
+                self._err(message, err, callback);
+            });
+        }
+
+        storage.getIndexedFields(self.tableName, (err, indexes) => {
             if (err)
-                return self._err(`Could not retrieve indexes from table ${self.tableName}`, err, callback);
+                return errCb(`Could not retrieve indexes from table ${self.tableName}`, err, callback);
+
             const newIndexes = [];
             const indexIterator = function(propsClone, callback){
                 const index = propsClone.shift();
@@ -180,17 +197,24 @@ class Manager{
                     return callback(undefined, newIndexes);
                 if (indexes.indexOf(index) !== -1)
                     return indexIterator(propsClone, callback);
-                self.getStorage().addIndex(self.tableName, index, (err) => {
+                storage.addIndex(self.tableName, index, (err) => {
                     if (err)
-                        return self._err(`Could not add index ${index} on table ${self.tableName}`, err, callback);
+                        return errCb(`Could not retrieve indexes from table ${self.tableName}`, err, callback);
+
                     newIndexes.push(index);
                     indexIterator(propsClone, callback);
                 });
             }
 
-            indexIterator(props.slice(), (err, updatedIndexes) => err
-                ? self._err(`Could not update indexes for table ${self.tableName}`, err, callback)
-                : callback(undefined, updatedIndexes));
+            indexIterator(props.slice(), (err, updatedIndexes) => {
+                if (err)
+                    return errCb(`Could not update indexes for table ${self.tableName}`, err, callback);
+                storage.commitBatch((err) => {
+                    if (err)
+                        return errCb(`Indexes committed for table ${self.tableName}`, err, callback);
+                    callback(undefined, updatedIndexes);
+                });
+            });
         });
     }
 
