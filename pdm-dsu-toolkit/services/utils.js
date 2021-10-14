@@ -223,7 +223,7 @@ const functionCallIterator = function(func, keys, ...args){
 			throw new Error("arguments need to be arrays");
 	});
 
-	if (!keys || keys.length !== args.length)
+	if (!keys || !args.every(a => a.length === keys.length))
 		throw new Error("Keys dont match args");
 
 	const result = {}
@@ -238,10 +238,18 @@ const functionCallIterator = function(func, keys, ...args){
 
 	const iterator = function(...argz){
 		const callback = argz.pop();
+		console.log('callback: ', callback);
+		console.log('argz: ', argz);
 		const callArgs = argz.map(a => a.shift()).filter(a => !!a);
+		
+		console.log('callArgs: ', callArgs);
+		console.log('argzAfter: ', argz);
 
 		if (callArgs.length !== argz.length || callArgs.every(ca => Array.isArray(ca) && !ca.length))
 			return callback();
+
+		if(callArgs.length < 2)
+			callArgs.unshift(callArgs.map(a => a.gtin));
 
 		try{
 			func(...callArgs, (err, ...results) => {
