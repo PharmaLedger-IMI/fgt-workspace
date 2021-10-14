@@ -1,7 +1,13 @@
+//process.exit(0); // Uncomment to skip test ...
 
-process.env.NO_LOGS = true;
+/*Test Setup*/
+process.env.NO_LOGS = true; // Prevents from recording logs. 
 process.env.PSK_CONFIG_LOCATION = process.cwd();
 
+let domain = 'traceability';
+let testName = 'ManagerTest' // no spaces please. its used as a folder name (change for the unit being tested)
+
+/*General Dependencies*/
 const path = require('path');
 
 const test_bundles_path = path.join('../../../privatesky/psknode/bundles', 'testsRuntime.js');
@@ -16,8 +22,13 @@ const dc = require("double-check");
 const assert = dc.assert;
 const tir = require("../../../privatesky/psknode/tests/util/tir");
 
-let domain = 'traceability';
-let testName = 'ManagerTest' // no spaces please. its used as a folder name
+const utils = require('../../utils');
+
+/*Specific Dependencies*/
+
+const { getIndividualProductManager } = require('../../../fgt-dsu-wizard/managers'); //change for the manager you want to test
+
+/*Fake Server Config*/
 
 const DOMAIN_CONFIG = {
     anchoring: {
@@ -50,7 +61,7 @@ const getBDNSConfig = function(folder){
 }
 
 const defaultOps = {
-    timeout: 250000,
+    timeout: 2500000,
     fakeServer: true,
     useCallback: true
 }
@@ -58,19 +69,7 @@ const defaultOps = {
 const TEST_CONF = argParser(defaultOps, process.argv);
 
 
-const testCreate = function(item, itemService, callback){
-    console.log(`Trying to create item`);
-}
-
-const testGet = function(keySSI, item, itemService, callback){
-    console.log(`Trying to read product from SSI: ${keySSI.getIdentifier()}`);
-}
-
-const testUpdate = function(keySSI, item, itemService, callback){
-    console.log(`Trying to update product from SSI: ${keySSI.getIdentifier()}`);
-}
-
-
+/*Run Tests*/
 
 const runTest = function(callback){
     const mahCredentials = getCredentials(APPS.MAH);
@@ -82,10 +81,17 @@ const runTest = function(callback){
     getMockParticipantManager(domain, credentials, (err, participantManager) => {
         if (err)
             return callback(err);
+
         console.log(participantManager);
-        callback();
-    });
-}
+
+        //Getting Individual Product Manager
+        const manager = getIndividualProductManager(participantManager); 
+       
+
+
+
+    });     
+};
 
 const testFinishCallback = function(callback){
     console.log(`Test ${testName} finished successfully`);
@@ -100,7 +106,7 @@ const launchTest = function(callback){
     const testRunner = function(callback){
         runTest((err) => {
             if (err)
-                return callback(err);
+                throw err;
             testFinishCallback(callback);
         });
     }
@@ -128,5 +134,3 @@ if (!TEST_CONF.useCallback)
 assert.callback(testName, (testFinished) => {
     launchTest(testFinished);
 }, TEST_CONF.timeout)
-
-
