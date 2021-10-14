@@ -213,7 +213,7 @@ const getMounts = function(dsu, basePath, ...paths){
  * @param args
  * @memberOf Utils
  */
-const functionCallIterator = function(func, keys, ...args){
+const functionCallIterator = function(func, ...args){
 	if (!args || args.length < 1)
 		throw new Error("Needs at least a callback");
 	const callback = args.pop();
@@ -223,24 +223,27 @@ const functionCallIterator = function(func, keys, ...args){
 			throw new Error("arguments need to be arrays");
 	});
 
+	const keys = args.shift();
+
 	if (!keys || !args.every(a => a.length === keys.length))
 		throw new Error("Keys dont match args");
 
-	const result = {}
+	const result = [];
 
 	const updateResult = function(callArgs, ...res){
 		let scope = result;
 		callArgs.forEach((ca, i) => {
-			scope[ca[keys[i]]] = scope[ca[keys[i]]] || (i === callArgs.length - 1 ? res : {});
+			scope[ca[keys[i]]] = scope[ca[keys[i]]] || (i === callArgs.length - 1 ? res : []);
 			scope = scope[ca[keys[i]]];
 		});
 	}
 
-	const iterator = function(...argz){
+	const iterator = function(keys ,...argz){
 		const callback = argz.pop();
 		console.log('callback: ', callback);
 		console.log('argz: ', argz);
 		const callArgs = argz.map(a => a.shift()).filter(a => !!a);
+		const callKey = keys.shift();
 		
 		console.log('callArgs: ', callArgs);
 		console.log('argzAfter: ', argz);
@@ -248,15 +251,15 @@ const functionCallIterator = function(func, keys, ...args){
 		if (callArgs.length !== argz.length || callArgs.every(ca => Array.isArray(ca) && !ca.length))
 			return callback();
 
-		if(callArgs.length < 2)
-			callArgs.unshift(callArgs.map(a => a.gtin));
+		if(callArgs)
+			return callback();
 
 		try{
-			func(...callArgs, (err, ...results) => {
+			func(callKey, ...callArgs, (err, ...results) => {
 				if (err)
 					return callback(err);
 				updateResult(callArgs, results);
-				iterator(...argz, callback);
+				iterator(keys, ...argz, callback);
 			});
 		} catch(e){
 			return callback(e);
