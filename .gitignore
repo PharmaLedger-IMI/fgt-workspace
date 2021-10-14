@@ -107,6 +107,7 @@ web-cardinal-ion
 .idea
 
 gtin-dsu-wizard
+gtin-resolver
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/jetbrains+all,vscode,netbeans,eclipse,node,objective-c,android

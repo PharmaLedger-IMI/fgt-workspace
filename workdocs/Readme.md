@@ -46,6 +46,8 @@ You will be present with a menu from where you can choose the SSApp you with to 
 
 #include "workdocs/Installation.md"
 
+#include "workdocs/testblockchain.md"
+
 #include "workdocs/build-mobile.md"
 
 #include "workdocs/workspace.md"

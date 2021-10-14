@@ -37,7 +37,7 @@
     "environment": "cd ./bin/environment && node --trace-warnings ./setup.js --app=traceability --exportCredentials=true",
     "environment-trace": "cd ./bin/environment && node --trace-warnings ./setup.js --app=traceability --attachLogic=true --exportCredentials=true",
     "environment-test": "cd ./bin/environment && node --trace-warnings ./setup.js --app=test --attachLogic=true --exportCredentials=true",
-    "deploy-chain": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run deploy-chain\""
+    "deploy-test-chain": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run deploy-chain\""
   },
   "repository": {
     "type": "git",

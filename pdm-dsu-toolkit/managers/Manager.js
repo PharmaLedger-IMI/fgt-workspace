@@ -171,10 +171,26 @@ class Manager{
         props.push('__timestamp');
         const self = this;
         const storage = self.getStorage();
-        try{
-            storage.beginBatch();
-        } catch (e){
-            console.log(e)
+
+        let batchCallCount = 0;
+
+        const beginBatch = function(callback){
+            if (batchCallCount > 0){
+                batchCallCount ++;
+                return callback();
+
+            }
+            try {
+                storage.beginBatch();
+                batchCallCount ++;
+            } catch (e){
+                return callback(e)
+            }
+
+            callback();
+        }
+
+        const commitBatch = function(callback){
 
         }
 
@@ -197,13 +213,18 @@ class Manager{
                     return callback(undefined, newIndexes);
                 if (indexes.indexOf(index) !== -1)
                     return indexIterator(propsClone, callback);
-                storage.addIndex(self.tableName, index, (err) => {
+                beginBatch((err) => {
                     if (err)
-                        return errCb(`Could not retrieve indexes from table ${self.tableName}`, err, callback);
+                        return errCb('Could not start batch Mode', err, callback);
+                    storage.addIndex(self.tableName, index, (err) => {
+                        if (err)
+                            return errCb(`Could not retrieve indexes from table ${self.tableName}`, err, callback);
 
-                    newIndexes.push(index);
-                    indexIterator(propsClone, callback);
-                });
+                        newIndexes.push(index);
+                        indexIterator(propsClone, callback);
+                    });
+                })
+
             }
 
             indexIterator(props.slice(), (err, updatedIndexes) => {
