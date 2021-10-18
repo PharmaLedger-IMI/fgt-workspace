@@ -130,23 +130,6 @@ function OrderService(domain, strategy) {
                 return callback(err);
         }
 
-
-
-        // if (isSimple){
-        //     let keySSI = this.generateKey(gtin, batch.batchNumber);
-        //     utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
-        //         if (err)
-        //             return callback(err);
-                
-      
-
-        //         dsu.writeFile(INFO_PATH, data, (err) => {
-        //             if (err)
-        //                 
-                    
-        //         });
-        //     });
-
         self.get(keySSI, (err, orderFromSSI, orderDsu) => {
             if (err)
                 return callback(err);
