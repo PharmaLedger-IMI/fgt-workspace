@@ -184,31 +184,42 @@ function OrderService(domain, strategy) {
         Utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);
+
+            try {
+                dsu.beginBatch();
+            } catch (e) {
+                return callback(e);
+            }
+
             dsu.writeFile(INFO_PATH, JSON.stringify(order), (err) => {
                 if (err)
-                    return callback(err);
+                    return dsu.cancelBatch(callback);
                 console.log("Order /info ", JSON.stringify(order));
                 createOrderStatus(order.requesterId, order.status,(err, statusSSI) => {
                     if (err)
-                        return callback(err);
+                        return dsu.cancelBatch(callback);
                     // Mount must take string version of keyssi
                     dsu.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(), (err) => {
                         if (err)
-                            return callback(err);
+                            return dsu.cancelBatch(callback);
                         console.log(`OrderStatus DSU (${statusSSI.getIdentifier(true)}) mounted at '/status'`);
                         createOrderLines(order, statusSSI, (err, orderLines) => {
                             if (err)
-                                return callback(err);
+                                return dsu.cancelBatch(callback);
                             const lines = JSON.stringify(orderLines.map(o => o.getIdentifier(true)));
                             dsu.writeFile('/lines', lines, (err) => {
                                 if (err)
-                                    return callback(err);
-                                dsu.getKeySSIAsObject((err, keySSI) => {
+                                    return dsu.cancelBatch(callback);
+                                dsu.commitBatch((err) => {
                                     if (err)
                                         return callback(err);
-                                    console.log("Finished creating Order " + keySSI.getIdentifier(true));
-                                    callback(undefined, keySSI, orderLines);
-                                });
+                                    dsu.getKeySSIAsObject((err, keySSI) => {
+                                        if (err)
+                                            return callback(err);
+                                        console.log("Finished creating Order " + keySSI.getIdentifier(true));
+                                        callback(undefined, keySSI, orderLines);
+                                        });                    
+                                    });
                             });
                         });
                     });
