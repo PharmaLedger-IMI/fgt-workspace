@@ -159,38 +159,67 @@ function ShipmentService(domain, strategy) {
     }
 
     let createSimple = function (shipment, orderSSI, callback) {
+
+
+        // if (isSimple){
+        //     let keySSI = this.generateKey(product.gtin);
+        //     utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
+        //         if (err)
+        //             return callback(err);
+
+              
+
+        //         dsu.writeFile(INFO_PATH, JSON.stringify(product), (err) => {
+        //             if (err)
+        //                 
+                    
+        //         });
+        //     });
+
         let keyGenFunction = require('../commands/setShipmentSSI').createShipmentSSI;
         let templateKeySSI = keyGenFunction({data: shipment.senderId + shipment.shipmentId}, domain);
         utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);
+
+            try {
+                dsu.beginBatch();
+            } catch (e) {
+                return callback(e);
+            }
+
             dsu.writeFile(INFO_PATH, JSON.stringify(shipment), (err) => {
                 if (err)
-                    return callback(err);
+                    return dsu.cancelBatch(callback);
                 console.log("Shipment /info ", JSON.stringify(shipment));
                 createShipmentStatus(shipment.senderId, (err, statusSSI) => {
                     if (err)
-                        return callback(err);
+                        return dsu.cancelBatch(callback);
                     // Mount must take string version of keyssi
                     dsu.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(), (err) => {
                         if (err)
-                            return callback(err);
+                            return dsu.cancelBatch(callback);
                         console.log(`OrderStatus DSU (${statusSSI.getIdentifier(true)}) mounted at '/status'`);
 
                         const finalize = function(callback){
                             createShipmentLines(shipment, statusSSI, (err, shipmentLines) => {
                                 if (err)
-                                    return callback(err);
+                                    return dsu.cancelBatch(callback);
                                 const lines = JSON.stringify(shipmentLines.map(o => o.getIdentifier()));
                                 dsu.writeFile(LINES_PATH, lines, (err) => {
                                     if (err)
                                         return callback(err);
-                                    dsu.getKeySSIAsObject((err, keySSI) => {
+
+                                    dsu.commitBatch((err) => {
                                         if (err)
                                             return callback(err);
-                                        console.log("Finished creating Shipment " + keySSI.getIdentifier(true));
-                                        callback(undefined, keySSI, shipmentLines, statusSSI.getIdentifier());
-                                    });
+                                        dsu.getKeySSIAsObject((err, keySSI) => {
+                                            if (err)
+                                                return callback(err);
+                                            console.log("Finished creating Shipment " + keySSI.getIdentifier(true));
+                                            callback(undefined, keySSI, shipmentLines, statusSSI.getIdentifier());
+                                        });
+                                    });                        
                                 });
                             });
                         };
@@ -200,7 +229,7 @@ function ShipmentService(domain, strategy) {
 
                         dsu.mount(ORDER_MOUNT_PATH, orderSSI, (err) => {
                             if (err)
-                                return callback(err);
+                                return dsu.cancelBatch(callback);
                            finalize(callback);
                         });
                     });
