@@ -159,23 +159,6 @@ function ShipmentService(domain, strategy) {
     }
 
     let createSimple = function (shipment, orderSSI, callback) {
-
-
-        // if (isSimple){
-        //     let keySSI = this.generateKey(product.gtin);
-        //     utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
-        //         if (err)
-        //             return callback(err);
-
-              
-
-        //         dsu.writeFile(INFO_PATH, JSON.stringify(product), (err) => {
-        //             if (err)
-        //                 
-                    
-        //         });
-        //     });
-
         let keyGenFunction = require('../commands/setShipmentSSI').createShipmentSSI;
         let templateKeySSI = keyGenFunction({data: shipment.senderId + shipment.shipmentId}, domain);
         utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
@@ -302,15 +285,26 @@ function ShipmentService(domain, strategy) {
             utils.getResolver().loadDSU(keySSI, {skipCache: true}, (err, dsu) => {
                 if (err)
                     return callback(err);
+                    
+                try{
+                    dsu.beginBatch();
+                }catch(e){
+                    return callback(e);
+                }
+
                 utils.getMounts(dsu, '/', STATUS_MOUNT_PATH,  (err, mounts) => {
                     if (err)
-                        return callback(err);
+                        return dsu.cancelBatch(callback);
                     if (!mounts[STATUS_MOUNT_PATH])
-                        return callback(`Could not find status mount`);
+                        return dsu.cancelBatch(callback);
                     statusService.update(mounts[STATUS_MOUNT_PATH], shipment.status, shipment.senderId, (err) => {
                         if (err)
-                            return callback(err);
-                        self.get(keySSI, callback);
+                            return dsu.cancelBatch(callback);
+                        dsu.commitBatch((err) => {
+                            if(err)
+                                return callback(err);
+                            self.get(keySSI, callback);
+                            });    
                     });
                 });
             });
