@@ -225,7 +225,7 @@ function StatusService(domain, strategy){
                                     return dsu.cancelBatch(callback);
                                 }
                                 if (!Array.isArray(data))
-                                    return callback(`Invalid log data`);
+                                    return dsu.cancelBatch(callback);
                                 dsu.writeFile(LOG_PATH, JSON.stringify([...data, log]), (err) => {
                                     if (err)
                                         return dsu.cancelBatch(callback);
