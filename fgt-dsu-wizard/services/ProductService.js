@@ -70,13 +70,20 @@ function ProductService(domain, strategy){
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);
+
+                try {
+                    dsu.beginBatch();
+                } catch (e) {
+                    return callback(e);
+                }
+
                 dsu.writeFile(INFO_PATH, JSON.stringify(product), (err) => {
                     if (err)
-                        return callback(err);
-                    dsu.getKeySSIAsObject((err, keySSI) => {
+                        return dsu.cancelBatch(callback);
+                    dsu.commitBatch((err) => {
                         if (err)
                             return callback(err);
-                        callback(undefined, keySSI);
+                        dsu.getKeySSIAsObject(callback);
                     });
                 });
             });
