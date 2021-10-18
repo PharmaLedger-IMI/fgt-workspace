@@ -123,17 +123,25 @@ function StatusService(domain, strategy){
             selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);
+
+                try {
+                    dsu.beginBatch();
+                } catch (e) {
+                    return callback(e);
+                }            
+
                 dsu.writeFile(INFO_PATH, JSON.stringify(status.status), (err) => {
                     if (err)
-                        return callback(err);
+                        return dsu.cancelBatch(callback);
 
                     const returnFunc = function(err){
                         if (err)
-                            return callback(err);
-                        dsu.getKeySSIAsObject((err, keySSI) => {
+                            return dsu.cancelBatch(callback);
+
+                        dsu.commitBatch((err) => {
                             if (err)
                                 return callback(err);
-                            callback(undefined, keySSI);
+                            dsu.getKeySSIAsObject(callback);
                         });
                     }
 
@@ -183,21 +191,26 @@ function StatusService(domain, strategy){
                             console.log(e)
                         }
 
+                        try {
+                            dsu.beginBatch();
+                        } catch (e) {
+                            return callback(e);
+                        }
 
                         dsu.writeFile(INFO_PATH, stringified, (err) => {
                             if (err){
                                 console.log(newKeySSI.getTypeName(), newKeySSI.getIdentifier(), data);
-                                return callback(err);
+                                    return dsu.cancelBatch(callback);
                             }
 
 
                             const returnFunc = function(err){
                                 if (err)
-                                    return callback(err);
-                                dsu.getKeySSIAsObject((err, keySSI) => {
+                                    return dsu.cancelBatch(callback);
+                                dsu.commitBatch((err) => {
                                     if (err)
                                         return callback(err);
-                                    self.get(keySSI, callback);
+                                    dsu.getKeySSIAsObject(callback);
                                 });
                             }
 
@@ -205,17 +218,17 @@ function StatusService(domain, strategy){
 
                             dsu.readFile(LOG_PATH, (err, data) => {
                                 if (err)
-                                    return callback(err);
+                                    return dsu.cancelBatch(callback);
                                 try {
                                     data = JSON.parse(data);
                                 } catch (e){
-                                    return callback(e);
+                                    return dsu.cancelBatch(callback);
                                 }
                                 if (!Array.isArray(data))
                                     return callback(`Invalid log data`);
                                 dsu.writeFile(LOG_PATH, JSON.stringify([...data, log]), (err) => {
                                     if (err)
-                                        return callback(err);
+                                        return dsu.cancelBatch(callback);
                                     dsu.readFile(EXTRA_INFO_PATH, (err, extraInfo) => {
                                         if (err)
                                             extraInfo = undefined;
@@ -223,7 +236,7 @@ function StatusService(domain, strategy){
                                             try {
                                                 extraInfo = JSON.parse(extraInfo);
                                             } catch (e){
-                                                return callback(e);
+                                                return dsu.cancelBatch(callback);
                                             }
                                         }
 
