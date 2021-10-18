@@ -80,11 +80,11 @@ function OrderLineService(domain, strategy){
                 dsu.writeFile(INFO_PATH, data, (err) => {
                     if (err)
                         return dsu.cancelBatch(callback);                    
-                    dsu.commitBatch((err) => {
-                        if (err)
-                            return callback(err);
-                        dsu.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(),(err)=>{
-                            if(err)
+                    dsu.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(),(err)=>{
+                        if(err)
+                            return dsu.cancelBatch(callback);    
+                        dsu.commitBatch((err) => {
+                            if (err)
                                 return callback(err);
                             dsu.getKeySSIAsObject(callback);
                         })
