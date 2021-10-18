@@ -170,87 +170,81 @@ function StatusService(domain, strategy){
             utils.getResolver().loadDSU(keySSI.getIdentifier(), {skipCache: true}, (err, dsu) => {
                 if (err)
                     return callback(err);
-                dsu.getKeySSIAsObject((err, newKeySSI) => {
+                dsu.readFile(INFO_PATH, (err, prevStatus) => {
                     if (err)
                         return callback(err);
-                    dsu.readFile(INFO_PATH, (err, prevStatus) => {
+                    try{
+                        prevStatus = JSON.parse(prevStatus).status;
+                    } catch (e){
+                        return callback(e);
+                    }
+
+                    status = parseStatus(status, id, prevStatus);
+
+                    let stringified;
+                    try{
+                        stringified = JSON.stringify(status.status);
+                    } catch (e){
+                        return callback(e);
+                    }
+
+                    try {
+                        dsu.beginBatch();
+                    } catch (e) {
+                        return callback(e);
+                    }
+
+                    dsu.writeFile(INFO_PATH, stringified, (err) => {
                         if (err)
-                            return callback(err);
-                        try{
-                            prevStatus = JSON.parse(prevStatus).status;
-                        } catch (e){
-                            return callback(e);
+                            return dsu.cancelBatch(callback);
+
+                        const returnFunc = function(err){
+                            if (err)
+                                return dsu.cancelBatch(callback);
+                            dsu.commitBatch((err) => {
+                                if (err)
+                                    return callback(err);
+                                dsu.getKeySSIAsObject(callback);
+                            });
                         }
 
-                        status = parseStatus(status, id, prevStatus);
+                        let log = createLog(id, prevStatus, status);
 
-                        let stringified;
-                        try{
-                            stringified = JSON.stringify(status.status);
-                        } catch (e){
-                            console.log(e)
-                        }
-
-                        try {
-                            dsu.beginBatch();
-                        } catch (e) {
-                            return callback(e);
-                        }
-
-                        dsu.writeFile(INFO_PATH, stringified, (err) => {
-                            if (err){
-                                console.log(newKeySSI.getTypeName(), newKeySSI.getIdentifier(), data);
-                                    return dsu.cancelBatch(callback);
+                        dsu.readFile(LOG_PATH, (err, data) => {
+                            if (err)
+                                return dsu.cancelBatch(callback);
+                            try {
+                                data = JSON.parse(data);
+                            } catch (e){
+                                return dsu.cancelBatch(callback);
                             }
-
-
-                            const returnFunc = function(err){
+                            if (!Array.isArray(data))
+                                return dsu.cancelBatch(callback);
+                            dsu.writeFile(LOG_PATH, JSON.stringify([...data, log]), (err) => {
                                 if (err)
                                     return dsu.cancelBatch(callback);
-                                dsu.commitBatch((err) => {
+                                dsu.readFile(EXTRA_INFO_PATH, (err, extraInfo) => {
                                     if (err)
-                                        return callback(err);
-                                    dsu.getKeySSIAsObject(callback);
-                                });
-                            }
-
-                            let log = createLog(id, prevStatus, status);
-
-                            dsu.readFile(LOG_PATH, (err, data) => {
-                                if (err)
-                                    return dsu.cancelBatch(callback);
-                                try {
-                                    data = JSON.parse(data);
-                                } catch (e){
-                                    return dsu.cancelBatch(callback);
-                                }
-                                if (!Array.isArray(data))
-                                    return dsu.cancelBatch(callback);
-                                dsu.writeFile(LOG_PATH, JSON.stringify([...data, log]), (err) => {
-                                    if (err)
-                                        return dsu.cancelBatch(callback);
-                                    dsu.readFile(EXTRA_INFO_PATH, (err, extraInfo) => {
-                                        if (err)
-                                            extraInfo = undefined;
-                                        else {
-                                            try {
-                                                extraInfo = JSON.parse(extraInfo);
-                                            } catch (e){
-                                                return dsu.cancelBatch(callback);
-                                            }
+                                        extraInfo = undefined;
+                                    else {
+                                        try {
+                                            extraInfo = JSON.parse(extraInfo);
+                                        } catch (e){
+                                            return dsu.cancelBatch(callback);
                                         }
+                                    }
 
-                                        if (!status.extraInfo)
-                                            return returnFunc();
+                                    if (!status.extraInfo)
+                                        return returnFunc();
 
-                                        extraInfo = `${extraInfo || ''}${extraInfo ? '. ' : ''}${status.extraInfo}`; // Object.assign({}, extraInfo, status.extraInfo);
-                                        dsu.writeFile(EXTRA_INFO_PATH, JSON.stringify(extraInfo), returnFunc);
-                                    });
+                                    extraInfo = `${extraInfo || ''}${extraInfo ? '. ' : ''}${status.extraInfo}`; // Object.assign({}, extraInfo, status.extraInfo);
+                                    dsu.writeFile(EXTRA_INFO_PATH, JSON.stringify(extraInfo), returnFunc);
                                 });
                             });
                         });
                     });
                 });
+
             });
         } else {
             return callback(`Not implemented`);

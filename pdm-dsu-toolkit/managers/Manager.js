@@ -628,24 +628,13 @@ class Manager{
      * @param {function(err, object, Archive)} callback
      */
     update(key, newItem, callback){
-        if (!callback)
+        if (!callback){
+            callback = newItem;
+            newItem = key;
+            key = undefined;
             return callback(`No key Provided...`);
-
-        let self = this;
-        self.getRecord(key, (err, record) => {
-            if (err)
-                return self._err(`Unable to retrieve record with key ${key} from table ${self._getTableName()}`, err, callback);
-            self._getDSUInfo(record, (err, item, dsu) => {
-                if (err)
-                    return self._err(`Key: ${key}: unable to read From DSU from SSI ${record}`, err, callback);
-                dsu.writeFile(INFO_PATH, JSON.stringify(newItem), (err) => {
-                    if (err)
-                        return self._err(`Could not update item ${key} with ${JSON.stringify(newItem)}`, err, callback);
-                    console.log(`Item ${key} in table ${self._getTableName()} updated`);
-                    callback(undefined, newItem, dsu)
-                });
-            });
-        });
+        }
+        callback('Child classes must implement this');
     }
 
     /**
@@ -656,11 +645,15 @@ class Manager{
      * @param {function(err, object[], Archive[])} callback
      */
     updateAll(keys, newItems, callback){
-        if (!callback)
+        if (!callback){
+            callback = newItems;
+            newItems = keys;
+            keys = undefined;
             return callback(`No key Provided...`);
+        }
 
         let self = this;
-        functionCallIterator(this.updateRecord.bind(this), keys, newItems, (err, results) => {
+        functionCallIterator(this.update.bind(this), keys, newItems, (err, results) => {
             if (err)
                 return self._err(`Could not update all records`, err, callback);
             callback(undefined, ...results.reduce((accum, r) => {
