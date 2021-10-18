@@ -74,17 +74,24 @@ function ShipmentLineService(domain, strategy){
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);
+
+                try {
+                    dsu.beginBatch();
+                } catch (e) {
+                    return callback(e);
+                }
+
                 dsu.writeFile(INFO_PATH, data, (err) => {
                     if (err)
-                        return callback(err);
-                    dsu.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(), (err) => {
+                        return dsu.cancelBatch(callback);
+                    dsu.commitBatch((err) => {
                         if (err)
                             return callback(err);
-                        dsu.getKeySSIAsObject((err, keySSI) => {
+                        dsu.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(), (err) => {
                             if (err)
                                 return callback(err);
-                            callback(undefined, keySSI);
-                        });
+                            dsu.getKeySSIAsObject(callback);
+                        });                            
                     });
                 });
             });
