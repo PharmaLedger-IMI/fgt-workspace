@@ -130,26 +130,54 @@ function OrderService(domain, strategy) {
                 return callback(err);
         }
 
+
+
+        // if (isSimple){
+        //     let keySSI = this.generateKey(gtin, batch.batchNumber);
+        //     utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
+        //         if (err)
+        //             return callback(err);
+                
+      
+
+        //         dsu.writeFile(INFO_PATH, data, (err) => {
+        //             if (err)
+        //                 
+                    
+        //         });
+        //     });
+
         self.get(keySSI, (err, orderFromSSI, orderDsu) => {
             if (err)
                 return callback(err);
+
+            try{
+                orderDsu.beginBatch();
+            }catch(e){
+                return callback(e);
+            }
+
             validateUpdate(orderFromSSI, order, (err) => {
                 if (err)
-                    return callback(err);
+                    return orderDsu.cancelBatch(callback);
                 Utils.getMounts(orderDsu, '/', STATUS_MOUNT_PATH, SHIPMENT_PATH, (err, mounts) => {
                     if (err)
-                        return callback(err);
+                        return orderDsu.cancelBatch(callback);
                     if (!mounts[STATUS_MOUNT_PATH])
-                        return callback(`Could not find status mount`);
+                        return orderDsu.cancelBatch(callback);
                     statusService.update(mounts[STATUS_MOUNT_PATH], order.status, order.requesterId, (err) => {
                         if (err)
-                            return callback(err);
+                            return orderDsu.cancelBatch(callback);
 
                         if (!mounts[SHIPMENT_PATH] && order.shipmentSSI)
                             orderDsu.mount(SHIPMENT_PATH, order.shipmentSSI, (err) => {
                                 if (err)
-                                    return callback(err);
+                                    return orderDsu.cancelBatch(callback);
                                 self.get(keySSI, callback);
+                                dsu.commitBatch((err) => {
+                                    if(err)
+                                        return callback(err);   
+                                });
                             });
                         else
                             self.get(keySSI, callback);
