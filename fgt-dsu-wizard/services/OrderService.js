@@ -157,7 +157,7 @@ function OrderService(domain, strategy) {
                                 if (err)
                                     return orderDsu.cancelBatch(callback);
                                 self.get(keySSI, callback);
-                                dsu.commitBatch((err) => {
+                                orderDsu.commitBatch((err) => {
                                     if(err)
                                         return callback(err);   
                                 });
