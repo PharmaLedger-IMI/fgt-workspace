@@ -7,7 +7,7 @@ import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 import {getBarCodePopOver} from "../../utils/popOverUtils";
 import {ListItemLayout} from "../list-item-layout/list-item-layout";
 
-const {Stock, Batch} = wizard.Model;
+const {Stock, Batch, IndividualProduct} = wizard.Model;
 
 @Component({
   tag: 'managed-stock-list-item',
@@ -41,6 +41,14 @@ export class ManagedProductListItem {
     cancelable: true,
   })
   sendNavigateTab: EventEmitter;
+
+  @Event({
+    eventName: 'fgt-track-request',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  trackRequestAction: EventEmitter;
 
   private sendError(message: string, err?: object){
     const event = this.sendErrorEvent.emit(message);
@@ -127,6 +135,7 @@ export class ManagedProductListItem {
   }
 
   addBatches(){
+    const self = this;
     if (!this.stock || !this.batches)
       return (<ion-skeleton-text slot="content" animated></ion-skeleton-text>);
     return(
@@ -135,6 +144,15 @@ export class ManagedProductListItem {
                             "gtin-batch": this.stock.gtin + '-' + batch.batchNumber,
                             "quantity": (new Batch(batch)).getQuantity(),
                             "mode": "detail",
+                            "event-data": JSON.stringify({
+                              gtin: self.stock.gtin,
+                              name: self.stock.name,
+                              batchNumber: batch.batchNumber,
+                              serialNumber: undefined,
+                              manufName: self.stock.manufName,
+                              expiry: batch.expiry,
+                              status: undefined
+                            }),
                             "loader-type": SUPPORTED_LOADERS.bubblingSmall
                           })))}
                           id-prop="gtin-batch"
@@ -145,9 +163,16 @@ export class ManagedProductListItem {
                           orientation={this.getOrientation()}
                           onSelectEvent={(evt) => {
                             evt.preventDefault();
-                            evt.stopImmediatePropagation();
-                            console.log(`Selected ${evt.detail}`);
-                          }}></pdm-item-organizer>
+                            evt.stopImmediatePropagation()
+                            let data;
+                            try {
+                              data = JSON.parse(evt.detail)
+                            } catch (e) {
+                              data = evt.detail
+                            }
+                            console.log('Selected', data);
+                            self.trackRequestAction.emit(new IndividualProduct(data))
+                          }}> </pdm-item-organizer>
     )
   }
 

@@ -268,29 +268,40 @@ export function nodeToTree(startNode: any, endNode: any, nodeList: {}){
     }
   }
 
-  const levelIterator = function(parentNode, accumulator = []){
-    accumulator.push(parentNode.children.filter(n => n !== startNode.id).map(n => {
-      return {
-        title: nodeList[n.id].title,
-        id: nodeList[n.id].id,
-        parentId: parentNode.id
+  const mapReduce = (nodes: Array<Node>, tree = []): any => {
+    nodes.map((node) => {
+      const {id, children} = node;
+
+      const mapReduceNodesTree: Array<NodeTree> = [];
+      const mapReduceResult = children.map((idx): NodeTree => {
+        const childNodeFromList = nodeList[idx]
+        return {
+          id: childNodeFromList.id,
+          title: childNodeFromList.title,
+          parentId: id
+        }
+      }).reduce((accum: Array<Node>, curr: NodeTree) => {
+        if (curr.id !== startNode.id) {
+          const nodeFromList = nodeList[curr.id]
+          mapReduceNodesTree.push(curr)
+          accum.push(nodeFromList)
+        }
+        return accum
+      }, [])
+
+      if (mapReduceResult.length > 0) {
+        tree.push(mapReduceNodesTree)
+        mapReduce(mapReduceResult, tree)
       }
-    }));
-
-    const subAccum = parentNode.children.reduce((accum, n) =>  {
-      accum.push(...levelIterator(nodeList[n.id || n]));
-      return accum;
-    }, []);
-
-    accumulator.push(...subAccum);
-
-    return accumulator;
+    })
+    return tree;
   }
 
+  const parentNode = [nodeList[endNode.id]]
   return {
     header: fromNode(endNode),
     footer: fromNode(startNode),
-    body: levelIterator(endNode)
+    body: mapReduce(parentNode)
   }
 }
 
@@ -312,5 +323,25 @@ export async function getTrackingModal(props: {title: string, startNode: any, en
   await trackModal.present();
   return trackModal;
 }
+
+interface NodeTree {
+  id: number;
+  title: string;
+  parentId: number;
+}
+
+interface Node {
+  id: number;
+  title: string;
+  children: Array<number>;
+  parents: Array<number>;
+}
+/*
+interface ParentNode {
+  id: number;
+  title: string;
+  children: Array<Node>
+}
+ */
 
 export {getDirectoryProducts, getDirectorySuppliers, getDirectoryRequesters};

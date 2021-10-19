@@ -9,6 +9,7 @@
 
 | Property          | Attribute          | Description | Type     | Default                     |
 | ----------------- | ------------------ | ----------- | -------- | --------------------------- |
+| `eventData`       | `event-data`       |             | `string` | `undefined`                 |
 | `expiryThreshold` | `expiry-threshold` |             | `number` | `30`                        |
 | `gtinBatch`       | `gtin-batch`       |             | `string` | `undefined`                 |
 | `loaderType`      | `loader-type`      |             | `string` | `SUPPORTED_LOADERS.circles` |
