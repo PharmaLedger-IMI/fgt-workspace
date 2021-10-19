@@ -108,10 +108,10 @@ class SaleManager extends Manager{
                     if (!gtin)
                         return callback(undefined, result);
 
-                    self.stockManager.manageAll(gtin, toBeManaged[gtin].slice(), (err, results) => {
+                    self.stockManager.manageAll(gtin, toBeManaged[gtin].slice(), (err, serials, stocks) => {
                         if (err)
                             return callback(err);
-                        result.push(results);
+                        result.push(...stocks);
                         productIterator(gtins, result, callback);
                     });
                 }

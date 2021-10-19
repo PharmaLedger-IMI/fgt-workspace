@@ -125,7 +125,7 @@ class ProductManager extends Manager {
                         if(err)
                             return callback(err);
                         callback(undefined, keySSI, path);
-                    })
+                    });
                 });
             });
         });

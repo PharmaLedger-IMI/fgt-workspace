@@ -200,7 +200,7 @@ class StockManager extends Manager{
                 return self.manage(product, batch, (err, serials, stock) => {
                     if (err)
                         return callback(err);
-                    callback(undefined, batch, serials);
+                    callback(undefined, batch, serials, stock);
                 });
             }
         }
@@ -208,17 +208,21 @@ class StockManager extends Manager{
         functionCallIterator(iterator(product).bind(this), batches, (err, ...results) => {
             if (err)
                 return self._err(`Could not perform manage all on Stock`, err, callback);
+
+            const newStocks = [];
             const mergedResult = results.reduce((accum, result) => {
                 accum[result[0].batchNumber] = accum[result[0].batchNumber] || [];
                 try {
-                    accum[result[0].batchNumber].push(...result[1])
+                    accum[result[0].batchNumber].push(...(Array.isArray(result[1]) ? result[1] : [result[1]]))
                 } catch (e) {
                     console.log(e)
                 }
-
+                if (result.length >= 3)
+                    newStocks.push(result[2])
                 return accum;
             }, {});
-            callback(undefined, mergedResult);
+
+            callback(undefined, mergedResult, newStocks);
         });
     }
 

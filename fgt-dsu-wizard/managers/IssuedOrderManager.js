@@ -231,11 +231,12 @@ class IssuedOrderManager extends OrderManager {
                         if (!gtin)
                             return callback(undefined, result);
                         const batches = batchObj[gtin];
-                        self.stockManager.manageAll(gtin, batches, (err, newStocks) => {
+                        self.stockManager.manageAll(gtin, batches, (err, newSerials, newStocks) => {
                             if (err)
                                 return callback(err);
                             result[gtin] = result[gtin] || [];
-                            result[gtin].push(newStocks);
+                            if (newStocks)
+                                result[gtin].push(...newStocks);
                             gtinIterator(gtins, batchObj, callback);
                         });
                     }
