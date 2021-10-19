@@ -133,7 +133,11 @@ class StockManager extends Manager{
                         if (err)
                             return callback(err);
                         newStock.batches = [mergedBatch];
-                        return self.create(gtin, newStock, callback);
+                        return self.create(gtin, newStock, (err, created, path) => {
+                            if (err)
+                                return callback(err);
+                            callback(undefined, batch.serialNumbers || batch.quantity, newStock);
+                        });
                     });
                 }
 

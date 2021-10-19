@@ -25,27 +25,20 @@ class DBLock {
     count = 0;
     storage;
 
-    nativeBeginBatch;
-    nativeCommitBatch;
-    nativeCancelBatch;
-
     constructor(manager){
         this.storage = manager.storage;
-        this.nativeBeginBatch = this.storage.beginBatch.bind(this.storage);
-        this.nativeCommitBatch = this.storage.commitBatch.bind(this.storage);
-        this.nativeCancelBatch = this.storage.cancelBatch.bind(this.storage);
     }
 
     beginBatch(){
         if (this.count === 0)
-            this.nativeBeginBatch();
+            this.storage.beginBatch.call(this.storage);
         this.count ++;
     }
 
     commitBatch(callback){
         this.count --;
         if (this.count === 0)
-            return this.nativeCommitBatch(callback);
+            return this.storage.commitBatch.call(this.storage, callback);
         console.log(`Other Batch operations in progress. not committing just yet`)
         callback();
     }
@@ -53,7 +46,7 @@ class DBLock {
     cancelBatch(callback){
         if (this.count > 0){
             this.count = 0;
-            this.nativeCancelBatch(callback);
+            this.storage.cancelBatch.call(this.storage, callback);
         }
     }
 
@@ -123,10 +116,7 @@ class Manager{
     constructor(baseManager, tableName, indexes, callback){
         let self = this;
         this.storage = baseManager.db;
-        self.dbLock = new DBLock(self);
-        self.storage.beginBatch = self.dbLock.beginBatch.bind(self.dbLock);
-        self.storage.commitBatch = self.dbLock.commitBatch.bind(self.dbLock);
-        self.storage.cancelBatch = self.dbLock.cancelBatch.bind(self.dbLock);
+        this.dbLock = new DBLock(this);
 
         this.getStorage = () => {
             if (!self.storage)
@@ -196,6 +186,18 @@ class Manager{
     refreshController(props){
         if (this.controllers)
             this.controllers.forEach(c => c.refresh(props));
+    }
+
+    beginBatch(){
+        this.dbLock.beginBatch();
+    }
+
+    commitBatch(callback){
+        this.dbLock.commitBatch(callback);
+    }
+
+    cancelBatch(callback){
+        this.dbLock.cancelBatch(callback);
     }
 
     /**
