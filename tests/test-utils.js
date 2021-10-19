@@ -3,6 +3,112 @@ const Participant = require('../fgt-dsu-wizard/model/Participant');
 const {isEqual, generateGtin, genDate, generateProductName, generateBatchNumber, generateRandomInt, validateGtin, calculateGtinCheckSum, generate2DMatrixCode, getRandom} = require('../pdm-dsu-toolkit/model/Utils');
 const utils = require('../pdm-dsu-toolkit/model/Utils');
 
+const {Product, Batch } = require('../fgt-dsu-wizard/model');
+
+
+
+const generateProduct = function(manager, callback){
+
+    if(!callback){
+        callback = manager;
+        manager = undefined;
+    }
+
+    if(!manager)
+        return callback( new Product({
+            name: generateProductName() ,
+            gtin: generateGtin(),
+            manufName:  generateProductName(),
+            description: generateProductName() + generateProductName() + generateProductName(),         
+        }));
+}
+
+const generateSimpleIterator = function(func, numOfTimes, list, callback){
+
+    if(!callback){
+        callback = list;
+        list = [];
+    }
+
+    if(numOfTimes < 1)
+        return callback(undefined, list);
+    
+    numOfTimes--;
+    
+    func((item) => {
+        
+        list.push(item);
+
+        generateSimpleIterator(func,numOfTimes,list,callback);
+
+    })
+
+}
+
+const copyList = function(list, callback){
+
+    let copyList = [];
+
+    for(let i = 0; i < list.length; i++){
+
+        copyList.push(list[i]);
+
+    }
+
+    if(copyList.length !== list.length)
+        return callback('Unable to copy List!');
+
+    callback(undefined, copyList);
+
+}
+
+
+
+
+/**
+ * 
+ * @param manager
+ * @param itemList
+ * @param test
+ * @param accumulator
+ * @param callback
+ * @returns {*}
+ */
+
+ const generateBatch = function(productQuantity){
+
+    let serials = [];
+    if(!productQuantity)
+        productQuantity = Math.ceil(Math.random()*100);
+
+    for(let i = 0; i < productQuantity; i++){
+
+        serials.push(utils.generateSerialNumber());
+
+    }
+
+    return new Batch({
+        batchNumber: generateBatchNumber(),
+        serialNumber: utils.generateSerialNumber(),
+        expiry: genDate(Math.ceil(Math.random()*100)),
+        quantity: productQuantity,
+        serialNumbers: serials,
+    });
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 /***
  * 
  * @param manager
@@ -23,17 +129,20 @@ const utils = require('../pdm-dsu-toolkit/model/Utils');
     if(!item)
         return callback(undefined,accumulator); 
     
-    accumulator.push(item);
+    
     if(!list)
         return test(manager , item ,(err, result) => {
             if(err)
                 return callback(err);
+                accumulator.push(result);
             testIterator(manager, test, itemList, accumulator, callback);
         });
     const itemTwo = list.shift();
-    test(item , itemTwo ,(err, result) => {
+    test(manager, item , itemTwo ,(err, result) => {
         if(err)
             return callback(err);
+            console.log(result)
+            accumulator.push(result);
         testIterator(manager, test, itemList, accumulator, list, callback);
     });
 }
@@ -87,6 +196,10 @@ module.exports ={
     genDate,
     isEqual,
     testIterator,
+    generateProduct,
+    generateBatch,
+    generateSimpleIterator,
+    copyList
    
     
 }
