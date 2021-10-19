@@ -94,20 +94,40 @@ class ProductManager extends Manager {
             product = gtin;
             gtin = product.gtin;
         }
+
+        const storage = self.getStorage();// <-----------------------------
+        
+        try {
+            storage.beginBatch();
+        } catch (e){
+            return callback(e)
+        }
+
         let self = this;
         self._bindParticipant(product, (err, product) => {
-            if (err)
-                return self._err(`Could not bind mah to product`, err, callback);
+            if (err){ //<----------------------------------------------------------------------
+                console.log(`Could not bind mah to product`);
+                return storage.cancelBatch(callback);
+            } //<----------------------------------------------------------------------
             self.productService.create(product, (err, keySSI) => {
-                if (err)
-                    return self._err(`Could not create product DSU for ${JSON.stringify(product, undefined, 2)}`, err, callback);
+                if (err){ //<----------------------------------------------------------------------
+                    console.log(`Could not create product DSU for ${JSON.stringify(product, undefined, 2)}`);
+                    return storage.cancelBatch(callback);
+                } //<----------------------------------------------------------------------
                 const record = keySSI.getIdentifier();
                 self.insertRecord(gtin, self._indexItem(gtin, product, record), (err) => {
-                    if (err)
-                        return self._err(`Could not inset record with gtin ${gtin} on table ${self.tableName}`, err, callback);
+                    if (err){ //<----------------------------------------------------------------------
+                        console.log(`Could not inset record with gtin ${gtin} on table ${self.tableName}`);
+                        return storage.cancelBatch(callback);
+                    } //<---------------------------------------------------------------------------
                     const path =`${self.tableName}/${gtin}`;
                     console.log(`Product ${gtin} created stored at '${path}'`);
-                    callback(undefined, keySSI, path);
+                    storage.commitBatch(err => {// <---------------------------------------
+                        if(err)
+                            return callback(err);
+                        callback(undefined, keySSI, path);
+                    })//<------------------------------------------------------------------------------------
+                    
                 });
             });
         });
