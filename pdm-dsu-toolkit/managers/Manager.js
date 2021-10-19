@@ -22,17 +22,24 @@ class Page {
 }
 
 class DBLock {
-    count = 0;
+    count = -1;
     storage;
 
     constructor(manager){
         this.storage = manager.storage;
     }
 
+    isLocked(){
+        return this.count !== -1;
+    }
+
     beginBatch(){
-        if (this.count === 0)
+        if (this.count === -1){
             this.storage.beginBatch.call(this.storage);
-        this.count ++;
+            this.count = 1;
+        } else {
+            this.count ++;
+        }
     }
 
     commitBatch(force, callback){
@@ -41,9 +48,12 @@ class DBLock {
             force = false;
         }
 
+        if (this.count === -1)
+            return callback();
+
         this.count --;
         if (force || this.count === 0){
-            this.count = 0;
+            this.count = -1;
             return this.storage.commitBatch.call(this.storage, callback);
         }
 
@@ -53,9 +63,11 @@ class DBLock {
 
     cancelBatch(callback){
         if (this.count > 0){
-            this.count = 0;
-            this.storage.cancelBatch.call(this.storage, callback);
+            this.count = -1;
+            return this.storage.cancelBatch.call(this.storage, callback);
         }
+
+        callback();
     }
 
 }
@@ -237,7 +249,7 @@ class Manager{
         }
 
         const errCb = function(message, err, callback){
-            storage.cancelBatch(err2 => {
+            self.cancelBatch(err2 => {
                 if (err2)
                     return self._err(`Could not cancelBatch over error: ${message}`, err2, callback);
                 self._err(message, err, callback);

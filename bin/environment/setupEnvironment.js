@@ -284,10 +284,8 @@ const setupDirectories = function(actors, allProducts, callback){
 
         console.log(`Storing actor directory entries for ${actor.credentials.id.secret}`)
 
-        const storage = actor.manager.directoryManager.getStorage();
-
         const errCb = function(err){
-            storage.cancelBatch(err2 => {
+            actor.manager.directoryManager.cancelBatch(err2 => {
                 if (err2)
                     console.log(`Could not cancelBatch over error`, err2);
                 callback(err);
@@ -295,7 +293,7 @@ const setupDirectories = function(actors, allProducts, callback){
         }
 
         try {
-            storage.beginBatch();
+            actor.manager.directoryManager.beginBatch();
         } catch (e){
             return callback(e);
         }
@@ -307,7 +305,7 @@ const setupDirectories = function(actors, allProducts, callback){
             const role = getRole(other.type)
             actor.manager.directoryManager.saveEntry(role, other.credentials.id.secret, (err) => {
                 if (err)
-                    return callback(err);
+                    return errCb(err);
                 console.log(`Directory entry for ${other.credentials.id.secret} as a ${role} stored`)
                 otherIterator(othersCopy, callback);
             });
@@ -316,10 +314,10 @@ const setupDirectories = function(actors, allProducts, callback){
         otherIterator(others.slice(), (err) => {
             if (err)
                 return errCb(err);
-            storage.commitBatch(err => {
+            actor.manager.directoryManager.commitBatch(true, err => {
                 if (err)
                     return callback(err);
-                actorIterator(actorsCopy, callback);
+                actorIterator(actorsCopy, ...others.slice(), callback);
             });
         });
     }
@@ -362,10 +360,8 @@ const setupDirectories = function(actors, allProducts, callback){
 
             console.log(`Storing Product directory entries for ${actor.credentials.id.secret}`)
 
-            const storage = actor.manager.directoryManager.getStorage();
-
             const errCb = function(err){
-                storage.cancelBatch(err2 => {
+                actor.manager.directoryManager.cancelBatch(err2 => {
                     if (err2)
                         console.log(`Could not cancelBatch over error`, err2);
                     callback(err);
@@ -373,7 +369,7 @@ const setupDirectories = function(actors, allProducts, callback){
             }
 
             try {
-                storage.beginBatch();
+                actor.manager.directoryManager.beginBatch();
             } catch (e){
                 return callback(e);
             }
@@ -394,10 +390,10 @@ const setupDirectories = function(actors, allProducts, callback){
                 if (err)
                     return errCb(err);
 
-                storage.commitBatch(err => {
+                actor.manager.directoryManager.commitBatch(true, err => {
                     if (err)
                         return errCb(err);
-                    actorIterator(actorsCopy, callback)
+                    actorIterator(actorsCopy, ...products.slice(), callback)
                 })
             });
         }

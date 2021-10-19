@@ -88,7 +88,7 @@ export default class HomeController extends LocalizedController {
                 WebManagerService.registerRepository(self.participantManager);
                 console.log("Home controller initialized");
                 self._testParticipant();
-              }, Math.floor(Math.random() * 100));
+              }, Math.floor(Math.random() * 250));
           });
         self.onTagClick('logout', () => {
           location.reload();

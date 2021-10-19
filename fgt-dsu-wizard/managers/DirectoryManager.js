@@ -145,6 +145,7 @@ class DirectoryManager extends Manager {
         options = options || defaultOptions();
 
         let self = this;
+        console.log(`Db lock status for ${self.tableName}`, self.dbLock.isLocked())
         self.query(options.query, options.sort, options.limit, (err, records) => {
             if (err)
                 return self._err(`Could not perform query`, err, callback);

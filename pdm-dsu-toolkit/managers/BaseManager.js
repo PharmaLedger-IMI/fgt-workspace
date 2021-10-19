@@ -239,7 +239,7 @@ class BaseManager {
                         ? self._err(`Could not get Identity`, err, callback)
                         : setTimeout(() => {
                             self._cacheRelevant(callback, identity);
-                        }), 100);
+                        }), 250);
                 }), 100);
         }, 100);
     };
