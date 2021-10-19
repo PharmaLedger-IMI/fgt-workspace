@@ -218,36 +218,23 @@ const functionCallIterator = function(func, keys, ...args){
 		throw new Error("Needs at least a callback");
 	const callback = args.pop();
 
-	args.forEach(a => {
-		if (!Array.isArray(a))
-			throw new Error("arguments need to be arrays");
-	});
+	if (!args.every(a => Array.isArray(a) && a.length === keys.length))
+		return callback(`Invalid argument length`);
 
-	if (!keys || keys.length !== args.length)
-		throw new Error("Keys dont match args");
-
-	const result = {}
-
-	const updateResult = function(callArgs, ...res){
-		let scope = result;
-		callArgs.forEach((ca, i) => {
-			scope[ca[keys[i]]] = scope[ca[keys[i]]] || (i === callArgs.length - 1 ? res : {});
-			scope = scope[ca[keys[i]]];
-		});
-	}
+	const result = [];
 
 	const iterator = function(...argz){
 		const callback = argz.pop();
 		const callArgs = argz.map(a => a.shift()).filter(a => !!a);
 
-		if (callArgs.length !== argz.length || callArgs.every(ca => Array.isArray(ca) && !ca.length))
+		if (!callArgs.length)
 			return callback();
 
 		try{
 			func(...callArgs, (err, ...results) => {
 				if (err)
 					return callback(err);
-				updateResult(callArgs, results);
+				result.push(results);
 				iterator(...argz, callback);
 			});
 		} catch(e){
@@ -255,9 +242,15 @@ const functionCallIterator = function(func, keys, ...args){
 		}
 	}
 
-	iterator(...args, (err) => err
+	iterator(keys, ...args, (err) => err
 		? callback(err)
-		: callback(undefined, result));
+		: callback(undefined, ...result.reduce((accum, r) => {
+			r.forEach((arg, i) => {
+				accum[i] = accum[i] || [];
+				accum[i].push(arg);
+			});
+			return accum;
+		}, new Array(result.length))));
 }
 
 

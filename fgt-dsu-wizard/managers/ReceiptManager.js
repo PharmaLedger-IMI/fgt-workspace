@@ -102,9 +102,9 @@ class ReceiptManager extends Manager{
                         return callback(undefined, accumulator);
 
                     const compostKey = self._genCompostKey(indReceipt);
-                    self.getRecord(compostKey, (err) => {
+                    self.getRecord(compostKey, (err, rec) => {
                         if (!err){
-                            console.log()
+                            console.log(rec);
                             return callback(`There is already an entry for this individual product ${compostKey}, and all sales are final!`);
                         }
 
@@ -133,10 +133,10 @@ class ReceiptManager extends Manager{
     /**
      * Creates a {@link Sale} entry
      * @param {IndividualReceipt} receipt
-     * @param {function(err, keySSI, string)} callback where the string is the mount path relative to the main DSU
+     * @param {function(err?, keySSI?, string?)} callback where the string is the mount path relative to the main DSU
      */
     create(receipt, callback) {
-        return callback(`Receipts cannot be manufactured`);
+        callback(`Receipts cannot be manufactured`);
     }
 
     /**

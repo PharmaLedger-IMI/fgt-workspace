@@ -21,6 +21,10 @@ const shipmentStatusUpdater = function(issuedShipmentManager, shipment, timeout,
     if (possibleStatus.length > 1)
         return callback(`More that one status allowed...`);
     console.log(`${identity.id} - Updating Shipment ${shipment.shipmentId}'s status to ${possibleStatus[0]} in ${timeout} miliseconds`);
+
+    if (possibleStatus[0] === ShipmentStatus.CONFIRMED)
+        console.log(`here`)
+
     setTimeout(() => {
         console.log(`\n${identity.id} - NOW UPDATING SHIPMENT STATUS FROM ${shipment.status.status} to ${possibleStatus[0]}\n`)
 

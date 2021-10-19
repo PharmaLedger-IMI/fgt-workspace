@@ -656,13 +656,7 @@ class Manager{
         functionCallIterator(this.update.bind(this), keys, newItems, (err, results) => {
             if (err)
                 return self._err(`Could not update all records`, err, callback);
-            callback(undefined, ...results.reduce((accum, r) => {
-                accum[0] = accum[0] || [];
-                accum[1] = accum[1] || [];
-                accum[0].push(r[0]);
-                accum[1].push(r[1]);
-                return accum;
-            }, [2]));
+            callback(undefined, ...results);
         });
     }
 

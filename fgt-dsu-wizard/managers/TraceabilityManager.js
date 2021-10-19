@@ -1,9 +1,7 @@
 const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
-const {functionCallIterator} = require('../services').utils;
 const TraceabilityService = require('../services/TraceabilityService');
 const IndividualProduct = require('../model/IndividualProduct');
-const Batch = require('../model/Batch');
 
 const ACTION = {
     REQUEST: 'request',

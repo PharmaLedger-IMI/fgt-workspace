@@ -16,7 +16,7 @@ function submitEvent(conf, callback){
     }
 
     const idInterval = setInterval(() => {
-        if (Date.now() - timeOfLastEvent > 100 * conf.statusUpdateTimeout){
+        if (Date.now() - timeOfLastEvent > conf.timeoutMultiplier * conf.statusUpdateTimeout){
             clearInterval(idInterval);
             console.log(`### The Blockchain seems to be silent... Going to end the process...`);
             if (cb)
