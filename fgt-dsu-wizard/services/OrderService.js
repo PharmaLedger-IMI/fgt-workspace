@@ -134,6 +134,14 @@ function OrderService(domain, strategy) {
             if (err)
                 return callback(err);
 
+            const cb = function(err, ...results){
+                if (err)
+                    return dsu.cancelBatch(err2 => {
+                        callback(err);
+                    });
+                callback(undefined, ...results);
+            }
+
             try{
                 orderDsu.beginBatch();
             }catch(e){
@@ -142,24 +150,24 @@ function OrderService(domain, strategy) {
 
             validateUpdate(orderFromSSI, order, (err) => {
                 if (err)
-                    return orderDsu.cancelBatch(callback);
+                    return cb(err);
                 Utils.getMounts(orderDsu, '/', STATUS_MOUNT_PATH, SHIPMENT_PATH, (err, mounts) => {
                     if (err)
-                        return orderDsu.cancelBatch(callback);
+                        return cb(err);
                     if (!mounts[STATUS_MOUNT_PATH])
-                        return orderDsu.cancelBatch(callback);
+                        return cb(`Missing mount path ${STATUS_MOUNT_PATH}`);
                     statusService.update(mounts[STATUS_MOUNT_PATH], order.status, order.requesterId, (err) => {
                         if (err)
-                            return orderDsu.cancelBatch(callback);
+                            return cb(err);
 
                         if (!mounts[SHIPMENT_PATH] && order.shipmentSSI)
                             orderDsu.mount(SHIPMENT_PATH, order.shipmentSSI, (err) => {
                                 if (err)
-                                    return orderDsu.cancelBatch(callback);
-                                self.get(keySSI, callback);
+                                    return cb(err);
                                 orderDsu.commitBatch((err) => {
                                     if(err)
-                                        return callback(err);   
+                                        return cb(err);
+                                    self.get(keySSI, callback);
                                 });
                             });
                         else
@@ -196,6 +204,14 @@ function OrderService(domain, strategy) {
             if (err)
                 return callback(err);
 
+            const cb = function(err, ...results){
+                if (err)
+                    return dsu.cancelBatch(err2 => {
+                        callback(err);
+                    });
+                callback(undefined, ...results);
+            }
+
             try {
                 dsu.beginBatch();
             } catch (e) {
@@ -204,33 +220,33 @@ function OrderService(domain, strategy) {
 
             dsu.writeFile(INFO_PATH, JSON.stringify(order), (err) => {
                 if (err)
-                    return dsu.cancelBatch(callback);
+                    return cb(err);
                 console.log("Order /info ", JSON.stringify(order));
                 createOrderStatus(order.requesterId, order.status,(err, statusSSI) => {
                     if (err)
-                        return dsu.cancelBatch(callback);
+                        return cb(err);
                     // Mount must take string version of keyssi
                     dsu.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(), (err) => {
                         if (err)
-                            return dsu.cancelBatch(callback);
+                            return cb(err);
                         console.log(`OrderStatus DSU (${statusSSI.getIdentifier(true)}) mounted at '/status'`);
                         createOrderLines(order, statusSSI, (err, orderLines) => {
                             if (err)
-                                return dsu.cancelBatch(callback);
+                                return cb(err);
                             const lines = JSON.stringify(orderLines.map(o => o.getIdentifier(true)));
                             dsu.writeFile('/lines', lines, (err) => {
                                 if (err)
-                                    return dsu.cancelBatch(callback);
+                                    return cb(err);
                                 dsu.commitBatch((err) => {
                                     if (err)
-                                        return callback(err);
+                                        return cb(err);
                                     dsu.getKeySSIAsObject((err, keySSI) => {
                                         if (err)
                                             return callback(err);
                                         console.log("Finished creating Order " + keySSI.getIdentifier(true));
                                         callback(undefined, keySSI, orderLines);
-                                        });                    
                                     });
+                                });
                             });
                         });
                     });

@@ -165,6 +165,14 @@ function ShipmentService(domain, strategy) {
             if (err)
                 return callback(err);
 
+            const cb = function(err, ...results){
+                if (err)
+                    return dsu.cancelBatch(err2 => {
+                        callback(err);
+                    });
+                callback(undefined, ...results);
+            }
+
             try {
                 dsu.beginBatch();
             } catch (e) {
@@ -173,29 +181,29 @@ function ShipmentService(domain, strategy) {
 
             dsu.writeFile(INFO_PATH, JSON.stringify(shipment), (err) => {
                 if (err)
-                    return dsu.cancelBatch(callback);
+                    return cb(err);
                 console.log("Shipment /info ", JSON.stringify(shipment));
                 createShipmentStatus(shipment.senderId, (err, statusSSI) => {
                     if (err)
-                        return dsu.cancelBatch(callback);
+                        return cb(err);
                     // Mount must take string version of keyssi
                     dsu.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(), (err) => {
                         if (err)
-                            return dsu.cancelBatch(callback);
+                            return cb(err);
                         console.log(`OrderStatus DSU (${statusSSI.getIdentifier(true)}) mounted at '/status'`);
 
                         const finalize = function(callback){
                             createShipmentLines(shipment, statusSSI, (err, shipmentLines) => {
                                 if (err)
-                                    return dsu.cancelBatch(callback);
+                                    return cb(err);
                                 const lines = JSON.stringify(shipmentLines.map(o => o.getIdentifier()));
                                 dsu.writeFile(LINES_PATH, lines, (err) => {
                                     if (err)
-                                        return callback(err);
+                                        return cb(err);
 
                                     dsu.commitBatch((err) => {
                                         if (err)
-                                            return callback(err);
+                                            return cb(err);
                                         dsu.getKeySSIAsObject((err, keySSI) => {
                                             if (err)
                                                 return callback(err);
@@ -212,7 +220,7 @@ function ShipmentService(domain, strategy) {
 
                         dsu.mount(ORDER_MOUNT_PATH, orderSSI, (err) => {
                             if (err)
-                                return dsu.cancelBatch(callback);
+                                return cb(err);
                            finalize(callback);
                         });
                     });
@@ -285,6 +293,14 @@ function ShipmentService(domain, strategy) {
             utils.getResolver().loadDSU(keySSI, {skipCache: true}, (err, dsu) => {
                 if (err)
                     return callback(err);
+
+                const cb = function(err, ...results){
+                    if (err)
+                        return dsu.cancelBatch(err2 => {
+                            callback(err);
+                        });
+                    callback(undefined, ...results);
+                }
                     
                 try{
                     dsu.beginBatch();
@@ -294,17 +310,17 @@ function ShipmentService(domain, strategy) {
 
                 utils.getMounts(dsu, '/', STATUS_MOUNT_PATH,  (err, mounts) => {
                     if (err)
-                        return dsu.cancelBatch(callback);
+                        return cb(err);
                     if (!mounts[STATUS_MOUNT_PATH])
-                        return dsu.cancelBatch(callback);
+                        return cb(`Missing mount ${STATUS_MOUNT_PATH}`);
                     statusService.update(mounts[STATUS_MOUNT_PATH], shipment.status, shipment.senderId, (err) => {
                         if (err)
-                            return dsu.cancelBatch(callback);
+                            return cb(err);
                         dsu.commitBatch((err) => {
                             if(err)
-                                return callback(err);
+                                return cb(err);
                             self.get(keySSI, callback);
-                            });    
+                        });
                     });
                 });
             });

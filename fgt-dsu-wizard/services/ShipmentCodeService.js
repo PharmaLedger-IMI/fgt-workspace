@@ -13,7 +13,7 @@ const {Shipment, ShipmentLine, ShipmentCode, TrackingCode} = require('../model')
 function ShipmentCodeService(domain, strategy){
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");
 
-    const endpoint = 'shipmencode';
+    const endpoint = 'shipmentcode';
 
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
@@ -69,6 +69,14 @@ function ShipmentCodeService(domain, strategy){
                 if (err)
                     return callback(err);
 
+                const cb = function(err, ...results){
+                    if (err)
+                        return dsu.cancelBatch(err2 => {
+                            callback(err);
+                        });
+                    callback(undefined, ...results);
+                }
+
                 try {
                     dsu.beginBatch();
                 } catch (e) {
@@ -77,13 +85,13 @@ function ShipmentCodeService(domain, strategy){
 
                 dsu.writeFile(INFO_PATH, data, (err) => {
                     if (err)
-                        return dsu.cancelBatch(callback);    
+                        return cb(err);
                     dsu.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(), (err) => {
                         if (err)
-                            return dsu.cancelBatch(callback);
+                            return cb(err);
                         dsu.commitBatch((err) => {
                             if (err)
-                                return callback(err);
+                                return cb(err);
                             dsu.getKeySSIAsObject(callback);
                         });            
                     });

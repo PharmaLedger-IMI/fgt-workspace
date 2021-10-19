@@ -69,6 +69,14 @@ function SaleService(domain, strategy){
                 if (err)
                     return callback(err);
 
+                const cb = function(err, ...results){
+                    if (err)
+                        return dsu.cancelBatch(err2 => {
+                            callback(err);
+                        });
+                    callback(undefined, ...results);
+                }
+
                 try {
                     dsu.beginBatch();
                 } catch (e) {
@@ -77,10 +85,10 @@ function SaleService(domain, strategy){
 
                 dsu.writeFile(INFO_PATH, data, (err) => {
                     if (err)
-                        return dsu.cancelBatch(callback);
+                        return cb(err);
                     dsu.commitBatch((err) => {
                         if (err)
-                            return callback(err);
+                            return cb(err);
                         dsu.getKeySSIAsObject(callback);
                     });
                 });
