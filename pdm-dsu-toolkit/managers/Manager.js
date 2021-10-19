@@ -35,10 +35,18 @@ class DBLock {
         this.count ++;
     }
 
-    commitBatch(callback){
+    commitBatch(force, callback){
+        if (!callback){
+            callback = force;
+            force = false;
+        }
+
         this.count --;
-        if (this.count === 0)
+        if (force || this.count === 0){
+            this.count = 0;
             return this.storage.commitBatch.call(this.storage, callback);
+        }
+
         console.log(`Other Batch operations in progress. not committing just yet`)
         callback();
     }
@@ -192,8 +200,8 @@ class Manager{
         this.dbLock.beginBatch();
     }
 
-    commitBatch(callback){
-        this.dbLock.commitBatch(callback);
+    commitBatch(force, callback){
+        this.dbLock.commitBatch(force, callback);
     }
 
     cancelBatch(callback){
@@ -218,10 +226,10 @@ class Manager{
         const storage = self.getStorage();
 
 
-        const beginBatch = function(callback){
+        const innerBeginBatch = function(callback){
 
             try {
-                storage.beginBatch();
+                self.beginBatch();
             } catch (e){
                 return callback(e)
             }
@@ -247,7 +255,7 @@ class Manager{
                     return callback(undefined, newIndexes);
                 if (indexes.indexOf(index) !== -1)
                     return indexIterator(propsClone, callback);
-                beginBatch((err) => {
+                innerBeginBatch((err) => {
                     if (err)
                         return errCb('Could not start batch Mode', err, callback);
                     storage.addIndex(self.tableName, index, (err) => {
@@ -264,7 +272,7 @@ class Manager{
             indexIterator(props.slice(), (err, updatedIndexes) => {
                 if (err)
                     return errCb(`Could not update indexes for table ${self.tableName}`, err, callback);
-                storage.commitBatch((err) => {
+                self.commitBatch(true, (err) => {
                     if (err)
                         return errCb(`Indexes committed for table ${self.tableName}`, err, callback);
                     callback(undefined, updatedIndexes);
