@@ -89,24 +89,40 @@ class BatchManager extends Manager{
     create(product, batch, callback) {
         let self = this;
 
+        try {
+            self.beginBatch();
+        } catch (e){
+            return callback(e)
+        }
+
         const gtin = product.gtin;
 
         self.batchService.create(gtin, batch, (err, keySSI) => {
             if (err)
-                return callback(err);
+                return self.cancelBatch(callback);
+            
             const record = keySSI.getIdentifier();
             const dbKey = self._genCompostKey(gtin, batch.batchNumber);
             self.insertRecord(dbKey, self._indexItem(gtin, batch, record), (err) => {
-                if (err)
-                    return self._err(`Could not inset record with gtin ${gtin} and batch ${batch.batchNumber} on table ${self.tableName}`, err, callback);
+                if (err){ 
+                    console.log(`Could not inset record with gtin ${gtin} and batch ${batch.batchNumber} on table ${self.tableName}`);
+                    return self.cancelBatch(callback);
+                } 
                 const path =`${self.tableName}/${dbKey}`;
                 console.log(`batch ${batch.batchNumber} created stored at '${path}'`);
 
                 self.stockManager.manage(product, batch, (err) => {
-                    if (err)
-                        return self._err(`Error Updating Stock for ${product.gtin} batch ${batch.batchNumber}: ${err.message}`, err, callback);
+                    if (err){ 
+                        console.log(`Error Updating Stock for ${product.gtin} batch ${batch.batchNumber}: ${err.message}`);
+                        return self.cancelBatch(callback);
+                    } 
+                    
                     console.log(`Stock for ${product.gtin} batch ${batch.batchNumber} updated`);
-                    callback(undefined, keySSI, path);
+                    self.commitBatch(err => {
+                        if(err)
+                            return callback(err);
+                        callback(undefined, keySSI, path);
+                    });
                 });
             });
         });
@@ -168,7 +184,7 @@ class BatchManager extends Manager{
      * @override
      */
     update(gtin, newBatch, callback){
-        super.update(this._genCompostKey(gtin, newBatch.batchNumber), newBatch, callback);
+        return callback(`Batch DSUs cannot be updated`);
     }
 
     /**
