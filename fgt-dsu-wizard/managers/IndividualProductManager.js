@@ -112,17 +112,35 @@ class IndividualProductManager extends Manager {
      */
     create(product, callback) {
         let self = this;
+
+        try {
+            self.beginBatch();
+        } catch (e){
+            return callback(e)
+        }
+
         self.individualProductService.create(product, (err, keySSI) => {
-            if (err)
-                return self._err(`Could not create individual product DSU for ${product}`, err, callback);
+            if (err){ 
+                console.log(`Could not create individual product DSU for ${product}`);
+                return self.cancelBatch(callback);
+            } 
+            
             const record = keySSI.getIdentifier();
             const key = self._genCompostKey(product.gtin, product.batchNumber, product.serialNumber);
             self.insertRecord(key, self._indexItem(key, product, record), (err) => {
-                if (err)
-                    return self._err(`Could not insert record with gtin ${product.gtin} on table ${self.tableName}`, err, callback);
+                if (err){ 
+                    console.log(`Could not insert record with gtin ${product.gtin} on table ${self.tableName}`);
+                    return self.cancelBatch(callback);
+                } 
+
                 const path =`${self.tableName}/${product.gtin}`;
                 console.log(`IndividualProduct ${key} created & stored at '${path}'`);
-                callback(undefined, keySSI, path);
+
+                self.commitBatch(err => {
+                    if(err)
+                        return callback(err);
+                    callback(undefined, keySSI, path);
+                });
             });
         });
     }
