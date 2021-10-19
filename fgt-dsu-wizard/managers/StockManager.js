@@ -179,7 +179,7 @@ class StockManager extends Manager{
                     if (err)
                         return self._err(`Could not manage stock for ${gtin}: ${err.message}`, err, callback);
                     console.log(`Updated Stock for ${gtin} batch ${batch.batchNumber}. ${self.serialization && serials ? serials.join(', ') : ''}`);
-                    callback(undefined, serials || batch.serialNumbers || batch.quantity, results);
+                    callback(undefined, (serials && serials.length ? serials : undefined) || batch.serialNumbers || batch.quantity, results);
                 });
             });
 
