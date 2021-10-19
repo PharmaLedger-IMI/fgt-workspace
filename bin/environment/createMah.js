@@ -42,10 +42,8 @@ const setupProducts = function(participantManager, products, batches, callback){
         participantManager.productManager = productManager;
         products = products || require('./products/productsRandom')();
 
-        const storage = productManager.getStorage();
-
         const errCb = function(err){
-            storage.cancelBatch(err2 => {
+            productManager.cancelBatch(err2 => {
                 if (err2)
                     console.log(`Could not cancelBatch over error`, err2);
                 callback(err);
@@ -53,7 +51,7 @@ const setupProducts = function(participantManager, products, batches, callback){
         }
 
         try {
-            storage.beginBatch();
+            productManager.beginBatch();
         } catch (e){
             return callback(e);
         }
@@ -74,7 +72,7 @@ const setupProducts = function(participantManager, products, batches, callback){
         iterator(products.slice(), (err, products) => {
             if (err)
                 return errCb(err);
-            storage.commitBatch(err => {
+            productManager.commitBatch(err => {
                 if (err)
                     return errCb(err);
                 callback(undefined, products);
@@ -98,10 +96,8 @@ const setupBatches = function(participantManager, products, batches,  callback){
 
         const batchesObject = {};
 
-        const storage = batchManager.getStorage();
-
         const errCb = function(err){
-            storage.cancelBatch(err2 => {
+            batchManager.cancelBatch(err2 => {
                 if (err2)
                     console.log(`Could not cancelBatch over error`, err2);
                 callback(err);
@@ -109,7 +105,7 @@ const setupBatches = function(participantManager, products, batches,  callback){
         }
 
         try {
-            storage.beginBatch();
+            batchManager.beginBatch();
         } catch (e){
             return callback(e);
         }
@@ -145,7 +141,7 @@ const setupBatches = function(participantManager, products, batches,  callback){
         productIterator(products.slice(), (err, batchesObj) => {
             if (err)
                 return errCb(err);
-            storage.commitBatch(err => {
+            batchManager.commitBatch(err => {
                 if (err)
                     return errCb(err);
                 const output = [];
@@ -202,36 +198,23 @@ const setup = function(conf, participantManager, products, batches, callback){
     if (!db)
         return callback(`database is not initialized`);
 
-    const newCallback = function(...args){
-        db.cancelBatch((err, result) => {
-            if (err)
-                return callback(`Could not even cancel batch`);
-            console.log(`Cancel batch succeeded`, result);
-            callback(...args);
-        })
-    }
-
     console.log(`Beginning batch operation on database`);
     // db.beginBatch();
     setupProducts(participantManager, products, batches, (err, productsObj) => {
         if (err)
-            return newCallback(err);
+            return callback(err);
         setupBatches(participantManager, productsObj, batches, (err, batchesObj) => {
             if (err)
-                return newCallback(err);
+                return callback(err);
             setupManager(participantManager, (err) => {
                 if (err)
-                    return newCallback(err);
-                // db.commitBatch((err) => {
-                //     if (err)
-                //         return newCallback(err);
-                    console.log(`Updates to db committed`);
-                    attachLogic(participantManager, conf, (err) => {
-                        if (err)
-                            return callback(err);
-                        callback(undefined, productsObj, batchesObj);
-                    })
-                // });
+                    return callback(err);
+                console.log(`Updates to db committed`);
+                attachLogic(participantManager, conf, (err) => {
+                    if (err)
+                        return callback(err);
+                    callback(undefined, productsObj, batchesObj);
+                })
             });
         });
     });

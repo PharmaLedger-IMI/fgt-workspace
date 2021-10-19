@@ -96,10 +96,9 @@ class ProductManager extends Manager {
         }
 
         let self = this;
-        const storage = self.getStorage();
-        
+
         try {
-            storage.beginBatch();
+            self.beginBatch();
         } catch (e){
             return callback(e)
         }
@@ -107,22 +106,22 @@ class ProductManager extends Manager {
         self._bindParticipant(product, (err, product) => {
             if (err){ 
                 console.log(`Could not bind mah to product`);
-                return storage.cancelBatch(callback);
+                return self.cancelBatch(callback);
             } 
             self.productService.create(product, (err, keySSI) => {
                 if (err){ 
                     console.log(`Could not create product DSU for ${JSON.stringify(product, undefined, 2)}`);
-                    return storage.cancelBatch(callback);
+                    return self.cancelBatch(callback);
                 } 
                 const record = keySSI.getIdentifier();
                 self.insertRecord(gtin, self._indexItem(gtin, product, record), (err) => {
                     if (err){ 
                         console.log(`Could not inset record with gtin ${gtin} on table ${self.tableName}`);
-                        return storage.cancelBatch(callback);
+                        return self.cancelBatch(callback);
                     } 
                     const path =`${self.tableName}/${gtin}`;
                     console.log(`Product ${gtin} created stored at '${path}'`);
-                    storage.commitBatch(err => {
+                    self.commitBatch(err => {
                         if(err)
                             return callback(err);
                         callback(undefined, keySSI, path);
