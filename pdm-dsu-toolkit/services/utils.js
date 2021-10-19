@@ -210,7 +210,7 @@ const getMounts = function(dsu, basePath, ...paths){
  * Utll function that calls the fame function iteratively wit the next arguments (destructive)
  * @param func
  * @param {string[]} keys
- * @param args
+ * @param {} args
  * @memberOf Utils
  */
 const functionCallIterator = function(func, keys, ...args){
@@ -244,13 +244,7 @@ const functionCallIterator = function(func, keys, ...args){
 
 	iterator(keys, ...args, (err) => err
 		? callback(err)
-		: callback(undefined, ...result.reduce((accum, r) => {
-			r.forEach((arg, i) => {
-				accum[i] = accum[i] || [];
-				accum[i].push(arg);
-			});
-			return accum;
-		}, new Array(result.length))));
+		: callback(undefined, ...result));
 }
 
 

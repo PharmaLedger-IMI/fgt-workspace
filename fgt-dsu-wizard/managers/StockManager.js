@@ -93,6 +93,12 @@ class StockManager extends Manager{
     }
 
 
+    /**
+     *
+     * @param {Product} product
+     * @param {Batch} batch
+     * @param {function(err?, string[]?, Stock?)} callback
+     */
     manage(product, batch, callback){
         const self = this;
 
@@ -165,11 +171,11 @@ class StockManager extends Manager{
                     });
                 }
 
-                self.update(gtin, stock, (err) => {
+                self.update(gtin, stock, (err, results) => {
                     if (err)
                         return self._err(`Could not manage stock for ${gtin}: ${err.message}`, err, callback);
                     console.log(`Updated Stock for ${gtin} batch ${batch.batchNumber}. ${self.serialization && serials ? serials.join(', ') : ''}`);
-                    callback(undefined, serials || batch.serialNumbers || batch.quantity);
+                    callback(undefined, serials || batch.serialNumbers || batch.quantity, results);
                 });
             });
 
@@ -177,18 +183,38 @@ class StockManager extends Manager{
         });
     }
 
+    /**
+     *
+     * @param {string} product gtin
+     * @param {Batch[]} batches
+     * @param {function(err?, {}?)} callback where {} as batchnumber as keys, as the added/removed serials as value
+     */
     manageAll(product, batches, callback){
         const self = this;
         const iterator = function(product){
-            return function(batches, callback){
-                return self.manage(product, batches, callback);
+            return function(batch, callback){
+                return self.manage(product, batch, (err, serials, stock) => {
+                    if (err)
+                        return callback(err);
+                    callback(undefined, batch, serials);
+                });
             }
         }
 
-        functionCallIterator(iterator(product).bind(this), ['batchNumber'], batches, (err, results) => {
+        functionCallIterator(iterator(product).bind(this), batches, (err, ...results) => {
             if (err)
                 return self._err(`Could not perform manage all on Stock`, err, callback);
-            callback(undefined, results);
+            const mergedResult = results.reduce((accum, result) => {
+                accum[result[0].batchNumber] = accum[result[0].batchNumber] || [];
+                try {
+                    accum[result[0].batchNumber].push(...result[1])
+                } catch (e) {
+                    console.log(e)
+                }
+
+                return accum;
+            }, {});
+            callback(undefined, mergedResult);
         });
     }
 

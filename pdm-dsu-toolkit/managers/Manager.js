@@ -21,6 +21,44 @@ class Page {
     }
 }
 
+class DBLock {
+    count = 0;
+    storage;
+
+    nativeBeginBatch;
+    nativeCommitBatch;
+    nativeCancelBatch;
+
+    constructor(manager){
+        this.storage = manager.storage;
+        this.nativeBeginBatch = this.storage.beginBatch.bind(this.storage);
+        this.nativeCommitBatch = this.storage.commitBatch.bind(this.storage);
+        this.nativeCancelBatch = this.storage.cancelBatch.bind(this.storage);
+    }
+
+    beginBatch(){
+        if (this.count === 0)
+            this.nativeBeginBatch();
+        this.count ++;
+    }
+
+    commitBatch(callback){
+        this.count --;
+        if (this.count === 0)
+            return this.nativeCommitBatch(callback);
+        console.log(`Other Batch operations in progress. not committing just yet`)
+        callback();
+    }
+
+    cancelBatch(callback){
+        if (this.count > 0){
+            this.count = 0;
+            this.nativeCancelBatch(callback);
+        }
+    }
+
+}
+
 /**
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
@@ -85,6 +123,11 @@ class Manager{
     constructor(baseManager, tableName, indexes, callback){
         let self = this;
         this.storage = baseManager.db;
+        self.dbLock = new DBLock(self);
+        self.storage.beginBatch = self.dbLock.beginBatch.bind(self.dbLock);
+        self.storage.commitBatch = self.dbLock.commitBatch.bind(self.dbLock);
+        self.storage.cancelBatch = self.dbLock.cancelBatch.bind(self.dbLock);
+
         this.getStorage = () => {
             if (!self.storage)
                 self.storage = baseManager.db;
@@ -172,26 +215,15 @@ class Manager{
         const self = this;
         const storage = self.getStorage();
 
-        let batchCallCount = 0;
 
         const beginBatch = function(callback){
-            if (batchCallCount > 0){
-                batchCallCount ++;
-                return callback();
 
-            }
             try {
                 storage.beginBatch();
-                batchCallCount ++;
             } catch (e){
                 return callback(e)
             }
-
             callback();
-        }
-
-        const commitBatch = function(callback){
-
         }
 
         const errCb = function(message, err, callback){
