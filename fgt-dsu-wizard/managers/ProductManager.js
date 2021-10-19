@@ -95,7 +95,8 @@ class ProductManager extends Manager {
             gtin = product.gtin;
         }
 
-        const storage = self.getStorage();// <-----------------------------
+        let self = this;
+        const storage = self.getStorage();
         
         try {
             storage.beginBatch();
@@ -103,31 +104,29 @@ class ProductManager extends Manager {
             return callback(e)
         }
 
-        let self = this;
         self._bindParticipant(product, (err, product) => {
-            if (err){ //<----------------------------------------------------------------------
+            if (err){ 
                 console.log(`Could not bind mah to product`);
                 return storage.cancelBatch(callback);
-            } //<----------------------------------------------------------------------
+            } 
             self.productService.create(product, (err, keySSI) => {
-                if (err){ //<----------------------------------------------------------------------
+                if (err){ 
                     console.log(`Could not create product DSU for ${JSON.stringify(product, undefined, 2)}`);
                     return storage.cancelBatch(callback);
-                } //<----------------------------------------------------------------------
+                } 
                 const record = keySSI.getIdentifier();
                 self.insertRecord(gtin, self._indexItem(gtin, product, record), (err) => {
-                    if (err){ //<----------------------------------------------------------------------
+                    if (err){ 
                         console.log(`Could not inset record with gtin ${gtin} on table ${self.tableName}`);
                         return storage.cancelBatch(callback);
-                    } //<---------------------------------------------------------------------------
+                    } 
                     const path =`${self.tableName}/${gtin}`;
                     console.log(`Product ${gtin} created stored at '${path}'`);
-                    storage.commitBatch(err => {// <---------------------------------------
+                    storage.commitBatch(err => {
                         if(err)
                             return callback(err);
                         callback(undefined, keySSI, path);
-                    })//<------------------------------------------------------------------------------------
-                    
+                    })
                 });
             });
         });
