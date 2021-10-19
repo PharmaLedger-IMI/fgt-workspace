@@ -166,15 +166,9 @@ class ProductManager extends Manager {
             gtin = newProduct.gtin;
         }
         let self = this;
-
-        super.update(gtin, newProduct, (err, storedData, dsu) => {
-            if (err)
-                return self._err(`Could not update product with gtin ${gtin}`, err, callback);
-            console.log(`Product ${gtin} updated`);
-            callback(undefined, newProduct, dsu)
-        });
+        
+        return callback(`Product DSUs cannot be updated`);
     }
-
 
     /**
      * Lists all registered items according to query options provided
