@@ -179,6 +179,10 @@ class Manager{
         this.dbLock.disallow(this.tableName, allowedManager);
     }
 
+    batchSchedule(method){
+        this.dbLock.schedule(method);
+    }
+
     /**
      * Should be called by child classes if then need to index the table.
      * (Can't be called during the constructor of the Manager class due to the need of virtual method
@@ -795,7 +799,8 @@ class Manager{
         try {
             self.beginBatch();
         } catch (e) {
-            return callback(e);
+            return self.batchSchedule(() => self.insertRecord.call(self, tableName, key, record, callback));
+            // return callback(e);
         }
 
         this.getStorage().insertRecord(tableName, key, record, (err, ...results) => {
@@ -834,7 +839,8 @@ class Manager{
         try {
             self.beginBatch();
         } catch (e) {
-            return callback(e);
+            return self.batchSchedule(() => self.updateRecord.call(self, tableName, key, newRecord, callback));
+            // return callback(e);
         }
 
         this.getStorage().updateRecord(tableName, key, newRecord, (err, ...results) => {

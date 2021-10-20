@@ -5,47 +5,68 @@ const {getMessageManager, Message} = require('./MessageManager');
 
 
 class DBLock {
-    cache = {};
-    storage;
-    allows = {};
+    _cache = {};
+    _storage;
+    _allows = {};
+    _schedule = [];
+    _timeout = 10;
 
-    constructor(db){
-        this.storage = db;
+    constructor(db, timeout){
+        this._storage = db;
+        this._timeout = timeout || this._timeout;
         console.log(`Created DB Lock`);
     }
 
     isLocked(tableName){
-        return this.cache[tableName] && this.cache[tableName] !== -1;
+        return this._cache[tableName] && this._cache[tableName] !== -1;
+    }
+    
+    schedule(method){
+        console.log(`Scheduling db method call...`)
+        this._schedule.push(method);
     }
 
     allow(tableName, manager){
         const allowedTable = manager.tableName;
-        if (this.allows[allowedTable])
+        if (this._allows[allowedTable])
             throw new Error(`Only one manager allowed`);
 
-        this.allows[allowedTable] = tableName;
+        this._allows[allowedTable] = tableName;
     }
 
     disallow(tableName, manager){
         const allowedTable = manager.tableName;
-        if (!this.allows[allowedTable])
+        if (!this._allows[allowedTable])
             throw new Error(`Only no manager to disallow`);
 
-        delete this.allows[allowedTable];
+        delete this._allows[allowedTable];
     }
 
     beginBatch(tableName){
 
-        if (tableName in this.allows)
-            tableName = this.allows[tableName]
+        if (tableName in this._allows)
+            tableName = this._allows[tableName]
 
-        this.cache[tableName] = this.cache[tableName] || -1;
+        this._cache[tableName] = this._cache[tableName] || -1;
 
-        if (this.cache[tableName] === -1){
-            this.storage.beginBatch.call(this.storage);
-            this.cache[tableName] = 1;
+        if (this._cache[tableName] === -1){
+            this._storage.beginBatch.call(this._storage);
+            this._cache[tableName] = 1;
         } else {
-            this.cache[tableName] += 1;
+            this._cache[tableName] += 1;
+        }
+    }
+
+    _executeFromSchedule(){
+        const method = this._schedule.shift();
+        if (method){
+            console.log(`Running scheduled db method call`);
+            try {
+                method();
+            } catch (e) {
+                console.log(`db method call failed. unshifting`, e);
+                this._schedule.unshift(method);
+            }
         }
     }
 
@@ -55,17 +76,25 @@ class DBLock {
             force = false;
         }
 
-        if (tableName in this.allows)
-            tableName = this.allows[tableName]
+        if (tableName in this._allows)
+            tableName = this._allows[tableName]
 
-        if (this.cache[tableName] === -1)
+        if (this._cache[tableName] === -1)
             return callback();
 
-        this.cache[tableName] -= 1;
-        if (force || this.cache[tableName] === 0){
-            this.cache[tableName] = -1;
-            this.allows = {};
-            return this.storage.commitBatch.call(this.storage, callback);
+        const self = this;
+
+        this._cache[tableName] -= 1;
+        if (force || this._cache[tableName] === 0){
+            this._cache[tableName] = -1;
+            this._allows = {};
+            return this._storage.commitBatch.call(this._storage, (err) => {
+                if (err)
+                    return callback(err);
+                if (self._schedule.length)
+                    setTimeout(self._executeFromSchedule.bind(self), self._timeout);
+                callback();
+            });
         }
 
         console.log(`Other Batch operations in progress in table ${tableName}. not committing just yet`)
@@ -73,9 +102,9 @@ class DBLock {
     }
 
     cancelBatch(tableName, callback){
-        if (this.cache[tableName] > 0){
-            this.cache[tableName] = -1;
-            return this.storage.cancelBatch.call(this.storage, callback);
+        if (this._cache[tableName] > 0){
+            this._cache[tableName] = -1;
+            return this._storage.cancelBatch.call(this._storage, callback);
         }
         callback();
     }
