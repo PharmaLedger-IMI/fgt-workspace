@@ -222,6 +222,14 @@ class IssuedOrderManager extends OrderManager {
             callback(undefined, ...results);
         }
 
+        const cbCancel = function(err, ...results){
+            if (err)
+                return self.cancelBatch(err2 => {
+                    callback(err);
+                });
+            callback(undefined, ...results);
+        }
+
         const self = this;
 
         self.getOne(key, false,(err, record) => {
@@ -297,7 +305,7 @@ class IssuedOrderManager extends OrderManager {
                                     const batches = batchObj[gtin];
                                     self.stockManager.manageAll(gtin, batches, (err, newSerials, newStocks) => {
                                         if (err)
-                                            return callback(err);
+                                            return cbCancel(err);
                                         result[gtin] = result[gtin] || [];
                                         if (newStocks)
                                             result[gtin].push(...newStocks);
@@ -314,14 +322,16 @@ class IssuedOrderManager extends OrderManager {
                                 self.batchAllow(self.stockManager);
                 
                                 gtinIterator(gtins.slice(), batchesToAdd, (err, result) => {
-                                    if (err)
-                                        return self._err(`Could not update Stock`, err, callback);
-
+                                    if (err) {
+                                        console.log(`Could not update Stock`);
+                                        return cbCancel(err);
+                                    }
+                                        
                                     self.batchDisallow(self.stockManager);
 
                                     self.commitBatch((err) => {
                                         if(err)
-                                            return cb(err);
+                                            return cbCancel(err);
 
                                         console.log(`Stocks updated`, result);
                                         sendMessages();
