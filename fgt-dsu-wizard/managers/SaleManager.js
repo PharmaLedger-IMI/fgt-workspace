@@ -110,27 +110,50 @@ class SaleManager extends Manager{
 
                     self.stockManager.manageAll(gtin, toBeManaged[gtin].slice(), (err, serials, stocks) => {
                         if (err)
-                            return callback(err);
+                            return cb(err);
                         result.push(...stocks);
                         productIterator(gtins, result, callback);
                     });
                 }
 
+                const cb = function(err, ...results){
+                    if (err)
+                        return self.cancelBatch(err2 => {
+                            callback(err);
+                        });
+                    callback(undefined, ...results);
+                }
+
+                try {
+                    self.beginBatch();
+                } catch (e){
+                    return callback(e);
+                }
+
+                self.batchAllow(self.stockManager);
+
                 productIterator(Object.keys(toBeManaged), [], (err, results) => {
                     if (err)
-                        return callback(err);
+                        return cb(err);
                     console.log(`Creating sale entry for: ${sale.productList.map(p => `${p.gtin}-${p.batchNumber}-${p.serialNumber}`).join(', ')}`);
 
 
                     self.splitSalesByMAHAndCreate(sale, (err, SSis) => {
                         if (err)
-                            return self._err(`COuld not Crease Sales DSUs`, err, callback);
+                            return cb(`Could not Crease Sales DSUs`);
                         self.insertRecord(sale.id, self._indexItem(sale), (err) => {
                             if (err)
-                                return self._err(`Could not insert record with gtin ${sale.id} on table ${self.tableName}`, err, callback);
-                            const path =`${self.tableName}/${sale.id}`;
-                            console.log(`Sale stored at '${path}'`);
-                            callback(undefined, sale, path);
+                                return cb(`Could not insert record with gtin ${sale.id} on table ${self.tableName}`);
+
+                            self.batchDisallow(self.stockManager);
+                            self.commitBatch((err) => {
+                                if(err)
+                                    return cb(err);
+                                const path =`${self.tableName}/${sale.id}`;
+                                console.log(`Sale stored at '${path}'`);
+                                callback(undefined, sale, path);
+                            });  
+                            
                         });
                     });
                 });
