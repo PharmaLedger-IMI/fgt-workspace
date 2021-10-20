@@ -66,14 +66,6 @@ class DirectoryManager extends Manager {
             }
         }
 
-        const cb = function(err, ...results){
-            if (err)
-                return self.cancelBatch(err2 => {
-                    callback(err);
-                });
-            callback(undefined, ...results);
-        }
-
         self.getOne(key, (err, existing) => {
             if (!err && !!existing){
                 if (matchEntries(existing)) {
