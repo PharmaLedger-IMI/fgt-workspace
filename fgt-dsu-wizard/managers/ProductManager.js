@@ -94,38 +94,20 @@ class ProductManager extends Manager {
             product = gtin;
             gtin = product.gtin;
         }
-
         let self = this;
-
-        try {
-            self.beginBatch();
-        } catch (e){
-            return callback(e)
-        }
-
         self._bindParticipant(product, (err, product) => {
-            if (err){ 
-                console.log(`Could not bind mah to product`);
-                return self.cancelBatch(callback);
-            } 
+            if (err)
+                return self._err(`Could not bind mah to product`, err, callback);
             self.productService.create(product, (err, keySSI) => {
-                if (err){ 
-                    console.log(`Could not create product DSU for ${JSON.stringify(product, undefined, 2)}`);
-                    return self.cancelBatch(callback);
-                } 
+                if (err)
+                    return self._err(`Could not create product DSU for ${JSON.stringify(product, undefined, 2)}`, err, callback);
                 const record = keySSI.getIdentifier();
                 self.insertRecord(gtin, self._indexItem(gtin, product, record), (err) => {
-                    if (err){ 
-                        console.log(`Could not inset record with gtin ${gtin} on table ${self.tableName}`);
-                        return self.cancelBatch(callback);
-                    } 
+                    if (err)
+                        return self._err(`Could not inset record with gtin ${gtin} on table ${self.tableName}`, err, callback);
                     const path =`${self.tableName}/${gtin}`;
                     console.log(`Product ${gtin} created stored at '${path}'`);
-                    self.commitBatch(err => {
-                        if(err)
-                            return callback(err);
-                        callback(undefined, keySSI, path);
-                    });
+                    callback(undefined, keySSI, path);
                 });
             });
         });
