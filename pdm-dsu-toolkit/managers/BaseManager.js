@@ -2,6 +2,60 @@ const {INFO_PATH, PARTICIPANT_MOUNT_PATH, IDENTITY_MOUNT_PATH, DATABASE_MOUNT_PA
 const { getResolver ,getKeySSISpace,  _err} = require('../services/utils');
 const relevantMounts = [PARTICIPANT_MOUNT_PATH, DATABASE_MOUNT_PATH];
 const {getMessageManager, Message} = require('./MessageManager');
+
+
+class DBLock {
+    cache = {};
+    storage;
+
+    constructor(db){
+        this.storage = db;
+        console.log(`Created DB Lock`);
+    }
+
+    isLocked(tableName){
+        return this.cache[tableName] !== -1;
+    }
+
+    beginBatch(tableName){
+        this.cache[tableName] = this.cache[tableName] || -1;
+
+        if (this.cache[tableName] === -1){
+            this.storage.beginBatch.call(this.storage);
+            this.count = 1;
+        } else {
+            this.count ++;
+        }
+    }
+
+    commitBatch(tableName, force, callback){
+        if (!callback){
+            callback = force;
+            force = false;
+        }
+
+        if (this.cache[tableName] === -1)
+            return callback();
+
+        this.cache[tableName] --;
+        if (force || this.cache[tableName] === 0){
+            this.cache[tableName] = -1;
+            return this.storage.commitBatch.call(this.storage, callback);
+        }
+
+        console.log(`Other Batch operations in progress in table ${tableName}. not committing just yet`)
+        callback();
+    }
+
+    cancelBatch(tableName, callback){
+        if (this.cache[tableName] > 0){
+            this.cache[tableName] = -1;
+            return this.storage.cancelBatch.call(this.storage, callback);
+        }
+        callback();
+    }
+}
+
 /**
  * Base Manager Class
  *
@@ -70,6 +124,7 @@ class BaseManager {
         this.DSUStorage = dsuStorage;
         this.rootDSU = undefined;
         this.db = undefined;
+        this.dbLock = undefined;
         this.participantConstSSI = undefined;
         this.did = undefined;
         this.messenger = undefined;
@@ -291,6 +346,7 @@ class BaseManager {
                     self.db = require('opendsu').loadApi('db').getWalletDB(dbSSI, 'mydb');
                     self.db.on('initialised', () => {
                         console.log(`Database Cached`);
+                        self.dbLock = new DBLock(self.db);
                         callback();
                     });
                 } catch (e) {

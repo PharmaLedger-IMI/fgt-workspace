@@ -21,57 +21,6 @@ class Page {
     }
 }
 
-class DBLock {
-    count = -1;
-    storage;
-
-    constructor(manager){
-        this.storage = manager.storage;
-    }
-
-    isLocked(){
-        return this.count !== -1;
-    }
-
-    beginBatch(){
-        if (this.count === -1){
-            this.storage.beginBatch.call(this.storage);
-            this.count = 1;
-        } else {
-            this.count ++;
-        }
-    }
-
-    commitBatch(force, callback){
-        if (!callback){
-            callback = force;
-            force = false;
-        }
-
-        if (this.count === -1)
-            return callback();
-
-        this.count --;
-        if (force || this.count === 0){
-            this.count = -1;
-            return this.storage.commitBatch.call(this.storage, callback);
-        }
-
-        console.log(`Other Batch operations in progress. not committing just yet`)
-        callback();
-    }
-
-    cancelBatch(callback){
-        if (this.count > 0){
-            this.count = -1;
-            return this.storage.cancelBatch.call(this.storage, callback);
-        }
-
-        callback();
-    }
-
-}
-
 /**
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
@@ -136,11 +85,13 @@ class Manager{
     constructor(baseManager, tableName, indexes, callback){
         let self = this;
         this.storage = baseManager.db;
-        this.dbLock = new DBLock(this);
+        this.dbLock = baseManager.dbLock;
 
         this.getStorage = () => {
-            if (!self.storage)
+            if (!self.storage){
                 self.storage = baseManager.db;
+                self.dbLock = baseManager.dbLock;
+            }
             if (!self.storage)
                 throw new Error(`DB is not initialized`);
             return self.storage;
@@ -209,15 +160,15 @@ class Manager{
     }
 
     beginBatch(){
-        this.dbLock.beginBatch();
+        this.dbLock.beginBatch(this.tableName);
     }
 
     commitBatch(force, callback){
-        this.dbLock.commitBatch(force, callback);
+        this.dbLock.commitBatch(this.tableName, force, callback);
     }
 
     cancelBatch(callback){
-        this.dbLock.cancelBatch(callback);
+        this.dbLock.cancelBatch(this.tableName, callback);
     }
 
     /**
