@@ -151,15 +151,15 @@ class IssuedOrderManager extends OrderManager {
             }
         }
 
+        console.log(`Updating order ${orderId} witj shipment ${shipment.shipmentId}`)
+
         const cb = function(err, ...results){
             if (err)
-                return dsu.cancelBatch(err2 => {
+                return self.cancelBatch(err2 => {
                     callback(err);
                 });
             callback(undefined, ...results);
         }
-
-        console.log(`Updating order ${orderId} witj shipment ${shipment.shipmentId}`)
 
         const self = this;
         const key = this._genCompostKey(shipment.senderId, orderId);
@@ -169,33 +169,24 @@ class IssuedOrderManager extends OrderManager {
             order.status = getOrderStatusByShipment(shipment.status.status);
             console.log(`Order Status for Issued Order ${key} to be updated to to ${order.status}`);
             order.shipmentSSI = shipmentSSI;
-            self.getRecord(key, (err, record) =>{
+
+            try {
+                self.beginBatch();
+            } catch (e){
+                return callback(e);
+            }
+
+            super.update(key, order, (err) => {
                 if (err)
-                    return self._err(`Unable to retrieve record with key ${key} from table ${self._getTableName()}`, err, callback);
-                self._getDSUInfo(record, (err, currentOrder, dsu) =>{
-                    if (err)
-                        return self._err(`Key: ${key}: unable to read From DSU from SSI ${record}`, err, callback);
+                    return cb(`Could not update Order:\n${err.message}`);
+                self.commitBatch((err) => {
+                    if(err)
+                        return cb(err);
 
-                    try{
-                        dsu.beginBatch();
-                    }catch(e){
-                        return callback(e);
-                    }
-
-                    dsu.writeFile(INFO_PATH, JSON.stringify(order), (err) => {
-                        if (err)
-                            return cb(`Could not update item ${key} with ${JSON.stringify(order)}`);
-                        console.log(`Item ${key} in table ${self._getTableName()} updated`);
-                        dsu.commitBatch((err) => {
-                            if(err)
-                                return cb(`Could not update Order:\n${err.message}`);
-                            console.log(`Order Status for Issued Order ${key} updated to ${order.status}`);
-                            self.refreshController(order);
-                            return callback();
-                        });
-                    });    
-
-                });
+                    console.log(`Order Status for Issued Order ${key} updated to ${order.status}`);
+                    self.refreshController(order);
+                    return callback();
+                });         
             });
         });
     }
@@ -214,14 +205,30 @@ class IssuedOrderManager extends OrderManager {
             key = this._genCompostKey(order.senderId, order.orderId);
         }
 
+        const cb = function(err, ...results){
+            if (err)
+                return self.cancelBatch(err2 => {
+                    callback(err);
+                });
+            callback(undefined, ...results);
+        }
+
         const self = this;
 
         self.getOne(key, false,(err, record) => {
             if (err)
                 return callback(err);
+                
+                
+            try {
+                self.beginBatch();
+            } catch (e){
+                return callback(e);
+            }
+
             super.update(key, order, (err, updatedOrder, dsu) => {
                 if (err)
-                    return callback(err);
+                    return cb(err);
 
                 const sendMessages = function(){
                     const sReadSSIStr = utils.getKeySSISpace().parse(record).derive().getIdentifier();
@@ -235,12 +242,13 @@ class IssuedOrderManager extends OrderManager {
                 // Get all the shipmentLines from the shipment so we can add it to the stock
                 dsu.readFile(`${SHIPMENT_PATH}${INFO_PATH}`, (err, data) => {
                     if (err)
-                        return self._err(`Could not get ShipmentLines SSI`, err, callback);
+                        return cb(`Could not get ShipmentLines SSI`);
+              
                     let shipment;
                     try {
                         shipment = JSON.parse(data);
                     } catch (e) {
-                        return callback(e);
+                        return cb(e);
                     }
                     const gtins = shipment.shipmentLines.map(sl => sl.gtin);
                     const batchesToAdd = shipment.shipmentLines.reduce((accum, sl) => {
@@ -267,20 +275,6 @@ class IssuedOrderManager extends OrderManager {
                             result[gtin].push(newStocks);
                             gtinIterator(gtins, batchObj, callback);
                         });
-                    }
-
-                    const cb = function(err, ...results){
-                        if (err)
-                            return self.cancelBatch(err2 => {
-                                callback(err);
-                            });
-                        callback(undefined, ...results);
-                    }
-                    
-                    try {
-                        self.beginBatch();
-                    } catch (e){
-                        return callback(e);
                     }
 
                     self.batchAllow(self.stockManager);
