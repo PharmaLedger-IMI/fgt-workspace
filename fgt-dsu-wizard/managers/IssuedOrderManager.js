@@ -151,6 +151,14 @@ class IssuedOrderManager extends OrderManager {
             }
         }
 
+        const cb = function(err, ...results){
+            if (err)
+                return dsu.cancelBatch(err2 => {
+                    callback(err);
+                });
+            callback(undefined, ...results);
+        }
+
         console.log(`Updating order ${orderId} witj shipment ${shipment.shipmentId}`)
 
         const self = this;
@@ -161,12 +169,33 @@ class IssuedOrderManager extends OrderManager {
             order.status = getOrderStatusByShipment(shipment.status.status);
             console.log(`Order Status for Issued Order ${key} to be updated to to ${order.status}`);
             order.shipmentSSI = shipmentSSI;
-            super.update(key, order, (err) => {
+            self.getRecord(key, (err, record) =>{
                 if (err)
-                    return self._err(`Could not update Order:\n${err.message}`, err, callback);
-                console.log(`Order Status for Issued Order ${key} updated to ${order.status}`);
-                self.refreshController(order);
-                return callback();
+                    return self._err(`Unable to retrieve record with key ${key} from table ${self._getTableName()}`, err, callback);
+                self._getDSUInfo(record, (err, currentOrder, dsu) =>{
+                    if (err)
+                        return self._err(`Key: ${key}: unable to read From DSU from SSI ${record}`, err, callback);
+
+                    try{
+                        dsu.beginBatch();
+                    }catch(e){
+                        return callback(e);
+                    }
+
+                    dsu.writeFile(INFO_PATH, JSON.stringify(order), (err) => {
+                        if (err)
+                            return cb(`Could not update item ${key} with ${JSON.stringify(order)}`);
+                        console.log(`Item ${key} in table ${self._getTableName()} updated`);
+                        dsu.commitBatch((err) => {
+                            if(err)
+                                return cb(`Could not update Order:\n${err.message}`);
+                            console.log(`Order Status for Issued Order ${key} updated to ${order.status}`);
+                            self.refreshController(order);
+                            return callback();
+                        });
+                    });    
+
+                });
             });
         });
     }
