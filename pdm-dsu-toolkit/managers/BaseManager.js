@@ -14,7 +14,7 @@ class DBLock {
     }
 
     isLocked(tableName){
-        return this.cache[tableName] !== -1;
+        return this.cache[tableName] && this.cache[tableName] !== -1;
     }
 
     beginBatch(tableName){
@@ -22,9 +22,9 @@ class DBLock {
 
         if (this.cache[tableName] === -1){
             this.storage.beginBatch.call(this.storage);
-            this.count = 1;
+            this.cache[tableName] = 1;
         } else {
-            this.count ++;
+            this.cache[tableName] ++;
         }
     }
 
