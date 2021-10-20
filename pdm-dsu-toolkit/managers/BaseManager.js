@@ -86,15 +86,21 @@ class DBLock {
 
         this._cache[tableName] -= 1;
         if (force || this._cache[tableName] === 0){
-            this._cache[tableName] = -1;
-            this._allows = {};
-            return this._storage.commitBatch.call(this._storage, (err) => {
+
+            const cb = function(err){
                 if (err)
                     return callback(err);
                 if (self._schedule.length)
                     setTimeout(self._executeFromSchedule.bind(self), self._timeout);
                 callback();
-            });
+            }
+
+            // if (isNaN(this._cache[tableName]))
+            //     return cb();
+
+            this._cache[tableName] = -1;
+            this._allows = {};
+            return this._storage.commitBatch.call(this._storage, cb);
         }
 
         console.log(`Other Batch operations in progress in table ${tableName}. not committing just yet`)

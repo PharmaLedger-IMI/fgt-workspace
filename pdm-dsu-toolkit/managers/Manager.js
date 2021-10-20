@@ -247,6 +247,8 @@ class Manager{
             indexIterator(props.slice(), (err, updatedIndexes) => {
                 if (err)
                     return errCb(`Could not update indexes for table ${self.tableName}`, err, callback);
+                if (!updatedIndexes.length)
+                    return callback(undefined, updatedIndexes);
                 self.commitBatch(true, (err) => {
                     if (err)
                         return errCb(`Indexes committed for table ${self.tableName}`, err, callback);
