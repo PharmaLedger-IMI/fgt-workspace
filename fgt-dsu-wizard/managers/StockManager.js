@@ -205,24 +205,42 @@ class StockManager extends Manager{
             }
         }
 
+        const cb = function(err, ...results){
+            if (err)
+                return self.cancelBatch(err2 => {
+                    callback(err);
+                });
+            callback(undefined, ...results);
+        }
+
+        try {
+            self.beginBatch();
+        } catch (e){
+            return callback(e);
+        }
+
         functionCallIterator(iterator(product).bind(this), batches, (err, ...results) => {
             if (err)
-                return self._err(`Could not perform manage all on Stock`, err, callback);
+                return cb(`Could not perform manage all on Stock`);
 
-            const newStocks = [];
-            const mergedResult = results.reduce((accum, result) => {
-                accum[result[0].batchNumber] = accum[result[0].batchNumber] || [];
-                try {
-                    accum[result[0].batchNumber].push(...(Array.isArray(result[1]) ? result[1] : [result[1]]))
-                } catch (e) {
-                    console.log(e)
-                }
-                if (result.length >= 3)
-                    newStocks.push(result[2])
-                return accum;
-            }, {});
-
-            callback(undefined, mergedResult, newStocks);
+            self.commitBatch((err) => {
+                if(err)
+                    return cb(err);
+                const newStocks = [];
+                const mergedResult = results.reduce((accum, result) => {
+                    accum[result[0].batchNumber] = accum[result[0].batchNumber] || [];
+                    try {
+                        accum[result[0].batchNumber].push(...(Array.isArray(result[1]) ? result[1] : [result[1]]))
+                    } catch (e) {
+                        console.log(e)
+                    }
+                    if (result.length >= 3)
+                        newStocks.push(result[2])
+                    return accum;
+                }, {});
+        
+                callback(undefined, mergedResult, newStocks);
+            });      
         });
     }
 
