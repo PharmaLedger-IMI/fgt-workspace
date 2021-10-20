@@ -83,24 +83,12 @@ class DirectoryManager extends Manager {
                     return callback(`Provided directory entry does not match existing.`);
             }
 
-            try {
-                self.beginBatch();
-            } catch (e){
-                return callback(e);
-            }
-
             self.insertRecord(key, entry, (err) => {
-                if(err){
-                    console.log(`Could not insert directory entry ${entry.id} on table ${self.tableName}`);
-                    return cb(err);
-                }
+                if (err)
+                    return self._err(`Could not insert directory entry ${entry.id} on table ${self.tableName}`, err, callback);
                 const path = `${self.tableName}/${key}`;
                 console.log(`Directory entry for ${entry.id} as a ${entry.role} created stored at DB '${path}'`);
-                self.commitBatch((err) => {
-                    if(err)
-                        return cb(err);
-                    callback(undefined, entry, path);
-                });
+                callback(undefined, entry, path);
             });
         });
     }
