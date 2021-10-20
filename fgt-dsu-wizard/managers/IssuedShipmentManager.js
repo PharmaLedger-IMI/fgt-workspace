@@ -99,16 +99,17 @@ class IssuedShipmentManager extends ShipmentManager {
                 const receivedOrderKey = receivedOrderManager._genCompostKey(shipment.requesterId, orderId);
 
             receivedOrderManager.getOne(receivedOrderKey, true, (err, order, orderDSU, orderSSI) => {
-                if (err)
-                    return self._err(`Could not retrieve received order ${orderId}`, err, callback);
+                if(err)
+                    return cb(`Could not retrieve received order ${orderId}`);
                 self.shipmentService.create(shipment, orderSSI, (err, keySSI, shipmentLinesSSIs) => {
-                    if (err)
-                        return self._err(`Could not create product DSU for ${shipment}`, err, callback);
+                    if(err)
+                        return cb(`Could not create product DSU for ${shipment}`);
                     const record = keySSI.getIdentifier();
                     console.log("Shipment SSI=" + record);
                     self.insertRecord(self._genCompostKey(shipment.requesterId, shipment.shipmentId), self._indexItem(shipment, record), (err) => {
-                        if (err)
-                            return self._err(`Could not insert record with shipmentId ${shipment.shipmentId} on table ${self.tableName}`, err, callback);
+                        if(err)
+                            return cb(`Could not insert record with shipmentId ${shipment.shipmentId} on table ${self.tableName}`);
+
                         const path = `${self.tableName}/${shipment.shipmentId}`;
                         console.log(`Shipment ${shipment.shipmentId} created stored at DB '${path}'`);
                         const aKey = keySSI.getIdentifier();
@@ -127,8 +128,8 @@ class IssuedShipmentManager extends ShipmentManager {
                 return callback(`gtins not found in batches`);
             const batches = batchesObj[gtin];
             self.stockManager.manageAll(gtin,  batches, (err, removed) => {
-                if (err)
-                    return self._err(`Could not update Stock`, err, callback);
+                if(err)
+                        return cb(`Could not update Stock`);
                 if (self.stockManager.serialization && self.stockManager.aggregation)
                     shipment.shipmentLines.filter(sl => sl.gtin === gtin && Object.keys(removed).indexOf(sl.batch) !== -1).forEach(sl => {
                         sl.serialNumbers = removed[sl.batch];
@@ -152,16 +153,37 @@ class IssuedShipmentManager extends ShipmentManager {
             return accum;
         }, {});
 
+        const cb = function(err, ...results){
+            if (err)
+                return self.cancelBatch(err2 => {
+                    callback(err);
+                });
+            callback(undefined, ...results);
+        }
+
+        try {
+            self.beginBatch();
+        } catch (e){
+            return callback(e);
+        }
+
+        self.batchAllow(self.stockManager);
 
         gtinIterator(gtins, batchesObj, (err) => {
-            if (err)
-                return self._err(`Could not retrieve info from stock`, err, callback);
+            if(err)
+                return cb(`Could not retrieve info from stock`);
             console.log(`Shipment updated after Stock confirmation`);
             createInner((err, keySSI, path) => {
-                if (err)
-                    return self._err(`Could not create Shipment`, err, callback);
-                console.log(`Shipment ${shipment.shipmentId} created!`);
-                callback(undefined, keySSI, path);
+                if(err)
+                    return cb(`Could not create Shipment`);
+                self.batchDisallow(self.stockManager);
+
+                self.commitBatch((err) => {
+                    if(err)
+                        return cb(err);
+                    console.log(`Shipment ${shipment.shipmentId} created!`);
+                    callback(undefined, keySSI, path);
+                });  
             })
         });
     }
