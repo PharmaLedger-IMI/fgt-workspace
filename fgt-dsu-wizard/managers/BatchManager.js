@@ -91,19 +91,19 @@ class BatchManager extends Manager{
 
         const gtin = product.gtin;
 
+        const cb = function(err, ...results){
+            if (err)
+                return self.cancelBatch(err2 => {
+                    callback(err);
+                });
+            callback(undefined, ...results);
+        }
+
         self.batchService.create(gtin, batch, (err, keySSI) => {
             if (err)
                 return callback(err);
             const record = keySSI.getIdentifier();
             const dbKey = self._genCompostKey(gtin, batch.batchNumber);
-
-            const cb = function(err, ...results){
-                if (err)
-                    return self.cancelBatch(err2 => {
-                        callback(err);
-                    });
-                callback(undefined, ...results);
-            }
 
             try {
                 self.beginBatch();
