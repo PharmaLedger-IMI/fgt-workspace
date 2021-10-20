@@ -805,7 +805,9 @@ class Manager{
                 });
             self.commitBatch((err) => {
                 if (err)
-                    return callback(err);
+                    return self.cancelBatch((err2) => {
+                        callback(err)
+                    });
                 callback(undefined, ...results);
             });
         });
@@ -842,7 +844,9 @@ class Manager{
                 });
             self.commitBatch((err) => {
                 if (err)
-                    return callback(err);
+                    return self.cancelBatch((err2) => {
+                        callback(err)
+                    });
                 callback(undefined, ...results);
             });
         });
