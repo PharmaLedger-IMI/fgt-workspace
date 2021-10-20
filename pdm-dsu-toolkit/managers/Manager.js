@@ -206,7 +206,8 @@ class Manager{
             try {
                 self.beginBatch();
             } catch (e){
-                return callback(e)
+                return self.batchSchedule(() => self._indexItem.call(self, ...props));
+                // return callback(e)
             }
             callback();
         }
@@ -672,10 +673,27 @@ class Manager{
         }
 
         let self = this;
+
+        try {
+            self.beginBatch();
+        } catch(e) {
+            return self.batchSchedule(() => self.updateAll.call(self, keys, newItems, callback));
+        }
+
+
         functionCallIterator(this.update.bind(this), keys, newItems, (err, results) => {
             if (err)
-                return self._err(`Could not update all records`, err, callback);
-            callback(undefined, ...results);
+                return self.cancelBatch((err2) => {
+                    self._err(`Could not update all records`, err, callback);
+                });
+
+            self.commitBatch((err) => {
+                if (err)
+                    return self.cancelBatch((err2) => {
+                        callback(err)
+                    });
+                callback(undefined, ...results);
+            });
         });
     }
 
