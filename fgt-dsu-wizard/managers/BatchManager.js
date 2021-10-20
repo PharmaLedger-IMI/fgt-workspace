@@ -118,15 +118,23 @@ class BatchManager extends Manager{
                 }
                 const path =`${self.tableName}/${dbKey}`;
                 console.log(`batch ${batch.batchNumber} created stored at '${path}'`);
-                self.commitBatch((err) => {
-                    if(err)
+
+                self.batchAllow(self.stockManager);
+
+                self.stockManager.manage(product, batch, (err) => {
+                    if(err){
+                        console.log(`Error Updating Stock for ${product.gtin} batch ${batch.batchNumber}: ${err.message}`);
                         return cb(err);
-                    self.stockManager.manage(product, batch, (err) => {
-                        if (err)
-                            return self._err(`Error Updating Stock for ${product.gtin} batch ${batch.batchNumber}: ${err.message}`, err, callback);
-                        console.log(`Stock for ${product.gtin} batch ${batch.batchNumber} updated`);
+                    }
+                    console.log(`Stock for ${product.gtin} batch ${batch.batchNumber} updated`);
+
+                    self.batchDisallow(self.stockManager);
+
+                    self.commitBatch((err) => {
+                        if(err)
+                            return cb(err);
                         callback(undefined, keySSI, path);
-                    });
+                    });                
                 });
             });
         });

@@ -171,6 +171,14 @@ class Manager{
         this.dbLock.cancelBatch(this.tableName, callback);
     }
 
+    batchAllow(allowedManager){
+        this.dbLock.allow(this.tableName, allowedManager);
+    }
+
+    batchDisallow(allowedManager){
+        this.dbLock.disallow(this.tableName, allowedManager);
+    }
+
     /**
      * Should be called by child classes if then need to index the table.
      * (Can't be called during the constructor of the Manager class due to the need of virtual method
