@@ -7,7 +7,7 @@ const {getMessageManager, Message} = require('./MessageManager');
 class DBLock {
     cache = {};
     storage;
-    _cache = -1;
+    allows = {};
 
     constructor(db){
         this.storage = db;
@@ -15,17 +15,37 @@ class DBLock {
     }
 
     isLocked(tableName){
-        return this._cache !== -1;
+        return this.cache[tableName] && this.cache[tableName] !== -1;
+    }
+
+    allow(tableName, manager){
+        const allowedTable = manager.tableName;
+        if (this.allows[allowedTable])
+            throw new Error(`Only one manager allowed`);
+
+        this.allows[allowedTable] = tableName;
+    }
+
+    disallow(tableName, manager){
+        const allowedTable = manager.tableName;
+        if (!this.allows[allowedTable])
+            throw new Error(`Only no manager to disallow`);
+
+        delete this.allows[allowedTable];
     }
 
     beginBatch(tableName){
-        this._cache = this._cache || -1;
 
-        if (this._cache === -1){
+        if (tableName in this.allows)
+            tableName = this.allows[tableName]
+
+        this.cache[tableName] = this.cache[tableName] || -1;
+
+        if (this.cache[tableName] === -1){
             this.storage.beginBatch.call(this.storage);
-            this._cache = 1;
+            this.cache[tableName] = 1;
         } else {
-            this._cache ++;
+            this.cache[tableName] += 1;
         }
     }
 
@@ -35,11 +55,16 @@ class DBLock {
             force = false;
         }
 
-        if (this._cache === -1)
+        if (tableName in this.allows)
+            tableName = this.allows[tableName]
+
+        if (this.cache[tableName] === -1)
             return callback();
-        this._cache --;
-        if (force || this._cache === 0){
-            this._cache = -1;
+
+        this.cache[tableName] -= 1;
+        if (force || this.cache[tableName] === 0){
+            this.cache[tableName] = -1;
+            this.allows = {};
             return this.storage.commitBatch.call(this.storage, callback);
         }
 
@@ -48,8 +73,8 @@ class DBLock {
     }
 
     cancelBatch(tableName, callback){
-        if (this._cache > 0){
-            this._cache = -1;
+        if (this.cache[tableName] > 0){
+            this.cache[tableName] = -1;
             return this.storage.cancelBatch.call(this.storage, callback);
         }
         callback();
