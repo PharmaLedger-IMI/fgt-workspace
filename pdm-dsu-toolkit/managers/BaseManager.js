@@ -7,6 +7,7 @@ const {getMessageManager, Message} = require('./MessageManager');
 class DBLock {
     cache = {};
     storage;
+    _cache = -1;
 
     constructor(db){
         this.storage = db;
@@ -14,17 +15,17 @@ class DBLock {
     }
 
     isLocked(tableName){
-        return this.cache[tableName] !== -1;
+        return this._cache !== -1;
     }
 
     beginBatch(tableName){
-        this.cache[tableName] = this.cache[tableName] || -1;
+        this._cache = this._cache || -1;
 
-        if (this.cache[tableName] === -1){
+        if (this._cache === -1){
             this.storage.beginBatch.call(this.storage);
-            this.count = 1;
+            this._cache = 1;
         } else {
-            this.count ++;
+            this._cache ++;
         }
     }
 
@@ -34,12 +35,11 @@ class DBLock {
             force = false;
         }
 
-        if (this.cache[tableName] === -1)
+        if (this._cache === -1)
             return callback();
-
-        this.cache[tableName] --;
-        if (force || this.cache[tableName] === 0){
-            this.cache[tableName] = -1;
+        this._cache --;
+        if (force || this._cache === 0){
+            this._cache = -1;
             return this.storage.commitBatch.call(this.storage, callback);
         }
 
@@ -48,8 +48,8 @@ class DBLock {
     }
 
     cancelBatch(tableName, callback){
-        if (this.cache[tableName] > 0){
-            this.cache[tableName] = -1;
+        if (this._cache > 0){
+            this._cache = -1;
             return this.storage.cancelBatch.call(this.storage, callback);
         }
         callback();

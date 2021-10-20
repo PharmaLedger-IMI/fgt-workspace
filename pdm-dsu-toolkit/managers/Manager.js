@@ -783,10 +783,23 @@ class Manager{
         }
         const self = this;
         console.log("insertRecord tableName="+tableName, "key", key, "record", record);
-        this.getStorage().insertRecord(tableName, key, record, (err) => {
+
+        try {
+            self.beginBatch();
+        } catch (e) {
+            return callback(e);
+        }
+
+        this.getStorage().insertRecord(tableName, key, record, (err, ...results) => {
             if (err)
-                return self._err(`Could not insert record with key ${key} in table ${tableName}`, err, callback);
-            callback(undefined);
+                return self.cancelBatch((err2) => {
+                    self._err(`Could not insert record with key ${key} in table ${tableName}`, err, callback);
+                });
+            self.commitBatch((err) => {
+                if (err)
+                    return callback(err);
+                callback(undefined, ...results);
+            });
         });
     }
 
@@ -804,7 +817,27 @@ class Manager{
             key = tableName;
             tableName = this._getTableName();
         }
-        this.getStorage().updateRecord(tableName, key, newRecord, callback);
+
+        console.log("update Record tableName="+tableName, "key", key, "record", newRecord);
+        const self = this;
+
+        try {
+            self.beginBatch();
+        } catch (e) {
+            return callback(e);
+        }
+
+        this.getStorage().updateRecord(tableName, key, newRecord, (err, ...results) => {
+            if (err)
+                return self.cancelBatch((err2) => {
+                    self._err(`Could not update record with key ${key} in table ${tableName}`, err, callback);
+                });
+            self.commitBatch((err) => {
+                if (err)
+                    return callback(err);
+                callback(undefined, ...results);
+            });
+        });
     }
 
     /**
