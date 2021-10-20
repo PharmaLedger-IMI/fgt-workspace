@@ -91,26 +91,50 @@ class BatchManager extends Manager{
 
         const gtin = product.gtin;
 
+        const cb = function(err, ...results){
+            if (err)
+                return self.cancelBatch(err2 => {
+                    callback(err);
+                });
+            callback(undefined, ...results);
+        }
+
         self.batchService.create(gtin, batch, (err, keySSI) => {
             if (err)
                 return callback(err);
             const record = keySSI.getIdentifier();
             const dbKey = self._genCompostKey(gtin, batch.batchNumber);
+
+            try {
+                self.beginBatch();
+            } catch (e){
+                return callback(e);
+            }
+
             self.insertRecord(dbKey, self._indexItem(gtin, batch, record), (err) => {
-                if (err)
-                    return self._err(`Could not inset record with gtin ${gtin} and batch ${batch.batchNumber} on table ${self.tableName}`, err, callback);
+                if(err){
+                    console.log(`Could not inset record with gtin ${gtin} and batch ${batch.batchNumber} on table ${self.tableName}`);
+                    return cb(err);
+                }
                 const path =`${self.tableName}/${dbKey}`;
                 console.log(`batch ${batch.batchNumber} created stored at '${path}'`);
 
                 self.batchAllow(self.stockManager);
 
                 self.stockManager.manage(product, batch, (err) => {
-                    if (err)
-                        return self._err(`Error Updating Stock for ${product.gtin} batch ${batch.batchNumber}: ${err.message}`, err, callback);
+                    if(err){
+                        console.log(`Error Updating Stock for ${product.gtin} batch ${batch.batchNumber}: ${err.message}`);
+                        return cb(err);
+                    }
                     console.log(`Stock for ${product.gtin} batch ${batch.batchNumber} updated`);
 
                     self.batchDisallow(self.stockManager);
-                    callback(undefined, keySSI, path);
+
+                    self.commitBatch((err) => {
+                        if(err)
+                            return cb(err);
+                        callback(undefined, keySSI, path);
+                    });                
                 });
             });
         });
