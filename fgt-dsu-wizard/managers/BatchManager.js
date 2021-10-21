@@ -141,8 +141,6 @@ class BatchManager extends Manager{
                         });                
                     });
                 });
-
-
             }
 
             dbAction.call(self, dbKey, record, gtin, batch, product, callback);
