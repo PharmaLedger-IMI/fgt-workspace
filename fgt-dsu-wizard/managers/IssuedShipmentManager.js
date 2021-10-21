@@ -303,6 +303,7 @@ class IssuedShipmentManager extends ShipmentManager {
                             mode: 'issued',
                             shipment: updatedShipment
                         });
+                        callback();
                     });
                 });
             });

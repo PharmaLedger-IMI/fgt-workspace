@@ -10,20 +10,17 @@ const ShipmentStatus = require('../../../fgt-dsu-wizard/model/ShipmentStatus');
 
 const submitEvent = require('./eventHandler');
 
-const shipmentStatusUpdater = function(issuedShipmentManager, shipment, timeout, callback){
+const shipmentStatusUpdater = function(issuedShipmentManager, shipment, timeout){
     const identity = issuedShipmentManager.getIdentity();
     const possibleStatus = Shipment.getAllowedStatusUpdates(shipment.status.status).filter(os => [ShipmentStatus.REJECTED, ShipmentStatus.ON_HOLD].indexOf(os) === -1);
-    if (!possibleStatus || !possibleStatus.length){
-        console.log(`${identity.id} - Shipment ${shipment.shipmentId} has no possible status updates`);
-        return callback();
-    }
+    if (!possibleStatus || !possibleStatus.length)
+        return console.log(`${identity.id} - Shipment ${shipment.shipmentId} has no possible status updates`);
+        // return callback();
 
     if (possibleStatus.length > 1)
-        return callback(`More that one status allowed...`);
-    console.log(`${identity.id} - Updating Shipment ${shipment.shipmentId}'s status to ${possibleStatus[0]} in ${timeout} miliseconds`);
+        throw new Error(`More that one status allowed...`);
 
-    if (possibleStatus[0] === ShipmentStatus.CONFIRMED)
-        console.log(`here`)
+    console.log(`${identity.id} - Updating Shipment ${shipment.shipmentId}'s status to ${possibleStatus[0]} in ${timeout} miliseconds`);
 
     setTimeout(() => {
         console.log(`\n${identity.id} - NOW UPDATING SHIPMENT STATUS FROM ${shipment.status.status} to ${possibleStatus[0]}\n`)
@@ -32,13 +29,13 @@ const shipmentStatusUpdater = function(issuedShipmentManager, shipment, timeout,
         submitEvent()
         issuedShipmentManager.update(shipment, (err, updatedShipment) => {
             if (err)
-                return callback(err);
+                throw err;
             console.log(`${identity.id} - Shipment ${updatedShipment.orderId}'s updated to ${updatedShipment.status.status}`);
 
             console.log(`\n${identity.id} - UPDATED SHIPMENT STATUS to ${updatedShipment.status.status}\n`);
             setTimeout(() => {
                 submitEvent()
-                shipmentStatusUpdater(issuedShipmentManager, updatedShipment, timeout, callback);
+                shipmentStatusUpdater(issuedShipmentManager, updatedShipment, timeout);
             }, timeout)
         });
     }, timeout)
@@ -205,7 +202,8 @@ function fulFillOrder(participantManager, receivedOrder, role, timeout, useForwa
             issuedShipmentManager._getDSUInfo(shipmentSSI, (err, shipment) => {
                 if (err)
                     return callback(err);
-                shipmentStatusUpdater(issuedShipmentManager, shipment, timeout, callback);
+                shipmentStatusUpdater(issuedShipmentManager, shipment, timeout);
+                callback()
             });
         });
     });

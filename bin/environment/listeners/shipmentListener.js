@@ -6,18 +6,16 @@ const ShipmentStatus = require('../../../fgt-dsu-wizard/model/ShipmentStatus');
 const submitEvent = require('./eventHandler');
 const {fulFillOrder} = require('./orderListener');
 
-const orderStatusUpdater = function(participantManager, order, batches, timeout, callback){
+const orderStatusUpdater = function(participantManager, order, batches, timeout){
     const identity = participantManager.getIdentity();
     const possibleStatus = Order.getAllowedStatusUpdates(order.status.status).filter(os => os !== OrderStatus.REJECTED);
-    if (!possibleStatus || !possibleStatus.length){
-        console.log(`${identity.id} - Order ${order.orderId} has no possible status updates`);
-        return callback();
-    }
+    if (!possibleStatus || !possibleStatus.length)
+        return console.log(`${identity.id} - Order ${order.orderId} has no possible status updates`);
 
     const issuedOrderManager = participantManager.getManager("IssuedOrderManager");
 
     if (possibleStatus.length > 1)
-        return callback(`More that one status allowed...`);
+        throw new Error(`More that one status allowed...`);
     console.log(`${identity.id} - Updating Order ${order.orderId}'s status to ${possibleStatus[0]} in ${timeout} miliseconds`);
     setTimeout(() => {
         order.status.status = possibleStatus[0];
@@ -28,10 +26,16 @@ const orderStatusUpdater = function(participantManager, order, batches, timeout,
             console.log(`${identity.id} - Order ${updatedOrder.orderId}'s updated to ${updatedOrder.status.status}`);
             submitEvent();
             if (updatedOrder.status.status !== OrderStatus.CONFIRMED)
-                return orderStatusUpdater(participantManager, updatedOrder, batches, timeout, callback);
+                return orderStatusUpdater(participantManager, updatedOrder, batches, timeout);
             if (!identity.id.startsWith('PHA'))
-                return findOrderToFulfill(participantManager, updatedOrder, timeout, callback);
-            issueSale(participantManager, order, batches, timeout, callback);
+                return findOrderToFulfill(participantManager, updatedOrder, timeout, (err) => {
+                    if (err)
+                        throw err;
+                });
+            issueSale(participantManager, order, batches, timeout, (err, sale) => {
+                if (err)
+                    throw err
+            });
         });
     }, timeout);
 }
@@ -114,7 +118,6 @@ const findOrderToFulfill = function(participantManager, receivedOrder, timeout, 
             setTimeout(() => {
                 fulFillOrder(participantManager, order, undefined, timeout, false, callback);
             }, timeout);
-
         });
     });
 
@@ -164,7 +167,8 @@ function shipmentListener(participantManager, batches, timeout = 1000){
                 if (err)
                     return callback(err);
 
-                orderStatusUpdater(participantManager, order, batches, timeout, callback);
+                orderStatusUpdater(participantManager, order, batches, timeout);
+                callback(undefined, message);
             });
         });
     }
