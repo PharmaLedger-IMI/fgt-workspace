@@ -24,7 +24,7 @@ function ShipmentLineService(domain, strategy){
      * @param {function(err?, OrderLine?)} callback
      */
     this.get = function(keySSI, callback){
-        utils.getResolver().loadDSU(keySSI, (err, dsu) => {
+        utils.getResolver().loadDSU(keySSI, {skipCache: true}, (err, dsu) => {
             if (err)
                 return callback(err);
             dsu.readFile(INFO_PATH, (err, data) => {
@@ -118,55 +118,6 @@ function ShipmentLineService(domain, strategy){
             }, callback);
         }
     };
-
-    this.update = function(keySSI, shipmentLine, callback){
-
-        if (typeof shipmentLine === 'object') {
-            let err = shipmentLine.validate();
-            if (err)
-                return callback(err);
-        }
-        const self = this;
-        if (isSimple) {
-            keySSI = utils.getKeySSISpace().parse(keySSI);
-            utils.getResolver().loadDSU(keySSI, {skipCache: true}, (err, dsu) => {
-                if (err)
-                    return callback(err);
-
-                const cb = function(err, ...results){
-                    if (err)
-                        return dsu.cancelBatch(err2 => {
-                            callback(err);
-                        });
-                    callback(undefined, ...results);
-                }
-
-                try{
-                    dsu.beginBatch();
-                }catch(e){
-                    return callback(e);
-                }
-
-                utils.getMounts(dsu, '/', STATUS_MOUNT_PATH,  (err, mounts) => {
-                    if (err)
-                        return cb(err);
-                    if (!mounts[STATUS_MOUNT_PATH])
-                        return cb(`Missing mount ${STATUS_MOUNT_PATH}`);
-                    statusService.update(mounts[STATUS_MOUNT_PATH], shipmentLine.status, shipmentLine.senderId, (err) => {
-                        if (err)
-                            return cb(err);
-                        dsu.commitBatch((err) => {
-                            if(err)
-                                return cb(err);
-                            self.get(keySSI, callback);
-                        });
-                    });
-                });
-            });
-        } else {
-            return callback(`Not implemented`);
-        }
-    }
 }
 
 module.exports = ShipmentLineService;
