@@ -153,33 +153,36 @@ class IssuedShipmentManager extends ShipmentManager {
             return accum;
         }, {});
 
-        const cb = function(err, ...results){
-            if (err)
-                return self.cancelBatch(err2 => {
-                    callback(err);
-                });
-            callback(undefined, ...results);
-        }
+        const dbAction = function (gtins, batchesObj, callback){
+            const self2 = this;
 
-        try {
-            self.beginBatch();
-        } catch (e){
-            return self.batchSchedule(() => self._indexItem.call(self, ...props));
-            //return callback(e);
-        }
+            const cb = function(err, ...results){
+                if (err)
+                    return self2.cancelBatch(err2 => {
+                        callback(err);
+                    });
+                callback(undefined, ...results);
+            }
 
-        self.batchAllow(self.stockManager);
+            try {
+                self2.beginBatch();
+            } catch (e){
+                return self2.batchSchedule(() => dbAction.call(self2,);
+                //return callback(e);
+            }
 
-        gtinIterator(gtins, batchesObj, (err) => {
+            self2.batchAllow(self.stockManager);
+
+            gtinIterator(gtins, batchesObj, (err) => {
             if(err)
                 return cb(`Could not retrieve info from stock`);
             console.log(`Shipment updated after Stock confirmation`);
             createInner((err, keySSI, path) => {
                 if(err)
                     return cb(`Could not create Shipment`);
-                self.batchDisallow(self.stockManager);
+                self2.batchDisallow(self.stockManager);
 
-                self.commitBatch((err) => {
+                self2.commitBatch((err) => {
                     if(err)
                         return cb(err);
                     console.log(`Shipment ${shipment.shipmentId} created!`);
@@ -187,6 +190,9 @@ class IssuedShipmentManager extends ShipmentManager {
                 });  
             })
         });
+        }
+
+        dbAction.call(self, gtins, batchesObj, callback);
     }
 
     sendMessagesAsync(shipment, shipmentLinesSSIs, aKey){
