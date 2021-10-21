@@ -181,14 +181,6 @@ class ShipmentLineManager extends Manager {
             shipmentLines = [message];
         }
 
-        const cbErr = function(err, ...results){
-            if (err)
-                return self.cancelBatch(err2 => {
-                    callback(err);
-                });
-            callback(undefined, ...results);
-        }
-
         const lines = [];
 
         const shipmentLineIterator = function(linesCopy, callback){
@@ -218,24 +210,38 @@ class ShipmentLineManager extends Manager {
                 });
             });
         }
+
+        const dbAction = function(shipmentLines, lines, callback){
+            const self2 = this;
+
+            const cbErr = function(err, ...results){
+                if (err)
+                    return self2.cancelBatch(err2 => {
+                        callback(err);
+                    });
+                callback(undefined, ...results);
+            }
         
-        try {
-            self.beginBatch();
-        } catch (e){
-            return self.batchSchedule(() => self._indexItem.call(self, ...props));
-            //return callback(e);
+            try {
+                self2.beginBatch();
+            } catch (e){
+                return self.batchSchedule(() => dbAction.call(self2, shipmentLines, lines, callback));
+                //return callback(e);
+            }
+
+            shipmentLineIterator(shipmentLines.slice(), (err, newLines) => {
+                if (err)
+                    return cbErr(`Could not register all shipmentlines`);
+                self2.commitBatch((err) => {
+                    if(err)
+                        return cbErr(err);
+                    console.log(`ShipmentLines successfully registered: ${JSON.stringify(newLines)}`);
+                    callback(undefined, lines);
+                });     
+            });
         }
 
-        shipmentLineIterator(shipmentLines.slice(), (err, newLines) => {
-            if (err)
-                return cbErr(`Could not register all shipmentlines`);
-            self.commitBatch((err) => {
-                if(err)
-                    return cbErr(err);
-                console.log(`ShipmentLines successfully registered: ${JSON.stringify(newLines)}`);
-                callback(undefined, lines);
-            });     
-        });
+        dbAction.call(self, shipmentLines, lines, callback);
     };
 
     /**
