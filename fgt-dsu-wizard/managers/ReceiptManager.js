@@ -131,20 +131,17 @@ class ReceiptManager extends Manager{
         }
 
         const dbAction = function(receipts, callback){
-
-            const self2 = this;
-
             try {
-                self2.beginBatch();
+                self.beginBatch();
             } catch (e){
-                return self2.batchSchedule(() => dbAction.call(self2, receipts, callback));
+                return self.batchSchedule(() => dbAction(receipts, callback));
                 //return callback(e);
             }
 
             receiptIterator(receipts.slice(), (err, newIndividualReceipts) => {
                 if (err)
                     return cb(`Could not register all receipts`);
-                self2.commitBatch((err) => {
+                self.commitBatch((err) => {
                     if(err)
                         return cb(err);
                     console.log(`Receipts successfully registered: ${JSON.stringify(newIndividualReceipts)}`);
@@ -153,7 +150,7 @@ class ReceiptManager extends Manager{
             });
         }
 
-        dbAction.call(self, receipts, callback);
+        dbAction(receipts, callback);
     };
 
     /**

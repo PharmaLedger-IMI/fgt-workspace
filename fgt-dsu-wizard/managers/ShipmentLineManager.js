@@ -212,27 +212,26 @@ class ShipmentLineManager extends Manager {
         }
 
         const dbAction = function(shipmentLines, lines, callback){
-            const self2 = this;
 
             const cbErr = function(err, ...results){
                 if (err)
-                    return self2.cancelBatch(err2 => {
+                    return self.cancelBatch(err2 => {
                         callback(err);
                     });
                 callback(undefined, ...results);
             }
         
             try {
-                self2.beginBatch();
+                self.beginBatch();
             } catch (e){
-                return self.batchSchedule(() => dbAction.call(self2, shipmentLines, lines, callback));
+                return self.batchSchedule(() => dbAction(shipmentLines, lines, callback));
                 //return callback(e);
             }
 
             shipmentLineIterator(shipmentLines.slice(), (err, newLines) => {
                 if (err)
                     return cbErr(`Could not register all shipmentlines`);
-                self2.commitBatch((err) => {
+                self.commitBatch((err) => {
                     if(err)
                         return cbErr(err);
                     console.log(`ShipmentLines successfully registered: ${JSON.stringify(newLines)}`);
@@ -241,7 +240,7 @@ class ShipmentLineManager extends Manager {
             });
         }
 
-        dbAction.call(self, shipmentLines, lines, callback);
+        dbAction(shipmentLines, lines, callback);
     };
 
     /**

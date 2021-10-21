@@ -74,6 +74,14 @@ class SaleManager extends Manager{
 
             const toManage = {};
 
+            const cb = function(err, ...results){
+                if (err)
+                    return self.cancelBatch(err2 => {
+                        callback(err);
+                    });
+                callback(undefined, ...results);
+            }
+
             const stockVerificationIterator = function(stocksCopy, callback){
                 const stock = stocksCopy.shift();
                 if (!stock)
@@ -108,7 +116,9 @@ class SaleManager extends Manager{
                     if (!gtin)
                         return callback(undefined, result);
 
+                    self.batchAllow(self.stockManager);
                     self.stockManager.manageAll(gtin, toBeManaged[gtin].slice(), (err, serials, stocks) => {
+                        self.batchDisallow(self.stockManager);
                         if (err)
                             return cb(err);
                         result.push(...stocks);
@@ -117,54 +127,36 @@ class SaleManager extends Manager{
                 }
 
                 const dbAction = function(sale, toBeManaged, callback) {
-                    const self2 = this;
-
-                    const cb = function(err, ...results){
-                        if (err)
-                            return self2.cancelBatch(err2 => {
-                                callback(err);
-                            });
-                        callback(undefined, ...results);
-                    }
-
                     try {
-                        self2.beginBatch();
+                        self.beginBatch();
                     } catch (e){
-                        return self2.batchSchedule(() => dbAction.call(self2, sale, toBeManaged,  callback));
+                        return self.batchSchedule(() => dbAction(sale, toBeManaged,  callback));
                         //return callback(e);
                     }
-
-                    self.batchAllow(self2.stockManager);
 
                     productIterator(Object.keys(toBeManaged), [], (err, results) => {
                         if (err)
                             return cb(err);
                         console.log(`Creating sale entry for: ${sale.productList.map(p => `${p.gtin}-${p.batchNumber}-${p.serialNumber}`).join(', ')}`);
-
-
-                        self2.splitSalesByMAHAndCreate(sale, (err, SSis) => {
+                        self.splitSalesByMAHAndCreate(sale, (err, SSis) => {
                             if (err)
                                 return cb(`Could not Crease Sales DSUs`);
-                            self2.insertRecord(sale.id, self2._indexItem(sale), (err) => {
-                                self2.batchDisallow(self.stockManager);
-
+                            self.insertRecord(sale.id, self._indexItem(sale), (err) => {
                                 if (err)
                                     return cb(`Could not insert record with gtin ${sale.id} on table ${self.tableName}`);
-
-                                self2.commitBatch((err) => {
+                                self.commitBatch((err) => {
                                     if(err)
                                         return cb(err);
                                     const path =`${self.tableName}/${sale.id}`;
                                     console.log(`Sale stored at '${path}'`);
                                     callback(undefined, sale, path);
-                                });  
-                            
+                                });
                             });
                         });
                     });
                 }
 
-                dbAction.call(self, sale, toBeManaged,  callback);
+                dbAction(sale, toBeManaged,  callback);
             });
         });
     }
