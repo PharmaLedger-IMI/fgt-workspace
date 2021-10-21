@@ -98,25 +98,23 @@ class BatchManager extends Manager{
             const dbKey = self._genCompostKey(gtin, batch.batchNumber);
 
             const dbAction = function(dbKey, record, gtin, batch, product, callback){
-                
-                const self2 = this;
 
                 const cb = function(err, ...results){
                     if (err)
-                        return self2.cancelBatch(err2 => {
+                        return self.cancelBatch(err2 => {
                             callback(err);
                         });
                     callback(undefined, ...results);
                 }
 
                 try {
-                    self2.beginBatch();
+                    self.beginBatch();
                 } catch (e){ 
-                    return self2.batchSchedule(() => dbAction.call(self2, dbKey, record, gtin, batch, product, callback));
+                    return self2.batchSchedule(() => dbAction(dbKey, record, gtin, batch, product, callback));
                     //return callback(e);
                 }
 
-                self2.insertRecord(dbKey, self._indexItem(gtin, batch, record), (err) => {
+                self.insertRecord(dbKey, self._indexItem(gtin, batch, record), (err) => {
                     if(err){
                         console.log(`Could not inset record with gtin ${gtin} and batch ${batch.batchNumber} on table ${self.tableName}`);
                         return cb(err);
@@ -124,17 +122,17 @@ class BatchManager extends Manager{
                     const path =`${self.tableName}/${dbKey}`;
                     console.log(`batch ${batch.batchNumber} created stored at '${path}'`);
     
-                    self2.batchAllow(self.stockManager);
+                    self.batchAllow(self.stockManager);
     
-                    self2.stockManager.manage(product, batch, (err) => {   
-                        self2.batchDisallow(self.stockManager);
-                        
+                    self.stockManager.manage(product, batch, (err) => {   
+                        self.batchDisallow(self.stockManager);
+
                         if(err){
                             console.log(`Error Updating Stock for ${product.gtin} batch ${batch.batchNumber}: ${err.message}`);
                             return cb(err);
                         }
                         console.log(`Stock for ${product.gtin} batch ${batch.batchNumber} updated`);
-                        self2.commitBatch((err) => {
+                        self.commitBatch((err) => {
                             if(err)
                                 return cb(err);
                             callback(undefined, keySSI, path);
@@ -143,7 +141,7 @@ class BatchManager extends Manager{
                 });
             }
 
-            dbAction.call(self, dbKey, record, gtin, batch, product, callback);
+            dbAction(dbKey, record, gtin, batch, product, callback);
 
         });
     }

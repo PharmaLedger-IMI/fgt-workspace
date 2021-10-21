@@ -166,19 +166,16 @@ class IssuedOrderManager extends OrderManager {
 
             const dbAction = function(key, order, callback){
 
-                const self2 = this;
-
                 try {
-                    self2.beginBatch();
+                    self.beginBatch();
                 } catch (e){
-                    const self2 = this;
-                    return self2.batchSchedule(() => dbAction.call(self2, key, order, callback));
+                    return self.batchSchedule(() => dbAction(key, order, callback));
                     //return callback(e);
                 }
 
                 const cb = function(err, ...results){
                     if (err)
-                        return self2.cancelBatch(err2 => {
+                        return self.cancelBatch(err2 => {
                             callback(err);
                         });
                     callback(undefined, ...results);
@@ -187,18 +184,18 @@ class IssuedOrderManager extends OrderManager {
                 update(key, order, (err) => {
                     if (err)
                         return cb(`Could not update Order:\n${err.message}`);
-                    self2.commitBatch((err) => {
+                    self.commitBatch((err) => {
                         if(err)
                             return cb(err);
 
                         console.log(`Order Status for Issued Order ${key} updated to ${order.status}`);
-                        self2.refreshController(order);
+                        self.refreshController(order);
                         return callback();
                     });         
                 });
             }
 
-            dbAction.call(self, key, order, callback);
+            dbAction(key, order, callback);
         });
     }
 

@@ -195,54 +195,62 @@ class StockManager extends Manager{
      */
     manageAll(product, batches, callback){
         const self = this;
-        const iterator = function(product){
-            return function(batch, callback){
-                return self.manage(product, batch, (err, serials, stock) => {
-                    if (err)
-                        return callback(err);
-                    callback(undefined, batch, serials, stock);
-                });
-            }
-        }
-
-        const cb = function(err, ...results){
-            if (err)
-                return self.cancelBatch(err2 => {
-                    callback(err);
-                });
-            callback(undefined, ...results);
-        }
-
-        try {
-            self.beginBatch();
-        } catch (e){
-            return self.batchSchedule(() => self._indexItem.call(self, ...props));
-            //return callback(e);
-        }
-
-        functionCallIterator(iterator(product).bind(this), batches, (err, ...results) => {
-            if (err)
-                return cb(`Could not perform manage all on Stock`);
-
-            self.commitBatch((err) => {
-                if(err)
-                    return cb(err);
-                const newStocks = [];
-                const mergedResult = results.reduce((accum, result) => {
-                    accum[result[0].batchNumber] = accum[result[0].batchNumber] || [];
-                    try {
-                        accum[result[0].batchNumber].push(...(Array.isArray(result[1]) ? result[1] : [result[1]]))
-                    } catch (e) {
-                        console.log(e)
-                    }
-                    if (result.length >= 3)
-                        newStocks.push(result[2])
-                    return accum;
-                }, {});
         
-                callback(undefined, mergedResult, newStocks);
-            });      
-        });
+        const dbAction = function(product, batches, callback){
+            
+
+            const iterator = function(product){
+                return function(batch, callback){
+                    return self.manage(product, batch, (err, serials, stock) => {
+                        if (err)
+                            return callback(err);
+                        callback(undefined, batch, serials, stock);
+                    });
+                }
+            }
+    
+            const cb = function(err, ...results){
+                if (err)
+                    return self.cancelBatch(err2 => {
+                        callback(err);
+                    });
+                callback(undefined, ...results);
+            }
+
+            try {
+                self.beginBatch();
+            } catch (e){
+                return self2.batchSchedule(() => dbAction(dbKey, record, gtin, batch, product, callback));
+                //return callback(e);
+            }
+
+            functionCallIterator(iterator(product).bind(this), batches, (err, ...results) => {
+                if (err)
+                    return cb(`Could not perform manage all on Stock`);
+
+                self.commitBatch((err) => {
+                    if(err)
+                        return cb(err);
+                    const newStocks = [];
+                    const mergedResult = results.reduce((accum, result) => {
+                        accum[result[0].batchNumber] = accum[result[0].batchNumber] || [];
+                        try {
+                            accum[result[0].batchNumber].push(...(Array.isArray(result[1]) ? result[1] : [result[1]]))
+                        } catch (e) {
+                            console.log(e)
+                        }
+                        if (result.length >= 3)
+                            newStocks.push(result[2])
+                        return accum;
+                    }, {});
+        
+                    callback(undefined, mergedResult, newStocks);
+                });      
+            });
+        }
+
+        dbAction(product, batches, callback);
+
     }
 
     /**
