@@ -110,7 +110,7 @@ class BatchManager extends Manager{
                 try {
                     self.beginBatch();
                 } catch (e){ 
-                    return self2.batchSchedule(() => dbAction(dbKey, record, gtin, batch, product, callback));
+                    return self.batchSchedule(() => dbAction(dbKey, record, gtin, batch, product, callback));
                     //return callback(e);
                 }
 
