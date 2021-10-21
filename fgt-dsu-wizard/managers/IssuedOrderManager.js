@@ -239,7 +239,11 @@ class IssuedOrderManager extends OrderManager {
                 }
 
                 if (order.status.status !== OrderStatus.CONFIRMED)
-                    return sendMessages();
+                    return self.commitBatch((err) => {
+                        if(err)
+                            return cb(err);
+                        sendMessages();
+                    });
 
                 // Get all the shipmentLines from the shipment so we can add it to the stock
                 dsu.readFile(`${SHIPMENT_PATH}${INFO_PATH}`, (err, data) => {

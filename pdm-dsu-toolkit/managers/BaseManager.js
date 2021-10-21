@@ -95,10 +95,7 @@ class DBLock {
                 callback();
             }
 
-            // if (isNaN(this._cache[tableName]))
-            //     return cb();
-
-            this._cache[tableName] = -1;
+            delete this._cache[tableName];
             this._allows = {};
             return this._storage.commitBatch.call(this._storage, cb);
         }
@@ -109,7 +106,7 @@ class DBLock {
 
     cancelBatch(tableName, callback){
         if (this._cache[tableName] > 0){
-            this._cache[tableName] = -1;
+            delete this._cache[tableName];
             return this._storage.cancelBatch.call(this._storage, callback);
         }
         callback();
