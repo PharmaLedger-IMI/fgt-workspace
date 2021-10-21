@@ -151,7 +151,7 @@ class Command {
      * @param {Archive|KeySSI} [bar] the destinationDSU or the keySSI
      * @param {string[]} [next] the remaining commands
      * @param {object} [options]
-     * @param {function(err, Archive|KeySSI|string|boolean)} callback
+     * @param {function(err, Archive | KeySSI | string | boolean )} callback
      */
     execute(args,bar, next, options, callback){
         if (typeof options === 'function'){

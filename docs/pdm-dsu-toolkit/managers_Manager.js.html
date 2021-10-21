@@ -196,9 +196,13 @@ class Manager{
     constructor(baseManager, tableName, indexes, callback){
         let self = this;
         this.storage = baseManager.db;
+        this.dbLock = baseManager.dbLock;
+
         this.getStorage = () => {
-            if (!self.storage)
+            if (!self.storage){
                 self.storage = baseManager.db;
+                self.dbLock = baseManager.dbLock;
+            }
             if (!self.storage)
                 throw new Error(`DB is not initialized`);
             return self.storage;
@@ -266,6 +270,30 @@ class Manager{
             this.controllers.forEach(c => c.refresh(props));
     }
 
+    beginBatch(){
+        this.dbLock.beginBatch(this.tableName);
+    }
+
+    commitBatch(force, callback){
+        this.dbLock.commitBatch(this.tableName, force, callback);
+    }
+
+    cancelBatch(callback){
+        this.dbLock.cancelBatch(this.tableName, callback);
+    }
+
+    batchAllow(allowedManager){
+        this.dbLock.allow(this.tableName, allowedManager);
+    }
+
+    batchDisallow(allowedManager){
+        this.dbLock.disallow(this.tableName, allowedManager);
+    }
+
+    batchSchedule(method){
+        this.dbLock.schedule(method);
+    }
+
     /**
      * Should be called by child classes if then need to index the table.
      * (Can't be called during the constructor of the Manager class due to the need of virtual method
@@ -281,9 +309,32 @@ class Manager{
         const callback = props.pop();
         props.push('__timestamp');
         const self = this;
-        self.getStorage().getIndexedFields(self.tableName, (err, indexes) => {
+        const storage = self.getStorage();
+
+
+        const innerBeginBatch = function(callback){
+
+            try {
+                self.beginBatch();
+            } catch (e){
+                return self.batchSchedule(() => self._indexItem.call(self, ...props));
+                // return callback(e)
+            }
+            callback();
+        }
+
+        const errCb = function(message, err, callback){
+            self.cancelBatch(err2 => {
+                if (err2)
+                    return self._err(`Could not cancelBatch over error: ${message}`, err2, callback);
+                self._err(message, err, callback);
+            });
+        }
+
+        storage.getIndexedFields(self.tableName, (err, indexes) => {
             if (err)
-                return self._err(`Could not retrieve indexes from table ${self.tableName}`, err, callback);
+                return errCb(`Could not retrieve indexes from table ${self.tableName}`, err, callback);
+
             const newIndexes = [];
             const indexIterator = function(propsClone, callback){
                 const index = propsClone.shift();
@@ -291,17 +342,31 @@ class Manager{
                     return callback(undefined, newIndexes);
                 if (indexes.indexOf(index) !== -1)
                     return indexIterator(propsClone, callback);
-                self.getStorage().addIndex(self.tableName, index, (err) => {
+                innerBeginBatch((err) => {
                     if (err)
-                        return self._err(`Could not add index ${index} on table ${self.tableName}`, err, callback);
-                    newIndexes.push(index);
-                    indexIterator(propsClone, callback);
-                });
+                        return errCb('Could not start batch Mode', err, callback);
+                    storage.addIndex(self.tableName, index, (err) => {
+                        if (err)
+                            return errCb(`Could not retrieve indexes from table ${self.tableName}`, err, callback);
+
+                        newIndexes.push(index);
+                        indexIterator(propsClone, callback);
+                    });
+                })
+
             }
 
-            indexIterator(props.slice(), (err, updatedIndexes) => err
-                ? self._err(`Could not update indexes for table ${self.tableName}`, err, callback)
-                : callback(undefined, updatedIndexes));
+            indexIterator(props.slice(), (err, updatedIndexes) => {
+                if (err)
+                    return errCb(`Could not update indexes for table ${self.tableName}`, err, callback);
+                if (!updatedIndexes.length)
+                    return callback(undefined, updatedIndexes);
+                self.commitBatch(true, (err) => {
+                    if (err)
+                        return errCb(`Indexes committed for table ${self.tableName}`, err, callback);
+                    callback(undefined, updatedIndexes);
+                });
+            });
         });
     }
 
@@ -398,7 +463,11 @@ class Manager{
                 return self._err(`Record processing failed: ${JSON.stringify(record)}`, err, callback);
             // and then delete message after processing.
             console.log("Going to delete messages's record", record);
-            self.deleteMessage(record, callback);
+            self.deleteMessage(record, (err) => {
+                if (err)
+                    console.log(`Could not delete message. THis usually means there are two instances of this Application running and might cause problems with data integrity`);
+                callback(undefined);
+            });
         });
     };
 
@@ -605,6 +674,38 @@ class Manager{
     }
 
     /**
+     * Creates several new items
+     *
+     * @param {string[]} keys key is optional so child classes can override them
+     * @param {object[]} items
+     * @param {function(err, object[]?, Archive[]?)} callback
+     */
+    createAll(keys, items, callback){
+        let self = this;
+
+        try {
+            self.beginBatch();
+        } catch(e) {
+            return self.batchSchedule(() => self.createAll.call(self, keys, items, callback));
+        }
+
+
+        functionCallIterator(this.create.bind(this), keys, items, (err, results) => {
+            if (err)
+                return self.cancelBatch((err2) => {
+                    self._err(`Could not update all records`, err, callback);
+                });
+
+            self.commitBatch((err) => {
+                if (err)
+                    return self.cancelBatch((err2) => {
+                        callback(err)
+                    });
+                callback(undefined, ...results);
+            });
+        });
+    }
+    /**
      * Must wrap the entry in an object like:
      * &lt;pre>
      *     {
@@ -656,7 +757,6 @@ class Manager{
     /**
      * reads ssi for that gtin in the db. loads is and reads the info at '/info'
      * @param {string} key
-     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
      * @param {function(err, object
      * |KeySSI, Archive?)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
      */
@@ -690,24 +790,13 @@ class Manager{
      * @param {function(err, object, Archive)} callback
      */
     update(key, newItem, callback){
-        if (!callback)
+        if (!callback){
+            callback = newItem;
+            newItem = key;
+            key = undefined;
             return callback(`No key Provided...`);
-
-        let self = this;
-        self.getRecord(key, (err, record) => {
-            if (err)
-                return self._err(`Unable to retrieve record with key ${key} from table ${self._getTableName()}`, err, callback);
-            self._getDSUInfo(record, (err, item, dsu) => {
-                if (err)
-                    return self._err(`Key: ${key}: unable to read From DSU from SSI ${record}`, err, callback);
-                dsu.writeFile(INFO_PATH, JSON.stringify(newItem), (err) => {
-                    if (err)
-                        return self._err(`Could not update item ${key} with ${JSON.stringify(newItem)}`, err, callback);
-                    console.log(`Item ${key} in table ${self._getTableName()} updated`);
-                    callback(undefined, newItem, dsu)
-                });
-            });
-        });
+        }
+        callback('Child classes must implement this');
     }
 
     /**
@@ -718,20 +807,35 @@ class Manager{
      * @param {function(err, object[], Archive[])} callback
      */
     updateAll(keys, newItems, callback){
-        if (!callback)
+        if (!callback){
+            callback = newItems;
+            newItems = keys;
+            keys = undefined;
             return callback(`No key Provided...`);
+        }
 
         let self = this;
-        functionCallIterator(this.updateRecord.bind(this), keys, newItems, (err, results) => {
+
+        try {
+            self.beginBatch();
+        } catch(e) {
+            return self.batchSchedule(() => self.updateAll.call(self, keys, newItems, callback));
+        }
+
+
+        functionCallIterator(this.update.bind(this), keys, newItems, (err, results) => {
             if (err)
-                return self._err(`Could not update all records`, err, callback);
-            callback(undefined, ...results.reduce((accum, r) => {
-                accum[0] = accum[0] || [];
-                accum[1] = accum[1] || [];
-                accum[0].push(r[0]);
-                accum[1].push(r[1]);
-                return accum;
-            }, [2]));
+                return self.cancelBatch((err2) => {
+                    self._err(`Could not update all records`, err, callback);
+                });
+
+            self.commitBatch((err) => {
+                if (err)
+                    return self.cancelBatch((err2) => {
+                        callback(err)
+                    });
+                callback(undefined, ...results);
+            });
         });
     }
 
@@ -853,10 +957,26 @@ class Manager{
         }
         const self = this;
         console.log("insertRecord tableName="+tableName, "key", key, "record", record);
-        this.getStorage().insertRecord(tableName, key, record, (err) => {
+
+        try {
+            self.beginBatch();
+        } catch (e) {
+            return self.batchSchedule(() => self.insertRecord.call(self, tableName, key, record, callback));
+            // return callback(e);
+        }
+
+        this.getStorage().insertRecord(tableName, key, record, (err, ...results) => {
             if (err)
-                return self._err(`Could not insert record with key ${key} in table ${tableName}`, err, callback);
-            callback(undefined);
+                return self.cancelBatch((err2) => {
+                    self._err(`Could not insert record with key ${key} in table ${tableName}`, err, callback);
+                });
+            self.commitBatch((err) => {
+                if (err)
+                    return self.cancelBatch((err2) => {
+                        callback(err)
+                    });
+                callback(undefined, ...results);
+            });
         });
     }
 
@@ -874,7 +994,30 @@ class Manager{
             key = tableName;
             tableName = this._getTableName();
         }
-        this.getStorage().updateRecord(tableName, key, newRecord, callback);
+
+        console.log("update Record tableName="+tableName, "key", key, "record", newRecord);
+        const self = this;
+
+        try {
+            self.beginBatch();
+        } catch (e) {
+            return self.batchSchedule(() => self.updateRecord.call(self, tableName, key, newRecord, callback));
+            // return callback(e);
+        }
+
+        this.getStorage().updateRecord(tableName, key, newRecord, (err, ...results) => {
+            if (err)
+                return self.cancelBatch((err2) => {
+                    self._err(`Could not update record with key ${key} in table ${tableName}`, err, callback);
+                });
+            self.commitBatch((err) => {
+                if (err)
+                    return self.cancelBatch((err2) => {
+                        callback(err)
+                    });
+                callback(undefined, ...results);
+            });
+        });
     }
 
     /**

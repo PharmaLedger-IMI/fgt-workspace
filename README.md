@@ -67,7 +67,7 @@ You will be present with a menu from where you can choose the SSApp you with to 
 
 SSApps built under the PDM Architecture present the following structure:
 
-[Current SSApp Architecture](resources/drawings/finishedGoodsTraceabilityDSUTypes-BaseSSAppArchitecture.png)
+![Current SSApp Architecture](resources/drawings/finishedGoodsTraceabilityDSUTypes-BaseSSAppArchitecture.png)
 
 Please note the following elements:
 
@@ -128,7 +128,7 @@ The documentation for the Scripting language and build process can be found in t
 
 Both the Pharmacy and Wholesaler SSApp present the following structure:
 
-[Ex: Wholesaler SSApp](resources/drawings/finishedGoodsTraceabilityDSUTypes-WholesalerSSAppArchitecture.png)
+![Ex: Wholesaler SSApp](resources/drawings/finishedGoodsTraceabilityDSUTypes-WholesalerSSAppArchitecture.png)
 
 While the MAH one will have 3 more managers, for Products, Batches and ShipmentLines
 
@@ -136,7 +136,13 @@ While the MAH one will have 3 more managers, for Products, Batches and ShipmentL
 
 In the link bellow please find the main DSU types currently in use and how they relate to each other
 
-[DSU Constitution](resources/drawings/finishedGoodsTraceabilityDSUTypes-DSUTypes.png)
+![DSU Constitution](resources/drawings/finishedGoodsTraceabilityDSUTypes-DSUTypes.png)
+
+### Environment Definition
+
+In the link bellow please find the Environment definition
+
+![Environment](resources/drawings/finishedGoodsTraceabilityDSUTypes-Deployment.png)
 
 
 
@@ -185,7 +191,7 @@ $ npm run dev-install
 
 For latest 'stable' version do:
 ```sh
-$ npm install
+$ npm run install
 ```
 instead.
 
@@ -215,8 +221,9 @@ $ npm run build-all
 #### Step 4: Build Environment (optional).
 
 Open a new console inside *fgt-workspace* folder and run:
- - For a test environment setup (random data/credentials): ```npm run environment-trace```;
- - For *THE* test setup (with predefined credentials/data): ```npm run environment-test```;
+- For a test environment setup (random data/credentials): ```npm run environment-trace```;
+- For *THE* test setup (with predefined credentials/data): ```npm run environment-test```;
+
 
 ### Documentation
 
@@ -247,15 +254,16 @@ add a file under ```docs/bin``` called ```drawio_exec_command.os``` containing t
  - Windows:
     ```echo "${PATH_TO_DRAW_IO}\drawio.exe"```
 
+
 ### Deploy and test with a local blockchain
 
- - (optional) clean 'fake' blockchain: ```npm run clean```
- - stop the server;
- - run ```npm run deploy-test-chain```. This will build a local blockchain infrastrucure and point the tracebility 
- domain anchoring to that blockchain;
- - run ```npm run server``` to load the server with the new settings;
- - run ```npm run build-all``` to build the environment in the 'real' blockchain;
- - follow up with whatever environment build required
+- (optional) clean 'fake' blockchain: ```npm run clean```
+- stop the server;
+- run ```npm run deploy-test-chain```. This will build a local blockchain infrastrucure and point the tracebility
+  domain anchoring to that blockchain;
+- run ```npm run server``` to load the server with the new settings;
+- run ```npm run build-all``` to build the environment in the 'real' blockchain;
+- follow up with whatever environment build required
 
 ### Build Mobile
 

@@ -4,7 +4,7 @@
 
 SSApps built under the PDM Architecture present the following structure:
 
-[Current SSApp Architecture](resources/drawings/finishedGoodsTraceabilityDSUTypes-BaseSSAppArchitecture.png)
+![Current SSApp Architecture](resources/drawings/finishedGoodsTraceabilityDSUTypes-BaseSSAppArchitecture.png)
 
 Please note the following elements:
 
@@ -65,7 +65,7 @@ The documentation for the Scripting language and build process can be found in t
 
 Both the Pharmacy and Wholesaler SSApp present the following structure:
 
-[Ex: Wholesaler SSApp](resources/drawings/finishedGoodsTraceabilityDSUTypes-WholesalerSSAppArchitecture.png)
+![Ex: Wholesaler SSApp](resources/drawings/finishedGoodsTraceabilityDSUTypes-WholesalerSSAppArchitecture.png)
 
 While the MAH one will have 3 more managers, for Products, Batches and ShipmentLines
 
@@ -73,7 +73,13 @@ While the MAH one will have 3 more managers, for Products, Batches and ShipmentL
 
 In the link bellow please find the main DSU types currently in use and how they relate to each other
 
-[DSU Constitution](resources/drawings/finishedGoodsTraceabilityDSUTypes-DSUTypes.png)
+![DSU Constitution](resources/drawings/finishedGoodsTraceabilityDSUTypes-DSUTypes.png)
+
+### Environment Definition
+
+In the link bellow please find the Environment definition
+
+![Environment](resources/drawings/finishedGoodsTraceabilityDSUTypes-Deployment.png)
 
 
 

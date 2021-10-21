@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="Controllers.HomeController.html">HomeController</a></li><li><a href="Controllers.LocalizedController.html">LocalizedController</a></li><li><a href="module.exports_module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_bindErrorHandler">_bindErrorHandler</a></li><li><a href="global.html#_bindMessageHandler">_bindMessageHandler</a></li><li><a href="global.html#_getLoader">_getLoader</a></li><li><a href="global.html#bindLocale">bindLocale</a></li><li><a href="global.html#closeIonicModal">closeIonicModal</a></li><li><a href="global.html#navigateToTab">navigateToTab</a></li><li><a href="global.html#on">on</a></li><li><a href="global.html#refresh">refresh</a></li><li><a href="global.html#showAlert">showAlert</a></li><li><a href="global.html#showBarcodeScanner">showBarcodeScanner</a></li><li><a href="global.html#showConfirm">showConfirm</a></li><li><a href="global.html#showErrorToast">showErrorToast</a></li><li><a href="global.html#showIonicModal">showIonicModal</a></li><li><a href="global.html#showToast">showToast</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="Controllers.HomeController.html">HomeController</a></li><li><a href="Controllers.LocalizedController.html">LocalizedController</a></li><li><a href="module.exports_module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_bindErrorHandler">_bindErrorHandler</a></li><li><a href="global.html#_bindMessageHandler">_bindMessageHandler</a></li><li><a href="global.html#_getLoader">_getLoader</a></li><li><a href="global.html#bindLocale">bindLocale</a></li><li><a href="global.html#closeIonicModal">closeIonicModal</a></li><li><a href="global.html#navigateToTab">navigateToTab</a></li><li><a href="global.html#on">on</a></li><li><a href="global.html#refresh">refresh</a></li><li><a href="global.html#showAlert">showAlert</a></li><li><a href="global.html#showBarcodeScanner">showBarcodeScanner</a></li><li><a href="global.html#showConfirm">showConfirm</a></li><li><a href="global.html#showErrorToast">showErrorToast</a></li><li><a href="global.html#showIonicModal">showIonicModal</a></li><li><a href="global.html#showPopup">showPopup</a></li><li><a href="global.html#showToast">showToast</a></li></ul></div>
                 
             </nav>
         </div>
@@ -122,7 +122,6 @@ import {
 } from '../constants/events'
 import {WebManagerService} from '../services/WebManagerService';
 import HistoryNavigator from "../utils/HistoryNavigator";
-
 /**
  * Main Controller For the SSApp Architecture. Should be instantiated like so:
  *
@@ -148,7 +147,6 @@ export default class HomeController extends LocalizedController {
     initializeModel = () => ({
         participant: {}
     });
-
     constructor(...args) {
         super(true, ...args);
         super.bindLocale(this, "");
@@ -159,7 +157,6 @@ export default class HomeController extends LocalizedController {
       this.historyNavigator = new HistoryNavigator({tab: 'tab-dashboard', props: {}}, 10);
         const self = this;
         self._updateLoading(this.model.loading.loading.status, this.model.loading.loading.progress)
-
         this.on(EVENT_ION_TABS_WILL_CHANGE, (evt) => {
             const el = self.element.querySelector(`ion-tab[tab="${evt.detail.tab}"] webc-container`)
               || self.querySelector(`ion-tab[tab="${evt.detail.tab}"] ion-content`);
@@ -178,23 +175,18 @@ export default class HomeController extends LocalizedController {
                 el.dispatchEvent(event)
               });
             }
-
         }, {capture: true});
-
         this.on(EVENT_NAVIGATE_TAB, (evt) => {
           evt.preventDefault();
           evt.stopImmediatePropagation();
           self._navigateToTab.call(self, evt.detail);
         });
-
         this.on(EVENT_BACK_NAVIGATE, (evt) => {
           const previousTab = this.historyNavigator.getBackToPreviousTab();
           evt.preventDefault();
           evt.stopImmediatePropagation();
           self._navigateToTab.call(self, previousTab);
         });
-
-
         const participantManager = require('wizard').Managers.getParticipantManager(this.DSUStorage, false, (err, pManager) => {
               if (err)
                   console.log(`Failed Participant Manager Initialization`);
@@ -207,9 +199,8 @@ export default class HomeController extends LocalizedController {
                 WebManagerService.registerRepository(self.participantManager);
                 console.log("Home controller initialized");
                 self._testParticipant();
-              }, Math.floor(Math.random() * 100));
+              }, Math.floor(Math.random() * 250));
           });
-
         self.onTagClick('logout', () => {
           location.reload();
         })
@@ -234,7 +225,6 @@ export default class HomeController extends LocalizedController {
       self.setState(props.props);
       el.select(props.tab);
     }
-
   /**
    * Updates loading status
    * @param status
@@ -249,13 +239,11 @@ export default class HomeController extends LocalizedController {
       }
       if (!status &amp;&amp; !progress)
         return this._concludeLoading();
-
       this.send(EVENT_SSAPP_STATUS_UPDATE, {
           status: status,
           progress: progress
         }, {capture: true});
     };
-
   /**
    * Signals the SSApp has finished loading
    * @private
@@ -263,7 +251,6 @@ export default class HomeController extends LocalizedController {
   _concludeLoading(){
       this.send(EVENT_SSAPP_HAS_LOADED, {}, {capture: true});
     }
-
   /**
    * Reads the identity from the DSU
    * @private
@@ -278,12 +265,10 @@ export default class HomeController extends LocalizedController {
               return self.showErrorToast(`Could not retrieve identity. Build process seems to not have worked properly`);
             self._updateLoading(this.model.loading.booted.status, this.model.loading.booted.progress)
             self.model.participant = identity;
-
             // Give UI some time to breathe and render stuff, it needs it this time...
             setTimeout(() => {
               self._concludeLoading();
             }, 500);
-
           });
         }, Math.floor(Math.random() * 100));
     }

@@ -168,7 +168,7 @@ SOFTWARE.</p>
 <h3>Architecture</h3>
 <h4>Concrete SSApp Architecture</h4>
 <p>SSApps built under the PDM Architecture present the following structure:</p>
-<p><a href="resources/drawings/finishedGoodsTraceabilityDSUTypes-BaseSSAppArchitecture.png">Current SSApp Architecture</a></p>
+<p><img src="resources/drawings/finishedGoodsTraceabilityDSUTypes-BaseSSAppArchitecture.png" alt="Current SSApp Architecture"></p>
 <p>Please note the following elements:</p>
 <ul>
 <li>Id DSU: Holds some the registration information (the public parts);</li>
@@ -220,11 +220,14 @@ mount $DB$ /db
 </code></pre>
 <p>The documentation for the Scripting language and build process can be found in the pdm-dsu-toolkit module.</p>
 <p>Both the Pharmacy and Wholesaler SSApp present the following structure:</p>
-<p><a href="resources/drawings/finishedGoodsTraceabilityDSUTypes-WholesalerSSAppArchitecture.png">Ex: Wholesaler SSApp</a></p>
+<p><img src="resources/drawings/finishedGoodsTraceabilityDSUTypes-WholesalerSSAppArchitecture.png" alt="Ex: Wholesaler SSApp"></p>
 <p>While the MAH one will have 3 more managers, for Products, Batches and ShipmentLines</p>
 <h3>DSU Types</h3>
 <p>In the link bellow please find the main DSU types currently in use and how they relate to each other</p>
-<p><a href="resources/drawings/finishedGoodsTraceabilityDSUTypes-DSUTypes.png">DSU Constitution</a></p>
+<p><img src="resources/drawings/finishedGoodsTraceabilityDSUTypes-DSUTypes.png" alt="DSU Constitution"></p>
+<h3>Environment Definition</h3>
+<p>In the link bellow please find the Environment definition</p>
+<p><img src="resources/drawings/finishedGoodsTraceabilityDSUTypes-Deployment.png" alt="Environment"></p>
 <h3>Traceability</h3>
 <h4>On the Batch Level</h4>
 <p>By always transmitting to the manufacturer of each Product, the shipmentLines on a batch level, and by chaining this information,
@@ -265,6 +268,12 @@ $ npm run dev-install
 <pre class="prettyprint source lang-sh"><code># Note: Run this in a new console inside &quot;fgt-workspace&quot; folder
 $ npm run build-all
 </code></pre>
+<h4>Step 4: Build Environment (optional).</h4>
+<p>Open a new console inside <em>fgt-workspace</em> folder and run:</p>
+<ul>
+<li>For a test environment setup (random data/credentials): <code>npm run environment-trace</code>;</li>
+<li>For <em>THE</em> test setup (with predefined credentials/data): <code>npm run environment-test</code>;</li>
+</ul>
 <h3>Documentation</h3>
 <p>To be able to generate the documentation for this project via</p>
 <pre class="prettyprint source lang-sh"><code>$ npm run docs
@@ -282,6 +291,16 @@ $ npm run build-all
 <code>echo &quot;drawio&quot;</code></li>
 <li>Windows:
 <code>echo &quot;${PATH_TO_DRAW_IO}\drawio.exe&quot;</code></li>
+</ul>
+<h3>Deploy and test with a local blockchain</h3>
+<ul>
+<li>(optional) clean 'fake' blockchain: <code>npm run clean</code></li>
+<li>stop the server;</li>
+<li>run <code>npm run deploy-test-chain</code>. This will build a local blockchain infrastrucure and point the tracebility
+domain anchoring to that blockchain;</li>
+<li>run <code>npm run server</code> to load the server with the new settings;</li>
+<li>run <code>npm run build-all</code> to build the environment in the 'real' blockchain;</li>
+<li>follow up with whatever environment build required</li>
 </ul>
 <h3>Build Mobile</h3>
 <p>Currently Not Supported</p>

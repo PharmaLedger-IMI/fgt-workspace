@@ -202,7 +202,7 @@ class MessageManager extends Manager{
             const listenerIterator = function(listeners, callback){
                 const listener = listeners.shift();
                 if (!listener)
-                    return callback();
+                    return callback(undefined, message);
                 listener(message, (err) => {
                     if (err)
                         console.log(`Error processing Api ${api}`, err);
@@ -297,10 +297,10 @@ class MessageManager extends Manager{
         }
         if (api) {
             // filter messages for this api only
-            this.query(MESSAGE_TABLE, `api == ${api}`, undefined, 10, callback);
+            this.query(MESSAGE_TABLE, `api == ${api}`, undefined, undefined, callback);
         } else {
             // list all messages
-            this.query(MESSAGE_TABLE, "__timestamp > 0", undefined, 10, callback);
+            this.query(MESSAGE_TABLE, "__timestamp > 0", undefined, undefined, callback);
         }
     }
 
@@ -309,7 +309,8 @@ class MessageManager extends Manager{
         console.log("_startMessageListener", did.getIdentifier());
         did.readMessage((err, message) => {
             if (err){
-                console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
+                if (err.message !== 'socket hang up')
+                    console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
                 return self._startMessageListener(did);
             }
 
@@ -326,11 +327,12 @@ class MessageManager extends Manager{
                     return;
                 }
             }
-            self._startMessageListener(did);
             self._receiveMessage(message, (err, message) => {
                 if (err)
-                    return console.log(`Failed to receive message`, err);
-                console.log(`Message received ${message}`);
+                    console.log(`Failed to receive message`, err);
+                else
+                    console.log(`Message received ${message}`);
+                self._startMessageListener(did);
             });
         });
     }
