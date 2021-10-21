@@ -107,6 +107,14 @@ class BatchManager extends Manager{
 
             const dbAction = function(dbKey, record, gtin, batch, product, callback){
 
+                try {
+                    self.beginBatch();
+                } catch (e){
+                    const self2 = this;
+                    return self.batchSchedule(() => dbAction.call(self2, dbKey, record, gtin, batch, product, callback));
+                    //return callback(e);
+                }
+
                 self.insertRecord(dbKey, self._indexItem(gtin, batch, record), (err) => {
                     if(err){
                         console.log(`Could not inset record with gtin ${gtin} and batch ${batch.batchNumber} on table ${self.tableName}`);
@@ -137,14 +145,7 @@ class BatchManager extends Manager{
 
             }
 
-            try {
-                self.beginBatch();
-            } catch (e){
-                return self.batchSchedule(() => self.dbAction.call(self, dbKey, record, gtin, batch, product, callback));
-                //return callback(e);
-            }
-
-            dbAction(dbKey, record, gtin, batch, product, callback);
+            dbAction.call(self, dbKey, record, gtin, batch, product, callback);
 
         });
     }
