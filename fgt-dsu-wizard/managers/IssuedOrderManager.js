@@ -151,6 +151,8 @@ class IssuedOrderManager extends OrderManager {
             }
         }
 
+        const update = super.update.bind(this);
+
         console.log(`Updating order ${orderId} witj shipment ${shipment.shipmentId}`);
 
         const self = this;
@@ -182,7 +184,7 @@ class IssuedOrderManager extends OrderManager {
                     callback(undefined, ...results);
                 }
 
-                super.update(key, order, (err) => {
+                update(key, order, (err) => {
                     if (err)
                         return cb(`Could not update Order:\n${err.message}`);
                     self2.commitBatch((err) => {
@@ -214,6 +216,8 @@ class IssuedOrderManager extends OrderManager {
             key = this._genCompostKey(order.senderId, order.orderId);
         }
 
+        const update = super.update.bind(this);
+
         const self = this;
 
         self.getOne(key, false,(err, record) => {
@@ -239,7 +243,7 @@ class IssuedOrderManager extends OrderManager {
                     //return callback(e);
                 }
 
-                super.update(key, order, (err, updatedOrder, dsu) => {
+                update(key, order, (err, updatedOrder, dsu) => {
                     if (err)
                         return cb(err);
 
