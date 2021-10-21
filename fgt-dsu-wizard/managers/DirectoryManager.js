@@ -1,4 +1,4 @@
-const { DB } = require('../constants');
+const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const {DirectoryEntry, ROLE } = require('../model/DirectoryEntry');
 

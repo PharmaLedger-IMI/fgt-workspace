@@ -563,6 +563,38 @@ class Manager{
     }
 
     /**
+     * Creates several new items
+     *
+     * @param {string[]} keys key is optional so child classes can override them
+     * @param {object[]} items
+     * @param {function(err, object[]?, Archive[]?)} callback
+     */
+    createAll(keys, items, callback){
+        let self = this;
+
+        try {
+            self.beginBatch();
+        } catch(e) {
+            return self.batchSchedule(() => self.createAll.call(self, keys, items, callback));
+        }
+
+
+        functionCallIterator(this.create.bind(this), keys, items, (err, results) => {
+            if (err)
+                return self.cancelBatch((err2) => {
+                    self._err(`Could not update all records`, err, callback);
+                });
+
+            self.commitBatch((err) => {
+                if (err)
+                    return self.cancelBatch((err2) => {
+                        callback(err)
+                    });
+                callback(undefined, ...results);
+            });
+        });
+    }
+    /**
      * Must wrap the entry in an object like:
      * <pre>
      *     {
@@ -614,7 +646,6 @@ class Manager{
     /**
      * reads ssi for that gtin in the db. loads is and reads the info at '/info'
      * @param {string} key
-     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
      * @param {function(err, object
      * |KeySSI, Archive?)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
      */
