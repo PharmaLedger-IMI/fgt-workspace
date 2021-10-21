@@ -151,15 +151,7 @@ class IssuedOrderManager extends OrderManager {
             }
         }
 
-        console.log(`Updating order ${orderId} witj shipment ${shipment.shipmentId}`)
-
-        const cb = function(err, ...results){
-            if (err)
-                return self.cancelBatch(err2 => {
-                    callback(err);
-                });
-            callback(undefined, ...results);
-        }
+        console.log(`Updating order ${orderId} witj shipment ${shipment.shipmentId}`);
 
         const self = this;
         const key = this._genCompostKey(shipment.senderId, orderId);
@@ -170,25 +162,41 @@ class IssuedOrderManager extends OrderManager {
             console.log(`Order Status for Issued Order ${key} to be updated to to ${order.status}`);
             order.shipmentSSI = shipmentSSI;
 
-            try {
-                self.beginBatch();
-            } catch (e){
-                return self.batchSchedule(() => self._indexItem.call(self, ...props));
-                //return callback(e);
+            const dbAction = function(key, order, callback){
+
+                const self2 = this;
+
+                try {
+                    self2.beginBatch();
+                } catch (e){
+                    const self2 = this;
+                    return self2.batchSchedule(() => dbAction.call(self2, key, order, callback));
+                    //return callback(e);
+                }
+
+                const cb = function(err, ...results){
+                    if (err)
+                        return self2.cancelBatch(err2 => {
+                            callback(err);
+                        });
+                    callback(undefined, ...results);
+                }
+
+                super.update(key, order, (err) => {
+                    if (err)
+                        return cb(`Could not update Order:\n${err.message}`);
+                    self2.commitBatch((err) => {
+                        if(err)
+                            return cb(err);
+
+                        console.log(`Order Status for Issued Order ${key} updated to ${order.status}`);
+                        self2.refreshController(order);
+                        return callback();
+                    });         
+                });
             }
 
-            super.update(key, order, (err) => {
-                if (err)
-                    return cb(`Could not update Order:\n${err.message}`);
-                self.commitBatch((err) => {
-                    if(err)
-                        return cb(err);
-
-                    console.log(`Order Status for Issued Order ${key} updated to ${order.status}`);
-                    self.refreshController(order);
-                    return callback();
-                });         
-            });
+            dbAction.call(self, key, order, callback);
         });
     }
 
@@ -206,40 +214,43 @@ class IssuedOrderManager extends OrderManager {
             key = this._genCompostKey(order.senderId, order.orderId);
         }
 
-        const cb = function(err, ...results){
-            if (err)
-                return self.cancelBatch(err2 => {
-                    callback(err);
-                });
-            callback(undefined, ...results);
-        }
-
         const self = this;
 
         self.getOne(key, false,(err, record) => {
             if (err)
                 return callback(err);
                 
+            const dbAction = function(key, order, record, callback){
+                const self2 = this;
+
+
+                const cb = function(err, ...results){
+                    if (err)
+                        return self2.cancelBatch(err2 => {
+                            callback(err);
+                        });
+                    callback(undefined, ...results);
+                }
                 
-            try {
-                self.beginBatch();
-            } catch (e){
-                return self.batchSchedule(() => self._indexItem.call(self, ...props));
-                //return callback(e);
-            }
+                try {
+                    self2.beginBatch();
+                } catch (e){
+                    return self2.batchSchedule(() => dbAction.call(self2, key, order, record, callback));
+                    //return callback(e);
+                }
 
-            super.update(key, order, (err, updatedOrder, dsu) => {
-                if (err)
-                    return cb(err);
+                super.update(key, order, (err, updatedOrder, dsu) => {
+                    if (err)
+                        return cb(err);
 
-                const sendMessages = function(){
-                    const sReadSSIStr = utils.getKeySSISpace().parse(record).derive().getIdentifier();
-                    self.sendMessagesAsync(order, sReadSSIStr);
-                    callback(undefined, updatedOrder, dsu);
+                    const sendMessages = function(){
+                        const sReadSSIStr = utils.getKeySSISpace().parse(record).derive().getIdentifier();
+                        self2.sendMessagesAsync(order, sReadSSIStr);
+                        callback(undefined, updatedOrder, dsu);
                 }
 
                 if (order.status.status !== OrderStatus.CONFIRMED)
-                    return self.commitBatch((err) => {
+                    return self2.commitBatch((err) => {
                         if(err)
                             return cb(err);
                         sendMessages();
@@ -274,7 +285,7 @@ class IssuedOrderManager extends OrderManager {
                         if (!gtin)
                             return callback(undefined, result);
                         const batches = batchObj[gtin];
-                        self.stockManager.manageAll(gtin, batches, (err, newStocks) => {
+                        self2.stockManager.manageAll(gtin, batches, (err, newStocks) => {
                             if (err)
                                 return callback(err);
                             result[gtin] = result[gtin] || [];
@@ -283,15 +294,15 @@ class IssuedOrderManager extends OrderManager {
                         });
                     }
 
-                    self.batchAllow(self.stockManager);
+                    self2.batchAllow(self.stockManager);
 
                     gtinIterator(gtins.slice(), batchesToAdd, (err, result) => {
+                        self2.batchDisallow(self.stockManager);
+
                         if (err)
                             return cb(`Could not update Stock`);
-                        
-                        self.batchDisallow(self.stockManager);
 
-                        self.commitBatch((err) => {
+                        self2.commitBatch((err) => {
                             if(err)
                                 return cb(err);
 
@@ -301,6 +312,9 @@ class IssuedOrderManager extends OrderManager {
                     })
                 });
             });
+            
+            dbAction.call(self, key, order, record, callback);
+        }
         });
     }
 
