@@ -185,17 +185,6 @@ export namespace Components {
         "refresh": (newOrder?: any, oldOrder?: any) => Promise<void>;
         "type"?: string;
     }
-    interface ManagedOrderlineListItem {
-        "createdOnLabel"?: string;
-        "gtinLabel"?: string;
-        "nameLabel"?: string;
-        "orderLine": string;
-        "quantityLabel"?: string;
-        "refresh": () => Promise<void>;
-        "requesterLabel"?: string;
-        "senderLabel"?: string;
-        "statusLabel"?: string;
-    }
     interface ManagedOrderlineStockChip {
         "available"?: number;
         "button"?: string;
@@ -565,12 +554,6 @@ declare global {
         prototype: HTMLManagedOrderListItemElement;
         new (): HTMLManagedOrderListItemElement;
     };
-    interface HTMLManagedOrderlineListItemElement extends Components.ManagedOrderlineListItem, HTMLStencilElement {
-    }
-    var HTMLManagedOrderlineListItemElement: {
-        prototype: HTMLManagedOrderlineListItemElement;
-        new (): HTMLManagedOrderlineListItemElement;
-    };
     interface HTMLManagedOrderlineStockChipElement extends Components.ManagedOrderlineStockChip, HTMLStencilElement {
     }
     var HTMLManagedOrderlineStockChipElement: {
@@ -743,7 +726,6 @@ declare global {
         "managed-individual-product-list-item": HTMLManagedIndividualProductListItemElement;
         "managed-order": HTMLManagedOrderElement;
         "managed-order-list-item": HTMLManagedOrderListItemElement;
-        "managed-orderline-list-item": HTMLManagedOrderlineListItemElement;
         "managed-orderline-stock-chip": HTMLManagedOrderlineStockChipElement;
         "managed-product": HTMLManagedProductElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
@@ -1030,24 +1012,6 @@ declare namespace LocalJSX {
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "orderId"?: string;
         "type"?: string;
-    }
-    interface ManagedOrderlineListItem {
-        "createdOnLabel"?: string;
-        "gtinLabel"?: string;
-        "nameLabel"?: string;
-        /**
-          * Through this event navigation requests to tabs are made
-         */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event errors are passed
-         */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
-        "orderLine"?: string;
-        "quantityLabel"?: string;
-        "requesterLabel"?: string;
-        "senderLabel"?: string;
-        "statusLabel"?: string;
     }
     interface ManagedOrderlineStockChip {
         "available"?: number;
@@ -1441,7 +1405,6 @@ declare namespace LocalJSX {
         "managed-individual-product-list-item": ManagedIndividualProductListItem;
         "managed-order": ManagedOrder;
         "managed-order-list-item": ManagedOrderListItem;
-        "managed-orderline-list-item": ManagedOrderlineListItem;
         "managed-orderline-stock-chip": ManagedOrderlineStockChip;
         "managed-product": ManagedProduct;
         "managed-product-list-item": ManagedProductListItem;
@@ -1489,7 +1452,6 @@ declare module "@stencil/core" {
             "managed-individual-product-list-item": LocalJSX.ManagedIndividualProductListItem & JSXBase.HTMLAttributes<HTMLManagedIndividualProductListItemElement>;
             "managed-order": LocalJSX.ManagedOrder & JSXBase.HTMLAttributes<HTMLManagedOrderElement>;
             "managed-order-list-item": LocalJSX.ManagedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedOrderListItemElement>;
-            "managed-orderline-list-item": LocalJSX.ManagedOrderlineListItem & JSXBase.HTMLAttributes<HTMLManagedOrderlineListItemElement>;
             "managed-orderline-stock-chip": LocalJSX.ManagedOrderlineStockChip & JSXBase.HTMLAttributes<HTMLManagedOrderlineStockChipElement>;
             "managed-product": LocalJSX.ManagedProduct & JSXBase.HTMLAttributes<HTMLManagedProductElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;

@@ -6,7 +6,6 @@ module.exports = {
     DSUService: require('../../pdm-dsu-toolkit/services/DSUService'),
     WebcLocaleService: require("../../pdm-dsu-toolkit/services/WebcLocaleService"),
     WebComponentService: require("../../pdm-dsu-toolkit/services/WebComponentService"),
-    OrderLineService: require("./OrderLineService"),
     OrderService: require("./OrderService"),
     ShipmentService: require("./ShipmentService"),
     ShipmentLineService: require('./ShipmentLineService'),

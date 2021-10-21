@@ -15,7 +15,6 @@ function OrderService(domain, strategy) {
     const endpoint = 'order';
 
     domain = domain || "default";
-    const orderLineService = new (require('./OrderLineService'))(domain, strategy);
     const statusService = new (require('./StatusService'))(domain, strategy);
 
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
@@ -230,23 +229,14 @@ function OrderService(domain, strategy) {
                         if (err)
                             return cb(err);
                         console.log(`OrderStatus DSU (${statusSSI.getIdentifier(true)}) mounted at '/status'`);
-                        createOrderLines(order, statusSSI, (err, orderLines) => {
+                        dsu.commitBatch((err) => {
                             if (err)
                                 return cb(err);
-                            const lines = JSON.stringify(orderLines.map(o => o.getIdentifier(true)));
-                            dsu.writeFile('/lines', lines, (err) => {
+                            dsu.getKeySSIAsObject((err, keySSI) => {
                                 if (err)
-                                    return cb(err);
-                                dsu.commitBatch((err) => {
-                                    if (err)
-                                        return cb(err);
-                                    dsu.getKeySSIAsObject((err, keySSI) => {
-                                        if (err)
-                                            return callback(err);
-                                        console.log("Finished creating Order " + keySSI.getIdentifier(true));
-                                        callback(undefined, keySSI, orderLines);
-                                    });
-                                });
+                                    return callback(err);
+                                console.log("Finished creating Order " + keySSI.getIdentifier(true));
+                                callback(undefined, keySSI, order.orderLines);
                             });
                         });
                     });
@@ -274,46 +264,12 @@ function OrderService(domain, strategy) {
                         return cb(err);
                     builder.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(), (err) => {
                         if (err)
-                            return cb(err);
-                        createOrderLines(order, statusSSI, (err, orderLines) => {
-                            if (err)
-                                return cb(err);
-                            builder.addFileDataToDossier('/lines', JSON.stringify(orderLines.map(o => o.getIdentifier(true))), (err) => {
-                                if (err)
-                                    return cb(err);
-                                cb();
-                            })
-                        });
+                            return cb(err); 
+                        cb();    
                     });
                 });
             });
         }, callback);
-    }
-
-    /**
-     * Creates OrderLines DSUs for each orderLine in order
-     * @param {Order} order
-     * @param {function} callback
-     * @param {KeySSI} statusSSI keySSI to the OrderStatus DSU
-     * @return {Object[]} keySSIs
-     */
-    let createOrderLines = function (order, statusSSI, callback) {
-        let orderLines = [];
-
-        statusSSI = statusSSI.derive();
-        let iterator = function (order, items, callback) {
-            let orderLine = items.shift();
-            if (!orderLine)
-                return callback(undefined, orderLines);
-            orderLineService.create(order.orderId, orderLine, statusSSI, (err, keySSI) => {
-                if (err)
-                    return callback(err);
-                orderLines.push(keySSI);
-                iterator(order, items, callback);
-            });
-        }
-        // the slice() clones the array, so that the shitf() does not destroy it.
-        iterator(order, order.orderLines.slice(), callback);
     }
 }
 

@@ -31,7 +31,7 @@ const defaultOps = {
 let conf = argParser(defaultOps, process.argv);
 
 const setupManager = function(participantManager, callback){
-    getReceivedShipmentManager(participantManager, (err, orderLineManager) => {
+    getReceivedShipmentManager(participantManager, (err, receivedShipmentManager) => {
         if (err)
             return callback(err);
         getIssuedShipmentManager(participantManager, (err, issuedShipmentManager) => {

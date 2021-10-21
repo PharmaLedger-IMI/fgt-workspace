@@ -15,7 +15,7 @@ try{
 
 const dt = require('./../../pdm-dsu-toolkit/services/dt');
 const getIssuedShipmentManager = require("../../fgt-dsu-wizard/managers/IssuedShipmentManager");
-const { getParticipantManager, getProductManager, getBatchManager, getOrderLineManager, getShipmentLineManager, getStockManager, getReceivedOrderManager, getReceiptManager} = require('../../fgt-dsu-wizard/managers');
+const { getParticipantManager, getProductManager, getBatchManager, getShipmentLineManager, getStockManager, getReceivedOrderManager, getReceiptManager} = require('../../fgt-dsu-wizard/managers');
 const { impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 const ROLE = require('../../fgt-dsu-wizard/model/DirectoryEntry').ROLE;
 const submitEvent = require('./listeners/eventHandler');
@@ -162,17 +162,13 @@ const setupManager = function(participantManager, callback){
         getIssuedShipmentManager(participantManager, (err, issuedShipmentManager) => {
             if (err)
                 return callback(err);
-            getOrderLineManager(participantManager, (err, orderLineManager) => {
+            getShipmentLineManager(participantManager, (err, shipmentLineManager) => {
                 if (err)
                     return callback(err);
-                getShipmentLineManager(participantManager, (err, shipmentLineManager) => {
+                getReceiptManager(participantManager, (err) => {
                     if (err)
                         return callback(err);
-                    getReceiptManager(participantManager, (err) => {
-                        if (err)
-                            return callback(err);
-                        callback();
-                    });
+                    callback();  
                 });
             });
         });

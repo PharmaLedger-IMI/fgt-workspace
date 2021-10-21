@@ -30,7 +30,6 @@
     "dashboard": "Dashboard",
     "products": "Products",
     "batches": "Batches",
-    "orderLines": "Order Lines",
     "shipmentLines": "Shipment Lines",
     "issuedShipments": "Shipments",
     "receivedOrders": "Orders",
@@ -435,19 +434,6 @@
         "color": "success",
         "paths": []
       }
-    }
-  },
-  "orderLines": {
-    "title": "Orders",
-    "gtinLabel": "Product Gtin:",
-    "nameLabel": "Product Name:",
-    "requesterLabel": "Ordered by:",
-    "senderLabel": "Ordered from:",
-    "createdOnLabel": "Registered on:",
-    "statusLabel": "Order status:",
-    "quantityLabel": "Order quantity:",
-    "errors": {
-      "list-error": "Could not list orders"
     }
   },
   "shipmentLines": {
