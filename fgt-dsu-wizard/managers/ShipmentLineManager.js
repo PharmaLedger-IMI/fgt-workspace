@@ -181,6 +181,15 @@ class ShipmentLineManager extends Manager {
             shipmentLines = [message];
         }
 
+        const cbErr = function(err, ...results){
+            if (err)
+                return self.cancelBatch(err2 => {
+                    callback(err);
+                });
+            callback(undefined, ...results);
+        }
+
+
         const lines = [];
 
         const shipmentLineIterator = function(linesCopy, callback){
@@ -210,12 +219,22 @@ class ShipmentLineManager extends Manager {
                 });
             });
         }
+        
+        try {
+            self.beginBatch();
+        } catch (e){
+            return callback(e);
+        }
 
         shipmentLineIterator(shipmentLines.slice(), (err, newLines) => {
             if (err)
-                return self._err(`Could not register all shipmentlines`, err, callback);
-            console.log(`ShipmentLines successfully registered: ${JSON.stringify(newLines)}`);
-            callback(undefined, lines);
+                return cbErr(`Could not register all shipmentlines`);
+            self.commitBatch((err) => {
+                if(err)
+                    return cbErr(err);
+                console.log(`ShipmentLines successfully registered: ${JSON.stringify(newLines)}`);
+                callback(undefined, lines);
+            });     
         });
     };
 
@@ -237,14 +256,10 @@ class ShipmentLineManager extends Manager {
         self.getRecord(key, (err, record) => {
             if (err)
                 return self._err(`Unable to retrieve record with key ${key} from table ${self._getTableName()}`, err, callback);
-            self.shipmentLineService.update(record.value, shipment, (err, updatedShipment, dsu, orderId, linesSSis) => {
-                if (err)
-                    return self._err(`Could not Update Order DSU`, err, callback);
-                self.updateRecord(key, self._indexItem(key, updatedShipment, record.value), (err) => {
+            self.updateRecord(key, self._indexItem(key, shipmentLine, record.value), (err) => {
                     if (err)
                         return self._err(`Unable to update record with key ${key} from table ${self._getTableName()}`, err, callback);
-                    callback(undefined, updatedShipment, record.value, orderId, linesSSis);
-                });
+                    callback(undefined, shipmentLine, record.value);
             });
         });
     }
