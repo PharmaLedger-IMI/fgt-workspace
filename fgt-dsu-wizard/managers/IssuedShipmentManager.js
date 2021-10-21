@@ -93,6 +93,13 @@ class IssuedShipmentManager extends ShipmentManager {
     create(orderId, shipment, callback) {
         let self = this;
 
+        const cb = function(err, ...results){
+            if (err)
+                return self.cancelBatch(err2 => {
+                    callback(err);
+                });
+            callback(undefined, ...results);
+        }
 
         const createInner = function(callback){
             const receivedOrderManager = getReceivedOrderManager(self.participantManager);
@@ -127,9 +134,12 @@ class IssuedShipmentManager extends ShipmentManager {
             if (!(gtin in batchesObj))
                 return callback(`gtins not found in batches`);
             const batches = batchesObj[gtin];
+            self.batchAllow(self.stockManager);
             self.stockManager.manageAll(gtin,  batches, (err, removed) => {
+                self.batchDisallow(self.stockManager);
+
                 if(err)
-                        return cb(`Could not update Stock`);
+                    return cb(`Could not update Stock`);
                 if (self.stockManager.serialization && self.stockManager.aggregation)
                     shipment.shipmentLines.filter(sl => sl.gtin === gtin && Object.keys(removed).indexOf(sl.batch) !== -1).forEach(sl => {
                         sl.serialNumbers = removed[sl.batch];
@@ -154,45 +164,32 @@ class IssuedShipmentManager extends ShipmentManager {
         }, {});
 
         const dbAction = function (gtins, batchesObj, callback){
-            const self2 = this;
-
-            const cb = function(err, ...results){
-                if (err)
-                    return self2.cancelBatch(err2 => {
-                        callback(err);
-                    });
-                callback(undefined, ...results);
-            }
 
             try {
-                self2.beginBatch();
+                self.beginBatch();
             } catch (e){
-                return self2.batchSchedule(() => dbAction.call(self2, gtins, batchesObj,callback));
+                return self.batchSchedule(() => dbAction(gtins, batchesObj, callback));
                 //return callback(e);
             }
 
-            self2.batchAllow(self.stockManager);
-
             gtinIterator(gtins, batchesObj, (err) => {
-            if(err)
-                return cb(`Could not retrieve info from stock`);
-            console.log(`Shipment updated after Stock confirmation`);
-            createInner((err, keySSI, path) => {
                 if(err)
-                    return cb(`Could not create Shipment`);
-                self2.batchDisallow(self.stockManager);
-
-                self2.commitBatch((err) => {
+                    return cb(`Could not retrieve info from stock`);
+                console.log(`Shipment updated after Stock confirmation`);
+                createInner((err, keySSI, path) => {
                     if(err)
-                        return cb(err);
-                    console.log(`Shipment ${shipment.shipmentId} created!`);
-                    callback(undefined, keySSI, path);
-                });  
-            })
-        });
+                        return cb(`Could not create Shipment`);
+                    self.commitBatch((err) => {
+                        if(err)
+                            return cb(err);
+                        console.log(`Shipment ${shipment.shipmentId} created!`);
+                        callback(undefined, keySSI, path);
+                    });
+                })
+            });
         }
 
-        dbAction.call(self, gtins, batchesObj, callback);
+        dbAction(gtins, batchesObj, callback);
     }
 
     sendMessagesAsync(shipment, shipmentLinesSSIs, aKey){

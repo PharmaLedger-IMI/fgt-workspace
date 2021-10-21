@@ -97,6 +97,7 @@ class DBLock {
 
             delete this._cache[tableName];
             this._allows = {};
+            console.log(`Committing batch in ${tableName}`);
             return this._storage.commitBatch.call(this._storage, cb);
         }
 
