@@ -24,6 +24,7 @@ export namespace Components {
         "type": string;
     }
     interface BatchChip {
+        "eventData"?: string;
         "expiryThreshold"?: number;
         "gtinBatch": string;
         "loaderType"?: string;
@@ -790,6 +791,7 @@ declare namespace LocalJSX {
         "type"?: string;
     }
     interface BatchChip {
+        "eventData"?: string;
         "expiryThreshold"?: number;
         "gtinBatch"?: string;
         "loaderType"?: string;
@@ -1216,6 +1218,7 @@ declare namespace LocalJSX {
     }
     interface ManagedStockListItem {
         "gtin"?: string;
+        "onFgt-track-request"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event navigation requests to tabs are made
          */

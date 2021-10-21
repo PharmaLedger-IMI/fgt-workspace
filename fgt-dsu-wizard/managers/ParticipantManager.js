@@ -62,8 +62,8 @@ class ParticipantManager extends BaseManager{
 
             const product = evt.detail;
 
-            const loader = controller._getLoader(controller.translate('tracking.loading',
-                product.gtin + controller.translate('tracking.serial', product.serialNumber)));
+            const serialNumberMsg = !!product.serialNumber ? controller.translate('tracking.serial', product.serialNumber) : '';
+            const loader = controller._getLoader(controller.translate('tracking.loading', product.gtin + serialNumberMsg));
 
             await loader.present();
 
@@ -72,6 +72,7 @@ class ParticipantManager extends BaseManager{
                 controller.showErrorToast(controller.translate('loading.error', err), err);
             }
 
+            console.log('# traceabilityManager product=', product)
             self.traceabilityManager.getOne(product, async (err, startNode, endNode, nodeList) => {
                 if (err)
                     return await sendError(`Could not perform tracking...`, err);
@@ -81,10 +82,12 @@ class ParticipantManager extends BaseManager{
                     cancelable: true
                 });
                 event.detail = {
-                    title: controller.translate('tracking.title',
+                    title: controller.translate(
+                        'tracking.title',
                         product.gtin,
                         product.batchNumber,
-                        controller.translate("tracking.serial", product.serialNumber) || ""),
+                        serialNumberMsg
+                    ), // controller.translate("tracking.serial", product.serialNumber) || ""),
                     startNode: startNode,
                     endNode: endNode,
                     nodeList: nodeList

@@ -48,14 +48,14 @@ function StatusService(domain, strategy){
                     return callback(`Could not parse status in DSU ${keySSI.getIdentifier()}`);
                 }
 
-                console.log('@@ StatusService.get status=', status);
+                // console.log('@@ StatusService.get status=', status);
 
                 dsu.readFile(LOG_PATH, (err, log) => {
                     if (err)
                         return callback(err);
                     try {
                         log = JSON.parse(log);
-                        console.log('@@ StatusService.get log=', log);
+                        // console.log('@@ StatusService.get log=', log);
                     } catch (e){
                         return callback(e);
                     }
