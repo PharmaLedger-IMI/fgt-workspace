@@ -167,7 +167,7 @@ class IssuedShipmentManager extends ShipmentManager {
             try {
                 self2.beginBatch();
             } catch (e){
-                return self2.batchSchedule(() => dbAction.call(self2,);
+                return self2.batchSchedule(() => dbAction.call(self2, gtins, batchesObj,callback));
                 //return callback(e);
             }
 
