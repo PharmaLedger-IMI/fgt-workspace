@@ -108,7 +108,8 @@ class BatchManager extends Manager{
             try {
                 self.beginBatch();
             } catch (e){
-                return callback(e);
+                return self.batchSchedule(() => self._indexItem.call(self, ...props));
+                //return callback(e);
             }
 
             self.insertRecord(dbKey, self._indexItem(gtin, batch, record), (err) => {

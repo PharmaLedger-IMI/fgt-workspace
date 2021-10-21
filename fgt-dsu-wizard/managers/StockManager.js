@@ -216,7 +216,8 @@ class StockManager extends Manager{
         try {
             self.beginBatch();
         } catch (e){
-            return callback(e);
+            return self.batchSchedule(() => self._indexItem.call(self, ...props));
+            //return callback(e);
         }
 
         functionCallIterator(iterator(product).bind(this), batches, (err, ...results) => {

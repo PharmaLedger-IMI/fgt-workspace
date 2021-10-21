@@ -189,7 +189,6 @@ class ShipmentLineManager extends Manager {
             callback(undefined, ...results);
         }
 
-
         const lines = [];
 
         const shipmentLineIterator = function(linesCopy, callback){

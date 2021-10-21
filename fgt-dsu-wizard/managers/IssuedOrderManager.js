@@ -173,7 +173,8 @@ class IssuedOrderManager extends OrderManager {
             try {
                 self.beginBatch();
             } catch (e){
-                return callback(e);
+                return self.batchSchedule(() => self._indexItem.call(self, ...props));
+                //return callback(e);
             }
 
             super.update(key, order, (err) => {
@@ -223,7 +224,8 @@ class IssuedOrderManager extends OrderManager {
             try {
                 self.beginBatch();
             } catch (e){
-                return callback(e);
+                return self.batchSchedule(() => self._indexItem.call(self, ...props));
+                //return callback(e);
             }
 
             super.update(key, order, (err, updatedOrder, dsu) => {
