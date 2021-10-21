@@ -252,7 +252,6 @@ class ShipmentLineManager extends Manager {
             key = this._genCompostKey(shipmentLine.requesterId, shipmentLine.senderId, shipmentLine.gtin, shipmentLine.createdOn);
         }
 
-        //retificar variaveis
         let self = this;
         self.getRecord(key, (err, record) => {
             if (err)
