@@ -149,6 +149,19 @@ const getBatches = function(numOfBatches){
     return batches;
 }
 
+const updateStocks = function(list , callback){
+
+    for(let i = 0; i < list.length; i++){
+
+        list[i].name = utils.generateProductName();
+        list[i].description = 'Description was changed!';
+        list[i].batches.push(getBatch(10));
+    }
+
+    callback(undefined,list);
+
+}
+
 // /*Tests*/
 
 /**
@@ -390,6 +403,8 @@ const testUpdate = function (manager, stock, callback){
     });
 };
 
+
+
 /**
  * @param {StockManager} manager 
  * @param {Array} stockList // represents the item list you want to get
@@ -469,6 +484,73 @@ const testUpdate = function (manager, stock, callback){
     });
 };
 
+/**
+ * @param {StockManager} manager 
+ * @param {Array} stockList
+ * @param {function(err, product, record)} callback
+ */
+
+ const testUpdateAll = function(manager, stockList, callback){
+
+    const run = function(callback){
+        let keys = stockList.map(a => a.gtin);
+
+        updateStocks(stockList, (err, modStocks) => {
+            if(err)
+                callback(err);
+
+            manager.updateAll(keys, modStocks,(err, modifiedStocks) => {
+                if(err)
+                    return callback(err);
+                
+                manager.getAll(true,(err, stocksFromDB) => {
+                    if(err)
+                        return callback(err);
+    
+                    callback(undefined, modifiedStocks, stocksFromDB);
+                })
+            })
+        })
+    };
+
+    const testAll = function(modifiedStocks, stocksFromDB, callback){
+        
+        const testResults = function (){
+            console.log('modded: ',modifiedStocks, 'DB: ', stocksFromDB)
+
+            // assert.true(list.length === results.length);
+            // assert.true(newStocks.length === results.length);
+            // const filteredResults = list.filter((item) => item.gtin <= 55289538478425).sort((a,b) => {
+            // if(a.gtin < b.gtin){
+            //     return -1;
+            // }
+            // if(a.gtin > b.gtin){
+            //     return 1;
+            // }
+            // if(a.gtin === b.gtin){
+            //     return 0;
+            // }
+            // });
+           
+            // testIterator(manager, compareItems ,filteredResults , [], results, (err, results) => {
+            //     if(err)
+            //         return  callback(err);
+
+                callback(undefined, stocksFromDB);
+
+            // })
+            
+        }();
+    };
+
+    run((err, ...args) => {
+        if(err)
+            return callback(err);
+        
+        testAll(...args, callback);
+    });
+}
+
 
 /*Chained Tests*/
 
@@ -522,13 +604,18 @@ const testAllCycle = function(manager, stockList, callback){
         testGetAllWithQueries(manager, createdStockList, (err) => {
             if(err)
                 return callback(err);
+            
+            testUpdateAll(manager, createdStockList, (err, moddedStocksList) => {
+                if(err)
+                    return callback(err);
+                
+                callback(undefined);
 
-            callback(undefined);
+            })
+            
         })
 
     })
-
-
 }
 
 
@@ -567,6 +654,10 @@ const runTest = function(callback){
 
             })   
         })
+
+     
+
+        
 
         
        

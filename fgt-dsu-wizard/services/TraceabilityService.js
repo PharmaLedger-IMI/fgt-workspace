@@ -16,10 +16,11 @@ class Node {
 /**
  * @param {ShipmentLineManager} shipmentLineManager
  * @param {ReceiptManager} receiptManager
+ * @param {string} requesterId
  * @function TraceabilityService
  * @memberOf Services
  */
-function TraceabilityService(shipmentLineManager, receiptManager){
+function TraceabilityService(shipmentLineManager, receiptManager, requesterId){
 
     class IdTracker{
         count = 0;
@@ -117,6 +118,7 @@ function TraceabilityService(shipmentLineManager, receiptManager){
      * @param {function(err?, Node?, Node?)} callback
      */
     this.fromProduct = function(product, callback){
+        console.log('# traceService from PRODUCT', product)
         const {gtin, batchNumber, serialNumber} = product;
         const idTracker = new IdTracker(gtin, batchNumber);
         const productKey = `${gtin}-${batchNumber}-${serialNumber}`;
@@ -135,6 +137,24 @@ function TraceabilityService(shipmentLineManager, receiptManager){
                     return callback(err);
                 callback(undefined, startNode, endNode);
             });
+        });
+    }
+
+    this.fromBatch = function(product, callback){
+        console.log('# traceService from BATCH', product)
+        const {gtin, batchNumber} = product;
+        const idTracker = new IdTracker(gtin, batchNumber);
+
+        const endNode = new Node({
+            id: idTracker.getNext(),
+            title: requesterId,
+            description: 'This is a description'
+        });
+
+        trackFromNode(endNode, idTracker,(err, startNode, endNode) => {
+            if (err)
+                return callback(err);
+            callback(undefined, startNode, endNode);
         });
     }
 

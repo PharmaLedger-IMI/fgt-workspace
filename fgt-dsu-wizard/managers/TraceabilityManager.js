@@ -123,8 +123,9 @@ class TraceabilityManager extends Manager{
 
         switch (message.action){
             case ACTION.REQUEST:
-                return self._trackObj(message.message, (err, startNode, endNode, nodeList) =>
-                        self._replyToMessage(message.id, message.requesterId, startNode, endNode, nodeList, err, self._messageCallback));
+                return self._trackObj(message.requesterId, message.message, (err, startNode, endNode, nodeList) =>
+                    self._replyToMessage(message.id, message.requesterId, startNode, endNode, nodeList, err, self._messageCallback)
+                );
             case ACTION.RESPONSE:
                 let cb;
                 try {
@@ -139,15 +140,22 @@ class TraceabilityManager extends Manager{
         }
     };
 
-    _trackObj(obj, callback){
+    _trackObj(requesterId, obj, callback){
+        if (!callback) { // compatibility
+            callback = obj;
+            obj = requesterId;
+            requesterId = undefined;
+        }
+
         try {
             this.shipmentLineManager = this.shipmentLineManager || this.participantManager.getManager("ShipmentLineManager");
             this.receiptManager = this.receiptManager || this.participantManager.getManager("ReceiptManager");
         } catch (e) {
             return callback(e);
         }
-        const tracker = new TraceabilityService(this.shipmentLineManager, this.receiptManager);
-        tracker.fromProduct(obj, (err, startNode, endNode) => {
+        const tracker = new TraceabilityService(this.shipmentLineManager, this.receiptManager, requesterId);
+        const method = !!obj.serialNumber ? tracker.fromProduct : tracker.fromBatch;
+        method(obj, (err, startNode, endNode) => {
             if (err)
                 return callback(err);
             console.log(`Tracking for product ${obj.gtin}, batch ${obj.batchNumber} and Serial ${obj.serialNumber} complete. Start and end Nodes:`, startNode, endNode);
@@ -218,9 +226,8 @@ class TraceabilityManager extends Manager{
             });
 
         const identity = self.getIdentity();
-
         if (identity.id === obj.manufName)
-            return self._trackObj(obj, callback);
+            return self._trackObj(identity.id, obj, callback);
 
         const message = new TrackMessage({
             id: identity.id + Date.now(),
