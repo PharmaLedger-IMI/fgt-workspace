@@ -77,6 +77,14 @@ class ReceiptManager extends Manager{
         let self = this;
         if (!message || !Array.isArray(message))
             return callback(`Message ${message} does not have  non-empty string with keySSI. Skipping record.`);
+            
+        const cb = function(err, ...results){
+            if (err)
+                return self.cancelBatch(err2 => {
+                    callback(err);
+                });
+            callback(undefined, ...results);
+        }
 
         const receipts = message;
 
@@ -122,12 +130,30 @@ class ReceiptManager extends Manager{
             });
         }
 
-        receiptIterator(receipts.slice(), (err, newIndividualReceipts) => {
-            if (err)
-                return self._err(`Could not register all receipts`, err, callback);
-            console.log(`Receipts successfully registered: ${JSON.stringify(newIndividualReceipts)}`);
-            callback(undefined, newIndividualReceipts);
-        });
+        const dbAction = function(receipts, callback){
+
+            const self2 = this;
+
+            try {
+                self2.beginBatch();
+            } catch (e){
+                return self2.batchSchedule(() => dbAction.call(self2, receipts, callback));
+                //return callback(e);
+            }
+
+            receiptIterator(receipts.slice(), (err, newIndividualReceipts) => {
+                if (err)
+                    return cb(`Could not register all receipts`);
+                self2.commitBatch((err) => {
+                    if(err)
+                        return cb(err);
+                    console.log(`Receipts successfully registered: ${JSON.stringify(newIndividualReceipts)}`);
+                    callback(undefined, newIndividualReceipts);
+                });        
+            });
+        }
+
+        dbAction.call(self, receipts, callback);
     };
 
     /**

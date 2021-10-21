@@ -116,48 +116,55 @@ class SaleManager extends Manager{
                     });
                 }
 
-                const cb = function(err, ...results){
-                    if (err)
-                        return self.cancelBatch(err2 => {
-                            callback(err);
-                        });
-                    callback(undefined, ...results);
-                }
+                const dbAction = function(sale, toBeManaged, callback) {
+                    const self2 = this;
 
-                try {
-                    self.beginBatch();
-                } catch (e){
-                    return self.batchSchedule(() => self._indexItem.call(self, ...props));
-                    //return callback(e);
-                }
-
-                self.batchAllow(self.stockManager);
-
-                productIterator(Object.keys(toBeManaged), [], (err, results) => {
-                    if (err)
-                        return cb(err);
-                    console.log(`Creating sale entry for: ${sale.productList.map(p => `${p.gtin}-${p.batchNumber}-${p.serialNumber}`).join(', ')}`);
-
-
-                    self.splitSalesByMAHAndCreate(sale, (err, SSis) => {
+                    const cb = function(err, ...results){
                         if (err)
-                            return cb(`Could not Crease Sales DSUs`);
-                        self.insertRecord(sale.id, self._indexItem(sale), (err) => {
-                            if (err)
-                                return cb(`Could not insert record with gtin ${sale.id} on table ${self.tableName}`);
+                            return self2.cancelBatch(err2 => {
+                                callback(err);
+                            });
+                        callback(undefined, ...results);
+                    }
 
-                            self.batchDisallow(self.stockManager);
-                            self.commitBatch((err) => {
-                                if(err)
-                                    return cb(err);
-                                const path =`${self.tableName}/${sale.id}`;
-                                console.log(`Sale stored at '${path}'`);
-                                callback(undefined, sale, path);
-                            });  
+                    try {
+                        self2.beginBatch();
+                    } catch (e){
+                        return self2.batchSchedule(() => dbAction.call(self2, sale, toBeManaged,  callback));
+                        //return callback(e);
+                    }
+
+                    self.batchAllow(self2.stockManager);
+
+                    productIterator(Object.keys(toBeManaged), [], (err, results) => {
+                        if (err)
+                            return cb(err);
+                        console.log(`Creating sale entry for: ${sale.productList.map(p => `${p.gtin}-${p.batchNumber}-${p.serialNumber}`).join(', ')}`);
+
+
+                        self2.splitSalesByMAHAndCreate(sale, (err, SSis) => {
+                            if (err)
+                                return cb(`Could not Crease Sales DSUs`);
+                            self2.insertRecord(sale.id, self2._indexItem(sale), (err) => {
+                                self2.batchDisallow(self.stockManager);
+
+                                if (err)
+                                    return cb(`Could not insert record with gtin ${sale.id} on table ${self.tableName}`);
+
+                                self2.commitBatch((err) => {
+                                    if(err)
+                                        return cb(err);
+                                    const path =`${self.tableName}/${sale.id}`;
+                                    console.log(`Sale stored at '${path}'`);
+                                    callback(undefined, sale, path);
+                                });  
                             
+                            });
                         });
                     });
-                });
+                }
+
+                dbAction.call(self, sale, toBeManaged,  callback);
             });
         });
     }
