@@ -232,7 +232,21 @@ class ShipmentLineManager extends Manager {
             shipmentLine = key;
             key = this._genCompostKey(shipmentLine.requesterId, shipmentLine.senderId, shipmentLine.gtin, shipmentLine.createdOn);
         }
-        super.update(key, shipmentLine, callback);
+
+        let self = this;
+        self.getRecord(key, (err, record) => {
+            if (err)
+                return self._err(`Unable to retrieve record with key ${key} from table ${self._getTableName()}`, err, callback);
+            self.shipmentLineService.update(record.value, shipment, (err, updatedShipment, dsu, orderId, linesSSis) => {
+                if (err)
+                    return self._err(`Could not Update Order DSU`, err, callback);
+                self.updateRecord(key, self._indexItem(key, updatedShipment, record.value), (err) => {
+                    if (err)
+                        return self._err(`Unable to update record with key ${key} from table ${self._getTableName()}`, err, callback);
+                    callback(undefined, updatedShipment, record.value, orderId, linesSSis);
+                });
+            });
+        });
     }
 }
 
