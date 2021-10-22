@@ -135,7 +135,7 @@ function OrderService(domain, strategy) {
 
             const cb = function(err, ...results){
                 if (err)
-                    return dsu.cancelBatch(err2 => {
+                    return orderDsu.cancelBatch(err2 => {
                         callback(err);
                     });
                 callback(undefined, ...results);
