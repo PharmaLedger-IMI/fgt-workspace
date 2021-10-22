@@ -22,7 +22,7 @@ const orderStatusUpdater = function(participantManager, order, batches, timeout)
         submitEvent();
         issuedOrderManager.update(order, (err, updatedOrder) => {
             if (err)
-                return callback(err);
+                throw err;
             console.log(`${identity.id} - Order ${updatedOrder.orderId}'s updated to ${updatedOrder.status.status}`);
             submitEvent();
             if (updatedOrder.status.status !== OrderStatus.CONFIRMED)

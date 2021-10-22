@@ -689,7 +689,7 @@
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd blockchain-node && npm install && npm run deploy-blockchain"
+                    "cmd": "cd blockchain-node && npm install && npm run config-blockchain -- --name=traceability && npm run deploy-blockchain"
                 }
             ]
         }
