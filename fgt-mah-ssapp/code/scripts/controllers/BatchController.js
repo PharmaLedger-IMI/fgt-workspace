@@ -20,7 +20,7 @@ export default class BatchController extends LocalizedController {
         super.bindLocale(self, `batch`, false);
         self.model = self.initializeModel();
         const wizard = require('wizard');
-        const {Batch} = wizard.Model;
+        const {Batch, BatchStatus} = wizard.Model;
         self._updateStatuses(Batch);
 
         const participantManager = wizard.Managers.getParticipantManager();
@@ -48,10 +48,17 @@ export default class BatchController extends LocalizedController {
             }
         }, {capture: true});
 
-        self.on(EVENT_ACTION, (evt) => {
+        self.on(EVENT_ACTION, async (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            self._handleCreateBatch.call(self, evt.detail);
+            const {action, props} = evt.detail;
+            switch(action){
+                case BatchStatus.COMMISSIONED:
+                    return self._handleCreateBatch.call(self, props);
+                default:
+                    const {newStatus, batch, popupOptions } = props;
+                    return await self._handleUpdateBatchStatus.call(self, batch, newStatus, popupOptions);
+            }
         });
 
         console.log("BatchController initialized");
@@ -71,6 +78,40 @@ export default class BatchController extends LocalizedController {
             accum[state].paths = clazz.getAllowedStatusUpdates(state);
             return accum;
         }, obj);
+    }
+
+    async _handleUpdateBatchStatus(batch, newStatus, popupOptions){
+        const self = this;
+
+        const oldStatus = batch.batchStatus.status;
+        batch.batchStatus.status = newStatus;
+        const errors = batch.validate(oldStatus);
+        if (errors)
+            return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
+
+        const popupCallback = (evt) => batch.batchStatus.extraInfo = evt.extraInfo;
+        const alert = await self._showPopup('manage.confirm', popupOptions, popupCallback, oldStatus, newStatus);
+
+        const {role} = await alert.onDidDismiss();
+
+        if (BUTTON_ROLES.CONFIRM !== role)
+            return console.log(`Batch update canceled by clicking ${role}`);
+
+        const loader = self._getLoader(self.translate('manage.loading'));
+        await loader.present();
+
+        const sendError = async function(msg){
+            await loader.dismiss();
+            self.showErrorToast(msg);
+        }
+
+        self.batchManager.update(batch, async (err, updatedBatch) => {
+            if (err)
+                return sendError(self.translate('manage.error.error'));
+            self.showToast(self.translate('manage.success'));
+            self.batchEl.refresh()
+            await loader.dismiss();
+        });
     }
 
     /**
