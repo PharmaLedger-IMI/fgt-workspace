@@ -36,6 +36,19 @@ function BatchService(domain, strategy){
         return callback();
     }
 
+    let createBatchStatus = function (id, status, callback) {
+        if (typeof status === 'function') {
+            callback = status;
+            status = BatchStatus.COMISSIONED;
+        }
+        statusService.create(status, id, (err, keySSI) => {
+            if (err)
+                return callback(err);
+            console.log(`BatchStatus DSU created with SSI ${keySSI.getIdentifier(true)}`);
+            callback(undefined, keySSI);
+        });
+    }
+
     /**
      * Resolves the DSU and loads the Batch object with all its properties, mutable or not
      * @param {KeySSI} keySSI
@@ -55,7 +68,20 @@ function BatchService(domain, strategy){
                 } catch (e) {
                     return callback(`unable to parse Batch: ${data}`);
                 }
-                callback(undefined, batch, dsu);
+
+                utils.getMounts(dsu, '/', STATUS_MOUNT_PATH, (err, mounts) => {
+                    if(err)
+                        return callback(err);
+                    
+                    statusService.get(mounts[STATUS_MOUNT_PATH], (err, status) => {
+                        if(err)
+                            return callback(err);
+
+                        batch.batchStatus = status;    
+
+                        callback(undefined, batch, dsu);
+                    });
+                });
             });
         });
     }
@@ -94,10 +120,21 @@ function BatchService(domain, strategy){
                 dsu.writeFile(INFO_PATH, data, (err) => {
                     if (err)
                         return cb(err);
-                    dsu.commitBatch((err) => {
+
+                    createBatchStatus(batch.status, (err, statusSSI) =>{
                         if(err)
                             return cb(err);
-                        dsu.getKeySSIAsObject(callback);
+                        
+                        dsu.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(true), (err) => {
+                            if(err)
+                                return cb(err);
+                            
+                            dsu.commitBatch((err) => {
+                                if(err)
+                                    return cb(err);
+                                dsu.getKeySSIAsObject(callback);
+                            });
+                        });
                     });
                 });
             });
