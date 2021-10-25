@@ -16,8 +16,8 @@ const defaultOps = {
     exportCredentials: false,                   // export credentials for use in the Api-hubs front page
     attachLogic: false,                         // attaches listeners to the proper managers to replicate business logic
     logicMode: "simple",                        // Accepts 'simple' - pharmacy makes an order, wholesalers try to ship/ place an order, mah fulfills, etc... or 'complex' where pharmacies keep issuing orders and performing sales up to a point
-    statusUpdateTimeout: 10000,                  // When attachLogic is true, sets the timeout between status updates
-    timeoutMultiplier: 10                       // If attach logic is true, will wait x times the status update timeout until it ends the process
+    statusUpdateTimeout: 15000,                  // When attachLogic is true, sets the timeout between status updates
+    timeoutMultiplier: 20                       // If attach logic is true, will wait x times the status update timeout until it ends the process
 }
 
 const conf = argParser(defaultOps, process.argv);

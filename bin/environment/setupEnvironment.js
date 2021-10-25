@@ -40,7 +40,7 @@ const getProd = () => {
     return MULTIPLE;
 }
 
-getFakeTest = () => {
+const getFakeTest = () => {
     const SINGLE = {}
     SINGLE[APPS.MAH] = [getCredentials(APPS.MAH, undefined, true), getCredentials(APPS.MAH, undefined, true)];
     SINGLE[APPS.WHOLESALER] = [getCredentials(APPS.WHOLESALER)];
