@@ -42,6 +42,15 @@ export class ManagedBatchListItem {
   })
   sendNavigateTab: EventEmitter;
 
+  @Event({
+    eventName: 'fgt-request-stock-trace',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  requestStockTrace: EventEmitter;
+
+
   private sendError(message: string, err?: object){
     const event = this.sendErrorEvent.emit(message);
     if (!event.defaultPrevented || err)
@@ -188,7 +197,13 @@ export class ManagedBatchListItem {
       getButton("buttons", "medium", "eye", () => self.navigateToTab('tab-batch', {
         gtin: self.getGtinAndBatchNumber().gtin,
         batchNumber: self.getGtinAndBatchNumber().batchNumber
-      }))
+      })),
+      getButton("buttons", "medium", "analytics-outline", () => {
+        self.requestStockTrace.emit({
+          gtin: self.getGtinAndBatchNumber().gtin,
+          batch: self.getGtinAndBatchNumber().batchNumber,
+        })
+      })
     ]
   }
 

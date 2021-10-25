@@ -84,7 +84,8 @@ const EVENTS = {
     TRACK: {
         REQUEST: 'fgt-track-request',
         RESPONSE: 'fgt-track-response'
-    }
+    },
+    STOCK_TRACE: 'fgt-request-stock-trace'
 }
 
 module.exports = {

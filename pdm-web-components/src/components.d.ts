@@ -896,6 +896,7 @@ declare namespace LocalJSX {
     }
     interface ManagedBatchListItem {
         "gtinBatch"?: string;
+        "onFgt-request-stock-trace"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event navigation requests to tabs are made
          */

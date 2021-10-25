@@ -4,6 +4,7 @@ const {functionCallIterator} = require('../services').utils;
 const Stock = require('../model/Stock');
 const Batch = require('../model/Batch');
 const StockStatus = require('../model/StockStatus');
+const StockManagementService = require("../services/StockManagementService");
 
 /**
  * Stock Manager Class
@@ -32,6 +33,7 @@ class StockManager extends Manager{
         this.aggregation = callback ? aggregation : false;
         this.productService = undefined;
         this.batchService = undefined;
+        this.participantManager = participantManager;
     }
 
     _getProduct(gtin, callback){
@@ -334,6 +336,40 @@ class StockManager extends Manager{
                 return callback(undefined, records.map(r => r.pk));
             callback(undefined, records.map(r => new Stock(r)));
         });
+    }
+
+    /**
+     * Get partner stock products that were shipped by MAH/manufName
+     * @param { string } manufName
+     * @param { string } gtin
+     * @param { string } batch
+     * @param callback
+     */
+    getStockTraceability(manufName, gtin, batch, callback) {
+        let self = this;
+
+        if (!manufName) {
+            return self._getProduct(gtin, (err, product) => {
+                if (err)
+                    return callback(err);
+                self.getStockTraceability(product.manufName, gtin, batch, callback);
+            });
+        }
+
+        const identity = self.getIdentity();
+        if (identity.id !== manufName) {
+            return callback('Stock Traceability is only available for Marketing Authorization Holder')
+        }
+
+        try {
+            this.stockManager = this.stockManager || this.participantManager.getManager("StockManager");
+            this.shipmentLineManager = this.shipmentLineManager || this.participantManager.getManager("ShipmentLineManager");
+            this.receiptManager = this.receiptManager || this.participantManager.getManager("ReceiptManager");
+        } catch (e) {
+            return callback(e);
+        }
+        const stockManagementService = new StockManagementService(manufName, this.stockManager, this.shipmentLineManager, this.receiptManager);
+        stockManagementService.traceStockManagement(gtin, batch, callback)
     }
 
     toModel(filteredStock, model){
