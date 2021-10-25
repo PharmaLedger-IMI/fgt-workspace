@@ -118,7 +118,6 @@ function TraceabilityService(shipmentLineManager, receiptManager, requesterId){
      * @param {function(err?, Node?, Node?)} callback
      */
     this.fromProduct = function(product, callback){
-        console.log('# traceService from PRODUCT', product)
         const {gtin, batchNumber, serialNumber} = product;
         const idTracker = new IdTracker(gtin, batchNumber);
         const productKey = `${gtin}-${batchNumber}-${serialNumber}`;
@@ -141,7 +140,6 @@ function TraceabilityService(shipmentLineManager, receiptManager, requesterId){
     }
 
     this.fromBatch = function(product, callback){
-        console.log('# traceService from BATCH', product)
         const {gtin, batchNumber} = product;
         const idTracker = new IdTracker(gtin, batchNumber);
 
