@@ -106,6 +106,7 @@ export namespace Components {
         "reset": () => Promise<void>;
         "serialsPlaceholderString": string;
         "serialsString": string;
+        "statuses": any;
         "titleString": string;
     }
     interface ManagedBatchListItem {
@@ -427,6 +428,7 @@ export namespace Components {
     interface SlideInBoard {
     }
     interface StatusBadge {
+        "status": string;
     }
     interface StatusUpdater {
         "currentState": string;
@@ -889,6 +891,7 @@ declare namespace LocalJSX {
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "serialsPlaceholderString"?: string;
         "serialsString"?: string;
+        "statuses"?: any;
         "titleString"?: string;
     }
     interface ManagedBatchListItem {
@@ -1347,6 +1350,7 @@ declare namespace LocalJSX {
     interface SlideInBoard {
     }
     interface StatusBadge {
+        "status"?: string;
     }
     interface StatusUpdater {
         "currentState"?: string;

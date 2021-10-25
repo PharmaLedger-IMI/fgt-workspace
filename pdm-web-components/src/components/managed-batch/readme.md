@@ -19,6 +19,7 @@
 | `manageString`             | `manage-title-string`        |             | `string` | `"Manage Batch"`                                    |
 | `serialsPlaceholderString` | `serials-placeholder-string` |             | `string` | `"Please insert comma separated serial numbers..."` |
 | `serialsString`            | `serials-string`             |             | `string` | `"Serial Numbers:"`                                 |
+| `statuses`                 | `statuses`                   |             | `any`    | `undefined`                                         |
 | `titleString`              | `create-title-string`        |             | `string` | `"Create Batch for"`                                |
 
 
@@ -60,14 +61,17 @@ Type: `Promise<void>`
 ### Depends on
 
 - [pdm-item-organizer](../pdm-item-organizer)
+- [status-updater](../status-updater)
 - [create-manage-view-layout](../create-manage-view-layout)
 
 ### Graph
 ```mermaid
 graph TD;
   managed-batch --> pdm-item-organizer
+  managed-batch --> status-updater
   managed-batch --> create-manage-view-layout
   pdm-item-organizer --> more-chip
+  status-updater --> status-updater-button
   style managed-batch fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

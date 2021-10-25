@@ -80,6 +80,8 @@ export class ManagedBatch implements CreateManageView{
 
   @Prop({attribute: "gtin-ref", mutable: true, reflect: true}) gtinRef?: string = undefined;
 
+  @Prop({attribute: 'statuses', mutable: true, reflect: true}) statuses: any;
+
   // strings
   @Prop({attribute: "create-title-string"}) titleString: string = "Create Batch for"
   @Prop({attribute: "manage-title-string"}) manageString: string = "Manage Batch"
@@ -288,7 +290,16 @@ export class ManagedBatch implements CreateManageView{
   getManage() {
     if (this.isCreate())
       return
-    return this.getSerials();
+    return (
+      <ion-row>
+        <ion-col size="12" size-lg="5">
+          {this.getSerials()}
+        </ion-col>
+        <ion-col size="12" size-lg="7">
+          <status-updater current-state={this.batch.status.status} states-json={JSON.stringify(this.statuses)}></status-updater>
+        </ion-col>
+      </ion-row>
+    );
   }
 
   getPostCreate() {
