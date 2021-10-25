@@ -1,7 +1,6 @@
 const Utils = require("../../pdm-dsu-toolkit/model/Utils");
 const BatchStatus = require('./BatchStatus');
 const IndividualProduct = require('./IndividualProduct');
-const OrderStatus = require("./OrderStatus");
 
 /**
  * @prop {string} batchNumber

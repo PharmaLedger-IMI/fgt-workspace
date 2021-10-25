@@ -39,7 +39,12 @@ class ParticipantManager extends BaseManager{
                         if (err)
                             return callback(err);
                         manager.traceabilityManager = traceabilityManager;
-                        callback(undefined, manager);
+                        require('./NotificationManager')(this, (err, notificationManager) => {
+                            if (err)
+                                return callback(err);
+                            manager.notificationManager = notificationManager;
+                            callback(undefined, manager);
+                        });
                     });
                 });
             });
@@ -47,6 +52,7 @@ class ParticipantManager extends BaseManager{
         this.directoryManager = this.directoryManager || undefined;
         this.stockManager = this.stockManager || undefined;
         this.traceabilityManager = this.traceabilityManager || undefined;
+        this.notificationManager = this.notificationManager || undefined;
     };
 
     setController(controller) {

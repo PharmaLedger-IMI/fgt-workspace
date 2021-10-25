@@ -1,6 +1,6 @@
-const {ANCHORING_DOMAIN, DB} = require('../constants');
+const {DB} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
-const Batch = require('../model').Batch;
+const {Notification, Batch, Stock} = require('../model');
 const getStockManager = require('./StockManager');
 
 /**
@@ -25,28 +25,33 @@ const getStockManager = require('./StockManager');
  */
 class NotificationManager extends Manager{
     constructor(participantManager, callback) {
-        super(participantManager, DB.notifications, ['gtin', 'batchNumber', 'expiry'], (err, manager) => {
+        super(participantManager, DB.notifications, ['senderId', 'subject'], (err, manager) => {
             if (err)
-                if (callback)
-                    return callback(err);
-                else
-                    throw err;
+                return callback ? callback(err) : console.log(err);
+            manager.registerMessageListener((message, cb) => {
+                manager.processMessageRecord(message, (err) => {
+                    manager.refreshController();
+                    cb(err);
+                });
+            });
 
-                manager.stockManager = manager.stockManager || getStockManager(participantManager);
+            manager.stockManager = manager.stockManager || getStockManager(participantManager);
 
+            if (callback)
+                callback(undefined, manager);
         });
         this.stockManager = this.stockManager || getStockManager(participantManager);
     }
 
     /**
      * generates the db's key for the batch
-     * @param {string|number} gtin
-     * @param {string|number} batchNumber
+     * @param {string} senderId
+     * @param {string} subject
      * @return {string}
      * @private
      */
-    _genCompostKey(gtin, batchNumber){
-        return `${gtin}-${batchNumber}`;
+    _genCompostKey(senderId, subject){
+        return `${senderId}-${subject}-${Date.now()}`;
     }
 
     /**
@@ -60,7 +65,7 @@ class NotificationManager extends Manager{
      * </pre>
      * so the DB can be queried by each of the indexes and still allow for lazy loading
      * @param {string} key
-     * @param {Batch} item
+     * @param {Notification} item
      * @param {string|object} record
      * @return {object} the indexed object to be stored in the db
      * @protected
@@ -68,92 +73,121 @@ class NotificationManager extends Manager{
      */
     _indexItem(key, item, record){
         return {
-            gtin: key,
-            batchNumber: item.batchNumber,
-            expiry: item.expiry,
-            value: record
+            senderId: item.senderId,
+            subject: item.subject,
+            body: item.body
         }
     };
 
     /**
-     * Util function that loads a BatchDSU and reads its information
-     * @param {string|KeySSI} keySSI
-     * @param {function(err, Batch, Archive)} callback
+     * Processes the received messages, saves them to the the table and deletes the message
+     * @param {*} message
+     * @param {function(err)} callback
      * @protected
      * @override
      */
-    _getDSUInfo(keySSI, callback){
-        return this.batchService.get(keySSI, callback);
+    _processMessageRecord(message, callback) {
+        let self = this;
+        if (!message || typeof message !== object)
+            return callback(`Invalid Message:  ${message} does not have a valid notification`);
+
+        const notification = new Notification(message);
+        const err = notification.validate()
+        if (err)
+            return callback(err);
+
+        const key = self._genCompostKey(notification.senderId, notification.subject);
+        self.insertRecord(key, self._indexItem(key, notification), (err, record) => {
+            if (err)
+                return callback(err);
+            self._handleNotification(notification, (err) => {
+                if (err)
+                    console.log(`Could not process notification`, err);
+                callback(undefined);
+            })
+        });
+    };
+
+    _handleBatch(body, callback){
+        const {gtin, batch} = body;
+        const err = batch.validate();
+        if (err)
+            return callback(err);
+
+        const {batchNumber, status, expiry} = batch;
+
+        const self = this;
+        self.stockManager.getAll({
+            query: [`gtin == ${gtin}`]
+        }, (err, stock) => {
+            if (err)
+                return callback(err);
+            const batch = stock.batches.find(b => b.batchNumber === batchNumber);
+            if (!batch)
+                return callback(`No stock of such batch... why were we notified of this??`);
+
+            if (batch.expiry !== expiry){
+                console.log(`Updating batch expiry to ${expiry}`);
+                batch.expiry = expiry;
+            }
+
+            if (batch.status !== status){
+                console.log(`Updating batch status to ${expiry}`);
+                batch.status = status;
+            }
+            self.stockManager.update(gtin, stock, callback);
+        });
+    }
+
+    _handleNotification(notification, callback){
+        switch (notification.subject){
+            case "batch":
+                return this._handleBatch(notification.body, callback);
+            default:
+                return callback(`Cannot handle such notification - ${notification}`);
+        }
     }
 
     /**
-     * Creates a {@link Batch} dsu
-     * @param {Product} product
-     * @param {Batch} batch
+     * Creates a {@link Notification}
+     * @param {Notification} notification
      * @param {function(err, keySSI, string)} callback first keySSI if for the batch, the second for its' product dsu
      * @override
      */
-    create(product, batch, callback) {
-        callback()
-    }
+    create(notification, callback) {
+        callback(`Notification cannot be created`);    }
 
     /**
-     * reads the specific Batch information from a given gtin (if exists and is registered to the mah)
+     * reads the specific Notification
      *
-     * @param {string|number} gtin
-     * @param {string|number} batchNumber
+     * @param {string} key
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
-     * @param {function(err, Batch|KeySSI, Archive)} callback returns the batch if readDSU, the keySSI otherwise
+     * @param {function(err, Notification|KeySSI, Archive)} callback returns the batch if readDSU, the keySSI otherwise
      * @override
      */
-    getOne(gtin, batchNumber, readDSU, callback){
-        let key;
-        if (!callback){
-            if (typeof batchNumber === 'boolean'){
-                key = gtin;
-                callback = readDSU;
-                readDSU = batchNumber;
-            } else {
-                callback = readDSU;
-                readDSU = true;
-                key = this._genCompostKey(gtin, batchNumber)
-            }
-        } else {
-            key = this._genCompostKey(gtin, batchNumber);
-        }
+    getOne(key, readDSU, callback){
         super.getOne(key, readDSU, callback);
     }
 
     /**
-     * Removes a product from the list (does not delete/invalidate DSU, simply 'forgets' the reference)
-     * @param {string|number} gtin
-     * @param {string|number} batchNumber
+     * Removes a Notification from the list (does not delete/invalidate DSU, simply 'forgets' the reference)
+     * @param {string|number} key
      * @param {function(err)} callback
      * @override
      */
-    remove(gtin, batchNumber, callback) {
-        super.remove(this._genCompostKey(gtin, batchNumber), callback);
-    }
-
-    /**
-     *
-     * @param model
-     * @returns {Batch}
-     * @override
-     */
-    fromModel(model){
-        return new Batch(super.fromModel(model));
+    remove(key, callback) {
+        super.remove(key, callback);
     }
 
     /**
      * updates a Batch from the list
      * @param {string|number} gtin
-     * @param {Batch} newBatch
+     * @param {Notification} newBatch
      * @param {function(err, Batch, Archive)} callback
      * @override
      */
     update(gtin, newBatch, callback){
-        return callback(`Batch DSUs cannot be updated`);
+        return callback(`Notification cannot be updated`);
     }
 
     /**

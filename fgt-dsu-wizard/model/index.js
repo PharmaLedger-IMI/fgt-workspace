@@ -29,5 +29,6 @@ module.exports = {
     TrackingCode: require('./TrackingCode'),
     IndividualProduct: require('./IndividualProduct'),
     IndividualProductStatus: require('./IndividualProductStatus'),
+    Notification: require('./Notification'),
     utils: require('./utils')
 }

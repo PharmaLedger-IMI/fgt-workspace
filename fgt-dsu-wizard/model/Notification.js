@@ -1,11 +1,13 @@
 
 /**
+ * @prop {string} senderId
  * @prop {string} subject
  * @prop {{}} body
  * @class Notification
  * @memberOf Model
  */
 class Notification {
+    senderId;
     subject;
     body;
 
@@ -21,6 +23,9 @@ class Notification {
     }
 
     validate() {
+        if (!this.senderId) {
+            return 'sender Id is mandatory';
+        }
         if (!this.subject) {
             return 'subject is mandatory field';
         }
