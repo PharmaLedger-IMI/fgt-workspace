@@ -1,6 +1,7 @@
 const Utils = require("../../pdm-dsu-toolkit/model/Utils");
 const BatchStatus = require('./BatchStatus');
 const IndividualProduct = require('./IndividualProduct');
+const OrderStatus = require("./OrderStatus");
 
 /**
  * @prop {string} batchNumber
@@ -102,6 +103,17 @@ class Batch {
 
     addSerialNumbers(serials){
         throw new Error("Not implemented");
+    }
+
+    static getAllowedStatusUpdates(status){
+        switch(status){
+            case BatchStatus.COMMISSIONED:
+                return [BatchStatus.QUARANTINED, BatchStatus.RECALL];
+            case BatchStatus.QUARANTINED:
+                return [BatchStatus.COMMISSIONED, BatchStatus.RECALL];
+            default:
+                return [];
+        }
     }
 }
 
