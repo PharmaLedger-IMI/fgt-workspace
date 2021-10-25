@@ -220,7 +220,7 @@ class StockManager extends Manager{
             try {
                 self.beginBatch();
             } catch (e){
-                return self.batchSchedule(() => dbAction(dbKey, record, gtin, batch, product, callback));
+                return self.batchSchedule(() => dbAction(product, batches, callback));
                 //return callback(e);
             }
 
