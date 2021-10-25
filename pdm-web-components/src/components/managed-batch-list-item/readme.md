@@ -14,10 +14,11 @@
 
 ## Events
 
-| Event                | Description                                             | Type               |
-| -------------------- | ------------------------------------------------------- | ------------------ |
-| `ssapp-navigate-tab` | Through this event navigation requests to tabs are made | `CustomEvent<any>` |
-| `ssapp-send-error`   | Through this event errors are passed                    | `CustomEvent<any>` |
+| Event                     | Description                                             | Type               |
+| ------------------------- | ------------------------------------------------------- | ------------------ |
+| `fgt-request-stock-trace` |                                                         | `CustomEvent<any>` |
+| `ssapp-navigate-tab`      | Through this event navigation requests to tabs are made | `CustomEvent<any>` |
+| `ssapp-send-error`        | Through this event errors are passed                    | `CustomEvent<any>` |
 
 
 ## Methods
