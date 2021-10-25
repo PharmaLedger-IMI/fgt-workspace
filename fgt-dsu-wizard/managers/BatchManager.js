@@ -202,7 +202,24 @@ class BatchManager extends Manager{
      * @override
      */
     update(gtin, newBatch, callback){
-        return callback(`Batch DSUs cannot be updated`);
+        if (!callback)
+            return callback(`No gtin Provided...`);
+
+        const self = this;
+        const key = this._genCompostKey(gtin, newBatch.batchNumber);
+        self.getRecord(key, (err, record) => {
+            if (err)
+                return self._err(`Unable to retrieve record with key ${key} from table ${self._getTableName()}`, err, callback);
+            self.batchService.update(record.value, newBatch, (err, updatedBatch, batchDsu) => {
+                if (err)
+                    return self._err(`Could not Update Batch DSU`, err, callback);
+                self.updateRecord(key, self._indexItem(gtin, updatedBatch, record.value), (err) => {
+                    if (err)
+                        return callback(err);
+                    callback(undefined, updatedBatch, batchDsu);
+                });
+            });
+        });
     }
 
     /**

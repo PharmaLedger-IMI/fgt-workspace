@@ -128,9 +128,17 @@ export class ManagedBatchListItem {
       return self.batch.expiry.toLocaleDateString();
     }
 
+    const getStatusBadge = function(){
+      if (self.batch && self.batch.batchStatus)
+        return (
+          <status-badge slot="badges" status={self.batch.batchStatus.status}></status-badge>
+        )
+    }
+
     return(
       <ion-label slot="label" color="secondary">
         {getBatchNumberLabel()}
+        {getStatusBadge()}
         <span class="ion-padding-start">{getExpiryLabel()}</span>
       </ion-label>)
   }

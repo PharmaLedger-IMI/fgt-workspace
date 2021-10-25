@@ -34,12 +34,14 @@
 
 - [multi-spinner](../multi-spinner)
 - [generic-chip](../generic-chip)
+- [status-badge](../status-badge)
 
 ### Graph
 ```mermaid
 graph TD;
   batch-chip --> multi-spinner
   batch-chip --> generic-chip
+  batch-chip --> status-badge
   line-stock-manager --> batch-chip
   style batch-chip fill:#f9f,stroke:#333,stroke-width:4px
 ```

@@ -33,6 +33,8 @@ function BatchService(domain, strategy){
     const validateUpdate = function(batchFromSSI, updatedBatch, callback){
         if (!utils.isEqual(batchFromSSI, updatedBatch, "batchStatus"))
             return callback('invalid update');
+        if (Batch.getAllowedStatusUpdates(batchFromSSI.batchStatus.status).indexOf(updatedBatch.batchStatus.status) === -1)
+            return callback(`Status update is not valid`);
         return callback();
     }
 

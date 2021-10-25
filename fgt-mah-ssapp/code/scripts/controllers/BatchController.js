@@ -19,8 +19,10 @@ export default class BatchController extends LocalizedController {
         let self = this;
         super.bindLocale(self, `batch`, false);
         self.model = self.initializeModel();
-
         const wizard = require('wizard');
+        const {Batch} = wizard.Model;
+        self._updateStatuses(Batch);
+
         const participantManager = wizard.Managers.getParticipantManager();
         this.batchManager = wizard.Managers.getBatchManager(participantManager);
         this.productmanager = wizard.Managers.getProductManager(participantManager);
@@ -59,6 +61,16 @@ export default class BatchController extends LocalizedController {
         if (!this.model.gtinBatch)
             throw new Error(`No gtin present. Should not happen`);
         return this.model.gtinBatch.split('-')[0];
+    }
+
+    _updateStatuses(clazz){
+        if (!clazz.getAllowedStatusUpdates)
+            throw new Error("Invalid Class provided")
+        const obj = this.model.toObject().statuses;
+        this.model.statuses = Object.keys(obj).reduce((accum, state) => {
+            accum[state].paths = clazz.getAllowedStatusUpdates(state);
+            return accum;
+        }, obj);
     }
 
     /**

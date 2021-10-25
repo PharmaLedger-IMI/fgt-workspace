@@ -107,6 +107,13 @@ export class BatchChip {
     )
   }
 
+  private renderStatus(){
+    if (this.batch && this.batch.batchStatus)
+      return (
+        <status-badge slot="badges" status={this.batch.batchStatus.status}></status-badge>
+      )
+  }
+
   private triggerSelect(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
@@ -121,6 +128,7 @@ export class BatchChip {
                       onSelectEvent={self.triggerSelect.bind(self)}>
           {self.renderExpiryInfo()}
           {self.renderQuantity()}
+          {self.renderStatus()}
         </generic-chip>
       </Host>
     )

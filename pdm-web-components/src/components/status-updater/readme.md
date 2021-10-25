@@ -27,6 +27,7 @@
 
 ### Used by
 
+ - [managed-batch](../managed-batch)
  - [managed-individual-product](../managed-individual-product)
  - [managed-order](../managed-order)
  - [managed-shipment](../managed-shipment)
@@ -39,6 +40,7 @@
 ```mermaid
 graph TD;
   status-updater --> status-updater-button
+  managed-batch --> status-updater
   managed-individual-product --> status-updater
   managed-order --> status-updater
   managed-shipment --> status-updater
