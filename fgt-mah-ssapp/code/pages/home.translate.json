@@ -193,6 +193,26 @@
       "title": "Manage Batch"
     },
     "back": "Back to {0}",
+    "statuses": {
+      "commissioned": {
+        "action": "Create Batch",
+        "label": "Commissioned",
+        "color": "success",
+        "paths": []
+      },
+      "quarantined": {
+        "action": "Quarantine Batch",
+        "label": "Quarantined",
+        "color": "warning",
+        "paths": []
+      },
+      "recall": {
+        "action": "Recall Batch",
+        "label": "Recalled",
+        "color": "danger",
+        "paths": []
+      }
+    },
     "error": {
       "bind": "Could not bind Product to Batch",
       "invalid": "Invalid Batch:\n",

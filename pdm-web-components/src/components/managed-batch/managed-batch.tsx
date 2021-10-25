@@ -290,13 +290,20 @@ export class ManagedBatch implements CreateManageView{
   getManage() {
     if (this.isCreate())
       return
+    const self = this;
+    const getStatus = function(){
+      if (self.batch && self.batch.batchStatus)
+        return (<status-updater current-state={self.batch.batchStatus.status} state-json={JSON.stringify(self.statuses)}></status-updater>);
+      return (<multi-spinner></multi-spinner>);
+    }
+
     return (
       <ion-row>
         <ion-col size="12" size-lg="5">
           {this.getSerials()}
         </ion-col>
         <ion-col size="12" size-lg="7">
-          <status-updater current-state={this.batch.status.status} states-json={JSON.stringify(this.statuses)}></status-updater>
+          {getStatus()}
         </ion-col>
       </ion-row>
     );

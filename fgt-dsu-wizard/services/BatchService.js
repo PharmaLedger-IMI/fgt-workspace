@@ -126,7 +126,7 @@ function BatchService(domain, strategy){
                         if(err)
                             return callback(err);                        
 
-                        createBatchStatus(product.manufName, batch.status, (err, statusSSI) =>{
+                        createBatchStatus(product.manufName, batch.batchStatus, (err, statusSSI) =>{
                             if(err)
                                 return cb(err);
                             
@@ -141,7 +141,7 @@ function BatchService(domain, strategy){
                                 });
                             });
                         });
-                    })
+                    });
                 });
             });
         } else {
