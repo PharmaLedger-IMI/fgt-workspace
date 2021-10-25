@@ -1,6 +1,7 @@
 const utils = require('../../pdm-dsu-toolkit/services/utils');
 const {STATUS_MOUNT_PATH, INFO_PATH} = require('../constants');
 
+
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
@@ -14,6 +15,7 @@ function BatchService(domain, strategy){
     const keyGenFunction = require('../commands/setBatchSSI').createBatchSSI;
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
+    const statusService = new (require('./StatusService'))(domain, strategy);
 
     this.generateKey = function(gtin, batchNumber){
         let keyGenData = {
@@ -26,6 +28,12 @@ function BatchService(domain, strategy){
     this.getDeterministic = function(gtin, batchNumber, callback){
         const key = this.generateKey(gtin, batchNumber);
         this.get(key, callback);
+    }
+    
+    const validateUpdate = function(batchFromSSI, updatedBatch, callback){
+        if (!utils.isEqual(batchFromSSI, updatedBatch, "batchStatus"))
+            return callback('invalid update');
+        return callback();
     }
 
     /**
@@ -47,7 +55,7 @@ function BatchService(domain, strategy){
                 } catch (e) {
                     return callback(`unable to parse Batch: ${data}`);
                 }
-                callback(undefined, batch);
+                callback(undefined, batch, dsu);
             });
         });
     }
@@ -114,11 +122,62 @@ function BatchService(domain, strategy){
     /**
      * updates a product DSU
      * @param {KeySSI} keySSI
-     * @param {Batch} product
+     * @param {Batch} batch
      * @param {function(err?)} callback
      */
-    this.update = function (keySSI, product, callback) {
-        return callback(`Product DSUs cannot be updated`);
+    this.update = function (keySSI, batch, callback) {
+        // if batch is invalid, abort immediatly.
+        const self = this;
+
+        if(typeof batch === 'object') {
+            let err = batch.validate();
+            if(err)
+                return callback(err);
+        }
+
+        self.get(keySSI, (err, batchFromSSI, batchDsu) => {
+            if(err)
+                return callback(err);
+
+            const cb = function(err, ...results){
+                if(err)
+                    return batchDsu.cancelBatch(err2 => {
+                        callback(err);
+                    })
+                callback(undefined, ...results);
+            }
+
+            try {
+                batchDsu.beginBatch();
+            } catch (e){
+                return callback(e);
+            }
+
+            validateUpdate(batchFromSSI, batch, (err) =>{
+                if(err)
+                    return cb(err);
+                
+                utils.getMounts(batchDsu, '/', STATUS_MOUNT_PATH, (err, mounts) => {
+                    if(err)
+                        return cb(err);
+                    
+                    if(!mounts[STATUS_MOUNT_PATH])
+                        return cb(`Missing mount path ${STATUS_MOUNT_PATH}`);
+
+                    statusService.update(mounts[STATUS_MOUNT_PATH], batch.batchStatus, (err) => {
+                        if(err)
+                            return cb(err);
+
+                        batchDsu.commitBatch((err) => {
+                            if(err)
+                                return cb(err);
+                            
+                            self.get(keySSI, callback);
+                        })
+                    })      
+                })
+            })
+        })
     }
 }
 
