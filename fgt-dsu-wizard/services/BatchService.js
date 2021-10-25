@@ -1,7 +1,6 @@
 const utils = require('../../pdm-dsu-toolkit/services/utils');
 const {STATUS_MOUNT_PATH, INFO_PATH} = require('../constants');
 
-
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
@@ -16,6 +15,7 @@ function BatchService(domain, strategy){
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
     const statusService = new (require('./StatusService'))(domain, strategy);
+    const productService = new ( require('./ProductService'))(domain, strategy);
 
     this.generateKey = function(gtin, batchNumber){
         let keyGenData = {
@@ -123,22 +123,27 @@ function BatchService(domain, strategy){
                 dsu.writeFile(INFO_PATH, data, (err) => {
                     if (err)
                         return cb(err);
-
-                    createBatchStatus(gtin, batch.status, (err, statusSSI) =>{
+                    
+                    productService.getDeterministic(gtin, (err, produc) => {
                         if(err)
-                            return cb(err);
-                        
-                        dsu.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(true), (err) => {
+                            return callback(err);                        
+
+                        createBatchStatus(product.manufName, batch.status, (err, statusSSI) =>{
                             if(err)
                                 return cb(err);
                             
-                            dsu.commitBatch((err) => {
+                            dsu.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(true), (err) => {
                                 if(err)
                                     return cb(err);
-                                dsu.getKeySSIAsObject(callback);
+                                    
+                                dsu.commitBatch((err) => {
+                                    if(err)
+                                        return cb(err);
+                                    dsu.getKeySSIAsObject(callback);
+                                });
                             });
                         });
-                    });
+                    })
                 });
             });
         } else {
