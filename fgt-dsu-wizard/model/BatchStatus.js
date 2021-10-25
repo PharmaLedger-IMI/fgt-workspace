@@ -4,6 +4,7 @@
  */
 const BatchStatus = {
     COMMISSIONED: "commissioned",
+    QUARANTINED: 'quarantined',
     RECALL: "recall"
 }
 

@@ -25,8 +25,17 @@ const getStockManager = require('./StockManager');
  */
 class NotificationManager extends Manager{
     constructor(participantManager, callback) {
-        super(participantManager, DB.notifications, ['gtin', 'batchNumber', 'expiry'], callback);
-        this.stockManager = getStockManager(participantManager);
+        super(participantManager, DB.notifications, ['gtin', 'batchNumber', 'expiry'], (err, manager) => {
+            if (err)
+                if (callback)
+                    return callback(err);
+                else
+                    throw err;
+
+                manager.stockManager = manager.stockManager || getStockManager(participantManager);
+
+        });
+        this.stockManager = this.stockManager || getStockManager(participantManager);
     }
 
     /**
