@@ -33,8 +33,6 @@ function BatchService(domain, strategy){
     const validateUpdate = function(batchFromSSI, updatedBatch, callback){
         if (!utils.isEqual(batchFromSSI, updatedBatch, "batchStatus"))
             return callback('invalid update');
-        if (Batch.getAllowedStatusUpdates(batchFromSSI.batchStatus.status).indexOf(updatedBatch.batchStatus.status) === -1)
-            return callback(`Status update is not valid`);
         return callback();
     }
 
@@ -168,15 +166,15 @@ function BatchService(domain, strategy){
         // if batch is invalid, abort immediatly.
         const self = this;
 
-        if(typeof batch === 'object') {
-            let err = batch.validate();
-            if(err)
-                return callback(err);
-        }
-
         self.get(keySSI, (err, batchFromSSI, batchDsu) => {
             if(err)
                 return callback(err);
+
+            if(typeof batch === 'object') {
+                let err = batch.validate(batchFromSSI.batchStatus.status);
+                if(err)
+                    return callback(err);
+            }
 
             const cb = function(err, ...results){
                 if(err)

@@ -1,5 +1,7 @@
 const ShipmentStatus = require('./ShipmentStatus');
 const ShipmentLine = require('./ShipmentLine');
+const Status = require('./Status');
+
 
 /**
  * @class Shipment
@@ -30,7 +32,9 @@ class Shipment {
         this.requesterId = requesterId;
         this.senderId = senderId;
         this.shipToAddress = shipToAddress;
-        this.status = status || ShipmentStatus.CREATED;
+        this.status = status || new Status({
+            status: ShipmentStatus.CREATED
+        });
         this.shipmentLines = shipmentLines ? shipmentLines.map(sl => new ShipmentLine(sl)) : [];
     }
 
