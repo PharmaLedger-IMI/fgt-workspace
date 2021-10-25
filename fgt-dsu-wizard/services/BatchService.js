@@ -39,7 +39,8 @@ function BatchService(domain, strategy){
     let createBatchStatus = function (id, status, callback) {
         if (typeof status === 'function') {
             callback = status;
-            status = BatchStatus.COMISSIONED;
+            status = id;
+            id = undefined;
         }
         statusService.create(status, id, (err, keySSI) => {
             if (err)
@@ -121,7 +122,7 @@ function BatchService(domain, strategy){
                     if (err)
                         return cb(err);
 
-                    createBatchStatus(batch.status, (err, statusSSI) =>{
+                    createBatchStatus(gtin, batch.status, (err, statusSSI) =>{
                         if(err)
                             return cb(err);
                         
