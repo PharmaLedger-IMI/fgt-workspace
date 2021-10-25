@@ -12,6 +12,7 @@
  * @namespace Managers
  */
 module.exports = {
+    DBLock: require('./DBLock'),
     Manager: require('./Manager'),
     Resolver: require('./resolvers/Resolver'),
     BaseManager: require('./BaseManager'),
