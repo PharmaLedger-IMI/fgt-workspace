@@ -122,7 +122,7 @@ function BatchService(domain, strategy){
                     if (err)
                         return cb(err);
                     
-                    productService.getDeterministic(gtin, (err, produc) => {
+                    productService.getDeterministic(gtin, (err, product) => {
                         if(err)
                             return callback(err);                        
 
