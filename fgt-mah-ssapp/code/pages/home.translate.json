@@ -207,7 +207,7 @@
     "back": "Back to {0}",
     "statuses": {
       "commissioned": {
-        "action": "Create Batch",
+        "action": "Commission Batch",
         "label": "Commissioned",
         "color": "success",
         "paths": []

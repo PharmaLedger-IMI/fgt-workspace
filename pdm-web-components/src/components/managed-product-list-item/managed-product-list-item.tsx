@@ -145,12 +145,14 @@ export class ManagedProductListItem {
   addBatches(){
     if (!this.product || !this.batches)
       return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
+    const dummyProp = Date.now(); // to ensure the item organizer updates even with the same data
     return(
       <pdm-item-organizer slot="content" component-name="batch-chip"
                           component-props={JSON.stringify(this.batches.map(gtinBatch => ({
                             "gtin-batch": gtinBatch,
                             "mode": "detail",
-                            "loader-type": SUPPORTED_LOADERS.bubblingSmall
+                            "loader-type": SUPPORTED_LOADERS.bubblingSmall,
+                            "dummy-prop": dummyProp
                           })))}
                           id-prop="gtin-batch"
                           is-ion-item="false"

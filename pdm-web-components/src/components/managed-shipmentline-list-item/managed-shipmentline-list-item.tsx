@@ -212,8 +212,12 @@ export class ManagedOrderlineListItem {
 
     const getStatusLabel = function(){
       if (!self.line)
-        return (<ion-skeleton-text animated className="label-status"></ion-skeleton-text>)
-      return (<ion-badge>{self.line.status.status}</ion-badge>);
+        return;
+      return (
+        <ion-col className="ion-padding-start" size="auto">
+          <status-badge status={self.line.status.status}></status-badge>
+        </ion-col>
+      )
     }
 
     const buildLabelElement = (props: any) =>{
@@ -232,7 +236,7 @@ export class ManagedOrderlineListItem {
           {buildLabelElement(props.gtin)}
           {buildLabelElement(getBatchLabel())}
           {buildLabelElement(getQuantityLabel())}
-          {buildLabelElement(getStatusLabel())}
+          {getStatusLabel()}
         </ion-row>
       </ion-col>
     )

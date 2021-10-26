@@ -77,8 +77,12 @@ export class PdmItemOrganizer {
 
       if (Array.isArray(oldProps) && Array.isArray(parsedProps)){
         parsedProps.forEach((p,i) => {
-          if (p[this.idProp] === oldProps[i][this.idProp])
-            equals.push(i);
+          try {
+            if (p[this.idProp] === oldProps[i][this.idProp])
+              equals.push(i);
+          } catch (e) {
+            // ignore. means parsedProps has more that before
+          }
         });
       }
 

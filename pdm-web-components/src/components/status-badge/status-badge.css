@@ -2,6 +2,6 @@
   display: block;
 }
 
-status-badge ion-badge{
+status-badge ion-badge.status-badge{
   background-color: var(--ion-color-base);
 }

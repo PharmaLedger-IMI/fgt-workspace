@@ -121,11 +121,22 @@ export class ManagedOrderListItem {
         </ion-col>
       )
     }
-    
+
+    const getStatusBadge = function(){
+      if (!self.order)
+        return;
+      return (
+        <ion-col className="ion-padding-start" size="auto">
+          <status-badge status={self.order.status.status}></status-badge>
+        </ion-col>
+      )
+    }
+
     return(
       <ion-row  slot="label" className="ion-align-items-center">
         {buildLabelElement(getOrderIdLabel())}
         {buildLabelElement(getRequesterIdLabel())}
+        {getStatusBadge()}
       </ion-row>
     )
   }

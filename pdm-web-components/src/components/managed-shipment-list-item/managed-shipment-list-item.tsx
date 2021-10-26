@@ -124,10 +124,21 @@ export class ManagedShipmentListItem{
       )
     }
 
+    const getStatusBadge = function(){
+      if (!self.shipment)
+        return;
+      return (
+        <ion-col className="ion-padding-start" size="auto">
+          <status-badge status={self.shipment.status.status}></status-badge>
+        </ion-col>
+      )
+    }
+
     return(
       <ion-row  slot="label" className="ion-align-items-center">
         {buildLabelElement(getShipmentId())}
         {buildLabelElement(getIdLabel())}
+        {getStatusBadge()}
       </ion-row>
     )
   }

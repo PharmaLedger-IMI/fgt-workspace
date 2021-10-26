@@ -19,8 +19,9 @@ export class StatusBadge {
       case ShipmentStatus.CREATED:
       case ShipmentStatus.ACKNOWLEDGED:
       case ShipmentStatus.PICKUP:
+      case ShipmentStatus.CONFIRMED:
         return 'success';
-      case BatchStatus.QUARENTINED:
+      case BatchStatus.QUARANTINED:
       case ShipmentStatus.ON_HOLD:
         return 'warning';
       case BatchStatus.RECALL:
@@ -36,7 +37,7 @@ export class StatusBadge {
       return;
     return (
       <Host>
-        <ion-badge class="ion-padding-horizontal ignore-color-scale" color={this.getColorByStatus()}>{this.status}</ion-badge>
+        <ion-badge class="ion-padding-horizontal status-badge" color={this.getColorByStatus()}>{this.status}</ion-badge>
       </Host>
     );
   }

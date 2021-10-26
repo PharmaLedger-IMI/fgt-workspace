@@ -29,7 +29,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "b6398ddd91fd7221c030e7c971778be9d49c4190"
+                    "commit": "db2b2741e5ff04b6f65f8cdc94dc978d75def2ae"
                 },
                 {
                     "type": "execute",
@@ -54,7 +54,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "a7b8c9950c67a21771f8a5f2fe02ed4e08d03a8b"
+                    "commit": "d28c30e878cee99ed0a62e093737c3c337038fe8"
                 },
                 {
                     "type": "execute",
@@ -244,7 +244,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "22d83ceacf62b9dcf0a7f70bc543ad0986d4226a"
+                    "commit": "21fd1451020a665f1b192b6f61565ec2542e1cd3"
                 },
                 {
                     "type": "execute",
@@ -268,7 +268,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "4c4654fab88439ea9a57b28b83eba798e46f205a"
+                    "commit": "6e7bed56f5c040908c32c099f5dd2a313fb1652c"
                 },
                 {
                     "type": "execute",
@@ -665,7 +665,7 @@
     ],
     "deploy-chain": [
         {
-            "name":"change anchoring to blockchain",
+            "name": "change anchoring to blockchain",
             "src": "",
             "actions": [
                 {
@@ -679,7 +679,7 @@
             ]
         },
         {
-            "name":"blockchain-node",
+            "name": "blockchain-node",
             "src": "https://Pharmaledger:x_Jp6JwvD4sQFu4cQA3T@gitlab.pdmfc.com/pharmaledger/blockchain-node-workspace.git",
             "actions": [
                 {
