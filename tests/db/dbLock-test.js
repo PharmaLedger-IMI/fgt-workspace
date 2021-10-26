@@ -9,6 +9,28 @@ const assert = dc.assert;
 
 const utils = require('../test-utils');
 
+const MockDB = {
+    interval: 500,
+    beginBatch: () => {
+        // Aqui podes defidir quando das erro ou nao
+        console.log(`Called Begin batch`);
+    },
+
+    commitBatch: (callback) => {
+        // Aqui podes variar o timeout e decidir quando retorna erro ou nao
+        setTimeout(() => {
+            callback()
+        }, this.interval);
+    },
+
+    cancelBatch: (callback) => {
+        // Aqui podes variar o timeout e decidir quando retorna erro ou nao
+        setTimeout(() => {
+            callback()
+        }, this.interval);
+    }
+}
+
 
 const dataBaseAPI = require("opendsu").loadApi('db');
 const keySSIApis = require('opendsu').loadApi('keyssi');
