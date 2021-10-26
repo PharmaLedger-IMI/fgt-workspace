@@ -1,4 +1,5 @@
 const utils = require('../../pdm-dsu-toolkit/services/utils');
+const ModelUtils = require('../model/utils');
 const {STATUS_MOUNT_PATH, INFO_PATH} = require('../constants');
 
 /**
@@ -31,7 +32,7 @@ function BatchService(domain, strategy){
     }
     
     const validateUpdate = function(batchFromSSI, updatedBatch, callback){
-        if (!utils.isEqual(batchFromSSI, updatedBatch, "batchStatus"))
+        if (!ModelUtils.isEqual(batchFromSSI, updatedBatch, "batchStatus"))
             return callback('invalid update');
         return callback();
     }
@@ -164,11 +165,12 @@ function BatchService(domain, strategy){
 
     /**
      * updates a product DSU
+     * @param {string} gtin
      * @param {KeySSI} keySSI
      * @param {Batch} batch
      * @param {function(err?)} callback
      */
-    this.update = function (keySSI, batch, callback) {
+    this.update = function (gtin, keySSI, batch, callback) {
         // if batch is invalid, abort immediatly.
         const self = this;
 
@@ -207,20 +209,24 @@ function BatchService(domain, strategy){
                     if(!mounts[STATUS_MOUNT_PATH])
                         return cb(`Missing mount path ${STATUS_MOUNT_PATH}`);
 
-                    statusService.update(mounts[STATUS_MOUNT_PATH], batch.batchStatus, (err) => {
+                    productService.getDeterministic(gtin, (err, product) => {
                         if(err)
-                            return cb(err);
-
-                        batchDsu.commitBatch((err) => {
-                            if(err)
+                            return callback(err);
+                        statusService.update(mounts[STATUS_MOUNT_PATH], batch.batchStatus, product.manufName, (err) => {
+                            if (err)
                                 return cb(err);
-                            
-                            self.get(keySSI, callback);
-                        })
-                    })      
-                })
-            })
-        })
+
+                            batchDsu.commitBatch((err) => {
+                                if (err)
+                                    return cb(err);
+
+                                self.get(keySSI, callback);
+                            });
+                        });
+                    });
+                });
+            });
+        });
     }
 }
 
