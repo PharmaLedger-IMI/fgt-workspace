@@ -13,7 +13,7 @@ export class StatusBadge {
 
   @Prop({attribute: 'status'}) status: string = undefined;
 
-  private getClassByStatus(){
+  private getColorByStatus(){
     switch(this.status){
       case BatchStatus.COMMISSIONED:
       case ShipmentStatus.CREATED:
@@ -36,7 +36,7 @@ export class StatusBadge {
       return;
     return (
       <Host>
-        <ion-badge class={`ion-padding-horizontal ion-color${this.getClassByStatus()}`}>{this.status}</ion-badge>
+        <ion-badge class="ion-padding-horizontal ignore-color-scale" color={this.getColorByStatus()}>{this.status}</ion-badge>
       </Host>
     );
   }

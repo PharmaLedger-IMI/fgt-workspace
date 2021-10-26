@@ -1,7 +1,8 @@
 const {ANCHORING_DOMAIN, DB} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
-const Batch = require('../model').Batch;
+const {Batch, Notification} = require('../model');
 const getStockManager = require('./StockManager');
+const getNotificationManager = require('./NotificationManager');
 
 /**
  * Batch Manager Class
@@ -27,6 +28,7 @@ class BatchManager extends Manager{
     constructor(participantManager, callback) {
         super(participantManager, DB.batches, ['gtin', 'batchNumber', 'expiry'], callback);
         this.stockManager = getStockManager(participantManager);
+        this.notificationManager = getNotificationManager(participantManager);
         this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
         this.batchService = new (require('../services/BatchService'))(ANCHORING_DOMAIN);
     }
@@ -64,6 +66,7 @@ class BatchManager extends Manager{
             gtin: key,
             batchNumber: item.batchNumber,
             expiry: item.expiry,
+            status: item.batchStatus.status,
             value: record
         }
     };
@@ -210,14 +213,87 @@ class BatchManager extends Manager{
         self.getRecord(key, (err, record) => {
             if (err)
                 return self._err(`Unable to retrieve record with key ${key} from table ${self._getTableName()}`, err, callback);
-            self.batchService.update(record.value, newBatch, (err, updatedBatch, batchDsu) => {
+            self.batchService.update(gtin, record.value, newBatch, (err, updatedBatch, batchDsu) => {
                 if (err)
                     return self._err(`Could not Update Batch DSU`, err, callback);
-                self.updateRecord(key, self._indexItem(gtin, updatedBatch, record.value), (err) => {
+
+                const cb = function(err, ...results){
                     if (err)
-                        return callback(err);
-                    callback(undefined, updatedBatch, batchDsu);
-                });
+                        return self.cancelBatch((err2) => {
+                            callback(err);
+                        });
+                    callback(undefined, ...results);
+                }
+
+                const dbOperation = function (gtin, updatedBatch, record, callback){
+                    try {
+                        self.beginBatch();
+                    } catch(e) {
+                        return self.batchSchedule(() => dbOperation(gtin, updatedBatch, record, callback));
+                    }
+
+                    self.updateRecord(key, self._indexItem(gtin, updatedBatch, record.value), (err) => {
+                        if (err)
+                            return cb(err);
+                        callback(undefined, updatedBatch, batchDsu);
+
+                        self.stockManager.getOne(gtin, true, (err, stock) => {
+                            if (err)
+                                return cb(err); //TODO: if not in stock, it must be in transit. handle shipments.
+                            const batch = stock.batches.find(b => b.batchNumber === updatedBatch.batchNumber);
+                            if (!batch)
+                                return cb(`could not find batch`)  //TODO: if not in stock, it must be in transit. handle shipments.
+                            batch.batchStatus = updatedBatch.batchStatus;
+                            self.batchAllow(self.stockManager);
+                            self.stockManager.update(gtin, stock, (err) => {
+                                self.batchDisallow(self.stockManager);
+                                if (err)
+                                    return cb(err);
+                                self.commitBatch((err) => {
+                                    if (err)
+                                        return cb(err);
+                                    self.stockManager.refreshController()
+
+                                    self.stockManager.getStockTraceability(self.getIdentity().id, gtin, batch.batchNumber, (err, results) => {
+                                        if (err || !results){
+                                            console.log(`Could not calculate partners with batch to send`, err, results);
+                                            return callback(undefined, newBatch);
+                                        }
+
+                                        const {partnersStock} = results;
+                                        if (!partnersStock){
+                                            console.log(`No Notification required. No stock found outside the producer for gtin ${gtin}, batch ${batch.batchNumber}`);
+                                            return callback(undefined, newBatch);
+                                        }
+
+
+                                        const toBeNotified = Object.keys(partnersStock);
+
+                                        const batchNotification = new Notification({
+                                            subject: self.tableName,
+                                            body: {
+                                                gtin: gtin,
+                                                batch: {
+                                                    batchNumber: batch.batchNumber,
+                                                    expiry: batch.expiry,
+                                                    batchStatus: batch.batchStatus
+                                                }
+                                            }
+                                        });
+
+                                        self.notificationManager.pushToAll(toBeNotified, batchNotification, (err) => {
+                                            if (err)
+                                                console.log(`Could not send notifications to partners`, err);
+                                            callback(undefined, newBatch);
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                }
+
+                dbOperation(gtin, updatedBatch, record, callback);
             });
         });
     }

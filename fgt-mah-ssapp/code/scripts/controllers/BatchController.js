@@ -57,7 +57,8 @@ export default class BatchController extends LocalizedController {
                     return self._handleCreateBatch.call(self, props);
                 default:
                     const {newStatus, batch, popupOptions } = props;
-                    return await self._handleUpdateBatchStatus.call(self, batch, newStatus, popupOptions);
+                    const gtin = this.model.gtinBatch.split('-')[0];
+                    return await self._handleUpdateBatchStatus.call(self, gtin, batch, newStatus, popupOptions);
             }
         });
 
@@ -80,7 +81,7 @@ export default class BatchController extends LocalizedController {
         }, obj);
     }
 
-    async _handleUpdateBatchStatus(batch, newStatus, popupOptions){
+    async _handleUpdateBatchStatus(gtin, batch, newStatus, popupOptions){
         const self = this;
 
         const oldStatus = batch.batchStatus.status;
@@ -90,7 +91,7 @@ export default class BatchController extends LocalizedController {
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
 
         const popupCallback = (evt) => batch.batchStatus.extraInfo = evt.extraInfo;
-        const alert = await self._showPopup('manage.confirm', popupOptions, popupCallback, oldStatus, newStatus);
+        const alert = await self.showPopup('manage.confirm', popupOptions, popupCallback, oldStatus, newStatus);
 
         const {role} = await alert.onDidDismiss();
 
@@ -105,7 +106,7 @@ export default class BatchController extends LocalizedController {
             self.showErrorToast(msg);
         }
 
-        self.batchManager.update(batch, async (err, updatedBatch) => {
+        self.batchManager.update(gtin, batch, async (err, updatedBatch) => {
             if (err)
                 return sendError(self.translate('manage.error.error'));
             self.showToast(self.translate('manage.success'));
@@ -156,5 +157,14 @@ export default class BatchController extends LocalizedController {
         return super.showConfirm(this.translate(`${action}.message`),
             this.translate(`${action}.buttons.ok`),
             this.translate(`${action}.buttons.cancel`));
+    }
+
+    async showPopup(message = 'create.confirm', popupOptions, callback, ...args){
+        return super.showPopup({
+            message: this.translate(`${message}.message`, ...args),
+            confirmButtonLabel: this.translate(`${message}.buttons.ok`),
+            cancelButtonLabel: this.translate(`${message}.buttons.cancel`),
+            options: popupOptions
+        }, callback);
     }
 }

@@ -2,6 +2,7 @@ const {DB} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const {Notification, Batch, Stock} = require('../model');
 const getStockManager = require('./StockManager');
+const {functionCallIterator} = require('../services').utils;
 
 /**
  * Batch Manager Class
@@ -88,7 +89,7 @@ class NotificationManager extends Manager{
      */
     _processMessageRecord(message, callback) {
         let self = this;
-        if (!message || typeof message !== object)
+        if (!message || typeof message !== 'object')
             return callback(`Invalid Message:  ${message} does not have a valid notification`);
 
         const notification = new Notification(message);
@@ -110,16 +111,11 @@ class NotificationManager extends Manager{
 
     _handleBatch(body, callback){
         const {gtin, batch} = body;
-        const err = batch.validate();
-        if (err)
-            return callback(err);
 
-        const {batchNumber, status, expiry} = batch;
+        const {batchNumber, batchStatus, expiry} = batch;
 
         const self = this;
-        self.stockManager.getAll({
-            query: [`gtin == ${gtin}`]
-        }, (err, stock) => {
+        self.stockManager.getOne(gtin, true, (err, stock) => {
             if (err)
                 return callback(err);
             const batch = stock.batches.find(b => b.batchNumber === batchNumber);
@@ -131,21 +127,56 @@ class NotificationManager extends Manager{
                 batch.expiry = expiry;
             }
 
-            if (batch.status !== status){
-                console.log(`Updating batch status to ${expiry}`);
-                batch.status = status;
+            if (batch.batchStatus !== batchStatus){
+                console.log(`Updating batch status to ${batchStatus}`);
+                batch.batchStatus = batchStatus;
             }
-            self.stockManager.update(gtin, stock, callback);
+            self.stockManager.update(gtin, stock, (err) => {
+                if (err)
+                    return callback(err);
+                self.stockManager.refreshController();
+                callback();
+            });
         });
     }
 
     _handleNotification(notification, callback){
         switch (notification.subject){
-            case "batch":
+            case DB.batches:
                 return this._handleBatch(notification.body, callback);
             default:
                 return callback(`Cannot handle such notification - ${notification}`);
         }
+    }
+
+    /**
+     * Sends a {@link Notification}
+     * @param {string} receiverId
+     * @param {Notification} notification
+     * @param {function(err, keySSI, string)} callback first keySSI if for the batch, the second for its' product dsu
+     * @override
+     */
+    push(receiverId, notification, callback){
+        if (!notification.senderId)
+            notification.senderId = this.getIdentity().id;
+        this.sendMessage(receiverId, this.tableName, notification, err =>
+            this._messageCallback(err, `Notification sent to ${receiverId} regarding ${notification.subject}`));
+        callback(undefined);
+    }
+
+    pushToAll(receivers, notification, callback){
+        const self = this;
+
+        const func = function(receiver, callback){
+            self.push.call(self, receiver, notification, callback)
+        }
+
+        functionCallIterator(func, receivers, (err, ...results) => {
+            if (err)
+                return callback(err);
+            console.log(`All notifications regarding ${notification.subject} sent`);
+            callback(undefined, ...results)
+        })
     }
 
     /**
