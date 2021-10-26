@@ -30,6 +30,7 @@ export namespace Components {
         "loaderType"?: string;
         "mode"?: string;
         "quantity"?: number;
+        "refresh": () => Promise<void>;
     }
     interface CreateManageViewLayout {
         "backString": string;

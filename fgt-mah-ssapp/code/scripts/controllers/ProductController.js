@@ -24,6 +24,7 @@ export default class ProductController extends LocalizedController {
         const wizard = require('wizard');
         const participantManager = wizard.Managers.getParticipantManager();
         this.productManager = wizard.Managers.getProductManager(participantManager);
+        self.productManager.bindController(this);
         this.productEl = this.element.querySelector('managed-product');
         HistoryNavigator.registerTab({
             'tab-product': self.translate('title')

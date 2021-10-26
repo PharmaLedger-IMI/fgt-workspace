@@ -24,6 +24,19 @@
 | `selectEvent` |             | `CustomEvent<string>` |
 
 
+## Methods
+
+### `refresh() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+
 ## Dependencies
 
 ### Used by

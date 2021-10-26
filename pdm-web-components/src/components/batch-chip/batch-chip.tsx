@@ -1,4 +1,4 @@
-import {Component, Host, h, Prop, Element, State, Watch, Event, EventEmitter} from '@stencil/core';
+import {Component, Host, h, Prop, Element, State, Watch, Event, EventEmitter, Method} from '@stencil/core';
 import {HostElement} from "../../decorators";
 import {WebManagerService, WebResolver} from "../../services/WebManagerService";
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
@@ -51,7 +51,12 @@ export class BatchChip {
     return await this.loadBatch();
   }
 
+  @Method()
   @Watch('gtinBatch')
+  async refresh(){
+    await this.loadBatch();
+  }
+
   async loadBatch(){
     if (!this.host.isConnected)
       return;

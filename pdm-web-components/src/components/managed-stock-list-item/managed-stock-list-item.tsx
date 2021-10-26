@@ -151,7 +151,7 @@ export class ManagedProductListItem {
                               serialNumber: undefined,
                               manufName: self.stock.manufName,
                               expiry: batch.expiry,
-                              status: undefined
+                              status: batch.batchStatus.status
                             }),
                             "loader-type": SUPPORTED_LOADERS.bubblingSmall
                           })))}

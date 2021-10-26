@@ -31,6 +31,7 @@ class BatchManager extends Manager{
         this.notificationManager = getNotificationManager(participantManager);
         this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
         this.batchService = new (require('../services/BatchService'))(ANCHORING_DOMAIN);
+        this.participantManager = participantManager;
     }
 
     /**
@@ -252,7 +253,10 @@ class BatchManager extends Manager{
                                 self.commitBatch((err) => {
                                     if (err)
                                         return cb(err);
-                                    self.stockManager.refreshController()
+                                    self.stockManager.refreshController();
+                                    const productManager = self.participantManager.getManager('ProductManager');
+
+                                    productManager.refreshController();
 
                                     self.stockManager.getStockTraceability(self.getIdentity().id, gtin, batch.batchNumber, (err, results) => {
                                         if (err || !results){
