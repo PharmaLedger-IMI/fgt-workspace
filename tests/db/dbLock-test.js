@@ -11,12 +11,29 @@ const utils = require('../test-utils');
 
 const MockDB = {
     interval: 500,
+    batchInProgress: 0,
+    currentTable: [],
+    operations: [],
+
     beginBatch: () => {
+        if(MockDB.batchInProgress === 0 && MockDB.currentTable.length < 2){
+            MockDB.batchInProgress = 1;
+            console.log(`Called Begin batch `, MockDB.currentTable[0]);
+            MockDB.operations.push('Called Begin batch');
+
+        } else {
+
+            MockDB.operations.push('There Batch Already in Progress!');
+            throw new Error ('There Batch Already in Progress!');
+
+        }
+
         // Aqui podes defidir quando das erro ou nao
-        console.log(`Called Begin batch`);
+        
     },
 
     commitBatch: (callback) => {
+        console.log('Commiting Batch');
         // Aqui podes variar o timeout e decidir quando retorna erro ou nao
         setTimeout(() => {
             callback()
@@ -40,16 +57,8 @@ const {DB} = require('../../fgt-dsu-wizard/constants');
 const {Product} = require('../../fgt-dsu-wizard/model');
 
 const {DBLock} = require('../../pdm-dsu-toolkit/managers');
-
-const getProduct = function (){
-
-    return new Product({
-        name: utils.generateProductName(),
-        gtin: utils.generateGtin(),
-        manufName: utils.generateProductName(),
-        description: utils.generateBatchNumber(),
-    })
-}
+const { table } = require('console');
+const { isGeneratorFunction } = require('util/types');
 
 const cb = function(err, dbLock, ...results){
     if (err)
@@ -59,180 +68,127 @@ const cb = function(err, dbLock, ...results){
     callback(undefined, ...results);
 }
 
-const transaction = function (db, dbLock, tableName, callback){
-
-    const dbAction = function(db, dbLock, tableName, callback){
-        console.log('dbAction')
-        try{
-            dbLock.beginBatch(tableName);
-        } catch (e){
-            console.log('Rescheduling');
-            return dbLock.batchSchedule(() => dbAction(db, dbLock, tableName, callback));
-        }
-
-        let product = getProduct();
-        let product2 = getProduct();
-        console.log(dbLock);
-
-        db.insertRecord(DB.products, product.gtin, product, (err, something) => {
-            if(err)
-                return cb(err);
-
-            console.log(something);
-            db.insertRecord(DB.products, product2.gtin, product2, (err, something) => {
-                if(err)
-                    return cb(err);
-            
-                dbLock.commitBatch(tableName,false, (err) => {
-                    if(err)
-                        return cb(err);
-
-                    callback(undefined);
-                })        
-            })
-        })
+const beginTransaction = function (db, tableName, force, callback){
+    
+    if(!callback){
+        callback = force;
+        force = false;
     }
 
-    dbAction(db, dbLock, tableName, callback);
+    
+
+    const commitBatch = function (tableName, force, callback){
+    
+        return db.commitBatch(tableName, force, callback);
+
+    }
+    
+    const dbAction = function(db, tableName, force, callback){
+
+        console.log(db);
+
+        try{
+            setTimeout(() => beginBatch(tableName) ,Math.round(Math.random()* 1000));
+        } catch (e){
+            console.log(e);
+            return db.schedule(() => dbAction(db, tableName, force, callback));
+        }
+
+        console.log("Performing actions on ", tableName);
+
+        setTimeout(() => commitBatch(tableName, force, () =>{
+
+            callback();
+
+        }), Math.round(Math.random()* 1000))
+    }
+
+    dbAction(db, tableName, force, callback)
+
+} 
+
+const startTransaction = function(mockDB, dbLock, tableName, timeout, callback){
+
+    const beginBatch = function (tableName){
+        return dbLock.beginBatch(tableName);
+    }
+
+    const dbAction = function(mockDB, dbLock, tableName, timeout, callback){
+
+        try{
+            if(timeout === 0){
+                beginBatch(tableName);
+                mockDB.currentTable.push(tableName);
+                callback()
+            }
+
+            if(timeout !== 0)    
+                setTimeout(() =>{ 
+                    mockDB.currentTable.push(tableName);
+                    beginBatch(tableName);
+                    callback()
+                }, timeout);
+
+        } catch (e){
+            console.log(e);
+            MockDB.currentTable.pop();
+            return dbLock.schedule(() => dbAction(mockDB, dbLock, tableName, timeout, callback));
+        }
+    }
+
+    dbAction(mockDB, dbLock, tableName, timeout, callback)
+
+
+}
+
+const testFinish = function(counter , func) {
+
+    if(counter === 0)
+        func()
+
 }
 
 
 
 
 
+
 assert.callback("DB Lock test", (testFinishCallback) => {
-    dc.createTestFolder("wallet", function (err, folder) {
-        const no_retries = 10;
-
-        const indexTable = function(db, table, props, callback){
-            db.getIndexedFields(table, (err, indexes) => {
-                if (err)
-                    return callback(err);
-                const newIndexes = [];
-
-                const indexIterator = function(propsClone, callback){
-                    const index = propsClone.shift();
-                    if (!index)
-                        return callback(undefined, newIndexes);
-                    if (indexes.indexOf(index) !== -1)
-                        return indexIterator(propsClone, callback);
-                    db.addIndex(table, index, (err) => {
-                        if (err)
-                            return callback(`Could not add index ${index} on table ${table}`);
-                        newIndexes.push(index);
-                        indexIterator(propsClone, callback);
-                    });
-                }
-
-                indexIterator(indexes.slice(), (err, updatedIndexes) => err
-                    ? callback(`Could not update indexes for table ${table}`)
-                    : callback(undefined, updatedIndexes));
-            })
-        }
-
-        const updateRecord = function(db, table, key, batch, callback){
-            db.getRecord(table, key, (err, record) => {
-                if (err)
-                    return callback(err);
-                console.log(`retrieved record in version ${record.__version}`)
-                record.batches.push(batch);
-                db.updateRecord(table, key, record, (err) => {
-                    if (err)
-                        return callback(err);
-                    console.log(`updated record`)
-                    callback();
-                })
-            })
-        }
-
-        tir.launchApiHubTestNode(no_retries, folder, function (err, port) {
-            if (err)
-                throw err;
-
-            let storageSSI = keySSIApis.createSeedSSI("default");
-
-            let db = dataBaseAPI.getWalletDB(storageSSI, "testDb");
+   
+            let db = MockDB;
 
             const dbLock = new DBLock(db, 1000);
+            
+            let tableNames = ['Status', 'Status', 'Status', 'AnotherStatus', 'AnotherStatus']
 
-            const indexes = ['name', 'gtin', 'manufName', '__timestamp'];
+            let counter = 2;
 
-            indexTable(db, DB.products, indexes, (err, updatedIndexes) => {
-                if (err)
-                    throw err;
-                console.log(`${DB.stock} table's indexes updated: ${updatedIndexes.join(', ')}`);
+            startTransaction(db , dbLock,tableNames[0],0,(err)=>{
+                console.log(db.operations)
 
-                transaction(db, dbLock, DB.products, (err)=> {
-                    if(err)
-                        throw err;
-                        
-                    console.log(1)
+                setTimeout(() => {
+                    counter--;
+                    testFinish(counter, testFinishCallback)
+                }, 3000);
+                
 
-                    
+            })
 
+            startTransaction(db , dbLock,tableNames[1],100,(err)=>{
+                console.log(db.operations)
+         
 
-                })
+                setTimeout(() => {
+                    counter--;
+                    testFinish(counter, testFinishCallback)
+                }, 3000);
+                
 
-                transaction(db, dbLock, DB.products, (err) => {
-                    if(err)
-                        throw err;
-                        console.log(2)
+            })
 
-
-
-                })
-
-                transaction(db, dbLock, DB.products, (err) => {
-                    if(err)
-                        throw err;
-
-                        console.log(3)
+            
 
 
-                    
-                })
-
-                transaction(db, dbLock, DB.products, (err) => {
-                    if(err)
-                        throw err;
-
-
-                        console.log(4);
-
-                    
-                })
-
-
-                // getModel((err, stock, b1, b2) => {
-                //     if (err)
-                //         throw err;
-
-                //     db.insertRecord(DB.stock, stock.gtin, stock, (err) => {
-                //         if (err)
-                //             throw err;
-                //         console.log(`record inserted`);
-
-                //         updateRecord(db, DB.stock, stock.gtin, b1, (err) => {
-                //             if (err)
-                //                 throw err;
-                //             updateRecord(db, DB.stock, stock.gtin, b2, (err) => {
-                //                 if (err)
-                //                     throw err;
-                //                 db.getRecord(DB.stock, stock.gtin, (err, record) => {
-                //                     if (err)
-                //                         throw err;
-
-                //                     const s = new Stock(record);
-                //                     stock.batches.push(b1, b2);
-                //                     assert.equal(s.getQuantity(), stock.getQuantity());
-                //                     assert.equal(record.__version, 2);
-                                    
-                                });
-                //             });
-                //         });
-                //     });
-                // });
-            //});
-        });
-    });
-}, 5000);
+                       
+             
+}, 10000);
