@@ -6,7 +6,7 @@ import {getBarCodePopOver} from "../../utils/popOverUtils";
 import CreateManageView from "../create-manage-view-layout/CreateManageView";
 
 const {generateBatchNumber} = wizard.Model.utils;
-const Batch = wizard.Model.Batch;
+const {Batch, BatchStatus} = wizard.Model;
 
 @Component({
   tag: 'managed-batch',
@@ -61,7 +61,7 @@ export class ManagedBatch implements CreateManageView{
     composed: true,
     cancelable: true,
   })
-  sendCreateAction: EventEmitter;
+  sendAction: EventEmitter;
 
   private sendError(message: string, err?: object){
     const event = this.sendErrorEvent.emit(message);
@@ -143,6 +143,20 @@ export class ManagedBatch implements CreateManageView{
     });
   }
 
+  async update(evt){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+    const { status, popupOptions } = evt.detail;
+    this.sendAction.emit({
+      action: evt.detail,
+      props:{
+        batch: new Batch(this.batch),
+        newStatus: status,
+        popupOptions
+      }
+    });
+  }
+
   async componentDidRender(){
     this.layoutComponent = this.layoutComponent || this.element.querySelector(`create-manage-view-layout`);
   }
@@ -171,7 +185,10 @@ export class ManagedBatch implements CreateManageView{
     evt.stopImmediatePropagation();
     const batch = new Batch(evt.detail);
     batch.serialNumbers = batch.serialNumbers.split(',');
-    this.sendCreateAction.emit(batch);
+    this.sendAction.emit({
+      action: BatchStatus.CREATE,
+      props: batch
+    });
   }
 
   private async setRandomBatchNumber(){
@@ -290,13 +307,22 @@ export class ManagedBatch implements CreateManageView{
   getManage() {
     if (this.isCreate())
       return
+    const self = this;
+    const getStatus = function(){
+      if (self.batch && self.batch.batchStatus)
+        return (<status-updater current-state={self.batch.batchStatus.status}
+                                state-json={JSON.stringify(self.statuses)}
+                                onStatusUpdateEvent={self.update.bind(self)}></status-updater>);
+      return (<multi-spinner></multi-spinner>);
+    }
+
     return (
       <ion-row>
         <ion-col size="12" size-lg="5">
           {this.getSerials()}
         </ion-col>
         <ion-col size="12" size-lg="7">
-          <status-updater current-state={this.batch.status.status} states-json={JSON.stringify(this.statuses)}></status-updater>
+          {getStatus()}
         </ion-col>
       </ion-row>
     );

@@ -29,9 +29,7 @@ class Order {
         this.requesterId = requesterId;
         this.senderId = senderId;
         this.shipToAddress = shipToAddress;
-        this.status = status || new Status({
-            status: OrderStatus.CREATED
-        });
+        this.status = status || OrderStatus.CREATED;
         this.orderLines = orderLines ? orderLines.map(sl => new OrderLine(sl.gtin, sl.quantity, sl.requesterId, sl.senderId, this.status)) : [];
     }
 

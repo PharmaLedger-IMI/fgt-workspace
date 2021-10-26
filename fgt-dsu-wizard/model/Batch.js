@@ -39,9 +39,7 @@ class Batch {
             if (this.quantity !== this.serialNumbers.length)
                 this.quantity = this.serialNumbers.length;
 
-        this.batchStatus = this.batchStatus || new Status({
-            status: BatchStatus.COMMISSIONED
-        });
+        this.batchStatus = this.batchStatus || BatchStatus.COMMISSIONED;
     }
 
     manage(delta, serialization = true){

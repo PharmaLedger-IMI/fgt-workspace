@@ -62,6 +62,7 @@ Type: `Promise<void>`
 
 - [pdm-item-organizer](../pdm-item-organizer)
 - [status-updater](../status-updater)
+- [multi-spinner](../multi-spinner)
 - [create-manage-view-layout](../create-manage-view-layout)
 
 ### Graph
@@ -69,6 +70,7 @@ Type: `Promise<void>`
 graph TD;
   managed-batch --> pdm-item-organizer
   managed-batch --> status-updater
+  managed-batch --> multi-spinner
   managed-batch --> create-manage-view-layout
   pdm-item-organizer --> more-chip
   status-updater --> status-updater-button

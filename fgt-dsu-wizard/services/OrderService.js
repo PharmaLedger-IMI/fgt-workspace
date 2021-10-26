@@ -129,7 +129,7 @@ function OrderService(domain, strategy) {
                 return callback(err);
 
             if (typeof order === 'object') {
-                let err = order.validate(orderFromSSI.status.status);
+                let err = order.validate();
                 if (err)
                     return callback(err);
             }
