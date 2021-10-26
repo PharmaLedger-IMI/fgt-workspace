@@ -159,7 +159,7 @@ assert.callback("DB Lock test", (testFinishCallback) => {
                 operationsTransaction(err => {
                     console.log(db.operations);
 
-                    finishTransaction(dbLock,(err) =>{
+                    finishTransaction(dbLock, tableNames[0], false, (err) =>{
                         console.log(db.operations);
 
                         setTimeout(() => {
