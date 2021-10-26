@@ -94,7 +94,6 @@ class ParticipantManager extends BaseManager{
                 controller.showErrorToast(controller.translate('loading.error', err), err);
             }
 
-            console.log('# traceabilityManager product=', product)
             self.traceabilityManager.getOne(product, async (err, startNode, endNode, nodeList) => {
                 if (err)
                     return await sendError(`Could not perform tracking...`, err);
