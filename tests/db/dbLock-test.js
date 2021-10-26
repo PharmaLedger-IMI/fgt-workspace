@@ -18,8 +18,9 @@ const MockDB = {
     beginBatch: () => {
         if(MockDB.batchInProgress === 0 && MockDB.currentTable.length < 2){
             MockDB.batchInProgress = 1;
+            console.log(MockDB.currentTable)
             console.log(`Called Begin batch `, MockDB.currentTable[0]);
-            MockDB.operations.push('Called Begin batch');
+            MockDB.operations.push('Called Begin batch db');
 
         } else {
 
@@ -34,7 +35,10 @@ const MockDB = {
 
     commitBatch: (callback) => {
         console.log('Commiting Batch');
-        // Aqui podes variar o timeout e decidir quando retorna erro ou nao
+        MockDB.operations.push('Commiting Batch db')
+        MockDB.batchInProgress = 0;
+        MockDB.currentTable = [];
+        
         setTimeout(() => {
             callback()
         }, this.interval);
@@ -68,83 +72,69 @@ const cb = function(err, dbLock, ...results){
     callback(undefined, ...results);
 }
 
-const beginTransaction = function (db, tableName, force, callback){
-    
-    if(!callback){
-        callback = force;
-        force = false;
-    }
 
-    
-
-    const commitBatch = function (tableName, force, callback){
-    
-        return db.commitBatch(tableName, force, callback);
-
-    }
-    
-    const dbAction = function(db, tableName, force, callback){
-
-        console.log(db);
-
-        try{
-            setTimeout(() => beginBatch(tableName) ,Math.round(Math.random()* 1000));
-        } catch (e){
-            console.log(e);
-            return db.schedule(() => dbAction(db, tableName, force, callback));
-        }
-
-        console.log("Performing actions on ", tableName);
-
-        setTimeout(() => commitBatch(tableName, force, () =>{
-
-            callback();
-
-        }), Math.round(Math.random()* 1000))
-    }
-
-    dbAction(db, tableName, force, callback)
-
-} 
-
-const startTransaction = function(mockDB, dbLock, tableName, timeout, callback){
+const startTransaction = function(mockDB, dbLock, tableName, callback){
 
     const beginBatch = function (tableName){
         return dbLock.beginBatch(tableName);
     }
 
-    const dbAction = function(mockDB, dbLock, tableName, timeout, callback){
+    const dbAction = function(mockDB, dbLock, tableName, callback){
 
         try{
-            if(timeout === 0){
-                beginBatch(tableName);
-                mockDB.currentTable.push(tableName);
-                callback()
-            }
-
-            if(timeout !== 0)    
-                setTimeout(() =>{ 
-                    mockDB.currentTable.push(tableName);
-                    beginBatch(tableName);
-                    callback()
-                }, timeout);
-
+            mockDB.currentTable.push(tableName);
+            beginBatch(tableName);
+            MockDB.operations.push('Called Begin batch dbLock'); 
         } catch (e){
             console.log(e);
             MockDB.currentTable.pop();
             return dbLock.schedule(() => dbAction(mockDB, dbLock, tableName, timeout, callback));
         }
+
+        callback()
     }
 
-    dbAction(mockDB, dbLock, tableName, timeout, callback)
+    dbAction(mockDB, dbLock, tableName, callback)
+
+
+}
+
+const operationsTransaction = function(callback){
+    MockDB.operations.push('Performing action on table');
+    callback();
+}
+
+const finishTransaction = function(dbLock, tableName, force, callback){
+
+    const commitBatch = function (tableName, cb){
+        return dbLock.commitBatch(tableName, callback);
+    }
+
+    const dbAction = function (dbLock, tableName, force, callback){
+
+        commitBatch(tableName, (err) => {
+
+            MockDB.operations.push('DB Lock commit')
+            callback();            
+
+        })
+
+
+    }
+
+    dbAction(dbLock, tableName, force, callback);
 
 
 }
 
 const testFinish = function(counter , func) {
+    console.log(counter)
+    counter--;
 
-    if(counter === 0)
+    if(counter === 0){
+        console.log(MockDB.operations);
         func()
+    }
 
 }
 
@@ -159,36 +149,35 @@ assert.callback("DB Lock test", (testFinishCallback) => {
 
             const dbLock = new DBLock(db, 1000);
             
-            let tableNames = ['Status', 'Status', 'Status', 'AnotherStatus', 'AnotherStatus']
+            let tableNames = ['Status', 'AnotherStatus']
 
             let counter = 2;
 
-            startTransaction(db , dbLock,tableNames[0],0,(err)=>{
-                console.log(db.operations)
+            startTransaction(db , dbLock, tableNames[0], (err) => {
+                console.log(db.operations);
 
-                setTimeout(() => {
-                    counter--;
-                    testFinish(counter, testFinishCallback)
-                }, 3000);
-                
+                operationsTransaction(err => {
+                    console.log(db.operations);
 
+                    finishTransaction(dbLock, tableNames[0], false, (err) =>{
+                        console.log(db.operations);
+
+                        setTimeout(() => {
+                            counter--;
+                            testFinish(counter, testFinishCallback)
+                        }, 3000);
+
+                    })
+                })
             })
 
-            startTransaction(db , dbLock,tableNames[1],100,(err)=>{
-                console.log(db.operations)
-         
+            
 
-                setTimeout(() => {
-                    counter--;
-                    testFinish(counter, testFinishCallback)
-                }, 3000);
-                
-
-            })
+            
 
             
 
 
                        
              
-}, 10000);
+}, 50000);
