@@ -436,17 +436,17 @@ export namespace Components {
         "updateString"?: string;
     }
     interface StatusUpdaterButton {
-        "addDetailPlaceholder": string;
-        "buttonCssClass": string;
+        "availableOptions": string;
+        "buttonsCssClass": string;
         "color": string;
         "disabled": boolean;
         "expand": string;
         "fill": string;
-        "label": string;
+        "individualProperties": string;
+        "popupOptions": string;
         "shape": string;
         "showAddDetail": boolean;
         "size": string;
-        "status": string;
         "strong": boolean;
     }
     interface TrackedSerialChip {
@@ -1360,18 +1360,18 @@ declare namespace LocalJSX {
         "updateString"?: string;
     }
     interface StatusUpdaterButton {
-        "addDetailPlaceholder"?: string;
-        "buttonCssClass"?: string;
+        "availableOptions"?: string;
+        "buttonsCssClass"?: string;
         "color"?: string;
         "disabled"?: boolean;
         "expand"?: string;
         "fill"?: string;
-        "label"?: string;
+        "individualProperties"?: string;
         "onClickUpdaterButton"?: (event: CustomEvent<any>) => void;
+        "popupOptions"?: string;
         "shape"?: string;
         "showAddDetail"?: boolean;
         "size"?: string;
-        "status"?: string;
         "strong"?: boolean;
     }
     interface TrackedSerialChip {

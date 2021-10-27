@@ -57,24 +57,6 @@ export class StatusUpdater {
     this.statusUpdateEvent.emit(evt.detail);
   }
 
-  private renderState(status, state: {action: string, label: string, color?:string, }, passed: boolean, available: boolean, isCurrent: boolean){
-    const self = this;
-    return (
-      <ion-row class="ion-margin-bottom ion-align-items-center ion-justify-content-center">
-        <status-updater-button
-          label={available ? state.action : state.label}
-          status={status}
-          disabled={passed || !available || isCurrent}
-          color={passed && !available ? "medium" : state.color}
-          size={available ? "large" : (passed ? "small" : "default")}
-          expand={isCurrent ? "full" : "block"}
-          shape={isCurrent ? undefined : "round"}
-          onClickUpdaterButton={(evt) => self.handleStateClick(evt)}>
-        </status-updater-button>
-      </ion-row>
-    )
-  }
-
   private renderStates(){
     const result = [];
     if (!(this.currentState in this.states)){
@@ -84,25 +66,37 @@ export class StatusUpdater {
 
     const self = this;
     const currentState = this.states[this.currentState];
-    const allowedStates = Object.keys(this.states).filter(state => currentState.paths.indexOf(state) !== -1);
+    const individualProperties = {} //temporarily, currently comes from the "translation"
+    const allowedStates = Object.keys(this.states).reduce((acc, status )=> {
+      if (currentState.paths.indexOf(status) !== -1) {
+        acc.push({status, ...self.states[status]})
+        individualProperties[status] = {
+          popupOptions: {
+            message: `Please confirm Shipment status update from <strong>${this.currentState.toUpperCase()}</strong> to <strong>${status.toUpperCase()}</strong>`
+          }
+        }
+      }
+      return acc;
+    }, []);
 
-    result.push(
-      <ion-item-divider className="ion-margin-bottom">
-        {self.currentString}
-      </ion-item-divider>
-    )
+    return ([
+      <ion-item-divider className="ion-margin-bottom">{self.currentString}</ion-item-divider>,
 
-    result.push(self.renderState(self.currentState, currentState, false, false, true))
+      <ion-row className="ion-margin-bottom ion-align-items-center ion-justify-content-center">
+        <ion-button expand="full" disabled="true" color={currentState.color} >
+          {currentState.label}
+        </ion-button>
+      </ion-row>,
 
-    result.push(
-      <ion-item-divider className="ion-margin-bottom">
-        {!!allowedStates.length ? self.updateString : self.noUpdateString}
-      </ion-item-divider>
-    )
-    result.push(...allowedStates.map((state) => {
-      return self.renderState(state, self.states[state],false, true, false);
-    }));
-    return result;
+      <ion-item-divider className="ion-margin-bottom">{!!allowedStates.length ? self.updateString : self.noUpdateString}</ion-item-divider>,
+
+      <status-updater-button
+        shape="round" expand="block" size="large"
+        available-options={JSON.stringify(allowedStates)}
+        individual-properties={JSON.stringify(individualProperties)}
+        onClickUpdaterButton={(evt) => self.handleStateClick(evt)}
+      > </status-updater-button>
+    ])
   }
 
   render() {
