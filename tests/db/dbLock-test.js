@@ -86,7 +86,7 @@ const startTransaction = function(mockDB, dbLock, tableName, callback){
         } catch (e){
             console.log(e);
             MockDB.currentTable.pop();
-            dbLock.schedule(() => dbAction(mockDB, dbLock, tableName, timeout, callback)); //removed return
+            return dbLock.schedule(() => dbAction(mockDB, dbLock, tableName, callback)); //removed return
         }
 
         callback()
@@ -126,8 +126,6 @@ const finishTransaction = function(dbLock, tableName, force, callback){
 }
 
 const testFinish = function(counter , func) {
-    console.log(counter)
-    counter--;
 
     if(counter === 0){
         console.log(MockDB.operations);
@@ -136,56 +134,25 @@ const testFinish = function(counter , func) {
 
 }
 
-const testTableLock = function (db, dblock, tableNames, counter, func, callback){
-    MockDB.operations.push('Test Table Lock');
-
+const completeTransaction = function(db, dbLock, tableName, callback){
+    
     let currentOperation = 1;
-
-    MockDB.operations.push(`${currentOperation}: Start Transaction on table ${tableNames[0]}`);
+    MockDB.operations.push(`${currentOperation}: Start Transaction on table ${tableName}`);
     currentOperation++;
-    startTransaction(db, dblock, tableNames[0],() => {
-        MockDB.operations.push(`${currentOperation}: Start another Transaction on table ${tableNames[0]}`); 
+    startTransaction(db, dbLock, tableName,() => { 
+        MockDB.operations.push(`${currentOperation}: Start Operation on table ${tableName}`);
         currentOperation++;
-        startTransaction(db, dblock, tableNames[0],() => {
-            MockDB.operations.push(`${currentOperation}: Start another Transaction on table ${tableNames[1]}`);
+        operationsTransaction(tableName, () => {
+            MockDB.operations.push(`${currentOperation}: Commit Operation on table ${tableName}`);
             currentOperation++;
-            startTransaction(db, dblock, tableNames[1],() => {
-            
-            })  
+            finishTransaction(dbLock, tableName, false, () => {
 
-            MockDB.operations.push(`${currentOperation}: Start Operation on table ${tableNames[0]}`);
-            currentOperation++;
-            operationsTransaction(tableNames[0], () => {
-                MockDB.operations.push(`${currentOperation}: Start Operation on table ${tableNames[0]}`);
-                currentOperation++;
-                operationsTransaction(tableNames[0], () => {
-                    MockDB.operations.push(`${currentOperation}: Commit Operation on table ${tableNames[0]}`);
-                    currentOperation++;
-                    finishTransaction(dblock, tableNames[0], false, () => {
-                        MockDB.operations.push(`${currentOperation}: Start another Transaction on table ${tableNames[1]}`);
-                        currentOperation++;
-                        startTransaction(db, dblock, tableNames[1],() => {
-                            MockDB.operations.push(`${currentOperation}: Start Operation on table ${tableNames[0]}`);
-                            currentOperation++;
-                            operationsTransaction(tableNames[0], () => {
-                                MockDB.operations.push(`${currentOperation}: Commit Operation on table ${tableNames[0]}`);
-                                currentOperation++;
-                                finishTransaction(dblock, tableNames[0], false, () => {
-            
-                                    testFinish(counter, func);
-            
-                                })
-                            })    
-                        }) 
-                    })             
-                })                     
-            }) 
-            
+                callback();
+
+            })
         })
     })
 }
-
-
 
 assert.callback("DB Lock test", (testFinishCallback) => {
    
@@ -195,108 +162,50 @@ assert.callback("DB Lock test", (testFinishCallback) => {
             
             let tableNames = ['Status', 'AnotherStatus']
 
-            let counter = 1;
+            let counter = 0;
 
-            // startTransaction(db , dbLock, tableNames[0], (err) => {
-            //     console.log(db.operations);
-
-            //     operationsTransaction(tableNames[0],err => {
-            //         console.log(db.operations);
-
-            //         finishTransaction(dbLock, tableNames[0], false, (err) =>{
-            //             console.log(db.operations);
-
-            //             setTimeout(() => {
-            //                 counter--;
-            //                 testFinish(counter, testFinishCallback)
-            //             }, 3000);
-
-            //         })
-            //     })
-            // })
-
-            // startTransaction(db , dbLock, tableNames[0], (err) => {
-            //     console.log(db.operations);
-
-            //     operationsTransaction(tableNames[0],err => {
-            //         console.log(db.operations);
-
-            //         finishTransaction(dbLock, tableNames[0], false, (err) =>{
-            //             console.log(db.operations);
-
-            //             setTimeout(() => {
-            //                 counter--;
-            //                 testFinish(counter, testFinishCallback)
-            //             }, 3000);
-
-            //         })
-            //     })
-            // })
-
-            // startTransaction(db , dbLock, tableNames[1], (err) => {
-            //     console.log(db.operations);
-
-            //     operationsTransaction(tableNames[0], err => {
-            //         console.log(db.operations);
-
-            //         finishTransaction(dbLock, tableNames[1], false, (err) =>{
-            //             console.log(db.operations);
-
-            //             setTimeout(() => {
-            //                 counter--;
-            //                 testFinish(counter, testFinishCallback)
-            //             }, 3000);
-
-            //         })
-            //     })
-            // })
-
-            // startTransaction(db , dbLock, tableNames[1], (err) => {
-            //     console.log(db.operations);
-
-            //     operationsTransaction(tableNames[0], err => {
-            //         console.log(db.operations);
-
-            //         finishTransaction(dbLock, tableNames[1], false, (err) =>{
-            //             console.log(db.operations);
-
-            //             setTimeout(() => {
-            //                 counter--;
-            //                 testFinish(counter, testFinishCallback)
-            //             }, 3000);
-
-            //         })
-            //     })
-            // })
-
-            // startTransaction(db , dbLock, tableNames[0], (err) => {
-            //     console.log(db.operations);
-
-            //     operationsTransaction(tableNames[0], err => {
-            //         console.log(db.operations);
-
-            //         finishTransaction(dbLock, tableNames[0], false, (err) =>{
-            //             console.log(db.operations);
-
-            //             setTimeout(() => {
-            //                 counter--;
-            //                 testFinish(counter, testFinishCallback)
-            //             }, 3000);
-
-            //         })
-            //     })
-            // })
-
-            // setTimeout(() => {
-                testTableLock(db, dbLock, tableNames, counter, testFinishCallback, () => {
-
-
-                    console.log('Test table lock finished')
-
+            counter++;
+            setTimeout(() => {
+                completeTransaction(db,dbLock,tableNames[0],() => {   
+                    counter--;
+                    testFinish(counter, testFinishCallback);
                 })
 
-            // }, 1000)
-            
-            
-             
+            },0);
+
+            counter++;
+            setTimeout(() => {
+                completeTransaction(db,dbLock,tableNames[0],() => { 
+                    counter--; 
+                    testFinish(counter, testFinishCallback);
+                })
+
+            },50);
+
+            counter++;
+            setTimeout(() => {
+                counter--;
+                completeTransaction(db,dbLock,tableNames[0],() => {   
+                    testFinish(counter, testFinishCallback);
+                })
+
+            },1000);
+
+            counter++;
+            setTimeout(() => {
+                completeTransaction(db,dbLock,tableNames[1],() => {
+                    counter--;   
+                    testFinish(counter, testFinishCallback);
+                })
+
+            },10);
+
+            counter++;
+            setTimeout(() => {
+                completeTransaction(db,dbLock,tableNames[0],() => {   
+                    counter--;
+                    testFinish(counter, testFinishCallback);
+                })
+
+            },1000);        
 }, 50000);
