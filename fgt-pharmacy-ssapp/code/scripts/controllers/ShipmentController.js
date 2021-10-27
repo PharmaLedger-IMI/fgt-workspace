@@ -73,8 +73,8 @@ export default class ShipmentController extends LocalizedController{
                     const {stock, orderId} = props;
                     return await self._handleCreateShipment.call(self, shipment, stock, orderId);
                 default:
-                    const {newStatus, popupOptions} = props;
-                    return await self._handleUpdateShipmentStatus.call(self, shipment, newStatus, popupOptions);
+                    const {newStatus, extraInfo} = props;
+                    return await self._handleUpdateShipmentStatus.call(self, shipment, newStatus, extraInfo);
             }
         });
     }
@@ -89,21 +89,18 @@ export default class ShipmentController extends LocalizedController{
         }, obj);
     }
 
-    async _handleUpdateShipmentStatus(shipment, newStatus, popupOptions){
+    async _handleUpdateShipmentStatus(shipment, newStatus, extraInfo){
         const self = this;
         const oldStatus = shipment.status.status;
+        const oldExtraInfo = shipment.status.extraInfo;
         shipment.status['status'] = newStatus;
+        shipment.status['extraInfo'] = extraInfo;
         const errors = shipment.validate(oldStatus);
-        if (errors)
+        if (errors) {
+            shipment.status['status'] = oldStatus; // rollback
+            shipment.status['extraInfo'] = oldExtraInfo;
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
-
-        const popupCallback = (evt) => shipment.status['extraInfo'] = evt.extraInfo;
-        const alert = await self._showPopup('manage.confirm', popupOptions, popupCallback, oldStatus, newStatus);
-
-        const {role} = await alert.onDidDismiss();
-
-        if (BUTTON_ROLES.CONFIRM !== role)
-            return console.log(`Shipment update canceled by clicking ${role}`);
+        }
 
         const loader = self._getLoader(self.translate('manage.loading'));
         await loader.present();

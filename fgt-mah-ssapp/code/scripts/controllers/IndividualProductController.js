@@ -38,8 +38,8 @@ export default class IndividualProductController extends LocalizedController{
         self.on(EVENT_ACTION, async (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            const {individualProduct, newStatus} = evt.detail;
-            await self._handleUpdateIndividualProduct.call(self, individualProduct, newStatus);
+            const {individualProduct, newStatus, extraInfo} = evt.detail;
+            await self._handleUpdateIndividualProduct.call(self, individualProduct, newStatus, extraInfo);
         });
     }
 
@@ -53,23 +53,17 @@ export default class IndividualProductController extends LocalizedController{
         }, obj);
     }
 
-    async _handleUpdateIndividualProduct(individualProduct, newStatus){
+    async _handleUpdateIndividualProduct(individualProduct, newStatus, extraInfo){
         const self = this;
         const oldStatus = IndividualProductStatus.COMMISSIONED;
+        const oldExtraInfo = individualProduct.status.extraInfo;
         individualProduct.status = newStatus;
+        individualProduct.extraInfo = extraInfo;
         const errors = individualProduct.validate(oldStatus);
         if (errors) {
             individualProduct.status = oldStatus; // rollback
+            individualProduct.extraInfo = oldExtraInfo;
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
-        }
-
-        const alert = await self.showConfirm('manage.confirm', individualProduct.status, newStatus);
-
-        const {role} = await alert.onDidDismiss();
-
-        if (BUTTON_ROLES.CONFIRM !== role) {
-            individualProduct.status = oldStatus; // rollback
-            return console.log(`Shipment update canceled by clicking ${role}`);
         }
 
         const loader = self._getLoader(self.translate('manage.loading'));
