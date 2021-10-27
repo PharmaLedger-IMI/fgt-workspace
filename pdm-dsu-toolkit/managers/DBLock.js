@@ -1,3 +1,9 @@
+/**
+ * Simple Database Lock system to handle minor concurrency issues
+ *
+ * @class DBLock
+ * @memberOf Managers
+ **/
 class DBLock {
     _cache = {};
     _storage;
@@ -5,21 +11,39 @@ class DBLock {
     _schedule = [];
     _timeout = 10;
 
+    /**
+     * @param {*} db DSU Database implementation
+     * @param {number} timeout timeout for scheduling operations in ms. defaults to 10ms
+     * @constructor
+     */
     constructor(db, timeout){
         this._storage = db;
         this._timeout = timeout || this._timeout;
         console.log(`Created DB Lock`);
     }
 
+    /**
+     * @param {string} tableName
+     * @returns {boolean} the DB Status regarding that table
+     */
     isLocked(tableName){
         return this._cache[tableName] && this._cache[tableName] !== -1;
     }
 
+    /**
+     * Schedules a method call for after the current db operation has benn finished
+     * @param {() => void} method
+     */
     schedule(method){
         console.log(`Scheduling db method call...`)
         this._schedule.push(method);
     }
 
+    /**
+     * Allows a different manager to act in the current transaction
+     * @param {string} tableName
+     * @param {Manager} manager
+     */
     allow(tableName, manager){
         const allowedTable = manager.tableName;
         if (this._allows[allowedTable])
@@ -28,6 +52,11 @@ class DBLock {
         this._allows[allowedTable] = tableName;
     }
 
+    /**
+     * Disallows a different manager to act in the current transaction
+     * @param {string} tableName
+     * @param {Manager} manager
+     */
     disallow(tableName, manager){
         const allowedTable = manager.tableName;
         if (!this._allows[allowedTable])
@@ -36,6 +65,11 @@ class DBLock {
         delete this._allows[allowedTable];
     }
 
+    /**
+     * Begins or continues a db batch operation depending if there's one in progress or not
+     * @param {string} tableName
+     * @throws {Error} error when a batch operation is already in progress
+     */
     beginBatch(tableName){
 
         if (tableName in this._allows)
@@ -51,6 +85,10 @@ class DBLock {
         }
     }
 
+    /**
+     * Checks is there are pending method calls and executes them in order
+     * @private
+     */
     _executeFromSchedule(){
         const method = this._schedule.shift();
         if (method){
@@ -64,6 +102,12 @@ class DBLock {
         }
     }
 
+    /**
+     * Commits or continues a db batch operation depending if the operation counter has run out
+     * @param {string} tableName
+     * @param {boolean} [force] when true forces the commit regardless of the counter. defaults to false
+     * @param {(err) => void} callback
+     */
     commitBatch(tableName, force, callback){
         if (!callback){
             callback = force;
@@ -99,6 +143,11 @@ class DBLock {
         callback();
     }
 
+    /**
+     * Cancels the batch operation in progress
+     * @param {string} tableName
+     * @param {(err) => void} callback
+     */
     cancelBatch(tableName, callback){
         if (this._cache[tableName] > 0){
             delete this._cache[tableName];
