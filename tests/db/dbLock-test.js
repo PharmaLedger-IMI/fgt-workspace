@@ -96,7 +96,10 @@ const startTransaction = function(dbLock, tableName, callback){
 
 }
 
-const operationsTransaction = function(tableName, timeout, callback){
+const operationsTransaction = function(pass, tableName, timeout, callback){
+    if(!pass)
+        return callback('Error in Operation');
+
     MockDB.operations.push(`Performing action on table ${tableName}`);
 
     setTimeout(() => {
@@ -105,26 +108,27 @@ const operationsTransaction = function(tableName, timeout, callback){
     
 }
 
-const finishTransaction = function(dbLock, tableName, force, callback){
+const finishTransaction = function(pass, dbLock, tableName, force, callback){
 
-    const commitBatch = function (tableName, callback){
+    const commitBatch = function (tableName, cb){
         MockDB.operations.push('DB Lock commit');
-        return dbLock.commitBatch(tableName, callback);
+        return dbLock.commitBatch(tableName, cb);
     }
 
-    const dbAction = function (dbLock, tableName, force, callback){
+    const dbAction = function (pass, dbLock, tableName, force, callback){
 
-        commitBatch(tableName, (err) => {
+        commitBatch(tableName, () => {
+            if(pass)
+                return callback(undefined);
 
-            
-            callback();            
+            callback('Error commiting');
 
-        })
+        });
 
 
     }
 
-    dbAction(dbLock, tableName, force, callback);
+    dbAction(pass, dbLock, tableName, force, callback);
 
 
 }
@@ -146,11 +150,16 @@ const completeTransaction = function(reference, dbLock, tableName, timeout, forc
     startTransaction(dbLock, tableName,() => {             
         MockDB.operations.push(`${reference} ${currentOperation}: Start Operation on table ${tableName}`);
         currentOperation++;
-        operationsTransaction(tableName, timeout, () => {
+        operationsTransaction(true, tableName, timeout, (err) => {
+            if(err)
+                throw new Error('Error on Operation')
             MockDB.operations.push(`${reference} ${currentOperation}: Commit Operation on table ${tableName}`);
             currentOperation++;
-            finishTransaction(dbLock, tableName, force, () => {
-                callback();
+            finishTransaction(true, dbLock, tableName, force, (err) => {
+                if(err)
+                    throw new Error('Error commiting');
+
+                callback(undefined);
             })            
         })       
     })
@@ -261,7 +270,8 @@ assert.callback("DB Lock test", (testFinishCallback) => {
             let counter = 0;
 
             counter++;
-            testMultipleAsyncronousTransactions(dbLock, tableNames, false, () => {
+            testMultipleAsyncronousTransactions(dbLock, tableNames, false, (err) => {
+                assert.true(err === undefined, 'Async Transactions failed');
                 counter--;
                 console.log(MockDB.operations);
                 assert.true(utils.isEqual(MockDB.operations, compareTestMultipleAsync), "Operations should follow a certain order")
