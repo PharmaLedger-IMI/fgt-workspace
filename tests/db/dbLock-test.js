@@ -82,13 +82,9 @@ const startTransaction = function(dbLock, tableName, callback){
 }
 
 const operationsTransaction = function(pass, tableName, timeout, callback){
-    if(!pass)
-        return callback('Error in Operation');
-
-    MockDB.operations.push(`Performing action on table ${tableName}`);
-
     setTimeout(() => {
-        callback();
+        MockDB.operations.push(`Performing action on table ${tableName}`);
+        callback(!pass ? callback('Error in Operation') : callback(undefined));
     }, timeout);
     
 }
