@@ -250,9 +250,11 @@ function StatusService(domain, strategy){
                                     if (!status.extraInfo)
                                         return returnFunc();
 
-                                    const extraInfoStatus = status.status in extraInfo ? extraInfo[status.status] : [];
-                                    const addExtraInfo = { [status.status]: extraInfoStatus.concat(status.extraInfo) }
-                                    extraInfo = Object.assign(extraInfo, addExtraInfo)
+                                    if (extraInfo.hasOwnProperty(status.status)) {
+                                        extraInfo[status.status].push(status.extraInfo)
+                                    } else {
+                                        extraInfo[status.status] = [status.extraInfo]
+                                    }
                                     dsu.writeFile(EXTRA_INFO_PATH, JSON.stringify(extraInfo), returnFunc);
                                 });
                             });
