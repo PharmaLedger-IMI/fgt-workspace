@@ -162,7 +162,6 @@ function StatusService(domain, strategy){
     };
 
     this.update = function(keySSI, status, id, callback){
-        const self = this;
 
         if (!callback){
             callback = id;
@@ -170,8 +169,6 @@ function StatusService(domain, strategy){
         } else {
             status = parseStatus(status, id);
         }
-
-        let data = JSON.stringify(status);
 
         if (isSimple){
             keySSI = utils.getKeySSISpace().parse(keySSI);
@@ -241,7 +238,7 @@ function StatusService(domain, strategy){
                                     return cb(err);
                                 dsu.readFile(EXTRA_INFO_PATH, (err, extraInfo) => {
                                     if (err)
-                                        extraInfo = undefined;
+                                        extraInfo = {};
                                     else {
                                         try {
                                             extraInfo = JSON.parse(extraInfo);
@@ -253,7 +250,9 @@ function StatusService(domain, strategy){
                                     if (!status.extraInfo)
                                         return returnFunc();
 
-                                    extraInfo = `${extraInfo || ''}${extraInfo ? '. ' : ''}${status.extraInfo}`; // Object.assign({}, extraInfo, status.extraInfo);
+                                    const extraInfoStatus = status.status in extraInfo ? extraInfo[status.status] : [];
+                                    const addExtraInfo = { [status.status]: extraInfoStatus.concat(status.extraInfo) }
+                                    extraInfo = Object.assign(extraInfo, addExtraInfo)
                                     dsu.writeFile(EXTRA_INFO_PATH, JSON.stringify(extraInfo), returnFunc);
                                 });
                             });

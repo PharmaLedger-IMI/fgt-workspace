@@ -20,7 +20,7 @@ const validateStatus = function(status){
 class Status {
     status;
     log = [];
-    extraInfo;
+    extraInfo = {};
 
     /**
      * @param {Status | {}} status
