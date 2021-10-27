@@ -2,7 +2,6 @@ const path = require('path');
 
 require(path.join('../../privatesky/psknode/bundles', 'testsRuntime.js'));     // test runtime
 require(path.join('../../privatesky/psknode/bundles', 'pskruntime.js'));
-const tir = require("../../privatesky/psknode/tests/util/tir");                // the test server framework
 
 const dc = require("double-check");
 const assert = dc.assert;
@@ -51,11 +50,6 @@ const MockDB = {
         // }, MockDB.interval);
     }
 }
-
-
-const dataBaseAPI = require("opendsu").loadApi('db');
-const keySSIApis = require('opendsu').loadApi('keyssi');
-
 
 const {DB} = require('../../fgt-dsu-wizard/constants');
 
@@ -141,7 +135,7 @@ const completeTransaction = function(reference, dbLock, tableName, timeout, forc
     startTransaction(dbLock, tableName,() => {             
         MockDB.operations.push(`${reference} ${currentOperation}: Start Operation on table ${tableName}`);
         currentOperation++;
-        operationsTransaction(false, tableName, timeout, (err) => {
+        operationsTransaction(true, tableName, timeout, (err) => {
             if(err)
                 cancelTransaction(err, dbLock, tableName, callback);
             MockDB.operations.push(`${reference} ${currentOperation}: Commit Operation on table ${tableName}`);
@@ -225,60 +219,57 @@ assert.callback("DB Lock test", (testFinishCallback) => {
             let tableNames = ['Status', 'AnotherStatus']
 
             const compareTestMultipleAsync = ['First Transaction: 1: Start Transaction on table Status',
-            'Called Begin batch db Status',
-            'Called Begin batch dbLock Status',
-            'First Transaction:  2: Start Operation on table Status',
-            'Performing action on table Status',
-            'Third Transaction: 1: Start Transaction on table AnotherStatus',
-            'There Batch Already in Progress!',
-            'First Transaction:  3: Commit Operation on table Status',
-            'DB Lock commit',
-            'Commiting Batch db Status',
-            'Fifth Transaction1: Start Transaction on table Status',
-            'Called Begin batch db Status',
-            'Called Begin batch dbLock Status',
-            'Fifth Transaction 2: Start Operation on table Status',
-            'Performing action on table Status',
-            'Forth Transaction: 1: Start Transaction on table AnotherStatus',
-            'There Batch Already in Progress!',
-            'Fifth Transaction 3: Commit Operation on table Status',
-            'DB Lock commit',
-            'Commiting Batch db Status',
-            'Second Transaction: 1: Start Transaction on table Status',
-            'Called Begin batch db Status',
-            'Called Begin batch dbLock Status',
-            'Second Transaction:  2: Start Operation on table Status',
-            'Performing action on table Status',
-            'Second Transaction:  3: Commit Operation on table Status',
-            'DB Lock commit',
-            'Commiting Batch db Status',
-            'Called Begin batch db AnotherStatus',
-            'Called Begin batch dbLock AnotherStatus',
-            'Third Transaction:  2: Start Operation on table AnotherStatus',
-            'Performing action on table AnotherStatus',
-            'Third Transaction:  3: Commit Operation on table AnotherStatus',
-            'DB Lock commit',
-            'Commiting Batch db AnotherStatus',
-            'Called Begin batch db AnotherStatus',
-            'Called Begin batch dbLock AnotherStatus',
-            'Forth Transaction:  2: Start Operation on table AnotherStatus',
-            'Performing action on table AnotherStatus',
-            'Forth Transaction:  3: Commit Operation on table AnotherStatus',
-            'DB Lock commit',
-            'Commiting Batch db AnotherStatus']
+                'Called Begin batch db Status',
+                'Called Begin batch dbLock Status',
+                'First Transaction:  2: Start Operation on table Status',
+                'Performing action on table Status',
+                'Third Transaction: 1: Start Transaction on table AnotherStatus',
+                'There Batch Already in Progress!',
+                'First Transaction:  3: Commit Operation on table Status',
+                'DB Lock commit',
+                'Commiting Batch db Status',
+                'Fifth Transaction1: Start Transaction on table Status',
+                'Called Begin batch db Status',
+                'Called Begin batch dbLock Status',
+                'Fifth Transaction 2: Start Operation on table Status',
+                'Performing action on table Status',
+                'Forth Transaction: 1: Start Transaction on table AnotherStatus',
+                'There Batch Already in Progress!',
+                'Fifth Transaction 3: Commit Operation on table Status',
+                'DB Lock commit',
+                'Commiting Batch db Status',
+                'Second Transaction: 1: Start Transaction on table Status',
+                'Called Begin batch db Status',
+                'Called Begin batch dbLock Status',
+                'Second Transaction:  2: Start Operation on table Status',
+                'Performing action on table Status',
+                'Second Transaction:  3: Commit Operation on table Status',
+                'DB Lock commit',
+                'Commiting Batch db Status',
+                'Called Begin batch db AnotherStatus',
+                'Called Begin batch dbLock AnotherStatus',
+                'Third Transaction:  2: Start Operation on table AnotherStatus',
+                'Performing action on table AnotherStatus',
+                'Third Transaction:  3: Commit Operation on table AnotherStatus',
+                'DB Lock commit',
+                'Commiting Batch db AnotherStatus',
+                'Called Begin batch db AnotherStatus',
+                'Called Begin batch dbLock AnotherStatus',
+                'Forth Transaction:  2: Start Operation on table AnotherStatus',
+                'Performing action on table AnotherStatus',
+                'Forth Transaction:  3: Commit Operation on table AnotherStatus',
+                'DB Lock commit',
+                'Commiting Batch db AnotherStatus']
 
             let counter = 0;
 
             counter++;
             testMultipleAsyncronousTransactions(dbLock, tableNames, false, (err) => {
-                if(err) {
-                err = undefined;
                 assert.true(err === undefined, 'Async Transactions failed');
                 counter--;
                 console.log(MockDB.operations);
-                //assert.true(utils.isEqual(MockDB.operations, compareTestMultipleAsync), "Operations should follow a certain order")
+                assert.true(utils.isEqual(MockDB.operations, compareTestMultipleAsync), "Operations should follow a certain order")
                 testFinish(counter, testFinishCallback);
-                }
             })
 
-}, 50000);
+}, 100000);
