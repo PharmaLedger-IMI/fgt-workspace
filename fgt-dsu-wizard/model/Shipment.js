@@ -1,5 +1,7 @@
 const ShipmentStatus = require('./ShipmentStatus');
 const ShipmentLine = require('./ShipmentLine');
+const Status = require('./Status');
+
 
 /**
  * @class Shipment

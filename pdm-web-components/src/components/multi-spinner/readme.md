@@ -17,6 +17,7 @@
 ### Used by
 
  - [batch-chip](../batch-chip)
+ - [managed-batch](../managed-batch)
  - [managed-batch-list-item](../managed-batch-list-item)
  - [managed-individual-product-list-item](../managed-individual-product-list-item)
  - [managed-product-list-item](../managed-product-list-item)
@@ -29,6 +30,7 @@
 ```mermaid
 graph TD;
   batch-chip --> multi-spinner
+  managed-batch --> multi-spinner
   managed-batch-list-item --> multi-spinner
   managed-individual-product-list-item --> multi-spinner
   managed-product-list-item --> multi-spinner

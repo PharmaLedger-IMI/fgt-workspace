@@ -108,10 +108,10 @@ export class PdmIonTable implements ComponentInterface {
 
     this.model = [...newModel];
 
-    this.element.querySelectorAll(`div[id="ion-table-content"] > *`).forEach((e,i) => {
+    this.element.querySelectorAll(`div[id="ion-table-content"] > *`).forEach(async (e,i) => {
       if (equals.indexOf(i) !== -1)
         if (e.refresh)
-          e.refresh();
+          await e.refresh();
     });
   }
 
@@ -128,7 +128,7 @@ export class PdmIonTable implements ComponentInterface {
         }
         this.currentPage = contents.currentPage;
         this.pageCount = contents.totalPages;
-        this.updateTable(contents.items)
+        this.updateTable(contents.items);
       });
     } else {
       await this.webManager.getAll( false, undefined, (err, contents) => {
@@ -136,7 +136,7 @@ export class PdmIonTable implements ComponentInterface {
           this.sendError(`Could not list items`, err);
           return;
         }
-        this.updateTable(contents)
+        this.updateTable(contents);
       });
     }
   }

@@ -1,5 +1,6 @@
 const Utils = require("../../pdm-dsu-toolkit/model/Utils");
 const BatchStatus = require('./BatchStatus');
+const Status = require('./Status');
 const IndividualProduct = require('./IndividualProduct');
 
 /**
@@ -80,13 +81,22 @@ class Batch {
         return {label: this.batchNumber, value: this.batchNumber}
     }
 
-    validate() {
+    /**
+     * Validate if everything seems ok with the properties of this object.
+     * @param {string} [oldStatus] if oldStatus validation is available
+     * @returns undefined if all ok. An array of errors if not all ok.
+     */
+    validate(oldStatus) {
         if (!this.batchNumber) {
             return 'Batch number is mandatory field';
         }
         if (!this.expiry) {
             return  'Expiration date is a mandatory field.';
         }
+
+        if (oldStatus && Batch.getAllowedStatusUpdates(oldStatus).indexOf(this.batchStatus.status || this.batchStatus) === -1)
+            return `Status update from ${oldStatus} to ${this.batchStatus.status || this.batchStatus} is not allowed`;
+
         return undefined;
     }
 
@@ -102,6 +112,17 @@ class Batch {
 
     addSerialNumbers(serials){
         throw new Error("Not implemented");
+    }
+
+    static getAllowedStatusUpdates(status){
+        switch(status){
+            case BatchStatus.COMMISSIONED:
+                return [BatchStatus.QUARANTINED, BatchStatus.RECALL];
+            case BatchStatus.QUARANTINED:
+                return [BatchStatus.COMMISSIONED, BatchStatus.RECALL];
+            default:
+                return [];
+        }
     }
 }
 

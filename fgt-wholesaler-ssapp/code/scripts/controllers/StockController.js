@@ -1,5 +1,4 @@
-import {LocalizedController, EVENT_REFRESH, HistoryNavigator} from "../../assets/pdm-web-components/index.esm.js";
-const Product = require('wizard').Model.Product;
+import { LocalizedController, HistoryNavigator, EVENT_REFRESH } from "../../assets/pdm-web-components/index.esm.js";
 
 export default class StockController extends LocalizedController{
     initializeModel = () => ({});
@@ -11,6 +10,7 @@ export default class StockController extends LocalizedController{
 
         const participantManager = wizard.Managers.getParticipantManager();
         this.stockManager = wizard.Managers.getStockManager(participantManager);
+        this.stockManager.bindController(this);
         let self = this;
         this.model = this.initializeModel();
         HistoryNavigator.registerTab({

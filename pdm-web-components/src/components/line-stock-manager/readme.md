@@ -98,6 +98,7 @@ graph TD;
   line-stock-manager --> pdm-item-organizer
   batch-chip --> multi-spinner
   batch-chip --> generic-chip
+  batch-chip --> status-badge
   managed-orderline-stock-chip --> generic-chip
   pdm-item-organizer --> more-chip
   managed-order --> line-stock-manager

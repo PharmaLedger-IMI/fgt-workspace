@@ -1,6 +1,6 @@
 const utils = require('../../pdm-dsu-toolkit/services/utils');
 const {STATUS_MOUNT_PATH, INFO_PATH, LINES_PATH, ORDER_MOUNT_PATH} = require('../constants');
-const {Shipment, ShipmentStatus, Status} = require('../model');
+const {Shipment, ShipmentStatus, Status, Order} = require('../model');
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
@@ -274,6 +274,14 @@ function ShipmentService(domain, strategy) {
                 });
             });
         }, callback);
+    }
+
+    const validateUpdate = function(shipmentFromSSI, updatedShipment, callback){
+        if (!utils.isEqual(shipmentFromSSI, updatedShipment, "status", "shipmentLines", "orderSSI"))
+            return callback('invalid update');
+        if (Shipment.getAllowedStatusUpdates(shipmentFromSSI.status.status).indexOf(updatedShipment.status.status) === -1)
+            return callback(`Status update is not valid`);
+        return callback();
     }
 
     this.update = function(keySSI, shipment, id, callback){

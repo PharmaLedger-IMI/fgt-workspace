@@ -1,4 +1,5 @@
 const utils = require('../../pdm-dsu-toolkit/services/utils');
+const ModelUtils = require('../model/utils');
 const {STATUS_MOUNT_PATH, INFO_PATH} = require('../constants');
 
 /**
@@ -14,6 +15,8 @@ function BatchService(domain, strategy){
     const keyGenFunction = require('../commands/setBatchSSI').createBatchSSI;
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
+    const statusService = new (require('./StatusService'))(domain, strategy);
+    const productService = new ( require('./ProductService'))(domain, strategy);
 
     this.generateKey = function(gtin, batchNumber){
         let keyGenData = {
@@ -26,6 +29,26 @@ function BatchService(domain, strategy){
     this.getDeterministic = function(gtin, batchNumber, callback){
         const key = this.generateKey(gtin, batchNumber);
         this.get(key, callback);
+    }
+    
+    const validateUpdate = function(batchFromSSI, updatedBatch, callback){
+        if (!ModelUtils.isEqual(batchFromSSI, updatedBatch, "batchStatus"))
+            return callback('invalid update');
+        return callback();
+    }
+
+    let createBatchStatus = function (id, status, callback) {
+        if (typeof status === 'function') {
+            callback = status;
+            status = id;
+            id = undefined;
+        }
+        statusService.create(status, id, (err, keySSI) => {
+            if (err)
+                return callback(err);
+            console.log(`BatchStatus DSU created with SSI ${keySSI.getIdentifier(true)}`);
+            callback(undefined, keySSI);
+        });
     }
 
     /**
@@ -47,7 +70,20 @@ function BatchService(domain, strategy){
                 } catch (e) {
                     return callback(`unable to parse Batch: ${data}`);
                 }
-                callback(undefined, batch);
+
+                utils.getMounts(dsu, '/', STATUS_MOUNT_PATH, (err, mounts) => {
+                    if(err)
+                        return callback(err);
+                    
+                    statusService.get(mounts[STATUS_MOUNT_PATH], (err, status) => {
+                        if(err)
+                            return callback(err);
+
+                        batch.batchStatus = status;    
+
+                        callback(undefined, batch, dsu);
+                    });
+                });
             });
         });
     }
@@ -86,10 +122,26 @@ function BatchService(domain, strategy){
                 dsu.writeFile(INFO_PATH, data, (err) => {
                     if (err)
                         return cb(err);
-                    dsu.commitBatch((err) => {
+                    
+                    productService.getDeterministic(gtin, (err, product) => {
                         if(err)
-                            return cb(err);
-                        dsu.getKeySSIAsObject(callback);
+                            return callback(err);                        
+
+                        createBatchStatus(product.manufName, batch.batchStatus, (err, statusSSI) =>{
+                            if(err)
+                                return cb(err);
+                            
+                            dsu.mount(STATUS_MOUNT_PATH, statusSSI.getIdentifier(true), (err) => {
+                                if(err)
+                                    return cb(err);
+                                    
+                                dsu.commitBatch((err) => {
+                                    if(err)
+                                        return cb(err);
+                                    dsu.getKeySSIAsObject(callback);
+                                });
+                            });
+                        });
                     });
                 });
             });
@@ -113,12 +165,68 @@ function BatchService(domain, strategy){
 
     /**
      * updates a product DSU
+     * @param {string} gtin
      * @param {KeySSI} keySSI
-     * @param {Batch} product
+     * @param {Batch} batch
      * @param {function(err?)} callback
      */
-    this.update = function (keySSI, product, callback) {
-        return callback(`Product DSUs cannot be updated`);
+    this.update = function (gtin, keySSI, batch, callback) {
+        // if batch is invalid, abort immediatly.
+        const self = this;
+
+        self.get(keySSI, (err, batchFromSSI, batchDsu) => {
+            if(err)
+                return callback(err);
+
+            if(typeof batch === 'object') {
+                let err = batch.validate(batchFromSSI.batchStatus.status);
+                if(err)
+                    return callback(err);
+            }
+
+            const cb = function(err, ...results){
+                if(err)
+                    return batchDsu.cancelBatch(err2 => {
+                        callback(err);
+                    })
+                callback(undefined, ...results);
+            }
+
+            try {
+                batchDsu.beginBatch();
+            } catch (e){
+                return callback(e);
+            }
+
+            validateUpdate(batchFromSSI, batch, (err) =>{
+                if(err)
+                    return cb(err);
+                
+                utils.getMounts(batchDsu, '/', STATUS_MOUNT_PATH, (err, mounts) => {
+                    if(err)
+                        return cb(err);
+                    
+                    if(!mounts[STATUS_MOUNT_PATH])
+                        return cb(`Missing mount path ${STATUS_MOUNT_PATH}`);
+
+                    productService.getDeterministic(gtin, (err, product) => {
+                        if(err)
+                            return callback(err);
+                        statusService.update(mounts[STATUS_MOUNT_PATH], batch.batchStatus, product.manufName, (err) => {
+                            if (err)
+                                return cb(err);
+
+                            batchDsu.commitBatch((err) => {
+                                if (err)
+                                    return cb(err);
+
+                                self.get(keySSI, callback);
+                            });
+                        });
+                    });
+                });
+            });
+        });
     }
 }
 

@@ -1,6 +1,6 @@
 const Utils = require('../../pdm-dsu-toolkit/services/utils');
 const {STATUS_MOUNT_PATH, INFO_PATH, SHIPMENT_PATH, ORDER_MOUNT_PATH} = require('../constants');
-const {OrderStatus} = require("../model");
+const {OrderStatus, Batch} = require("../model");
 
 
 /**
@@ -123,15 +123,16 @@ function OrderService(domain, strategy) {
     this.update = function (keySSI, order, callback) {
         // if product is invalid, abort immediatly.
         const self = this;
-        if (typeof order === 'object') {
-            let err = order.validate();
-            if (err)
-                return callback(err);
-        }
 
         self.get(keySSI, (err, orderFromSSI, orderDsu) => {
             if (err)
                 return callback(err);
+
+            if (typeof order === 'object') {
+                let err = order.validate();
+                if (err)
+                    return callback(err);
+            }
 
             const cb = function(err, ...results){
                 if (err)

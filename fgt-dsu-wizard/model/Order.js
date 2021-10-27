@@ -1,5 +1,6 @@
 const OrderStatus = require('./OrderStatus');
 const OrderLine = require('./OrderLine');
+const Status = require('./Status');
 
 /**
  * @class Order

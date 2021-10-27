@@ -30,6 +30,7 @@ export namespace Components {
         "loaderType"?: string;
         "mode"?: string;
         "quantity"?: number;
+        "refresh": () => Promise<void>;
     }
     interface CreateManageViewLayout {
         "backString": string;
@@ -106,6 +107,7 @@ export namespace Components {
         "reset": () => Promise<void>;
         "serialsPlaceholderString": string;
         "serialsString": string;
+        "statuses": any;
         "titleString": string;
     }
     interface ManagedBatchListItem {
@@ -427,6 +429,7 @@ export namespace Components {
     interface SlideInBoard {
     }
     interface StatusBadge {
+        "status": string;
     }
     interface StatusUpdater {
         "currentState": string;
@@ -889,10 +892,12 @@ declare namespace LocalJSX {
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "serialsPlaceholderString"?: string;
         "serialsString"?: string;
+        "statuses"?: any;
         "titleString"?: string;
     }
     interface ManagedBatchListItem {
         "gtinBatch"?: string;
+        "onFgt-request-stock-trace"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event navigation requests to tabs are made
          */
@@ -1347,6 +1352,7 @@ declare namespace LocalJSX {
     interface SlideInBoard {
     }
     interface StatusBadge {
+        "status"?: string;
     }
     interface StatusUpdater {
         "currentState"?: string;

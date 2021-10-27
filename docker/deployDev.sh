@@ -52,7 +52,8 @@ docker stop \$(docker ps -aq)
 docker rm \$(docker ps -aq)
 docker rmi \$(docker images -q)
 ( xz -d < images/$IMG_NAME | docker load )
-docker run --detach --hostname fgt --publish 8080:8080 --name $UCNAME --restart always pharmaledger/$UCNAME
+docker run --detach --hostname fgt --publish 8080:8080 --mount source=external-volume,target=/fgt-workspace/apihub-root/external-volume --name $UCNAME --restart always pharmaledger/$UCNAME
+#docker run --detach --hostname fgt --publish 8080:8080 --name $UCNAME --restart always pharmaledger/$UCNAME
 docker logs -f $UCNAME
 EOF
 

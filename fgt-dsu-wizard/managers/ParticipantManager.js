@@ -39,7 +39,12 @@ class ParticipantManager extends BaseManager{
                         if (err)
                             return callback(err);
                         manager.traceabilityManager = traceabilityManager;
-                        callback(undefined, manager);
+                        require('./NotificationManager')(this, (err, notificationManager) => {
+                            if (err)
+                                return callback(err);
+                            manager.notificationManager = notificationManager;
+                            callback(undefined, manager);
+                        });
                     });
                 });
             });
@@ -47,6 +52,7 @@ class ParticipantManager extends BaseManager{
         this.directoryManager = this.directoryManager || undefined;
         this.stockManager = this.stockManager || undefined;
         this.traceabilityManager = this.traceabilityManager || undefined;
+        this.notificationManager = this.notificationManager || undefined;
     };
 
     setController(controller) {
@@ -55,6 +61,22 @@ class ParticipantManager extends BaseManager{
 
         // We use the body because popovers are attached to the doc, not the element
         const listenerElement = controller.element.closest('body');
+
+        listenerElement.addEventListener(EVENTS.STOCK_TRACE, async (evt) => {
+            const sendError = async function(msg, err){
+                await loader.dismiss();
+                controller.showErrorToast(msg, err);
+            }
+            const { gtin, batch, manufName } = evt.detail;
+            const loader = controller._getLoader(`Requesting stock from Partners for ${gtin} Batch: ${batch}`);
+            await loader.present();
+            self.stockManager.getStockTraceability(manufName, gtin, batch, async (err, stockTrace) => {
+                if (err)
+                    return await sendError(err)
+                await loader.dismiss();
+                console.log('# StockManagement stockTrace=', stockTrace)
+            })
+        })
 
         listenerElement.addEventListener(EVENTS.TRACK.REQUEST, async (evt) => {
             evt.preventDefault();

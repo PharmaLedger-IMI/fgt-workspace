@@ -190,9 +190,41 @@
       }
     },
     "manage": {
-      "title": "Manage Batch"
+      "title": "Manage Batch",
+      "status": "Batch Status:",
+      "update": "Update Batch Status:",
+      "no-update": "The Batch Status Cannot be Updated.",
+      "confirm": {
+        "message": "Please confirm Batch status update from {0} to {1}",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Updating Batch. Please wait...",
+      "success": "Batch Successfully updated"
     },
     "back": "Back to {0}",
+    "statuses": {
+      "commissioned": {
+        "action": "Commission Batch",
+        "label": "Commissioned",
+        "color": "success",
+        "paths": []
+      },
+      "quarantined": {
+        "action": "Quarantine Batch",
+        "label": "Quarantined",
+        "color": "warning",
+        "paths": []
+      },
+      "recall": {
+        "action": "Recall Batch",
+        "label": "Recalled",
+        "color": "danger",
+        "paths": []
+      }
+    },
     "error": {
       "bind": "Could not bind Product to Batch",
       "invalid": "Invalid Batch:\n",

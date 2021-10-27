@@ -39,12 +39,14 @@ Type: `Promise<void>`
 
 ### Depends on
 
+- [status-badge](../status-badge)
 - [pdm-item-organizer](../pdm-item-organizer)
 - [list-item-layout](../list-item-layout)
 
 ### Graph
 ```mermaid
 graph TD;
+  managed-shipment-list-item --> status-badge
   managed-shipment-list-item --> pdm-item-organizer
   managed-shipment-list-item --> list-item-layout
   pdm-item-organizer --> more-chip

@@ -63,13 +63,38 @@ export class PdmItemOrganizer {
   updateParsedProps(newProps){
     if (!newProps)
       this.parsedProps = undefined;
-    else
-      try{
-        this.parsedProps = JSON.parse(newProps);
+    else {
+      const oldProps = this.parsedProps;
+      const equals = [];
+      let parsedProps: [{}];
+      try {
+        parsedProps = JSON.parse(newProps);
       } catch (e){
         console.log("could not parse props");
         this.parsedProps = undefined;
+        return;
       }
+
+      if (Array.isArray(oldProps) && Array.isArray(parsedProps)){
+        parsedProps.forEach((p,i) => {
+          try {
+            if (p[this.idProp] === oldProps[i][this.idProp])
+              equals.push(i);
+          } catch (e) {
+            // ignore. means parsedProps has more that before
+          }
+        });
+      }
+
+      // @ts-ignore
+      this.parsedProps = [...parsedProps];
+
+      this.element.querySelectorAll(`${this.componentName}`).forEach(async (e,i) => {
+        if (equals.indexOf(i) !== -1)
+          if (e.refresh)
+            await e.refresh();
+      });
+    }
   }
 
   @Listen('resize', {target: 'window'})

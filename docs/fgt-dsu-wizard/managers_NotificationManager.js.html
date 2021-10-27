@@ -1,0 +1,389 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability DSU Wizard Documentation managers/NotificationManager.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability DSU Wizard Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/epi-workspace/fgt-dsu-wizard.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com"
+                        >
+                            Example Application - Finished Goods Traceability
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-fgt-dsu-wizard.html">fgt-dsu-wizard</a></li></ul><h3>Namespaces</h3><ul><li><a href="Commands.html">Commands</a></li><li><a href="Constants.html">Constants</a></li><li><a href="Managers.html">Managers</a></li><li><a href="Model.html">Model</a></li><li><a href="module-fgt-dsu-wizard-Server.html">Server</a></li><li><a href="Resolvers.html">Resolvers</a></li><li><a href="Services.html">Services</a></li></ul><h3>Classes</h3><ul><li><a href="Batch.html">Batch</a></li><li><a href="DirectoryEntry.html">DirectoryEntry</a></li><li><a href="IndividualProduct.html">IndividualProduct</a></li><li><a href="IndividualReceipt.html">IndividualReceipt</a></li><li><a href="MAH.html">MAH</a></li><li><a href="Managers.BatchManager.html">BatchManager</a></li><li><a href="Managers.DirectoryManager.html">DirectoryManager</a></li><li><a href="Managers.IndividualProductManager.html">IndividualProductManager</a></li><li><a href="Managers.IssuedOrderManager.html">IssuedOrderManager</a></li><li><a href="Managers.IssuedShipmentManager.html">IssuedShipmentManager</a></li><li><a href="Managers.NotificationManager.html">NotificationManager</a></li><li><a href="Managers.OrderManager.html">OrderManager</a></li><li><a href="Managers.ParticipantManager.html">ParticipantManager</a></li><li><a href="Managers.ProductManager.html">ProductManager</a></li><li><a href="Managers.ReceiptManager.html">ReceiptManager</a></li><li><a href="Managers.ReceivedOrderManager.html">ReceivedOrderManager</a></li><li><a href="Managers.ReceivedShipmentManager.html">ReceivedShipmentManager</a></li><li><a href="Managers.SaleManager.html">SaleManager</a></li><li><a href="Managers.ShipmentLineManager.html">ShipmentLineManager</a></li><li><a href="Managers.ShipmentManager.html">ShipmentManager</a></li><li><a href="Managers.StockManager.html">StockManager</a></li><li><a href="Managers.TraceabilityManager.html">TraceabilityManager</a></li><li><a href="Model.Batch.html">Batch</a></li><li><a href="Model.DirectoryEntry.html">DirectoryEntry</a></li><li><a href="Model.FinalProduct.html">FinalProduct</a></li><li><a href="Model.IndividualProduct.html">IndividualProduct</a></li><li><a href="Model.MAH.html">MAH</a></li><li><a href="Model.Notification.html">Notification</a></li><li><a href="Model.Order.html">Order</a></li><li><a href="Model.OrderLine.html">OrderLine</a></li><li><a href="Model.Participant.html">Participant</a></li><li><a href="Model.Pharmacy.html">Pharmacy</a></li><li><a href="Model.Product.html">Product</a></li><li><a href="Model.Receipt.html">Receipt</a></li><li><a href="Model.Sale.html">Sale</a></li><li><a href="Model.Shipment.html">Shipment</a></li><li><a href="Model.ShipmentCode.html">ShipmentCode</a></li><li><a href="Model.ShipmentLine.html">ShipmentLine</a></li><li><a href="Model.Status.html">Status</a></li><li><a href="Model.Stock.html">Stock</a></li><li><a href="Model.TrackingCode.html">TrackingCode</a></li><li><a href="Model.Wholesaler.html">Wholesaler</a></li><li><a href="Notification.html">Notification</a></li><li><a href="Order.html">Order</a></li><li><a href="OrderLine.html">OrderLine</a></li><li><a href="Participant.html">Participant</a></li><li><a href="Pharmacy.html">Pharmacy</a></li><li><a href="Product.html">Product</a></li><li><a href="Receipt.html">Receipt</a></li><li><a href="Resolvers.BatchResolver.html">BatchResolver</a></li><li><a href="Resolvers.ProductResolver.html">ProductResolver</a></li><li><a href="Sale.html">Sale</a></li><li><a href="Shipment.html">Shipment</a></li><li><a href="ShipmentCode.html">ShipmentCode</a></li><li><a href="ShipmentLine.html">ShipmentLine</a></li><li><a href="Status.html">Status</a></li><li><a href="Stock.html">Stock</a></li><li><a href="TrackingCode.html">TrackingCode</a></li><li><a href="Wholesaler.html">Wholesaler</a></li></ul><h3>Global</h3><ul><li><a href="global.html#confirmWithStock">confirmWithStock</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#fromProduct">fromProduct</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#traceStockManagement">traceStockManagement</a></li><li><a href="global.html#update">update</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>managers/NotificationManager.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const {DB} = require('../constants');
+const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
+const {Notification, Batch, Stock} = require('../model');
+const getStockManager = require('./StockManager');
+const {functionCallIterator} = require('../services').utils;
+
+/**
+ * Batch Manager Class
+ *
+ * Manager Classes in this context should do the bridge between the controllers
+ * and the services exposing only the necessary api to the controllers while encapsulating &lt;strong>all&lt;/strong> business logic.
+ *
+ * All Manager Classes should be singletons.
+ *
+ * This complete separation of concerts is very beneficial for 2 reasons:
+ * &lt;ul>
+ *     &lt;li>Allows for testing since there's no browser dependent code (i think) since the DSUStorage can be 'mocked'&lt;/li>
+ *     &lt;li>Allows for different controllers access different business logic when necessary (while benefiting from the singleton behaviour)&lt;/li>
+ * &lt;/ul>
+ *
+ * @param {ParticipantManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @class NotificationManager
+ * @extends Manager
+ * @memberOf Managers
+ */
+class NotificationManager extends Manager{
+    constructor(participantManager, callback) {
+        super(participantManager, DB.notifications, ['senderId', 'subject'], (err, manager) => {
+            if (err)
+                return callback ? callback(err) : console.log(err);
+            manager.registerMessageListener((message, cb) => {
+                manager.processMessageRecord(message, (err) => {
+                    manager.refreshController();
+                    cb(err);
+                });
+            });
+
+            manager.stockManager = manager.stockManager || getStockManager(participantManager);
+
+            if (callback)
+                callback(undefined, manager);
+        });
+        this.stockManager = this.stockManager || getStockManager(participantManager);
+    }
+
+    /**
+     * generates the db's key for the batch
+     * @param {string} senderId
+     * @param {string} subject
+     * @return {string}
+     * @private
+     */
+    _genCompostKey(senderId, subject){
+        return `${senderId}-${subject}-${Date.now()}`;
+    }
+
+    /**
+     * Must wrap the entry in an object like:
+     * &lt;pre>
+     *     {
+     *         index1: ...
+     *         index2: ...
+     *         value: item
+     *     }
+     * &lt;/pre>
+     * so the DB can be queried by each of the indexes and still allow for lazy loading
+     * @param {string} key
+     * @param {Notification} item
+     * @param {string|object} record
+     * @return {object} the indexed object to be stored in the db
+     * @protected
+     * @override
+     */
+    _indexItem(key, item, record){
+        return {
+            senderId: item.senderId,
+            subject: item.subject,
+            body: item.body
+        }
+    };
+
+    /**
+     * Processes the received messages, saves them to the the table and deletes the message
+     * @param {*} message
+     * @param {function(err)} callback
+     * @protected
+     * @override
+     */
+    _processMessageRecord(message, callback) {
+        let self = this;
+        if (!message || typeof message !== 'object')
+            return callback(`Invalid Message:  ${message} does not have a valid notification`);
+
+        const notification = new Notification(message);
+        const err = notification.validate()
+        if (err)
+            return callback(err);
+
+        const key = self._genCompostKey(notification.senderId, notification.subject);
+        self.insertRecord(key, self._indexItem(key, notification), (err, record) => {
+            if (err)
+                return callback(err);
+            self._handleNotification(notification, (err) => {
+                if (err)
+                    console.log(`Could not process notification`, err);
+                callback(undefined);
+            })
+        });
+    };
+
+    _handleBatch(body, callback){
+        const {gtin, batch} = body;
+
+        const {batchNumber, batchStatus, expiry} = batch;
+
+        const self = this;
+        self.stockManager.getOne(gtin, true, (err, stock) => {
+            if (err)
+                return callback(err);
+            const batch = stock.batches.find(b => b.batchNumber === batchNumber);
+            if (!batch)
+                return callback(`No stock of such batch... why were we notified of this??`);
+
+            if (batch.expiry !== expiry){
+                console.log(`Updating batch expiry to ${expiry}`);
+                batch.expiry = expiry;
+            }
+
+            if (batch.batchStatus !== batchStatus){
+                console.log(`Updating batch status to ${batchStatus}`);
+                batch.batchStatus = batchStatus;
+            }
+            self.stockManager.update(gtin, stock, (err) => {
+                if (err)
+                    return callback(err);
+                self.stockManager.refreshController();
+                callback();
+            });
+        });
+    }
+
+    _handleNotification(notification, callback){
+        switch (notification.subject){
+            case DB.batches:
+                return this._handleBatch(notification.body, callback);
+            default:
+                return callback(`Cannot handle such notification - ${notification}`);
+        }
+    }
+
+    /**
+     * Sends a {@link Notification}
+     * @param {string} receiverId
+     * @param {Notification} notification
+     * @param {function(err, keySSI, string)} callback first keySSI if for the batch, the second for its' product dsu
+     * @override
+     */
+    push(receiverId, notification, callback){
+        if (!notification.senderId)
+            notification.senderId = this.getIdentity().id;
+        this.sendMessage(receiverId, this.tableName, notification, err =>
+            this._messageCallback(err, `Notification sent to ${receiverId} regarding ${notification.subject}`));
+        callback(undefined);
+    }
+
+    pushToAll(receivers, notification, callback){
+        const self = this;
+
+        const func = function(receiver, callback){
+            self.push.call(self, receiver, notification, callback)
+        }
+
+        functionCallIterator(func, receivers, (err, ...results) => {
+            if (err)
+                return callback(err);
+            console.log(`All notifications regarding ${notification.subject} sent`);
+            callback(undefined, ...results)
+        })
+    }
+
+    /**
+     * Creates a {@link Notification}
+     * @param {Notification} notification
+     * @param {function(err, keySSI, string)} callback first keySSI if for the batch, the second for its' product dsu
+     * @override
+     */
+    create(notification, callback) {
+        callback(`Notification cannot be created`);    }
+
+    /**
+     * reads the specific Notification
+     *
+     * @param {string} key
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not
+     * @param {function(err, Notification|KeySSI, Archive)} callback returns the batch if readDSU, the keySSI otherwise
+     * @override
+     */
+    getOne(key, readDSU, callback){
+        super.getOne(key, readDSU, callback);
+    }
+
+    /**
+     * Removes a Notification from the list (does not delete/invalidate DSU, simply 'forgets' the reference)
+     * @param {string|number} key
+     * @param {function(err)} callback
+     * @override
+     */
+    remove(key, callback) {
+        super.remove(key, callback);
+    }
+
+    /**
+     * updates a Batch from the list
+     * @param {string|number} gtin
+     * @param {Notification} newBatch
+     * @param {function(err, Batch, Archive)} callback
+     * @override
+     */
+    update(gtin, newBatch, callback){
+        return callback(`Notification cannot be updated`);
+    }
+
+    /**
+     * Converts the text typed in a general text box into the query for the db
+     * Subclasses should override this
+     * @param {string} keyword
+     * @return {string[]} query
+     * @protected
+     * @override
+     */
+    _keywordToQuery(keyword){
+        keyword = keyword || '.*';
+        return [`gtin like /${keyword}/g`];
+    }
+}
+
+/**
+ * @param {BaseManager} participantManager
+ * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
+ * @returns {NotificationManager}
+ * @memberOf Managers
+ */
+const getNotificationManager = function (participantManager, callback) {
+    let manager;
+    try {
+        manager = participantManager.getManager(NotificationManager);
+        if (callback)
+            return callback(undefined, manager);
+    } catch (e){
+        manager = new NotificationManager(participantManager, callback);
+    }
+
+    return manager;
+}
+
+module.exports = getNotificationManager;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

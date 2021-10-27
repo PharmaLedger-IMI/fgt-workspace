@@ -69,7 +69,8 @@ const DB = {
     directory: 'directory',
     sales: 'sales',
     receipts: 'receipts',
-    traceability: 'traceability'
+    traceability: 'traceability',
+    notifications: 'notifications'
 }
 
 /**
@@ -83,7 +84,8 @@ const EVENTS = {
     TRACK: {
         REQUEST: 'fgt-track-request',
         RESPONSE: 'fgt-track-response'
-    }
+    },
+    STOCK_TRACE: 'fgt-request-stock-trace'
 }
 
 module.exports = {
