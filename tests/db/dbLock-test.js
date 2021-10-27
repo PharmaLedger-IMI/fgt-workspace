@@ -134,24 +134,29 @@ const testFinish = function(counter , func) {
 
 }
 
-const completeTransaction = function(db, dbLock, tableName, callback){
+const completeTransaction = function(db, dbLock, tableName, timeout1, timeout2, timeout3, callback){
     
     let currentOperation = 1;
-    MockDB.operations.push(`${currentOperation}: Start Transaction on table ${tableName}`);
-    currentOperation++;
-    startTransaction(db, dbLock, tableName,() => { 
-        MockDB.operations.push(`${currentOperation}: Start Operation on table ${tableName}`);
+    
+    setTimeout(() => {
+        MockDB.operations.push(`${currentOperation}: Start Transaction on table ${tableName}`);
         currentOperation++;
-        operationsTransaction(tableName, () => {
-            MockDB.operations.push(`${currentOperation}: Commit Operation on table ${tableName}`);
-            currentOperation++;
-            finishTransaction(dbLock, tableName, false, () => {
-
-                callback();
-
-            })
+        startTransaction(db, dbLock, tableName,() => {             
+            setTimeout(() => {
+                MockDB.operations.push(`${currentOperation}: Start Operation on table ${tableName}`);
+                currentOperation++;
+                operationsTransaction(tableName, () => {
+                    setTimeout(() => {
+                        MockDB.operations.push(`${currentOperation}: Commit Operation on table ${tableName}`);
+                        currentOperation++;
+                        finishTransaction(dbLock, tableName, false, () => {
+                            callback();
+                        })
+                    },timeout3);                   
+                })
+            }, timeout2);  
         })
-    })
+    }, timeout1); 
 }
 
 assert.callback("DB Lock test", (testFinishCallback) => {
@@ -166,7 +171,7 @@ assert.callback("DB Lock test", (testFinishCallback) => {
 
             counter++;
             setTimeout(() => {
-                completeTransaction(db,dbLock,tableNames[0],() => {   
+                completeTransaction(db,dbLock,tableNames[0],10,20,100,() => {   
                     counter--;
                     testFinish(counter, testFinishCallback);
                 })
@@ -175,7 +180,7 @@ assert.callback("DB Lock test", (testFinishCallback) => {
 
             counter++;
             setTimeout(() => {
-                completeTransaction(db,dbLock,tableNames[0],() => { 
+                completeTransaction(db,dbLock,tableNames[0],10,20,150,() => { 
                     counter--; 
                     testFinish(counter, testFinishCallback);
                 })
@@ -185,7 +190,7 @@ assert.callback("DB Lock test", (testFinishCallback) => {
             counter++;
             setTimeout(() => {
                 counter--;
-                completeTransaction(db,dbLock,tableNames[0],() => {   
+                completeTransaction(db,dbLock,tableNames[0],30,50,1000, () => {   
                     testFinish(counter, testFinishCallback);
                 })
 
@@ -193,7 +198,7 @@ assert.callback("DB Lock test", (testFinishCallback) => {
 
             counter++;
             setTimeout(() => {
-                completeTransaction(db,dbLock,tableNames[1],() => {
+                completeTransaction(db,dbLock,tableNames[1],10,20,150,() => {
                     counter--;   
                     testFinish(counter, testFinishCallback);
                 })
@@ -202,10 +207,10 @@ assert.callback("DB Lock test", (testFinishCallback) => {
 
             counter++;
             setTimeout(() => {
-                completeTransaction(db,dbLock,tableNames[0],() => {   
+                completeTransaction(db,dbLock,tableNames[1],50,10,200,() => {   
                     counter--;
                     testFinish(counter, testFinishCallback);
                 })
 
-            },1000);        
+            },100);        
 }, 50000);
