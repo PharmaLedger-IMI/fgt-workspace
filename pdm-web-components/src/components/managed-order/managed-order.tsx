@@ -544,7 +544,7 @@ export class ManagedOrder implements CreateManageView{
           </ion-col>
           <ion-col size="12" size-lg="6">
             <status-updater state-json={JSON.stringify(self.statuses)}
-                            current-state={self.order.status.status}
+                            current-state={JSON.stringify(self.order.status)}
                             onStatusUpdateEvent={self.update.bind(self)}>
             </status-updater>
           </ion-col>

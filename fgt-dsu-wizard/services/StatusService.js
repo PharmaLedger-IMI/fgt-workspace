@@ -247,13 +247,21 @@ function StatusService(domain, strategy){
                                         }
                                     }
 
-                                    if (!status.extraInfo)
-                                        return returnFunc();
+                                    /**
+                                     *commented to read/mount the status history, for each log, it must fetch extraInfo information,
+                                     * so it must have the same length (extraInfo.length === log.length)
+                                     */
+                                    // if (!status.extraInfo)
+                                    //     return returnFunc();
+
+                                    if (typeof status.extraInfo === 'object') {
+                                        status.extraInfo = '';
+                                    }
 
                                     if (extraInfo.hasOwnProperty(status.status)) {
-                                        extraInfo[status.status].push(status.extraInfo)
+                                        extraInfo[status.status].push(status.extraInfo || '')
                                     } else {
-                                        extraInfo[status.status] = [status.extraInfo]
+                                        extraInfo[status.status] = [status.extraInfo || '']
                                     }
                                     dsu.writeFile(EXTRA_INFO_PATH, JSON.stringify(extraInfo), returnFunc);
                                 });

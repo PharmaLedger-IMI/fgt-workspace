@@ -310,7 +310,7 @@ export class ManagedBatch implements CreateManageView{
     const self = this;
     const getStatus = function(){
       if (self.batch && self.batch.batchStatus)
-        return (<status-updater current-state={self.batch.batchStatus.status}
+        return (<status-updater current-state={JSON.stringify(self.batch.batchStatus)}
                                 state-json={JSON.stringify(self.statuses)}
                                 onStatusUpdateEvent={self.update.bind(self)}></status-updater>);
       return (<multi-spinner></multi-spinner>);

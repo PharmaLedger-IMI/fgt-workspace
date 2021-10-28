@@ -435,6 +435,7 @@ export namespace Components {
         "currentState": string;
         "currentString"?: string;
         "noUpdateString"?: string;
+        "pastString"?: string;
         "statesJSON": any;
         "updateString"?: string;
     }
@@ -1362,6 +1363,7 @@ declare namespace LocalJSX {
           * Through this event action requests are made
          */
         "onStatusUpdateEvent"?: (event: CustomEvent<any>) => void;
+        "pastString"?: string;
         "statesJSON"?: any;
         "updateString"?: string;
     }
