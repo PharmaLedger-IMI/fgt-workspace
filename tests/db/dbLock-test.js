@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 
 const path = require('path');
 
@@ -91,20 +90,11 @@ const beginTransaction = function(reference, operations, dbLock, tableName, call
 }
 
 const dbOperation = function(reference, operations, pass, tableName,callback){
-    if(pass)
-        operations.push(`${reference}.2: ${tableName}`);
 
-    if(!pass)
-        operations.push(`${reference}.2: ${tableName}: Error`);
+    operations.push(pass ? `${reference}.2: ${tableName}`: `${reference}.2: ${tableName}: Error`);
 
-    setTimeout(() => {
-        if (pass)
-            callback(undefined);
-        
-
-        if(!pass)
-            callback('Error in Operation')
-         
+    setTimeout(() => {  
+            callback(pass ? undefined: 'Error in Operation');     
     },100);
 }
 
@@ -139,7 +129,7 @@ const finishTransaction = function(reference, operations, dbLock, tableName, for
 
 const singleTransaction = function (operations, expectedOperations, reference, dbLock, tableName, callback){
 
-    let pass = true; // Late on refactor single transaction to receive this argument
+    let pass = true; // Later on refactor single transaction to receive this argument
     
     operations.push(`${reference}.1`);
     expectedOperations.push(`${reference}.1`);
@@ -160,20 +150,15 @@ const singleTransaction = function (operations, expectedOperations, reference, d
     }
     
     beginTransaction(reference, operations, dbLock, tableName,(err) => {
-        if(err)
-            assert.false(err, 'Start Transaction: Single Transaction cannot generate errors!'); // Cancel batch
+        assert.false(err, 'Start Transaction: Single Transaction cannot generate errors!'); // Cancel batch
 
         operations.push(`${reference}.2`);
         expectedOperations.push(`${reference}.2`);
-        if(pass)
-            expectedOperations.push(`${reference}.2: ${tableName}`);
         
-        if(!pass)
-            expectedOperations.push(`${reference}.2: ${tableName}: Error`);
+        expectedOperations.push(pass ? `${reference}.2: ${tableName}` : `${reference}.2: ${tableName}: Error`);
 
         dbOperation(reference, operations, pass, tableName, (err) => {
-            if(err)
-                assert.false(err, 'DB Operation: Single Transaction cannot generate errors!'); // cancel Batch
+            assert.false(err, 'DB Operation: Single Transaction cannot generate errors!'); // cancel Batch
 
             operations.push(`${reference}.3`);
             expectedOperations.push(`${reference}.3`);
@@ -188,8 +173,7 @@ const singleTransaction = function (operations, expectedOperations, reference, d
             }
             
             finishTransaction(reference, operations, dbLock, tableName,(err) => {
-                if(err)
-                    assert.false(err, 'Finish Transaction: Single Transaction cannot generate errors!'); // Cancel Batch
+                assert.false(err, 'Finish Transaction: Single Transaction cannot generate errors!'); // Cancel Batch
 
                 callback();
             })
@@ -230,9 +214,6 @@ const testSingleTransactionBySteps = function(reference, dbLock, tableName, call
     operations.push(`${reference}.1`);
     expectedOperations.push(`${reference}.1`);
     beginTransaction(reference, operations, dbLock, tableName,(err) => {
-        if(err)
-            assert.false(err, 'Start Transaction: Single Transaction cannot generate errors!');
-
         expectedOperations.push(`${reference}.1: db lock`);
         expectedOperations.push(`${reference}.1: ${tableName}: 1`);
 
@@ -241,10 +222,7 @@ const testSingleTransactionBySteps = function(reference, dbLock, tableName, call
 
         operations.push(`${reference}.2`);
         expectedOperations.push(`${reference}.2`);
-        dbOperation(reference, operations, true, tableName, (err) => {
-            if(err)
-                assert.false(err, 'DB Operation: Single Transaction cannot generate errors!');
-            
+        dbOperation(reference, operations, true, tableName, (err) => {           
             expectedOperations.push(`${reference}.2: ${tableName}`);
 
             assert.false(err,'DB Operation: Single Transaction cannot generate errors!');
@@ -253,8 +231,6 @@ const testSingleTransactionBySteps = function(reference, dbLock, tableName, call
             operations.push(`${reference}.3`);
             expectedOperations.push(`${reference}.3`);
             finishTransaction(reference, operations, dbLock, tableName,(err) => {
-                if(err)
-                    assert.false(err, 'Finish Transaction: Single Transaction cannot generate errors!');
                 
                 expectedOperations.push(`${reference}.3: db lock`);
                 expectedOperations.push(`${reference}.3: ${tableName}`);
@@ -416,11 +392,9 @@ assert.callback("DB Lock test", (testFinishCallback) => {
             let references = [1,2,3,4,5,6,7,8,9,10];
 
             singleTests(references, dbLock, tableNames,(err) => {
-                if(err)
-                    console.log(err);
+                assert.false(err);
                 
                 testMultipleAsyncTransactions(references, dbLock, tableNames, (err) => {
-                    if(err)
                         assert.false(err);
                     testFinishCallback()
                 })
