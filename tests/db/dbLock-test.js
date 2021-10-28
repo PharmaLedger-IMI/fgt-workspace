@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 const path = require('path');
 
 require(path.join('../../privatesky/psknode/bundles', 'testsRuntime.js'));     // test runtime
@@ -8,6 +10,8 @@ const assert = dc.assert;
 
 const utils = require('../test-utils');
 
+
+
 const MockDB = {
     interval: 500,
     batchInProgress: 0,
@@ -15,7 +19,7 @@ const MockDB = {
     operations: [],
 
     beginBatch: () => {
-        if(MockDB.batchInProgress === 0 && MockDB.currentTable.length < 2){
+        if(MockDB.batchInProgress === 0){
             MockDB.batchInProgress = 1;
             MockDB.operations.push(`Called Begin batch on db ${MockDB.currentTable[0]}`);
         } else {
@@ -26,7 +30,7 @@ const MockDB = {
 
     commitBatch: (callback) => {
         setTimeout(() => {
-            if(!MockDB.batchInProgress > 0 && !currentTable){
+            if(!(MockDB.batchInProgress > 0) && !MockDB.currentTable){
                 MockDB.operations.push('Error commiting no batch initiated');
                 return callback('No batch to commit');
             }
@@ -41,7 +45,7 @@ const MockDB = {
 
     cancelBatch: (callback) => {
         setTimeout(() => {
-            if(!MockDB.batchInProgress > 0 && !currentTable){
+            if(!(MockDB.batchInProgress > 0) && !MockDB.currentTable){
                 MockDB.operations.push('Cancel batch failed no batch in progress');
                 return callback('Error canceling batch');
             }
@@ -55,70 +59,142 @@ const MockDB = {
     }
 }
 
-const {DB} = require('../../fgt-dsu-wizard/constants');
-
 const {DBLock} = require('../../pdm-dsu-toolkit/managers');
 
-const startTransaction = function(dbLock, tableName, callback){
 
-    const beginBatch = function (tableName){
+/*DB Methos*/
+
+const beginTransaction = function(reference, operations, dbLock, tableName, callback){
+
+    const beginBatch = function(reference, operations, dbLock, tableName){
+        operations.push(`${reference}.1: db lock`);
         return dbLock.beginBatch(tableName);
     }
 
-    const dbAction = function(dbLock, tableName, callback){
+    const dbAction = function (reference, operations, dbLock, tableName, callback){
 
         try{
-            MockDB.currentTable.push(tableName);
-            beginBatch(tableName);
-            MockDB.operations.push(`Called Begin batch dbLock ${tableName}`); 
-        } catch (e){
+            beginBatch(reference, operations, dbLock, tableName);
+            operations.push(`${reference}.1: ${tableName}: ${dbLock._cache[tableName]}`);
+        }catch(e){
             console.log(e);
-            MockDB.currentTable.pop();
-            return dbLock.schedule(() => dbAction(dbLock, tableName, callback)); 
+            operations.push(`${reference}.1: ${tableName}: schedule`);
+            return dbLock.schedule(() => dbAction(reference, operations, dbLock, tableName, callback)); 
         }
 
-        callback()
+        callback(undefined);
+
     }
 
-    dbAction(dbLock, tableName, callback)
-
-
+    dbAction(reference, operations, dbLock, tableName, callback);
 }
 
-const operationsTransaction = function(pass, tableName, timeout, callback){
+const dbOperation = function(reference, operations, pass, tableName,callback){
+    if(pass)
+        operations.push(`${reference}.2: ${tableName}`);
+
+    if(!pass)
+        operations.push(`${reference}.2: ${tableName}: Error`);
+
     setTimeout(() => {
-        if(pass)
-            MockDB.operations.push(`Performing action on table ${tableName}`);
+        if (pass)
+            callback(undefined);
+        
 
-        callback(!pass ? callback('Error in Operation') : callback(undefined));
-    }, timeout);
-    
+        if(!pass)
+            callback('Error in Operation')
+         
+    },100);
 }
 
-const finishTransaction = function(pass, dbLock, tableName, force, callback){
+const finishTransaction = function(reference, operations, dbLock, tableName, force, callback){
 
-    const commitBatch = function (tableName, cb){
-        MockDB.operations.push('DB Lock commit');
-        return dbLock.commitBatch(tableName, cb);
+    if(!callback){
+        callback = force;
+        force = false;
     }
 
-    const dbAction = function (pass, dbLock, tableName, force, callback){
+    const commitBatch = function(reference, operations, dbLock, tableName, callback){
+        operations.push(`${reference}.3: db lock`);
+        return dbLock.commitBatch(tableName, callback)
+    }
 
-        commitBatch(tableName, () => {
-            if(pass)
-                return callback(undefined);
+    const dbAction = function (reference, operations, dbLock, tableName, force, callback){
 
-            callback('Error commiting');
+        commitBatch(reference, operations, dbLock, tableName, (err) => {
+            if(err) {
+                operations.push(`${reference}.3: db lock: Error`)
+                return callback(err);
+            }
 
+            operations.push(`${reference}.3: ${tableName}`)
+            callback(undefined);
         });
-
-
     }
 
-    dbAction(pass, dbLock, tableName, force, callback);
-
+    dbAction(reference, operations, dbLock, tableName, force, callback);
 
 }
+
+const singleTransaction = function (operations, expectedOperations, reference, dbLock, tableName, callback){
+
+    let pass = true; // Late on refactor single transaction to receive this argument
+    
+    operations.push(`${reference}.1`);
+    expectedOperations.push(`${reference}.1`);
+
+    if(!dbLock._cache[tableName] && !MockDB.beginTransaction){
+    expectedOperations.push(`${reference}.1: db lock`);
+    expectedOperations.push(`${reference}.1: ${tableName}: 1`);
+    }
+
+    if(dbLock._cache[tableName] > 0 && !!MockDB.beginTransaction && MockDB.currentTable[0] === tableName){
+    expectedOperations.push(`${reference}.1: db lock`);
+    expectedOperations.push(`${reference}.1: ${tableName}: ${(dbLock._cache[tableName] + 1)}`);
+    }
+
+    if(!!MockDB.beginTransaction && MockDB.currentTable[0] !== tableName){
+        expectedOperations.push(`${reference}.1: db lock`);
+        expectedOperations.push(`${reference}.1: ${tableName}: schedule`);
+    }
+    
+    beginTransaction(reference, operations, dbLock, tableName,(err) => {
+        if(err)
+            assert.false(err, 'Start Transaction: Single Transaction cannot generate errors!'); // Cancel batch
+
+        operations.push(`${reference}.2`);
+        expectedOperations.push(`${reference}.2`);
+        if(pass)
+            expectedOperations.push(`${reference}.2: ${tableName}`);
+        
+        if(!pass)
+            expectedOperations.push(`${reference}.2: ${tableName}: Error`);
+
+        dbOperation(reference, operations, pass, tableName, (err) => {
+            if(err)
+                assert.false(err, 'DB Operation: Single Transaction cannot generate errors!'); // cancel Batch
+
+            operations.push(`${reference}.3`);
+            expectedOperations.push(`${reference}.3`);
+
+            if(MockDB.batchInProgress === 1 && MockDB.currentTable[0] === tableName && dbLock._cache[tableName] > 0){
+                expectedOperations.push(`${reference}.3: db lock`);
+                expectedOperations.push(`${reference}.3: ${tableName}`);
+            }
+            
+            finishTransaction(reference, operations, dbLock, tableName,(err) => {
+                if(err)
+                    assert.false(err, 'Finish Transaction: Single Transaction cannot generate errors!'); // Cancel Batch
+
+                console.log(operations)
+                console.log(expectedOperations)
+                callback();
+            })
+        })
+    })
+}
+
+//utils
 
 const testFinish = function(counter , func) {
 
@@ -128,80 +204,7 @@ const testFinish = function(counter , func) {
 
 }
 
-const completeTransaction = function(reference, dbLock, tableName, timeout, force, callback){
 
-    let currentOperation = 1;
-    
-    MockDB.operations.push(`${reference}${currentOperation}: Start Transaction on table ${tableName}`);
-    currentOperation++;
-    startTransaction(dbLock, tableName,() => {             
-        MockDB.operations.push(`${reference} ${currentOperation}: Start Operation on table ${tableName}`);
-        currentOperation++;
-        operationsTransaction(true, tableName, timeout, (err) => {
-            if(err)
-                cancelTransaction(err, dbLock, tableName, callback);
-            MockDB.operations.push(`${reference} ${currentOperation}: Commit Operation on table ${tableName}`);
-            currentOperation++;
-            finishTransaction(true, dbLock, tableName, force, (err) => {
-                if(err)
-                    cancelTransaction(err, dbLock, tableName, callback);
-
-                callback(undefined);
-            })            
-        })       
-    })
-  
-}
-
-const testMultipleAsyncronousTransactions = function (dbLock, tableNames, force, callback){
-    let counter = 0;
-    
-    counter++;
-    //One
-    setTimeout(() => {
-        completeTransaction('First Transaction: ', dbLock, tableNames[0], 10, force,() => {   
-            counter--;
-            testFinish(counter, callback);
-        })
-    },0);
-
-    counter++;
-    //Two
-    setTimeout(() => {
-        counter--;
-        completeTransaction('Second Transaction: ', dbLock,tableNames[0], 20, force, () => {   
-            testFinish(counter, callback);
-        })
-    },1000);
-
-    counter++;
-    //Three
-    setTimeout(() => {
-        completeTransaction('Third Transaction: ', dbLock, tableNames[1], 30, force, () => {
-            counter--;   
-            testFinish(counter, callback);
-        })
-    },10);
-
-    counter++;
-    // Four
-    setTimeout(() => {
-        completeTransaction('Forth Transaction: ', dbLock, tableNames[1], 40, force,() => {   
-            counter--;
-            testFinish(counter, callback);
-        })
-    },100); 
-
-    counter++;
-    //Five
-    setTimeout(() => {
-        completeTransaction('Fifth Transaction', dbLock, tableNames[0], 50, force, () => { 
-            counter--; 
-            testFinish(counter, callback);
-        })
-    },50);
-
-}
 
 const cancelTransaction = function(err, dbLock, tableName, callback){
     if(err)
@@ -212,6 +215,146 @@ const cancelTransaction = function(err, dbLock, tableName, callback){
     callback(undefined);
 }
 
+/*DB Lock Tests*/
+
+const testSingleTransactionBySteps = function(reference, dbLock, tableName, callback){
+
+    console.log('Test Single Transaction start ...')
+
+    let operations = [];
+    let expectedOperations = [];
+
+    operations.push(`${reference}.1`);
+    expectedOperations.push(`${reference}.1`);
+    beginTransaction(reference, operations, dbLock, tableName,(err) => {
+        if(err)
+            assert.false(err, 'Start Transaction: Single Transaction cannot generate errors!');
+
+        expectedOperations.push(`${reference}.1: db lock`);
+        expectedOperations.push(`${reference}.1: ${tableName}: 1`);
+
+        assert.false(err,'Begin Transaction: Single Transaction cannot generate errors!');
+        assert.true(utils.isEqual(operations, expectedOperations), 'Begin Transaction didnt work as expected!!');
+
+        operations.push(`${reference}.2`);
+        expectedOperations.push(`${reference}.2`);
+        dbOperation(reference, operations, true, tableName, (err) => {
+            if(err)
+                assert.false(err, 'DB Operation: Single Transaction cannot generate errors!');
+            
+            expectedOperations.push(`${reference}.2: ${tableName}`);
+
+            assert.false(err,'DB Operation: Single Transaction cannot generate errors!');
+            assert.true(utils.isEqual(operations, expectedOperations), 'DB Operation didnt work as expected!!');
+
+            operations.push(`${reference}.3`);
+            expectedOperations.push(`${reference}.3`);
+            finishTransaction(reference, operations, dbLock, tableName,(err) => {
+                if(err)
+                    assert.false(err, 'Finish Transaction: Single Transaction cannot generate errors!');
+                
+                expectedOperations.push(`${reference}.3: db lock`);
+                expectedOperations.push(`${reference}.3: ${tableName}`);
+
+                assert.false(err,'Finish Transaction: Single Transaction cannot generate errors!');
+                assert.true(utils.isEqual(operations, expectedOperations), 'Finish Transaction didnt work as expected!!');
+
+                console.log('Test Single Transaction complete!');
+                callback();
+            })
+        })
+    })
+}
+//incomplete
+const testBeginBatch = function(references, dbLock, tableNames, callback){
+
+    let operations = [];
+    let expectedOperations = [];
+
+    console.log('Test Begin Batch start ...')
+
+    operations.push(`${references[0]}.1`);
+    expectedOperations.push(`${references[0]}.1`);
+    beginTransaction(references[0], operations, dbLock, tableNames[0], (err) => {
+        if(err)
+            assert.false(err, 'Begin Transaction 1: Test Begin Batch cannot generate errors!');
+
+        expectedOperations.push(`${references[0]}.1: db lock`);
+        expectedOperations.push(`${references[0]}.1: ${tableNames[0]}: 1`);
+
+        assert.false(err,'Begin Transaction 1: Test Begin Batch cannot generate errors!');
+        assert.true(utils.isEqual(operations, expectedOperations), 'Begin Transaction didnt work as expected!!');
+
+        operations.push(`${references[1]}.1`);
+        expectedOperations.push(`${references[1]}.1`);
+        beginTransaction(references[1], operations, dbLock, tableNames[0], (err) => {
+            if(err)
+                assert.false(err, 'Begin Transaction 2: Test Begin Batch cannot generate errors!');
+
+            expectedOperations.push(`${references[1]}.1: db lock`);
+            expectedOperations.push(`${references[1]}.1: ${tableNames[0]}: 2`);
+
+            assert.false(err,'Begin Transaction 2: Test Begin Batch cannot generate errors!');
+            assert.true(utils.isEqual(operations, expectedOperations), 'Begin Transaction didnt work as expected!!');
+
+            operations.push(`${references[2]}.1`);
+            expectedOperations.push(`${references[2]}.1`);
+            // beginTransaction(references[2], operations, dbLock, tableNames[1], (err) => {
+            //     if(err)
+            //         assert.false(err, 'Begin Transaction 3: Test Begin Batch cannot generate errors!');
+
+            //     expectedOperations.push(`${references[2]}.1: db lock`);
+            //     expectedOperations.push(`${references[2]}.1: ${tableNames[1]}: schedule`);
+
+            //     assert.false(err,'Begin Transaction 3: Test Begin Batch cannot generate errors!');
+            //     assert.true(utils.isEqual(operations, expectedOperations), 'Begin Transaction didnt work as expected!!');
+
+                callback(undefined);
+
+            // })
+        })
+    })
+}
+
+/*DB Lock Chain Tests*/
+
+const testMultipleAsyncTransactions = function(references, dbLock, tableNames, callback){
+
+    let counter = 0;
+    let operations = [];
+    let expectedOperations = [];
+    
+    counter++;
+    setTimeout(() => {
+        singleTransaction (operations, expectedOperations, references[0], dbLock,tableNames[0], (err) => {
+            counter--;
+            console.log(operations);
+            console.log(expectedOperations)
+            testFinish(counter, callback);
+        })
+    },0);
+
+
+}
+
+const singleTests = function(references, dbLock, tableNames, callback){
+
+    testSingleTransactionBySteps(references[0], dbLock, tableNames[0], (err) => {
+        if(err)
+            assert.false(err, 'Test Single Transaction Failed');
+
+        console.log('Test Single Transaction Passed');
+
+        // testBeginBatch(references, dbLock, tableNames, (err) => {
+        //     if(err)
+        //         assert.false(err, 'Test Begin Batch Failed');
+
+            // console.log('Test Begin Batch Passed');
+            callback(undefined);
+        // })
+    });
+}
+
 assert.callback("DB Lock test", (testFinishCallback) => {
    
             let db = MockDB;
@@ -220,58 +363,22 @@ assert.callback("DB Lock test", (testFinishCallback) => {
             
             let tableNames = ['Status', 'AnotherStatus']
 
-            const compareTestMultipleAsync = ['First Transaction: 1: Start Transaction on table Status',
-                'Called Begin batch db Status',
-                'Called Begin batch dbLock Status',
-                'First Transaction:  2: Start Operation on table Status',
-                'Performing action on table Status',
-                'Third Transaction: 1: Start Transaction on table AnotherStatus',
-                'There Batch Already in Progress!',
-                'First Transaction:  3: Commit Operation on table Status',
-                'DB Lock commit',
-                'Commiting Batch db Status',
-                'Fifth Transaction1: Start Transaction on table Status',
-                'Called Begin batch db Status',
-                'Called Begin batch dbLock Status',
-                'Fifth Transaction 2: Start Operation on table Status',
-                'Performing action on table Status',
-                'Forth Transaction: 1: Start Transaction on table AnotherStatus',
-                'There Batch Already in Progress!',
-                'Fifth Transaction 3: Commit Operation on table Status',
-                'DB Lock commit',
-                'Commiting Batch db Status',
-                'Second Transaction: 1: Start Transaction on table Status',
-                'Called Begin batch db Status',
-                'Called Begin batch dbLock Status',
-                'Second Transaction:  2: Start Operation on table Status',
-                'Performing action on table Status',
-                'Second Transaction:  3: Commit Operation on table Status',
-                'DB Lock commit',
-                'Commiting Batch db Status',
-                'Called Begin batch db AnotherStatus',
-                'Called Begin batch dbLock AnotherStatus',
-                'Third Transaction:  2: Start Operation on table AnotherStatus',
-                'Performing action on table AnotherStatus',
-                'Third Transaction:  3: Commit Operation on table AnotherStatus',
-                'DB Lock commit',
-                'Commiting Batch db AnotherStatus',
-                'Called Begin batch db AnotherStatus',
-                'Called Begin batch dbLock AnotherStatus',
-                'Forth Transaction:  2: Start Operation on table AnotherStatus',
-                'Performing action on table AnotherStatus',
-                'Forth Transaction:  3: Commit Operation on table AnotherStatus',
-                'DB Lock commit',
-                'Commiting Batch db AnotherStatus']
+            let references = [1,2,3,4,5,6,7,8,9,10];
 
-            let counter = 0;
+            singleTests(references, dbLock, tableNames,(err) => {
+                if(err)
+                    console.log(err);
+                
+                singleTransaction([],[],references[0],dbLock,tableNames[0],(err) => {
+                    if(err)
+                        assert.false(err);
+                        testFinishCallback()
+                })
+                
 
-            counter++;
-            testMultipleAsyncronousTransactions(dbLock, tableNames, false, (err) => {
-                assert.true(err === undefined, 'Async Transactions failed');
-                counter--;
-                console.log(MockDB.operations);
-                //assert.true(utils.isEqual(MockDB.operations, compareTestMultipleAsync), "Operations should follow a certain order")
-                testFinish(counter, testFinishCallback);
             })
+
+
+         
 
 }, 100000);
