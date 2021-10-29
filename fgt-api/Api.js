@@ -1,4 +1,4 @@
-const {functionCallIterator} = require('../fgt-dsu-wizard/services').utils;
+const {functionCallIterator} = require('./utils');
 const BASE_PATH = '/traceability';
 const ALL_SUFFIX = "All";
 
@@ -145,10 +145,9 @@ class Api {
 
     /**
      * Creates a new Model Object
-     * @param {string} [keys] can be optional if can be generated from model object
+     * @param {string[]} [keys] can be optional if can be generated from model object
      * @param {[{}]} models a list of model objects
      * @param {function(err?, [{}]?)} callback
-     * @returns {*}
      */
     createAll(keys, models, callback){
         functionCallIterator(this.create.bind(this), keys, models, callback);
@@ -160,7 +159,7 @@ class Api {
 
     /**
      * Creates a new Model Object
-     * @param {string} [keys] can be optional if can be generated from model object
+     * @param {string[]} [keys] can be optional if can be generated from model object
      * @param {[{}]} models a list of model objects
      * @param {function(err?, [{}]?)} callback
      * @returns {*}
