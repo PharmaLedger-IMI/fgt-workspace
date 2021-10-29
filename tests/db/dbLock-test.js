@@ -63,14 +63,27 @@ const {DBLock} = require('../../pdm-dsu-toolkit/managers');
 
 /*DB Methos*/
 
-const beginTransaction = function(reference, operations, dbLock, tableName, callback){
+const beginTransaction = function(reference, operations, expectedOperations, dbLock, tableName, callback){
+
+    let reschedule = false;
 
     const beginBatch = function(reference, operations, dbLock, tableName){
         operations.push(`${reference}.1: db lock`);
         return dbLock.beginBatch(tableName);
     }
 
-    const dbAction = function (reference, operations, dbLock, tableName, callback){
+    const dbAction = function (reference, operations, expectedOperations, dbLock, tableName, reschedule, callback){
+        if(reschedule) 
+            expectedOperations.push(`${reference}.1: db lock`);
+
+        if(reschedule && !MockDB.batchInProgress)
+            expectedOperations.push(`${reference}.1: ${tableName}: 1`);
+
+        if(reschedule && MockDB.batchInProgress && MockDB.currentTable[0] === tableName)
+            expectedOperations.push(`${reference}.1: ${tableName}: ${(dbLock._cache[tableName]+1)}`);
+        
+        if(reschedule && MockDB.batchInProgress && MockDB.currentTable[0] !== tableName)
+            expectedOperations.push(`${reference}.1: ${tableName}: schedule`);
 
         try{
             beginBatch(reference, operations, dbLock, tableName);
@@ -79,14 +92,14 @@ const beginTransaction = function(reference, operations, dbLock, tableName, call
         }catch(e){
             console.log(e);
             operations.push(`${reference}.1: ${tableName}: schedule`);
-            return dbLock.schedule(() => dbAction(reference, operations, dbLock, tableName, callback)); 
+            return dbLock.schedule(() => dbAction(reference, operations, expectedOperations, dbLock, tableName, true, callback)); 
         }
 
         callback(undefined);
 
     }
 
-    dbAction(reference, operations, dbLock, tableName, callback);
+    dbAction(reference, operations, expectedOperations, dbLock, tableName, reschedule, callback);
 }
 
 const dbOperation = function(reference, operations, pass, tableName,callback){
@@ -134,22 +147,22 @@ const singleTransaction = function (operations, expectedOperations, reference, d
     operations.push(`${reference}.1`);
     expectedOperations.push(`${reference}.1`);
 
-    if(!dbLock._cache[tableName] && !MockDB.beginTransaction){
+    if(!dbLock._cache[tableName] && !MockDB.batchInProgress){
     expectedOperations.push(`${reference}.1: db lock`);
     expectedOperations.push(`${reference}.1: ${tableName}: 1`);
     }
 
-    if(dbLock._cache[tableName] > 0 && !!MockDB.beginTransaction && MockDB.currentTable[0] === tableName){
+    if(dbLock._cache[tableName] > 0 && !!MockDB.batchInProgress && MockDB.currentTable[0] === tableName){
     expectedOperations.push(`${reference}.1: db lock`);
     expectedOperations.push(`${reference}.1: ${tableName}: ${(dbLock._cache[tableName] + 1)}`);
     }
 
-    if(!!MockDB.beginTransaction && MockDB.currentTable[0] !== tableName){
+    if(!!MockDB.batchInProgress && MockDB.currentTable[0] !== tableName){
         expectedOperations.push(`${reference}.1: db lock`);
         expectedOperations.push(`${reference}.1: ${tableName}: schedule`);
     }
     
-    beginTransaction(reference, operations, dbLock, tableName,(err) => {
+    beginTransaction(reference, operations, expectedOperations, dbLock, tableName,(err) => {
         assert.false(err, 'Start Transaction: Single Transaction cannot generate errors!'); // Cancel batch
 
         operations.push(`${reference}.2`);
@@ -183,10 +196,10 @@ const singleTransaction = function (operations, expectedOperations, reference, d
 
 //utils
 
-const testFinish = function(counter , func) {
+const testFinish = function(counter, operations, expectedOperations , func) {
 
     if(counter === 0){
-        func()
+        func(undefined, operations,expectedOperations);
     }
 
 }
@@ -213,9 +226,12 @@ const testSingleTransactionBySteps = function(reference, dbLock, tableName, call
 
     operations.push(`${reference}.1`);
     expectedOperations.push(`${reference}.1`);
-    beginTransaction(reference, operations, dbLock, tableName,(err) => {
+    beginTransaction(reference, operations, expectedOperations, dbLock, tableName,(err) => {
         expectedOperations.push(`${reference}.1: db lock`);
         expectedOperations.push(`${reference}.1: ${tableName}: 1`);
+
+        console.log(expectedOperations)
+        console.log(operations)
 
         assert.false(err,'Begin Transaction: Single Transaction cannot generate errors!');
         assert.true(utils.isEqual(operations, expectedOperations), 'Begin Transaction didnt work as expected!!');
@@ -297,17 +313,11 @@ const testBeginBatch = function(references, dbLock, tableNames, callback){
 
 /*DB Lock Chain Tests*/
 
-const testMultipleAsyncTransactions = function(references, dbLock, tableNames, callback){
+const testMultipleTransactions = function(references, dbLock, tableNames, callback){
 
     let counter = 0;
     let operations = [];
     let expectedOperations = [];
-
-    const compareOperations = function (operations, expectedOperations){
-
-        assert.true(utils.isEqual(operations, expectedOperations));
-
-    }
     
     counter++;
     setTimeout(() => {
@@ -315,10 +325,9 @@ const testMultipleAsyncTransactions = function(references, dbLock, tableNames, c
             counter--;
             console.log(operations);
             console.log(expectedOperations)
-            compareOperations(operations,expectedOperations);
-            testFinish(counter, callback);
+            testFinish(counter, operations, expectedOperations, callback);
         })
-    },0);
+    },Math.floor(Math.random()*100));
 
     counter++;
     setTimeout(() => {
@@ -326,9 +335,9 @@ const testMultipleAsyncTransactions = function(references, dbLock, tableNames, c
             counter--;
             console.log(operations);
             console.log(expectedOperations)
-            testFinish(counter, callback);
+            testFinish(counter, operations, expectedOperations, callback);
         })
-    },10);
+    },Math.floor(Math.random()*100));
 
     counter++;
     setTimeout(() => {
@@ -336,9 +345,9 @@ const testMultipleAsyncTransactions = function(references, dbLock, tableNames, c
             counter--;
             console.log(operations);
             console.log(expectedOperations)
-            testFinish(counter, callback);
+            testFinish(counter, operations, expectedOperations, callback);
         })
-    },40);
+    },Math.floor(Math.random()*100));
 
     counter++;
     setTimeout(() => {
@@ -346,9 +355,9 @@ const testMultipleAsyncTransactions = function(references, dbLock, tableNames, c
             counter--;
             console.log(operations);
             console.log(expectedOperations)
-            testFinish(counter, callback);
+            testFinish(counter, operations, expectedOperations, callback);
         })
-    },20);
+    },Math.floor(Math.random()*100));
 
     counter++;
     setTimeout(() => {
@@ -356,9 +365,9 @@ const testMultipleAsyncTransactions = function(references, dbLock, tableNames, c
             counter--;
             console.log(operations);
             console.log(expectedOperations)
-            testFinish(counter, callback);
+            testFinish(counter, operations, expectedOperations, callback);
         })
-    },30);
+    },Math.floor(Math.random()*100));
 
 
 }
@@ -394,8 +403,13 @@ assert.callback("DB Lock test", (testFinishCallback) => {
             singleTests(references, dbLock, tableNames,(err) => {
                 assert.false(err);
                 
-                testMultipleAsyncTransactions(references, dbLock, tableNames, (err) => {
-                        assert.false(err);
+                testMultipleTransactions(references, dbLock, tableNames, (err, operations, expectedOperations) => {
+                    console.log('###############################')
+                    console.log(operations);
+                    console.log(expectedOperations)
+                    console.log('#############################################')
+
+                    assert.true(utils.isEqual(operations, expectedOperations))
                     testFinishCallback()
                 })
                 
