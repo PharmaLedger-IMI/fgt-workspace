@@ -28,6 +28,7 @@
   },
   "welcome": "Welcome back",
   "menu": {
+    "notifications": "Notifications",
     "dashboard": "Dashboard",
     "orders": {
       "label": "Orders",
@@ -322,5 +323,8 @@
   "dashboard": {
     "title": "Dashboard",
     "none": "There are no pending orders"
+  },
+  "notifications": {
+    "title": "Notifications"
   }
 }
