@@ -202,6 +202,17 @@ const singleTransaction = function (operations, expectedOperations, reference, d
     })
 }
 
+const resetDB = function(dbLock, callback){
+
+    MockDB.batchInProgress = 0;
+    MockDB.currentTable = [];
+    
+    dbLock = new DBLock(MockDB, 1000);
+
+    callback(dbLock);
+
+}
+
 //utils
 
 const testFinish = function(counter, operations, expectedOperations , func) {
@@ -266,26 +277,22 @@ const testBeginBatch = function(references, dbLock, tableNames, callback){
 
     operations.push(`${references[0]}.1`);
     expectedOperations.push(`${references[0]}.1`);
-    beginTransaction(references[0], operations, dbLock, tableNames[0], (err) => {
-        if(err)
-            assert.false(err, 'Begin Transaction 1: Test Begin Batch cannot generate errors!');
+    beginTransaction(references[0], operations,expectedOperations, dbLock, tableNames[0], (err) => {
+        assert.false(err, 'Begin Transaction 1: Test Begin Batch cannot generate errors!');
 
         expectedOperations.push(`${references[0]}.1: db lock`);
         expectedOperations.push(`${references[0]}.1: ${tableNames[0]}: 1`);
 
-        assert.false(err,'Begin Transaction 1: Test Begin Batch cannot generate errors!');
         assert.true(utils.isEqual(operations, expectedOperations), 'Begin Transaction didnt work as expected!!');
 
         operations.push(`${references[1]}.1`);
         expectedOperations.push(`${references[1]}.1`);
-        beginTransaction(references[1], operations, dbLock, tableNames[0], (err) => {
-            if(err)
-                assert.false(err, 'Begin Transaction 2: Test Begin Batch cannot generate errors!');
+        beginTransaction(references[1], operations, expectedOperations, dbLock, tableNames[0], (err) => {
+            assert.false(err, 'Begin Transaction 2: Test Begin Batch cannot generate errors!');
 
             expectedOperations.push(`${references[1]}.1: db lock`);
             expectedOperations.push(`${references[1]}.1: ${tableNames[0]}: 2`);
 
-            assert.false(err,'Begin Transaction 2: Test Begin Batch cannot generate errors!');
             assert.true(utils.isEqual(operations, expectedOperations), 'Begin Transaction didnt work as expected!!');
 
             operations.push(`${references[2]}.1`);
@@ -299,8 +306,13 @@ const testBeginBatch = function(references, dbLock, tableNames, callback){
 
             //     assert.false(err,'Begin Transaction 3: Test Begin Batch cannot generate errors!');
             //     assert.true(utils.isEqual(operations, expectedOperations), 'Begin Transaction didnt work as expected!!');
+                resetDB(dbLock, (dbLock) => {
+                    assert.true(dbLock, 'DB didnt reset');
 
-                callback(undefined);
+                    callback(undefined);
+
+
+                });
 
             // })
         })
@@ -452,9 +464,11 @@ const multiTests = function(references, dbLock, tableNames, callback){
     
     testMultipleTransactions(references, dbLock, tableNames, (err, operations, expectedOperations) => {
         assert.false(err);
+        console.log(err)
         assert.true(utils.isEqual(operations, expectedOperations))
 
         testMultipleAsyncTransactions(references, dbLock, tableNames,(err, operations,expectedOperations) => {
+            assert.false(err);
 
             console.log(operations)
             console.log(expectedOperations)
@@ -470,14 +484,12 @@ const multiTests = function(references, dbLock, tableNames, callback){
 const singleTests = function(references, dbLock, tableNames, callback){
 
     testSingleTransactionBySteps(references[0], dbLock, tableNames[0], (err) => {
-        if(err)
-            assert.false(err, 'Test Single Transaction Failed');
+        assert.false(err, 'Test Single Transaction Failed');
 
         console.log('Test Single Transaction Passed');
 
         // testBeginBatch(references, dbLock, tableNames, (err) => {
-        //     if(err)
-        //         assert.false(err, 'Test Begin Batch Failed');
+        //     assert.false(err, 'Test Begin Batch Failed');
 
             // console.log('Test Begin Batch Passed');
             callback(undefined);
