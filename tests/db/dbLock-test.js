@@ -56,7 +56,7 @@ const MockDB = {
 const {DBLock} = require('../../pdm-dsu-toolkit/managers');
 
 
-/*DB Methos*/
+/*DB Methods*/
 
 const beginTransaction = function(reference, operations, expectedOperations, dbLock, tableName, callback){
 
@@ -210,10 +210,9 @@ const resetDB = function(dbLock, callback){
     dbLock = new DBLock(MockDB, 1000);
 
     callback(dbLock);
-
 }
 
-//utils
+/*Utils*/ 
 
 const testFinish = function(counter, operations, expectedOperations , func) {
 
@@ -366,8 +365,6 @@ const testMultipleTransactions = function(references, dbLock, tableNames, callba
             testFinish(counter, operations, expectedOperations, callback);
         })
     },Math.floor(Math.random()*100));
-
-
 }
 
 const testMultipleAsyncTransactions = function(references, dbLock, tableNames, callback){
@@ -455,8 +452,6 @@ const testMultipleAsyncTransactions = function(references, dbLock, tableNames, c
             testFinish(counter, operations, expectedOperations, callback);
         })
     },Math.floor(Math.random()*100));
-
-
 }
 
 /*Grouped Tests by category*/
@@ -475,8 +470,6 @@ const multiTests = function(references, dbLock, tableNames, callback){
             assert.true(utils.isEqual(operations, expectedOperations))
 
             callback();
-
-
         })
     })
 }
@@ -492,7 +485,7 @@ const singleTests = function(references, dbLock, tableNames, callback){
         //     assert.false(err, 'Test Begin Batch Failed');
 
             // console.log('Test Begin Batch Passed');
-            callback(undefined);
+        callback(undefined);
         // })
     });
 }
@@ -521,15 +514,6 @@ assert.callback("DB Lock test", (testFinishCallback) => {
             let references = [1,2,3,4,5,6,7,8,9,10];
 
             fullTest(references, dbLock, tableNames, () =>{
-
-                
                 testFinishCallback()
-
             })
-
-            
-
-
-         
-
 }, 100000);
