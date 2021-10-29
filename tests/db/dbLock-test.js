@@ -372,6 +372,115 @@ const testMultipleTransactions = function(references, dbLock, tableNames, callba
 
 }
 
+const testMultipleAsyncTransactions = function(references, dbLock, tableNames, callback){
+
+    let counter = 0;
+    let operations = [];
+    let expectedOperations = [];
+    
+    counter++;
+    setTimeout(() => {
+        singleTransaction (operations, expectedOperations, references[0], dbLock,tableNames[0], (err) => {
+            counter--;
+            console.log(operations);
+            console.log(expectedOperations)
+            testFinish(counter, operations, expectedOperations, callback);
+        })
+    },Math.floor(Math.random()*100));
+
+    counter++;
+    setTimeout(() => {
+        singleTransaction (operations, expectedOperations, references[1], dbLock,tableNames[1], (err) => {
+            counter--;
+            console.log(operations);
+            console.log(expectedOperations)
+            testFinish(counter, operations, expectedOperations, callback);
+        })
+    },Math.floor(Math.random()*100));
+
+    counter++;
+    setTimeout(() => {
+        singleTransaction (operations, expectedOperations, references[2], dbLock,tableNames[2], (err) => {
+            counter--;
+            console.log(operations);
+            console.log(expectedOperations)
+            testFinish(counter, operations, expectedOperations, callback);
+        })
+    },Math.floor(Math.random()*100));
+
+    counter++;
+    setTimeout(() => {
+        singleTransaction (operations, expectedOperations, references[3], dbLock,tableNames[3], (err) => {
+            counter--;
+            console.log(operations);
+            console.log(expectedOperations)
+            testFinish(counter, operations, expectedOperations, callback);
+        })
+    },Math.floor(Math.random()*100));
+
+    counter++;
+    setTimeout(() => {
+        singleTransaction (operations, expectedOperations, references[4], dbLock,tableNames[4], (err) => {
+            counter--;
+            console.log(operations);
+            console.log(expectedOperations)
+            testFinish(counter, operations, expectedOperations, callback);
+        })
+    },Math.floor(Math.random()*100));
+
+    counter++;
+    setTimeout(() => {
+        singleTransaction (operations, expectedOperations, references[5], dbLock,tableNames[5], (err) => {
+            counter--;
+            console.log(operations);
+            console.log(expectedOperations)
+            testFinish(counter, operations, expectedOperations, callback);
+        })
+    },Math.floor(Math.random()*100));
+
+    counter++;
+    setTimeout(() => {
+        singleTransaction (operations, expectedOperations, references[6], dbLock,tableNames[6], (err) => {
+            counter--;
+            console.log(operations);
+            console.log(expectedOperations)
+            testFinish(counter, operations, expectedOperations, callback);
+        })
+    },Math.floor(Math.random()*100));
+
+    counter++;
+    setTimeout(() => {
+        singleTransaction (operations, expectedOperations, references[7], dbLock,tableNames[7], (err) => {
+            counter--;
+            console.log(operations);
+            console.log(expectedOperations)
+            testFinish(counter, operations, expectedOperations, callback);
+        })
+    },Math.floor(Math.random()*100));
+
+    counter++;
+    setTimeout(() => {
+        singleTransaction (operations, expectedOperations, references[8], dbLock,tableNames[8], (err) => {
+            counter--;
+            console.log(operations);
+            console.log(expectedOperations)
+            testFinish(counter, operations, expectedOperations, callback);
+        })
+    },Math.floor(Math.random()*100));
+
+    counter++;
+    setTimeout(() => {
+        singleTransaction (operations, expectedOperations, references[9], dbLock,tableNames[9], (err) => {
+            counter--;
+            console.log(operations);
+            console.log(expectedOperations)
+            testFinish(counter, operations, expectedOperations, callback);
+        })
+    },Math.floor(Math.random()*100));
+
+
+}
+
 const singleTests = function(references, dbLock, tableNames, callback){
 
     testSingleTransactionBySteps(references[0], dbLock, tableNames[0], (err) => {
@@ -396,7 +505,7 @@ assert.callback("DB Lock test", (testFinishCallback) => {
 
             const dbLock = new DBLock(db, 1000);
             
-            let tableNames = ['Status', 'AnotherStatus']
+            let tableNames = ['Status', 'AnotherStatus', 'Gtin', 'Product', 'Individualproduct', 'Batch', 'Order', 'Wholesaler', 'MAH','Pharmacy']
 
             let references = [1,2,3,4,5,6,7,8,9,10];
 
@@ -404,13 +513,18 @@ assert.callback("DB Lock test", (testFinishCallback) => {
                 assert.false(err);
                 
                 testMultipleTransactions(references, dbLock, tableNames, (err, operations, expectedOperations) => {
-                    console.log('###############################')
-                    console.log(operations);
-                    console.log(expectedOperations)
-                    console.log('#############################################')
-
+                    assert.false(err);
                     assert.true(utils.isEqual(operations, expectedOperations))
-                    testFinishCallback()
+
+                    testMultipleAsyncTransactions(references, dbLock, tableNames,(err, operations,expectedOperations) => {
+
+                        console.log(operations)
+                        console.log(expectedOperations)
+                        assert.true(utils.isEqual(operations, expectedOperations))
+
+                        testFinishCallback()
+
+                    })
                 })
                 
             })
