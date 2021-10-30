@@ -255,10 +255,13 @@ function StatusService(domain, strategy){
                                     //     return returnFunc();
 
                                     if (typeof status.extraInfo === 'object') {
-                                        status.extraInfo = '';
-                                    }
-
-                                    if (extraInfo.hasOwnProperty(status.status)) {
+                                        const extraInfoStatusArray = status.extraInfo[status.status];
+                                        const lastElement = extraInfoStatusArray === undefined ? '' : extraInfoStatusArray.pop();
+                                        if (extraInfo[status.status])
+                                            extraInfo[status.status].push(lastElement)
+                                        else
+                                            extraInfo[status.status] = [lastElement];
+                                    } else if (extraInfo.hasOwnProperty(status.status)) {
                                         extraInfo[status.status].push(status.extraInfo || '')
                                     } else {
                                         extraInfo[status.status] = [status.extraInfo || '']
