@@ -111,7 +111,8 @@ export class StatusUpdater {
        */
       if (self._currentState.hasOwnProperty('extraInfo')) {
         if (self._currentState.extraInfo.hasOwnProperty(status)) {
-          extraInfo = self._currentState.extraInfo[status][extraInfoIndex]
+          const rawExtraInfo = self._currentState.extraInfo[status][extraInfoIndex]
+          extraInfo = rawExtraInfo.split(' ').slice(2).join(' ').trim()
         }
       }
       const current = (self._currentState.log.length - 1) === index;

@@ -24,8 +24,12 @@ function StatusService(domain, strategy){
 
     let createLog = function(id, prevStatus, status){
         return prevStatus
-                ? `${id} updated status from ${prevStatus.status || prevStatus} to ${status.status || status}.`
-                : `${id} set status to ${status.status || status}`;
+                ? `${id} ${Date.now()} updated status from ${prevStatus.status || prevStatus} to ${status.status || status}.`
+                : `${id} ${Date.now()} set status to ${status.status || status}`;
+    }
+
+    const createExtraInfo = function (id, extraInfo) {
+        return `${id} ${Date.now()} ${extraInfo ? extraInfo : ''}`
     }
 
     /**
@@ -258,13 +262,13 @@ function StatusService(domain, strategy){
                                         const extraInfoStatusArray = status.extraInfo[status.status];
                                         const lastElement = extraInfoStatusArray === undefined ? '' : extraInfoStatusArray.pop();
                                         if (extraInfo[status.status])
-                                            extraInfo[status.status].push(lastElement)
+                                            extraInfo[status.status].push(createExtraInfo(id, lastElement))
                                         else
-                                            extraInfo[status.status] = [lastElement];
+                                            extraInfo[status.status] = [createExtraInfo(id, lastElement)];
                                     } else if (extraInfo.hasOwnProperty(status.status)) {
-                                        extraInfo[status.status].push(status.extraInfo || '')
+                                        extraInfo[status.status].push(createExtraInfo(id, status.extraInfo))
                                     } else {
-                                        extraInfo[status.status] = [status.extraInfo || '']
+                                        extraInfo[status.status] = [createExtraInfo(id, status.extraInfo)]
                                     }
                                     dsu.writeFile(EXTRA_INFO_PATH, JSON.stringify(extraInfo), returnFunc);
                                 });

@@ -151,6 +151,22 @@ class IssuedOrderManager extends OrderManager {
             }
         }
 
+        /**
+         * Message/ExtraInfo by default follows the model: `{SENDER_ID} {TIMESTAMP} {MESSAGE}`,
+         * so need to be sanitized to remove {SENDER_ID} and {TIMESTAMP}, because {REQUESTER_ID}
+         * just needs the message
+         * @param {string} status
+         * @param {{[key: string]: string[]} }extraInfo
+         * @returns {string}
+         */
+        const getExtraInfoMsg = function (status, extraInfo) {
+            if (!extraInfo)
+                return '';
+            const extraInfoStatusArray = [...extraInfo[status]]
+            const msg =  extraInfoStatusArray.pop();
+            return msg.split(' ').slice(2).join(' '); // sanitized
+        }
+
         const update = super.update.bind(this);
 
         console.log(`Updating order ${orderId} witj shipment ${shipment.shipmentId}`);
@@ -161,7 +177,7 @@ class IssuedOrderManager extends OrderManager {
             if (err)
                 return self._err(`Could not load Order`, err, callback);
             order.status['status'] = getOrderStatusByShipment(shipment.status.status);
-            order.status['extraInfo'] = shipment.status.extraInfo;
+            order.status['extraInfo'] = getExtraInfoMsg(shipment.status.status, shipment.status.extraInfo);
             console.log(`Order Status for Issued Order ${key} to be updated to ${order.status.status}`);
             order.shipmentSSI = shipmentSSI;
 
