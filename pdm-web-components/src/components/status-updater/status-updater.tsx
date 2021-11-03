@@ -97,13 +97,12 @@ export class StatusUpdater {
       return [];
     }
 
-    const statusHistoryButtons = [];
-    self._currentState.log.reduce((accum, log, index) => {
+    const statusHistoryButtons = self._currentState.log.reduce((accum, log, index) => {
       let extraInfo = undefined;
-      const id = log.substring(0, log.indexOf(' ')).trim();
+      const id = log.split(' ')[0].trim();
+      const logTimeStamp = log.split(' ')[1].trim();
       const status = log.substring(log.lastIndexOf(' ') + 1).trim();
       const state = self.states[status];
-      const extraInfoIndex = accum.hasOwnProperty(status) ? (accum[status] + 1) : 0;
 
       /**
        * 1. extraInfo property may not exist in the object
@@ -111,20 +110,19 @@ export class StatusUpdater {
        */
       if (self._currentState.hasOwnProperty('extraInfo')) {
         if (self._currentState.extraInfo.hasOwnProperty(status)) {
-          const rawExtraInfo = self._currentState.extraInfo[status][extraInfoIndex]
-          extraInfo = rawExtraInfo.split(' ').slice(2).join(' ').trim()
+          const rawExtraInfo = self._currentState.extraInfo[status].filter((_extraInfo) => (_extraInfo.split(' ')[1]).trim() === logTimeStamp)
+          extraInfo = rawExtraInfo.length > 0 ? rawExtraInfo[0].split(' ').slice(2).join(' ').trim() : undefined;
         }
       }
       const current = (self._currentState.log.length - 1) === index;
-      statusHistoryButtons.push(self.buildButtonWithAlert(current, state.label, current ? state.color : 'medium', !extraInfo,
+      accum.push(self.buildButtonWithAlert(current, state.label, current ? state.color : 'medium', !extraInfo,
         {
           header: `Status update to ${status.toUpperCase()} by ${id}`,
           message: extraInfo
         })
       )
-      accum[status] = extraInfoIndex;
       return accum;
-    }, {})
+    }, [])
 
     const currentStatusFromState = this.states[this._currentState.status];
     const individualProperties = {} //temporarily, currently comes from the "translation"

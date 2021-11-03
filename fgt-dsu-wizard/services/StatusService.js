@@ -22,14 +22,15 @@ function StatusService(domain, strategy){
         return utils.getResolver().createDSU;
     }
 
-    let createLog = function(id, prevStatus, status){
+    let createLog = function(id, prevStatus, status, timestamp){
+        const ts = timestamp ? timestamp : Date.now();
         return prevStatus
-                ? `${id} ${Date.now()} updated status from ${prevStatus.status || prevStatus} to ${status.status || status}.`
-                : `${id} ${Date.now()} set status to ${status.status || status}`;
+                ? `${id} ${ts} updated status from ${prevStatus.status || prevStatus} to ${status.status || status}.`
+                : `${id} ${ts} set status to ${status.status || status}`;
     }
 
-    const createExtraInfo = function (id, extraInfo) {
-        return `${id} ${Date.now()} ${extraInfo ? extraInfo : ''}`
+    const createExtraInfo = function (id, extraInfo, timestamp) {
+        return `${id} ${timestamp ? timestamp : Date.now()} ${extraInfo ? extraInfo : ''}`
     }
 
     /**
@@ -225,7 +226,8 @@ function StatusService(domain, strategy){
                             });
                         }
 
-                        let log = createLog(id, prevStatus, status);
+                        const timestamp = Date.now()
+                        let log = createLog(id, prevStatus, status, timestamp);
 
                         dsu.readFile(LOG_PATH, (err, data) => {
                             if (err)
@@ -251,24 +253,20 @@ function StatusService(domain, strategy){
                                         }
                                     }
 
-                                    /**
-                                     *commented to read/mount the status history, for each log, it must fetch extraInfo information,
-                                     * so it must have the same length (extraInfo.length === log.length)
-                                     */
-                                    // if (!status.extraInfo)
-                                    //     return returnFunc();
+                                    if (!status.extraInfo)
+                                        return returnFunc();
 
                                     if (typeof status.extraInfo === 'object') {
                                         const extraInfoStatusArray = status.extraInfo[status.status];
                                         const lastElement = extraInfoStatusArray === undefined ? '' : extraInfoStatusArray.pop();
                                         if (extraInfo[status.status])
-                                            extraInfo[status.status].push(createExtraInfo(id, lastElement))
+                                            extraInfo[status.status].push(createExtraInfo(id, lastElement, timestamp))
                                         else
-                                            extraInfo[status.status] = [createExtraInfo(id, lastElement)];
+                                            extraInfo[status.status] = [createExtraInfo(id, lastElement, timestamp)];
                                     } else if (extraInfo.hasOwnProperty(status.status)) {
-                                        extraInfo[status.status].push(createExtraInfo(id, status.extraInfo))
+                                        extraInfo[status.status].push(createExtraInfo(id, status.extraInfo, timestamp))
                                     } else {
-                                        extraInfo[status.status] = [createExtraInfo(id, status.extraInfo)]
+                                        extraInfo[status.status] = [createExtraInfo(id, status.extraInfo, timestamp)]
                                     }
                                     dsu.writeFile(EXTRA_INFO_PATH, JSON.stringify(extraInfo), returnFunc);
                                 });
