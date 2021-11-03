@@ -144,7 +144,7 @@ class Api {
     }
 
     /**
-     * Creates a new Model Object
+     * Creates several new Model Object
      * @param {string[]} [keys] can be optional if can be generated from model object
      * @param {[{}]} models a list of model objects
      * @param {function(err?, [{}]?)} callback
@@ -153,12 +153,18 @@ class Api {
         functionCallIterator(this.create.bind(this), keys, models, callback);
     }
 
+    /**
+     * updates a new Model Object
+     * @param {string[]} [key] can be optional if can be generated from model object
+     * @param {{}} model a list of model objects
+     * @param {function(err?, {}?)} callback
+     */
     update(key, model, callback){
         return callback(`Not Implemented in master Class`);
     }
 
     /**
-     * Creates a new Model Object
+     * updates several Model Objects
      * @param {string[]} [keys] can be optional if can be generated from model object
      * @param {[{}]} models a list of model objects
      * @param {function(err?, [{}]?)} callback

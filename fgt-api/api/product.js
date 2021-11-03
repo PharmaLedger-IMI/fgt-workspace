@@ -1,7 +1,6 @@
 
-const {Api, OPERATIONS} = require('../../Api');
-const {functionCallIterator} = require('../../utils');
-const Product = require('../../../fgt-dsu-wizard/model/Product');
+const {Api, OPERATIONS} = require('../Api');
+const Product = require('../../fgt-dsu-wizard/model/Product');
 
 class ProductApi extends Api {
     productManager;
@@ -32,10 +31,17 @@ class ProductApi extends Api {
 
         const self = this;
 
+        if (!(product instanceof Product))
+            product = new Product(product);
+
+        const err = product.validate();
+        if (err)
+            return callback(err.join(', '));
+
         self.productManager.create(product, (err, keySSI) => {
             if (err)
                 return callback(err);
-            self.getOne(product.gtin, true, (err, savedProduct) => {
+            self.productManager.getOne(product.gtin, true, (err, savedProduct) => {
                 if (err)
                     return callback(err);
                 callback(undefined, savedProduct, keySSI.getIdentifier());
@@ -57,7 +63,7 @@ class ProductApi extends Api {
             return self.productManager.batchSchedule(() => self.createAll.call(self, keys, models, callback));
         }
 
-        functionCallIterator(this.create.bind(this), keys, models, (err, ...results) => {
+        super.createAll(keys, models, (err, ...results) => {
             if (err){
                 console.log(err);
                 return self.productManager.cancelBatch((_) => callback(err));
