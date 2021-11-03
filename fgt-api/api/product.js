@@ -80,3 +80,5 @@ class ProductApi extends Api {
         });
     }
 }
+
+module.exports = ProductApi;

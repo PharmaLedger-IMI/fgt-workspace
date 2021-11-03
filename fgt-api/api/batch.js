@@ -2,7 +2,7 @@
 const {Api, OPERATIONS} = require('../Api');
 const Batch = require("../../fgt-dsu-wizard/model/Batch");
 
-class BatchApi extends Api {
+module.exports = class BatchApi extends Api {
     batchManager;
 
     constructor(server, participantManager) {
