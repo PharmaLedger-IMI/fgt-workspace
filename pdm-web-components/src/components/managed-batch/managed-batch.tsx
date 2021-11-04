@@ -146,13 +146,13 @@ export class ManagedBatch implements CreateManageView{
   async update(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    const { status, popupOptions } = evt.detail;
+    const { status, extraInfo } = evt.detail;
     this.sendAction.emit({
       action: evt.detail,
       props:{
         batch: new Batch(this.batch),
         newStatus: status,
-        popupOptions
+        extraInfo
       }
     });
   }
