@@ -2,8 +2,8 @@ const path = require("path");
 const fs = require("fs");
 
 const {functionCallIterator, getResolver, getKeySSISpace} = require('../pdm-dsu-toolkit/services/utils');
-const {getParticipantManager} = require('../fgt-dsu-wizard/managers/ParticipantManager');
-const {instantiateSSApp} = require('../bin/environment/utils');
+const getParticipantManager = require('../fgt-dsu-wizard/managers/ParticipantManager');
+const {instantiateSSApp, impersonateDSUStorage} = require('../bin/environment/utils');
 const {APPS} = require('../bin/environment/credentials/credentials3');
 
 const AppBuilderService = require('../pdm-dsu-toolkit/services/dt/AppBuilderService');
@@ -43,7 +43,7 @@ const instantiate = function(basePath, walletName, callback){
 
 const load = function(keySSI, callback){
     try {
-        keySSI = getKeySSISpace().parse(keySSI);
+        keySSI = getKeySSISpace().parse(keySSI.toString());
     } catch (e) {
         return callback(e);
     }
@@ -51,12 +51,12 @@ const load = function(keySSI, callback){
     getResolver().loadDSU(keySSI, (err, dsu) => {
         if (err)
             return callback(err);
-        callback(undefined, keySSI, dsu);
+        callback(undefined, dsu);
     });
 }
 
 const getSeed = function(basePath, walletName, callback){
-    const seedFilePath = path.join(process.cwd(), "config", "seed");
+    const seedFilePath = path.join(process.cwd(), "..", "fgt-api", "config", "seed");
     if (!fs.existsSync(seedFilePath))
         return instantiate(basePath, walletName, callback);
 
@@ -69,26 +69,74 @@ const getSeed = function(basePath, walletName, callback){
     });
 }
 
+const saveSeed = function(seed, callback){
+    const seedFilePath = path.join(process.cwd(), "..", "fgt-api", "config", "seed");
+    fs.writeFile(seedFilePath, seed.toString(), callback);
+}
 
-const initApis = function(server, apis, walletName){
-    getSeed(process.cwd(), walletName, (err, keySSI) => {
+
+const initApis = function(server, apis, walletName, ...managerInitMethods){
+    getSeed(process.cwd(), walletName, (err, keySSI, walletDSU) => {
         if (err)
             throw err;
+
+        const init = function(wallet){
+            getParticipantManager(impersonateDSUStorage(wallet.getWritableDSU()), (err, participantManager) => {
+                if (err)
+                    throw err;
+                initManagers(participantManager, ...managerInitMethods, (err) => {
+                    if (err)
+                        throw err;
+                    Object.values(apis).forEach(api => {
+                        try {
+                            new api(server, participantManager)
+                        } catch (e) {
+                            console.log(e);
+                        }
+                    });
+                });
+            });
+        }
+
+        if (walletDSU){
+            walletDSU.getKeySSIAsObject((err, keySSI) => {
+                if (err)
+                    return callback(err);
+                saveSeed(keySSI.getIdentifier(), (err) => {
+                    if (err)
+                        return callback(err);
+                    init(walletDSU);
+                });
+            });
+        }
+
         load(keySSI, (err, walletDSU) => {
             if (err)
                 throw err;
-            getParticipantManager(walletDSU.getWritableDSU(), (err, participantManager) => {
-                if (err)
-                    throw err;
-                Object.values(apis).forEach(api => {
-                    try {
-                        (new api)(server, participantManager)
-                    } catch (e) {
-                        console.log(e);
-                    }
-                });
-            });
+            init(walletDSU);
         });
+    });
+}
+
+const initManagers = function(participantManager, ...managerInitMethods){
+    const callback = managerInitMethods.pop();
+
+    const initIterator = function(managerInits, callback){
+        const managerInit = managerInits.shift();
+        if (!managerInit)
+            return callback();
+        managerInit(participantManager, (err, manager) => {
+            if (err)
+                return callback(err);
+            console.log(`Manager ${manager.tableName} booted for ${participantManager.getIdentity().id}`);
+            initIterator(managerInits, callback);
+        });
+    }
+
+    initIterator(managerInitMethods.slice(), (err) => {
+        if (err)
+            return callback(err);
+        callback(undefined);
     });
 }
 
