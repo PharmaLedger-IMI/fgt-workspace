@@ -21,10 +21,22 @@ export default class NotificationsController extends LocalizedController {
         })
 
         this.on(EVENT_REFRESH, (evt) => {
+            let notification = evt.detail;
+            self._handleNotifications.call(self,notification);
             evt.preventDefault();
             evt.stopImmediatePropagation();
             self.element.querySelector('pdm-ion-table').refresh();
         }, {capture: true});
+    }
+
+    _handleNotifications(notification){
+        const self = this;
+
+        if(notification.api !== 'notifications')
+            return self.model.notification = "0"; 
+        
+        let currentNum = Number(self.model.notification);
+        self.model.notification = (currentNum + 1).toString();
     }
 }
 

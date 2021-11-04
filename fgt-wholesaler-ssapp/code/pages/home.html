@@ -31,8 +31,7 @@
                             <menu-tab-button icon-name="reader" label="@menu.orders.label" tab="@menu.orders.options"></menu-tab-button>
                             <menu-tab-button icon-name="map" label="@menu.shipments.label" tab="@menu.shipments.options"></menu-tab-button>
                             <menu-tab-button icon-name="podium" label="@menu.stock" tab="tab-stock"></menu-tab-button>
-                            <!--Test Notifications bar paper-plane-->
-                            <menu-tab-button icon-name="paper-plane" label="@menu.notifications" tab="tab-notifications"></menu-tab-button>
+                            <menu-tab-button icon-name="paper-plane" label="@menu.notifications" badge="@notifications.notification" tab="tab-notifications"></menu-tab-button>
                         </ion-list>
                     </div>
                 </ion-col>
@@ -80,8 +79,6 @@
                                 </div>
                             </ion-content>
                         </ion-tab>
-
-                        <!--Test notification tab-->
                         <ion-tab tab="tab-notifications">
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <div data-if="@identified">
@@ -111,8 +108,7 @@
                                 <menu-tab-button icon-name="reader" label="@menu.orders.label" tab="@menu.orders.options" mode="bar"></menu-tab-button>
                                 <menu-tab-button icon-name="map" label="@menu.shipments.label" tab="@menu.shipments.options" mode="bar"></menu-tab-button>
                                 <menu-tab-button icon-name="podium" label="@menu.stock" tab="tab-stock" mode="bar"></menu-tab-button>
-                                <!--Test Notifications bar paper-plane-->
-                                <menu-tab-button icon-name="paper-plane" label="@menu.notifications" tab="tab-notifications" mode ="bar"></menu-tab-button>
+                                <menu-tab-button icon-name="paper-plane" label="@menu.notifications" badge="@notifications.notification" tab="tab-notifications" mode ="bar"></menu-tab-button>
                             </ion-tab-bar>
                         </div>
                     </ion-tabs>

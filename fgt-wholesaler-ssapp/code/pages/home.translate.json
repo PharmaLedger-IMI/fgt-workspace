@@ -325,6 +325,8 @@
     "none": "There are no pending orders"
   },
   "notifications": {
-    "title": "Notifications"
+    "title": "Notifications",
+    "notification": "0"
+    
   }
 }
