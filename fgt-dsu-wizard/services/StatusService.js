@@ -22,10 +22,15 @@ function StatusService(domain, strategy){
         return utils.getResolver().createDSU;
     }
 
-    let createLog = function(id, prevStatus, status){
+    let createLog = function(id, prevStatus, status, timestamp){
+        const ts = timestamp ? timestamp : Date.now();
         return prevStatus
-                ? `${id} updated status from ${prevStatus.status || prevStatus} to ${status.status || status}.`
-                : `${id} set status to ${status.status || status}`;
+                ? `${id} ${ts} updated status from ${prevStatus.status || prevStatus} to ${status.status || status}.`
+                : `${id} ${ts} set status to ${status.status || status}`;
+    }
+
+    const createExtraInfo = function (id, extraInfo, timestamp) {
+        return `${id} ${timestamp ? timestamp : Date.now()} ${extraInfo ? extraInfo : ''}`
     }
 
     /**
@@ -162,7 +167,6 @@ function StatusService(domain, strategy){
     };
 
     this.update = function(keySSI, status, id, callback){
-        const self = this;
 
         if (!callback){
             callback = id;
@@ -170,8 +174,6 @@ function StatusService(domain, strategy){
         } else {
             status = parseStatus(status, id);
         }
-
-        let data = JSON.stringify(status);
 
         if (isSimple){
             keySSI = utils.getKeySSISpace().parse(keySSI);
@@ -224,7 +226,8 @@ function StatusService(domain, strategy){
                             });
                         }
 
-                        let log = createLog(id, prevStatus, status);
+                        const timestamp = Date.now()
+                        let log = createLog(id, prevStatus, status, timestamp);
 
                         dsu.readFile(LOG_PATH, (err, data) => {
                             if (err)
@@ -241,7 +244,7 @@ function StatusService(domain, strategy){
                                     return cb(err);
                                 dsu.readFile(EXTRA_INFO_PATH, (err, extraInfo) => {
                                     if (err)
-                                        extraInfo = undefined;
+                                        extraInfo = {};
                                     else {
                                         try {
                                             extraInfo = JSON.parse(extraInfo);
@@ -253,7 +256,18 @@ function StatusService(domain, strategy){
                                     if (!status.extraInfo)
                                         return returnFunc();
 
-                                    extraInfo = `${extraInfo || ''}${extraInfo ? '. ' : ''}${status.extraInfo}`; // Object.assign({}, extraInfo, status.extraInfo);
+                                    if (typeof status.extraInfo === 'object') {
+                                        const extraInfoStatusArray = status.extraInfo[status.status];
+                                        const lastElement = extraInfoStatusArray === undefined ? '' : extraInfoStatusArray.pop();
+                                        if (extraInfo[status.status])
+                                            extraInfo[status.status].push(createExtraInfo(id, lastElement, timestamp))
+                                        else
+                                            extraInfo[status.status] = [createExtraInfo(id, lastElement, timestamp)];
+                                    } else if (extraInfo.hasOwnProperty(status.status)) {
+                                        extraInfo[status.status].push(createExtraInfo(id, status.extraInfo, timestamp))
+                                    } else {
+                                        extraInfo[status.status] = [createExtraInfo(id, status.extraInfo, timestamp)]
+                                    }
                                     dsu.writeFile(EXTRA_INFO_PATH, JSON.stringify(extraInfo), returnFunc);
                                 });
                             });

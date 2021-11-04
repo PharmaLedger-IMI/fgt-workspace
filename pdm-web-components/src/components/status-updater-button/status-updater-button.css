@@ -1,3 +1,32 @@
 :host {
   display: block;
 }
+
+.status-updater-alert .alert-wrapper {
+  height: auto !important;
+  width: 90vw !important;
+  max-width: 370px !important;
+  padding: 8px !important;
+  margin: 2px !important;
+}
+
+.status-updater-alert .alert-head {
+  text-align: center !important;
+}
+
+.status-updater-alert .alert-message {
+  margin: 0 3px !important;
+  padding: 3px !important;
+  text-align: justify;
+  text-align-last: center;
+}
+
+.status-updater-alert .alert-input-group {
+  margin: 0 3px !important;
+  padding: 3px !important;
+}
+
+.status-updater-alert .alert-button-group {
+  margin: 0 3px !important;
+  padding: 7px !important;
+}

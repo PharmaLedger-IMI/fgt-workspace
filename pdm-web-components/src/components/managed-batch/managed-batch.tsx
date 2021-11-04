@@ -146,13 +146,13 @@ export class ManagedBatch implements CreateManageView{
   async update(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    const { status, popupOptions } = evt.detail;
+    const { status, extraInfo } = evt.detail;
     this.sendAction.emit({
       action: evt.detail,
       props:{
         batch: new Batch(this.batch),
         newStatus: status,
-        popupOptions
+        extraInfo
       }
     });
   }
@@ -310,7 +310,7 @@ export class ManagedBatch implements CreateManageView{
     const self = this;
     const getStatus = function(){
       if (self.batch && self.batch.batchStatus)
-        return (<status-updater current-state={self.batch.batchStatus.status}
+        return (<status-updater current-state={JSON.stringify(self.batch.batchStatus)}
                                 state-json={JSON.stringify(self.statuses)}
                                 onStatusUpdateEvent={self.update.bind(self)}></status-updater>);
       return (<multi-spinner></multi-spinner>);
