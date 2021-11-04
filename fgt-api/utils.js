@@ -13,7 +13,7 @@ const dt = {
 }
 
 const getCredentials = function(basePath, walletName, callback){
-    const credentialsFilePath = path.join(process.cwd(), "config", "credentials.json");
+    const credentialsFilePath = path.join(process.cwd(), "..", "fgt-api", "config", "credentials.json");
     if (!fs.existsSync(credentialsFilePath))
         return callback(`No credentials file found`);
 
@@ -30,10 +30,10 @@ const getCredentials = function(basePath, walletName, callback){
 }
 
 const instantiate = function(basePath, walletName, callback){
-    getCredentials(basePath, (err, credentials) => {
+    getCredentials(basePath, walletName, (err, credentials) => {
         if (err)
             return callback(err);
-        instantiateSSApp(walletName, basePath, dt, credentials, (err, walletSSI, walletDSU) => {
+        instantiateSSApp(walletName, "..", dt, credentials, (err, walletSSI, walletDSU) => {
             if (err)
                 return callback(err);
             callback(undefined, walletSSI, walletDSU);

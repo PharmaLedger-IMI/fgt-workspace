@@ -31,6 +31,10 @@
       "module": "./../../fgt-dsu-wizard",
       "function": "Init"
     },
+    "fgt-api": {
+      "module": "./../../fgt-api/participants/mah",
+      "function": "init"
+    },
     "bricking": {},
     "anchoring": {}
   },
