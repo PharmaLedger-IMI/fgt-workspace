@@ -34,8 +34,6 @@ export class BatchChip {
 
   @Prop({attribute: "loader-type"}) loaderType?: string = SUPPORTED_LOADERS.circles;
 
-  @Prop({attribute: "event-data", mutable: true}) eventData?: string;
-
   @Prop({attribute: "expiry-threshold", mutable: true}) expiryThreshold?: number = 30;
 
   private batchResolver: WebResolver = undefined;
@@ -122,7 +120,7 @@ export class BatchChip {
   private triggerSelect(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.selectEvent.emit(this.eventData || this.gtinBatch)
+    this.selectEvent.emit(this.gtinBatch)
   }
 
   private renderDetail(){
