@@ -282,7 +282,7 @@ export class ManagedOrder implements CreateManageView{
   async update(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    const { status, popupOptions } = evt.detail;
+    const { status, extraInfo } = evt.detail;
     const order = new Order(this.order.orderId, this.order.requesterId, this.order.senderId, this.order.shipToAddress, this.order.status, this.order.orderLines.slice());
     order.shipmentId = this.order.shipmentId;
     this.sendAction.emit({
@@ -290,7 +290,7 @@ export class ManagedOrder implements CreateManageView{
       props:{
         order: order,
         newStatus: status,
-        popupOptions
+        extraInfo
       }
     });
   }
