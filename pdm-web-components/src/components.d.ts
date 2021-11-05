@@ -24,7 +24,6 @@ export namespace Components {
         "type": string;
     }
     interface BatchChip {
-        "eventData"?: string;
         "expiryThreshold"?: number;
         "gtinBatch": string;
         "loaderType"?: string;
@@ -777,7 +776,6 @@ declare namespace LocalJSX {
         "type"?: string;
     }
     interface BatchChip {
-        "eventData"?: string;
         "expiryThreshold"?: number;
         "gtinBatch"?: string;
         "loaderType"?: string;

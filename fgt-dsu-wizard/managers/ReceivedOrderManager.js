@@ -144,7 +144,36 @@ class ReceivedOrderManager extends OrderManager {
                     console.log(`Received new Order: `, orderObj);
                     return self.insertRecord(dbKey, self._indexItem(orderId, orderObj, orderSReadSSIStr), callback);
                 }
-                console.log(`Updating order`)
+
+                /**
+                 * Message/ExtraInfo by default follows the model: `{SENDER_ID} {TIMESTAMP} {MESSAGE}`,
+                 * so need to be sanitized to remove {SENDER_ID} and {TIMESTAMP}, because receiver
+                 * just needs the message
+                 * @param {Status} statusObj
+                 * @returns {string}
+                 */
+                const getExtraInfoMsg = function (statusObj) {
+                    const { status, extraInfo } = statusObj;
+                    if (!extraInfo)
+                        return '';
+
+                    if (!extraInfo.hasOwnProperty(status))
+                        return '';
+
+                    const lastLog = statusObj.log[statusObj.log.length - 1]
+                    const extraInfoUpdated = extraInfo[status].filter(_extraInfo => {
+                        // verify if extraInfo.timestamp ===log.timestamp
+                        return _extraInfo.split(' ')[1].trim() === lastLog.split(' ')[1].trim()
+                    })
+                    if (extraInfoUpdated.length > 0) {
+                        return extraInfoUpdated[0].split(' ').slice(2).join(' ').trim(); // sanitized
+                    } else {
+                        return '';
+                    }
+                }
+
+                orderObj.status['extraInfo'] = getExtraInfoMsg(orderObj.status);
+                console.log(`Updating order ${orderObj.orderId} with status ${orderObj.status.status}`)
                 self.updateRecord(dbKey, self._indexItem(orderId, orderObj, orderSReadSSIStr), (err) => {
                     if (err)
                         return self._err(`Could not update order`, err, callback);

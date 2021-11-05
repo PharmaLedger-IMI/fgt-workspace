@@ -186,7 +186,7 @@ export class ManagedBatch implements CreateManageView{
     const batch = new Batch(evt.detail);
     batch.serialNumbers = batch.serialNumbers.split(',');
     this.sendAction.emit({
-      action: BatchStatus.CREATE,
+      action: BatchStatus.COMMISSIONED,
       props: batch
     });
   }
