@@ -122,21 +122,10 @@ export class PdmItemOrganizer {
   </${listTag}>
 </ion-content>`;
 
-        this.querySelectorAll(componentName).forEach((item, index) => {
-          const el = parsedProps.filter((parsedProp) => {
-            return parsedProp['gtin-batch'] === item.getAttribute(self.idProp)
-          })[0];
-
+        this.querySelectorAll(componentName).forEach(item => {
           item.addEventListener('click', () => {
             const popover: any = contentEl.closest('ion-popover');
-            let data;
-            if (!el) {
-              data = item.getAttribute(self.idProp)
-            } else {
-              data = el.hasOwnProperty('event-data') ? el['event-data'] : item.getAttribute(self.idProp)
-            }
-            item.getAttribute(self.idProp)
-            popover.dismiss(undefined, data);
+            popover.dismiss(undefined, item.getAttribute(self.idProp));
           });
         });
       }
