@@ -36,15 +36,17 @@ export default class HomeController extends BaseHomeController{
     _handleNotifications(notification){
         const self = this;
 
-        if(notification.api !== 'notifications')
-            return
-        
-        let currentNum = Number(self.model.notifications.notification);      
+        let currentNum = Number(self.model.notifications.notification);
+    
+        if(currentNum === NaN)
+            return self.model.notification = "0" 
+
         self.model.notifications.notification = (currentNum + 1).toString();
     }
 
     _resetNotifications(notification) {
         const self = this;
+
         if(notification.tab !== 'tab-notifications')
             return
 
