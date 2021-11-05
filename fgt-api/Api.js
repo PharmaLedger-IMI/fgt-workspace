@@ -1,23 +1,27 @@
-const {functionCallIterator} = require('./utils');
+const {functionCallIterator, log} = require('./utils');
 const BASE_PATH = '/traceability';
 const ALL_SUFFIX = "All";
 
 const OPERATIONS = {
     CREATE: {
         endpoint: 'create',
-        method: 'PUT'
+        method: 'PUT',
+        pathParams: undefined
     },
     UPDATE: {
         endpoint: 'update',
-        method: 'POST'
+        method: 'POST',
+        pathParams: undefined
     },
     GET: {
         endpoint: 'get',
-        method: 'GET'
+        method: 'GET',
+        pathParams: undefined
     },
     DELETE: {
         endpoint: 'delete',
-        method: 'DELETE'
+        method: 'DELETE',
+        pathParams: undefined
     },
 }
 
@@ -79,6 +83,7 @@ class Api {
         res.statusCode = code;
         if (response)
             res.write(JSON.stringify(response));
+        log(response);
         res.send();
     }
 
@@ -113,9 +118,12 @@ class Api {
             return "/:" + params.join(':');
         }
 
+        log(`Initializing ${this.endpoint} endpoint with operations:`);
+
         operations.forEach(op => {
-            const pathParams = parsePathParams(op.pathParams || []);
-            getMethod(op.method)(this._getEndpoint() + parsePathParams(...pathParams), (req, res, next) => {
+            const pathParams = parsePathParams(...(op.pathParams || []));
+            log(`Setting up ${op.endpoint}${pathParams}`)
+            getMethod(op.method)(this._getEndpoint() + pathParams, (req, res, next) => {
                 parseRequestBody(req, (err, body) => {
                     if (err)
                         return self._sendResponse(res, 500, "Could not parse request Body");
@@ -130,6 +138,8 @@ class Api {
                 });
             });
         });
+
+        log(`Initialization for ${this.endpoint} endpoint concluded.`);
     }
 
     /**

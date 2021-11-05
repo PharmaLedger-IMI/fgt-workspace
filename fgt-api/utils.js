@@ -12,6 +12,12 @@ const dt = {
     AppBuilderService
 }
 
+const log = function(message, ...args){
+    if (!message)
+        return;
+    console.log(`[FGT-API][${Date.now()}] - ${message}`, ...args);
+}
+
 const getCredentials = function(basePath, walletName, callback){
     const credentialsFilePath = path.join(process.cwd(), "..", "fgt-api", "config", "credentials.json");
     if (!fs.existsSync(credentialsFilePath))
@@ -128,7 +134,7 @@ const initManagers = function(participantManager, ...managerInitMethods){
         managerInit(participantManager, (err, manager) => {
             if (err)
                 return callback(err);
-            console.log(`Manager ${manager.tableName} booted for ${participantManager.getIdentity().id}`);
+            log(`Manager ${manager.tableName} booted for ${participantManager.getIdentity().id}`);
             initIterator(managerInits, callback);
         });
     }
@@ -143,5 +149,6 @@ const initManagers = function(participantManager, ...managerInitMethods){
 module.exports = {
     functionCallIterator,
     initApis,
-    APPS
+    APPS,
+    log
 }

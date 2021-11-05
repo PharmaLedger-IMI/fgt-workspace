@@ -2,11 +2,13 @@
 const {Api, OPERATIONS} = require('../Api');
 const Product = require('../../fgt-dsu-wizard/model/Product');
 
+const PRODUCT_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['gtin']});
+
 class ProductApi extends Api {
     productManager;
 
     constructor(server, participantManager) {
-        super(server, 'product', participantManager, [OPERATIONS.CREATE, OPERATIONS.GET]);
+        super(server, 'product', participantManager, [OPERATIONS.CREATE, PRODUCT_GET]);
         try {
             this.productManager = participantManager.getManager("ProductManager");
         } catch (e) {
