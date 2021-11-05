@@ -3,18 +3,15 @@ import {Component, Host, h, Element, Prop, State, Watch, Method, Event, EventEmi
 import {WebManagerService, WebManager} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
-import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
-import {getBarCodePopOver} from "../../utils/popOverUtils";
-import {ListItemLayout} from "../list-item-layout/list-item-layout";
 
-const {Stock, Batch, IndividualProduct} = wizard.Model;
+const {Notification} = wizard.Model;
 
 @Component({
   tag: 'managed-notifications-list-item',
   styleUrl: 'managed-notifications-list-item.css',
   shadow: false,
 })
-export class ManageNotificationListItem {
+export class ManagedNotificationListItem {
 
   @HostElement() host: HTMLElement;
 
@@ -53,25 +50,15 @@ export class ManageNotificationListItem {
   private sendError(message: string, err?: object){
     const event = this.sendErrorEvent.emit(message);
     if (!event.defaultPrevented || err)
-      console.log(`Product Component: ${message}`, err);
+      console.log(`Notification Component: ${message}`, err);
   }
 
-  private navigateToTab(tab: string,  props: any){
-    const event = this.sendNavigateTab.emit({
-      tab: tab,
-      props: props
-    });
-    if (!event.defaultPrevented)
-      console.log(`Tab Navigation request seems to have been ignored by all components...`);
-  }
-
-  @Prop() notificationID: string; 
+  @Prop() notificationKey: string;
 
   private notificationManager: WebManager = undefined;
 
-  @State() senderID: string = undefined; 
-  @State() subject: string = undefined; //--------------------------------------------------------
-  @State() body: string = undefined; //--------------------------------------------------------
+  @State() notification: typeof Notification = undefined;
+
 
   async componentWillLoad() {
     if (!this.host.isConnected)
@@ -84,19 +71,17 @@ export class ManageNotificationListItem {
     let self = this;
     if (!self.notificationManager)
       return;
-    self.notificationManager.getOne(self.notificationID, false, (err, record) => {
+    self.notificationManager.getOne(self.notificationKey, true, (err, notification) => {
       if (err){
-        self.sendError(`Could not get Product with key ${self.notificationID}`, err);
+        self.sendError(`Could not get Notification with key ${self.notificationKey}`, err);
         return;
       }
-      self.notificationID = record.notificationID; 
-      self.senderID = record.senderId; 
-      self.subject = record.subject; 
-      self.body = record.body;
+
+      self.notification = new Notification(notification);
     });
   }
 
-  @Watch('notificationID')
+  @Watch('notificationKey')
   @Method()
   async refresh(){
     await this.loadNotification();
@@ -105,41 +90,38 @@ export class ManageNotificationListItem {
   addLabel(){
     const self = this;
 
-    const getNotificationIDLabel = function(){
-      if (!self.notificationID)
+    const getKeyLabel = function(){
+      if (!self.notificationKey)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
-      return self.notificationID;
+      return self.notificationKey;
     }
 
-    const getSenderIDLabel = function(){
-      if (!self.senderID)
+    const getSenderLabel = function(){
+      if (!self.notification || !self.notification.senderId)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
-      return self.senderID;
+      return self.notification.senderId;
     }
 
     const getSubjectLabel = function(){
-      if (!self.subject)
+      if (!self.notification || !self.notification.subject)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
-      return self.subject;
+      return self.notification.subject;
     }
 
     return(
       <ion-label slot="label" color="secondary">
-        {getNotificationIDLabel()}
-        <span class="ion-padding-start">
-          {/* <ion-badge>
-            {getQuantityLabel()}
-          </ion-badge> */}
-        </span>
-        <span class="ion-padding-start">{getSenderIDLabel()}</span>
+        {getKeyLabel()}
+        <span class="ion-padding-start">{getSenderLabel()}</span>
         <span class="ion-padding-start">{getSubjectLabel()}</span>
       </ion-label>)
   }
 
 
+
+
   addButtons(){
     let self = this;
-    if (!self.notificationID)
+    if (!self.notification)
       return (<ion-skeleton-text animated></ion-skeleton-text>);
 
     const getButton = function(slot, color, icon, handler){
@@ -151,7 +133,7 @@ export class ManageNotificationListItem {
     }
 
     return [
-      getButton("buttons", "medium", "eye", () => console.log('Message Viewed'))
+      getButton("buttons", "medium", "eye", () => console.log(self.notification.subject))
     ]
   }
 

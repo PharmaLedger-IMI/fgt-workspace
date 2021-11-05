@@ -7,9 +7,9 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type     | Default     |
-| -------- | --------- | ----------- | -------- | ----------- |
-| `gtin`   | `gtin`    |             | `string` | `undefined` |
+| Property          | Attribute          | Description | Type     | Default     |
+| ----------------- | ------------------ | ----------- | -------- | ----------- |
+| `notificationKey` | `notification-key` |             | `string` | `undefined` |
 
 
 ## Events
@@ -38,15 +38,12 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [pdm-item-organizer](../pdm-item-organizer)
 - [list-item-layout](../list-item-layout)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-notifications-list-item --> pdm-item-organizer
   managed-notifications-list-item --> list-item-layout
-  pdm-item-organizer --> more-chip
   style managed-notifications-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
