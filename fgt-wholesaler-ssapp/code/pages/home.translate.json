@@ -326,7 +326,7 @@
   },
   "notifications": {
     "title": "Notifications",
-    "notification": "0"
-    
+    "notification": "0",
+    "stockNotification": "0"  
   }
 }
