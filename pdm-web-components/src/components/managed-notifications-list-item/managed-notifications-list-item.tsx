@@ -87,14 +87,28 @@ export class ManagedNotificationListItem {
     await this.loadNotification();
   }
 
+  addContent(){
+    const self = this;
+
+    const getActionLabel = function(){
+      if (!self.notification.body.batch.batchStatus.log)
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
+
+      const statusInfo = self.notification.body.batch.batchStatus.log.pop();
+      return statusInfo;
+    }
+  
+  return(
+    <ion-label slot="content" color="secondary">
+      {getActionLabel()}
+    </ion-label>)
+
+  }
+
   addLabel(){
     const self = this;
 
-    const getKeyLabel = function(){
-      if (!self.notificationid)
-        return (<ion-skeleton-text animated></ion-skeleton-text>);
-      return self.notificationid;
-    }
+   
 
     const getSenderLabel = function(){
       if (!self.notification || !self.notification.senderId)
@@ -110,8 +124,7 @@ export class ManagedNotificationListItem {
 
     return(
       <ion-label slot="label" color="secondary">
-        {getKeyLabel()}
-        <span class="ion-padding-start">{getSenderLabel()}</span>
+        {getSenderLabel()}
         <span class="ion-padding-start">{getSubjectLabel()}</span>
       </ion-label>)
   }
@@ -139,6 +152,7 @@ export class ManagedNotificationListItem {
       <Host>
         <list-item-layout>
           {this.addLabel()}
+          {this.addContent()}
           {this.addButtons()}
         </list-item-layout>
       </Host>
