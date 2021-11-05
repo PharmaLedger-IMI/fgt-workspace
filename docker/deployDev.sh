@@ -51,6 +51,7 @@ echo "When you see a message like 'Storing seeds:\ ...' you may CTL-C to exit."
 docker stop \$(docker ps -aq)
 docker rm \$(docker ps -aq)
 docker rmi \$(docker images -q)
+docker volume rm external-volume
 ( xz -d < images/$IMG_NAME | docker load )
 docker run --detach --hostname fgt --publish 8080:8080 --mount source=external-volume,target=/fgt-workspace/apihub-root/external-volume --name $UCNAME --restart always pharmaledger/$UCNAME
 #docker run --detach --hostname fgt --publish 8080:8080 --name $UCNAME --restart always pharmaledger/$UCNAME

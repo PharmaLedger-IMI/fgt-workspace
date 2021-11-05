@@ -8,3 +8,63 @@ Blockchain Domains:
   - "external-volume/domains/epi" storage for bricks 
   - ethereum anchoring
 
+v0.7.1 Demo Guide
+
+After deploy with npm run environment-test
+open in the browser (and login) the following wallets
+
+MAHs:
+Pfizer
+
+Wholesalers:
+PDM the Wholesaler
+
+Pharmacy;
+PDM the Pharmacy
+
+
+
+Demo Traceability:
+
+Go to MAH Pfizer, Products, and see Deop Medrol (do nothing - just confirm it is there)
+
+Go to Wholesaler PDM, Stock, choose Depo Medrol (may be in second/last page), chip and show traceability
+
+Go to Pharmacy PDM, Stock, choose Depo Medrol (may be in second/last page), chip and show traceability
+
+
+
+Demo Order Status Communication:
+
+Go to Pharmacy PDM, Issued Order, New, order from PDM (same ID) choose Depo Medrol, set small quantity (1 or 2).
+
+Go to Wholesaler PDM, Orders, Received, see first order. Click cog wheel, confirm all available, CREATE.
+
+Go to Pharmacy PDM, Issued Order, see that order is Acknowledge.
+
+Go to Wholesaler PDM, Shipments, see latest shipment. Change to PICK UP (and give a comment).
+
+Go to Pharmacy PDM, Issued Order, see that order is PICK UP.
+...
+PICK UP, TRANSIT, and DELIVERED.
+
+Go to Pharmacy PDM, Issued Order, see that order, and CONFIRM SHIPMENT (add comment).
+
+
+
+Demo Batch Recall:
+
+Go to Pharmacy PDM, Stock, see what batch from Depo Medrol it has.
+
+Go to MAH Pfizer, Products, and see Depo Medrol, choose the same batch that exists in the Pharmacy , change status to RECALL.
+
+Go to Pharmacy PDM, Stock, see that batch status changed.
+
+
+
+
+
+
+
+
+
