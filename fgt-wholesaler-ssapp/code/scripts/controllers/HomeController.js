@@ -4,7 +4,7 @@ export default class HomeController extends BaseHomeController{
         super(...args);
         let self = this;
 
-        self.model.notifications.notification = '20';
+        self.model.notifications.stockNotification = '0';
 
         self.on(EVENT_SSAPP_HAS_LOADED, (evt) => {
             if (self.model.participant)
@@ -36,21 +36,23 @@ export default class HomeController extends BaseHomeController{
     _handleNotifications(notification){
         const self = this;
 
-        let currentNum = Number(self.model.notifications.notification);
+        if(notification.subject === 'batches'){
+            let currentNum = Number(self.model.notifications.stockNotification);
+            
+            if(currentNum === NaN)
+                return self.model.stockNotification = "0" 
     
-        if(currentNum === NaN)
-            return self.model.notification = "0" 
-
-        self.model.notifications.notification = (currentNum + 1).toString();
+            self.model.notifications.stockNotification = (currentNum + 1).toString();
+        }
     }
 
     _resetNotifications(notification) {
         const self = this;
 
-        if(notification.tab !== 'tab-notifications')
+        if(!notification.tab)
             return
 
-        if(notification.tab === 'tab-notifications')
-            self.model.notifications.notification = "0";           
+        if(notification.tab === 'tab-stock')
+            self.model.notifications.stockNotification = "0";           
     }
 }

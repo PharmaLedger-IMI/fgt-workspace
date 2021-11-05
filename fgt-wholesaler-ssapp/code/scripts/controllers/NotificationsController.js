@@ -30,17 +30,7 @@ export default class NotificationsController extends LocalizedController {
     }
 
     _handleNotifications(notification){
-        const self = this;
-
-        if(!notification.subject)
-            return self.model.notification = "0"   
-
-        let currentNum = Number(self.model.notification);
-        
-        if(currentNum === NaN)
-            return self.model.notification = "0" 
-
-        self.model.notification = (currentNum + 1).toString();    
+        const self = this;   
     }
 }
 
