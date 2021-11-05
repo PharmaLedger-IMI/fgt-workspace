@@ -7,9 +7,9 @@
 
 ## Properties
 
-| Property          | Attribute          | Description | Type     | Default     |
-| ----------------- | ------------------ | ----------- | -------- | ----------- |
-| `notificationKey` | `notification-key` |             | `string` | `undefined` |
+| Property         | Attribute        | Description | Type     | Default     |
+| ---------------- | ---------------- | ----------- | -------- | ----------- |
+| `notificationid` | `notificationid` |             | `string` | `undefined` |
 
 
 ## Events

@@ -53,7 +53,7 @@ export class ManagedNotificationListItem {
       console.log(`Notification Component: ${message}`, err);
   }
 
-  @Prop() notificationKey: string;
+  @Prop() notificationid: string;
 
   private notificationManager: WebManager = undefined;
 
@@ -71,9 +71,9 @@ export class ManagedNotificationListItem {
     let self = this;
     if (!self.notificationManager)
       return;
-    self.notificationManager.getOne(self.notificationKey, true, (err, notification) => {
+    self.notificationManager.getOne(self.notificationid, true, (err, notification) => {
       if (err){
-        self.sendError(`Could not get Notification with key ${self.notificationKey}`, err);
+        self.sendError(`Could not get Notification with key ${self.notificationid}`, err);
         return;
       }
 
@@ -81,7 +81,7 @@ export class ManagedNotificationListItem {
     });
   }
 
-  @Watch('notificationKey')
+  @Watch('notificationid')
   @Method()
   async refresh(){
     await this.loadNotification();
@@ -91,9 +91,9 @@ export class ManagedNotificationListItem {
     const self = this;
 
     const getKeyLabel = function(){
-      if (!self.notificationKey)
+      if (!self.notificationid)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
-      return self.notificationKey;
+      return self.notificationid;
     }
 
     const getSenderLabel = function(){
@@ -116,9 +116,6 @@ export class ManagedNotificationListItem {
       </ion-label>)
   }
 
-
-
-
   addButtons(){
     let self = this;
     if (!self.notification)
@@ -133,7 +130,7 @@ export class ManagedNotificationListItem {
     }
 
     return [
-      getButton("buttons", "medium", "eye", () => console.log(self.notification.subject))
+      getButton("buttons", "medium", "eye", () => console.log(self.notification.body))
     ]
   }
 
