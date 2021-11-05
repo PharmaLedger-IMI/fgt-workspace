@@ -143,6 +143,7 @@ export class ManagedProductListItem {
                           component-props={JSON.stringify(this.batches.map(batch => ({
                             "gtin-batch": this.stock.gtin + '-' + batch.batchNumber,
                             "quantity": (new Batch(batch)).getQuantity(),
+                            "status": batch.batchStatus.status,
                             "mode": "detail",
                             "loader-type": SUPPORTED_LOADERS.bubblingSmall
                           })))}
