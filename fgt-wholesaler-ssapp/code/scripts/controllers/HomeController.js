@@ -4,8 +4,6 @@ export default class HomeController extends BaseHomeController{
         super(...args);
         let self = this;
 
-        self.model.notifications.stockNotification = '0';
-
         self.on(EVENT_SSAPP_HAS_LOADED, (evt) => {
             if (self.model.participant)
                 self.showToast(`Welcome back to Finished Goods Traceability's Wholesaler App ${self.model.participant.name}`);
