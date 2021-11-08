@@ -189,12 +189,13 @@ export class PdmItemOrganizer {
   }
 
   private getFilteredComponents(){
+    const self = this;
     if (!this.parsedProps || !this.parsedProps.length)
       return [];
     if (this.parsedProps.length <= this._displayCount)
       return this.parsedProps.map(props => this.getComponentJSX(props));
-    const toDisplay = Math.max(this._displayCount, 0) - 1;
-    const result = this.parsedProps.filter((props,i) => !!props && i <= toDisplay).map(props => this.getComponentJSX(props));
+
+    const result = this.parsedProps.filter((props, i) => !!props && i < self._displayCount).map(props => this.getComponentJSX(props));
 
     if (this.singleLine || this._displayCount < 0){
       const operation = this.moreChipsPosition === "start" ? result.unshift.bind(result) : result.push.bind(result);
@@ -206,12 +207,11 @@ export class PdmItemOrganizer {
   private selectRenderMode(){
     if (this._displayCount >= 0) {
       return (
-        <ion-row
-          class={`${this.singleLine ? "flex " : "flex-break "} ion-justify-content-${this.orientation} ion-align-items-end`}>
-          <ion-col size="auto">
+        <ion-col size="auto">
+          <ion-row className={`${this.singleLine ? "flex " : "flex-break "} ion-nowrap ion-justify-content-${this.orientation} ion-align-items-end`}>
             {...this.getFilteredComponents()}
-          </ion-col>
-        </ion-row>
+          </ion-row>
+        </ion-col>
       );
     }
 
@@ -221,9 +221,9 @@ export class PdmItemOrganizer {
   }
 
   private calculateDisplayCount(width: number, divider: number) {
-    const calc = width > 0 ? Math.trunc(width / divider) : this._displayCount;
+    const calc = width > 0 ? Math.trunc((width - 50) / divider) : this._displayCount;
     if (this._displayCount !== calc) {
-      this._displayCount = calc;
+      this._displayCount = Math.max(calc, 0);
     }
   }
 
