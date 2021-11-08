@@ -89,6 +89,12 @@ export class MenuTabButton {
       
     const props = !!slot ? {slot: slot} : {};
 
+    if(slot === 'menu'){
+      return (
+        <ion-badge class = "menu-badge"> {this.badge}</ion-badge>
+      )
+    }
+
     return (
       <ion-badge {...props}>{this.badge}</ion-badge>
     )
@@ -163,7 +169,7 @@ export class MenuTabButton {
               </span>
             </ion-row>
           </ion-grid>
-          {this.getBadge()}
+          {this.getBadge('menu')}
         </ion-item>
     );
   }
