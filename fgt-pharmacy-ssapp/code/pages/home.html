@@ -31,7 +31,8 @@
                             <menu-tab-button icon-name="bag" label="@menu.sales" tab="tab-sales"></menu-tab-button>
                             <menu-tab-button icon-name="reader" label="@menu.issuedOrders" tab="tab-issued-orders"></menu-tab-button>
                             <menu-tab-button icon-name="map" label="@menu.receivedShipments" tab="tab-received-shipments"></menu-tab-button>
-                            <menu-tab-button icon-name="stats-chart" label="@menu.stock" tab="tab-stock"></menu-tab-button>
+                            <menu-tab-button icon-name="podium" label="@menu.stock" badge="@notifications.stockNotification" tab="tab-stock"></menu-tab-button>
+                            <menu-tab-button icon-name="paper-plane" label="@menu.notifications" tab="tab-notifications"></menu-tab-button>                           
                         </ion-list>
                     </div>
                 </ion-col>
@@ -83,6 +84,13 @@
                                 </div>
                             </ion-content>
                         </ion-tab>
+                        <ion-tab tab="tab-notifications">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <div data-if="@identified">
+                                    <webc-template template="notifications" disable-container></webc-template>
+                                </div>
+                            </ion-content>
+                        </ion-tab>
                         <!-- Invisible tabs -->
                         <ion-tab tab="tab-order">
                             <ion-content class="tab-content" overflow-scroll="true">
@@ -106,7 +114,8 @@
                                 <menu-tab-button icon-name="bag" label="@menu.sales" tab="tab-sales" mode="bar"></menu-tab-button>
                                 <menu-tab-button icon-name="reader" label="@menu.issuedOrders" tab="tab-issued-orders" mode="bar"></menu-tab-button>
                                 <menu-tab-button icon-name="map" label="@menu.receivedShipments" tab="tab-received-shipments" mode="bar"></menu-tab-button>
-                                <menu-tab-button icon-name="stats-chart" label="@menu.stock" tab="tab-stock" mode="bar"></menu-tab-button>
+                                <menu-tab-button icon-name="podium" label="@menu.stock" tab="tab-stock" badge="@notifications.stockNotification" mode="bar"></menu-tab-button>
+                                <menu-tab-button icon-name="paper-plane" label="@menu.notifications" tab="tab-notifications" mode ="bar"></menu-tab-button>
                             </ion-tab-bar>
                         </div>
                     </ion-tabs>
