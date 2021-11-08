@@ -208,7 +208,7 @@ export class PdmItemOrganizer {
     if (this._displayCount >= 0) {
       return (
         <ion-col size="auto">
-          <ion-row className={`${this.singleLine ? "flex " : "flex-break "} ion-nowrap ion-justify-content-${this.orientation} ion-align-items-end`}>
+          <ion-row className={`${this.singleLine ? "flex ion-nowrap " : "flex-break "} ion-justify-content-${this.orientation} ion-align-items-end`}>
             {...this.getFilteredComponents()}
           </ion-row>
         </ion-col>
