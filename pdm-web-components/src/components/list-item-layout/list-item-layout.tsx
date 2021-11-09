@@ -73,20 +73,26 @@ export class ListItemLayout {
           <div slot="start">
             <slot name="start"></slot>
           </div>
+
           <ion-grid>
             <ion-row>
-              <ion-col col-12 col-sm size-lg={this.labelCol}>
+              <ion-col size={this.labelCol} size-xl={this.labelCol} size-lg={this.labelCol}  size-md={this.labelCol + 3}  size-sm={Math.min(this.labelCol + 6, 10)} size-xs={10}
+              style={{border: "1px solid red"}}>
                 <div>
                   <slot name="label"></slot>
                 </div>
               </ion-col>
-              <ion-col col-12 col-sm align-self-end size-lg={12 - this.labelCol}>
-                <div class={`flex ${this.getAdjustment()}`}>
+
+              <ion-col align-self-end size={12 - this.labelCol} size-xl={12 - this.labelCol} size-lg={12 - this.labelCol} size-md={12 - this.labelCol - 3} size-sm={Math.max(12 - this.labelCol - 6, 2)} size-xs={2}
+                       style={{border: "1px solid green"}}
+              >
+                <div class={`${this.getAdjustment()}`}>
                   <slot name="content" ></slot>
                 </div>
               </ion-col>
             </ion-row>
           </ion-grid>
+
           <div slot="end">
             <slot name="buttons"></slot>
           </div>

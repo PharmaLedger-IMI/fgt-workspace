@@ -201,7 +201,7 @@ export class ManagedProductListItem {
   render() {
     return (
       <Host>
-        <list-item-layout>
+        <list-item-layout label-col={7}>
           {this.addLabel()}
           {this.addBatches()}
           {this.addButtons()}

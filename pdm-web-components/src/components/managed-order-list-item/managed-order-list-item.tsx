@@ -226,7 +226,7 @@ export class ManagedOrderListItem {
   render() {
     return (
       <Host>
-        <list-item-layout>
+        <list-item-layout label-col={4}>
           {this.addLabel()}
           {this.addOrderLines()}
           {this.addButtons()}
