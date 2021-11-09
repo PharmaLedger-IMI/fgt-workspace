@@ -191,6 +191,35 @@ const generateIterator = function (func, counter, list, callback){
 
 /***
  * 
+ * @param {function} func
+ * @param {Item[]} acc
+ * @param {Array} list
+ * @param {function(err, list)} callback
+ */
+ const manipulateIterator = function (func, list, acc, callback){
+    
+    if(!callback){
+        callback = acc;
+        acc = []
+    }
+
+    const item = list.shift();
+
+    if(!item)
+        return callback(undefined, acc);
+
+    func(item, (err, result) => {
+        if(err)
+            return callback(err)
+
+        acc.push(result);
+        
+        manipulateIterator(func, list, acc, callback);
+    })
+}
+
+/***
+ * 
  * @param {Manager} manager
  * @param {Item[]} itemList
  * @param {function} test
@@ -373,6 +402,7 @@ module.exports ={
     generateStock,
     generateStocksWithManagers,
     generateIterator,
+    manipulateIterator,
     generateSimpleIterator,
     copyList
    
