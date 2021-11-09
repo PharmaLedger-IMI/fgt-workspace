@@ -86,6 +86,21 @@ const compareStocks = function(stockOne, stockTwo, callback){
     callback(undefined);
 }
 
+/**
+ * @param {Stock} stock
+ * @param {function(err)} callback
+ */
+ const modStocks = function(stock, callback){
+    
+    const modStock = stock;
+
+    modStock.name = utils.generateProductName();
+    modStock.description = utils.generateProductName();
+
+    callback(undefined, modStock);
+}
+
+
 /*Simple Tests*/
 
 /**
@@ -296,7 +311,7 @@ const testRemove = function(manager, stock, callback){
  * @param {Array} stockList 
  * @param {function(err, stockListFromDB)} callback
  */
- const testGetAll = function(manager, stockList, callback){
+const testGetAll = function(manager, stockList, callback){
     let options = {
                 query:['gtin > 0'],
                 sort: "asc",
@@ -422,10 +437,65 @@ const testGetAllWithQueries = function(manager, stockList, callback){
     });
 };
 
+/**
+ * @param {StockManager} manager 
+ * @param {Array} stockList // represents the item list you want to get
+ * @param {function(err)} callback
+ * 
+ */
+const testUpdateAll = function(manager,stockList, callback){
 
+    const run = function(callback){
+        let keys = stockList.map(a => a.gtin);
 
+        utils.manipulateIterator(modStocks, stockList, (err, moddedStocks) => {
+            if(err)
+                return callback(err);
+            
+            utils.copyList(moddedStocks, (err, copyModdedList) => {
+                if(err)
+                    return callback(err);
+                
+                const testList = copyModdedList;
+                manager.updateAll(keys, moddedStocks, (err, modifiedStocks) => {
+                    if(err)
+                        return callback(err);
+                    
+                    testGetAll(manager, testList, (err, stocksFromDB) =>{
+                        if(err)
+                            return callback(err);
+                        
+                        callback(undefined, testList, stocksFromDB);
+                    })
+    
+                })
 
+            })
+            
+        })      
+    };
 
+    const testAll = function(testList, stocksFromDB, callback){
+        
+        const testResults = function (){
+            assert.true(testList.length === stocksFromDB.length, 'Both stock list should have the same size');
+
+            const filteredTestList = testList.filter((item) => item.gtin > 0).sort((a, b) => { return a.gtin - b.gtin});
+
+            assert.true(utils.isEqual(filteredTestList, stocksFromDB), 'Stocks from DB results are not the ones expected');
+
+            callback(undefined, stocksFromDB);
+        }();
+    };
+
+    run((err, ...args) => {
+        if(err)
+            return callback(err);
+        
+        testAll(...args, callback);
+    });
+
+}
 
 /*Chain Tests*/
 
@@ -433,7 +503,6 @@ const testGetAllWithQueries = function(manager, stockList, callback){
  * @param {StockManager} manager 
  * @param {function(err)} callback
  */
-
 const testOneFullCycle = function(manager, callback){
 
     utils.generateStock((err, stock) => {
@@ -486,7 +555,7 @@ const testGetAllMultiTests = function (manager, callback){
                 testGetAllWithQueries(manager, getAllStockList, (err) => {
                     if(err)
                         return callback(err);
-                    callback(undefined);
+                    callback(undefined, getAllStockList);
                 })
             })
         })    
@@ -514,18 +583,18 @@ const runTest = function(callback){
             if(err)
                 return callback(err);
             
-            testGetAllMultiTests(manager, (err) => {
+            testGetAllMultiTests(manager, (err, stockList) => {
                 if(err)
                    return callback(err);
+                
+                testUpdateAll(manager, stockList, (err) => {
+                    if(err)
+                        return callback(err);
 
-                callback()
-            })
-
-            
-          
-            
+                    callback();
+                })
+            })    
         })
-        
     });     
 };
 
