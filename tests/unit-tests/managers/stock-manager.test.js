@@ -168,8 +168,7 @@ const testGetOne = function(manager, stock, callback){
 
     const testAll = function(stockFromDB, record, callback){
         
-        const testEquality = function (){
-            
+        const testEquality = function (){    
             assert.notNull(stockFromDB, 'Get one stock is null');
             assert.notNull(record, 'Get one record is null');
             
@@ -177,8 +176,115 @@ const testGetOne = function(manager, stock, callback){
             assert.true(utils.isEqual(stock, record), 'Stock and record are not equal');
             assert.true(utils.isEqual(stockFromDB, record), 'Record and StockFromDB are not equal')
             
-            callback(undefined, stockFromDB);
-            
+            callback(undefined, stockFromDB);            
+        }();
+    };
+
+    run((err, ...args) => {
+        if(err)
+            return callback(err);
+        
+        testAll(...args, callback);
+    });
+};
+
+/**
+ * @param {StockManager} manager 
+ * @param {Stock} stock 
+ * @param {function(err, product, record)} callback
+ */
+
+const testUpdate = function (manager, stock, callback){
+    const key = stock.gtin;
+    const stockForUpdate = stock;
+
+    stockForUpdate.name = utils.generateProductName();
+    stockForUpdate.description = utils.generateProductName();
+    
+
+    const run = function(callback){
+        manager.update(key, stockForUpdate, (err, updatedStock) => {
+            if(err)
+                return callback(err);
+
+            manager.getOne(key, true, (err, updatedStockFromDB) => {
+                if(err)
+                    return callback(err);         
+
+                manager.getOne(key, false, (err, updatedRecordFromDB) => {
+                    if(err)
+                        return callback(err);         
+    
+                    callback(undefined, stockForUpdate, updatedStock, updatedStockFromDB, updatedRecordFromDB);
+                })
+            })        
+        });
+    };
+
+    const testAll = function(stockForUpdate, updatedStock, updatedStockFromDB, updatedRecordFromDB, callback){
+        
+        const testEquality = function (){
+
+            assert.notNull(stockForUpdate, 'StockForUpdate is Null');
+            assert.notNull(updatedStock, 'updatedStock is Null');
+            assert.notNull(updatedStockFromDB, 'updatedStockFromDB is Null');
+            assert.notNull(updatedRecordFromDB, 'updatedRecordFromDB is Null'); 
+
+            assert.true(utils.isEqual(stockForUpdate, updatedStock), 'stockFotUpdate and updatedStock are not equal');
+            assert.true(utils.isEqual(stockForUpdate, updatedStockFromDB), 'stockFotUpdate and updatedStockFromDB are not equal')
+            assert.true(utils.isEqual(stockForUpdate, updatedRecordFromDB), 'stockFotUpdate and updatedRecordFromDB are not equal')
+            assert.true(utils.isEqual(updatedStock, updatedStockFromDB), 'updatedStock aand updatedStockFromDB are not equal')
+            assert.true(utils.isEqual(updatedStock, updatedRecordFromDB), 'updatedStock aand updatedRecordFromDB are not equal')
+            assert.true(utils.isEqual(updatedRecordFromDB, updatedRecordFromDB), 'updatedRecordFromDB aand updatedRecordFromDB are not equal')
+
+            callback(undefined, updatedStockFromDB);                
+        }();
+    };
+
+    run((err, ...args) => {
+        if(err)
+            return callback(err);
+        
+        testAll(...args, callback);
+    });
+}
+
+
+/**
+ * @param {StockManager} manager 
+ * @param {Stock} stock 
+ * @param {function(err)} callback
+ */
+
+const testRemove = function(manager, stock, callback){
+    const key = stock.gtin;
+
+    const run = function(callback){
+        manager.remove(key, (err) => {
+            if(err)
+                return callback(err);
+
+            manager.getOne(key, true, (err, stockFromDB) => {
+                if(!err)
+                    return callback('Should have error geting a removed item');
+                
+                manager.getOne(key, false, (err, record) => {
+                    if(!err)
+                        return callback('Should have error geting a removed item');
+                    
+                    callback(undefined, stockFromDB, record);
+                })
+            })    
+        })
+    };
+
+    const testAll = function(stockFromDB, record, callback){
+        
+        const testItemRemoved = function (){
+            assert.false(!!stockFromDB)
+            assert.false(!!record)
+
+            callback(undefined);      
         }();
     };
 
@@ -216,20 +322,24 @@ const runTest = function(callback){
                     return callback(err);
                 
                 testGetOne(manager, stockFromCreate, (err, stockFromGetOne)=> {
+                    if(err)
+                        return callback(err);
 
-                    console.log(stockFromGetOne)
-                    callback()
+                    testUpdate(manager, stockFromGetOne, (err, updatedStockFromDB) => {
+                        if(err)
+                            return callback(err);
+                        
+                        console.log(updatedStockFromDB)
+                        testRemove(manager, updatedStockFromDB, (err) => {
+                            if(err)
+                                return callback(err);
+
+                            callback()
+                        })
+                    })
                 })
-
             })
         })
-        
-
-        
-       
-
-
-
     });     
 };
 
