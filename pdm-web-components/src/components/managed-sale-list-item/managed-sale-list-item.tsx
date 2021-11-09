@@ -139,6 +139,7 @@ export class ManagedSaleListItem {
                           id-prop="id-prop"
                           is-ion-item="false"
                           display-count="3"
+                          display-count-divider="248"
                           orientation={this.getOrientation()}
                           onSelectEvent={(evt) => {
                             evt.preventDefault();

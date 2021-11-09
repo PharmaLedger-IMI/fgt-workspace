@@ -150,7 +150,7 @@ export class ManagedProductListItem {
                           id-prop="gtin-batch"
                           is-ion-item="false"
                           display-count="2"
-                          display-count-divider="230"
+                          display-count-divider="326"
                           more-chips-position="start"
                           orientation={this.getOrientation()}
                           onSelectEvent={(evt) => {
