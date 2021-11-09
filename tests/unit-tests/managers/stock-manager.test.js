@@ -86,7 +86,7 @@ const compareStocks = function(stockOne, stockTwo, callback){
     callback(undefined);
 }
 
-/*Tests*/
+/*Simple Tests*/
 
 /**
  * @param {StockManager} manager 
@@ -332,7 +332,7 @@ const testRemove = function(manager, stock, callback){
             const filteredRecords = stockList.filter((item) => item.gtin > 0).sort((a, b) => { return a.gtin - b.gtin}).map(a => a.gtin);
             assert.true(utils.isEqual(filteredRecords, recordsFromDB, 'Record list from db is not equal to record list provided'))
 
-            callback() 
+            callback(undefined, stocksFromDB); 
         }();
     };
 
@@ -343,6 +343,85 @@ const testRemove = function(manager, stock, callback){
         testAll(...args, callback);
     });
 }
+
+/*Complex Tests*/
+
+/**
+ * @param {StockManager} manager 
+ * @param {Array} stockList // represents the item list you want to get
+ * @param {function(err)} callback
+ * 
+ */
+const testGetAllWithQueries = function(manager, stockList, callback){
+
+    let options = {
+        query:['name == '+ stockList[0].name],
+        sort: "asc",
+        limit: undefined,
+    }
+
+    const run = function(callback){
+
+        manager.getAll(true, options, (err, resultsQueryOne) => {
+            if(err)
+                return callback(err);
+            
+            manager.getAll(false, options, (err , resultsRecordQueryOne) => {
+                if(err)
+                    return callback(err);
+                    
+                options.query = ['gtin <= 55289538478425'];
+
+                manager.getAll(true, options, (err, resultsQueryTwo) => {
+                    if(err)
+                        return callback(err);
+
+                    manager.getAll(false, options, (err, resultsRecordQueryTwo) => {
+                        if(err)
+                            return callback(err);
+
+                        callback(undefined, resultsQueryOne, resultsRecordQueryOne, resultsQueryTwo, resultsRecordQueryTwo);
+                    })
+                })
+            }) 
+        })      
+    };
+
+    const testAll = function(resultsQueryOne, resultsRecordQueryOne, resultsQueryTwo,resultsRecordQueryTwo, callback){
+
+        const testResults = function (){
+            const filteredResultsOne = stockList.filter((item) => stockList[0].name === item.name);
+            const filteredResultsTwo = stockList.filter((item) => item.gtin <= 55289538478425).sort((a, b) => { return a.gtin - b.gtin});
+            const filteredRecordsResultOne = stockList.filter((item) => stockList[0].name === item.name).map(a => a.gtin);
+            const filteredRecordsResultTwo = stockList.filter((item) => item.gtin <= 55289538478425).sort((a, b) => { return a.gtin - b.gtin}).map(a => a.gtin);
+
+            assert.notNull(resultsQueryOne, 'Query one should return one stock');
+            assert.notNull(resultsRecordQueryOne, 'Query one should return one record');
+            assert.notNull(resultsQueryTwo, 'Query two should return multiple stocks');
+            assert.notNull(resultsRecordQueryTwo, 'Query two should return multiple records');
+           
+            assert.true(utils.isEqual(resultsQueryOne, filteredResultsOne), 'Query one ReadDSU true results dont match expected');
+            assert.true(utils.isEqual(resultsRecordQueryOne, filteredRecordsResultOne), 'Query one ReadDSU false results dont match expected')
+            assert.true(utils.isEqual(resultsQueryTwo, filteredResultsTwo), 'Query two ReadDSU true results dont match expected');
+            assert.true(utils.isEqual(resultsRecordQueryTwo, filteredRecordsResultTwo), 'Query two ReadDSU false results dont match expected');
+
+            assert.true(resultsQueryOne.length === 1, 'Query one should return one stock');
+            assert.true(resultsRecordQueryOne.length === 1, 'Query one should return one record')
+            assert.true(resultsQueryTwo.length === filteredResultsTwo.length, 'Query two didnt return expected number of stocks');
+            assert.true(resultsRecordQueryTwo.length === filteredRecordsResultTwo.length, 'Query two didnt return expected number of records');
+                        
+            callback(undefined);
+        }();
+    };
+
+    run((err, ...args) => {
+        if(err)
+            return callback(err);
+        
+        testAll(...args, callback);
+    });
+};
+
 
 
 
@@ -355,7 +434,7 @@ const testRemove = function(manager, stock, callback){
  * @param {function(err)} callback
  */
 
- const testOneFullCycle = function(manager, callback){
+const testOneFullCycle = function(manager, callback){
 
     utils.generateStock((err, stock) => {
         if(err)
@@ -386,6 +465,34 @@ const testRemove = function(manager, stock, callback){
     })
 }
 
+/**
+ * @param {StockManager} manager 
+ * @param {function(err)} callback
+ */
+const testGetAllMultiTests = function (manager, callback){
+
+    utils.generateIterator(utils.generateStock, 10, (err, stockList) => {
+        if(err)
+            return callback(err);
+        
+        utils.testIterator(manager, testCreate, stockList, (err, createdStockList) => {
+            if(err)
+                return callback(err);
+            
+            testGetAll(manager, createdStockList,(err, getAllStockList) => {
+                if(err)
+                    return callback(err);
+                console.log('get all: ',getAllStockList)
+                testGetAllWithQueries(manager, getAllStockList, (err) => {
+                    if(err)
+                        return callback(err);
+                    callback(undefined);
+                })
+            })
+        })    
+    })
+}
+
 
 /*Run Tests*/ 
 const runTest = function(callback){
@@ -406,26 +513,15 @@ const runTest = function(callback){
         testOneFullCycle(manager, (err) => {
             if(err)
                 return callback(err);
-
-            utils.generateIterator(utils.generateStock, 10, (err, stockList) => {
+            
+            testGetAllMultiTests(manager, (err) => {
                 if(err)
-                    return callback(err);
-                
-                utils.testIterator(manager, testCreate, stockList, (err, createdStockList) => {
-                    if(err)
-                        return callback(err);
-                    
-                    testGetAll(manager, createdStockList,(err, getAllStockList) => {
+                   return callback(err);
 
-                        console.log(getAllStockList)
-                    callback();
-
-                    })
-
-                })
-                
-                
+                callback()
             })
+
+            
           
             
         })
