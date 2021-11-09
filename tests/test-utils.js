@@ -4,6 +4,7 @@ const utils = require('../pdm-dsu-toolkit/model/Utils');
 const {getProductManager, getBatchManager, getStockManager} = require('../fgt-dsu-wizard/managers')
 
 const {Product, Batch, Stock } = require('../fgt-dsu-wizard/model');
+const Manager = require('../pdm-dsu-toolkit/managers/Manager');
 
 
 /** 
@@ -89,7 +90,7 @@ const generateBatchesForProduct = function(participantManager, product, batchLis
 
     if(!callback){
         callback = batchList;
-        counter = Math.floor(Math.random() * 4);
+        counter = Math.ceil(Math.random() * 3);
         batchList = [];
     }
 
@@ -99,6 +100,8 @@ const generateBatchesForProduct = function(participantManager, product, batchLis
 
         batchList.push(batch);
         counter--;
+
+        console.log(counter);
         
         if(counter === 0)
             return callback(undefined, batchList);
@@ -138,14 +141,8 @@ const generateBatches = function(batchList, counter, callback){
  * @param {ParticipantManager} participantManager optional
  * @param {function(err, Stock)} callback
  */
-const generateStock = function(participantManager,callback){
+const generateStock = function(callback){
     
-    if(!callback){
-        callback = participantManager;
-        participantManager = undefined;
-    }
-
-    if(!participantManager){
         generateBatches(Math.floor(Math.random()* 5), (err, batches) =>{
             if(err)
                 return callback(err)
@@ -163,41 +160,74 @@ const generateStock = function(participantManager,callback){
 
             return callback(undefined, stock);
         })
-    }
-
-    if(participantManager){
-        generateProduct(participantManager,(err, product) => {
-            if(err)
-               return callback(err);
-            
-            generateBatchesForProduct(participantManager, product, (err, batches) => {
-                if(err)
-                    return callback(err)
-                
-                const manager = getStockManager(participantManager);
-
-                const stock = new Stock({
-                    
-                    name: generateProductName() ,
-                    gtin: generateGtin(),
-                    manufName:  generateProductName(),
-                    description: generateProductName() + generateProductName() + generateProductName(),
-                    batches: batches,
-                    status: undefined,
-
-                })
-
-                manager.create(stock.gtin, stock, (err, keySSI) => {
-                    if(err)
-                        return callback(err);
-                    
-                    callback(undefined, stock);
-                })
-            })
-        })
-    }
-
 }
+
+/***
+ * 
+ * @param {function} func
+ * @param {Number} counter
+ * @param {Array} list
+ * @param {function(err, list)} callback
+ */
+const generateIterator = function (func, counter, list, callback){
+    if(!callback){
+        callback = list;
+        list = []
+    }
+
+    func((err, item) => {
+        if(err)
+            return callback(err)
+
+        list.push(item);
+        counter--;
+
+        if(counter === 0)
+            return callback(undefined, list);
+
+        generateIterator(func, counter, list, callback);
+    })
+}
+
+/***
+ * 
+ * @param {Manager} manager
+ * @param {Item[]} itemList
+ * @param {function} test
+ * @param {Item[]}accumulator
+ * @param {function(err , Item[])}callback
+ */
+const testIterator = function(manager, test, itemList, accumulator, callback){
+   
+    if(!callback){
+        callback = accumulator; 
+        accumulator = [];
+    }
+    
+    const item = itemList.shift();
+
+    if(!item)
+        return callback(undefined,accumulator); 
+    
+    
+    return test(manager , item ,(err, result) => {
+        if(err)
+            return callback(err);
+
+        accumulator.push(result);
+        testIterator(manager, test, itemList, accumulator, callback);
+        });
+}
+
+
+
+
+
+
+
+
+
+
 
 /** 
  * @param {ParticipantManager} participantManager 
@@ -227,7 +257,7 @@ const generateStocksWithManagers= function (participantManager, stockList, callb
             generateStock(participantManager,(err, stock) => {
                 if(err)
                     return callback(err);
-                    
+
                 stockList.push(stock);
                     
                 generateStock(participantManager,(err, stock) => {
@@ -317,77 +347,9 @@ const copyList = function(list, callback){
 
 
 
-/***
- * 
- * @param manager
- * @param itemList
- * @param test
- * @param accumulator
- * @param callback
- * @returns {*}
- */
 
- const testIterator = function(manager, test, itemList, accumulator,...args){
-    const callback = args.length > 0? args.pop(): accumulator;
-    const list = args.pop();
-    if(callback === accumulator)
-        accumulator = [];
-    
-    const item = itemList.shift();
-    if(!item)
-        return callback(undefined,accumulator); 
-    
-    
-    if(!list)
-        return test(manager , item ,(err, result) => {
-            if(err)
-                return callback(err);
-                accumulator.push(result);
-            testIterator(manager, test, itemList, accumulator, callback);
-        });
-    const itemTwo = list.shift();
-    test(manager, item , itemTwo ,(err, result) => {
-        if(err)
-            return callback(err);
-            console.log(result)
-            accumulator.push(result);
-        testIterator(manager, test, itemList, accumulator, list, callback);
-    });
-}
 
-/***
- * 
- * @param {ParticipantManager} participantManager
- * @param {function} genFunc
- * @param {Number} quantity
- * @param {Array}accumulator
- * @param {function(err, accumulator)} callback
- */
 
- const generateIterator = function(participantManager, genFunc, quantity, accumulator, callback){
-    if(!callback){
-        callback = accumulator;
-    }
-    
-    if(callback === accumulator){
-        accumulator = [];
-    }
-
-    if(quantity <= 0){
-        return callback(undefined,accumulator); 
-    }
-
-    genFunc(participantManager, (err, item) => {
-        if(err)
-            callback(err);
-
-        accumulator.push(item);
-        quantity--;
-
-        generateIterator(participantManager,  genFunc, quantity,accumulator,callback);
-
-    })
-}
 
 
 
@@ -410,6 +372,7 @@ module.exports ={
     generateBatches,
     generateStock,
     generateStocksWithManagers,
+    generateIterator,
     generateSimpleIterator,
     copyList
    
