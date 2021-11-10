@@ -101,7 +101,7 @@ const generateBatchesForProduct = function(participantManager, product, batchLis
 
     if(!callback){
         callback = batchList;
-        counter = Math.ceil(Math.random() * 5);
+        counter = 3;
         batchList = [];
     }
 
