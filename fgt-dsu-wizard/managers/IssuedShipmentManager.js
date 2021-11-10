@@ -330,4 +330,7 @@ const getIssuedShipmentManager = function (participantManager,  callback) {
     return manager;
 }
 
-module.exports = getIssuedShipmentManager;
+module.exports = {
+    getIssuedShipmentManager,
+    IssuedShipmentManager
+};

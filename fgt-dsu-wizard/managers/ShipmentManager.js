@@ -94,7 +94,7 @@ class ShipmentManager extends Manager {
                 return self._err(`Could not load record with key ${key} on table ${self._getTableName()}`, err, callback);
             if (!readDSU)
                 return callback(undefined, record.value || record);
-            self.shipmentService.get(record.value || record, callback);
+            self._getDSUInfo(record.value || record, callback);
         });
     }
 
@@ -146,7 +146,7 @@ class ShipmentManager extends Manager {
                 const message = JSON.stringify(ssis);
                 self.sendMessage(mahId, DB.shipmentLines, message, (err) =>
                     self._messageCallback(err ? `Could not send message to MAH ${mahId} for shipmentLines ${JSON.stringify(byMAH[mahId])} with ssis ${ssis} ${err}` : err,
-                        `ShipmentLines ${JSON.stringify(ssis)} transmitted to MAH ${mahId}`));
+                        `ShipmentLines ${message} transmitted to MAH ${mahId}`));
             });
 
             callback();

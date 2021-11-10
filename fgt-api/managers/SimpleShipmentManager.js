@@ -1,11 +1,14 @@
 const { DB, DEFAULT_QUERY_OPTIONS } = require('../../fgt-dsu-wizard/constants');
 const ShipmentManager = require("../../fgt-dsu-wizard/managers/ShipmentManager");
 const getReceivedOrderManager = require("../../fgt-dsu-wizard/managers/ReceivedOrderManager");
-const {Shipment, Order, OrderStatus, ShipmentStatus, Wholesaler, Batch} = require('../../fgt-dsu-wizard/model');
+const ShipmentLine = require('../../fgt-dsu-wizard/model/ShipmentLine');
+const Batch = require('../../fgt-dsu-wizard/model/Batch');
+const Wholesaler = require('../../fgt-dsu-wizard/model/Wholesaler');
+const SimpleShipment = require('../model/SimpleShipment');
 
 
 /**
- * Issued Shipment Manager Class - concrete ShipmentManager for issuedShipments.
+ * Simple Shipment Manager Class - concrete ShipmentManager for issuedShipments.
  *
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
@@ -21,14 +24,14 @@ const {Shipment, Order, OrderStatus, ShipmentStatus, Wholesaler, Batch} = requir
  * @param {ParticipantManager} participantManager
  * @param {function(err, Manager)} [callback] optional callback for when the assurance that the table has already been indexed is required.
  * @class SimpleShipmentManager
- * @extends Manager
+ * @extends ShipmentManager
  * @memberOf Managers
  */
 class SimpleShipmentManager extends ShipmentManager {
     constructor(participantManager, callback) {
         super(participantManager, DB.issuedShipments, ['requesterId'], callback);
         this.participantManager = participantManager;
-        this.stockManager = participantManager.stockManager;
+        this.stockManager = participantManager.getManager("StockManager");
     }
 
     /**
@@ -58,13 +61,13 @@ class SimpleShipmentManager extends ShipmentManager {
     }
 
     /**
-     * Binds the {@link Shipment#shipmentId} to the shipment and fills in participant details;
-     * @param {Shipment} shipment
-     * @param {function(err, Shipment)} callback
+     * Binds the {@link SimpleShipment#id} to the shipment and fills in participant details;
+     * @param {SimpleShipment} shipment
+     * @param {function(err, SimpleShipment)} callback
      * @private
      */
     _bindParticipant(shipment, callback){
-        shipment.shipmentId = shipment.shipmentId || Date.now();
+        shipment.id = shipment.id || Date.now();
 
         let self = this;
         self.getIdentity((err, wholesaler) => {
