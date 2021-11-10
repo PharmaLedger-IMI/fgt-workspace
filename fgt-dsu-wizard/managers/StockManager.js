@@ -86,6 +86,7 @@ class StockManager extends Manager{
             gtin = newStock.gtin;
         }
         let self = this;
+        newStock.quantity = newStock.getQuantity();
         self.updateRecord(gtin, newStock, (err) => {
             if (err)
                 return self._err(`Could not update stock with gtin ${gtin}: ${err.message}`, err, callback);
