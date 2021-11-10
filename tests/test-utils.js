@@ -34,7 +34,12 @@ const generateProduct = function(participantManager, callback){
         if(err)
             return callback(err);
         
-        callback(undefined, product);
+        manager.getOne(product.gtin, true, (err, result)=>{
+            if(err)
+                return callback(err);
+
+            callback(undefined, result);
+        })
     })
 }
 
@@ -74,7 +79,13 @@ const generateBatch = function(participantManager, product, callback){
         if(err)
             return callback(err);
         
-        callback(undefined, batch);
+        manager.getOne(product.gtin, batch.batchNumber, true, (err, result) => {
+            if(err)
+                return callback(err);
+        
+            callback(undefined, result);
+        })
+        
     });
 }
 
@@ -90,7 +101,7 @@ const generateBatchesForProduct = function(participantManager, product, batchLis
 
     if(!callback){
         callback = batchList;
-        counter = Math.ceil(Math.random() * 3);
+        counter = Math.ceil(Math.random() * 5);
         batchList = [];
     }
 
@@ -138,7 +149,6 @@ const generateBatches = function(batchList, counter, callback){
 }
 
 /** 
- * @param {ParticipantManager} participantManager optional
  * @param {function(err, Stock)} callback
  */
 const generateStock = function(callback){
@@ -248,66 +258,36 @@ const testIterator = function(manager, test, itemList, accumulator, callback){
         });
 }
 
-
-
-
-
-
-
-
-
-
-
 /** 
  * @param {ParticipantManager} participantManager 
- * @param {Stock[]} stockList 
  * @param {function(err, Stock[])} callback
  */
 
-const generateStocksWithManagers= function (participantManager, stockList, callback){
-
-    if(!callback){
-        callback = stockList;
-        stockList = [];
-    }
+const generateStockWithManagers= function (participantManager, callback){
     
-    generateStock(participantManager,(err, stock) => {
+    generateProduct(participantManager, (err, product)=>{
         if(err)
             return callback(err);
         
-            stockList.push(stock);
-            
-        generateStock(participantManager,(err, stock) => {
+        generateBatchesForProduct(participantManager, product, (err, batches) => {
             if(err)
                 return callback(err);
             
-                stockList.push(stock);
-                
-            generateStock(participantManager,(err, stock) => {
+            const manager = getStockManager(participantManager);
+
+            manager.getOne(product.gtin, true, (err, dbStock) => {
                 if(err)
                     return callback(err);
 
-                stockList.push(stock);
-                    
-                generateStock(participantManager,(err, stock) => {
-                    if(err)
-                        return callback(err);
-                        
-                    stockList.push(stock);
-                        
-                    generateStock(participantManager,(err, stock) => {
-                        if(err)
-                            return callback(err);
-                    
-                        stockList.push(stock);
-                        
-                        callback(undefined, stockList);
-                    })
-                })
-            })
+                callback(undefined, dbStock);
+            })        
         })
     })
 }
+
+
+
+
 
 
 
@@ -400,7 +380,7 @@ module.exports ={
     generateBatchesForProduct,
     generateBatches,
     generateStock,
-    generateStocksWithManagers,
+    generateStockWithManagers,
     generateIterator,
     manipulateIterator,
     generateSimpleIterator,
