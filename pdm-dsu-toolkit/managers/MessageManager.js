@@ -194,36 +194,40 @@ class MessageManager extends Manager{
     }
 
     _startMessageListener(did){
-        let self = this;
-        console.log("_startMessageListener", did.getIdentifier());
-        did.readMessage((err, message) => {
-            if (err){
-                if (err.message !== 'socket hang up')
-                    console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
-                return self._startMessageListener(did);
-            }
-
-            console.log("did.readMessage did", did.getIdentifier(), "message", message);
-            // jpsl: did.readMessage appears to return a string, but db.insertRecord requires a record object.
-            // ... So JSON.parse the message into an object.
-            // https://opendsu.slack.com/archives/C01DQ33HYQJ/p1618848231120300
-            if (typeof message == "string") {
-                try {
-                    message = JSON.parse(message);
-                } catch (error) {
-                    console.log(createOpenDSUErrorWrapper(`Could not JSON.parse message ${message}`, err));
-                    self._startMessageListener(did);
-                    return;
+        setTimeout(() => {
+            
+            let self = this;
+            console.log("_startMessageListener", did.getIdentifier());
+            did.readMessage((err, message) => {
+                if (err){
+                    if (err.message !== 'socket hang up')
+                        console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
+                    return self._startMessageListener(did);
                 }
-            }
-            self._receiveMessage(message, (err, message) => {
-                if (err)
-                    console.log(`Failed to receive message`, err);
-                else
-                    console.log(`Message received ${message}`);
-                self._startMessageListener(did);
+    
+                console.log("did.readMessage did", did.getIdentifier(), "message", message);
+                // jpsl: did.readMessage appears to return a string, but db.insertRecord requires a record object.
+                // ... So JSON.parse the message into an object.
+                // https://opendsu.slack.com/archives/C01DQ33HYQJ/p1618848231120300
+                if (typeof message == "string") {
+                    try {
+                        message = JSON.parse(message);
+                    } catch (error) {
+                        console.log(createOpenDSUErrorWrapper(`Could not JSON.parse message ${message}`, err));
+                        self._startMessageListener(did);
+                        return;
+                    }
+                }
+                self._receiveMessage(message, (err, message) => {
+                    if (err)
+                        console.log(`Failed to receive message`, err);
+                    else
+                        console.log(`Message received ${message}`);
+                    self._startMessageListener(did);
+                });
             });
-        });
+        },1000);
+
     }
 
     getOwnDID(callback){
