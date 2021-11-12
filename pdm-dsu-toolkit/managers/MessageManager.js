@@ -87,13 +87,13 @@ class MessageManager extends Manager{
                 const self = this;
                 const {api} = message;
 
-                if(counter > 3)
+                if(counter > 4)
                     return callback();
 
                 if (!(api in self._listeners)) {
                     console.log(`No listeners registered for ${api} messages.`);
                     return setTimeout(()=>{
-                        checkForListeners.call(self, message, counter++, callback);
+                        checkForListeners.call(self, message, ++counter, callback);
                     },1000);
                 }
     
