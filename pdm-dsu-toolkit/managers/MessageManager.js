@@ -83,7 +83,7 @@ class MessageManager extends Manager{
                 return _err(`Could not save message to inbox`, err, callback);
             console.log(`Message ${JSON.stringify(message)} saved to table ${self._getTableName()} on DID ${self.didString}`);
             
-            const operation = function(message, counter, callback){
+            const checkForListeners = function(message, counter, callback){
                 const self = this;
                 const {api} = message;
 
@@ -93,7 +93,7 @@ class MessageManager extends Manager{
                 if (!(api in self._listeners)) {
                     console.log(`No listeners registered for ${api} messages.`);
                     return setTimeout(()=>{
-                        operation.call(self, message, counter++, callback);
+                        checkForListeners.call(self, message, counter++, callback);
                     },1000);
                 }
     
@@ -114,7 +114,7 @@ class MessageManager extends Manager{
 
             }
 
-            operation.call(self, message, 0, callback);
+            checkForListeners.call(self, message, 0, callback);
             
         });
     }
