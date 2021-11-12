@@ -75,31 +75,47 @@ class MessageManager extends Manager{
     }
 
     _receiveMessage(message, callback){
+
         const {api} = message;
         let self = this;
         self._saveToInbox(message, (err) => {
             if (err)
                 return _err(`Could not save message to inbox`, err, callback);
             console.log(`Message ${JSON.stringify(message)} saved to table ${self._getTableName()} on DID ${self.didString}`);
-            if (!(api in self._listeners)) {
-                console.log(`No listeners registered for ${api} messages.`);
-                return callback();
+            
+            const operation = function(message, counter, callback){
+                const self = this;
+                const {api} = message;
+
+                if(counter > 3)
+                    return callback();
+
+                if (!(api in self._listeners)) {
+                    console.log(`No listeners registered for ${api} messages.`);
+                    return setTimeout(()=>{
+                        operation.call(self, message, counter++, callback);
+                    },1000);
+                }
+    
+                console.log(`Found ${self._listeners[api].length} listeners for the ${api} message api`);
+                
+                const listenerIterator = function(listeners, callback){
+                    const listener = listeners.shift();
+                    if (!listener)
+                        return callback(undefined, message);
+                    listener(message, (err) => {
+                        if (err)
+                            console.log(`Error processing Api ${api}`, err);
+                        listenerIterator(listeners, callback);
+                    });
+                }
+    
+                listenerIterator(self._listeners[api].slice(), callback);
+
             }
 
-            console.log(`Found ${self._listeners[api].length} listeners for the ${api} message api`);
-
-            const listenerIterator = function(listeners, callback){
-                const listener = listeners.shift();
-                if (!listener)
-                    return callback(undefined, message);
-                listener(message, (err) => {
-                    if (err)
-                        console.log(`Error processing Api ${api}`, err);
-                    listenerIterator(listeners, callback);
-                });
-            }
-
-            listenerIterator(self._listeners[api].slice(), callback);
+            operation.call(self, message, 0, callback);
+            
         });
     }
 
@@ -194,40 +210,37 @@ class MessageManager extends Manager{
     }
 
     _startMessageListener(did){
-        setTimeout(() => {
-            
-            let self = this;
-            console.log("_startMessageListener", did.getIdentifier());
-            did.readMessage((err, message) => {
-                if (err){
-                    if (err.message !== 'socket hang up')
-                        console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
-                    return self._startMessageListener(did);
-                }
-    
-                console.log("did.readMessage did", did.getIdentifier(), "message", message);
-                // jpsl: did.readMessage appears to return a string, but db.insertRecord requires a record object.
-                // ... So JSON.parse the message into an object.
-                // https://opendsu.slack.com/archives/C01DQ33HYQJ/p1618848231120300
-                if (typeof message == "string") {
-                    try {
-                        message = JSON.parse(message);
-                    } catch (error) {
-                        console.log(createOpenDSUErrorWrapper(`Could not JSON.parse message ${message}`, err));
-                        self._startMessageListener(did);
-                        return;
-                    }
-                }
-                self._receiveMessage(message, (err, message) => {
-                    if (err)
-                        console.log(`Failed to receive message`, err);
-                    else
-                        console.log(`Message received ${message}`);
-                    self._startMessageListener(did);
-                });
-            });
-        },1000);
+        
+        let self = this;
+        console.log("_startMessageListener", did.getIdentifier());
+        did.readMessage((err, message) => {
+            if (err){
+                if (err.message !== 'socket hang up')
+                    console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
+                return self._startMessageListener(did);
+            }
 
+            console.log("did.readMessage did", did.getIdentifier(), "message", message);
+            // jpsl: did.readMessage appears to return a string, but db.insertRecord requires a record object.
+            // ... So JSON.parse the message into an object.
+            // https://opendsu.slack.com/archives/C01DQ33HYQJ/p1618848231120300
+            if (typeof message == "string") {
+                try {
+                    message = JSON.parse(message);
+                } catch (error) {
+                    console.log(createOpenDSUErrorWrapper(`Could not JSON.parse message ${message}`, err));
+                    self._startMessageListener(did);
+                    return;
+                }
+            }
+            self._receiveMessage(message, (err, message) => {
+                if (err)
+                    console.log(`Failed to receive message`, err);
+                else
+                    console.log(`Message received ${message}`);
+                self._startMessageListener(did);
+            });
+        });
     }
 
     getOwnDID(callback){
