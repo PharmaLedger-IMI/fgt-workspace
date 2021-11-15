@@ -60,10 +60,14 @@ export default class DashboardController extends LocalizedController {
                     accum[product.name] = product.quantity
                     return accum;
                 }, {})
+                const sortStockManagement = Object.entries(stockManagement)
+                    .sort(([,a],[,b]) => a-b)
+                    .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+
                 self.updateStockChart({
-                    labels: Object.keys(stockManagement),
-                    monthlyAvg: Object.values(stockManagement).map(v => (Math.random() + 0.5) * v),
-                    productsInStock: Object.values(stockManagement)
+                    labels: Object.keys(sortStockManagement),
+                    monthlyAvg: Object.values(sortStockManagement).map(v => (Math.random() + 0.5) * v),
+                    productsInStock: Object.values(sortStockManagement)
                 })
             })
 
