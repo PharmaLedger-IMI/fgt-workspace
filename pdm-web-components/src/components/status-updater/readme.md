@@ -12,6 +12,7 @@
 | `currentState`   | `current-state`    |             | `string` | `undefined`                 |
 | `currentString`  | `current-string`   |             | `string` | `"Current Status:"`         |
 | `noUpdateString` | `no-update-string` |             | `string` | `"No operations available"` |
+| `pastString`     | `past-string`      |             | `string` | `"Past Status:"`            |
 | `statesJSON`     | `state-json`       |             | `any`    | `undefined`                 |
 | `updateString`   | `update-string`    |             | `string` | `"Available Operation:"`    |
 

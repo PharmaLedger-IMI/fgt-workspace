@@ -151,6 +151,34 @@ class IssuedOrderManager extends OrderManager {
             }
         }
 
+        /**
+         * Message/ExtraInfo by default follows the model: `{SENDER_ID} {TIMESTAMP} {MESSAGE}`,
+         * so need to be sanitized to remove {SENDER_ID} and {TIMESTAMP}, because {REQUESTER_ID}
+         * just needs the message
+         * @param {Status} status
+         * @param {{[key: string]: string[]} }extraInfo
+         * @returns {string}
+         */
+        const getExtraInfoMsg = function (status, extraInfo) {
+            if (!extraInfo)
+                return '';
+
+            const statusStr = status.status;
+            if (!extraInfo.hasOwnProperty(statusStr))
+                return '';
+
+            const lastLog = status.log[status.log.length - 1]
+            const extraInfoUpdated = extraInfo[statusStr].filter(_extraInfo => {
+                // verify if extraInfo.timestamp ===log.timestamp
+                return _extraInfo.split(' ')[1].trim() === lastLog.split(' ')[1].trim()
+            })
+            if (extraInfoUpdated.length > 0) {
+                return extraInfoUpdated[0].split(' ').slice(2).join(' ').trim(); // sanitized
+            } else {
+                return '';
+            }
+        }
+
         const update = super.update.bind(this);
 
         console.log(`Updating order ${orderId} witj shipment ${shipment.shipmentId}`);
@@ -160,8 +188,9 @@ class IssuedOrderManager extends OrderManager {
         self.getOne(key, true, (err, order) => {
             if (err)
                 return self._err(`Could not load Order`, err, callback);
-            order.status = getOrderStatusByShipment(shipment.status.status);
-            console.log(`Order Status for Issued Order ${key} to be updated to to ${order.status}`);
+            order.status['status'] = getOrderStatusByShipment(shipment.status.status);
+            order.status['extraInfo'] = getExtraInfoMsg(shipment.status, shipment.status.extraInfo);
+            console.log(`Order Status for Issued Order ${key} to be updated to ${order.status.status}`);
             order.shipmentSSI = shipmentSSI;
 
             const dbAction = function(key, order, callback){

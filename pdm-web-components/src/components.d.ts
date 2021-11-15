@@ -24,7 +24,6 @@ export namespace Components {
         "type": string;
     }
     interface BatchChip {
-        "eventData"?: string;
         "expiryThreshold"?: number;
         "gtinBatch": string;
         "loaderType"?: string;
@@ -435,21 +434,22 @@ export namespace Components {
         "currentState": string;
         "currentString"?: string;
         "noUpdateString"?: string;
+        "pastString"?: string;
         "statesJSON": any;
         "updateString"?: string;
     }
     interface StatusUpdaterButton {
-        "addDetailPlaceholder": string;
-        "buttonCssClass": string;
+        "availableOptions": string;
+        "buttonsCssClass": string;
         "color": string;
         "disabled": boolean;
         "expand": string;
         "fill": string;
-        "label": string;
+        "individualProperties": string;
+        "popupOptions": string;
         "shape": string;
         "showAddDetail": boolean;
         "size": string;
-        "status": string;
         "strong": boolean;
     }
     interface TrackedSerialChip {
@@ -776,7 +776,6 @@ declare namespace LocalJSX {
         "type"?: string;
     }
     interface BatchChip {
-        "eventData"?: string;
         "expiryThreshold"?: number;
         "gtinBatch"?: string;
         "loaderType"?: string;
@@ -1362,22 +1361,23 @@ declare namespace LocalJSX {
           * Through this event action requests are made
          */
         "onStatusUpdateEvent"?: (event: CustomEvent<any>) => void;
+        "pastString"?: string;
         "statesJSON"?: any;
         "updateString"?: string;
     }
     interface StatusUpdaterButton {
-        "addDetailPlaceholder"?: string;
-        "buttonCssClass"?: string;
+        "availableOptions"?: string;
+        "buttonsCssClass"?: string;
         "color"?: string;
         "disabled"?: boolean;
         "expand"?: string;
         "fill"?: string;
-        "label"?: string;
+        "individualProperties"?: string;
         "onClickUpdaterButton"?: (event: CustomEvent<any>) => void;
+        "popupOptions"?: string;
         "shape"?: string;
         "showAddDetail"?: boolean;
         "size"?: string;
-        "status"?: string;
         "strong"?: boolean;
     }
     interface TrackedSerialChip {

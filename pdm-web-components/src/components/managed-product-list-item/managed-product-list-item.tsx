@@ -158,6 +158,7 @@ export class ManagedProductListItem {
                           is-ion-item="false"
                           more-chips-position="start"
                           orientation={this.getOrientation()}
+                          display-count-divider="257"
                           onSelectEvent={this.triggerSelect.bind(this)}></pdm-item-organizer>
     )
   }

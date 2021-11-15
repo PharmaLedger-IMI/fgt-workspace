@@ -7,20 +7,20 @@
 
 ## Properties
 
-| Property               | Attribute                | Description | Type      | Default                   |
-| ---------------------- | ------------------------ | ----------- | --------- | ------------------------- |
-| `addDetailPlaceholder` | `add-detail-placeholder` |             | `string`  | `'Add detail (optional)'` |
-| `buttonCssClass`       | `button-css-class`       |             | `string`  | `undefined`               |
-| `color`                | `color`                  |             | `string`  | `'primary'`               |
-| `disabled`             | `disabled`               |             | `boolean` | `false`                   |
-| `expand`               | `expand`                 |             | `string`  | `'full'`                  |
-| `fill`                 | `fill`                   |             | `string`  | `'solid'`                 |
-| `label`                | `label`                  |             | `string`  | `'Show Alert'`            |
-| `shape`                | `shape`                  |             | `string`  | `undefined`               |
-| `showAddDetail`        | `show-add-detail`        |             | `boolean` | `true`                    |
-| `size`                 | `size`                   |             | `string`  | `'default'`               |
-| `status`               | `status`                 |             | `string`  | `undefined`               |
-| `strong`               | `strong`                 |             | `boolean` | `false`                   |
+| Property               | Attribute               | Description | Type      | Default     |
+| ---------------------- | ----------------------- | ----------- | --------- | ----------- |
+| `availableOptions`     | `available-options`     |             | `string`  | `'[]'`      |
+| `buttonsCssClass`      | `buttons-css-class`     |             | `string`  | `''`        |
+| `color`                | `color`                 |             | `string`  | `'primary'` |
+| `disabled`             | `disabled`              |             | `boolean` | `false`     |
+| `expand`               | `expand`                |             | `string`  | `'full'`    |
+| `fill`                 | `fill`                  |             | `string`  | `'solid'`   |
+| `individualProperties` | `individual-properties` |             | `string`  | `'{}'`      |
+| `popupOptions`         | `popup-options`         |             | `string`  | `'{}'`      |
+| `shape`                | `shape`                 |             | `string`  | `undefined` |
+| `showAddDetail`        | `show-add-detail`       |             | `boolean` | `true`      |
+| `size`                 | `size`                  |             | `string`  | `'default'` |
+| `strong`               | `strong`                |             | `boolean` | `false`     |
 
 
 ## Events

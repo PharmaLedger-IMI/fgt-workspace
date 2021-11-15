@@ -282,7 +282,7 @@ export class ManagedOrder implements CreateManageView{
   async update(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    const { status, popupOptions } = evt.detail;
+    const { status, extraInfo } = evt.detail;
     const order = new Order(this.order.orderId, this.order.requesterId, this.order.senderId, this.order.shipToAddress, this.order.status, this.order.orderLines.slice());
     order.shipmentId = this.order.shipmentId;
     this.sendAction.emit({
@@ -290,7 +290,7 @@ export class ManagedOrder implements CreateManageView{
       props:{
         order: order,
         newStatus: status,
-        popupOptions
+        extraInfo
       }
     });
   }
@@ -419,7 +419,7 @@ export class ManagedOrder implements CreateManageView{
       return (
         <ion-item lines="none">
           <ion-label position="stacked">{self.productsCodeString}</ion-label>
-          <ion-input name="input-gtin" type="number" value={self.currentGtin}></ion-input>
+          <ion-input name="input-gtin" type="number" value={self.currentGtin} disabled></ion-input>
           <ion-buttons slot="end">
             <ion-button onClick={() => self.scan()} color="medium" size="large" fill="clear">
               <ion-icon slot="icon-only" name="scan-circle"></ion-icon>
@@ -544,7 +544,7 @@ export class ManagedOrder implements CreateManageView{
           </ion-col>
           <ion-col size="12" size-lg="6">
             <status-updater state-json={JSON.stringify(self.statuses)}
-                            current-state={self.order.status.status}
+                            current-state={JSON.stringify(self.order.status)}
                             onStatusUpdateEvent={self.update.bind(self)}>
             </status-updater>
           </ion-col>

@@ -143,35 +143,27 @@ export class ManagedProductListItem {
                           component-props={JSON.stringify(this.batches.map(batch => ({
                             "gtin-batch": this.stock.gtin + '-' + batch.batchNumber,
                             "quantity": (new Batch(batch)).getQuantity(),
+                            "status": batch.batchStatus.status,
                             "mode": "detail",
-                            "event-data": JSON.stringify({
-                              gtin: self.stock.gtin,
-                              name: self.stock.name,
-                              batchNumber: batch.batchNumber,
-                              serialNumber: undefined,
-                              manufName: self.stock.manufName,
-                              expiry: batch.expiry,
-                              status: batch.batchStatus.status
-                            }),
                             "loader-type": SUPPORTED_LOADERS.bubblingSmall
                           })))}
                           id-prop="gtin-batch"
                           is-ion-item="false"
                           display-count="2"
-                          display-count-divider="230"
+                          display-count-divider="326"
                           more-chips-position="start"
                           orientation={this.getOrientation()}
                           onSelectEvent={(evt) => {
                             evt.preventDefault();
-                            evt.stopImmediatePropagation()
-                            let data;
-                            try {
-                              data = JSON.parse(evt.detail)
-                            } catch (e) {
-                              data = evt.detail
-                            }
-                            console.log('Selected', data);
-                            self.trackRequestAction.emit(new IndividualProduct(data))
+                            evt.stopImmediatePropagation();
+                            console.log('Selected', evt);
+                            const gtinBatch = evt.detail.split('-');
+                            self.trackRequestAction.emit(new IndividualProduct({
+                              gtin: gtinBatch[0],
+                              batchNumber: gtinBatch[1],
+                              name: self.stock.name,
+                              manufName: self.stock.manufName,
+                            }))
                           }}> </pdm-item-organizer>
     )
   }

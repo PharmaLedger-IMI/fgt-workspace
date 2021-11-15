@@ -68,8 +68,8 @@ export default class OrderController extends LocalizedController {
                 case OrderStatus.CREATED:
                     return await self._handleCreateOrder.call(self, props);
                 default:
-                    const {newStatus, order, popupOptions} = props;
-                    return await self._handleUpdateOrderStatus.call(self, order, newStatus, popupOptions);
+                    const {newStatus, order, extraInfo} = props;
+                    return await self._handleUpdateOrderStatus.call(self, order, newStatus, extraInfo);
             }
         });
 
@@ -86,25 +86,18 @@ export default class OrderController extends LocalizedController {
         }, obj);
     }
 
-    async _handleUpdateOrderStatus(order, newStatus, popupOptions = {}){
+    async _handleUpdateOrderStatus(order, newStatus, extraInfo){
         const self = this;
 
         const oldStatus = order.status.status;
+        const oldExtraInfo = order.status.extraInfo;
         order.status['status'] = newStatus;
+        order.status['extraInfo'] = extraInfo;
         const errors = order.validate(oldStatus);
         if (errors) {
             order.status['status'] = oldStatus; // rollback
+            order.status['extraInfo'] = oldExtraInfo;
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
-        }
-
-        const popupCallback = (evt) => order.status['extraInfo'] = evt.extraInfo;
-        const alert = await self._showPopup('manage.confirm', popupOptions, popupCallback, oldStatus, newStatus);
-
-        const {role} = await alert.onDidDismiss();
-
-        if (BUTTON_ROLES.CONFIRM !== role) {
-            order.status['status'] = oldStatus; // rollback
-            return console.log(`Order update canceled by clicking ${role}`);
         }
 
         const loader = self._getLoader(self.translate('manage.loading'));

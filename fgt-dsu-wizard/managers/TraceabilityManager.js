@@ -1,6 +1,8 @@
 const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const TraceabilityService = require('../services/TraceabilityService');
+const getShipmentLineManager = require('./ShipmentLineManager');
+const getReceiptManager = require('./ReceiptManager');
 const IndividualProduct = require('../model/IndividualProduct');
 
 const ACTION = {
@@ -123,9 +125,10 @@ class TraceabilityManager extends Manager{
 
         switch (message.action){
             case ACTION.REQUEST:
-                return self._trackObj(message.requesterId, message.message, (err, startNode, endNode, nodeList) =>
+                return self._trackObj(message.requesterId, message.message, (err, startNode, endNode, nodeList) => {
                     self._replyToMessage(message.id, message.requesterId, startNode, endNode, nodeList, err, self._messageCallback)
-                );
+                    callback();
+                });
             case ACTION.RESPONSE:
                 let cb;
                 try {
@@ -147,20 +150,44 @@ class TraceabilityManager extends Manager{
             requesterId = undefined;
         }
 
-        try {
-            this.shipmentLineManager = this.shipmentLineManager || this.participantManager.getManager("ShipmentLineManager");
-            this.receiptManager = this.receiptManager || this.participantManager.getManager("ReceiptManager");
-        } catch (e) {
-            return callback(e);
+        if (!this.getIdentity().id.startsWith("MAH")) // TODO: Bad hack (the other one was worse). maybe we just split this in two files to split the api
+            return callback(`Only manufacturers can access this`);
+
+        const self = this;
+
+        const track = function(callback){
+            const tracker = new TraceabilityService(self.shipmentLineManager, self.receiptManager, requesterId);
+            const method = !!obj.serialNumber ? tracker.fromProduct : tracker.fromBatch;
+            method(obj, (err, startNode, endNode) => {
+                if (err)
+                    return callback(err);
+                console.log(`Tracking for product ${obj.gtin}, batch ${obj.batchNumber} and Serial ${obj.serialNumber} complete. Start and end Nodes:`, startNode, endNode);
+                const message = convertForJson(startNode, endNode);
+                callback(undefined, message.startNode, message.endNode, message.nodeList);
+            });
         }
-        const tracker = new TraceabilityService(this.shipmentLineManager, this.receiptManager, requesterId);
-        const method = !!obj.serialNumber ? tracker.fromProduct : tracker.fromBatch;
-        method(obj, (err, startNode, endNode) => {
+
+        const cacheManagers = function(callback){
+            getShipmentLineManager(self.participantManager, (err, shipmentLineManager) => {
+                if (err)
+                    return callback(err);
+                self.shipmentLineManager = shipmentLineManager;
+                getReceiptManager(self.participantManager, (err, receiptManager) => {
+                    if (err)
+                        return callback(err);
+                    self.receiptManager = receiptManager;
+                    callback();
+                });
+            });
+        }
+
+        if (this.shipmentLineManager && this.receiptManager)
+            return track(callback);
+
+        cacheManagers((err) => {
             if (err)
                 return callback(err);
-            console.log(`Tracking for product ${obj.gtin}, batch ${obj.batchNumber} and Serial ${obj.serialNumber} complete. Start and end Nodes:`, startNode, endNode);
-            const message = convertForJson(startNode, endNode);
-            callback(undefined, message.startNode, message.endNode, message.nodeList);
+            track(callback);
         });
     }
 
@@ -177,8 +204,8 @@ class TraceabilityManager extends Manager{
                 endNode: endNode,
                 nodeList: nodeList
             },
-            error: error
-        })
+            error: error ? error.message || error : undefined
+        });
         self.sendMessage(requesterId, reply, callback);
     }
 

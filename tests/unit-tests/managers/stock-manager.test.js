@@ -23,7 +23,6 @@ const assert = dc.assert;
 const tir = require("../../../privatesky/psknode/tests/util/tir");
 
 const utils = require('../../test-utils');
-const Utils = require('../../../pdm-dsu-toolkit/model/Utils');
 
 /*Specific Dependencies*/
 
@@ -69,127 +68,83 @@ const defaultOps = {
 }
 
 const TEST_CONF = argParser(defaultOps, process.argv);
-/*Utils*/
+/*Utils*/ 
+
 /**
  * @param {Stock} stockOne
  * @param {Stock} stockTwo 
  * @param {function(err)} callback
  */
-
 const compareStocks = function(stockOne, stockTwo, callback){
 
     assert.true(utils.isEqual(stockOne.name,stockTwo.name), 'Names dont match!');
     assert.true(utils.isEqual(stockOne.gtin,stockTwo.gtin), 'Gtins dont match!');
     assert.true(utils.isEqual(stockOne.manufName,stockTwo.manufName), 'Manufactor Names dont match!');
-    assert.true(utils.isEqual(stockOne.description,stockTwo.description), 'Description dont match!');
+    assert.true(utils.isEqual(stockOne.description,stockTwo.description), 'Descriptions dont match!');
     assert.true(utils.isEqual(stockOne.batches,stockTwo.batches), 'Batches dont match!');
 
     callback(undefined);
 }
 
-
-const populateStocks = function(numOfStocks){
+/**
+ * @param {Stock} stock
+ * @param {function(err)} callback
+ */
+ const modStocks = function(stock, callback){
     
-    let stockList = [];
+    const modStock = stock;
 
-    for(let i = 0; i < numOfStocks; i++){
+    modStock.name = utils.generateProductName();
+    modStock.description = utils.generateProductName();
 
-        stockList.push(getStock(getBatches(Math.ceil(Math.random()* 100))));
-    }
-    
-    return stockList;    
+    callback(undefined, modStock);
 }
 
-const getStock = function(batches){
-    
-    return new Stock({
 
-            name: utils.generateProductName() ,
-            gtin: utils.generateGtin(),
-            manufName:  utils.generateProductName(),
-            description: utils.generateProductName() + utils.generateProductName() + utils.generateProductName(),
-            batches: batches,
-            status: undefined,
-                    
-    }); 
-
-}
-
-const getBatch = function(quantity){
-    let serials = [];
-
-    for(let i = 0; i < quantity; i++){
-
-        serials.push(Utils.generateSerialNumber());
-
-    }
-
-    return new Batch({
-        batchNumber: utils.generateBatchNumber(),
-        serialNumber: Utils.generateSerialNumber(),
-        expiry: utils.genDate(100),
-        quantity: quantity,
-        serialNumbers: serials,
-    });
-
-
-}
-
-const getBatches = function(numOfBatches){
-
-    let batches = [];
-    numOfBatches = 1;
-
-    for(let i = 0; i < numOfBatches; i++){
-
-            batches.push(getBatch(Math.ceil(Math.random()*100)));
-    
-    }
-
-    return batches;
-}
-
-const updateStocks = function(list , callback){
-
-    for(let i = 0; i < list.length; i++){
-
-        list[i].name = utils.generateProductName();
-        list[i].description = 'Description was changed!';
-        list[i].batches.push(getBatch(10));
-    }
-
-    callback(undefined,list);
-
-}
-
-// /*Tests*/
+/*Simple Tests*/
 
 /**
  * @param {StockManager} manager 
  * @param {Stock} stock 
  * @param {function(err, Stock)} callback
  */
-
- const testCreate = function(manager , stock, callback){
+const testCreate = function(manager , stock, callback){
 
     const run = function(callback){
         manager.create(stock, (err , createdStock, path) => {
             if(err)
                 return callback(err);
+            manager.getOne(stock.gtin, true, (err, stockFromDB) =>{
+                if(err)
+                    return callback(err);
+                manager.getOne(stock.gtin, false, (err, record) =>{
+                    if(err)
+                        callback(err)
 
-            callback(undefined, stock, createdStock, path);
-                
+                    callback(undefined, stock, createdStock, stockFromDB, record, path);        
+                })    
+            })
         })
     }                   
 
-    const testAll = function(stock, createdStock, path, callback){
+    const testAll = function(stock, createdStock, stockFromDB,record, path, callback){
         
         const testCreateBasic = function(){
-            assert.notNull(stock, 'Stock is null!');
-            assert.notNull(path, 'Path is null!');
-            assert.true(utils.isEqual(stock, createdStock), 'Stocks are not equal');
+            assert.notNull(stock, 'Stock is null');
+            assert.notNull(createdStock, 'Created Stock in null');
+            assert.notNull(path , 'Path does not exist');
+            compareStocks(stock, stockFromDB, ()=>{
+                compareStocks(stock, record, ()=>{
+                    compareStocks(createdStock, stockFromDB, ()=> {
+                        compareStocks(createdStock, record, () => {
+                            compareStocks(record, stockFromDB, () => {
 
-            callback(undefined , stock);
+                                callback(undefined, stockFromDB);
+                            })
+                        })
+                    })
+                })
+            })
         }();       
     };
 
@@ -200,80 +155,14 @@ const updateStocks = function(list , callback){
         testAll(...args, callback);
     });
 
-}
-
-/**
- * @param {StockManager} manager
- * @param {boolean} readDSU 
- * @param {Array} stockList 
- * @param {function(err, stockListFromDB)} callback
- */
-
- const testGetAll = function(manager, readDSU, stockList, callback){
-    let options = {
-                query:['gtin > 0'],
-                sort: "asc",
-                limit: undefined,
-            }
-
-    const run = function(callback){
-        manager.getAll(readDSU, options, (err, stockListFromDB) => {
-            if(err)
-                return callback(err);
-            
-            manager.getAll(false, options,(err, recordsFromDB) => {
-                if(err)
-                    return callback(err);
-
-                callback(undefined, stockListFromDB, recordsFromDB);
-            }) 
-        })
-    };
-
-    const testAll = function(stockListFromDB, recordsFromDB, callback){
-        
-        const testResults = function (){
-            assert.notNull(recordsFromDB);
-            assert.notNull(stockListFromDB);
-            assert.true(stockListFromDB.length === stockList.length);
-            assert.true(stockList.length === recordsFromDB.length);
-            
-            const filteredResults = stockList.filter((item) => item.gtin > 0).sort((a, b) => {
-                if(a.gtin < b.gtin)
-                    return -1;
-                
-                if(a.gtin > b.gtin)
-                    return 1;
-                
-                if(a.gtin === b.gtin)
-                    return 0;
-                
-            });
-           
-            utils.testIterator(manager, compareStocks , filteredResults, [], stockListFromDB, (err, stockListAfterCompareFromDB) => {
-                if(err)
-                    return  callback(err);
-
-                callback(undefined, stockListAfterCompareFromDB);
-            })      
-        }();
-    };
-
-    run((err, ...args) => {
-        if(err)
-            return callback(err);
-        
-        testAll(...args, callback);
-    });
-}
+} 
 
 /**
  * @param {StockManager} manager 
  * @param {Stock} stock 
  * @param {function(err)} callback
  */
-
- const testGetOne = function(manager, stock, callback){
+const testGetOne = function(manager, stock, callback){
     const key = stock.gtin;
 
     const run = function(callback){
@@ -292,15 +181,15 @@ const updateStocks = function(list , callback){
 
     const testAll = function(stockFromDB, record, callback){
         
-        const testProductEquality = function (){
-            compareStocks(stock , stockFromDB, (err) => {
-                if(err)
-                    return callback(err);
-
-                assert.true(!!record, 'Failed to get the record!');
-
-                callback(undefined);
-            });
+        const testEquality = function (){    
+            assert.notNull(stockFromDB, 'Get one stock is null');
+            assert.notNull(record, 'Get one record is null');
+            
+            assert.true(utils.isEqual(stock, stockFromDB), 'Stock and StockFromDB are not equal');
+            assert.true(utils.isEqual(stock, record), 'Stock and record are not equal');
+            assert.true(utils.isEqual(stockFromDB, record), 'Record and StockFromDB are not equal')
+            
+            callback(undefined, stockFromDB);            
         }();
     };
 
@@ -317,14 +206,13 @@ const updateStocks = function(list , callback){
  * @param {Stock} stock 
  * @param {function(err, product, record)} callback
  */
-
 const testUpdate = function (manager, stock, callback){
     const key = stock.gtin;
     const stockForUpdate = stock;
 
     stockForUpdate.name = utils.generateProductName();
     stockForUpdate.description = utils.generateProductName();
-    stockForUpdate.batches.push(getBatch(30));
+    
 
     const run = function(callback){
         manager.update(key, stockForUpdate, (err, updatedStock) => {
@@ -335,23 +223,33 @@ const testUpdate = function (manager, stock, callback){
                 if(err)
                     return callback(err);         
 
-                callback(undefined, updatedStockFromDB, updatedStock);
-
-            })
-            
+                manager.getOne(key, false, (err, updatedRecordFromDB) => {
+                    if(err)
+                        return callback(err);         
+    
+                    callback(undefined, stockForUpdate, updatedStock, updatedStockFromDB, updatedRecordFromDB);
+                })
+            })        
         });
     };
 
-    const testAll = function(updatedStockFromDB, updatedStock, callback){
+    const testAll = function(stockForUpdate, updatedStock, updatedStockFromDB, updatedRecordFromDB, callback){
         
-        const testProductEquality = function (){
-            assert.true(utils.isEqual(updatedStockFromDB, updatedStock), 'Updated Stocks are not equal!');
-            compareStocks(updatedStockFromDB, updatedStock,(err) => {
-                if(err)
-                    return callback(err);
+        const testEquality = function (){
 
-                callback(undefined);
-            });
+            assert.notNull(stockForUpdate, 'StockForUpdate is Null');
+            assert.notNull(updatedStock, 'updatedStock is Null');
+            assert.notNull(updatedStockFromDB, 'updatedStockFromDB is Null');
+            assert.notNull(updatedRecordFromDB, 'updatedRecordFromDB is Null'); 
+
+            assert.true(utils.isEqual(stockForUpdate, updatedStock), 'stockFotUpdate and updatedStock are not equal');
+            assert.true(utils.isEqual(stockForUpdate, updatedStockFromDB), 'stockFotUpdate and updatedStockFromDB are not equal')
+            assert.true(utils.isEqual(stockForUpdate, updatedRecordFromDB), 'stockFotUpdate and updatedRecordFromDB are not equal')
+            assert.true(utils.isEqual(updatedStock, updatedStockFromDB), 'updatedStock aand updatedStockFromDB are not equal')
+            assert.true(utils.isEqual(updatedStock, updatedRecordFromDB), 'updatedStock aand updatedRecordFromDB are not equal')
+            assert.true(utils.isEqual(updatedRecordFromDB, updatedRecordFromDB), 'updatedRecordFromDB aand updatedRecordFromDB are not equal')
+
+            callback(undefined, updatedStockFromDB);                
         }();
     };
 
@@ -368,30 +266,35 @@ const testUpdate = function (manager, stock, callback){
  * @param {Stock} stock 
  * @param {function(err)} callback
  */
-
- const testRemove = function(manager, stock, callback){
+const testRemove = function(manager, stock, callback){
     const key = stock.gtin;
 
     const run = function(callback){
         manager.remove(key, (err) => {
             if(err)
                 return callback(err);
-            
-            callback(undefined, key);
+
+            manager.getOne(key, true, (err, stockFromDB) => {
+                if(!err)
+                    return callback('Should have error geting a removed item');
+                
+                manager.getOne(key, false, (err, record) => {
+                    if(!err)
+                        return callback('Should have error geting a removed item');
+                    
+                    callback(undefined, stockFromDB, record);
+                })
+            })    
         })
     };
 
-    const testAll = function(key, callback){
+    const testAll = function(stockFromDB, record, callback){
         
         const testItemRemoved = function (){
-            manager.getOne(key, true, (err, product) => {
-                if(!err)
-                    return callback('Stock should be deleted!');
-                
-                assert.true(!product, 'Product should be undefined');
-                
-                callback(undefined);
-            });       
+            assert.false(!!stockFromDB, 'Error retrieving removed data');
+            assert.false(!!record, 'Error retrieving removed data');
+
+            callback(undefined);      
         }();
     };
 
@@ -403,7 +306,60 @@ const testUpdate = function (manager, stock, callback){
     });
 };
 
+/**
+ * @param {StockManager} manager
+ * @param {Array} stockList 
+ * @param {function(err, stockListFromDB)} callback
+ */
+const testGetAll = function(manager, stockList, callback){
+    let options = {
+                query:['gtin > 0'],
+                sort: "asc",
+                limit: undefined,
+            }
 
+    const run = function(callback){
+        manager.getAll(true, options, (err, stocksFromDB) => {
+            if(err)
+                return callback(err);
+
+            manager.getAll(false, options,(err, recordsFromDB) => {
+                if(err)
+                    return callback(err);
+
+                callback(undefined, stocksFromDB, recordsFromDB);
+            }) 
+        })
+    };
+
+    const testAll = function(stocksFromDB, recordsFromDB, callback){
+        
+        const testResults = function (){
+            assert.notNull(recordsFromDB, 'Records from db cannot be null');
+            assert.notNull(stocksFromDB, 'Stocks from db cannot be null');
+
+            assert.true(stocksFromDB.length === stockList.length, 'Stocks from db size doesnt match stock list size');
+            assert.true(stockList.length === recordsFromDB.length, 'records from db size doesnt match stock list size');
+            
+            const filteredResults = stockList.filter((item) => item.gtin > 0).sort((a, b) => { return a.gtin - b.gtin});
+            assert.true(utils.isEqual(filteredResults, stocksFromDB), 'Stocks From db is not equal to stock list provided')
+
+            const filteredRecords = stockList.filter((item) => item.gtin > 0).sort((a, b) => { return a.gtin - b.gtin}).map(a => a.gtin);
+            assert.true(utils.isEqual(filteredRecords, recordsFromDB, 'Record list from db is not equal to record list provided'))
+
+            callback(undefined, stocksFromDB); 
+        }();
+    };
+
+    run((err, ...args) => {
+        if(err)
+            return callback(err);
+        
+        testAll(...args, callback);
+    });
+}
+
+/*Complex Tests*/
 
 /**
  * @param {StockManager} manager 
@@ -411,9 +367,7 @@ const testUpdate = function (manager, stock, callback){
  * @param {function(err)} callback
  * 
  */
-
- const testGetAllWithQueries = function(manager, stockList, callback){
-    const readDSU = true;
+const testGetAllWithQueries = function(manager, stockList, callback){
 
     let options = {
         query:['name == '+ stockList[0].name],
@@ -423,56 +377,55 @@ const testUpdate = function (manager, stock, callback){
 
     const run = function(callback){
 
-        manager.getAll(readDSU, options, (err, resultsQueryOne) => {
+        manager.getAll(true, options, (err, resultsQueryOne) => {
             if(err)
                 return callback(err);
-                
-            const filteredResultsOne = stockList.filter((item) => stockList[0].name === item.name);
-
-            options.query = ['gtin <= 55289538478425'];
-
-            manager.getAll(readDSU, options, (err, resultsQueryTwo) => {
-                if(err)
-                    callback(err);
             
-                const filteredResultsTwo = stockList.filter((item) => item.gtin <= 55289538478425).sort((a,b) => {
-                    if(a.gtin < b.gtin){
-                        return -1;
-                    }
-                    if(a.gtin > b.gtin){
-                        return 1;
-                    }
-                    if(a.gtin === b.gtin){
-                        return 0;
-                    }
+            manager.getAll(false, options, (err , resultsRecordQueryOne) => {
+                if(err)
+                    return callback(err);
+                    
+                options.query = ['gtin <= 55289538478425'];
 
-                });
+                manager.getAll(true, options, (err, resultsQueryTwo) => {
+                    if(err)
+                        return callback(err);
 
-                console.log(resultsQueryTwo);
-                console.log(filteredResultsTwo);
+                    manager.getAll(false, options, (err, resultsRecordQueryTwo) => {
+                        if(err)
+                            return callback(err);
 
-
-                callback(undefined, resultsQueryOne, filteredResultsOne, resultsQueryTwo, filteredResultsTwo);
-            })
-          
+                        callback(undefined, resultsQueryOne, resultsRecordQueryOne, resultsQueryTwo, resultsRecordQueryTwo);
+                    })
+                })
+            }) 
         })      
     };
 
-    const testAll = function(resultsQueryOne, filteredResultsOne, resultsQueryTwo, filteredResultsTwo, callback){
-        
-        const testItemRemoved = function (){
-           
-            utils.testIterator(manager, compareStocks,resultsQueryOne,[],filteredResultsOne, (err) => {
-                if(err)
-                    return callback(err);
+    const testAll = function(resultsQueryOne, resultsRecordQueryOne, resultsQueryTwo,resultsRecordQueryTwo, callback){
 
-                utils.testIterator(manager, compareStocks, resultsQueryTwo,[],filteredResultsTwo, (err) => {
-                    if(err)
-                        return callback(err);
+        const testResults = function (){
+            const filteredResultsOne = stockList.filter((item) => stockList[0].name === item.name);
+            const filteredResultsTwo = stockList.filter((item) => item.gtin <= 55289538478425).sort((a, b) => { return a.gtin - b.gtin});
+            const filteredRecordsResultOne = stockList.filter((item) => stockList[0].name === item.name).map(a => a.gtin);
+            const filteredRecordsResultTwo = stockList.filter((item) => item.gtin <= 55289538478425).sort((a, b) => { return a.gtin - b.gtin}).map(a => a.gtin);
+
+            assert.notNull(resultsQueryOne, 'Query one should return one stock');
+            assert.notNull(resultsRecordQueryOne, 'Query one should return one record');
+            assert.notNull(resultsQueryTwo, 'Query two should return multiple stocks');
+            assert.notNull(resultsRecordQueryTwo, 'Query two should return multiple records');
+           
+            assert.true(utils.isEqual(resultsQueryOne, filteredResultsOne), 'Query one ReadDSU true results dont match expected');
+            assert.true(utils.isEqual(resultsRecordQueryOne, filteredRecordsResultOne), 'Query one ReadDSU false results dont match expected')
+            assert.true(utils.isEqual(resultsQueryTwo, filteredResultsTwo), 'Query two ReadDSU true results dont match expected');
+            assert.true(utils.isEqual(resultsRecordQueryTwo, filteredRecordsResultTwo), 'Query two ReadDSU false results dont match expected');
+
+            assert.true(resultsQueryOne.length === 1, 'Query one should return one stock');
+            assert.true(resultsRecordQueryOne.length === 1, 'Query one should return one record')
+            assert.true(resultsQueryTwo.length === filteredResultsTwo.length, 'Query two didnt return expected number of stocks');
+            assert.true(resultsRecordQueryTwo.length === filteredRecordsResultTwo.length, 'Query two didnt return expected number of records');
                         
-                    callback(undefined);
-                })
-            })
+            callback(undefined);
         }();
     };
 
@@ -486,60 +439,52 @@ const testUpdate = function (manager, stock, callback){
 
 /**
  * @param {StockManager} manager 
- * @param {Array} stockList
- * @param {function(err, product, record)} callback
+ * @param {Array} stockList // represents the item list you want to get
+ * @param {function(err)} callback
+ * 
  */
-
- const testUpdateAll = function(manager, stockList, callback){
+const testUpdateAll = function(manager,stockList, callback){
 
     const run = function(callback){
         let keys = stockList.map(a => a.gtin);
 
-        updateStocks(stockList, (err, modStocks) => {
+        utils.manipulateIterator(modStocks, stockList, (err, moddedStocks) => {
             if(err)
-                callback(err);
-
-            manager.updateAll(keys, modStocks,(err, modifiedStocks) => {
+                return callback(err);
+            
+            utils.copyList(moddedStocks, (err, copyModdedList) => {
                 if(err)
                     return callback(err);
                 
-                manager.getAll(true,(err, stocksFromDB) => {
+                const testList = copyModdedList;
+                manager.updateAll(keys, moddedStocks, (err, modifiedStocks) => {
                     if(err)
                         return callback(err);
+                    
+                    testGetAll(manager, testList, (err, stocksFromDB) =>{
+                        if(err)
+                            return callback(err);
+                        
+                        callback(undefined, testList, stocksFromDB);
+                    })
     
-                    callback(undefined, modifiedStocks, stocksFromDB);
                 })
+
             })
-        })
+            
+        })      
     };
 
-    const testAll = function(modifiedStocks, stocksFromDB, callback){
+    const testAll = function(testList, stocksFromDB, callback){
         
         const testResults = function (){
-            console.log('modded: ',modifiedStocks, 'DB: ', stocksFromDB)
+            assert.true(testList.length === stocksFromDB.length, 'Both stock list should have the same size');
 
-            // assert.true(list.length === results.length);
-            // assert.true(newStocks.length === results.length);
-            // const filteredResults = list.filter((item) => item.gtin <= 55289538478425).sort((a,b) => {
-            // if(a.gtin < b.gtin){
-            //     return -1;
-            // }
-            // if(a.gtin > b.gtin){
-            //     return 1;
-            // }
-            // if(a.gtin === b.gtin){
-            //     return 0;
-            // }
-            // });
-           
-            // testIterator(manager, compareItems ,filteredResults , [], results, (err, results) => {
-            //     if(err)
-            //         return  callback(err);
+            const filteredTestList = testList.filter((item) => item.gtin > 0).sort((a, b) => { return a.gtin - b.gtin});
 
-                callback(undefined, stocksFromDB);
+            assert.true(utils.isEqual(filteredTestList, stocksFromDB), 'Stocks from DB results are not the ones expected');
 
-            // })
-            
+            callback(undefined, stocksFromDB);
         }();
     };
 
@@ -549,80 +494,76 @@ const testUpdate = function (manager, stock, callback){
         
         testAll(...args, callback);
     });
+
 }
 
-
-/*Chained Tests*/
+/*Chain Tests*/
 
 /**
  * @param {StockManager} manager 
- * @param {Array} stockList 
  * @param {function(err)} callback
  */
+const testOneFullCycle = function(manager, callback){
 
-const testOneFullCycle = function(manager, stockList, callback){
-    utils.testIterator(manager, testCreate, stockList,(err, createdStockList) => {
+    utils.generateStock((err, stock) => {
         if(err)
             return callback(err);
-        
-        testGetAll(manager, true, createdStockList, (err, stockListFromDB) => {
+
+        testCreate(manager, stock, (err, stockFromCreate) => {
             if(err)
                 return callback(err);
-
-            utils.testIterator(manager, testGetOne, stockListFromDB, (err, stockList) => {
+            
+            testGetOne(manager, stockFromCreate, (err, stockFromGetOne)=> {
                 if(err)
                     return callback(err);
-                
-                utils.testIterator(manager, testUpdate, stockList, (err, updatedStockListFromDB) => {
+
+                testUpdate(manager, stockFromGetOne, (err, updatedStockFromDB) => {
                     if(err)
-                        callback(err);
+                        return callback(err);
                     
-                    utils.testIterator(manager, testRemove, updatedStockListFromDB, (err, results) => {
+                    console.log(updatedStockFromDB)
+                    testRemove(manager, updatedStockFromDB, (err) => {
                         if(err)
-                            return callback(err)
+                            return callback(err);
 
                         callback(undefined);
                     })
-                })     
-            })  
-        })  
+                })
+            })
+        })
     })
 }
 
 /**
  * @param {StockManager} manager 
- * @param {Array} stockList 
  * @param {function(err)} callback
  */
+const testGetAllMultiTests = function (manager, callback){
 
-const testAllCycle = function(manager, stockList, callback){
-
-    utils.testIterator(manager, testCreate, stockList, (err, createdStockList) => {
+    utils.generateIterator(utils.generateStock, 10, (err, stockList) => {
         if(err)
             return callback(err);
-
-        testGetAllWithQueries(manager, createdStockList, (err) => {
+        
+        utils.testIterator(manager, testCreate, stockList, (err, createdStockList) => {
             if(err)
                 return callback(err);
             
-            testUpdateAll(manager, createdStockList, (err, moddedStocksList) => {
+            testGetAll(manager, createdStockList,(err, getAllStockList) => {
                 if(err)
                     return callback(err);
-                
-                callback(undefined);
-
+                console.log('get all: ',getAllStockList)
+                testGetAllWithQueries(manager, getAllStockList, (err) => {
+                    if(err)
+                        return callback(err);
+                    callback(undefined, getAllStockList);
+                })
             })
-            
-        })
-
+        })    
     })
 }
 
 
-
-
-/*Run Tests*/
-
+/*Run Tests*/ 
 const runTest = function(callback){
     const mahCredentials = getCredentials(APPS.MAH);
     const credentials = Object.keys(mahCredentials).reduce((accum, key) => {
@@ -636,39 +577,24 @@ const runTest = function(callback){
 
         console.log(participantManager);
 
-        //Getting Stock Manager
         const manager = getStockManager(participantManager);
 
-        let stockList = populateStocks(10);
-        let queryStockList = populateStocks(10);
-
-        testOneFullCycle(manager, stockList, (err) => {
+        testOneFullCycle(manager, (err) => {
             if(err)
                 return callback(err);
             
-            testAllCycle(manager, queryStockList, (err) => {
+            testGetAllMultiTests(manager, (err, stockList) => {
                 if(err)
-                    return callback(err);
+                   return callback(err);
                 
-                callback();
+                testUpdateAll(manager, stockList, (err) => {
+                    if(err)
+                        return callback(err);
 
-            })   
+                    callback();
+                })
+            })    
         })
-
-     
-
-        
-
-        
-       
-
-        
-
-
-        
-
-        
-
     });     
 };
 

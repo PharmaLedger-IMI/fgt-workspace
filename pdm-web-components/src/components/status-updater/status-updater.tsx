@@ -26,14 +26,10 @@ export class StatusUpdater {
   @Prop({attribute: "update-string"}) updateString?:string = "Available Operation:";
   @Prop({attribute: "no-update-string"}) noUpdateString?:string = "No operations available";
   @Prop({attribute: "current-string"}) currentString?:string = "Current Status:";
+  @Prop({attribute: "past-string"}) pastString?:string = "Past Status:";
 
   @State() states;
-
-  async componentWillLoad() {
-    if (!this.host.isConnected)
-      return;
-    await this.updateStates(this.statesJSON);
-  }
+  @State() _currentState;
 
   @Watch('statesJSON')
   async updateStates(newStates){
@@ -47,62 +43,128 @@ export class StatusUpdater {
       this.states = {...newStates};
   }
 
+  @Watch('currentState')
+  async watchCurrentState(newStatus){
+    if (typeof newStatus === 'string' && !newStatus.startsWith('@'))
+      try{
+        this._currentState = JSON.parse(newStatus);
+      } catch (e){
+        console.log(`Could not parse Status JSON` ,e);
+        this._currentState = {log: []};
+      }
+    else if (typeof newStatus === 'object')
+      this._currentState = {log: [], ...newStatus};
+  }
+
 
   private handleStateClick(evt){
     evt.preventDefault();
     evt.stopImmediatePropagation();
     const { status } = evt.detail;
-    if (this.states[this.currentState].paths.indexOf(status) === -1)
+    if (this.states[this._currentState.status].paths.indexOf(status) === -1)
       return console.log("Status change not allowed");
     this.statusUpdateEvent.emit(evt.detail);
   }
 
-  private renderState(status, state: {action: string, label: string, color?:string, }, passed: boolean, available: boolean, isCurrent: boolean){
+  async showInfoPopup(popupOptions: any) {
+    const alert: any = document.createElement('ion-alert');
+    alert.header = popupOptions.header;
+    alert.cssClass = popupOptions.cssClass || 'status-updater-alert';
+    alert.message = popupOptions.message;
+    alert.buttons = ['OK'];
+    document.body.appendChild(alert);
+    await alert.present();
+  }
+
+  private buildButtonWithAlert(current: boolean, label: string, color: string, disabled: boolean, popupOptions: any) {
     const self = this;
     return (
-      <ion-row class="ion-margin-bottom ion-align-items-center ion-justify-content-center">
-        <status-updater-button
-          label={available ? state.action : state.label}
-          status={status}
-          disabled={passed || !available || isCurrent}
-          color={passed && !available ? "medium" : state.color}
-          size={available ? "large" : (passed ? "small" : "default")}
-          expand={isCurrent ? "full" : "block"}
-          shape={isCurrent ? undefined : "round"}
-          onClickUpdaterButton={(evt) => self.handleStateClick(evt)}>
-        </status-updater-button>
+      <ion-row className="ion-align-items-center ion-justify-content-center">
+        <ion-button
+          class="history-status-btn" expand="full" color={color} size={current ? 'default' : 'small'}
+          disabled={disabled} onClick={() => self.showInfoPopup(popupOptions)}
+        >
+          {label}
+        </ion-button>
       </ion-row>
     )
   }
 
   private renderStates(){
-    const result = [];
-    if (!(this.currentState in this.states)){
-      console.log(`Invalid state ${this.currentState}`, this.states);
-      return result;
+    const self = this;
+    if (!(this._currentState.status in this.states)){
+      console.log(`Invalid state ${this._currentState.status}`, this.states);
+      return [];
     }
 
-    const self = this;
-    const currentState = this.states[this.currentState];
-    const allowedStates = Object.keys(this.states).filter(state => currentState.paths.indexOf(state) !== -1);
+    const statusHistoryButtons = self._currentState.log.reduce((accum, log, index) => {
+      let extraInfo = undefined;
+      const id = log.split(' ')[0].trim();
+      const logTimeStamp = log.split(' ')[1].trim();
+      const status = log.substring(log.lastIndexOf(' ') + 1).trim();
+      const state = self.states[status];
 
-    result.push(
-      <ion-item-divider className="ion-margin-bottom">
-        {self.currentString}
-      </ion-item-divider>
-    )
+      /**
+       * 1. extraInfo property may not exist in the object
+       * 2. extraInfo[status] may not exist in the object (e.g. created status)
+       */
+      if (self._currentState.hasOwnProperty('extraInfo')) {
+        if (self._currentState.extraInfo.hasOwnProperty(status)) {
+          const rawExtraInfo = self._currentState.extraInfo[status].filter((_extraInfo) => (_extraInfo.split(' ')[1]).trim() === logTimeStamp)
+          extraInfo = rawExtraInfo.length > 0 ? rawExtraInfo[0].split(' ').slice(2).join(' ').trim() : undefined;
+        }
+      }
+      const current = (self._currentState.log.length - 1) === index;
+      accum.push(self.buildButtonWithAlert(current, state.label, current ? state.color : 'medium', !extraInfo,
+        {
+          header: `Status update to ${status.toUpperCase()} by ${id}`,
+          message: extraInfo
+        })
+      )
+      return accum;
+    }, [])
 
-    result.push(self.renderState(self.currentState, currentState, false, false, true))
+    const currentStatusFromState = this.states[this._currentState.status];
+    const individualProperties = {} //temporarily, currently comes from the "translation"
+    const allowedStates = Object.keys(this.states).reduce((acc, status )=> {
+      if (currentStatusFromState.paths.indexOf(status) !== -1) {
+        acc.push({status, ...self.states[status]})
+        individualProperties[status] = {
+          popupOptions: {
+            message: `Please confirm Shipment status update from <strong>${this._currentState.status.toUpperCase()}</strong> to <strong>${status.toUpperCase()}</strong>`
+          }
+        }
+      }
+      return acc;
+    }, []);
 
-    result.push(
-      <ion-item-divider className="ion-margin-bottom">
-        {!!allowedStates.length ? self.updateString : self.noUpdateString}
-      </ion-item-divider>
-    )
-    result.push(...allowedStates.map((state) => {
-      return self.renderState(state, self.states[state],false, true, false);
-    }));
-    return result;
+    const pastStatus = statusHistoryButtons.slice(0, statusHistoryButtons.length - 1)
+
+    return ([
+      pastStatus.length > 0 ? <ion-item-divider>{self.pastString}</ion-item-divider> : '',
+
+      ...pastStatus,
+
+      <ion-item-divider>{self.currentString}</ion-item-divider>,
+
+      statusHistoryButtons[statusHistoryButtons.length - 1],
+
+      <ion-item-divider className="ion-margin-bottom">{!!allowedStates.length ? self.updateString : self.noUpdateString}</ion-item-divider>,
+
+      <status-updater-button
+        shape="round" expand="block" size="large"
+        available-options={JSON.stringify(allowedStates)}
+        individual-properties={JSON.stringify(individualProperties)}
+        onClickUpdaterButton={(evt) => self.handleStateClick(evt)}
+      > </status-updater-button>
+    ])
+  }
+
+  async componentWillLoad() {
+    if (!this.host.isConnected)
+      return;
+    await this.updateStates(this.statesJSON);
+    await this.watchCurrentState(this.currentState)
   }
 
   render() {
