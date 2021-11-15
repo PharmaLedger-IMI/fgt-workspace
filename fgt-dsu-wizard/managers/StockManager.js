@@ -86,6 +86,7 @@ class StockManager extends Manager{
             gtin = newStock.gtin;
         }
         let self = this;
+        newStock.quantity = newStock.getQuantity();
         self.updateRecord(gtin, newStock, (err) => {
             if (err)
                 return self._err(`Could not update stock with gtin ${gtin}: ${err.message}`, err, callback);
@@ -126,6 +127,7 @@ class StockManager extends Manager{
 
         self.getOne(gtin, true, (err, stock) => {
             if (err){
+                console.log('batch quantity err check', batch.quantity);
                 if (batch.quantity < 0)
                     return callback(`Trying to reduce from an unexisting stock`);
 
@@ -172,7 +174,7 @@ class StockManager extends Manager{
                         batchNumber: updatedBatch.batchNumber,
                         expiry: updatedBatch.expiry,
                         batchStatus: updatedBatch.batchStatus,
-                        quantity: sb.batch.getQuantity(),
+                        quantity: newQuantity,
                         serialNumbers: sb.batch.serialNumbers
                     });
                 }
