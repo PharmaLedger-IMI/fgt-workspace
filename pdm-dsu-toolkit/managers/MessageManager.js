@@ -1,3 +1,4 @@
+
 const Manager = require('./Manager')
 const { _err } = require('../services/utils')
 const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE } = require('../constants');
@@ -75,47 +76,31 @@ class MessageManager extends Manager{
     }
 
     _receiveMessage(message, callback){
-
         const {api} = message;
         let self = this;
         self._saveToInbox(message, (err) => {
             if (err)
                 return _err(`Could not save message to inbox`, err, callback);
             console.log(`Message ${JSON.stringify(message)} saved to table ${self._getTableName()} on DID ${self.didString}`);
-            
-            const checkForListeners = function(message, counter, callback){
-                const self = this;
-                const {api} = message;
-
-                if(counter > 4)
-                    return callback();
-
-                if (!(api in self._listeners)) {
-                    console.log(`No listeners registered for ${api} messages.`);
-                    return setTimeout(()=>{
-                        checkForListeners.call(self, message, ++counter, callback);
-                    },1000);
-                }
-    
-                console.log(`Found ${self._listeners[api].length} listeners for the ${api} message api`);
-                
-                const listenerIterator = function(listeners, callback){
-                    const listener = listeners.shift();
-                    if (!listener)
-                        return callback(undefined, message);
-                    listener(message, (err) => {
-                        if (err)
-                            console.log(`Error processing Api ${api}`, err);
-                        listenerIterator(listeners, callback);
-                    });
-                }
-    
-                listenerIterator(self._listeners[api].slice(), callback);
-
+            if (!(api in self._listeners)) {
+                console.log(`No listeners registered for ${api} messages.`);
+                return callback();
             }
 
-            checkForListeners.call(self, message, 0, callback);
-            
+            console.log(`Found ${self._listeners[api].length} listeners for the ${api} message api`);
+
+            const listenerIterator = function(listeners, callback){
+                const listener = listeners.shift();
+                if (!listener)
+                    return callback(undefined, message);
+                listener(message, (err) => {
+                    if (err)
+                        console.log(`Error processing Api ${api}`, err);
+                    listenerIterator(listeners, callback);
+                });
+            }
+
+            listenerIterator(self._listeners[api].slice(), callback);
         });
     }
 
@@ -210,7 +195,6 @@ class MessageManager extends Manager{
     }
 
     _startMessageListener(did){
-        
         let self = this;
         console.log("_startMessageListener", did.getIdentifier());
         did.readMessage((err, message) => {
