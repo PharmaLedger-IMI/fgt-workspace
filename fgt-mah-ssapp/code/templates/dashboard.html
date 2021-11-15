@@ -1,47 +1,49 @@
 <webc-container controller="DashboardController">
     <ion-title>{{ @welcome }}</ion-title>
-    UPDATE
-    <ion-row class="ion-margin">
-        <ion-grid>
-            <ion-row>
-                <ion-col size="12" size-lg="6">
-                    <div>
-                        <pdm-chartjs
-                                container-id="most-sold"
-                                card-title="Most Sold Products"
-                                card-sub-title="Most sold products of last 3 months"
-                                data="@soldData"
-                                options="@soldOptions"
-                        >
-                        </pdm-chartjs>
-                    </div>
-                    <div>
-                        <pdm-chartjs
-                                container-id="most-stock"
-                                card-title="Stock"
-                                card-sub-title="Lorem ipsum praesent mauris dolor, ullamcorper a mattis auctor eget."
-                                data="@stockData"
-                                options="@stockOptions"
-                        >
-                        </pdm-chartjs>
-                    </div>
-                </ion-col>
-                <ion-col size="12" size-lg="6">
-                    <div>
-                        <pdm-chartjs
-                                container-id="shipments-status"
-                                card-title="Shipments Status"
-                                card-sub-title="Shipments control based on product traceability"
-                                data="@shipmentsData"
-                                options="@shipmentsOptions"
-                                show-data-table="true"
-                                table-data-source="@shipmentsTable"
-                        >
-                        </pdm-chartjs>
-                    </div>
-                </ion-col>
-            </ion-row>
-        </ion-grid>
-    </ion-row>
 
+    <div>
+        <ion-row class="ion-margin">
+            <ion-grid>
+                <ion-row>
+                    <ion-col size="12" size-lg="6">
+                        <div>
+                            <pdm-chartjs
+                                    container-id="sale-chart"
+                                    card-title="Most Sold Products"
+                                    card-sub-title="Most sold products of last 3 months"
+                                    data="@saleChartData"
+                                    options="@saleChartOptions"
+                            >
+                            </pdm-chartjs>
+                        </div>
+                        <div>
+                            <pdm-chartjs
+                                    container-id="stock-chart"
+                                    card-title="Stock"
+                                    card-sub-title="Lorem ipsum praesent mauris dolor, ullamcorper a mattis auctor eget."
+                                    data="@stockChartData"
+                                    options="@stockChartOptions"
+                            >
+                            </pdm-chartjs>
+                        </div>
+                    </ion-col>
+                    <ion-col size="12" size-lg="6">
+                        <div>
+                            <pdm-chartjs
+                                    container-id="shipment-status-chart"
+                                    card-title="Shipments Status"
+                                    card-sub-title="Shipments control based on product traceability"
+                                    data="@shipmentChartData"
+                                    options="@shipmentChartOptions"
+                                    show-data-table="true"
+                                    table-data-source="@shipmentsChartTable"
+                            >
+                            </pdm-chartjs>
+                        </div>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-row>
+
+    </div>
 </webc-container>

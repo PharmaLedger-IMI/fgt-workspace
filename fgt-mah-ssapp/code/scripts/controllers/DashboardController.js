@@ -2,7 +2,15 @@ import {LocalizedController, HistoryNavigator, EVENT_REFRESH,} from "../../asset
 
 export default class DashboardController extends LocalizedController {
 
-    initializeModel = () => ({});
+    initializeModel = () => ({
+        saleChartData: '',
+        saleChartOptions: '',
+        stockChartData: '',
+        stockChartOptions: '',
+        shipmentChartData: '',
+        shipmentChartOptions: '',
+        shipmentsChartTable: ''
+    });
 
     constructor(...args) {
         super(false, ...args);
@@ -21,10 +29,111 @@ export default class DashboardController extends LocalizedController {
         this.stockManager = wizard.Managers.getStockManager(participantManager);
 
         const self = this;
-        self.buildChart('sold', {
+        self.updateSaleChart({
             labels: ["Diflucan", "Depo Medrol", "Ventolin", "Benlysta", "Fiasp", "Novolin", "Adalat"],
+            total: [86,114,106,106,107,111,133],
+            mahToWhs: [70,90,44,60,83,90,100],
+            whsToPha: [10,21,60,44,17,21,17],
+            phaToFinalUser: [6,3,2,2,7,0,16]
+        })
+
+        self.updateStockChart({
+            labels: ["Diflucan", "Depo Medrol", "Ventolin", "Benlysta", "Fiasp", "Novolin", "Adalat"],
+            monthlyAvg: [1091, 2662, 1650, 3144, 3721, 3160, 3775],
+            productsInStock: [1591, 1962, 2150, 2844, 3521, 3660, 4175]
+        })
+
+        self.updateShipmentsChart({
+            labels: ["Created", "on Hold", "for Pickup", "in Transit", "Delivered", "Pending Conf.","Recall"],
+            shipmentsQtyByStatus: [1251, 2561, 958, 3690, 1305, 2391, 105]
+        })
+
+        self.on(EVENT_REFRESH, (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+
+            // update stock chart
+            this.stockManager.getAll(true, (err, stock) => {
+                if(err)
+                    console.error(err)
+                const stockManagement = stock.reduce((accum, product) => {
+                    accum[product.name] = product.quantity
+                    return accum;
+                }, {})
+                self.updateStockChart({
+                    labels: Object.keys(stockManagement),
+                    monthlyAvg: Object.values(stockManagement).map(v => (Math.random() + 0.5) * v),
+                    productsInStock: Object.values(stockManagement)
+                })
+            })
+
+            // update shipment chart
+            self.issuedShipmentManager.getAll(true, (err, issuedShipments) => {
+                if (err)
+                    return console.error(err)
+
+                const statusDictionary = {
+                    created: 'Created',
+                    hold: 'on Hold',
+                    pickup: 'for Pickup',
+                    transit: 'in Transit',
+                    delivered: 'Delivered',
+                    received: 'Pending Conf.',
+                    recall: 'Recall'
+                }
+                const shipmentsChartTable = []
+                // initialize with zero for each status
+                const shipments = Object.values(statusDictionary).reduce((acc, statusValue) => {
+                    acc[statusValue] = 0;
+                    return acc
+                }, {})
+                const shipmentsQtyByStatus = issuedShipments.reduce((accum, curr) => {
+                    // if confirmed, the order has been completed
+                    if (curr.status.status !== 'confirmed') {
+                        const statusLabel = statusDictionary[curr.status.status]
+
+                        const timestampDiffFromNow = (timestamp) => {
+                            let delta = (Date.now() - timestamp) / 1000; // delta and transform to seconds
+                            const days = Math.floor(delta / 86400); // 24*60*60 - seconds -> days
+                            delta -= (days * 86400);
+                            const hours = Math.floor(delta / 3600) % 24;
+                            delta -= (hours * 3600);
+                            const min = Math.floor(delta / 60) % 60;
+                            return (days > 0 ? `${days}d` : '') + (hours > 0 ? `${hours}h` : '') + (min > 0 ? `${min}m` : '');
+                        }
+
+                        const lastUpdate = curr.status.log[curr.status.log.length - 1]; // in timestamp
+                        shipmentsChartTable.push({
+                            shipmentId: curr.shipmentId,
+                            requesterId: curr.requesterId,
+                            status: statusLabel,
+                            days: timestampDiffFromNow(lastUpdate.split(' ')[1].trim())
+                        })
+                        accum[statusLabel] += 1; // add +1 shipment qty
+                    }
+                    return accum;
+                }, shipments)
+
+                console.log('$$$ issuedShipments=', issuedShipments)
+                console.log('$$$ shipmentsQtyByStatus=', shipmentsQtyByStatus)
+                console.log('$$$ shipmentsChartTable=', shipmentsChartTable)
+
+                this.updateShipmentsChart({
+                    labels: Object.keys(shipmentsQtyByStatus),
+                    shipmentsQtyByStatus: Object.values(shipmentsQtyByStatus)
+                })
+                self.model.shipmentsChartTable = JSON.stringify(shipmentsChartTable)
+            })
+
+        }, {capture: true});
+        console.log('DashboardController Initialized');
+    }
+
+    updateSaleChart(metadata, options) {
+        const gData = {
+            labels: metadata.labels,
             datasets: [{
-                data: [86,114,106,106,107,111,133],
+                data: metadata.total,
                 label: "Total",
                 borderColor: "#001219",
                 backgroundColor: "#001219",
@@ -32,38 +141,36 @@ export default class DashboardController extends LocalizedController {
                 type: 'line',
                 fill:false
             }, {
-                data: [70,90,44,60,83,90,100],
+                data: metadata.mahToWhs,
                 label: "MAH -> WHS",
                 backgroundColor: "#005f73",
             }, {
-                data: [10,21,60,44,17,21,17],
+                data: metadata.whsToPha, //[10,21,60,44,17,21,17],
                 label: "WHS -> PHA",
                 backgroundColor:"#0a9396",
             }, {
-                data: [6,3,2,2,7,0,16],
+                data: metadata.phaToFinalUser, // [6,3,2,2,7,0,16],
                 label: "PHA -> USER",
                 backgroundColor:"#94d2bd",
             }]
-        }, {
+        }
+        options = {
             plugins: {
-                title: {
-                    display: false,
-                    text: 'Most Sold Products',
-                    font: {
-                        size: 18
-                    }
-                },
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        })
-        self.buildChart('stock', {
-            labels: ["Diflucan", "Depo Medrol", "Ventolin", "Benlysta", "Fiasp", "Novolin", "Adalat"],
+                title: { display: false },
+                legend: { position: 'bottom'}
+            },
+            ...options
+        }
+        this.buildChart('saleChart', gData, options)
+    }
+
+    updateStockChart(metadata, options) {
+        const gData =  {
+            labels: metadata.labels,
             datasets: [
                 {
                     label: "Overall Monthly Average",
-                    data: [1091, 2662, 1650, 3144, 3721, 3160, 3775],
+                    data: metadata.monthlyAvg,
                     borderColor: "#001219",
                     backgroundColor: "#001219",
                     borderWidth:2,
@@ -73,154 +180,38 @@ export default class DashboardController extends LocalizedController {
                 {
                     label: "Products in Stock",
                     backgroundColor: ["#76c893", "#52b69a","#34a0a4","#168aad","#1a759f", "#1e6091", "#184e77"],
-                    data: [1591, 1962, 2150, 2844, 3521, 3660, 4175]
+                    data: metadata.productsInStock
                 }
             ]
-        }, {
+        }
+        options = {
             plugins: {
-                title: {
-                    display: false,
-                    text: 'Most Stock Products',
-                    font: {
-                        size: 18
-                    }
-                },
+                title: { display: false },
                 legend: false
-            }
-        })
-        self.buildChart('shipments', {
-            labels: ["Created", "on Hold", "for Pickup", "in Transit", "Delivered", "Pending Conf.","Recall"],
+            },
+            ...options
+        }
+        this.buildChart('stockChart', gData, options)
+    }
+
+    updateShipmentsChart(metadata, options) {
+        const gData =  {
+            labels: metadata.labels,
             datasets: [
                 {
-                    label: "Total Orders",
+                    label: "Total Shipments",
                     backgroundColor: ["#02C39A", "#F6AE2D","#2F4858","#219EBC","#8ECAE6", "#E4959E", "#FA003F"],
-                    data: [1251, 2561, 958, 3690, 1305, 2391, 105]
+                    data: metadata.shipmentsQtyByStatus
                 }
             ]
-        }, {
+        }
+        options = {
+            title: { display: true },
+            plugins: { legend: false },
             indexAxis: 'y',
-            plugins: {
-                legend: false,
-            },
-            title: {
-                display: true
-            }
-        })
-
-        self.on(EVENT_REFRESH, (evt) => {
-            evt.preventDefault();
-            evt.stopImmediatePropagation();
-            this.stockManager.getAll(true, (err, stock) => {
-                if (err)
-                    return console.log('$$', err)
-                const stockManagement = stock.reduce((accum, product) => {
-                    accum[product.name] = product.quantity
-                    return accum;
-                }, {})
-                self.buildChart('stock', {
-                    labels: Object.keys(stockManagement), //["Diflucan", "Depo Medrol", "Ventolin", "Benlysta", "Fiasp", "Novolin", "Adalat"],
-                    datasets: [
-                        {
-                            label: "Overall Monthly Average",
-                            data: Object.values(stockManagement).map(v => (Math.random() + 0.5) * v), //[1091, 2662, 1650, 3144, 3721, 3160, 3775],
-                            borderColor: "#001219",
-                            backgroundColor: "#001219",
-                            borderWidth:2,
-                            type: 'line',
-                            fill:false
-                        },
-                        {
-                            label: "Products in Stock",
-                            backgroundColor: ["#76c893", "#52b69a","#34a0a4","#168aad","#1a759f", "#1e6091", "#184e77"],
-                            data: Object.values(stockManagement)
-                        }
-                    ]
-                })
-                self.model.stockData = JSON.stringify({
-                    labels: Object.keys(stockManagement), //["Diflucan", "Depo Medrol", "Ventolin", "Benlysta", "Fiasp", "Novolin", "Adalat"],
-                    datasets: [
-                        {
-                            label: "Overall Monthly Average",
-                            data: Object.values(stockManagement).map(v => (Math.random() + 0.5) * v), //[1091, 2662, 1650, 3144, 3721, 3160, 3775],
-                            borderColor: "#001219",
-                            backgroundColor: "#001219",
-                            borderWidth:2,
-                            type: 'line',
-                            fill:false
-                        },
-                        {
-                            label: "Products in Stock",
-                            backgroundColor: ["#76c893", "#52b69a","#34a0a4","#168aad","#1a759f", "#1e6091", "#184e77"],
-                            data: Object.values(stockManagement)
-                        }
-                    ]
-                });
-                console.log('$$ stock.stockManagement=', stockManagement);
-
-                /**
-                 self.stockManager.getStockTraceability("MAH135315170", "08470007909231", "DIF1", async (err, stockTrace) => {
-                    if (err)
-                        return console.log('$$', err)
-                    console.log('$$ stock.stockTrace=', stockTrace)
-                })
-                 */
-
-                const shipmentsTable = []
-                const statuses = {
-                    created: 'Created',
-                    hold: 'on Hold',
-                    pickup: 'for Pickup',
-                    transit: 'in Transit',
-                    delivered: 'Delivered',
-                    received: 'Pending Conf.',
-                    recall: 'Recall'
-                }
-                const shipments = Object.values(statuses).reduce((acc, curr) => {
-                    acc[curr] = 0
-                    return acc
-                }, {})
-                // {created: 0, hold: 0, pickup: 0, transit: 0, delivered: 0, pendingConf: 0, recall: 0}
-                self.issuedShipmentManager.getAll(true, (err, issuedShipments) => {
-                    if (err)
-                        return console.log('$$', err)
-                    const acc = issuedShipments.reduce((accum, curr) => {
-                        if (curr.status.status !== 'confirmed') {
-                            const key = statuses[curr.status.status]
-                            accum[key] += 1;
-                            const dt = curr.status.log[curr.status.log.length - 1]
-                            const data = {
-                                shipmentId: curr.shipmentId,
-                                requesterId: curr.requesterId,
-                                status: key,
-                                days: ((Date.now() - dt.split(' ')[1].trim()) / (24*60*60*1000)).toFixed(1) + 'd'// 1 day in milliseconds
-                            }
-                            shipmentsTable.push(data)
-                        }
-                        return accum;
-                    }, shipments);
-
-                    self.buildChart('shipments', {
-                        labels: Object.keys(shipments), //["Created", "on Hold", "for Pickup", "in Transit", "Delivered", "Pending Conf.","Recall"],
-                        datasets: [
-                            {
-                                label: "Total Shipments",
-                                backgroundColor: ["#02C39A", "#F6AE2D","#2F4858","#219EBC","#8ECAE6", "#E4959E", "#FA003F"],
-                                data: Object.values(shipments)
-                            }
-                        ]
-                    })
-                    self.model.shipmentsTable = JSON.stringify(shipmentsTable)
-
-                    console.log('$$ issuedShipments=', issuedShipments)
-                    console.log('$$ shipments=', acc)
-                    console.log('$$ shipmentsTable=', shipmentsTable)
-                })
-
-                console.log('$$ model=', self.model)
-            })
-
-        }, {capture: true});
-        console.log('DashboardController Initialized');
+            ...options
+        }
+        this.buildChart('shipmentChart', gData, options)
     }
 
     buildChart(name, data, options) {
