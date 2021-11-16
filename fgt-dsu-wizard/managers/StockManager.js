@@ -5,6 +5,7 @@ const Stock = require('../model/Stock');
 const Batch = require('../model/Batch');
 const StockStatus = require('../model/StockStatus');
 const StockManagementService = require("../services/StockManagementService");
+const Page = require('../../pdm-dsu-toolkit/model/page')
 
 /**
  * Stock Manager Class
@@ -381,6 +382,55 @@ class StockManager extends Manager{
                 name: value.name,
                 batches: value.stock
             }
+        });
+    }
+
+    /**
+     * Returns a page object
+     * @param {number} itemsPerPage
+     * @param {number} page
+     * @param {string} keyword
+     * @param {string} sort
+     * @param {boolean} readDSU
+     * @param {function(err, Page)}callback
+     */
+     getPage(itemsPerPage, page, keyword, sort, readDSU, callback){
+        const self = this;
+        page = page || 1;
+
+        const options = {
+            query: keyword ? self._keywordToQuery(keyword) : ['__timestamp > 0', 'quantity > 0'],
+            sort: sort || "dsc",
+            limit: undefined
+        }
+
+        const toPage = function(currentPage, totalPages, items){
+            return new Page({
+                itemsPerPage: itemsPerPage,
+                currentPage: currentPage,
+                totalPages: totalPages,
+                items: items || []
+            });
+        }
+
+        const paginate = function(items){
+            const totalPages = Math.floor(items.length / itemsPerPage) + (items.length % itemsPerPage === 0 ? 0 : 1);
+            let startIndex = (page - 1) * itemsPerPage;
+            startIndex = startIndex === 0 ? startIndex : startIndex - 1;
+            const endIndex = startIndex + itemsPerPage >= items.length ? undefined: startIndex + itemsPerPage;
+            const sliced = items.slice(startIndex, endIndex);
+            return toPage(page, totalPages, sliced);
+        }
+
+        self.getAll(readDSU, options, (err, records) => {
+           if (err)
+               return self._err(`Could not retrieve records to page`, err, callback);
+            if (records.length === 0)
+                return callback(undefined, toPage(0, 0, records));
+           if (records.length <= itemsPerPage)
+               return callback(undefined, toPage(1, 1, records));
+           const page = paginate(records);
+           callback(undefined, page);
         });
     }
 }
