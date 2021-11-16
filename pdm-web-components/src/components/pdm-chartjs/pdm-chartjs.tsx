@@ -32,8 +32,17 @@ export class PdmChartjs {
   @Prop({attribute: 'card-sub-title'}) cardSubTitle: string = 'sub-title';
   @Prop({attribute: 'show-data-table'}) showDataTable: boolean = false;
 
+  @Prop({attribute: 'table-data-structure', mutable: true}) tableDataStruct: string = '[]'
+  @State() _tableDataStruct: any[];
+
+  @Watch('tableDataStruct')
+  watchTableDataStruct(newStruct: string) {
+    this._tableDataStruct = this._parse(newStruct, [])
+  }
+
   @Prop({attribute: 'data'}) data: string = '[]';
-  @State() _data: any;
+  @State() _data: any[];
+
 
   @Watch('data')
   watchData(newData: string) {
@@ -83,25 +92,24 @@ export class PdmChartjs {
     if (!this.showDataTable)
       return [];
 
-    let rows = [];
-    if (this._filteredTableRows || this._filteredTableRows.length > 0)
-      rows = this._filteredTableRows.map((tableShipment) => {
-        return (
-          <ion-row>
-            <ion-col size="3"><h6>{tableShipment.shipmentId}</h6></ion-col>
-            <ion-col size="4"><h6>{tableShipment.requesterId}</h6></ion-col>
-            <ion-col size="3"><h6>{tableShipment.status}</h6></ion-col>
-            <ion-col size="2"><h6>{tableShipment.days}</h6></ion-col>
-          </ion-row>
-        )
+    const self = this;
+    const header = this._tableDataStruct.map((col => {
+      return (<ion-col {...col.props}><h6><strong>{col.label}</strong></h6></ion-col>)
+    }))
+
+    let rows = [<div>No data available</div>];
+    if (this._filteredTableRows.length > 0) {
+      rows = this._filteredTableRows.map((shipmentRow) => {
+        const cols = self._tableDataStruct.map((col) => {
+          return (<ion-col {...col.props}><h6>{shipmentRow[col.id]}</h6></ion-col>)
+        })
+        return (<ion-row>{...cols}</ion-row>)
       })
+    }
 
     return [
       <ion-row className="ion-margin-top">
-        <ion-col size="3"><h6><strong>#</strong></h6></ion-col>
-        <ion-col size="4"><h6><strong>Requester</strong></h6></ion-col>
-        <ion-col size="3"><h6><strong>Status</strong></h6></ion-col>
-        <ion-col size="2"><h6><strong>Last Update</strong></h6></ion-col>
+        {...header}
       </ion-row>,
       ...rows
     ]
@@ -111,6 +119,7 @@ export class PdmChartjs {
     this.watchData(this.data);
     this.watchOptions(this.options);
     this.watchTableDataSrc(this.tableDataSrc);
+    this.watchTableDataStruct(this.tableDataStruct)
   }
 
   render() {

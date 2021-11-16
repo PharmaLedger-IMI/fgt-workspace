@@ -9,7 +9,12 @@ export default class DashboardController extends LocalizedController {
         stockChartOptions: '',
         shipmentChartData: '',
         shipmentChartOptions: '',
-        shipmentsChartTable: ''
+        shipmentsTableStruct: JSON.stringify([
+            {id: 'shipmentId', label: '#', props: {size: '3'}},
+            {id: 'requesterId', label: 'Requester', props: {size: '4'}},
+            {id: 'status', label: 'Status', props: {size: '3'}},
+            {id: 'days', label: 'Last Update', props: {size: '2'}},
+        ])
     });
 
     constructor(...args) {
