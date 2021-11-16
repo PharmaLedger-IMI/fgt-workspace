@@ -41,13 +41,15 @@ const confirmWithStock = function(stockManager, shipment, stockObj, callback){
                 result = result || {};
                 result[gtin] = result[gtin] || [];
 
+                let myQuantity = quantity < b.getQuantity() ? quantity : b.quantity;
+            
                 const resultBatch = new Batch(b);
                 if (stockManager.serialization){
-                    resultBatch.serialNumbers = resultBatch.serialNumbers.splice(0, Math.min(quantity, b.getQuantity()));
-                    resultBatch.quantity = resultBatch.getQuantity();
+                    resultBatch.serialNumbers = resultBatch.serialNumbers.splice(0, myQuantity);
+                    resultBatch.quantity = myQuantity;
                 } else {
                     resultBatch.serialNumbers = undefined;
-                    resultBatch.quantity = Math.min(quantity, b.getQuantity());
+                    resultBatch.quantity = myQuantity;
                 }
 
                 result[gtin].push(resultBatch);
