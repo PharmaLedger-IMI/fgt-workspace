@@ -1,4 +1,3 @@
-
 const Manager = require('./Manager')
 const { _err } = require('../services/utils')
 const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE } = require('../constants');
@@ -122,11 +121,7 @@ class MessageManager extends Manager{
         this._listeners[api].push(onNewApiMsgListener);
         const self = this;
         console.log(`registering a new listener on ${api}`);
-        self.getAll(true, {
-            query: [
-                `api like /${api}/g`
-            ]
-        }, (err, messages) => {
+        self.getAll(api, (err, messages) => {
             if (err)
                 return console.log(`Could not list messages from Inbox, api: ${api}`);
             if (!messages || !messages.length)
@@ -193,6 +188,26 @@ class MessageManager extends Manager{
             this.query(MESSAGE_TABLE, "__timestamp > 0", undefined, undefined, callback);
         }
     }
+    /**
+* Lists all registered items according to query options provided
+* @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
+* @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
+* @param {function(err, object[])} callback
+*/
+getAll(api, callback) {
+    let self = this;
+    self.query('messages', 'api == ' + api, 'dsc', undefined, (err, records) =>{
+        if (err)
+            return self._err(`Could not perform query`, err, callback);
+        self._iterator(records.map(r => r.message), self._getDSUInfo.bind(self), (err, result) => {
+            if (err)
+                return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
+            console.log(`Parsed ${result.length} ${self._getTableName()}s`);
+
+            callback(undefined, result);
+        });
+    });
+}
 
     _startMessageListener(did){
         let self = this;
