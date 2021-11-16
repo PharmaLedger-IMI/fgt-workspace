@@ -140,11 +140,10 @@ export class ManagedProductListItem {
       return (<ion-skeleton-text slot="content" animated></ion-skeleton-text>);
       
     const displayedBatches = this.batches.filter( (batch) => batch.quantity > 0);
-    this.batches = displayedBatches;
     
     return(
       <pdm-item-organizer slot="content"  component-name="batch-chip"
-                          component-props={JSON.stringify(this.batches.map(batch => ({
+                          component-props={JSON.stringify(displayedBatches.map(batch => ({
                             "gtin-batch": this.stock.gtin + '-' + batch.batchNumber,
                             "quantity": (new Batch(batch)).getQuantity(),
                             "status": batch.batchStatus.status,
