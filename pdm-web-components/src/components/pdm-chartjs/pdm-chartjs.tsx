@@ -12,12 +12,13 @@ Chart.register(...registerables);
 export class PdmChartjs {
   private chart: any;
   private _parse = (strObj: string, res: any): any => {
-    if (strObj) {
-      try {
-        res = JSON.parse(strObj)
-      } catch (err) {
-        console.log('parse error err=', err)
-      }
+    if (strObj.startsWith('@') || !strObj)
+      return res;
+
+    try {
+      res = JSON.parse(strObj)
+    } catch (err) {
+      console.log('parse error err=', err)
     }
     return res;
   }
