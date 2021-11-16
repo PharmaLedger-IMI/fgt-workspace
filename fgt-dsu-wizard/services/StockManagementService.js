@@ -28,19 +28,11 @@ function StockManagementService(requesterId, stockManager, shipmentLineManager, 
 
     /**
      * Stock taking from ShipmentLines
-     * @param gtin
-     * @param batch
+     * @param query
      * @param callback
      */
-    const getStockFromPartners = (gtin, batch, callback) => {
-        shipmentLineManager.getAll(true, {
-            query: [
-                '__timestamp > 0',
-                `gtin == ${gtin}`,
-                `batch == ${batch}`
-            ],
-            sort: 'dsc'
-        }, (err, shipmentLines) => {
+    const getStockFromPartners = (query, callback) => {
+        shipmentLineManager.getAll(true, {query, sort: 'dsc'}, (err, shipmentLines) => {
             if (err)
                 callback(err)
             const partnersStock = shipmentLines.reduce((accum, currShipmentLine) => {
@@ -63,36 +55,37 @@ function StockManagementService(requesterId, stockManager, shipmentLineManager, 
      * Stock taking from ShipmentLines and Receipts
      * @param { string }gtin
      * @param {string }batch
-     * @param { function(err, res )} callback
+     * @param { function(err, {results})} callback
      */
     this.traceStockManagement = function (gtin, batch, callback) {
+        if (!callback) {
+            callback = batch;
+            batch = undefined;
+        }
+
+        let query = ['__timestamp > 0', `gtin == ${gtin}`];
+        query = batch ? [...query, `batch == ${batch}`] : [...query];
+
         stockManager.getOne(gtin, true, (err, stock) => {
             if (err)
                 callback(err)
             const {batches, ...stockInfo} = stock;
-            const batchStock = batches.filter((_batch) => _batch.batchNumber === batch)[0];
+            let batchStock = {batchNumber: undefined}
+            if (batch)
+                batchStock = batches.find((_batch) => batch && _batch.batchNumber === batch);
 
-            getStockFromPartners(gtin, batch, (err, partnersStock) => {
+            getStockFromPartners(query, (err, partnersStock) => {
                 if (err)
                     callback(err)
 
                 Object.keys(partnersStock).forEach((sellerId) => {
-                    receiptManager.getAll(true, {
-                        query: [
-                            '__timestamp > 0',
-                            `gtin == ${gtin}`,
-                            `batchNumber == ${batch}`,
-                            `sellerId == ${sellerId}`
-                        ],
-                        sort: 'dsc'
-                    }, (err, receipts) => {
+                    receiptManager.getAll(true, {query: [...query, `sellerId == ${sellerId}`], sort: 'dsc'}, (err, receipts) => {
                         if (err)
                             callback(err)
-
                         partnersStock[sellerId] = removeFromStock(partnersStock[sellerId], receipts.length);
                     })
                 })
-                callback(undefined, {...stockInfo, ...batchStock, partnersStock})
+                callback(undefined, {stock: stockInfo, batch: batchStock, partnersStock})
             })
         })
     }
