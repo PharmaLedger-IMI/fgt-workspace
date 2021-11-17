@@ -1,5 +1,4 @@
 <webc-container controller="DashboardController">
-    <ion-title>{{ @welcome }}</ion-title>
 
     <div>
         <ion-row class="ion-margin">
@@ -10,7 +9,7 @@
                             <pdm-chartjs
                                     container-id="sale-chart"
                                     card-title="Most Sold Products"
-                                    card-sub-title="Most sold products of last 3 months"
+                                    card-sub-title="Most sold products by supplier according to stock traceability."
                                     data="@saleChartData"
                                     options="@saleChartOptions"
                             >

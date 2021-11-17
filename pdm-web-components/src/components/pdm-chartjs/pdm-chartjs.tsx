@@ -124,7 +124,6 @@ export class PdmChartjs {
   }
 
   render() {
-    console.log('# pdm-chartjs render()')
     return (
       <Host>
         <div>

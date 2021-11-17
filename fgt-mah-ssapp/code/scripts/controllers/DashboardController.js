@@ -31,13 +31,6 @@ export default class DashboardController extends LocalizedController {
         this.stockManager = wizard.Managers.getStockManager(participantManager);
 
         const self = this;
-        // self.updateSaleChart({
-        //     labels: ["Diflucan", "Depo Medrol", "Ventolin", "Benlysta", "Fiasp", "Novolin", "Adalat"],
-        //     total: [86,114,106,106,107,111,133],
-        //     mahToWhs: [70,90,44,60,83,90,100],
-        //     whsToPha: [10,21,60,44,17,21,17],
-        //     phaToFinalUser: [6,3,2,2,7,0,16]
-        // })
 
         self.updateStockChart({
             labels: ["Diflucan", "Depo Medrol", "Ventolin", "Benlysta", "Fiasp", "Novolin", "Adalat"],
@@ -54,7 +47,11 @@ export default class DashboardController extends LocalizedController {
             evt.preventDefault();
             evt.stopImmediatePropagation();
 
+            // update sale chart
             this.stockManager.getAll(true, async (err, products) => {
+                if(err)
+                    console.error(err)
+
                 let index = 0;
                 products.reduce((accum, product) => {
                     const {gtin, name} = product;
