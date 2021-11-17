@@ -2,24 +2,8 @@ const { INFO_PATH , DEFAULT_QUERY_OPTIONS } = require('../constants');
 
 const {functionCallIterator} = require('../services/utils');
 
-/**
- * Util class to handle pagination
- * @class Page
- * @memberOf Managers
- */
-class Page {
-    itemsPerPage = 10;
-    currentPage = 1;
-    totalPages = undefined;
-    items = [];
+const Page = require('../model/page');
 
-    constructor(page) {
-        if (typeof page !== undefined)
-            for (let prop in page)
-                if (page.hasOwnProperty(prop))
-                    this[prop] = page[prop];
-    }
-}
 
 /**
  * Manager Classes in this context should do the bridge between the controllers
@@ -379,7 +363,7 @@ class Manager{
      * @private
      */
     _iterateMessageRecords(records, callback) {
-        let self = this;
+        let self = this;Meeting in "General" 
         if (!records || !Array.isArray(records))
             return callback(`Message records ${records} is not an array!`);
         if (records.length <= 0)
