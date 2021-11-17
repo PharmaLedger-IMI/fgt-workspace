@@ -5,7 +5,7 @@ const Stock = require('../model/Stock');
 const Batch = require('../model/Batch');
 const StockStatus = require('../model/StockStatus');
 const StockManagementService = require("../services/StockManagementService");
-const Page = require('../../pdm-dsu-toolkit/model/page')
+const Page = require('../../pdm-dsu-toolkit/managers/Page')
 
 /**
  * Stock Manager Class

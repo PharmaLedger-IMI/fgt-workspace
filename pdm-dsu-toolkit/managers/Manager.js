@@ -2,7 +2,7 @@ const { INFO_PATH , DEFAULT_QUERY_OPTIONS } = require('../constants');
 
 const {functionCallIterator} = require('../services/utils');
 
-const Page = require('../model/page');
+const Page = require('./Page');
 
 
 /**
