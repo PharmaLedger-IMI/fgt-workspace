@@ -28,19 +28,16 @@ export default class DashboardController extends LocalizedController {
         const wizard = require('wizard');
         const participantManager = wizard.Managers.getParticipantManager();
         this.issuedShipmentManager = wizard.Managers.getIssuedShipmentManager(participantManager);
-        this.receivedShipmentManager = wizard.Managers.getReceivedShipmentManager(participantManager);
-        this.issuedShipmentManager.bindController(this);
-        this.receivedShipmentManager.bindController(this);
         this.stockManager = wizard.Managers.getStockManager(participantManager);
 
         const self = this;
-        self.updateSaleChart({
-            labels: ["Diflucan", "Depo Medrol", "Ventolin", "Benlysta", "Fiasp", "Novolin", "Adalat"],
-            total: [86,114,106,106,107,111,133],
-            mahToWhs: [70,90,44,60,83,90,100],
-            whsToPha: [10,21,60,44,17,21,17],
-            phaToFinalUser: [6,3,2,2,7,0,16]
-        })
+        // self.updateSaleChart({
+        //     labels: ["Diflucan", "Depo Medrol", "Ventolin", "Benlysta", "Fiasp", "Novolin", "Adalat"],
+        //     total: [86,114,106,106,107,111,133],
+        //     mahToWhs: [70,90,44,60,83,90,100],
+        //     whsToPha: [10,21,60,44,17,21,17],
+        //     phaToFinalUser: [6,3,2,2,7,0,16]
+        // })
 
         self.updateStockChart({
             labels: ["Diflucan", "Depo Medrol", "Ventolin", "Benlysta", "Fiasp", "Novolin", "Adalat"],
@@ -56,6 +53,31 @@ export default class DashboardController extends LocalizedController {
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
+
+            this.stockManager.getAll(true, async (err, products) => {
+                let index = 0;
+                products.reduce((accum, product) => {
+                    const {gtin, name} = product;
+                    accum[name] = {x: name, gtin: gtin, mah: 0, whs: 0, pha: 0, total: 0};
+                    self.stockManager.getStockTraceability(gtin, {manufName: "MAH135315170"}, (err, stockTrace) => {
+                        const {partnersStock} = stockTrace;
+                        Object.keys(partnersStock).map(key => {
+                            const value = partnersStock[key];
+                            if (key.startsWith('PHA')) {
+                                accum[name].pha += value.dispatched
+                            } else if (key.startsWith('WHS')) {
+                                accum[name].mah += (value.inStock + value.dispatched)
+                                accum[name].whs += value.dispatched
+                            }
+                        })
+                        accum[name].total = accum[name].mah + accum[name].whs + accum[name].pha;
+                        index += 1
+                        if (index === products.length)
+                            this.updateSaleChart({data: Object.values(accum)})
+                    })
+                    return accum;
+                }, {})
+            })
 
             // update stock chart
             this.stockManager.getAll(true, (err, stock) => {
@@ -123,10 +145,6 @@ export default class DashboardController extends LocalizedController {
                     return accum;
                 }, shipments)
 
-                console.log('$$$ issuedShipments=', issuedShipments)
-                console.log('$$$ shipmentsQtyByStatus=', shipmentsQtyByStatus)
-                console.log('$$$ shipmentsChartTable=', shipmentsChartTable)
-
                 this.updateShipmentsChart({
                     labels: Object.keys(shipmentsQtyByStatus),
                     shipmentsQtyByStatus: Object.values(shipmentsQtyByStatus)
@@ -139,37 +157,59 @@ export default class DashboardController extends LocalizedController {
     }
 
     updateSaleChart(metadata, options) {
+        const labels = []
+        const sortedAndFiltered = metadata.data.sort((a, b) => {
+            if (a.total < b.total) return -1;
+            if (a.total > b.total ) return 1;
+            return 0;
+        }).filter((v) => {
+            if (v.total > 0)  {
+                labels.push(v.x)
+                return v.total > 0;
+            }
+        })
+
         const gData = {
-            labels: metadata.labels,
-            datasets: [{
-                data: metadata.total,
-                label: "Total",
-                borderColor: "#001219",
-                backgroundColor: "#001219",
-                borderWidth:2,
-                type: 'line',
-                fill:false
-            }, {
-                data: metadata.mahToWhs,
-                label: "MAH -> WHS",
-                backgroundColor: "#005f73",
-            }, {
-                data: metadata.whsToPha, //[10,21,60,44,17,21,17],
-                label: "WHS -> PHA",
-                backgroundColor:"#0a9396",
-            }, {
-                data: metadata.phaToFinalUser, // [6,3,2,2,7,0,16],
-                label: "PHA -> USER",
-                backgroundColor:"#94d2bd",
-            }]
+            labels: labels,
+            datasets: [
+                {
+                    data: sortedAndFiltered,
+                    label: "Total",
+                    borderColor: "#001219",
+                    backgroundColor: "#001219",
+                    borderWidth:2,
+                    type: 'line',
+                    fill:false,
+                    parsing: {
+                        yAxisKey: 'total'
+                    }
+                },
+                {
+                    label: 'MAH',
+                    data: sortedAndFiltered,
+                    backgroundColor: "#005f73",
+                    parsing: {
+                        yAxisKey: 'mah'
+                    }
+                },
+                {
+                    label: 'WHS',
+                    data: sortedAndFiltered,
+                    backgroundColor:"#0a9396",
+                    parsing: {
+                        yAxisKey: 'whs'
+                    }
+                },
+                {
+                    label: 'PHA',
+                    data: sortedAndFiltered,
+                    backgroundColor:"#94d2bd",
+                    parsing: {
+                        yAxisKey: 'pha'
+                    }
+                }]
         }
-        options = {
-            plugins: {
-                title: { display: false },
-                legend: { position: 'bottom'}
-            },
-            ...options
-        }
+        options = {...options}
         this.buildChart('saleChart', gData, options)
     }
 
