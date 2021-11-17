@@ -399,7 +399,7 @@ class StockManager extends Manager{
         page = page || 1;
 
         const options = {
-            query: keyword ? self._keywordToQuery(keyword) : ['quantity > 0'],
+            query: keyword ? self._keywordToQuery(keyword) : ["__timestamp > 0", "quantity > 0"],
             sort: sort || "dsc",
             limit: undefined
         }
