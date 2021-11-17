@@ -197,10 +197,14 @@ export default class DashboardController extends LocalizedController {
                     backgroundColor:"#94d2bd",
                     parsing: {
                         yAxisKey: 'pha'
-                    }
-                }]
+                    },
+                }
+            ]
         }
-        options = {...options}
+        options = {
+            plugins: {legend: { position: 'bottom'}},
+            ...options
+        }
         this.buildChart('saleChart', gData, options)
     }
 

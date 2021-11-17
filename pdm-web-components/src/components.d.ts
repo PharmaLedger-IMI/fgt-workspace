@@ -343,6 +343,17 @@ export namespace Components {
         "present": (props?: any, callback?: any) => Promise<any>;
         "scannerMode"?: string;
     }
+    interface PdmChartjs {
+        "cardSubTitle": string;
+        "cardTitle": string;
+        "containerId": string;
+        "data": string;
+        "options": string;
+        "showDataTable": boolean;
+        "tableDataSrc": string;
+        "tableDataStruct": string;
+        "type": string;
+    }
     interface PdmIonTable {
         /**
           * the querying attribute name so the items can query their own value
@@ -647,6 +658,12 @@ declare global {
         prototype: HTMLPdmBarcodeScannerControllerElement;
         new (): HTMLPdmBarcodeScannerControllerElement;
     };
+    interface HTMLPdmChartjsElement extends Components.PdmChartjs, HTMLStencilElement {
+    }
+    var HTMLPdmChartjsElement: {
+        prototype: HTMLPdmChartjsElement;
+        new (): HTMLPdmChartjsElement;
+    };
     interface HTMLPdmIonTableElement extends Components.PdmIonTable, HTMLStencilElement {
     }
     var HTMLPdmIonTableElement: {
@@ -744,6 +761,7 @@ declare global {
         "multi-spinner": HTMLMultiSpinnerElement;
         "pdm-barcode-scanner": HTMLPdmBarcodeScannerElement;
         "pdm-barcode-scanner-controller": HTMLPdmBarcodeScannerControllerElement;
+        "pdm-chartjs": HTMLPdmChartjsElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "pdm-item-organizer": HTMLPdmItemOrganizerElement;
         "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
@@ -1257,6 +1275,17 @@ declare namespace LocalJSX {
         "barcodeTitle"?: string;
         "scannerMode"?: string;
     }
+    interface PdmChartjs {
+        "cardSubTitle"?: string;
+        "cardTitle"?: string;
+        "containerId"?: string;
+        "data"?: string;
+        "options"?: string;
+        "showDataTable"?: boolean;
+        "tableDataSrc"?: string;
+        "tableDataStruct"?: string;
+        "type"?: string;
+    }
     interface PdmIonTable {
         /**
           * the querying attribute name so the items can query their own value
@@ -1426,6 +1455,7 @@ declare namespace LocalJSX {
         "multi-spinner": MultiSpinner;
         "pdm-barcode-scanner": PdmBarcodeScanner;
         "pdm-barcode-scanner-controller": PdmBarcodeScannerController;
+        "pdm-chartjs": PdmChartjs;
         "pdm-ion-table": PdmIonTable;
         "pdm-item-organizer": PdmItemOrganizer;
         "pdm-ssapp-loader": PdmSsappLoader;
@@ -1473,6 +1503,7 @@ declare module "@stencil/core" {
             "multi-spinner": LocalJSX.MultiSpinner & JSXBase.HTMLAttributes<HTMLMultiSpinnerElement>;
             "pdm-barcode-scanner": LocalJSX.PdmBarcodeScanner & JSXBase.HTMLAttributes<HTMLPdmBarcodeScannerElement>;
             "pdm-barcode-scanner-controller": LocalJSX.PdmBarcodeScannerController & JSXBase.HTMLAttributes<HTMLPdmBarcodeScannerControllerElement>;
+            "pdm-chartjs": LocalJSX.PdmChartjs & JSXBase.HTMLAttributes<HTMLPdmChartjsElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "pdm-item-organizer": LocalJSX.PdmItemOrganizer & JSXBase.HTMLAttributes<HTMLPdmItemOrganizerElement>;
             "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;
