@@ -29,7 +29,7 @@ const Page = require('../../pdm-dsu-toolkit/model/page')
  */
 class StockManager extends Manager{
     constructor(participantManager, serialization, aggregation, callback) {
-        super(participantManager, DB.stock, ['name', 'gtin', 'manufName'], callback || aggregation);
+        super(participantManager, DB.stock, ['name', 'gtin', 'manufName', 'quantity'], callback || aggregation);
         this.serialization = serialization;
         this.aggregation = callback ? aggregation : false;
         this.productService = undefined;
@@ -399,7 +399,7 @@ class StockManager extends Manager{
         page = page || 1;
 
         const options = {
-            query: keyword ? self._keywordToQuery(keyword) : ['__timestamp > 0', 'quantity > 0'],
+            query: keyword ? self._keywordToQuery(keyword) : ['quantity > 0'],
             sort: sort || "dsc",
             limit: undefined
         }
