@@ -1,5 +1,12 @@
 <webc-container controller="DashboardController">
 
+    <ion-row class="ion-margin-horizontal ion-align-items-center ion-justify-content-end">
+        <small class="text-muted ion-margin-horizontal">Last Update: {{@lastUpdate}}</small>
+        <ion-button data-tag="update-dashboard"  color="primary" size="small">
+            <ion-icon name="refresh-outline"></ion-icon>
+        </ion-button>
+    </ion-row>
+
     <div>
         <ion-row class="ion-margin">
             <ion-grid>
