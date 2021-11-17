@@ -22,6 +22,7 @@
 
  - [managed-batch-list-item](../managed-batch-list-item)
  - [managed-individual-product-list-item](../managed-individual-product-list-item)
+ - [managed-notifications-list-item](../managed-notifications-list-item)
  - [managed-order-list-item](../managed-order-list-item)
  - [managed-product-list-item](../managed-product-list-item)
  - [managed-sale-list-item](../managed-sale-list-item)
@@ -34,6 +35,7 @@
 graph TD;
   managed-batch-list-item --> list-item-layout
   managed-individual-product-list-item --> list-item-layout
+  managed-notifications-list-item --> list-item-layout
   managed-order-list-item --> list-item-layout
   managed-product-list-item --> list-item-layout
   managed-sale-list-item --> list-item-layout

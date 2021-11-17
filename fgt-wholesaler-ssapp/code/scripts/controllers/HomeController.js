@@ -24,7 +24,7 @@ export default class HomeController extends BaseHomeController{
 
         self.on(EVENT_NAVIGATE_TAB, (evt)=> {
             let notification = evt.detail;
-            self._resetNotifications.call(self, notification);
+            self._handleCurrentPage.call(self, notification);
             evt.preventDefault();
             evt.stopImmediatePropagation();
             self._navigateToTab.call(self, evt.detail);
@@ -33,6 +33,9 @@ export default class HomeController extends BaseHomeController{
 
     _handleNotifications(notification){
         const self = this;
+
+        if(self.model.currentPage === 'tab-stock')
+            return;
 
         if(notification.subject === 'batches'){
             let currentNum = Number(self.model.notifications.stockNotification);
@@ -44,13 +47,19 @@ export default class HomeController extends BaseHomeController{
         }
     }
 
-    _resetNotifications(notification) {
+    _handleCurrentPage(notification){
+        const self = this;
+        self.model.currentPage = notification.tab;
+        self._resetNotifications.call(self, self.model.currentPage);
+    }
+
+    _resetNotifications(currentPage) {
         const self = this;
 
-        if(!notification.tab)
+        if(!currentPage)
             return
 
-        if(notification.tab === 'tab-stock')
+        if(currentPage === 'tab-stock')
             self.model.notifications.stockNotification = "0";           
     }
 }
