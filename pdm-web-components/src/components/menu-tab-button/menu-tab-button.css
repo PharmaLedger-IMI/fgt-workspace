@@ -55,6 +55,12 @@ ion-icon.menu-icon {
   vertical-align: middle;
 }
 
+ion-badge.menu-badge {
+  position: absolute;
+  top: 0;
+  left: 50%;
+}
+
 .menu-text{
   display: inline-block;
   vertical-align: middle;

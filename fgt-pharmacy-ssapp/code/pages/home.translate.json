@@ -28,6 +28,7 @@
   },
   "welcome": "Welcome back",
   "menu": {
+    "notifications": "Notifications",
     "dashboard": "Dashboard",
     "issuedOrders": "Issued Orders",
     "receivedShipments": "Received Shipments",
@@ -340,5 +341,10 @@
   "dashboard": {
     "title": "Dashboard",
     "none": "There are no pending orders"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "notification": "0",
+    "stockNotification": "0"  
   }
 }
