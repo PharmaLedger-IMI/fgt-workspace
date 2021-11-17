@@ -84,6 +84,13 @@
                                 </div>
                             </ion-content>
                         </ion-tab>
+                        <ion-tab tab="tab-notifications">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <div data-if="@identified">
+                                    <webc-template template="notifications" disable-container></webc-template>
+                                </div>
+                            </ion-content>
+                        </ion-tab>
                         <!-- Invisible tabs -->
                         <ion-tab tab="tab-order">
                             <ion-content class="tab-content" overflow-scroll="true">
