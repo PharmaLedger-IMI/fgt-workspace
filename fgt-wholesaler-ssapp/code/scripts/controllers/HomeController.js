@@ -29,6 +29,16 @@ export default class HomeController extends BaseHomeController{
             evt.stopImmediatePropagation();
             self._navigateToTab.call(self, evt.detail);
         }, {capture: true})
+
+       
+    }
+
+    _handleIonChange(evt){
+        const self = this;
+
+        self._handleCurrentPage(evt.detail);
+        self._handleNotifications(evt.detail);
+        super._handleIonChange(evt);
     }
 
     _handleNotifications(notification){
