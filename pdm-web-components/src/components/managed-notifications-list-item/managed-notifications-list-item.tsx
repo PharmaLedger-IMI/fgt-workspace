@@ -94,8 +94,14 @@ export class ManagedNotificationListItem {
       if (!self.notification.body.batch.batchStatus.log)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
 
-      const statusInfo = self.notification.body.batch.batchStatus.log.pop();
-      return statusInfo;
+      const statusInfo = self.notification.body.batch.batchStatus.log.pop().split(' ');
+      const finalMessage = `${new Date(Number(statusInfo[1])).toString().split(' ').splice(1,4).join(' ')} - 
+                            ${statusInfo[0].charAt(0).toUpperCase()}${statusInfo[0].slice(1)} 
+                            ${statusInfo[2]} 
+                            batch: ${self.notification.body.batch.batchNumber} 
+                            ${statusInfo.splice(3).join(' ')}`
+    
+      return finalMessage;
     }
   
   return(
