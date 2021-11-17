@@ -43,13 +43,28 @@ export default class DashboardController extends LocalizedController {
     updateAllCharts() {
         const self = this;
         self.model.lastUpdate = new Date().toLocaleString()
-        // update sale chart
-        this.stockManager.getAll(true, async (err, products) => {
+
+        // update sale and stock chart
+        this.stockManager.getAll(true, (err, stock) => {
             if(err)
                 console.error(err)
+            const stockManagement = stock.reduce((accum, product) => {
+                accum[product.name] = product.quantity
+                return accum;
+            }, {})
+            const sortStockManagement = Object.entries(stockManagement)
+                .sort(([,a],[,b]) => a-b)
+                .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
 
+            self.updateStockChart({
+                labels: Object.keys(sortStockManagement),
+                monthlyAvg: Object.values(sortStockManagement).map(v => (Math.random() + 0.5) * v),
+                productsInStock: Object.values(sortStockManagement)
+            })
+
+            // # sale chart
             let index = 0;
-            products.reduce((accum, product) => {
+            stock.reduce((accum, product) => {
                 const {gtin, name} = product;
                 accum[name] = {x: name, gtin: gtin, mah: 0, whs: 0, pha: 0, total: 0};
                 self.stockManager.getStockTraceability(gtin, (err, stockTrace) => {
@@ -68,30 +83,11 @@ export default class DashboardController extends LocalizedController {
                     })
                     accum[name].total = accum[name].mah + accum[name].whs + accum[name].pha;
                     index += 1
-                    if (index === products.length)
+                    if (index === stock.length)
                         this.updateSaleChart({data: Object.values(accum)})
                 })
                 return accum;
             }, {})
-        })
-
-        // update stock chart
-        this.stockManager.getAll(true, (err, stock) => {
-            if(err)
-                console.error(err)
-            const stockManagement = stock.reduce((accum, product) => {
-                accum[product.name] = product.quantity
-                return accum;
-            }, {})
-            const sortStockManagement = Object.entries(stockManagement)
-                .sort(([,a],[,b]) => a-b)
-                .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
-
-            self.updateStockChart({
-                labels: Object.keys(sortStockManagement),
-                monthlyAvg: Object.values(sortStockManagement).map(v => (Math.random() + 0.5) * v),
-                productsInStock: Object.values(sortStockManagement)
-            })
         })
 
         // update shipment chart
