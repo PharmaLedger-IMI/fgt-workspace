@@ -363,7 +363,7 @@ class Manager{
      * @private
      */
     _iterateMessageRecords(records, callback) {
-        let self = this;Meeting in "General" 
+        let self = this; 
         if (!records || !Array.isArray(records))
             return callback(`Message records ${records} is not an array!`);
         if (records.length <= 0)
