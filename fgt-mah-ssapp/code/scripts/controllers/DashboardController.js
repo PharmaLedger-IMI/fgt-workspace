@@ -122,7 +122,7 @@ export default class DashboardController extends LocalizedController {
                         const hours = Math.floor(delta / 3600) % 24;
                         delta -= (hours * 3600);
                         const min = Math.floor(delta / 60) % 60;
-                        return (days > 0 ? `${days}d` : '') + (hours > 0 ? `${hours}h` : '') + (min > 0 ? `${min}m` : '');
+                        return (days > 0 ? `${days}d` : '') + (hours > 0 ? `${hours}h` : '') + (min > 0 ? `${min}m` : '') || 'now';
                     }
 
                     const lastUpdate = curr.status.log[curr.status.log.length - 1]; // in timestamp
