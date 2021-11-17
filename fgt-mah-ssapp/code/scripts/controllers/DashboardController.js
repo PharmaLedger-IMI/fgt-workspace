@@ -52,7 +52,10 @@ export default class DashboardController extends LocalizedController {
             products.reduce((accum, product) => {
                 const {gtin, name} = product;
                 accum[name] = {x: name, gtin: gtin, mah: 0, whs: 0, pha: 0, total: 0};
-                self.stockManager.getStockTraceability(gtin, {manufName: "MAH135315170"}, (err, stockTrace) => {
+                self.stockManager.getStockTraceability(gtin, (err, stockTrace) => {
+                    if (err)
+                        console.log(err)
+
                     const {partnersStock} = stockTrace;
                     Object.keys(partnersStock).map(key => {
                         const value = partnersStock[key];
