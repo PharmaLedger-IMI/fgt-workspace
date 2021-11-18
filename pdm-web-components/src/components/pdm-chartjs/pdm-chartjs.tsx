@@ -76,8 +76,8 @@ export class PdmChartjs {
       const id = points[0];
       const label = this.chart.data.labels[id.index];
       const value = this.chart.data.datasets[id.datasetIndex].data[id.index];
-      console.log('#chart click=', this.containerId, ' label=', label, ' value=', value, ' evt=', id)
-      if (this.showDataTable) {
+      console.log('# chartClick $valid=', id.element.active, ' $chart=', this.containerId, ' $label=', label, ' $value=', value, ' $evt=', id)
+      if (this.showDataTable && id.element.active) {
         this._filteredTableRows = this._tableDataSrc.filter((v) => {
           return v.status === label;
         })
