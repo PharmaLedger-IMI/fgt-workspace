@@ -124,12 +124,23 @@ export class PdmChartjs {
   }
 
   render() {
+    const loading = () => {
+      if (this._data.length === 0)
+        return (<ion-spinner name="lines" id="spinner"> </ion-spinner>)
+      return;
+    }
+
     return (
       <Host>
         <div>
           <ion-card>
             <ion-card-header>
-              <ion-card-title>{this.cardTitle}</ion-card-title>
+              <ion-card-title>
+                <ion-row>
+                  <ion-col class="ion-align-self-start" size="auto">{this.cardTitle}</ion-col>
+                  <ion-col class="ion-align-self-end">{loading()}</ion-col>
+                </ion-row>
+              </ion-card-title>
               <ion-card-subtitle>{this.cardSubTitle}</ion-card-subtitle>
             </ion-card-header>
 
