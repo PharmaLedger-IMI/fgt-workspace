@@ -45,7 +45,7 @@ export default class DashboardController extends LocalizedController {
         self.model.lastUpdate = new Date().toLocaleString()
 
         // update sale and stock chart
-        this.stockManager.getAll(true, (err, stock) => {
+        self.stockManager.getAll(true, (err, stock) => {
             if(err)
                 return console.error(err)
             const stockManagement = stock.reduce((accum, product) => {
@@ -100,25 +100,16 @@ export default class DashboardController extends LocalizedController {
             if (err)
                 return console.error(err)
 
-            const statusDictionary = {
-                created: 'Created',
-                hold: 'on Hold',
-                pickup: 'for Pickup',
-                transit: 'in Transit',
-                delivered: 'Delivered',
-                received: 'Pending Conf.',
-                recall: 'Recall'
-            }
             const shipmentsChartTable = []
             // initialize with zero for each status
-            const shipments = Object.values(statusDictionary).reduce((acc, statusValue) => {
+            const shipmentsInitialQty = Object.values(self.model.allowedShipmentStatuses).reduce((acc, statusValue) => {
                 acc[statusValue] = 0;
                 return acc
             }, {})
             const shipmentsQtyByStatus = issuedShipments.reduce((accum, curr) => {
-                // if confirmed, the order has been completed
-                if (curr.status.status !== 'confirmed') {
-                    const statusLabel = statusDictionary[curr.status.status]
+                // status confirmed is not in dictionary, because in this case, the order/shipment has been completed
+                if (self.model.allowedShipmentStatuses.hasOwnProperty(curr.status.status)) {
+                    const statusLabel = self.model.allowedShipmentStatuses[curr.status.status]
 
                     const timestampDiffFromNow = (timestamp) => {
                         let delta = (Date.now() - timestamp) / 1000; // delta and transform to seconds
@@ -140,7 +131,7 @@ export default class DashboardController extends LocalizedController {
                     accum[statusLabel] += 1; // add +1 shipment qty
                 }
                 return accum;
-            }, shipments)
+            }, shipmentsInitialQty)
 
             this.updateShipmentsChart({
                 labels: Object.keys(shipmentsQtyByStatus),
