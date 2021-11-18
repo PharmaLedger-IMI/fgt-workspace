@@ -47,7 +47,7 @@ export default class DashboardController extends LocalizedController {
         // update sale and stock chart
         this.stockManager.getAll(true, (err, stock) => {
             if(err)
-                console.error(err)
+                return console.error(err)
             const stockManagement = stock.reduce((accum, product) => {
                 accum[product.name] = product.quantity
                 return accum;
@@ -63,14 +63,16 @@ export default class DashboardController extends LocalizedController {
             })
 
             // # sale chart
-            let index = 0;
-            stock.reduce((accum, product) => {
+            const stockIterator = (accum, products, _callback) => {
+                const product = products.shift();
+                if (!product)
+                    return _callback(undefined, {...accum});
+
                 const {gtin, name} = product;
                 accum[name] = {x: name, gtin: gtin, mah: 0, whs: 0, pha: 0, total: 0};
                 self.stockManager.getStockTraceability(gtin, (err, stockTrace) => {
                     if (err)
-                        console.log(err)
-
+                        return console.error(err);
                     const {partnersStock} = stockTrace;
                     Object.keys(partnersStock).map(key => {
                         const value = partnersStock[key];
@@ -82,12 +84,15 @@ export default class DashboardController extends LocalizedController {
                         }
                     })
                     accum[name].total = accum[name].mah + accum[name].whs + accum[name].pha;
-                    index += 1
-                    if (index === stock.length)
-                        this.updateSaleChart({data: Object.values(accum)})
+                    stockIterator(accum, products, _callback)
                 })
-                return accum;
-            }, {})
+            }
+
+            stockIterator({}, stock.slice(), (err, res) => {
+                if (err)
+                    return console.error(err);
+                this.updateSaleChart({data: Object.values(res)})
+            })
         })
 
         // update shipment chart
