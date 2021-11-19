@@ -15,3 +15,7 @@ ion-item.main-item{
     opacity: 1;
   }
 }
+
+.item-native {
+  border: 1px solid red !important;
+}

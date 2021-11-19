@@ -21,7 +21,7 @@ export class ListItemLayout {
 
   @Prop({attribute: "color"}) color: string = "light";
 
-  @Prop({attribute: "label-col"}) labelCol: number = 4;
+  @Prop({attribute: "label-col"}) labelCol: number = 6;
 
   @State() currentBreakpoint = ionBreakpoints.lg + '';
 
@@ -74,8 +74,8 @@ export class ListItemLayout {
             <slot name="start"></slot>
           </div>
           <ion-grid>
-            <ion-row>
-              <ion-col col-12 col-sm size-lg={this.labelCol}>
+            <ion-row class="l-col">
+              <ion-col col-12 col-sm size-lg={12 - this.labelCol}>
                 <div>
                   <slot name="label"></slot>
                 </div>
