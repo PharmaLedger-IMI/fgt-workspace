@@ -1,17 +1,44 @@
 :host {
   display: block;
 }
-
 ion-item.main-item{
   animation: 1s linear fadein;
 }
-
 @keyframes fadein {
   from {
     opacity: 0;
   }
-
   to {
     opacity: 1;
   }
+}
+
+.l-group {
+  display: flex;
+}
+@media (max-width: 991px) {
+  .l-group {
+    padding: 0;
+  }
+}
+@media (max-width: 1100px) {
+  .l-group {
+    flex-direction: column;
+    padding: .4em 0;
+  }
+}
+
+.l-group .l-group-item--one {
+  display: flex;
+}
+
+.l-group .l-group-item--one span:last-child {
+  display: flex;
+  margin-left: 12px;
+  margin-right: 8px;
+}
+
+.l-group .l-group-item--two {
+  display: flex;
+  align-items: center;
 }

@@ -1,3 +1,8 @@
 :host {
   display: block;
 }
+
+.l-col {
+  display: flex;
+  align-items: center;
+} 

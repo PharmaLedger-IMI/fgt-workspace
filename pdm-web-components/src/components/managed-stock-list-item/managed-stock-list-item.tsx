@@ -124,13 +124,15 @@ export class ManagedProductListItem {
 
     return(
       <ion-label slot="label" color="secondary">
-        {getGtinLabel()}
-        <span class="ion-padding-start">
-          <ion-badge>
-            {getQuantityLabel()}
-          </ion-badge>
-        </span>
-        <span class="ion-padding-start">{getNameLabel()}</span>
+        <div class="l-group">
+          <div class="l-group-item l-group-item--one">
+            <span>{getGtinLabel()}</span>
+            <span><ion-badge>{getQuantityLabel()}</ion-badge></span>
+          </div>
+          <div class="l-group-item l-group-item--two">
+            <span>{getNameLabel()}</span>
+          </div>
+        </div>
       </ion-label>)
   }
 
