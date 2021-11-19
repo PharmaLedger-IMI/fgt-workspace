@@ -1,6 +1,6 @@
 const Manager = require('./Manager')
 const { _err } = require('../services/utils')
-const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE } = require('../constants');
+const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE, DEFAULT_QUERY_OPTIONS } = require('../constants');
 
 /**
  * @typedef W3cDID
@@ -116,19 +116,53 @@ class MessageManager extends Manager{
      *
      */
     registerListeners(api, onNewApiMsgListener){
-        if (!(api in this._listeners))
-            this._listeners[api] = [];
-        this._listeners[api].push(onNewApiMsgListener);
         const self = this;
-        console.log(`registering a new listener on ${api}`);
-        self.getAll(api, (err, messages) => {
+ 
+        const options = {
+            query: [`api == ${api}`],
+            sort: "dsc",
+            limit: undefined
+        }
+
+        const messageIterator = function (messages, onNewApiMsgListener, callback){
+            const currentMessage = messages.shift();
+
+            if(!currentMessage)
+                return callback();
+
+            onNewApiMsgListener(currentMessage, (err) => {
+                if(err)
+                    console.log(err);
+                messageIterator(messages, onNewApiMsgListener, callback);
+            })
+        }
+
+        const checkForMessagesThenRegisterListener = function (api, onNewApiMsgListener, options){
+
+        self.getAll(options, (err, messages) => {
             if (err)
                 return console.log(`Could not list messages from Inbox, api: ${api}`);
-            if (!messages || !messages.length)
-                return console.log(`No Stashed Messages Stored for ${api}...`);
+            if (!messages || !messages.length){
+                console.log(`No Stashed Messages Stored for ${api}...`);
+                if (!(api in self._listeners))
+                    self._listeners[api] = [];
+                self._listeners[api].push(onNewApiMsgListener);
+                return console.log(`registering a new listener on ${api}`);
+            }
             console.log(`${messages.length} Stashed Messages found for manager ${api}`);
-            messages.forEach(m => onNewApiMsgListener(m));
+            messageIterator(messages, onNewApiMsgListener, (err) => {
+                if(err)
+                    return console.log('Something went wrong!')
+
+                checkForMessagesThenRegisterListener(api, onNewApiMsgListener, options);
+                
+                return console.log('Messages were processed');
+            })
         });
+
+        }
+
+        checkForMessagesThenRegisterListener(api, onNewApiMsgListener, options);
     }
 
     /**
@@ -188,26 +222,6 @@ class MessageManager extends Manager{
             this.query(MESSAGE_TABLE, "__timestamp > 0", undefined, undefined, callback);
         }
     }
-    /**
-* Lists all registered items according to query options provided
-* @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
-* @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
-* @param {function(err, object[])} callback
-*/
-getAll(api, callback) {
-    let self = this;
-    self.query('messages', 'api == ' + api, 'dsc', undefined, (err, records) =>{
-        if (err)
-            return self._err(`Could not perform query`, err, callback);
-        self._iterator(records.map(r => r.message), self._getDSUInfo.bind(self), (err, result) => {
-            if (err)
-                return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
-            console.log(`Parsed ${result.length} ${self._getTableName()}s`);
-
-            callback(undefined, result);
-        });
-    });
-}
 
     _startMessageListener(did){
         let self = this;
@@ -252,6 +266,42 @@ getAll(api, callback) {
         this.w3cDID.createIdentity(DID_METHOD, didString, (err, didDoc) => err
             ? _err(`Could not create DID identity`, err, callback)
             : callback(undefined, didDoc));
+    }
+
+    /**
+     * Lists all registered items according to query options provided
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
+     * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
+     * @param {function(err, object[])} callback
+     */
+     getAll(readDSU, options, callback) {
+        if (!callback){
+            if (!options){
+                callback = readDSU;
+                options = DEFAULT_QUERY_OPTIONS;
+                readDSU = false;
+            }
+            if (typeof readDSU === 'boolean'){
+                callback = options;
+                options = DEFAULT_QUERY_OPTIONS;
+            }
+            if (typeof readDSU === 'object'){
+                callback = options;
+                options = readDSU;
+                readDSU = false;
+            }
+        }
+
+        options = options || DEFAULT_QUERY_OPTIONS;
+
+        let self = this;
+        self.query(options.query, options.sort, options.limit, (err, records) => {
+            if (err)
+                return self._err(`Could not perform query`, err, callback);
+            
+            callback(undefined, records);
+            
+        });
     }
 }
 
