@@ -1,6 +1,7 @@
 const Manager = require('./Manager')
 const { _err } = require('../services/utils')
 const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE, DEFAULT_QUERY_OPTIONS } = require('../constants');
+const ListenerLock = require('./ListenerLock');
 
 /**
  * @typedef W3cDID
@@ -52,6 +53,7 @@ class MessageManager extends Manager{
             manager.did = undefined;
             manager._listeners = {};
             manager.timer = undefined;
+            manager.listenerLock = new ListenerLock();
 
             manager.getOwnDID((err, didDoc) => err
                 ? console.log(`Could not get Own DID`, err)
@@ -65,6 +67,8 @@ class MessageManager extends Manager{
         this.did = this.did || undefined;
         this._listeners = this._listeners || {};
         this.timer = this.timer || undefined;
+        this.listenerIterator = this.listenerLock || undefined;
+        
     }
 
     shutdown(){
@@ -139,28 +143,29 @@ class MessageManager extends Manager{
 
         const checkForMessagesThenRegisterListener = function (api, onNewApiMsgListener, options){
 
-        self.getAll(options, (err, messages) => {
-            if (err)
-                return console.log(`Could not list messages from Inbox, api: ${api}`);
-            if (!messages || !messages.length){
-                console.log(`No Stashed Messages Stored for ${api}...`);
-                if (!(api in self._listeners))
-                    self._listeners[api] = [];
-                self._listeners[api].push(onNewApiMsgListener);
-                return console.log(`registering a new listener on ${api}`);
-            }
-            console.log(`${messages.length} Stashed Messages found for manager ${api}`);
-            messageIterator(messages, onNewApiMsgListener, (err) => {
-                if(err)
-                    return console.log('Something went wrong!')
+            self.getAll(options, (err, messages) => {
+                if (err)
+                    return console.log(`Could not list messages from Inbox, api: ${api}`);
+                if (!messages || !messages.length){
+                    console.log(`No Stashed Messages Stored for ${api}...`);
+                    if (!(api in self._listeners))
+                        self._listeners[api] = [];
+                    self._listeners[api].push(onNewApiMsgListener);
+                    return console.log(`registering a new listener on ${api}`);
+                }
+                console.log(`${messages.length} Stashed Messages found for manager ${api}`);
+                messageIterator(messages, onNewApiMsgListener, (err) => {
+                    if(err)
+                        return console.log('Something went wrong!')
 
-                checkForMessagesThenRegisterListener(api, onNewApiMsgListener, options);
-                
-                return console.log('Messages were processed');
-            })
-        });
-
+                    checkForMessagesThenRegisterListener(api, onNewApiMsgListener, options);    
+                    return console.log('Messages were processed');
+                })
+            });
         }
+
+        if(self.listenerLock.isLocked())
+            return self.listenerLock.schedule(() => checkForMessagesThenRegisterListener(api, onNewApiMsgListener, options));
 
         checkForMessagesThenRegisterListener(api, onNewApiMsgListener, options);
     }
@@ -226,7 +231,9 @@ class MessageManager extends Manager{
     _startMessageListener(did){
         let self = this;
         console.log("_startMessageListener", did.getIdentifier());
+        self.listenerLock.deactivateLock();
         did.readMessage((err, message) => {
+            self.listenerLock.activateLock();
             if (err){
                 if (err.message !== 'socket hang up')
                     console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
