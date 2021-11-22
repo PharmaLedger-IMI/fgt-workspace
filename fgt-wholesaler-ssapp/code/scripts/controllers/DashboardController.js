@@ -237,14 +237,14 @@ export default class DashboardController extends LocalizedController {
             labels: metadata.labels,
             datasets: [
                 {
-                    label: "Issued Shipments",
-                    backgroundColor: ["#02C39A", "#F6AE2D","#2F4858","#219EBC","#8ECAE6", "#E4959E", "#FA003F"],
-                    data: metadata.shipmentsQtyByStatusIssued
-                },
-                {
-                    label: "Received Shipments",
+                    label: "Incoming Shipments",
                     backgroundColor: ["#02765d", "#be8621","#1c2b34","#145e70","#648DA1", "#AD636B", "#AD022D"],
                     data: metadata.shipmentsQtyByStatusRec
+                },
+                {
+                    label: "Outgoing Shipments",
+                    backgroundColor: ["#02C39A", "#F6AE2D","#2F4858","#219EBC","#8ECAE6", "#E4959E", "#FA003F"],
+                    data: metadata.shipmentsQtyByStatusIssued
                 }
             ]
         }
