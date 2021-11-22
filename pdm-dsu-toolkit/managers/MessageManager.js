@@ -56,6 +56,7 @@ class MessageManager extends Manager{
             manager.lock = new AsyncLock();
             manager.events = [];
             manager.confirmedEvents = [];
+            manager._cacheListener = {};
 
             manager.getOwnDID((err, didDoc) => err
                 ? console.log(`Could not get Own DID`, err)
@@ -127,51 +128,81 @@ class MessageManager extends Manager{
         const event = `registering a new listener on ${api}`;
 
         self.events.push(event);
- 
-        const options = {
-            query: [`api == ${api}`],
-            sort: "dsc",
-            limit: undefined
-        }
 
-        const messageIterator = function (messages, onNewApiMsgListener, callback){
-            const currentMessage = messages.shift();
+        if (!(api in self._listeners))
+            self._cacheListener[api] = [];
 
-            if(!currentMessage)
+        self._cacheListener[api].push(onNewApiMsgListener);
+        console.log(`registering a new listener on ${api}`);
+        return setTimeout(() => self.evtHandler(event),200);
+    }
+
+    checkPendingMessages(doubleCheck){
+        const self = this;
+
+        console.log('Checking pending messages');
+
+        const apis = Object.keys(self._listeners);
+
+        const messageIterator = function (messages, api, callback){
+            const message = messages.shift();
+
+            if(!message)
                 return callback();
+            
+            listenerIterator(self._listeners[api].slice(), api, message, () => {
+                console.log('Processed messages for ${api}');
 
-            onNewApiMsgListener(currentMessage, (err) => {
-                if(err)
-                    console.log(err);
-                messageIterator(messages, onNewApiMsgListener, callback);
-            })
+                messageIterator(messages, api, callback);
+            })    
+           
         }
 
-        const checkForMessagesThenRegisterListener = function (api, onNewApiMsgListener, options){
+        const listenerIterator = function(listeners, api, message, callback){
+            const listener = listeners.shift();
+            if (!listener)
+                return callback(undefined, message);
+            listener(message, (err) => {
+                if (err)
+                    console.log(`Error processing Api ${api}`, err);
+                listenerIterator(listeners, api, message, callback);
+            });
+        }
+        
+        const apiIterator = function(apis, callback){
+            const api = apis.shift();
+
+            if(!api)
+               return callback();
+
+            const options = {
+                query: [`api == ${api}`],
+                sort: "dsc",
+                limit: undefined
+            }
 
             self.getAll(options, (err, messages) => {
                 if (err)
                     return console.log(`Could not list messages from Inbox, api: ${api}`);
                 if (!messages || !messages.length){
                     console.log(`No Stashed Messages Stored for ${api}...`);
-                    if (!(api in self._listeners))
-                        self._listeners[api] = [];
-                    self._listeners[api].push(onNewApiMsgListener);
-                    console.log(`registering a new listener on ${api}`);
-                    return setTimeout(() => self.evtHandler(event),200);
+                    return apiIterator(apis, callback);
                 }
-                console.log(`${messages.length} Stashed Messages found for manager ${api}`);
-                messageIterator(messages, onNewApiMsgListener, (err) => {
-                    if(err)
-                        return console.log('Something went wrong!')
 
-                    checkForMessagesThenRegisterListener(api, onNewApiMsgListener, options);    
-                    return console.log('Messages were processed');
-                })
+                messageIterator(messages.slice(), api, () => {                    
+                    apiIterator(apis,callback);
+                })   
+
             });
         }
 
-        checkForMessagesThenRegisterListener(api, onNewApiMsgListener, options);
+        apiIterator(apis.slice(), () => {
+            if(!doubleCheck)
+                return this.checkPendingMessages(true);
+
+            console.log('All Pending messages were processed!');
+            self.lock.disable();
+        })
     }
 
     evtHandler(evt){
@@ -182,7 +213,6 @@ class MessageManager extends Manager{
 
         self.confirmedEvents.push(evt);
         self.confirmEventsFinish();
-
     }
 
     confirmEventsFinish(){
@@ -191,12 +221,12 @@ class MessageManager extends Manager{
         const idInterval = setInterval(() => {
             if(self.confirmedEvents.length === self.events.length){
                 clearInterval(idInterval);
-                self.lock.disable();
+                self._listeners = self._cacheListener;
+                self.lock.enable();
+                self.checkPendingMessages();
             }    
         }, 1000);
     }
-
-
 
     /**
      * Sends a Message to the provided did
@@ -259,18 +289,13 @@ class MessageManager extends Manager{
     _startMessageListener(did){
         let self = this;
 
-        this.lock.enable();
-
-        this._startDIDListener(did);
-
-
-       
+        self._startDIDListener(did);
     }
 
     async _startDIDListener(did){
-        const self = this;
+        let self = this;
 
-        await this.lock.promise
+        await self.lock.promise;
         console.log("_startMessageListener", did.getIdentifier());
         
         did.readMessage((err, message) => {
@@ -302,6 +327,7 @@ class MessageManager extends Manager{
                 self._startMessageListener(did);
             });
         });
+
     }
 
     getOwnDID(callback){
@@ -347,8 +373,7 @@ class MessageManager extends Manager{
             if (err)
                 return self._err(`Could not perform query`, err, callback);
             
-            callback(undefined, records);
-            
+            callback(undefined, records);            
         });
     }
 }
