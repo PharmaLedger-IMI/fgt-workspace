@@ -1,5 +1,4 @@
-<webc-container controller="DashboardController">
-
+<webc-container controller="DashboardController" style="height: 100%;">
     <ion-row class="ion-margin-horizontal ion-align-items-center ion-justify-content-end">
         <small class="text-muted ion-margin-horizontal">Last Update: {{@lastUpdate}}</small>
         <ion-button data-tag="update-dashboard"  color="primary" size="small">
@@ -7,7 +6,7 @@
         </ion-button>
     </ion-row>
 
-    <div>
+    <div class="l-chart">
         <ion-row class="ion-margin">
             <ion-grid>
                 <ion-row>
@@ -52,7 +51,4 @@
             </ion-grid>
         </ion-row>
     </div>
-
-    <!-- hack to appear scrollbar and show the chart until the end -->
-    <div style="height: 100px;">  </div>
 </webc-container>
