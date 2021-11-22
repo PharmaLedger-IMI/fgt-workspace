@@ -79,22 +79,22 @@ export default class DashboardController extends LocalizedController {
                 return [...accum, ...issuedShipment.shipmentLines];
             }, [])
 
-            console.log('$$$ shipmentLines=', shipmentLines);
             const saleAccountant = (accum, shipmentLines, _callback) => {
                 const shipmentLine = shipmentLines.shift();
                 if (!shipmentLine)
                     return _callback(undefined, accum)
-
-                const { gtin } = shipmentLine;
-                if (!cacheProductName.hasOwnProperty(gtin)) {
-                    self.stockManager.getOne(gtin, (err, product) => {
-                        registerProductName(gtin, product.name);
-                        accum[product.name] = saleCalculator(accum, product.name, shipmentLine.quantity)
-                        saleAccountant(accum, shipmentLines, _callback)
-                    })
-                } else {
-                    const productName = cacheProductName[gtin]
-                    accum[productName] = saleCalculator(accum, productName, shipmentLine.quantity)
+                if (shipmentLine.status !== 'confirmed') {
+                    const { gtin } = shipmentLine;
+                    if (!cacheProductName.hasOwnProperty(gtin)) {
+                        self.stockManager.getOne(gtin, (err, product) => {
+                            registerProductName(gtin, product.name);
+                            accum[product.name] = saleCalculator(accum, product.name, shipmentLine.quantity)
+                            saleAccountant(accum, shipmentLines, _callback)
+                        })
+                    } else {
+                        const productName = cacheProductName[gtin]
+                        accum[productName] = saleCalculator(accum, productName, shipmentLine.quantity)
+                    }
                     saleAccountant(accum, shipmentLines, _callback)
                 }
             }
@@ -111,7 +111,7 @@ export default class DashboardController extends LocalizedController {
             if (err)
                 return console.error(err)
             self.receivedShipmentManager.getAll(true, (err, receivedShipments) => {
-                const participandId = self.participantManager.getIdentity().id;
+                const participantId = self.participantManager.getIdentity().id;
                 const shipmentsInitialQty = Object.values(self.model.allowedShipmentStatuses).reduce((acc, statusValue) => {
                     acc[statusValue] = 0;
                     return acc
@@ -142,15 +142,20 @@ export default class DashboardController extends LocalizedController {
                             status: statusLabel,
                             days: timestampDiffFromNow(lastUpdate.split(' ')[1].trim())
                         })
-                        if (shipment.senderId === participandId)
-                            accum.issued[statusLabel] += 1; // add +1 shipment qty
-                        else
+                        if (shipment.requesterId === participantId)
                             accum.received[statusLabel] += 1; // add +1 shipment qty
+                        else
+                            accum.issued[statusLabel] += 1; // add +1 shipment qty
                     }
                     shipmentIterator(accum, shipments, _callback)
                 }
 
-                shipmentIterator({received: shipmentsInitialQty, issued: shipmentsInitialQty}, [...issuedShipments, ...receivedShipments], (err, res) => {
+                console.log('$$$ shipments=', [...issuedShipments, ...receivedShipments])
+                const accum = {
+                    received: {...shipmentsInitialQty}, // copy obj
+                    issued: {...shipmentsInitialQty} // copy obj
+                }
+                shipmentIterator(accum, [...issuedShipments, ...receivedShipments], (err, res) => {
                     if (err)
                         return console.error(err)
                     console.log('$$$ res=', res)
@@ -183,7 +188,7 @@ export default class DashboardController extends LocalizedController {
             labels: labels,
             datasets: [
                 {
-                    label: 'MAH',
+                    label: 'Qty',
                     data: sortedAndFiltered,
                     backgroundColor: "#005f73",
                     parsing: {
@@ -193,7 +198,7 @@ export default class DashboardController extends LocalizedController {
             ]
         }
         options = {
-            plugins: {legend: { position: 'bottom'}},
+            plugins: {legend: false},
             ...options
         }
         this.buildChart('saleChart', gData, options)
@@ -240,14 +245,14 @@ export default class DashboardController extends LocalizedController {
                 },
                 {
                     label: "Received Shipments",
-                    backgroundColor: ["#02765d", "#be8621","#1c2b34","#145e70","#8ECAE6", "#E4959E", "#FA003F"],
+                    backgroundColor: ["#02765d", "#be8621","#1c2b34","#145e70","#648DA1", "#AD636B", "#AD022D"],
                     data: metadata.shipmentsQtyByStatusRec
                 }
             ]
         }
         options = {
             title: { display: true },
-            indexAxis: 'y',
+            plugins: { legend: false },
             ...options
         }
         this.buildChart('shipmentChart', gData, options)
