@@ -22,7 +22,6 @@ export default class DashboardController extends LocalizedController {
         super(false, ...args);
         super.bindLocale(this, "dashboard");
         this.model = this.initializeModel();
-        console.log('DashboardController Initialized');
         HistoryNavigator.registerTab({
             'tab-dashboard': this.translate('title')
         })
@@ -30,8 +29,7 @@ export default class DashboardController extends LocalizedController {
 
         const wizard = require('wizard');
         const participantManager = wizard.Managers.getParticipantManager();
-        this.issuedShipmentManager = wizard.Managers.getIssuedShipmentManager(participantManager);
-        this.shipmentLineManager = wizard.Managers.getShipmentLineManager(participantManager);
+        this.receivedShipmentManager = wizard.Managers.getReceivedShipmentManager(participantManager);
         this.stockManager = wizard.Managers.getStockManager(participantManager);
 
         const self = this;
@@ -45,16 +43,15 @@ export default class DashboardController extends LocalizedController {
 
     updateAllCharts() {
         const self = this;
-        self.model.lastUpdate = new Date().toLocaleString()
+        self.model.lastUpdate = new Date().toLocaleString();
+        const cacheProductName = {};
+        const registerProductName = (gtin, name) => { cacheProductName[gtin] = name };
+        const saleCalculator = (saleObj, productName, qty) => {
+            const sale = saleObj[productName] ? saleObj[productName] : {x: productName, qty: 0}
+            return { x: sale.x, qty: sale.qty + qty }
+        }
 
-        // self.shipmentLineManager.getAll(true, {query: ['__timestamp > 0', `gtin == ${54192559488918}`], sort: 'dsc'}, (err, shipmentLines) => {
-        self.shipmentLineManager.getAll(true, (err, shipmentLines) => {
-            if (err)
-                return console.error(err)
-            console.log('$$$ shipmentLines=', shipmentLines)
-        })
-
-        // update sale and stock chart
+        // update stock chart
         self.stockManager.getAll(true, (err, stock) => {
             if(err)
                 return console.error(err)
@@ -71,24 +68,52 @@ export default class DashboardController extends LocalizedController {
                 monthlyAvg: Object.values(sortStockManagement).map(v => (Math.random() + 0.5) * v),
                 productsInStock: Object.values(sortStockManagement)
             })
-
-            // # sale chart
-
         })
 
-        // update shipment chart
-        self.issuedShipmentManager.getAll(true, (err, issuedShipments) => {
+        // update sale &  shipment chart
+        self.receivedShipmentManager.getAll(true, (err, receivedShipments) => {
             if (err)
                 return console.error(err)
 
-            console.log('$$$ issuedShipmentManager=', issuedShipments)
+            const shipmentLines = receivedShipments.reduce((accum, issuedShipment) => {
+                return [...accum, ...issuedShipment.shipmentLines];
+            }, [])
+
+            // # update sale chart
+            const saleAccountant = (accum, shipmentLines, _callback) => {
+                const shipmentLine = shipmentLines.shift();
+                if (!shipmentLine)
+                    return _callback(undefined, accum)
+                if (shipmentLine.status !== 'confirmed') {
+                    const { gtin } = shipmentLine;
+                    if (!cacheProductName.hasOwnProperty(gtin)) {
+                        self.stockManager.getOne(gtin, (err, product) => {
+                            registerProductName(gtin, product.name);
+                            accum[product.name] = saleCalculator(accum, product.name, shipmentLine.quantity)
+                            saleAccountant(accum, shipmentLines, _callback)
+                        })
+                    } else {
+                        const productName = cacheProductName[gtin]
+                        accum[productName] = saleCalculator(accum, productName, shipmentLine.quantity)
+                    }
+                    saleAccountant(accum, shipmentLines, _callback)
+                }
+            }
+
+            saleAccountant({}, shipmentLines.slice(), (err, res) => {
+                if (err)
+                    return console.error(err)
+                self.updateSaleChart({data: Object.values(res)})
+            })
+
+            // # update shipments chart
             const shipmentsChartTable = []
             // initialize with zero for each status
             const shipmentsInitialQty = Object.values(self.model.allowedShipmentStatuses).reduce((acc, statusValue) => {
                 acc[statusValue] = 0;
                 return acc
             }, {})
-            const shipmentsQtyByStatus = issuedShipments.reduce((accum, curr) => {
+            const shipmentsQtyByStatus = receivedShipments.reduce((accum, curr) => {
                 // status confirmed is not in dictionary, because in this case, the order/shipment has been completed
                 if (self.model.allowedShipmentStatuses.hasOwnProperty(curr.status.status)) {
                     const statusLabel = self.model.allowedShipmentStatuses[curr.status.status]
@@ -127,13 +152,13 @@ export default class DashboardController extends LocalizedController {
     updateSaleChart(metadata, options) {
         const labels = []
         const sortedAndFiltered = metadata.data.sort((a, b) => {
-            if (a.total < b.total) return -1;
-            if (a.total > b.total ) return 1;
+            if (a.qty < b.qty) return -1;
+            if (a.qty > b.qty ) return 1;
             return 0;
         }).filter((v) => {
-            if (v.total > 0)  {
+            if (v.qty > 0)  {
                 labels.push(v.x)
-                return v.total > 0;
+                return v.qty > 0;
             }
         })
 
@@ -141,45 +166,17 @@ export default class DashboardController extends LocalizedController {
             labels: labels,
             datasets: [
                 {
-                    data: sortedAndFiltered,
-                    label: "Total",
-                    borderColor: "#001219",
-                    backgroundColor: "#001219",
-                    borderWidth:2,
-                    type: 'line',
-                    fill:false,
-                    parsing: {
-                        yAxisKey: 'total'
-                    }
-                },
-                {
-                    label: 'MAH',
+                    label: 'Qty',
                     data: sortedAndFiltered,
                     backgroundColor: "#005f73",
                     parsing: {
-                        yAxisKey: 'mah'
+                        yAxisKey: 'qty'
                     }
-                },
-                {
-                    label: 'WHS',
-                    data: sortedAndFiltered,
-                    backgroundColor:"#0a9396",
-                    parsing: {
-                        yAxisKey: 'whs'
-                    }
-                },
-                {
-                    label: 'PHA',
-                    data: sortedAndFiltered,
-                    backgroundColor:"#94d2bd",
-                    parsing: {
-                        yAxisKey: 'pha'
-                    },
                 }
             ]
         }
         options = {
-            plugins: {legend: { position: 'bottom'}},
+            plugins: {legend: false},
             ...options
         }
         this.buildChart('saleChart', gData, options)
