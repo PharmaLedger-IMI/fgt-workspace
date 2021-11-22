@@ -121,6 +121,8 @@ class MessageManager extends Manager{
      */
     registerListeners(api, onNewApiMsgListener){
         const self = this;
+
+        self.lock.increaseLock();
  
         const options = {
             query: [`api == ${api}`],
@@ -151,6 +153,7 @@ class MessageManager extends Manager{
                     if (!(api in self._listeners))
                         self._listeners[api] = [];
                     self._listeners[api].push(onNewApiMsgListener);
+                    setTimeout( () => self.lock.decreaseLock(),100);
                     return console.log(`registering a new listener on ${api}`);
                 }
                 console.log(`${messages.length} Stashed Messages found for manager ${api}`);
@@ -230,7 +233,7 @@ class MessageManager extends Manager{
 
         this.lock.enable();
 
-        this.someMethod();
+        this.someMethod(did);
 
 
        
