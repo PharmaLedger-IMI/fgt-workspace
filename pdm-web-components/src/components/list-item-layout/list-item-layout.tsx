@@ -75,12 +75,12 @@ export class ListItemLayout {
           </div>
           <ion-grid>
             <ion-row class="l-col">
-              <ion-col col-12 col-sm size-lg={12 - this.labelCol}>
+              <ion-col col-12 col-sm size-lg={6}>
                 <div>
                   <slot name="label"></slot>
                 </div>
               </ion-col>
-              <ion-col col-12 col-sm align-self-end size-lg={12 - this.labelCol}>
+              <ion-col col-12 col-sm align-self-end size-lg={6}>
                 <div class={`flex ${this.getAdjustment()}`}>
                   <slot name="content" ></slot>
                 </div>
