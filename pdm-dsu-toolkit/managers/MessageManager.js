@@ -54,6 +54,8 @@ class MessageManager extends Manager{
             manager._listeners = {};
             manager.timer = undefined;
             manager.lock = new AsyncLock();
+            manager.events = [];
+            manager.confirmedEvents = [];
 
             manager.getOwnDID((err, didDoc) => err
                 ? console.log(`Could not get Own DID`, err)
@@ -121,6 +123,10 @@ class MessageManager extends Manager{
      */
     registerListeners(api, onNewApiMsgListener){
         const self = this;
+
+        const event = `registering a new listener on ${api}`;
+
+        self.events.push(event);
  
         const options = {
             query: [`api == ${api}`],
@@ -151,8 +157,8 @@ class MessageManager extends Manager{
                     if (!(api in self._listeners))
                         self._listeners[api] = [];
                     self._listeners[api].push(onNewApiMsgListener);
-                    setTimeout(() => self.lock.disable(),2000);
-                    return console.log(`registering a new listener on ${api}`);
+                    console.log(`registering a new listener on ${api}`);
+                    return setTimeout(() => self.evtHandler(event),200);
                 }
                 console.log(`${messages.length} Stashed Messages found for manager ${api}`);
                 messageIterator(messages, onNewApiMsgListener, (err) => {
@@ -167,6 +173,30 @@ class MessageManager extends Manager{
 
         checkForMessagesThenRegisterListener(api, onNewApiMsgListener, options);
     }
+
+    evtHandler(evt){
+        const self = this;
+
+        if(self.confirmedEvents.length)
+            return self.confirmedEvents.push(evt);
+
+        self.confirmedEvents.push(evt);
+        self.confirmEventsFinish();
+
+    }
+
+    confirmEventsFinish(){
+        const self = this;
+       
+        const idInterval = setInterval(() => {
+            if(self.confirmedEvents.length === self.events.length){
+                clearInterval(idInterval);
+                self.lock.disable();
+            }    
+        }, 1000);
+    }
+
+
 
     /**
      * Sends a Message to the provided did
@@ -231,13 +261,13 @@ class MessageManager extends Manager{
 
         this.lock.enable();
 
-        this.someMethod(did);
+        this._startDIDListener(did);
 
 
        
     }
 
-    async someMethod(did){
+    async _startDIDListener(did){
         const self = this;
 
         await this.lock.promise
