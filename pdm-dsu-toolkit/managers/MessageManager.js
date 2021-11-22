@@ -1,7 +1,7 @@
 const Manager = require('./Manager')
 const { _err } = require('../services/utils')
 const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE, DEFAULT_QUERY_OPTIONS } = require('../constants');
-const ListenerLock = require('./ListenerLock');
+const AsyncLock = require('./AsyncLock');
 
 /**
  * @typedef W3cDID
@@ -53,7 +53,7 @@ class MessageManager extends Manager{
             manager.did = undefined;
             manager._listeners = {};
             manager.timer = undefined;
-            manager.listenerLock = new ListenerLock();
+            manager.lock = new AsyncLock();
 
             manager.getOwnDID((err, didDoc) => err
                 ? console.log(`Could not get Own DID`, err)
@@ -67,7 +67,7 @@ class MessageManager extends Manager{
         this.did = this.did || undefined;
         this._listeners = this._listeners || {};
         this.timer = this.timer || undefined;
-        this.listenerIterator = this.listenerLock || undefined;
+        this.lock = this.lock || undefined;
         
     }
 
@@ -164,9 +164,6 @@ class MessageManager extends Manager{
             });
         }
 
-        if(self.listenerLock.isLocked())
-            return self.listenerLock.schedule(() => checkForMessagesThenRegisterListener(api, onNewApiMsgListener, options));
-
         checkForMessagesThenRegisterListener(api, onNewApiMsgListener, options);
     }
 
@@ -230,10 +227,23 @@ class MessageManager extends Manager{
 
     _startMessageListener(did){
         let self = this;
+
+        this.lock.enable();
+
+        this.someMethod();
+
+
+       
+    }
+
+    async someMethod(did){
+        const self = this;
+
+        await this.lock.promise
         console.log("_startMessageListener", did.getIdentifier());
-        self.listenerLock.deactivateLock();
+        
         did.readMessage((err, message) => {
-            self.listenerLock.activateLock();
+            
             if (err){
                 if (err.message !== 'socket hang up')
                     console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
