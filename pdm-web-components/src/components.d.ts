@@ -141,6 +141,10 @@ export namespace Components {
         "showCloseButton": boolean;
         "showTrackButton": boolean;
     }
+    interface ManagedNotificationsListItem {
+        "notificationid": string;
+        "refresh": () => Promise<void>;
+    }
     interface ManagedOrder {
         "availableString": string;
         "backString": string;
@@ -310,7 +314,7 @@ export namespace Components {
         "value": string;
     }
     interface MenuTabButton {
-        "badge"?: number;
+        "badge"?: string;
         "iconName"?: string;
         "label"?: string;
         "mode"?: string;
@@ -556,6 +560,12 @@ declare global {
         prototype: HTMLManagedIndividualProductListItemElement;
         new (): HTMLManagedIndividualProductListItemElement;
     };
+    interface HTMLManagedNotificationsListItemElement extends Components.ManagedNotificationsListItem, HTMLStencilElement {
+    }
+    var HTMLManagedNotificationsListItemElement: {
+        prototype: HTMLManagedNotificationsListItemElement;
+        new (): HTMLManagedNotificationsListItemElement;
+    };
     interface HTMLManagedOrderElement extends Components.ManagedOrder, HTMLStencilElement {
     }
     var HTMLManagedOrderElement: {
@@ -744,6 +754,7 @@ declare global {
         "managed-individual-product": HTMLManagedIndividualProductElement;
         "managed-individual-product-chip": HTMLManagedIndividualProductChipElement;
         "managed-individual-product-list-item": HTMLManagedIndividualProductListItemElement;
+        "managed-notifications-list-item": HTMLManagedNotificationsListItemElement;
         "managed-order": HTMLManagedOrderElement;
         "managed-order-list-item": HTMLManagedOrderListItemElement;
         "managed-orderline-stock-chip": HTMLManagedOrderlineStockChipElement;
@@ -973,6 +984,18 @@ declare namespace LocalJSX {
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "showCloseButton"?: boolean;
         "showTrackButton"?: boolean;
+    }
+    interface ManagedNotificationsListItem {
+        "notificationid"?: string;
+        "onFgt-track-request"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
     }
     interface ManagedOrder {
         "availableString"?: string;
@@ -1231,7 +1254,7 @@ declare namespace LocalJSX {
         "value"?: string;
     }
     interface MenuTabButton {
-        "badge"?: number;
+        "badge"?: string;
         "iconName"?: string;
         "label"?: string;
         "mode"?: string;
@@ -1438,6 +1461,7 @@ declare namespace LocalJSX {
         "managed-individual-product": ManagedIndividualProduct;
         "managed-individual-product-chip": ManagedIndividualProductChip;
         "managed-individual-product-list-item": ManagedIndividualProductListItem;
+        "managed-notifications-list-item": ManagedNotificationsListItem;
         "managed-order": ManagedOrder;
         "managed-order-list-item": ManagedOrderListItem;
         "managed-orderline-stock-chip": ManagedOrderlineStockChip;
@@ -1486,6 +1510,7 @@ declare module "@stencil/core" {
             "managed-individual-product": LocalJSX.ManagedIndividualProduct & JSXBase.HTMLAttributes<HTMLManagedIndividualProductElement>;
             "managed-individual-product-chip": LocalJSX.ManagedIndividualProductChip & JSXBase.HTMLAttributes<HTMLManagedIndividualProductChipElement>;
             "managed-individual-product-list-item": LocalJSX.ManagedIndividualProductListItem & JSXBase.HTMLAttributes<HTMLManagedIndividualProductListItemElement>;
+            "managed-notifications-list-item": LocalJSX.ManagedNotificationsListItem & JSXBase.HTMLAttributes<HTMLManagedNotificationsListItemElement>;
             "managed-order": LocalJSX.ManagedOrder & JSXBase.HTMLAttributes<HTMLManagedOrderElement>;
             "managed-order-list-item": LocalJSX.ManagedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedOrderListItemElement>;
             "managed-orderline-stock-chip": LocalJSX.ManagedOrderlineStockChip & JSXBase.HTMLAttributes<HTMLManagedOrderlineStockChipElement>;

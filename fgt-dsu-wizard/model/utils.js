@@ -44,7 +44,7 @@ const confirmWithStock = function(stockManager, shipment, stockObj, callback){
                 const resultBatch = new Batch(b);
                 if (stockManager.serialization){
                     resultBatch.serialNumbers = resultBatch.serialNumbers.splice(0, Math.min(quantity, b.getQuantity()));
-                    resultBatch.quantity = resultBatch.getQuantity();
+                    resultBatch.quantity = resultBatch.serialNumbers.length === 0 ? Math.min(quantity, b.getQuantity()) : resultBatch.getQuantity();    
                 } else {
                     resultBatch.serialNumbers = undefined;
                     resultBatch.quantity = Math.min(quantity, b.getQuantity());

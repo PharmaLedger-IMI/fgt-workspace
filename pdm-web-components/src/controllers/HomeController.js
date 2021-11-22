@@ -47,23 +47,7 @@ export default class HomeController extends LocalizedController {
         const self = this;
         self._updateLoading(this.model.loading.loading.status, this.model.loading.loading.progress)
         this.on(EVENT_ION_TABS_WILL_CHANGE, (evt) => {
-            const el = self.element.querySelector(`ion-tab[tab="${evt.detail.tab}"] webc-container`)
-              || self.querySelector(`ion-tab[tab="${evt.detail.tab}"] ion-content`);
-            if (el){
-              const detail = self.getState();
-              const evt = new Event(EVENT_REFRESH);
-              evt.detail = detail;
-              el.dispatchEvent(evt);
-            }
-            // For side Menu Integration we forward the ionTabsWillChange event if it exists
-            const menuEl = self.element.querySelectorAll(SIDE_MENU_CLASS_SELECTOR);
-            if (menuEl && menuEl.length){
-              menuEl.forEach(el => {
-                const event = new Event(EVENT_SELECT);
-                event.detail = evt.detail;
-                el.dispatchEvent(event)
-              });
-            }
+            self._handleIonChange.call(self, evt);
         }, {capture: true});
         this.on(EVENT_NAVIGATE_TAB, (evt) => {
           evt.preventDefault();
@@ -96,6 +80,27 @@ export default class HomeController extends LocalizedController {
 
         participantManager.setController(this);
     }
+    
+  _handleIonChange(evt){
+    const self = this;
+    const el = self.element.querySelector(`ion-tab[tab="${evt.detail.tab}"] webc-container`)
+               || self.querySelector(`ion-tab[tab="${evt.detail.tab}"] ion-content`);
+    if (el){
+      const detail = self.getState();
+      const evt = new Event(EVENT_REFRESH);
+      evt.detail = detail;
+      el.dispatchEvent(evt);
+    }
+    // For side Menu Integration we forward the ionTabsWillChange event if it exists
+    const menuEl = self.element.querySelectorAll(SIDE_MENU_CLASS_SELECTOR);
+    if (menuEl && menuEl.length){
+      menuEl.forEach(el => {
+        const event = new Event(EVENT_SELECT);
+        event.detail = evt.detail;
+        el.dispatchEvent(event)
+        });
+    }
+  }
 
   /**
    * Handles navigation request events

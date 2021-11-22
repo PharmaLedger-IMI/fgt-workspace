@@ -9,7 +9,7 @@
 
 | Property   | Attribute   | Description                                                                           | Type     | Default                   |
 | ---------- | ----------- | ------------------------------------------------------------------------------------- | -------- | ------------------------- |
-| `badge`    | `badge`     |                                                                                       | `number` | `undefined`               |
+| `badge`    | `badge`     |                                                                                       | `string` | `undefined`               |
 | `iconName` | `icon-name` |                                                                                       | `string` | `undefined`               |
 | `label`    | `label`     |                                                                                       | `string` | `"tab button label"`      |
 | `mode`     | `mode`      |                                                                                       | `string` | `BUTTON_TYPE.MENU_BUTTON` |
