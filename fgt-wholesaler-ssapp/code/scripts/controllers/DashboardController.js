@@ -51,7 +51,7 @@ export default class DashboardController extends LocalizedController {
             return { x: sale.x, qty: sale.qty + qty }
         }
 
-        // update sale and stock chart
+        // update stock chart
         self.stockManager.getAll(true, (err, stock) => {
             if(err)
                 return console.error(err)
@@ -74,11 +74,17 @@ export default class DashboardController extends LocalizedController {
         self.issuedShipmentManager.getAll(true, (err, issuedShipments) => {
             if (err)
                 return console.error(err)
+        })
 
+        // update sale & shipment chart
+        self.issuedShipmentManager.getAll(true, (err, issuedShipments) => {
+            if (err)
+                return console.error(err)
+
+            // # update sale chart
             const shipmentLines = issuedShipments.reduce((accum, issuedShipment) => {
                 return [...accum, ...issuedShipment.shipmentLines];
             }, [])
-
             const saleAccountant = (accum, shipmentLines, _callback) => {
                 const shipmentLine = shipmentLines.shift();
                 if (!shipmentLine)
@@ -104,12 +110,8 @@ export default class DashboardController extends LocalizedController {
                     return console.error(err)
                 self.updateSaleChart({data: Object.values(res)})
             })
-        })
 
-        // update shipment chart
-        self.issuedShipmentManager.getAll(true, (err, issuedShipments) => {
-            if (err)
-                return console.error(err)
+            // # update shipments chart
             self.receivedShipmentManager.getAll(true, (err, receivedShipments) => {
                 const participantId = self.participantManager.getIdentity().id;
                 const shipmentsInitialQty = Object.values(self.model.allowedShipmentStatuses).reduce((acc, statusValue) => {
@@ -133,7 +135,6 @@ export default class DashboardController extends LocalizedController {
                     if (!shipment)
                         return _callback(undefined, accum)
                     if (self.model.allowedShipmentStatuses.hasOwnProperty(shipment.status.status)) {
-                        console.log('$$$ shipment=', shipment)
                         const statusLabel = self.model.allowedShipmentStatuses[shipment.status.status]
                         const lastUpdate = shipment.status.log[shipment.status.log.length - 1]; // in timestamp
                         shipmentsChartTable.push({
@@ -150,7 +151,6 @@ export default class DashboardController extends LocalizedController {
                     shipmentIterator(accum, shipments, _callback)
                 }
 
-                console.log('$$$ shipments=', [...issuedShipments, ...receivedShipments])
                 const accum = {
                     received: {...shipmentsInitialQty}, // copy obj
                     issued: {...shipmentsInitialQty} // copy obj
@@ -158,13 +158,11 @@ export default class DashboardController extends LocalizedController {
                 shipmentIterator(accum, [...issuedShipments, ...receivedShipments], (err, res) => {
                     if (err)
                         return console.error(err)
-                    console.log('$$$ res=', res)
                     this.updateShipmentsChart({
                         labels: Object.keys(res.issued),
                         shipmentsQtyByStatusIssued: Object.values(res.issued),
                         shipmentsQtyByStatusRec: Object.values(res.received),
                     })
-                    console.log('$$$ shipmentsChartTable=', shipmentsChartTable)
                     self.model.shipmentsChartTable = JSON.stringify(shipmentsChartTable)
                 })
             })
