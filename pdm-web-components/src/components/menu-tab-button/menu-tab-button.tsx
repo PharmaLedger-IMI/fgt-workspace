@@ -32,7 +32,7 @@ export class MenuTabButton {
 
   @Prop({attribute: 'label', mutable: true}) label?: string = "tab button label";
 
-  @Prop({attribute: 'badge', mutable: true}) badge?: number = undefined;
+  @Prop({attribute: 'badge', mutable: true}) badge?: string = undefined;
 
   /**
    * the tab name or a list of options like:
@@ -84,7 +84,17 @@ export class MenuTabButton {
   private getBadge(slot?: string){
     if (!this.badge)
       return;
+    if(this.badge === "0")
+      return;
+      
     const props = !!slot ? {slot: slot} : {};
+
+    if(slot === 'menu'){
+      return (
+        <ion-badge class = "menu-badge"> {this.badge}</ion-badge>
+      )
+    }
+
     return (
       <ion-badge {...props}>{this.badge}</ion-badge>
     )
@@ -159,7 +169,7 @@ export class MenuTabButton {
               </span>
             </ion-row>
           </ion-grid>
-          {this.getBadge()}
+          {this.getBadge('menu')}
         </ion-item>
     );
   }

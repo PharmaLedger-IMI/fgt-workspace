@@ -258,7 +258,7 @@ class BatchManager extends Manager{
 
                                     productManager.refreshController();
 
-                                    self.stockManager.getStockTraceability(self.getIdentity().id, gtin, batch.batchNumber, (err, results) => {
+                                    self.stockManager.getStockTraceability(gtin, {manufName: self.getIdentity().id, batch: batch.batchNumber}, (err, results) => {
                                         if (err || !results){
                                             console.log(`Could not calculate partners with batch to send`, err, results);
                                             return callback(undefined, newBatch);

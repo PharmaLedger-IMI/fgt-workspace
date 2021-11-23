@@ -28,6 +28,7 @@
   },
   "welcome": "Welcome back",
   "menu": {
+    "notifications": "Notifications",
     "dashboard": "Dashboard",
     "orders": {
       "label": "Orders",
@@ -321,6 +322,20 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "none": "There are no pending orders"
+    "none": "There are no pending orders",
+    "allowedShipmentStatuses": {
+      "created": "Created",
+      "hold": "on Hold",
+      "pickup": "for Pickup",
+      "transit": "in Transit",
+      "delivered": "Delivered",
+      "received": "Pending Conf.",
+      "recall": "Recall"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "notification": "0",
+    "stockNotification": "0"  
   }
 }

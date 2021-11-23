@@ -38,7 +38,15 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "welcome": "This is a Dashboard"
+    "allowedShipmentStatuses": {
+      "created": "Created",
+      "hold": "on Hold",
+      "pickup": "for Pickup",
+      "transit": "in Transit",
+      "delivered": "Delivered",
+      "received": "Pending Conf.",
+      "recall": "Recall"
+    }
   },
   "products": {
     "title": "Manage Products",
