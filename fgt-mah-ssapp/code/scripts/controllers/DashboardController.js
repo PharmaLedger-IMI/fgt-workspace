@@ -32,7 +32,9 @@ export default class DashboardController extends LocalizedController {
         this.stockManager = wizard.Managers.getStockManager(participantManager);
 
         const self = this;
-        self.updateAllCharts();
+        setTimeout(() => {
+            self.updateAllCharts()
+        }, 3500)
 
         self.onTagEvent('update-dashboard', 'click', () => {
             self.updateAllCharts();
