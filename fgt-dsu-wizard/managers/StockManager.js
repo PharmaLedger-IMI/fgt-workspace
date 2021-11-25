@@ -360,7 +360,7 @@ class StockManager extends Manager{
             return self._getProduct(gtin, (err, product) => {
                 if (err)
                     return callback(err);
-                self.getStockTraceability(gtin, {manufName: product.manufName,  batch}, callback);
+                return self.getStockTraceability(gtin, {manufName: product.manufName,  batch}, callback);
             });
         }
 
