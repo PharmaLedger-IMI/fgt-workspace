@@ -32,7 +32,9 @@ export default class DashboardController extends LocalizedController {
         this.stockManager = wizard.Managers.getStockManager(participantManager);
 
         const self = this;
-        self.updateAllCharts();
+        setTimeout(() => {
+            self.updateAllCharts()
+        }, 3500)
 
         self.onTagEvent('update-dashboard', 'click', () => {
             self.updateAllCharts();
@@ -92,54 +94,52 @@ export default class DashboardController extends LocalizedController {
                 if (err)
                     return console.error(err);
                 this.updateSaleChart({data: Object.values(res)})
-            })
-        })
+                // update shipment chart
+                self.issuedShipmentManager.getAll(true, (err, issuedShipments) => {
+                    if (err)
+                        return console.error(err)
 
-        // update shipment chart
-        self.issuedShipmentManager.getAll(true, (err, issuedShipments) => {
-            if (err)
-                return console.error(err)
+                    const shipmentsChartTable = []
+                    // initialize with zero for each status
+                    const shipmentsInitialQty = Object.values(self.model.allowedShipmentStatuses).reduce((acc, statusValue) => {
+                        acc[statusValue] = 0;
+                        return acc
+                    }, {})
+                    const shipmentsQtyByStatus = issuedShipments.reduce((accum, curr) => {
+                        // status confirmed is not in dictionary, because in this case, the order/shipment has been completed
+                        if (self.model.allowedShipmentStatuses.hasOwnProperty(curr.status.status)) {
+                            const statusLabel = self.model.allowedShipmentStatuses[curr.status.status]
 
-            const shipmentsChartTable = []
-            // initialize with zero for each status
-            const shipmentsInitialQty = Object.values(self.model.allowedShipmentStatuses).reduce((acc, statusValue) => {
-                acc[statusValue] = 0;
-                return acc
-            }, {})
-            const shipmentsQtyByStatus = issuedShipments.reduce((accum, curr) => {
-                // status confirmed is not in dictionary, because in this case, the order/shipment has been completed
-                if (self.model.allowedShipmentStatuses.hasOwnProperty(curr.status.status)) {
-                    const statusLabel = self.model.allowedShipmentStatuses[curr.status.status]
+                            const timestampDiffFromNow = (timestamp) => {
+                                let delta = (Date.now() - timestamp) / 1000; // delta and transform to seconds
+                                const days = Math.floor(delta / 86400); // 24*60*60 - seconds -> days
+                                delta -= (days * 86400);
+                                const hours = Math.floor(delta / 3600) % 24;
+                                delta -= (hours * 3600);
+                                const min = Math.floor(delta / 60) % 60;
+                                return (days > 0 ? `${days}d` : '') + (hours > 0 ? `${hours}h` : '') + (min > 0 ? `${min}m` : '') || 'now';
+                            }
 
-                    const timestampDiffFromNow = (timestamp) => {
-                        let delta = (Date.now() - timestamp) / 1000; // delta and transform to seconds
-                        const days = Math.floor(delta / 86400); // 24*60*60 - seconds -> days
-                        delta -= (days * 86400);
-                        const hours = Math.floor(delta / 3600) % 24;
-                        delta -= (hours * 3600);
-                        const min = Math.floor(delta / 60) % 60;
-                        return (days > 0 ? `${days}d` : '') + (hours > 0 ? `${hours}h` : '') + (min > 0 ? `${min}m` : '') || 'now';
-                    }
+                            const lastUpdate = curr.status.log[curr.status.log.length - 1]; // in timestamp
+                            shipmentsChartTable.push({
+                                shipmentId: curr.shipmentId,
+                                requesterId: curr.requesterId,
+                                status: statusLabel,
+                                days: timestampDiffFromNow(lastUpdate.split(' ')[1].trim())
+                            })
+                            accum[statusLabel] += 1; // add +1 shipment qty
+                        }
+                        return accum;
+                    }, shipmentsInitialQty)
 
-                    const lastUpdate = curr.status.log[curr.status.log.length - 1]; // in timestamp
-                    shipmentsChartTable.push({
-                        shipmentId: curr.shipmentId,
-                        requesterId: curr.requesterId,
-                        status: statusLabel,
-                        days: timestampDiffFromNow(lastUpdate.split(' ')[1].trim())
+                    this.updateShipmentsChart({
+                        labels: Object.keys(shipmentsQtyByStatus),
+                        shipmentsQtyByStatus: Object.values(shipmentsQtyByStatus)
                     })
-                    accum[statusLabel] += 1; // add +1 shipment qty
-                }
-                return accum;
-            }, shipmentsInitialQty)
-
-            this.updateShipmentsChart({
-                labels: Object.keys(shipmentsQtyByStatus),
-                shipmentsQtyByStatus: Object.values(shipmentsQtyByStatus)
+                    self.model.shipmentsChartTable = JSON.stringify(shipmentsChartTable)
+                })
             })
-            self.model.shipmentsChartTable = JSON.stringify(shipmentsChartTable)
         })
-
     }
 
     updateSaleChart(metadata, options) {
