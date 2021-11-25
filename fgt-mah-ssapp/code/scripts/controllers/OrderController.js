@@ -36,12 +36,14 @@ export default class OrderController extends LocalizedController {
             'tab-order': self.translate('title')
         })
 
-        self.orderEl.updateDirectory();
+
 
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
             self.model.identity = self.issuedOrderManager.getIdentity();
+
+            self.orderEl.updateDirectory();
 
             const state = evt.detail;
             const label = !!state.previousTab ? state.previousTab.label : HistoryNavigator.getPreviousTab().label;
