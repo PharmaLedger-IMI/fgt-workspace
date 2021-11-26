@@ -59,7 +59,24 @@ class TrackAndManageListeners {
         console.log('track continue listenerregistration complete' , this._startedRegistrations, ' : ', this._finishedRegistrations)
         console.log('Track listeners before callback: ', this._listeners);
         
-        callback(undefined, this._listeners);
+        this._checkPendingMessages(callback);
+        
+    }
+
+    _checkPendingMessages(callback){
+        console.log('track check pendign messages: ', this._pendingMessageProcess);
+        if(!this._pendingMessageProcess)
+            return callback(undefined, this._listeners);
+
+        const message = this._pendingMessageProcess.shift();
+        console.log('track processing message: ', message)
+
+        if(!message)
+            return callback(undefined, this._listeners);
+
+        this.processMessage(message, () => {
+                this._checkPendingMessages(callback);       
+        });
     }
 
     scheduleMessageProcess(message){
@@ -71,6 +88,11 @@ class TrackAndManageListeners {
     processMessage(message, callback){
         const self = this;
         const {api} = message;
+
+        if (!(api in self._listeners)) {
+            console.log(`No listeners registered for ${api} messages.`);
+            return callback();
+        }
 
         const listenerIterator = function(listeners, callback){
             const listener = listeners.shift();
@@ -201,8 +223,12 @@ class MessageManager extends Manager{
             if(listeners)
                 console.log('track listeners on complete check: ', listeners);
 
+            if(!listeners)
+                return;
+
             self._listeners = listeners;
             console.log('track listeners on message manager: ', self._listeners);
+            
         });
     }
 
