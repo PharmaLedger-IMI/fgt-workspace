@@ -11,6 +11,7 @@ class TrackAndManageListeners {
     _startedRegistrations = 0;
     _finishedRegistrations = 0;
     _listeners = {};
+    _pendingMessageProcess = [];
 
     constructor() {
         console.log('Track Manager Listeners Initiated');
@@ -28,7 +29,7 @@ class TrackAndManageListeners {
 
         setTimeout(() => {
             this._finishRegistration(callback);
-        },100);
+        },250);
     }
 
     _startRegistration(){
@@ -37,11 +38,9 @@ class TrackAndManageListeners {
     }
 
     _finishRegistration(callback){ 
-        setTimeout(()=> {
             this._finishedRegistrations++;
             console.log('track finish registration: ',this._finishedRegistrations)
-            this._checkListenersRegistrationComplete(callback); 
-        },100);       
+            this._checkListenersRegistrationComplete(callback);      
     }
 
     _checkListenersRegistrationComplete(callback){
@@ -61,6 +60,30 @@ class TrackAndManageListeners {
         console.log('Track listeners before callback: ', this._listeners);
         
         callback(undefined, this._listeners);
+    }
+
+    scheduleMessageProcess(message){
+        this._pendingMessageProcess.push(message);
+        console.log('track schedule Message: ', message);
+        console.log('track schedule: ', this._pendingMessageProcess);
+    }
+
+    processMessage(message, callback){
+        const self = this;
+        const {api} = message;
+
+        const listenerIterator = function(listeners, callback){
+            const listener = listeners.shift();
+            if (!listener)
+                return callback(undefined, message);
+            listener(message, (err) => {
+                if (err)
+                    console.log(`Error processing Api ${api}`, err);
+                listenerIterator(listeners, callback);
+            });
+        }
+
+        listenerIterator(self._listeners[api].slice(), callback);
     }
 
 }
@@ -146,24 +169,14 @@ class MessageManager extends Manager{
                 return _err(`Could not save message to inbox`, err, callback);
             console.log(`Message ${JSON.stringify(message)} saved to table ${self._getTableName()} on DID ${self.didString}`);
             if (!(api in self._listeners)) {
+                self.track.scheduleMessageProcess(message);
                 console.log(`No listeners registered for ${api} messages.`);
                 return callback();
             }
 
             console.log(`Found ${self._listeners[api].length} listeners for the ${api} message api`);
 
-            const listenerIterator = function(listeners, callback){
-                const listener = listeners.shift();
-                if (!listener)
-                    return callback(undefined, message);
-                listener(message, (err) => {
-                    if (err)
-                        console.log(`Error processing Api ${api}`, err);
-                    listenerIterator(listeners, callback);
-                });
-            }
-
-            listenerIterator(self._listeners[api].slice(), callback);
+            self.track.processMessage(message, callback);    
         });
     }
 
