@@ -40,7 +40,27 @@ class TrackAndManageListeners {
         setTimeout(()=> {
             this._finishedRegistrations++;
             console.log('track finish registration: ',this._finishedRegistrations)
+            this._checkListenersRegistrationComplete(callback); 
         },100);       
+    }
+
+    _checkListenersRegistrationComplete(callback){
+        console.log('track start listenerregistration complete:' , this._startedRegistrations, ' : ', this._finishedRegistrations)
+
+        console.log('track checkListenerregistrationComplete: ' , this._startedRegistrations, ' : ', this._finishedRegistrations);
+        if(this._startedRegistrations < 3)
+            return callback();
+        
+        if(this._finishedRegistrations < 3)
+            return callback();
+
+        if(this._startedRegistrations !== this._finishedRegistrations)
+            return callback();
+
+        console.log('track continue listenerregistration complete' , this._startedRegistrations, ' : ', this._finishedRegistrations)
+        console.log('Track listeners before callback: ', this._listeners);
+        
+        callback(undefined, this._listeners);
     }
 
 }
@@ -164,8 +184,15 @@ class MessageManager extends Manager{
             this._listeners[api] = [];
         this._listeners[api].push(onNewApiMsgListener);
         const self = this;
-        self.track.registerListener(api, onNewApiMsgListener);
         console.log(`registering a new listener on ${api}`);
+        self.track.registerListener(api, onNewApiMsgListener, (err, listeners) => {
+            if(err)
+                return;
+
+            if(listeners)
+                console.log('track listeners on complete check: ', listeners);
+
+        });
         
         self.getAll(true, {
             query: [
