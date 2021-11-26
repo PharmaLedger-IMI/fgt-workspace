@@ -1,7 +1,33 @@
 const Manager = require('./Manager')
 const { _err } = require('../services/utils')
-const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE, DEFAULT_QUERY_OPTIONS } = require('../constants');
-const AsyncLock = require('./AsyncLock');
+const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE } = require('../constants');
+
+/**
+* Util class to handle manager listeners registration
+* @class TrackManagerListeners
+* @memberOf MessageManager
+*/
+class TrackAndManageListeners {
+    _startedRegistrations = 0;
+    _finishedRegistrations = 0;
+
+    constructor() {
+        console.log('Track Manager Listeners Initiated');
+    }
+
+    startRegistration(){
+        this._startedRegistrations++;
+        console.log('track start registration: ', this._startedRegistrations)
+    }
+
+    _finishRegistration(callback){ 
+        setTimeout(()=> {
+            this._finishedRegistrations++;
+        console.log('track finish registration: ',this._finishedRegistrations)
+        },100);       
+    }
+
+}
 
 /**
  * @typedef W3cDID
@@ -53,10 +79,7 @@ class MessageManager extends Manager{
             manager.did = undefined;
             manager._listeners = {};
             manager.timer = undefined;
-            manager.lock = new AsyncLock();
-            manager.events = [];
-            manager.confirmedEvents = [];
-            manager._cacheListener = {};
+            manager.track = new TrackAndManageListeners();
 
             manager.getOwnDID((err, didDoc) => err
                 ? console.log(`Could not get Own DID`, err)
@@ -70,8 +93,6 @@ class MessageManager extends Manager{
         this.did = this.did || undefined;
         this._listeners = this._listeners || {};
         this.timer = this.timer || undefined;
-        this.lock = this.lock || undefined;
-        
     }
 
     shutdown(){
@@ -123,109 +144,25 @@ class MessageManager extends Manager{
      *
      */
     registerListeners(api, onNewApiMsgListener){
+        if (!(api in this._listeners))
+            this._listeners[api] = [];
+        this._listeners[api].push(onNewApiMsgListener);
         const self = this;
-
-        const event = `registering a new listener on ${api}`;
-
-        self.events.push(event);
-
-        if (!(api in self._listeners))
-            self._cacheListener[api] = [];
-
-        self._cacheListener[api].push(onNewApiMsgListener);
+        self.track.startRegistration();
         console.log(`registering a new listener on ${api}`);
-        return setTimeout(() => self.evtHandler(event),200);
-    }
-
-    checkPendingMessages(doubleCheck){
-        const self = this;
-
-        console.log('Checking pending messages');
-
-        const apis = Object.keys(self._listeners);
-
-        const messageIterator = function (messages, api, callback){
-            const message = messages.shift();
-
-            if(!message)
-                return callback();
-            
-            listenerIterator(self._listeners[api].slice(), api, message, () => {
-                console.log('Processed messages for ${api}');
-
-                messageIterator(messages, api, callback);
-            })    
-           
-        }
-
-        const listenerIterator = function(listeners, api, message, callback){
-            const listener = listeners.shift();
-            if (!listener)
-                return callback(undefined, message);
-            listener(message, (err) => {
-                if (err)
-                    console.log(`Error processing Api ${api}`, err);
-                listenerIterator(listeners, api, message, callback);
-            });
-        }
-        
-        const apiIterator = function(apis, callback){
-            const api = apis.shift();
-
-            if(!api)
-               return callback();
-
-            const options = {
-                query: [`api == ${api}`],
-                sort: "dsc",
-                limit: undefined
-            }
-
-            self.getAll(options, (err, messages) => {
-                if (err)
-                    return console.log(`Could not list messages from Inbox, api: ${api}`);
-                if (!messages || !messages.length){
-                    console.log(`No Stashed Messages Stored for ${api}...`);
-                    return apiIterator(apis, callback);
-                }
-
-                messageIterator(messages.slice(), api, () => {                    
-                    apiIterator(apis,callback);
-                })   
-
-            });
-        }
-
-        apiIterator(apis.slice(), () => {
-            if(!doubleCheck)
-                return this.checkPendingMessages(true);
-
-            console.log('All Pending messages were processed!');
-            self.lock.disable();
-        })
-    }
-
-    evtHandler(evt){
-        const self = this;
-
-        if(self.confirmedEvents.length)
-            return self.confirmedEvents.push(evt);
-
-        self.confirmedEvents.push(evt);
-        self.confirmEventsFinish();
-    }
-
-    confirmEventsFinish(){
-        const self = this;
-       
-        const idInterval = setInterval(() => {
-            if(self.confirmedEvents.length === self.events.length){
-                clearInterval(idInterval);
-                self._listeners = self._cacheListener;
-                self.lock.enable();
-                self.checkPendingMessages();
-            }    
-        }, 1000);
+        self.track._finishRegistration();
+        self.getAll(true, {
+            query: [
+                `api like /${api}/g`
+            ]
+        }, (err, messages) => {
+            if (err)
+                return console.log(`Could not list messages from Inbox, api: ${api}`);
+            if (!messages || !messages.length)
+                return console.log(`No Stashed Messages Stored for ${api}...`);
+            console.log(`${messages.length} Stashed Messages found for manager ${api}`);
+            messages.forEach(m => onNewApiMsgListener(m));
+        });
     }
 
     /**
@@ -288,18 +225,8 @@ class MessageManager extends Manager{
 
     _startMessageListener(did){
         let self = this;
-
-        self._startDIDListener(did);
-    }
-
-    async _startDIDListener(did){
-        let self = this;
-
-        await self.lock.promise;
         console.log("_startMessageListener", did.getIdentifier());
-        
         did.readMessage((err, message) => {
-            
             if (err){
                 if (err.message !== 'socket hang up')
                     console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
@@ -327,7 +254,6 @@ class MessageManager extends Manager{
                 self._startMessageListener(did);
             });
         });
-
     }
 
     getOwnDID(callback){
@@ -340,41 +266,6 @@ class MessageManager extends Manager{
         this.w3cDID.createIdentity(DID_METHOD, didString, (err, didDoc) => err
             ? _err(`Could not create DID identity`, err, callback)
             : callback(undefined, didDoc));
-    }
-
-    /**
-     * Lists all registered items according to query options provided
-     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
-     * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
-     * @param {function(err, object[])} callback
-     */
-     getAll(readDSU, options, callback) {
-        if (!callback){
-            if (!options){
-                callback = readDSU;
-                options = DEFAULT_QUERY_OPTIONS;
-                readDSU = false;
-            }
-            if (typeof readDSU === 'boolean'){
-                callback = options;
-                options = DEFAULT_QUERY_OPTIONS;
-            }
-            if (typeof readDSU === 'object'){
-                callback = options;
-                options = readDSU;
-                readDSU = false;
-            }
-        }
-
-        options = options || DEFAULT_QUERY_OPTIONS;
-
-        let self = this;
-        self.query(options.query, options.sort, options.limit, (err, records) => {
-            if (err)
-                return self._err(`Could not perform query`, err, callback);
-            
-            callback(undefined, records);            
-        });
     }
 }
 
