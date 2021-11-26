@@ -10,12 +10,28 @@ const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE } = require('../constant
 class TrackAndManageListeners {
     _startedRegistrations = 0;
     _finishedRegistrations = 0;
+    _listeners = {};
 
     constructor() {
         console.log('Track Manager Listeners Initiated');
     }
 
-    startRegistration(){
+    registerListener(api, onNewApiMsgListener, callback){
+        this._startRegistration();
+
+        if (!(api in this._listeners))
+            this._listeners[api] = [];
+
+        this._listeners[api].push(onNewApiMsgListener);
+        console.log(`track registering a new listener on ${api}`);
+        console.log('track register listener: ', this._listeners);
+
+        setTimeout(() => {
+            this._finishRegistration(callback);
+        },100);
+    }
+
+    _startRegistration(){
         this._startedRegistrations++;
         console.log('track start registration: ', this._startedRegistrations)
     }
@@ -23,7 +39,7 @@ class TrackAndManageListeners {
     _finishRegistration(callback){ 
         setTimeout(()=> {
             this._finishedRegistrations++;
-        console.log('track finish registration: ',this._finishedRegistrations)
+            console.log('track finish registration: ',this._finishedRegistrations)
         },100);       
     }
 
@@ -148,9 +164,9 @@ class MessageManager extends Manager{
             this._listeners[api] = [];
         this._listeners[api].push(onNewApiMsgListener);
         const self = this;
-        self.track.startRegistration();
+        self.track.registerListener(api, onNewApiMsgListener);
         console.log(`registering a new listener on ${api}`);
-        self.track._finishRegistration();
+        
         self.getAll(true, {
             query: [
                 `api like /${api}/g`
