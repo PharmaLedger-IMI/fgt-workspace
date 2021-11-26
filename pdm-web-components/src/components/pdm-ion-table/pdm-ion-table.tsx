@@ -115,6 +115,25 @@ export class PdmIonTable implements ComponentInterface {
     });
   }
 
+  async performSearch(evt: any) {
+    console.log('## evt=', evt)
+    this.webManager = this.webManager || await WebManagerService.getWebManager(this.manager);
+    if (!this.webManager)
+      return;
+
+    const queries = [
+      {query: ['__timestamp > 0'], sort: "dsc"},
+      {query: ['__timestamp > 0'], sort: "dsc"},
+    ]
+    await this.webManager.search( true, queries, (err, contents) => {
+      if (err){
+        this.sendError(`Could not list items`, err);
+        return;
+      }
+      console.log('$$ search results=', contents);
+    });
+  }
+
   async loadContents(pageNumber?: number){
     this.webManager = this.webManager || await WebManagerService.getWebManager(this.manager);
     if (!this.webManager)
