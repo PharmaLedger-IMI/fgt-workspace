@@ -111,7 +111,7 @@ class DirectoryManager extends Manager {
      */
     _keywordToQuery(keyword) {
         keyword = keyword || '.*';
-        return [`role like /${keyword}/g`];
+        return [[`role like /${keyword}/g`]];
     }
 
     /**
