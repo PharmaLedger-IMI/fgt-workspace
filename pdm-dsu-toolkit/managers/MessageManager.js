@@ -8,10 +8,12 @@ const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE } = require('../constant
 * @memberOf MessageManager
 */
 class TrackAndManageListeners {
+    
     _startedRegistrations = 0;
     _finishedRegistrations = 0;
-    _listeners = {};
-    _pendingMessageProcess = [];
+    _listeners = {};MAH771663665
+    _scheduledMethods = [];
+    counter = 3;
 
     constructor() {
         console.log('Track Manager Listeners Initiated');
@@ -58,34 +60,36 @@ class TrackAndManageListeners {
 
         console.log('track continue listenerregistration complete' , this._startedRegistrations, ' : ', this._finishedRegistrations)
         console.log('Track listeners before callback: ', this._listeners);
-        
-        this._checkPendingMessages(callback);
-        
+
+        callback(undefined, this._listeners);
     }
 
-    _checkPendingMessages(callback){
-        console.log('track check pendign messages: ', this._pendingMessageProcess);
-        if(!this._pendingMessageProcess)
-            return callback(undefined, this._listeners);
-
-        const message = this._pendingMessageProcess.shift();
-        console.log('track processing message: ', message)
-
-        if(!message)
-            return callback(undefined, this._listeners);
-
-        this.processMessage(message, () => {
-                this._checkPendingMessages(callback);       
-        });
+    startProcessingMessages(){
+        setTimeout(() => {
+            this.runScheduleProcessMessage();
+        }, 1000);
     }
 
-    scheduleMessageProcess(message){
-        this._pendingMessageProcess.push(message);
-        console.log('track schedule Message: ', message);
-        console.log('track schedule: ', this._pendingMessageProcess);
+    scheduleProcessMessage(method){
+        this._scheduledMethods.push(method);
+    }
+
+    runScheduleProcessMessage(){
+        const method = this._scheduledMethods.shift();
+
+        if(method){
+            console.log(`Running scheduled process message...`)
+            try{
+                method();
+            } catch(e) {
+                console.log(`Message processing failed pushing to the end of the queue`);
+                this._scheduledMethods.push(method);
+            }
+        }
     }
 
     processMessage(message, callback){
+        console.log('track: ' , this._timeout);
         const self = this;
         const {api} = message;
 
@@ -162,8 +166,10 @@ class MessageManager extends Manager{
             manager.timer = undefined;
             manager.track = new TrackAndManageListeners();
 
-            
-
+            manager.getOwnDID((err, didDoc) => err
+                ? console.log(`Could not get Own DID`, err)
+                : manager._startMessageListener(didDoc));             
+        
             if (callback)
                 callback(undefined, manager);
         });
@@ -184,20 +190,18 @@ class MessageManager extends Manager{
     _receiveMessage(message, callback){
         const {api} = message;
         let self = this;
+
         self._saveToInbox(message, (err) => {
             if (err)
                 return _err(`Could not save message to inbox`, err, callback);
             console.log(`Message ${JSON.stringify(message)} saved to table ${self._getTableName()} on DID ${self.didString}`);
-            if (!(api in self._listeners)) {
-                self.track.scheduleMessageProcess(message);
-                console.log(`No listeners registered for ${api} messages.`);
-                return callback();
+
+            if(!(api in self._listeners)){
+               return self.track.scheduleProcessMessage(() => self.track.processMessage.call(self, message, callback));
             }
 
-            console.log(`Found ${self._listeners[api].length} listeners for the ${api} message api`);
-
             self.track.processMessage(message, callback);    
-        });
+        }); 
     }
 
     _saveToInbox(message, callback){
@@ -226,13 +230,9 @@ class MessageManager extends Manager{
 
             self._listeners = listeners;
             console.log('track listeners on message manager: ', self._listeners);
+
+            self.track.startProcessingMessages();
             
-            setTimeout(() => {
-                self.getOwnDID((err, didDoc) => err
-                    ? console.log(`Could not get Own DID`, err)
-                    : self._startMessageListener(didDoc));                
-            },1000);
-                        
         });
     }
 
@@ -256,7 +256,8 @@ class MessageManager extends Manager{
             selfDID.sendMessage(JSON.stringify(message), did.getIdentifier(), err => err
                 ? _err(`Could not send Message`, err, callback)
                 : callback());
-        });
+                        
+            });
     }
 
     /**
@@ -322,9 +323,14 @@ class MessageManager extends Manager{
                     console.log(`Failed to receive message`, err);
                 else
                     console.log(`Message received ${message}`);
-                setTimeout(() => {
-                    self._startMessageListener(did);                    
-                }, 1000);    
+
+                if(!(self.track.counter > 0))
+                    return self._startMessageListener(did);
+            
+                    setTimeout(() => {
+                        self.track.counter--;
+                        self._startMessageListener(did);                     
+                    }, 2000);    
             });
         });
     }
