@@ -9,83 +9,38 @@ const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE } = require('../constant
 */
 class TrackAndManageListeners {
     
-    _startedRegistrations = 0;
-    _finishedRegistrations = 0;
-    _listeners = {};MAH771663665
+    _timeOfLastRegisteredListener = Date.now();
+    _loaded = false;
+    _listeners = {};
     _scheduledMethods = [];
-    counter = 3;
 
     constructor() {
         console.log('Track Manager Listeners Initiated');
     }
 
     registerListener(api, onNewApiMsgListener, callback){
-        this._startRegistration();
+        this._startRegistration(Date.now());
 
         if (!(api in this._listeners))
             this._listeners[api] = [];
 
         this._listeners[api].push(onNewApiMsgListener);
-        console.log(`track registering a new listener on ${api}`);
-        console.log('track register listener: ', this._listeners);
+        console.log(`registering a new listener on ${api}`);
 
-        setTimeout(() => {
-            this._finishRegistration(callback);
-        },250);
-    }
-
-    _startRegistration(){
-        this._startedRegistrations++;
-        console.log('track start registration: ', this._startedRegistrations)
-    }
-
-    _finishRegistration(callback){ 
-            this._finishedRegistrations++;
-            console.log('track finish registration: ',this._finishedRegistrations)
-            this._checkListenersRegistrationComplete(callback);      
-    }
-
-    _checkListenersRegistrationComplete(callback){
-        console.log('track start listenerregistration complete:' , this._startedRegistrations, ' : ', this._finishedRegistrations)
-
-        console.log('track checkListenerregistrationComplete: ' , this._startedRegistrations, ' : ', this._finishedRegistrations);
-        if(this._startedRegistrations < 3)
-            return callback();
-        
-        if(this._finishedRegistrations < 3)
-            return callback();
-
-        if(this._startedRegistrations !== this._finishedRegistrations)
-            return callback();
-
-        console.log('track continue listenerregistration complete' , this._startedRegistrations, ' : ', this._finishedRegistrations)
-        console.log('Track listeners before callback: ', this._listeners);
-
-        callback(undefined, this._listeners);
-    }
-
-    startProcessingMessages(){
-        setTimeout(() => {
-            this.runScheduleProcessMessage();
-        }, 1000);
-    }
-
-    scheduleProcessMessage(method){
-        this._scheduledMethods.push(method);
-    }
-
-    runScheduleProcessMessage(){
-        const method = this._scheduledMethods.shift();
-
-        if(method){
-            console.log(`Running scheduled process message...`)
-            try{
-                method();
-            } catch(e) {
-                console.log(`Message processing failed pushing to the end of the queue`);
-                this._scheduledMethods.push(method);
+        const idInterval = setInterval(() => {
+            console.log('track time: ', Date.now(), ' / ', this._timeOfLastRegisteredListener, ' = ', (Date.now() - this._timeOfLastRegisteredListener))
+            if ((Date.now() - this._timeOfLastRegisteredListener) > 2000){
+                clearInterval(idInterval);
+                if(this._loaded)
+                    return callback (undefined, true);
+                this._loaded = true;
+                callback(undefined, false);    
             }
-        }
+        }, 500); 
+    }
+
+    _startRegistration(time){
+        this._timeOfLastRegisteredListener = time;   
     }
 
     processMessage(message, callback){
@@ -165,10 +120,6 @@ class MessageManager extends Manager{
             manager._listeners = {};
             manager.timer = undefined;
             manager.track = new TrackAndManageListeners();
-
-            manager.getOwnDID((err, didDoc) => err
-                ? console.log(`Could not get Own DID`, err)
-                : manager._startMessageListener(didDoc));             
         
             if (callback)
                 callback(undefined, manager);
@@ -188,17 +139,12 @@ class MessageManager extends Manager{
     }
 
     _receiveMessage(message, callback){
-        const {api} = message;
         let self = this;
 
         self._saveToInbox(message, (err) => {
             if (err)
                 return _err(`Could not save message to inbox`, err, callback);
             console.log(`Message ${JSON.stringify(message)} saved to table ${self._getTableName()} on DID ${self.didString}`);
-
-            if(!(api in self._listeners)){
-               return self.track.scheduleProcessMessage(() => self.track.processMessage.call(self, message, callback));
-            }
 
             self.track.processMessage(message, callback);    
         }); 
@@ -218,21 +164,16 @@ class MessageManager extends Manager{
      */
     registerListeners(api, onNewApiMsgListener){
         const self = this;
-        self.track.registerListener(api, onNewApiMsgListener, (err, listeners) => {
+        self.track.registerListener(api, onNewApiMsgListener, (err, hasDIDListener) => {
             if(err)
                 return;
 
-            if(listeners)
-                console.log('track listeners on complete check: ', listeners);
-
-            if(!listeners)
+            if(hasDIDListener)
                 return;
 
-            self._listeners = listeners;
-            console.log('track listeners on message manager: ', self._listeners);
-
-            self.track.startProcessingMessages();
-            
+            self.getOwnDID((err, didDoc) => err
+                ? console.log(`Could not get Own DID`, err)
+                : self._startMessageListener(didDoc));          
         });
     }
 
@@ -322,15 +263,8 @@ class MessageManager extends Manager{
                 if (err)
                     console.log(`Failed to receive message`, err);
                 else
-                    console.log(`Message received ${message}`);
-
-                if(!(self.track.counter > 0))
-                    return self._startMessageListener(did);
-            
-                    setTimeout(() => {
-                        self.track.counter--;
-                        self._startMessageListener(did);                     
-                    }, 2000);    
+                    console.log(`Message received ${message}`);            
+                self._startMessageListener(did);                       
             });
         });
     }
