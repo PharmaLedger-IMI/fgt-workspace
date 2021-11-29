@@ -27,6 +27,7 @@ const utils = require('../../test-utils');
 /*Specific Dependencies*/
 
 const {getMessageManager , Message} = require('../../../pdm-dsu-toolkit/managers/MessageManager');
+const {getStockManager, getBatchManager, getDirectoryManager, getIndividualProductManager, getIssuedOrderManager, getIssuedShipmentManager, getNotificationManager, getParticipantManager, getProductManager, getReceiptManager, getReceivedOrderManager, getReceivedShipmentManager, getSaleManager, getShipmentLineManager} = require('../../../fgt-dsu-wizard/managers');
 
 /*Fake Server Config*/
 
@@ -86,67 +87,93 @@ const sendMessages = function(messages, manager, did, callback){
 /*Run Tests*/
 
 const runTest = function(callback){
-    const mahGetCredentials = getCredentials(APPS.MAH);
-    mahGetCredentials['id']['secret'] = 'MAH999999999'
-
-    const whsGetCredentials = getCredentials(APPS.WHOLESALER);
-    whsGetCredentials['id']['secret'] = 'WHS999999999'
-
-    const mahCredentials = Object.keys(mahGetCredentials).reduce((accum, key) => {
-        if (mahGetCredentials[key].public)
-            accum[key] = mahGetCredentials[key].secret;
-        return accum;
-    }, {})
-
-    const whsCredentials = Object.keys(whsGetCredentials).reduce((accum, key) => {
-        if (whsGetCredentials[key].public)
-            accum[key] = whsGetCredentials[key].secret;
-        return accum;
-    }, {})
+    
   
-    const whsDID = 'WHS999999999';
-    const mahDID = 'MAH999999999';
-    const messages = [];
+  
+    
+ 
+    // const messages = [];
 
-    getMockParticipantManager(domain, mahCredentials, (err, participantManager) => {
-        if (err)
-            return callback(err);
 
-        for(let i = 0; i < 10; i++){
-            messages.push(new Message('notifications', 'hello' + i));
-        }
 
-        console.log(participantManager);
+    //     for(let i = 0; i < 10; i++){
+    //         messages.push(new Message('notifications', 'hello' + i));
+    //     }
 
-        const messageManagerMAH = getMessageManager(participantManager);
+    //     console.log(participantManager);
 
-        sendMessages(messages, messageManagerMAH, whsDID, ()=> {
+    //     const messageManagerMAH = getMessageManager(participantManager);
 
-            getMockParticipantManager(domain, whsCredentials, (err, participantManager) => {
-                if(err)
-                    return callback(err);
+    //     sendMessages(messages, messageManagerMAH, whsDID, ()=> {
+
+    //         getMockParticipantManager(domain, whsCredentials, (err, participantManager) => {
+    //             if(err)
+    //                 return callback(err);
     
     
                 
-                callback();
+    //             callback();
+    //         })
+
+
+
+    //     })
+     
+
+    
+    /*
+    * Create MAH Credentials
+    */ 
+    const mahCredentials = getCredentials(APPS.MAH); // MAH Credentials Creation 
+    mahCredentials['id']['secret'] = 'MAH999999999' //Assign knowned DID
+
+    const mahFinalCredentials = Object.keys(mahCredentials).reduce((accum, key) => {
+        if (mahCredentials[key].public)
+            accum[key] = mahCredentials[key].secret;
+        return accum;
+    }, {})
+
+    /*
+    * Create WHS Credentials
+    */
+
+    const whsCredentials = getCredentials(APPS.WHOLESALER); // WHS Credentials Creation 
+    whsCredentials['id']['secret'] = 'WHS999999999' //Assign knowned DID
+
+    const whsFinalCredentials = Object.keys(whsCredentials).reduce((accum, key) => {
+        if (whsCredentials[key].public)
+            accum[key] = whsCredentials[key].secret;
+        return accum;
+    }, {})
+
+    /*
+    * KNOWNED DIDS
+    */ 
+
+    const mahDID = 'MAH999999999'; // MAH DID INFO
+    const whsDID = 'WHS999999999'; // WHS DID INFO
+
+    getMockParticipantManager(domain, mahFinalCredentials, (err, participantManagerMAH) => {
+        if (err)
+            return callback(err);
+
+        getParticipantManager(domain, whsFinalCredentials, (err, participantManagerWHS) => {
+                if (err)
+                    return callback(err);
+        
+               
+            
+        
+        
+        
+                callback()
             })
+            
+        
+    });
 
 
 
-        })
-
-
-
-
-
-
-
-       
-       
-
-
-
-    });     
 };
 
 const testFinishCallback = function(callback){
