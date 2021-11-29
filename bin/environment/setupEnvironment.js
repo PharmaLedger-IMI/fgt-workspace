@@ -53,9 +53,11 @@ const getTest = () => {
     MULTIPLE[APPS.MAH] = [PFIZER, MSD, ROCHE, BAYER, NOVO_NORDISK, GSK, TAKEDA];
     MULTIPLE[APPS.WHOLESALER] = [
         generateWholesalerCredentials(undefined, "PDM the Wholesaler", undefined, "London, England"),
+        generateWholesalerCredentials(undefined, "PDM the Wholesaler", undefined, "London, England"),
         generateWholesalerCredentials(134013710, "Takeda", "takeda", "Illinois, USA")
     ];
     MULTIPLE[APPS.PHARMACY] = [
+        generatePharmacyCredentials(undefined, "PDM the Pharmacy", undefined, "Avenida da Liberdade, Lisboa, Portugal"),
         generatePharmacyCredentials(undefined, "PDM the Pharmacy", undefined, "Avenida da Liberdade, Lisboa, Portugal")
     ];
     return MULTIPLE;
