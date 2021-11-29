@@ -250,6 +250,7 @@ export class ManagedProduct implements CreateManageView{
                      item-reference="gtin-batch"
                      query={this.gtin}
                      auto-load={true}
+                     search-bar-placeholder="gtin, product name"
                      canQuery={false}
                      paginated={true}
                      manager="BatchManager"
