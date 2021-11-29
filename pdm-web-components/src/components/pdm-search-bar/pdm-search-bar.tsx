@@ -26,18 +26,19 @@ export class PdmSearchBar {
     return (
       <Host>
         <ion-grid>
-          <ion-row className="ion-justify-content-center ion-align-items-center">
+          <ion-row className="ion-justify-content-end ion-align-items-end">
             <ion-col size="auto" className="ion-align-self-center">
               <ion-searchbar
                 id="search-bar"
                 debounce={1000}
                 placeholder={self.placeholder}
-                search-icon="search-outline">
+                search-icon="undefined"
+              >
               </ion-searchbar>
             </ion-col>
-            <ion-col className="ion-align-self-center">
-              <ion-button style={{padding: '3px 0'}} color="secondary" expand="full"
-                          onClick={self.searchEvt.bind(self)}>{self.btnLabel}
+            <ion-col>
+              <ion-button color="secondary" expand="full" onClick={self.searchEvt.bind(self)}>
+                <ion-icon name="search-outline"> </ion-icon>
               </ion-button>
             </ion-col>
           </ion-row>
