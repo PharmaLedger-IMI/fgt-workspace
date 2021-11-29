@@ -162,9 +162,7 @@ class MessageManager extends Manager{
             manager.timer = undefined;
             manager.track = new TrackAndManageListeners();
 
-            manager.getOwnDID((err, didDoc) => err
-                ? console.log(`Could not get Own DID`, err)
-                : manager._startMessageListener(didDoc));
+            
 
             if (callback)
                 callback(undefined, manager);
@@ -229,6 +227,12 @@ class MessageManager extends Manager{
             self._listeners = listeners;
             console.log('track listeners on message manager: ', self._listeners);
             
+            setTimeout(() => {
+                self.getOwnDID((err, didDoc) => err
+                    ? console.log(`Could not get Own DID`, err)
+                    : self._startMessageListener(didDoc));                
+            },1000);
+                        
         });
     }
 
@@ -318,7 +322,9 @@ class MessageManager extends Manager{
                     console.log(`Failed to receive message`, err);
                 else
                     console.log(`Message received ${message}`);
-                self._startMessageListener(did);
+                setTimeout(() => {
+                    self._startMessageListener(did);                    
+                }, 1000);    
             });
         });
     }
