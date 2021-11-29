@@ -39,7 +39,7 @@ export class PdmIonTable implements ComponentInterface {
   @Prop({attribute: 'icon-name'}) iconName?: string = undefined;
   @Prop({attribute: 'no-content-message', mutable: true}) noContentMessage?: string = "No Content";
   @Prop({attribute: 'loading-message', mutable: true}) loadingMessage?: string = "Loading...";
-  @Prop({attribute: 'query-placeholder', mutable: true}) searchBarPlaceholder?: string =  "enter search terms...";
+  @Prop({attribute: 'search-bar-placeholder', mutable: true}) searchBarPlaceholder?: string =  "enter search terms...";
   // @Prop({attribute: 'buttons', mutable: true}) buttons?: string[] | {} = [];
   // @Prop({attribute: 'send-real-events', mutable: true}) sendRealEvents: boolean = false;
 

@@ -430,6 +430,10 @@ export namespace Components {
         "orientation": "between" | "end" | "evenly" | "around" | "center" | "start";
         "singleLine": boolean;
     }
+    interface PdmSearchBar {
+        "btnLabel": string;
+        "placeholder": string;
+    }
     interface PdmSsappLoader {
         "loader"?: string;
         "markAsLoaded": () => Promise<void>;
@@ -686,6 +690,12 @@ declare global {
         prototype: HTMLPdmItemOrganizerElement;
         new (): HTMLPdmItemOrganizerElement;
     };
+    interface HTMLPdmSearchBarElement extends Components.PdmSearchBar, HTMLStencilElement {
+    }
+    var HTMLPdmSearchBarElement: {
+        prototype: HTMLPdmSearchBarElement;
+        new (): HTMLPdmSearchBarElement;
+    };
     interface HTMLPdmSsappLoaderElement extends Components.PdmSsappLoader, HTMLStencilElement {
     }
     var HTMLPdmSsappLoaderElement: {
@@ -775,6 +785,7 @@ declare global {
         "pdm-chartjs": HTMLPdmChartjsElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "pdm-item-organizer": HTMLPdmItemOrganizerElement;
+        "pdm-search-bar": HTMLPdmSearchBarElement;
         "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
         "simple-managed-product-item": HTMLSimpleManagedProductItemElement;
         "slide-in-board": HTMLSlideInBoardElement;
@@ -1385,6 +1396,11 @@ declare namespace LocalJSX {
         "orientation"?: "between" | "end" | "evenly" | "around" | "center" | "start";
         "singleLine"?: boolean;
     }
+    interface PdmSearchBar {
+        "btnLabel"?: string;
+        "onSearch"?: (event: CustomEvent<any>) => void;
+        "placeholder"?: string;
+    }
     interface PdmSsappLoader {
         "loader"?: string;
         "timeout"?: number;
@@ -1482,6 +1498,7 @@ declare namespace LocalJSX {
         "pdm-chartjs": PdmChartjs;
         "pdm-ion-table": PdmIonTable;
         "pdm-item-organizer": PdmItemOrganizer;
+        "pdm-search-bar": PdmSearchBar;
         "pdm-ssapp-loader": PdmSsappLoader;
         "simple-managed-product-item": SimpleManagedProductItem;
         "slide-in-board": SlideInBoard;
@@ -1531,6 +1548,7 @@ declare module "@stencil/core" {
             "pdm-chartjs": LocalJSX.PdmChartjs & JSXBase.HTMLAttributes<HTMLPdmChartjsElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "pdm-item-organizer": LocalJSX.PdmItemOrganizer & JSXBase.HTMLAttributes<HTMLPdmItemOrganizerElement>;
+            "pdm-search-bar": LocalJSX.PdmSearchBar & JSXBase.HTMLAttributes<HTMLPdmSearchBarElement>;
             "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;
             "simple-managed-product-item": LocalJSX.SimpleManagedProductItem & JSXBase.HTMLAttributes<HTMLSimpleManagedProductItemElement>;
             "slide-in-board": LocalJSX.SlideInBoard & JSXBase.HTMLAttributes<HTMLSlideInBoardElement>;
