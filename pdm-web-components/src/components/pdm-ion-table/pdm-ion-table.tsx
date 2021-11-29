@@ -109,18 +109,17 @@ export class PdmIonTable implements ComponentInterface {
   }
 
   async performSearch(evt: any) {
-    const keyword = evt.detail;
-    console.log(`# ${this.manager} search keyword=${keyword}`)
-    await this.loadContents(this.currentPage, keyword)
+    console.log(`# ${this.manager} search keyword=${evt.detail}`)
+    this.query = evt.detail;
   }
 
-  async loadContents(pageNumber?: number, keyword?: string){
+  async loadContents(pageNumber?: number){
     this.webManager = this.webManager || await WebManagerService.getWebManager(this.manager);
     if (!this.webManager)
       return;
 
     if (this.paginated){
-      await this.webManager.getPage(this.itemsPerPage, pageNumber || this.currentPage, keyword || this.query, this.sort, false, (err, contents) => {
+      await this.webManager.getPage(this.itemsPerPage, pageNumber || this.currentPage, this.query, this.sort, false, (err, contents) => {
         if (err){
           this.sendError(`Could not list items`, err);
           return;
