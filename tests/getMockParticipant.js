@@ -139,7 +139,7 @@ const getMockParticipantManager = function(domain, identity, callback){
     getFakeDSUStorage(domain, identity,(err, dsuStorage) => {
         if (err)
             return callback(err);
-        getParticipantManager(dsuStorage, (err, manager) => {
+        getParticipantManager(dsuStorage, true, (err, manager) => {
             if (err)
                 return callback(err);
             callback(undefined, manager);
