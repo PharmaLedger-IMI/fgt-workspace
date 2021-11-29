@@ -57,11 +57,13 @@ Type: `Promise<void>`
 ### Depends on
 
 - [multi-spinner](../multi-spinner)
+- [pdm-search-bar](../pdm-search-bar)
 
 ### Graph
 ```mermaid
 graph TD;
   pdm-ion-table --> multi-spinner
+  pdm-ion-table --> pdm-search-bar
   managed-product --> pdm-ion-table
   style pdm-ion-table fill:#f9f,stroke:#333,stroke-width:4px
 ```

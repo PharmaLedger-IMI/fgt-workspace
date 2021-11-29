@@ -3,6 +3,7 @@ const ShipmentManager = require("./ShipmentManager");
 const {Order, Stock, OrderLine, OrderStatus} = require('../model');
 
 const getIssuedOrderManager = require('./IssuedOrderManager');
+const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 
 /**
  * Received Shipment Manager Class - concrete ShipmentManager for received Shipments.
@@ -26,7 +27,7 @@ const getIssuedOrderManager = require('./IssuedOrderManager');
  */
 class ReceivedShipmentManager extends ShipmentManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.receivedShipments, ['requesterId'], (err, manager) => {
+        super(participantManager, DB.receivedShipments, ['shipmentId', 'senderId', 'requesterId'], (err, manager) => {
             if (err)
                 return callback ? callback(err) : console.log(err);
 
@@ -83,20 +84,69 @@ class ReceivedShipmentManager extends ShipmentManager {
             item = key;
             key = undefined;
         }
-        return {...super._indexItem(key, item, record), senderId: item.senderId}
+        return {...super._indexItem(key, item, record), senderId: item.senderId, requesterId: item.requesterId}
     };
 
     /**
      * Converts the text typed in a general text box into the query for the db
      * Subclasses should override this
      * @param {string} keyword
-     * @return {string[]} query
+     * @return {string[string[]]} query
      * @protected
      * @override
      */
-    _keywordToQuery(keyword) {
+    _keywordToQuery(keyword){
         keyword = keyword || '.*';
-        return [`orderId like /${keyword}/g`];
+        return [[`shipmentId like /${keyword}/g`], [`senderId like /${keyword}/g`]];
+    }
+
+    /**
+     * Returns a page object
+     * @param {number} itemsPerPage
+     * @param {number} page
+     * @param {string} keyword
+     * @param {string} sort
+     * @param {boolean} readDSU
+     * @param {function(err, Page)}callback
+     */
+    getPage(itemsPerPage, page, keyword, sort, readDSU, callback){
+        const self = this;
+        let receivedPage = page || 1;
+
+        const queries = keyword ? self._keywordToQuery(keyword) : [["__timestamp > 0"]]
+        const iterator = (accum, queriesArr, _callback) => {
+            const query = queriesArr.shift()
+            if (!query)
+                return _callback(undefined, accum)
+
+            self.getAll(readDSU, {query, sort: sort || "dsc",  limit: undefined}, (err, records) => {
+                accum = [...accum, ...records]
+                iterator(accum, queriesArr, _callback)
+            })
+        }
+
+        iterator([], queries.slice(), (err, records) => {
+            if (err)
+                return self._err(`Could not retrieve records to page`, err, callback);
+            if (records.length === 0)
+                return callback(undefined, toPage(0, 0, records, itemsPerPage));
+
+            // remove duplicates
+            records = Object.values(
+                records.reduce((accum, record) => {
+                    const key = record.shipmentId;
+                    if (!accum.hasOwnProperty(key)) {
+                        accum[key] = record;
+                    }
+                    return accum
+                }, {})
+            );
+
+            if (records.length <= itemsPerPage)
+                return callback(undefined, toPage(1, 1, records, itemsPerPage));
+            const page = paginate(records, itemsPerPage, receivedPage);
+            callback(undefined, page);
+        })
     }
 
     /**

@@ -1,6 +1,7 @@
 const {INFO_PATH, ANCHORING_DOMAIN, DB, DEFAULT_QUERY_OPTIONS} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Product = require('../model/Product');
+const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 
 
 /**
@@ -191,12 +192,61 @@ class ProductManager extends Manager {
      * Converts the text typed in a general text box into the query for the db
      * Subclasses should override this
      * @param {string} keyword
-     * @return {string[]} query
+     * @return {string[string[]]} query
      * @protected
      */
     _keywordToQuery(keyword){
         keyword = keyword || '.*';
-        return [`gtin like /${keyword}/g`];
+        return [[`gtin like /${keyword}/g`], [`name like /${keyword}/g`]];
+    }
+
+    /**
+     * Returns a page object
+     * @param {number} itemsPerPage
+     * @param {number} page
+     * @param {string} keyword
+     * @param {string} sort
+     * @param {boolean} readDSU
+     * @param {function(err, Page)}callback
+     */
+    getPage(itemsPerPage, page, keyword, sort, readDSU, callback){
+        const self = this;
+        let receivedPage = page || 1;
+
+        const queries = keyword ? self._keywordToQuery(keyword) : [["__timestamp > 0"]]
+        const iterator = (accum, queriesArr, _callback) => {
+            const query = queriesArr.shift()
+            if (!query)
+                return _callback(undefined, accum)
+
+            self.getAll(readDSU, {query, sort: sort || "dsc",  limit: undefined}, (err, records) => {
+                accum = [...accum, ...records]
+                iterator(accum, queriesArr, _callback)
+            })
+        }
+
+        iterator([], queries.slice(), (err, records) => {
+            if (err)
+                return self._err(`Could not retrieve records to page`, err, callback);
+            if (records.length === 0)
+                return callback(undefined, toPage(0, 0, records, itemsPerPage));
+
+            // remove duplicates
+            records = Object.values(
+                records.reduce((accum, record) => {
+                    const key = record.gtin;
+                    if (!accum.hasOwnProperty(key)) {
+                        accum[key] = record;
+                    }
+                    return accum
+                }, {})
+            );
+
+            if (records.length <= itemsPerPage)
+                return callback(undefined, toPage(1, 1, records, itemsPerPage));
+            const page = paginate(records, itemsPerPage, receivedPage);
+            callback(undefined, page);
+        })
     }
 
     /**

@@ -87,13 +87,6 @@ export class PdmIonTable implements ComponentInterface {
 
   @State() model = undefined;
 
-  async componentWillLoad() {
-    if (!this.host.isConnected)
-      return;
-    if (this.autoLoad)
-      await this.loadContents();
-  }
-
   private updateTable(newModel){
     if (!this.model){
       this.model = [...newModel];
@@ -116,31 +109,18 @@ export class PdmIonTable implements ComponentInterface {
   }
 
   async performSearch(evt: any) {
-    console.log('## evt=', evt)
-    this.webManager = this.webManager || await WebManagerService.getWebManager(this.manager);
-    if (!this.webManager)
-      return;
-
-    const queries = [
-      {query: ['__timestamp > 0'], sort: "dsc"},
-      {query: ['__timestamp > 0'], sort: "dsc"},
-    ]
-    await this.webManager.search( true, queries, (err, contents) => {
-      if (err){
-        this.sendError(`Could not list items`, err);
-        return;
-      }
-      console.log('$$ search results=', contents);
-    });
+    const keyword = evt.detail;
+    console.log(`# ${this.manager} search keyword=${keyword}`)
+    await this.loadContents(this.currentPage, keyword)
   }
 
-  async loadContents(pageNumber?: number){
+  async loadContents(pageNumber?: number, keyword?: string){
     this.webManager = this.webManager || await WebManagerService.getWebManager(this.manager);
     if (!this.webManager)
       return;
 
     if (this.paginated){
-      await this.webManager.getPage(this.itemsPerPage, pageNumber || this.currentPage, this.query, this.sort, false, (err, contents) => {
+      await this.webManager.getPage(this.itemsPerPage, pageNumber || this.currentPage, keyword || this.query, this.sort, false, (err, contents) => {
         if (err){
           this.sendError(`Could not list items`, err);
           return;
@@ -252,8 +232,7 @@ export class PdmIonTable implements ComponentInterface {
         return;
       return (
         <div class="ion-margin-end">
-          <ion-searchbar debounce={1000} placeholder={self.searchBarPlaceholder}
-                         search-icon="search-outline"></ion-searchbar>
+          <pdm-search-bar onSearch={self.performSearch.bind(self)} placeholder={self.searchBarPlaceholder}> </pdm-search-bar>
         </div>
       )
     }
@@ -293,6 +272,13 @@ export class PdmIonTable implements ComponentInterface {
       </ion-row>
     )
   };
+
+  async componentWillLoad() {
+    if (!this.host.isConnected)
+      return;
+    if (this.autoLoad)
+      await this.loadContents();
+  }
 
   render() {
     return (

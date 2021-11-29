@@ -2,6 +2,7 @@ const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../con
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Receipt = require('../model/Receipt');
 const IndividualReceipt = require('../model/IndividualReceipt');
+const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 
 /**
  * Stock Manager Class
@@ -193,6 +194,67 @@ class ReceiptManager extends Manager{
                 return callback(undefined, receipt.pk);
             callback(undefined, new IndividualReceipt(receipt));
         });
+    }
+
+
+    /**
+     * Converts the text typed in a general text box into the query for the db
+     * @param {string} keyword
+     * @return {string[string[]]} query
+     * @override
+     */
+    _keywordToQuery(keyword){
+        keyword = keyword || '.*';
+        return [[`gtin like /${keyword}/g`], [`batchNumber like /${keyword}/g`], [`sellerId like /${keyword}/g`]];
+    }
+
+    /**
+     * Returns a page object
+     * @param {number} itemsPerPage
+     * @param {number} page
+     * @param {string} keyword
+     * @param {string} sort
+     * @param {boolean} readDSU
+     * @param {function(err, Page)}callback
+     */
+    getPage(itemsPerPage, page, keyword, sort, readDSU, callback){
+        const self = this;
+        let receivedPage = page || 1;
+
+        const queries = keyword ? self._keywordToQuery(keyword) : [["__timestamp > 0"]]
+        const iterator = (accum, queriesArr, _callback) => {
+            const query = queriesArr.shift()
+            if (!query)
+                return _callback(undefined, accum)
+
+            self.getAll(readDSU, {query, sort: sort || "dsc",  limit: undefined}, (err, records) => {
+                accum = [...accum, ...records]
+                iterator(accum, queriesArr, _callback)
+            })
+        }
+
+        iterator([], queries.slice(), (err, records) => {
+            if (err)
+                return self._err(`Could not retrieve records to page`, err, callback);
+            if (records.length === 0)
+                return callback(undefined, toPage(0, 0, records, itemsPerPage));
+
+            // remove duplicates
+            records = Object.values(
+                records.reduce((accum, record) => {
+                    const key = record.id;
+                    if (!accum.hasOwnProperty(key)) {
+                        accum[key] = record;
+                    }
+                    return accum
+                }, {})
+            );
+
+            if (records.length <= itemsPerPage)
+                return callback(undefined, toPage(1, 1, records, itemsPerPage));
+            const page = paginate(records, itemsPerPage, receivedPage);
+            callback(undefined, page);
+        })
     }
 
     /**

@@ -2,6 +2,7 @@ const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const ShipmentManager = require("./ShipmentManager");
 const getReceivedOrderManager = require("./ReceivedOrderManager");
 const {Shipment, Order, OrderStatus, ShipmentStatus, Wholesaler, Batch} = require('../model');
+const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 
 
 /**
@@ -26,7 +27,7 @@ const {Shipment, Order, OrderStatus, ShipmentStatus, Wholesaler, Batch} = requir
  */
 class IssuedShipmentManager extends ShipmentManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.issuedShipments, ['requesterId'], callback);
+        super(participantManager, DB.issuedShipments, ['shipmentId', 'senderId', 'requesterId'], callback);
         this.participantManager = participantManager;
         this.stockManager = participantManager.stockManager;
     }
@@ -253,6 +254,66 @@ class IssuedShipmentManager extends ShipmentManager {
             console.log(`Parsed ${result.length} shipments`);
             callback(undefined, result);
         });
+    }
+
+    /**
+     * Converts the text typed in a general text box into the query for the db
+     * @param {string} keyword
+     * @return {string[string[]]} query
+     * @override
+     */
+    _keywordToQuery(keyword){
+        keyword = keyword || '.*';
+        return [[`shipmentId like /${keyword}/g`], [`requesterId like /${keyword}/g`]];
+    }
+
+    /**
+     * Returns a page object
+     * @param {number} itemsPerPage
+     * @param {number} page
+     * @param {string} keyword
+     * @param {string} sort
+     * @param {boolean} readDSU
+     * @param {function(err, Page)}callback
+     */
+    getPage(itemsPerPage, page, keyword, sort, readDSU, callback){
+        const self = this;
+        let receivedPage = page || 1;
+
+        const queries = keyword ? self._keywordToQuery(keyword) : [["__timestamp > 0"]]
+        const iterator = (accum, queriesArr, _callback) => {
+            const query = queriesArr.shift()
+            if (!query)
+                return _callback(undefined, accum)
+
+            self.getAll(readDSU, {query, sort: sort || "dsc",  limit: undefined}, (err, records) => {
+                accum = [...accum, ...records]
+                iterator(accum, queriesArr, _callback)
+            })
+        }
+
+        iterator([], queries.slice(), (err, records) => {
+            if (err)
+                return self._err(`Could not retrieve records to page`, err, callback);
+            if (records.length === 0)
+                return callback(undefined, toPage(0, 0, records, itemsPerPage));
+
+            // remove duplicates
+            records = Object.values(
+                records.reduce((accum, record) => {
+                    const key = record.shipmentId;
+                    if (!accum.hasOwnProperty(key)) {
+                        accum[key] = record;
+                    }
+                    return accum
+                }, {})
+            );
+
+            if (records.length <= itemsPerPage)
+                return callback(undefined, toPage(1, 1, records, itemsPerPage));
+            const page = paginate(records, itemsPerPage, receivedPage);
+            callback(undefined, page);
+        })
     }
 
     /**
