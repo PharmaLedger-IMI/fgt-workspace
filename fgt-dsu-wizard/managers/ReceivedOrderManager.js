@@ -26,7 +26,7 @@ const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
  */
 class ReceivedOrderManager extends OrderManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.receivedOrders, ['orderId', 'requesterId'], (err, manager) => {
+        super(participantManager, DB.receivedOrders, ['orderId', 'requesterId', 'status'], (err, manager) => {
             if (err)
                 return callback ? callback(err) : console.log(err);
             manager.registerMessageListener((message, cb) => {

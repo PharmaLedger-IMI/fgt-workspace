@@ -27,7 +27,7 @@ const utils = require('../services').utils
  */
 class IssuedOrderManager extends OrderManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.issuedOrders, ['orderId', 'senderId', 'shipmentId'], callback);
+        super(participantManager, DB.issuedOrders, ['orderId', 'senderId', 'shipmentId', 'status'], callback);
         this.stockManager = participantManager.stockManager;
     }
 
