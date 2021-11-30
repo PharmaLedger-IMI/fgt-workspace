@@ -26,7 +26,7 @@ const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
  */
 class ProductManager extends Manager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.products, ['gtin'], callback);
+        super(participantManager, DB.products, ['gtin', 'name'], callback);
         this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
     }
 
