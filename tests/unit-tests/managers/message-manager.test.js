@@ -69,70 +69,60 @@ const defaultOps = {
 
 const TEST_CONF = argParser(defaultOps, process.argv);
 
-const sendMessages = function(messages, manager, did, callback){
+const sendMessages = function(incmessages, manager, did, callback){
 
-    const message = messages.shift();
+    const message = incmessages.shift();
 
-    manager.sendMessage(did, message, () => {
-        if(!messages)
-            return sendMessages(messages, manager, did, callback);
+    if(!message)
+        return callback();
 
-        callback();
-
-    } )
+    manager.sendMessage(did, message, () => {    
+        
+        sendMessages(incmessages, manager, did, callback)
+     })
 
 }
 
 
-/*Run Tests*/
+const generateMessages = function (num){
+    const messages = [];
 
-const runTest = function(callback){
-    
-  
-  
-    
- 
-    // const messages = [];
+    for(let i  = 0; i < num; i++){
+        messages.push(new Message('notifications', i));
+    }
 
+    return messages;
+}
 
+const createMAH = function(callback){
 
-    //     for(let i = 0; i < 10; i++){
-    //         messages.push(new Message('notifications', 'hello' + i));
-    //     }
-
-    //     console.log(participantManager);
-
-    //     const messageManagerMAH = getMessageManager(participantManager);
-
-    //     sendMessages(messages, messageManagerMAH, whsDID, ()=> {
-
-    //         getMockParticipantManager(domain, whsCredentials, (err, participantManager) => {
-    //             if(err)
-    //                 return callback(err);
-    
-    
-                
-    //             callback();
-    //         })
-
-
-
-    //     })
-     
-
-    
-    /*
+     /*
     * Create MAH Credentials
     */ 
-    const mahCredentials = getCredentials(APPS.MAH); // MAH Credentials Creation 
-    mahCredentials['id']['secret'] = 'MAH999999999' //Assign knowned DID
+     const mahCredentials = getCredentials(APPS.MAH); // MAH Credentials Creation 
+     mahCredentials['id']['secret'] = 'MAH999999999' //Assign knowned DID
+ 
+     const mahFinalCredentials = Object.keys(mahCredentials).reduce((accum, key) => {
+         if (mahCredentials[key].public)
+             accum[key] = mahCredentials[key].secret;
+         return accum;
+     }, {})
 
-    const mahFinalCredentials = Object.keys(mahCredentials).reduce((accum, key) => {
-        if (mahCredentials[key].public)
-            accum[key] = mahCredentials[key].secret;
-        return accum;
-    }, {})
 
+     getMockParticipantManager(domain, mahFinalCredentials, (err, participantManagerMAH) => {
+        if (err)
+            return callback(err);
+
+        console.log('MAH Created');
+
+        const mahMManager = getMessageManager(participantManagerMAH);
+
+        callback(undefined, mahMManager);
+     });
+
+}
+
+const createWHS = function(callback){
     /*
     * Create WHS Credentials
     */
@@ -146,6 +136,21 @@ const runTest = function(callback){
         return accum;
     }, {})
 
+    getMockParticipantManager(domain, whsFinalCredentials, (err, participantManagerWHS) => {
+        if(err)
+            return callback(err);
+        
+        const whsMManager = getMessageManager(participantManagerWHS);
+
+        callback(undefined, whsMManager);
+    })
+
+}
+
+/*Run Tests*/
+
+const runTest = function(callback){
+
     /*
     * KNOWNED DIDS
     */ 
@@ -153,27 +158,24 @@ const runTest = function(callback){
     const mahDID = 'MAH999999999'; // MAH DID INFO
     const whsDID = 'WHS999999999'; // WHS DID INFO
 
-    getMockParticipantManager(domain, mahFinalCredentials, (err, participantManagerMAH) => {
-        if (err)
+    const messages = generateMessages(20);
+
+    createMAH((err, messageManagerMAH) => {
+        if(err)
             return callback(err);
 
-        getParticipantManager(domain, whsFinalCredentials, (err, participantManagerWHS) => {
-                if (err)
+        sendMessages(messages.slice(), messageManagerMAH, whsDID,(err) => {
+            if(err)
+                return callback(err);
+
+            createWHS((err, messageManagerWHS) => {
+                if(err)
                     return callback(err);
         
-               
-            
-        
-        
-        
-                callback()
+                callback();
             })
-            
-        
-    });
-
-
-
+        })
+    })
 };
 
 const testFinishCallback = function(callback){
