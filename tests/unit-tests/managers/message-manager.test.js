@@ -28,7 +28,7 @@ const utils = require('../../test-utils');
 
 const {getMessageManager , Message} = require('../../../pdm-dsu-toolkit/managers/MessageManager');
 const {getStockManager, getBatchManager, getDirectoryManager, getIndividualProductManager, getIssuedOrderManager, getIssuedShipmentManager, getNotificationManager, getParticipantManager, getProductManager, getReceiptManager, getReceivedOrderManager, getReceivedShipmentManager, getSaleManager, getShipmentLineManager} = require('../../../fgt-dsu-wizard/managers');
-
+const {Notification} = require('../../../fgt-dsu-wizard/model');
 /*Fake Server Config*/
 
 const DOMAIN_CONFIG = {
@@ -76,19 +76,20 @@ const sendMessages = function(incmessages, manager, did, callback){
     if(!message)
         return callback();
 
-    manager.sendMessage(did, message, () => {    
-        
+    manager.sendMessage(did, message, (err) => {    
+        if(err)
+            assert.true(err);
         sendMessages(incmessages, manager, did, callback)
      })
 
 }
 
 
-const generateMessages = function (num){
+const generateMessages = function (num, sender){
     const messages = [];
 
     for(let i  = 0; i < num; i++){
-        messages.push(new Message('notifications', i));
+        messages.push(new Message('notifications', new Notification({senderId: sender, subject: 'batches' , body: {gtin: i}})));
     }
 
     return messages;
@@ -117,7 +118,13 @@ const createMAH = function(callback){
 
         const mahMManager = getMessageManager(participantManagerMAH);
 
-        callback(undefined, mahMManager);
+        mahMManager.getOwnDID((err, ownDID) => {
+            if(err)
+                return callback(err);
+
+            callback(undefined, mahMManager, ownDID);
+        })
+
      });
 
 }
@@ -156,21 +163,23 @@ const runTest = function(callback){
     */ 
 
     const mahDID = 'MAH999999999'; // MAH DID INFO
-    const whsDID = 'WHS999999999'; // WHS DID INFO
+    const whsDID = 'WHS999999999' //'WHS999999999'; // WHS DID INFO
 
-    const messages = generateMessages(20);
+    const messages = generateMessages(20, );
 
-    createMAH((err, messageManagerMAH) => {
+    createMAH((err, messageManagerMAH, selfDID) => {
         if(err)
-            return callback(err);
+            assert.true(err);
+        
+            const messages = generateMessages(20, selfDID);
 
         sendMessages(messages.slice(), messageManagerMAH, whsDID,(err) => {
             if(err)
-                return callback(err);
+                assert.true(err);
 
             createWHS((err, messageManagerWHS) => {
                 if(err)
-                    return callback(err);
+                    assert.true(err);
         
                 callback();
             })
