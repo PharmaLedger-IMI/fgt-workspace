@@ -23,12 +23,13 @@ const assert = dc.assert;
 const tir = require("../../../privatesky/psknode/tests/util/tir");
 
 const utils = require('../../test-utils');
+const Utils = require('../../../fgt-dsu-wizard/model/utils');
 
 /*Specific Dependencies*/
 
 const {getMessageManager , Message} = require('../../../pdm-dsu-toolkit/managers/MessageManager');
 const {getStockManager, getBatchManager, getDirectoryManager, getIndividualProductManager, getIssuedOrderManager, getIssuedShipmentManager, getNotificationManager, getParticipantManager, getProductManager, getReceiptManager, getReceivedOrderManager, getReceivedShipmentManager, getSaleManager, getShipmentLineManager} = require('../../../fgt-dsu-wizard/managers');
-const {Notification} = require('../../../fgt-dsu-wizard/model');
+const {Notification, Batch, Product, Stock} = require('../../../fgt-dsu-wizard/model');
 /*Fake Server Config*/
 
 const DOMAIN_CONFIG = {
@@ -69,73 +70,39 @@ const defaultOps = {
 
 const TEST_CONF = argParser(defaultOps, process.argv);
 
-const sendMessages = function(incmessages, manager, did, callback){
+const sendAMessage = function(did, message, sendeMessageManager, callback){
 
-    const message = incmessages.shift();
+    sendeMessageManager.sendMessage(did, message, (err) => {
+        assert.false(err, 'Error Sending message')
 
-    if(!message)
-        return callback();
+        callback();
+    })
+    
 
-    manager.sendMessage(did, message, (err) => {    
-        if(err)
-            assert.true(err);
-        sendMessages(incmessages, manager, did, callback)
-     })
+    
 
 }
 
+/*Run Tests*/
 
-const generateMessages = function (num, sender){
-    const messages = [];
+const runTest = function(finishTest){
+    /*
+        * Create MAH Credentials
+        */ 
+    const mahCredentials = getCredentials(APPS.MAH); // MAH Credentials Creation 
 
-    for(let i  = 0; i < num; i++){
-        messages.push(new Message('notifications', new Notification({senderId: sender, subject: 'batches' , body: {gtin: i}})));
-    }
+    const mahFinalCredentials = Object.keys(mahCredentials).reduce((accum, key) => {
+        if (mahCredentials[key].public)
+            accum[key] = mahCredentials[key].secret;
+        return accum;
+    }, {});
 
-    return messages;
-}
-
-const createMAH = function(callback){
-
-     /*
-    * Create MAH Credentials
-    */ 
-     const mahCredentials = getCredentials(APPS.MAH); // MAH Credentials Creation 
-     mahCredentials['id']['secret'] = 'MAH999999999' //Assign knowned DID
- 
-     const mahFinalCredentials = Object.keys(mahCredentials).reduce((accum, key) => {
-         if (mahCredentials[key].public)
-             accum[key] = mahCredentials[key].secret;
-         return accum;
-     }, {})
-
-
-     getMockParticipantManager(domain, mahFinalCredentials, (err, participantManagerMAH) => {
-        if (err)
-            return callback(err);
-
-        console.log('MAH Created');
-
-        const mahMManager = getMessageManager(participantManagerMAH);
-
-        mahMManager.getOwnDID((err, ownDID) => {
-            if(err)
-                return callback(err);
-
-            callback(undefined, mahMManager, ownDID);
-        })
-
-     });
-
-}
-
-const createWHS = function(callback){
     /*
     * Create WHS Credentials
     */
 
     const whsCredentials = getCredentials(APPS.WHOLESALER); // WHS Credentials Creation 
-    whsCredentials['id']['secret'] = 'WHS999999999' //Assign knowned DID
+    //whsCredentials['id']['secret'] //Assign knowned DID
 
     const whsFinalCredentials = Object.keys(whsCredentials).reduce((accum, key) => {
         if (whsCredentials[key].public)
@@ -143,48 +110,43 @@ const createWHS = function(callback){
         return accum;
     }, {})
 
-    getMockParticipantManager(domain, whsFinalCredentials, (err, participantManagerWHS) => {
-        if(err)
-            return callback(err);
-        
-        const whsMManager = getMessageManager(participantManagerWHS);
 
-        callback(undefined, whsMManager);
-    })
+    /**Knowned DIDS/ */
 
-}
+    const mahDID = mahCredentials['id']['secret'];
+    const whsDID = whsCredentials['id']['secret'];
 
-/*Run Tests*/
+    getMockParticipantManager(domain, mahFinalCredentials, (err, participantManagerMAH) => {
+        assert.false(err, 'Error Getting Mock MAH Participant Manager');
 
-const runTest = function(callback){
+        const mahMManager = getMessageManager(participantManagerMAH);
 
-    /*
-    * KNOWNED DIDS
-    */ 
+        console.log('MAH Created');
 
-    const mahDID = 'MAH999999999'; // MAH DID INFO
-    const whsDID = 'WHS999999999' //'WHS999999999'; // WHS DID INFO
+        const message = new Message('random', 'Hello Worlds')
 
-    const messages = generateMessages(20, );
+        sendAMessage (whsDID,message, mahMManager, (err) => {
+            // assert.false(err, 'Error Sending Message')
 
-    createMAH((err, messageManagerMAH, selfDID) => {
-        if(err)
-            assert.true(err);
-        
-            const messages = generateMessages(20, selfDID);
-
-        sendMessages(messages.slice(), messageManagerMAH, whsDID,(err) => {
-            if(err)
-                assert.true(err);
-
-            createWHS((err, messageManagerWHS) => {
-                if(err)
-                    assert.true(err);
-        
-                callback();
+            getMockParticipantManager(domain, whsFinalCredentials, (err, participantManagerWHS) => {
+                assert.false(err , 'Error Getting Mock WHS Participant Manager')
+    
+                console.log('WHS Created');
+                
+                const whsMManager = getMessageManager(participantManagerWHS);
+                
+                setTimeout(() => {
+    
+                    finishTest();
+                },30000)
             })
+
         })
-    })
+
+    });
+ 
+
+
 };
 
 const testFinishCallback = function(callback){
@@ -215,7 +177,7 @@ const launchTest = function(callback){
         });
     }
 
-    if (TEST_CONF.fakeServer)
+    if (false)
         return runWithFakeServer(callback);
 
     if (!callback)
