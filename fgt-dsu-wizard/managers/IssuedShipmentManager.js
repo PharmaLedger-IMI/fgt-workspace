@@ -102,8 +102,9 @@ class IssuedShipmentManager extends ShipmentManager {
         }
 
         const createInner = function(callback){
+            console.log(`createInner orderId=${orderId}`);
             const receivedOrderManager = getReceivedOrderManager(self.participantManager);
-                const receivedOrderKey = receivedOrderManager._genCompostKey(shipment.requesterId, orderId);
+            const receivedOrderKey = receivedOrderManager._genCompostKey(shipment.requesterId, orderId);
 
             receivedOrderManager.getOne(receivedOrderKey, true, (err, order, orderDSU, orderSSI) => {
                 if(err)
@@ -112,13 +113,13 @@ class IssuedShipmentManager extends ShipmentManager {
                     if(err)
                         return cb(`Could not create product DSU for ${shipment}`);
                     const record = keySSI.getIdentifier();
-                    console.log("Shipment SSI=" + record);
+                    console.log("Shipment SSI=" + record + ` orderId=${orderId}`);
                     self.insertRecord(self._genCompostKey(shipment.requesterId, shipment.shipmentId), self._indexItem(shipment, record), (err) => {
                         if(err)
                             return cb(`Could not insert record with shipmentId ${shipment.shipmentId} on table ${self.tableName}`);
 
                         const path = `${self.tableName}/${shipment.shipmentId}`;
-                        console.log(`Shipment ${shipment.shipmentId} created stored at DB '${path}'`);
+                        console.log(`Shipment ${shipment.shipmentId} created stored at DB '${path}' orderId=${orderId}`);
                         const aKey = keySSI.getIdentifier();
                         self.sendMessagesAsync(shipment, shipmentLinesSSIs, aKey);
                         callback(undefined, keySSI, path);
@@ -128,18 +129,23 @@ class IssuedShipmentManager extends ShipmentManager {
         }
 
         const gtinIterator = function(gtins, batchesObj, callback){
+            console.log(`gtinIterator ongoing for orderId=${orderId}`, gtins);
             const gtin = gtins.shift();
-            if (!gtin)
+            if (!gtin) {
+                console.log(`gtinIterator for orderId=${orderId} done`, gtins);
                 return callback();
+            }
             if (!(gtin in batchesObj))
                 return callback(`gtins not found in batches`);
             const batches = batchesObj[gtin];
             self.batchAllow(self.stockManager);
+            console.log("manageAll start");
             self.stockManager.manageAll(gtin,  batches, (err, removed) => {
+                console.log("manageAll done");
                 self.batchDisallow(self.stockManager);
 
                 if(err)
-                    return cb(`Could not update Stock`);
+                    return cb(`Could not update Stock for orderId=${orderId}`);
                 if (self.stockManager.serialization && self.stockManager.aggregation)
                     shipment.shipmentLines.filter(sl => sl.gtin === gtin && Object.keys(removed).indexOf(sl.batch) !== -1).forEach(sl => {
                         sl.serialNumbers = removed[sl.batch];
@@ -177,15 +183,15 @@ class IssuedShipmentManager extends ShipmentManager {
 
             gtinIterator(gtins, batchesObj, (err) => {
                 if(err)
-                    return cb(`Could not retrieve info from stock`);
-                console.log(`Shipment updated after Stock confirmation`);
+                    return cb(`Could not retrieve info from stock while processing orderId=${orderId}`);
+                console.log(`Shipment updated after Stock confirmation while processing orderId=${orderId}`);
                 createInner((err, keySSI, path) => {
                     if(err)
-                        return cb(`Could not create Shipment`);
+                        return cb(`Could not create Shipment for orderId=${orderId}`);
                     self.commitBatch((err) => {
                         if(err)
                             return cb(err);
-                        console.log(`Shipment ${shipment.shipmentId} created!`);
+                        console.log(`Shipment ${shipment.shipmentId} created for orderId=${orderId}!`);
                         callback(undefined, keySSI, path);
                     });
                 })

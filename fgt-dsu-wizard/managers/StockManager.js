@@ -203,7 +203,7 @@ class StockManager extends Manager{
         const self = this;
         
         const dbAction = function(product, batches, callback){
-            
+            console.log(`manageAll(${product},...) dbAction start`);
 
             const iterator = function(product){
                 return function(batch, callback){
@@ -216,6 +216,7 @@ class StockManager extends Manager{
             }
     
             const cb = function(err, ...results){
+                console.log(`manageAll(${product},...) dbAction err`, err);
                 if (err)
                     return self.cancelBatch(err2 => {
                         callback(err);
@@ -249,7 +250,8 @@ class StockManager extends Manager{
                             newStocks.push(result[2])
                         return accum;
                     }, {});
-        
+
+                    console.log(`manageAll(${product},...) dbAction done`);        
                     callback(undefined, mergedResult, newStocks);
                 });      
             });
