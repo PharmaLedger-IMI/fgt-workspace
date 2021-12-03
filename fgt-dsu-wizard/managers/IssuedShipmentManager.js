@@ -164,13 +164,16 @@ class IssuedShipmentManager extends ShipmentManager {
         }, {});
 
         const dbAction = function (gtins, batchesObj, callback){
+            console.log("dbAction orderId="+orderId);
 
             try {
                 self.beginBatch();
             } catch (e){
+                console.log(`batchSchedule orderId=${orderId} because of error`,e);
                 return self.batchSchedule(() => dbAction(gtins, batchesObj, callback));
                 //return callback(e);
             }
+            console.log(`beginBatch ok for orderId=${orderId}`);
 
             gtinIterator(gtins, batchesObj, (err) => {
                 if(err)

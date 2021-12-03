@@ -71,14 +71,16 @@ class DBLock {
      * @throws {Error} error when a batch operation is already in progress
      */
     beginBatch(tableName){
-
+        console.log(`DBLock.beginBatch(${tableName})`);
         if (tableName in this._allows)
             tableName = this._allows[tableName]
 
         this._cache[tableName] = this._cache[tableName] || -1;
 
         if (this._cache[tableName] === -1){
+            console.log(`_storage.beginBatch() start`);
             this._storage.beginBatch.call(this._storage);
+            console.log(`_storage.beginBatch() done`);
             this._cache[tableName] = 1;
         } else {
             this._cache[tableName] += 1;
@@ -109,6 +111,7 @@ class DBLock {
      * @param {(err) => void} callback
      */
     commitBatch(tableName, force, callback){
+        console.log(`DBLock.commitBatch(${tableName},${force})`);
         if (!callback){
             callback = force;
             force = false;
@@ -149,6 +152,7 @@ class DBLock {
      * @param {(err) => void} callback
      */
     cancelBatch(tableName, callback){
+        console.log(`DBLock.cancelBatch(${tableName})`);
         if (this._cache[tableName] > 0){
             delete this._cache[tableName];
             return this._storage.cancelBatch.call(this._storage, callback);
