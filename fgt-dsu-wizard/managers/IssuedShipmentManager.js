@@ -164,10 +164,12 @@ class IssuedShipmentManager extends ShipmentManager {
         }, {});
 
         const dbAction = function (gtins, batchesObj, callback){
+            console.log("dbAction orderId="+orderId);
 
             try {
                 self.beginBatch();
             } catch (e){
+                console.log(`batchSchedule orderId=${orderId} because of error`,e);
                 return self.batchSchedule(() => dbAction(gtins, batchesObj, callback));
                 //return callback(e);
             }
@@ -175,7 +177,7 @@ class IssuedShipmentManager extends ShipmentManager {
             gtinIterator(gtins, batchesObj, (err) => {
                 if(err)
                     return cb(`Could not retrieve info from stock`);
-                console.log(`Shipment updated after Stock confirmation`);
+                console.log(`Shipment updated after Stock confirmation orderId=${orderId}`);
                 createInner((err, keySSI, path) => {
                     if(err)
                         return cb(`Could not create Shipment`);
@@ -189,6 +191,7 @@ class IssuedShipmentManager extends ShipmentManager {
             });
         }
 
+        console.log("going to dbAction orderId="+orderId);
         dbAction(gtins, batchesObj, callback);
     }
 
