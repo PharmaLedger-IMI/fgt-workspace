@@ -138,8 +138,10 @@ class IssuedShipmentManager extends ShipmentManager {
             self.stockManager.manageAll(gtin,  batches, (err, removed) => {
                 self.batchDisallow(self.stockManager);
 
-                if(err)
-                    return cb(`Could not update Stock`);
+                if(err) {
+                    console.log(err);
+                    return cb(`Could not update Stock for orderId=${orderId} because of ${err}`);
+                }
                 if (self.stockManager.serialization && self.stockManager.aggregation)
                     shipment.shipmentLines.filter(sl => sl.gtin === gtin && Object.keys(removed).indexOf(sl.batch) !== -1).forEach(sl => {
                         sl.serialNumbers = removed[sl.batch];
