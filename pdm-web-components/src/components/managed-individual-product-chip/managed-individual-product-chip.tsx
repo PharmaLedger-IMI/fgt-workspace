@@ -60,15 +60,15 @@ export class ManagedIndividualProductChip {
   private renderSerials(){
     return (
       <pdm-item-organizer slot="buttons" component-name="tracked-serial-chip"
-                          component-props={JSON.stringify(this.serialNumbers.map(serial => ({
-                            "reference": `${this.gtin}-${this.batchNumber}-${serial}-${this.expiry}`
-                          })))}
+                          component-props={JSON.stringify(this.serialNumbers.map(serial => {
+                            return {"reference": `${this.gtin}-${this.batchNumber}-${serial}-${this.expiry}`};
+                          } ))}
                           display-count="-1"
                           id-prop="chip-label"
                           is-ion-item="false"
                           orientation={this.getOrientation()}
                           more-label={this.serialNumbers.length}
-                          onSelectEvent={this.triggerSelect.bind(this)}></pdm-item-organizer>
+                          onSelectEvent={this.triggerSelect.bind(this)}> </pdm-item-organizer>
     )
   }
 
