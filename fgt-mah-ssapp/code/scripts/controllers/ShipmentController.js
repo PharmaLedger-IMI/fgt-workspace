@@ -29,12 +29,12 @@ export default class ShipmentController extends LocalizedController{
 
         let self = this;
 
-        self.shipmentEl.updateDirectory();
-
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
             self.model.identity = self.issuedShipmentManager.getIdentity();
+
+            self.shipmentEl.updateDirectory();
 
             const state = evt.detail;
             const label = !!state.previousTab ? state.previousTab.label : HistoryNavigator.getPreviousTab().label;

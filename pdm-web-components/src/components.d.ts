@@ -141,6 +141,10 @@ export namespace Components {
         "showCloseButton": boolean;
         "showTrackButton": boolean;
     }
+    interface ManagedNotificationsListItem {
+        "notificationid": string;
+        "refresh": () => Promise<void>;
+    }
     interface ManagedOrder {
         "availableString": string;
         "backString": string;
@@ -310,7 +314,7 @@ export namespace Components {
         "value": string;
     }
     interface MenuTabButton {
-        "badge"?: number;
+        "badge"?: string;
         "iconName"?: string;
         "label"?: string;
         "mode"?: string;
@@ -342,6 +346,17 @@ export namespace Components {
         "holdForScan": (callback: any) => Promise<any>;
         "present": (props?: any, callback?: any) => Promise<any>;
         "scannerMode"?: string;
+    }
+    interface PdmChartjs {
+        "cardSubTitle": string;
+        "cardTitle": string;
+        "containerId": string;
+        "data": string;
+        "options": string;
+        "showDataTable": boolean;
+        "tableDataSrc": string;
+        "tableDataStruct": string;
+        "type": string;
     }
     interface PdmIonTable {
         /**
@@ -545,6 +560,12 @@ declare global {
         prototype: HTMLManagedIndividualProductListItemElement;
         new (): HTMLManagedIndividualProductListItemElement;
     };
+    interface HTMLManagedNotificationsListItemElement extends Components.ManagedNotificationsListItem, HTMLStencilElement {
+    }
+    var HTMLManagedNotificationsListItemElement: {
+        prototype: HTMLManagedNotificationsListItemElement;
+        new (): HTMLManagedNotificationsListItemElement;
+    };
     interface HTMLManagedOrderElement extends Components.ManagedOrder, HTMLStencilElement {
     }
     var HTMLManagedOrderElement: {
@@ -647,6 +668,12 @@ declare global {
         prototype: HTMLPdmBarcodeScannerControllerElement;
         new (): HTMLPdmBarcodeScannerControllerElement;
     };
+    interface HTMLPdmChartjsElement extends Components.PdmChartjs, HTMLStencilElement {
+    }
+    var HTMLPdmChartjsElement: {
+        prototype: HTMLPdmChartjsElement;
+        new (): HTMLPdmChartjsElement;
+    };
     interface HTMLPdmIonTableElement extends Components.PdmIonTable, HTMLStencilElement {
     }
     var HTMLPdmIonTableElement: {
@@ -727,6 +754,7 @@ declare global {
         "managed-individual-product": HTMLManagedIndividualProductElement;
         "managed-individual-product-chip": HTMLManagedIndividualProductChipElement;
         "managed-individual-product-list-item": HTMLManagedIndividualProductListItemElement;
+        "managed-notifications-list-item": HTMLManagedNotificationsListItemElement;
         "managed-order": HTMLManagedOrderElement;
         "managed-order-list-item": HTMLManagedOrderListItemElement;
         "managed-orderline-stock-chip": HTMLManagedOrderlineStockChipElement;
@@ -744,6 +772,7 @@ declare global {
         "multi-spinner": HTMLMultiSpinnerElement;
         "pdm-barcode-scanner": HTMLPdmBarcodeScannerElement;
         "pdm-barcode-scanner-controller": HTMLPdmBarcodeScannerControllerElement;
+        "pdm-chartjs": HTMLPdmChartjsElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "pdm-item-organizer": HTMLPdmItemOrganizerElement;
         "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
@@ -955,6 +984,18 @@ declare namespace LocalJSX {
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "showCloseButton"?: boolean;
         "showTrackButton"?: boolean;
+    }
+    interface ManagedNotificationsListItem {
+        "notificationid"?: string;
+        "onFgt-track-request"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
     }
     interface ManagedOrder {
         "availableString"?: string;
@@ -1213,7 +1254,7 @@ declare namespace LocalJSX {
         "value"?: string;
     }
     interface MenuTabButton {
-        "badge"?: number;
+        "badge"?: string;
         "iconName"?: string;
         "label"?: string;
         "mode"?: string;
@@ -1256,6 +1297,17 @@ declare namespace LocalJSX {
     interface PdmBarcodeScannerController {
         "barcodeTitle"?: string;
         "scannerMode"?: string;
+    }
+    interface PdmChartjs {
+        "cardSubTitle"?: string;
+        "cardTitle"?: string;
+        "containerId"?: string;
+        "data"?: string;
+        "options"?: string;
+        "showDataTable"?: boolean;
+        "tableDataSrc"?: string;
+        "tableDataStruct"?: string;
+        "type"?: string;
     }
     interface PdmIonTable {
         /**
@@ -1409,6 +1461,7 @@ declare namespace LocalJSX {
         "managed-individual-product": ManagedIndividualProduct;
         "managed-individual-product-chip": ManagedIndividualProductChip;
         "managed-individual-product-list-item": ManagedIndividualProductListItem;
+        "managed-notifications-list-item": ManagedNotificationsListItem;
         "managed-order": ManagedOrder;
         "managed-order-list-item": ManagedOrderListItem;
         "managed-orderline-stock-chip": ManagedOrderlineStockChip;
@@ -1426,6 +1479,7 @@ declare namespace LocalJSX {
         "multi-spinner": MultiSpinner;
         "pdm-barcode-scanner": PdmBarcodeScanner;
         "pdm-barcode-scanner-controller": PdmBarcodeScannerController;
+        "pdm-chartjs": PdmChartjs;
         "pdm-ion-table": PdmIonTable;
         "pdm-item-organizer": PdmItemOrganizer;
         "pdm-ssapp-loader": PdmSsappLoader;
@@ -1456,6 +1510,7 @@ declare module "@stencil/core" {
             "managed-individual-product": LocalJSX.ManagedIndividualProduct & JSXBase.HTMLAttributes<HTMLManagedIndividualProductElement>;
             "managed-individual-product-chip": LocalJSX.ManagedIndividualProductChip & JSXBase.HTMLAttributes<HTMLManagedIndividualProductChipElement>;
             "managed-individual-product-list-item": LocalJSX.ManagedIndividualProductListItem & JSXBase.HTMLAttributes<HTMLManagedIndividualProductListItemElement>;
+            "managed-notifications-list-item": LocalJSX.ManagedNotificationsListItem & JSXBase.HTMLAttributes<HTMLManagedNotificationsListItemElement>;
             "managed-order": LocalJSX.ManagedOrder & JSXBase.HTMLAttributes<HTMLManagedOrderElement>;
             "managed-order-list-item": LocalJSX.ManagedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedOrderListItemElement>;
             "managed-orderline-stock-chip": LocalJSX.ManagedOrderlineStockChip & JSXBase.HTMLAttributes<HTMLManagedOrderlineStockChipElement>;
@@ -1473,6 +1528,7 @@ declare module "@stencil/core" {
             "multi-spinner": LocalJSX.MultiSpinner & JSXBase.HTMLAttributes<HTMLMultiSpinnerElement>;
             "pdm-barcode-scanner": LocalJSX.PdmBarcodeScanner & JSXBase.HTMLAttributes<HTMLPdmBarcodeScannerElement>;
             "pdm-barcode-scanner-controller": LocalJSX.PdmBarcodeScannerController & JSXBase.HTMLAttributes<HTMLPdmBarcodeScannerControllerElement>;
+            "pdm-chartjs": LocalJSX.PdmChartjs & JSXBase.HTMLAttributes<HTMLPdmChartjsElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "pdm-item-organizer": LocalJSX.PdmItemOrganizer & JSXBase.HTMLAttributes<HTMLPdmItemOrganizerElement>;
             "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;

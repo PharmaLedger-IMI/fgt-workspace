@@ -1,4 +1,4 @@
-const {DB} = require('../constants');
+const {DB, DEFAULT_QUERY_OPTIONS} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const {Notification, Batch, Stock} = require('../model');
 const getStockManager = require('./StockManager');
@@ -31,7 +31,7 @@ class NotificationManager extends Manager{
                 return callback ? callback(err) : console.log(err);
             manager.registerMessageListener((message, cb) => {
                 manager.processMessageRecord(message, (err) => {
-                    manager.refreshController();
+                    manager.refreshController(message.message);
                     cb(err);
                 });
             });
@@ -98,7 +98,7 @@ class NotificationManager extends Manager{
             return callback(err);
 
         const key = self._genCompostKey(notification.senderId, notification.subject);
-        self.insertRecord(key, self._indexItem(key, notification), (err, record) => {
+        self.insertRecord(key, notification, (err, record) => {
             if (err)
                 return callback(err);
             self._handleNotification(notification, (err) => {
@@ -197,7 +197,57 @@ class NotificationManager extends Manager{
      * @override
      */
     getOne(key, readDSU, callback){
-        super.getOne(key, readDSU, callback);
+        if (!callback){
+            callback = readDSU;
+            readDSU = true;
+        }
+        let self = this;
+        self.getRecord(key, (err, notification) => {
+            if (err)
+                return self._err(`Could not load record with key ${key} on table ${self._getTableName()}`, err, callback);
+            callback(undefined, new Notification(notification));
+        });
+    }
+
+    /**
+     * Lists all registered items according to query options provided
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
+     * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
+     * @param {function(err, object[])} callback
+     * @override
+     */
+     getAll(readDSU, options, callback){
+        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
+            query: ['__timestamp > 0']
+        });
+
+        if (!callback){
+            if (!options){
+                callback = readDSU;
+                options = defaultOptions();
+                readDSU = true;
+            }
+            if (typeof readDSU === 'boolean'){
+                callback = options;
+                options = defaultOptions();
+            }
+            if (typeof readDSU === 'object'){
+                callback = options;
+                options = readDSU;
+                readDSU = true;
+            }
+        }
+
+        options = options || defaultOptions();
+
+        let self = this;
+        self.query(options.query, options.sort, options.limit, (err, records) => {
+            if (err)
+                return self._err(`Could not perform query`, err, callback);
+            if (!readDSU)
+                return callback(undefined, records.map(r => r.pk));
+            callback(undefined, records.map(r => new Notification(r)));
+        });
     }
 
     /**

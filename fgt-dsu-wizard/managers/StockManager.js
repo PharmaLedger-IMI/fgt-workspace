@@ -5,6 +5,8 @@ const Stock = require('../model/Stock');
 const Batch = require('../model/Batch');
 const StockStatus = require('../model/StockStatus');
 const StockManagementService = require("../services/StockManagementService");
+const Page = require('../../pdm-dsu-toolkit/managers/Page');
+const { toPage, paginate } = require('../../pdm-dsu-toolkit/managers/Page');
 
 /**
  * Stock Manager Class
@@ -28,7 +30,7 @@ const StockManagementService = require("../services/StockManagementService");
  */
 class StockManager extends Manager{
     constructor(participantManager, serialization, aggregation, callback) {
-        super(participantManager, DB.stock, ['name', 'gtin', 'manufName'], callback || aggregation);
+        super(participantManager, DB.stock, ['name', 'gtin', 'manufName', 'quantity'], callback || aggregation);
         this.serialization = serialization;
         this.aggregation = callback ? aggregation : false;
         this.productService = undefined;
@@ -86,6 +88,7 @@ class StockManager extends Manager{
             gtin = newStock.gtin;
         }
         let self = this;
+        newStock.quantity = newStock.getQuantity();
         self.updateRecord(gtin, newStock, (err) => {
             if (err)
                 return self._err(`Could not update stock with gtin ${gtin}: ${err.message}`, err, callback);
@@ -126,6 +129,7 @@ class StockManager extends Manager{
 
         self.getOne(gtin, true, (err, stock) => {
             if (err){
+                console.log('batch quantity err check', batch.quantity);
                 if (batch.quantity < 0)
                     return callback(`Trying to reduce from an unexisting stock`);
 
@@ -172,7 +176,7 @@ class StockManager extends Manager{
                         batchNumber: updatedBatch.batchNumber,
                         expiry: updatedBatch.expiry,
                         batchStatus: updatedBatch.batchStatus,
-                        quantity: sb.batch.getQuantity(),
+                        quantity: newQuantity,
                         serialNumbers: sb.batch.serialNumbers
                     });
                 }
@@ -228,7 +232,7 @@ class StockManager extends Manager{
 
             functionCallIterator(iterator(product).bind(this), batches, (err, ...results) => {
                 if (err)
-                    return cb(`Could not perform manage all on Stock`);
+                    return cb(`Could not perform manage all on Stock beacause ${err}`);
 
                 self.commitBatch((err) => {
                     if(err)
@@ -340,19 +344,23 @@ class StockManager extends Manager{
 
     /**
      * Get partner stock products that were shipped by MAH/manufName
-     * @param { string } manufName
      * @param { string } gtin
-     * @param { string } batch
+     * @param {{manufName: string, batch: number}} options
      * @param callback
      */
-    getStockTraceability(manufName, gtin, batch, callback) {
+    getStockTraceability(gtin, options, callback) {
         let self = this;
+        if (!callback) {
+            callback = options;
+            options = {}
+        }
+        const {manufName, batch} = options;
 
         if (!manufName) {
             return self._getProduct(gtin, (err, product) => {
                 if (err)
                     return callback(err);
-                self.getStockTraceability(product.manufName, gtin, batch, callback);
+                return self.getStockTraceability(gtin, {manufName: product.manufName,  batch}, callback);
             });
         }
 
@@ -379,6 +387,37 @@ class StockManager extends Manager{
                 name: value.name,
                 batches: value.stock
             }
+        });
+    }
+
+    /**
+     * Returns a page object
+     * @param {number} itemsPerPage
+     * @param {number} page
+     * @param {string} keyword
+     * @param {string} sort
+     * @param {boolean} readDSU
+     * @param {function(err, Page)}callback
+     */
+     getPage(itemsPerPage, page, keyword, sort, readDSU, callback){
+        const self = this;
+        let receivedPage = page || 1;
+
+        const options = {
+            query: keyword ? self._keywordToQuery(keyword) : ["__timestamp > 0", "quantity > 0"],
+            sort: sort || "dsc",
+            limit: undefined
+        }
+
+        self.getAll(readDSU, options, (err, records) => {
+           if (err)
+               return self._err(`Could not retrieve records to page`, err, callback);
+            if (records.length === 0)
+                return callback(undefined, toPage(0, 0, records, itemsPerPage));
+           if (records.length <= itemsPerPage)
+               return callback(undefined, toPage(1, 1, records, itemsPerPage));
+           const page = paginate(records, itemsPerPage, receivedPage);
+           callback(undefined, page);
         });
     }
 }

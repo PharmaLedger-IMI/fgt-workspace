@@ -1,6 +1,54 @@
-<webc-container controller="DashboardController">
-    <ion-title>{{ @welcome }}</ion-title>
+<webc-container controller="DashboardController" style="height: 100%;">
+    <ion-row class="ion-margin-horizontal ion-align-items-center ion-justify-content-end">
+        <small class="text-muted ion-margin-horizontal">Last Update: {{@lastUpdate}}</small>
+        <ion-button data-tag="update-dashboard"  color="primary" size="small">
+            <ion-icon name="refresh-outline"></ion-icon>
+        </ion-button>
+    </ion-row>
+
+    <div class="l-chart">
+        <ion-row class="ion-margin">
+            <ion-grid>
+                <ion-row>
+                    <ion-col size="12" size-lg="6">
+                        <div>
+                            <pdm-chartjs
+                                    container-id="sale-chart"
+                                    card-title="Most Sold Products"
+                                    card-sub-title="Most sold products by supplier according to stock traceability."
+                                    data="@saleChartData"
+                                    options="@saleChartOptions"
+                            >
+                            </pdm-chartjs>
+                        </div>
+                        <div>
+                            <pdm-chartjs
+                                    container-id="stock-chart"
+                                    card-title="Stock"
+                                    card-sub-title="Stock Management of MAH. Currently the Overall Monthly Average is a computed number, not based on historical stock."
+                                    data="@stockChartData"
+                                    options="@stockChartOptions"
+                            >
+                            </pdm-chartjs>
+                        </div>
+                    </ion-col>
+                    <ion-col size="12" size-lg="6">
+                        <div>
+                            <pdm-chartjs
+                                    container-id="shipment-status-chart"
+                                    card-title="Shipments Status"
+                                    card-sub-title="Shipments control based on product traceability"
+                                    data="@shipmentChartData"
+                                    options="@shipmentChartOptions"
+                                    show-data-table="true"
+                                    table-data-structure="@shipmentsTableStruct"
+                                    table-data-source="@shipmentsChartTable"
+                            >
+                            </pdm-chartjs>
+                        </div>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-row>
+    </div>
 </webc-container>
-
-
-

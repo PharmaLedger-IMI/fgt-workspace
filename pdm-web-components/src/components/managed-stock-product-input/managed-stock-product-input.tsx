@@ -91,7 +91,9 @@ export class ManagedStockProductInput {
 
     const _addProduct = function(p){
       const product = new IndividualProduct(p);
-
+      if (!product.serialNumber) {
+        return self.sendError(`Product ${product.gtin}-${product.name} out of stock.`);
+      }
       const previousProducts: (typeof IndividualProduct)[] = self.products || [];
       self.products = [...previousProducts, product];
     }

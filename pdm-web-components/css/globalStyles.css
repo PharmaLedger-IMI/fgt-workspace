@@ -171,3 +171,13 @@ ion-loading.ssapp-spinner{
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.l-chart {
+  margin-bottom: 150px;
+}
+
+@media (max-width: 991px) {
+  .l-chart {
+    margin-bottom: 0;
+  }
+}

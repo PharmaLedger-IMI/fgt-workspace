@@ -132,13 +132,14 @@ export class ManagedSaleListItem {
                               "id-prop": k,
                               "gtin": gtin,
                               "expiry": expiry,
-                              "batchNumber": batch,
+                              "batch": batch,
                               "serials": JSON.stringify(groupedByBatch[k])
                             }
                           }))}
                           id-prop="id-prop"
                           is-ion-item="false"
                           display-count="3"
+                          display-count-divider="248"
                           orientation={this.getOrientation()}
                           onSelectEvent={(evt) => {
                             evt.preventDefault();

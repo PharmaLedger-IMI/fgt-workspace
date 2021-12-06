@@ -26,6 +26,7 @@
   "dependencies": {
     "@zxing/library": "^0.18.5",
     "bwip-js": "^3.0.0",
+    "chart.js": "^3.6.0",
     "stencil": "0.0.5"
   },
   "license": "MIT",

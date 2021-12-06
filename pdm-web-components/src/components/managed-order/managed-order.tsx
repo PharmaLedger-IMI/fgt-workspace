@@ -419,7 +419,7 @@ export class ManagedOrder implements CreateManageView{
       return (
         <ion-item lines="none">
           <ion-label position="stacked">{self.productsCodeString}</ion-label>
-          <ion-input name="input-gtin" type="number" value={self.currentGtin}></ion-input>
+          <ion-input name="input-gtin" type="number" value={self.currentGtin} disabled></ion-input>
           <ion-buttons slot="end">
             <ion-button onClick={() => self.scan()} color="medium" size="large" fill="clear">
               <ion-icon slot="icon-only" name="scan-circle"></ion-icon>

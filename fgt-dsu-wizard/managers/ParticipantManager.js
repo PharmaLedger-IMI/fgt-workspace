@@ -70,7 +70,7 @@ class ParticipantManager extends BaseManager{
             const { gtin, batch, manufName } = evt.detail;
             const loader = controller._getLoader(`Requesting stock from Partners for ${gtin} Batch: ${batch}`);
             await loader.present();
-            self.stockManager.getStockTraceability(manufName, gtin, batch, async (err, stockTrace) => {
+            self.stockManager.getStockTraceability(gtin, {manufName, batch}, async (err, stockTrace) => {
                 if (err)
                     return await sendError(err)
                 await loader.dismiss();

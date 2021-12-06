@@ -2,24 +2,8 @@ const { INFO_PATH , DEFAULT_QUERY_OPTIONS } = require('../constants');
 
 const {functionCallIterator} = require('../services/utils');
 
-/**
- * Util class to handle pagination
- * @class Page
- * @memberOf Managers
- */
-class Page {
-    itemsPerPage = 10;
-    currentPage = 1;
-    totalPages = undefined;
-    items = [];
+const {Page, toPage, paginate } = require('./Page');
 
-    constructor(page) {
-        if (typeof page !== undefined)
-            for (let prop in page)
-                if (page.hasOwnProperty(prop))
-                    this[prop] = page[prop];
-    }
-}
 
 /**
  * Manager Classes in this context should do the bridge between the controllers
@@ -379,7 +363,7 @@ class Manager{
      * @private
      */
     _iterateMessageRecords(records, callback) {
-        let self = this;
+        let self = this; 
         if (!records || !Array.isArray(records))
             return callback(`Message records ${records} is not an array!`);
         if (records.length <= 0)
@@ -792,7 +776,7 @@ class Manager{
      */
     getPage(itemsPerPage, page, keyword, sort, readDSU, callback){
         const self = this;
-        page = page || 1;
+        let receivedPage = page || 1;
 
         const options = {
             query: keyword ? self._keywordToQuery(keyword) : ['__timestamp > 0'],
@@ -800,34 +784,16 @@ class Manager{
             limit: undefined
         }
 
-        const toPage = function(currentPage, totalPages, items){
-            return new Page({
-                itemsPerPage: itemsPerPage,
-                currentPage: currentPage,
-                totalPages: totalPages,
-                items: items || []
-            });
-        }
-
-        const paginate = function(items){
-            const totalPages = Math.floor(items.length / itemsPerPage) + (items.length % itemsPerPage === 0 ? 0 : 1);
-            let startIndex = (page - 1) * itemsPerPage;
-            startIndex = startIndex === 0 ? startIndex : startIndex - 1;
-            const endIndex = startIndex + itemsPerPage >= items.length ? undefined: startIndex + itemsPerPage;
-            const sliced = items.slice(startIndex, endIndex);
-            return toPage(page, totalPages, sliced);
-        }
-
         self.getAll(readDSU, options, (err, records) => {
-           if (err)
-               return self._err(`Could not retrieve records to page`, err, callback);
-            if (records.length === 0)
-                return callback(undefined, toPage(0, 0, records));
-           if (records.length <= itemsPerPage)
-               return callback(undefined, toPage(1, 1, records));
-           const page = paginate(records);
-           callback(undefined, page);
-        });
+            if (err)
+                return self._err(`Could not retrieve records to page`, err, callback);
+             if (records.length === 0)
+                 return callback(undefined, toPage(0, 0, records, itemsPerPage));
+            if (records.length <= itemsPerPage)
+                return callback(undefined, toPage(1, 1, records, itemsPerPage));
+            const page = paginate(records, itemsPerPage, receivedPage);
+            callback(undefined, page);
+         });
     }
 
     /**

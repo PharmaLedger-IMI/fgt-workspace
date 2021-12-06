@@ -61,7 +61,7 @@ class ReceiptManager extends Manager{
     }
 
     _genCompostKey(individualReceipt){
-        return `${individualReceipt.gtin}-${individualReceipt.batchNumber}-${individualReceipt.serialNumber}`;
+        return `${individualReceipt.gtin}-${individualReceipt.batchNumber}-${individualReceipt.serialNumber}-${Date.now()}`;
     }
 
     _getDSUInfo(keySSI, callback){
