@@ -134,12 +134,15 @@ class IssuedShipmentManager extends ShipmentManager {
             if (!(gtin in batchesObj))
                 return callback(`gtins not found in batches`);
             const batches = batchesObj[gtin];
+            //console.log("Going to self.stockManager.manageAll(", gtin, batches);
             self.batchAllow(self.stockManager);
             self.stockManager.manageAll(gtin,  batches, (err, removed) => {
                 self.batchDisallow(self.stockManager);
 
-                if(err)
-                    return cb(`Could not update Stock`);
+                if(err) {
+                    console.log(err);
+                    return cb(`Could not update Stock for orderId=${orderId} because of ${err}`);
+                }
                 if (self.stockManager.serialization && self.stockManager.aggregation)
                     shipment.shipmentLines.filter(sl => sl.gtin === gtin && Object.keys(removed).indexOf(sl.batch) !== -1).forEach(sl => {
                         sl.serialNumbers = removed[sl.batch];
@@ -164,6 +167,7 @@ class IssuedShipmentManager extends ShipmentManager {
         }, {});
 
         const dbAction = function (gtins, batchesObj, callback){
+            //console.log(`dbAction for orderId=${orderId}`, gtins, batchesObj, shipment);
 
             try {
                 self.beginBatch();
@@ -174,11 +178,11 @@ class IssuedShipmentManager extends ShipmentManager {
 
             gtinIterator(gtins, batchesObj, (err) => {
                 if(err)
-                    return cb(`Could not retrieve info from stock`);
-                console.log(`Shipment updated after Stock confirmation`);
+                    return cb(`Could not retrieve info from stock for orderId=${orderId} because of ${err}`);
+                console.log(`Shipment updated after Stock confirmation for orderId=${orderId}`);
                 createInner((err, keySSI, path) => {
                     if(err)
-                        return cb(`Could not create Shipment`);
+                        return cb(`Could not create Shipment for orderId=${orderId} because of ${err}`);
                     self.commitBatch((err) => {
                         if(err)
                             return cb(err);
