@@ -9,7 +9,7 @@
 
 | Property          | Attribute          | Description | Type     | Default     |
 | ----------------- | ------------------ | ----------- | -------- | ----------- |
-| `batchNumber`     | `batch-number`     |             | `string` | `undefined` |
+| `batchNumber`     | `batch`            |             | `string` | `undefined` |
 | `expiry`          | `expiry`           |             | `string` | `undefined` |
 | `expiryThreshold` | `expiry-threshold` |             | `number` | `30`        |
 | `gtin`            | `gtin`             |             | `string` | `undefined` |

@@ -24,7 +24,7 @@ export class ManagedIndividualProductChip {
 
   @Prop({attribute: "gtin", mutable: true}) gtin: string = undefined;
 
-  @Prop({attribute: "batch-number", mutable: true}) batchNumber: string = undefined;
+  @Prop({attribute: "batch", mutable: true}) batchNumber: string = undefined;
 
   @Prop({attribute: "serials", mutable: true}) serials: string = undefined;
 
