@@ -100,13 +100,13 @@ class Api {
         const getMethod = function(method){
             switch(method){
                 case OPERATIONS.GET.method:
-                    return server.get;
+                    return server.get.bind(server);
                 case OPERATIONS.CREATE.method:
-                    return server.put;
+                    return server.put.bind(server);
                 case OPERATIONS.UPDATE.method:
-                    return server.post;
+                    return server.post.bind(server);
                 case OPERATIONS.DELETE.method:
-                    return server.delete;
+                    return server.delete.bind(server);
                 default:
                     throw new Error(`Method not supported: ${method}`);
             }

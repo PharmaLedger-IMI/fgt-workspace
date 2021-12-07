@@ -304,6 +304,15 @@
             ]
         },
         {
+            "name": "fgt-api",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-api && npm install"
+                }
+            ]
+        },
+        {
             "name": "Install workbox cli globally",
             "actions": [
                 {

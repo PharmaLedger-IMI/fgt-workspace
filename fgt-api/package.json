@@ -1,0 +1,15 @@
+{
+  "name": "fgt-api",
+  "version": "0.0.1",
+  "description": "REST Api for traceability operations",
+  "main": "index.js",
+  "scripts": {
+    "run-mah": "node ./participants/mah/index.js",
+    "test": "test"
+  },
+  "devDependencies": {
+    "express": "^4.17.1"
+  },
+  "author": "",
+  "license": "MIT"
+}

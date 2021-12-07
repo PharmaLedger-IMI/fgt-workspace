@@ -62,6 +62,8 @@ fgt-wholesaler-ssapp/code/assets/skin.css
 fgt-wholesaler-ssapp/docs
 fgt-wholesaler-ssapp/seed
 
+fgt-api/config/seed
+
 latest-change-set.txt
 
 node_modules

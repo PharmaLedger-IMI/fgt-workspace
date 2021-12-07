@@ -81,7 +81,8 @@ const saveSeed = function(seed, callback){
 }
 
 
-const initApis = function(server, apis, walletName, ...managerInitMethods){
+const initApis = function(express, apis, walletName, ...managerInitMethods){
+
     getSeed(process.cwd(), walletName, (err, keySSI, walletDSU) => {
         if (err)
             throw err;
@@ -93,6 +94,9 @@ const initApis = function(server, apis, walletName, ...managerInitMethods){
                 initManagers(participantManager, ...managerInitMethods, (err) => {
                     if (err)
                         throw err;
+
+                    const server = express();
+
                     Object.values(apis).forEach(api => {
                         try {
                             new api(server, participantManager)
@@ -100,6 +104,8 @@ const initApis = function(server, apis, walletName, ...managerInitMethods){
                             console.log(e);
                         }
                     });
+
+                    server.listen(8081);
                 });
             });
         }
