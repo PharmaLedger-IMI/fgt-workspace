@@ -75,8 +75,8 @@ class Api {
         this._initialize(server, ensureAllMethods(operations));
     }
 
-    _getEndpoint(){
-        return BASE_PATH + (this.endpoint.startsWith('/') ? this.endpoint : "/" + this.endpoint);
+    _getEndpoint(operation){
+        return BASE_PATH + (this.endpoint.startsWith('/') ? this.endpoint : "/" + this.endpoint) + (operation ? (operation.startsWith('/') ? operation : "/" + operation) : "");
     }
 
     _sendResponse(res, code, response){
@@ -122,8 +122,8 @@ class Api {
 
         operations.forEach(op => {
             const pathParams = parsePathParams(...(op.pathParams || []));
-            log(`Setting up ${op.endpoint}${pathParams}`)
-            getMethod(op.method)(this._getEndpoint() + pathParams, (req, res, next) => {
+            log(`Setting up ${op.method}${this._getEndpoint(op.endpoint)}${pathParams}`)
+            getMethod(op.method)(this._getEndpoint(op.endpoint) + pathParams, (req, res, next) => {
                 parseRequestBody(req, (err, body) => {
                     if (err)
                         return self._sendResponse(res, 500, "Could not parse request Body");
