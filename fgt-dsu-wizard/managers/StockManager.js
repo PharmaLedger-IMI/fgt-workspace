@@ -232,7 +232,7 @@ class StockManager extends Manager{
 
             functionCallIterator(iterator(product).bind(this), batches, (err, ...results) => {
                 if (err)
-                    return cb(`Could not perform manage all on Stock`);
+                    return cb(`Could not perform manage all on Stock beacause ${err}`);
 
                 self.commitBatch((err) => {
                     if(err)
