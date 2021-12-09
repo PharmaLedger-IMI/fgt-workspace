@@ -75,15 +75,33 @@ class Api {
         this._initialize(server, ensureAllMethods(operations));
     }
 
-    _getEndpoint(operation){
-        return BASE_PATH + (this.endpoint.startsWith('/') ? this.endpoint : "/" + this.endpoint) + (operation ? (operation.startsWith('/') ? operation : "/" + operation) : "");
+    /**
+     * Return a normalized URI according to parameters
+     * @param  operation  related to {@link OPERATIONS}
+     * @param {pathParams: string[]?} params
+     * @returns {string}
+     */
+    _getEndpoint(operation, params){
+        const parsePath = (path) => {
+            if (!path)
+                return "";
+            return path.startsWith('/') ? path : ("/" + path);
+        }
+
+        const parseParams = (params) => {
+            if (!params || !params.length)
+                return "";
+            return "/:" + params.join(":");
+        }
+
+        return BASE_PATH + parsePath(this.endpoint) + parsePath(operation) + parseParams(params);
     }
 
     _sendResponse(res, code, response){
         res.statusCode = code;
         if (response)
             res.write(JSON.stringify(response));
-        log(response);
+        log('_sendResponse=', response);
         res.send();
     }
 
@@ -112,18 +130,13 @@ class Api {
             }
         }
 
-        const parsePathParams = function(...params){
-            if (!params.length)
-                return '';
-            return "/:" + params.join(':');
-        }
-
         log(`Initializing ${this.endpoint} endpoint with operations:`);
 
         operations.forEach(op => {
-            const pathParams = parsePathParams(...(op.pathParams || []));
-            log(`Setting up ${op.method}${this._getEndpoint(op.endpoint)}${pathParams}`)
-            getMethod(op.method)(this._getEndpoint(op.endpoint) + pathParams, (req, res, next) => {
+            const method = getMethod(op.method);
+            const endpoint = this._getEndpoint(op.endpoint, op.pathParams || []);
+            log(`Setting up ${op.method} on ${endpoint}`)
+            method(endpoint, (req, res, next) => {
                 parseRequestBody(req, (err, body) => {
                     if (err)
                         return self._sendResponse(res, 500, "Could not parse request Body");
@@ -133,7 +146,7 @@ class Api {
                     self[op.endpoint].call(self, ...params, (err, ...results) => {
                         if (err)
                             return self._sendResponse(res, 501, `Could not execute select method: ${err}`);
-                        self._sendResponse(200, results);
+                        self._sendResponse(res, 200, results);
                     });
                 });
             });

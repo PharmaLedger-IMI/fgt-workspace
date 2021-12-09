@@ -68,7 +68,7 @@ const getSeed = function(basePath, walletName, callback){
 
     fs.readFile(seedFilePath, (err, data) => {
         if (err){
-            console.log(`Could not read seed file. Trying to instantiate`);
+            log(`Could not read seed file. Trying to instantiate`);
             return instantiate(basePath, walletName, callback);
         }
         callback(undefined, data);
