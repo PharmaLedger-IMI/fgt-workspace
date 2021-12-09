@@ -10,14 +10,16 @@ const testOptions = {
     noLogs: true, // Prevents from recording logs. (set to false if you want to record them);
     testName: 'w3cDIDMethodNameTest', // no spaces please. its used as a folder name (change for the unit being tested);
     timeout: 100000, // Sets timeout for the test.
-    fakeServer: false, // Decides if fake server is used (change if you want to use fake server);
+    fakeServer: true, // Decides if fake server is used (change if you want to use fake server);
     useCallback: true, // Decides if you want to use callback (change if you dont want to use it);
 };
 
 const options = {
     domain: 'traceability',
     DID_METHOD: 'ssi:name',
-    DID_NAME: 'mydidssiname',
+    DID_SENDERNAME: 'sendername',
+    DID_RECEIVERNAME: 'receivername',
+    data: 'some Data',
 }
 
 //################################################################################################
@@ -78,6 +80,7 @@ const { argParser } = require('../../../bin/environment/utils');
 
 const opendsu = require("opendsu");
 const w3cDID = opendsu.loadApi('w3cdid');
+const scAPI = opendsu.loadAPI("sc");
 
 
 //################################################################################################
@@ -92,13 +95,40 @@ const config = argParser(options, process.argv);
 
 const runTest = function(finishTest){
 
-    w3cDID.createIdentity(config.DID_METHOD, config.domain, config.DID_NAME, (err, did) => {
-        if (err)
-            throw err;
-       
-        console.log(did);
-        finishTest();
+    let sc = scAPI.getSecurityContext();
+
+    sc.on('initialised', async () => {
+        
+        w3cDID.createIdentity(config.DID_METHOD, config.domain, config.DID_SENDERNAME, (err, senderDIDDoc) => {
+            assert.false(err, 'Could Not Create Identity: ', config.DID_SENDERNAME);
+
+            console.log(senderDIDDoc.getIdentifier(), ' created');
+
+            w3cDID.createIdentity(config.DID_METHOD, config.domain, config.DID_RECEIVERNAME, (err, receiverDIDDoc) => {
+                assert.false(err, 'Could Not Create Identity: ', config.DID_RECEIVERNAME);
+
+                console.log(receiverDIDDoc.getIdentifier(), ' created');
+
+                const message = `Message created at ${Date.now()}`;
+
+                senderDIDDoc.sendMessage(JSON.stringify(message), receiverDIDDoc,  (err) => {
+                    assert.false(err, `${senderDIDDoc.getIdentifier()} failed to send message to ${receiverDIDDoc.getIdentifier()} : ${message}`);
+                    
+                    console.log(`${senderDIDDoc.getIdentifier()} sent message to ${receiverDIDDoc.getIdentifier()}`)
+
+                    receiverDIDDoc.readMessage((err, decMessage) => {
+                        assert.false(err, `${receiverDIDDoc.getIdentifier()} failed to receive message from ${senderDIDDoc.getIdentifier()} : ${message}`);
+
+                        console.log(`${receiverDIDDoc.getIdentifier()} received message from ${senderDIDDoc.getIdentifier()}`); 
+                        console.log(decMessage);                       
+                        finishTest();
+                    })
+                });
+            });   
+        });
+
     });
+
     
 };
 
@@ -186,7 +216,7 @@ assert.callback(testOptions.testName, (testFinished) => {
 
 
 //     /*Test related Specific*/
-//     didMethod: 'demo',
+
 //     utilTest: 'tests/unit-tests/managers/message-manager/message-manager-children.js',
 
 //     messages: 10,
@@ -290,12 +320,3 @@ assert.callback(testOptions.testName, (testFinished) => {
 //         });
 //     })   
 // };
-
-
-
-// //################################################################################################
-/*Fake Server Config*/
-
-
-
-
