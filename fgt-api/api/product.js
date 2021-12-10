@@ -8,7 +8,7 @@ class ProductApi extends Api {
     productManager;
 
     constructor(server, participantManager) {
-        super(server, 'product', participantManager, [OPERATIONS.CREATE, PRODUCT_GET]);
+        super(server, 'product', participantManager, [OPERATIONS.CREATE, PRODUCT_GET], Product);
         try {
             this.productManager = participantManager.getManager("ProductManager");
         } catch (e) {
@@ -18,54 +18,41 @@ class ProductApi extends Api {
     }
 
     /**
-     *
-     * @param {string} [gtin]
      * @param {Product} product
      * @param {function(err?, Product?, KeySSI?)} callback
      * @override
      */
-    create(gtin, product, callback){
-        if (!callback){
-            callback = product;
-            product = gtin;
-            gtin = product.gtin;
-        }
-
+    create(product, callback){
         const self = this;
 
-        if (!(product instanceof Product))
-            product = new Product(product);
-
-        const err = product.validate();
+        const [err, _product] = self._validate(product);
         if (err)
-            return callback(err.join(', '));
+            return callback(err);
 
-        self.productManager.create(product, (err, keySSI) => {
+        self.productManager.create(_product, (err, keySSI) => {
             if (err)
                 return callback(err);
-            self.productManager.getOne(product.gtin, true, (err, savedProduct) => {
+            self.productManager.getOne(_product.gtin, true, (err, insertedProduct) => {
                 if (err)
                     return callback(err);
-                callback(undefined, savedProduct, keySSI.getIdentifier());
+                callback(undefined, insertedProduct, keySSI.getIdentifier());
             });
         });
     }
 
     /**
-     * Creates a new Model Object
-     * @param {string[]} [keys] can be optional if can be generated from model object
-     * @param {[{}]} models a list of model objects
+     * @param {[Products]} products
      * @param {function(err?, [{}]?, KeySSI[]?)} callback
      */
-    createAll(keys, models, callback){
+    createAll(products, callback){
         const self = this;
         try{
             self.productManager.beginBatch();
         } catch (e) {
-            return self.productManager.batchSchedule(() => self.createAll.call(self, keys, models, callback));
+            return self.productManager.batchSchedule(() => self.createAll.call(self, products, callback));
         }
 
-        super.createAll(keys, models, (err, ...results) => {
+        super.createAll([], products, (err, ...results) => {
             if (err){
                 console.log(err);
                 return self.productManager.cancelBatch((_) => callback(err));
@@ -81,6 +68,31 @@ class ProductApi extends Api {
             });
         });
     }
+
+    /**
+     * @param gtin
+     * @param {function(err?, Product?)} callback
+     */
+    getOne(gtin, callback) {
+        this.productManager.getOne(gtin, true, (err, product) => {
+            if (err)
+                return callback(err);
+            callback(undefined, product);
+        })
+    }
+
+    /**
+     * @param keys
+     * @param {function(err?, [Product]?)} callback
+     */
+    getAll(keys, callback) {
+        this.productManager.getAll(true, (err, products) => {
+            if (err)
+                return callback(err);
+            callback(undefined, products);
+        })
+    }
+
 }
 
 module.exports = ProductApi;
