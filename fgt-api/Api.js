@@ -197,7 +197,7 @@ class Api {
         functionCallIterator(this.update.bind(this), keys, models, callback);
     }
 
-    getOne(key, callback){
+    get(key, callback){
         return callback(`Not Implemented in master Class`);
     }
 
