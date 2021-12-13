@@ -1,4 +1,5 @@
 const {functionCallIterator, log} = require('./utils');
+const {BadRequest, InternalServerError} = require("./utils/errorHandler");
 const BASE_PATH = '/traceability';
 const ALL_SUFFIX = "All";
 
@@ -139,6 +140,15 @@ class Api {
         return BASE_PATH + parsePath(this.endpoint) + parsePath(operation) + parseParams(params);
     }
 
+    _handleError(res, err) {
+        err = !(err instanceof Error ) || !err.statusCode ? new InternalServerError() : err;
+        this._sendResponse(res, err.statusCode, {
+            status: err.statusCode,
+            error: err.message,
+            message: err.customMsg
+        })
+    }
+
     _sendResponse(res, code, response){
         res.statusCode = code;
         if (response)
@@ -181,11 +191,11 @@ class Api {
             method(endpoint, (req, res, next) => {
                 parseRequestBody(req, (err, body) => {
                     if (err)
-                        return self._sendResponse(res, 500, "Could not parse request Body");
+                        return self._handleError(res, new BadRequest("Could not parse request Body"));
 
                     self._methodMiddleware(op.endpoint, req.params, req.query, body, (err, ...results) => {
                         if (err)
-                            return self._sendResponse(res, 501, `Could not execute select method: ${err}`);
+                            return self._handleError(res, err);
                         self._sendResponse(res, 200, results);
                     })
                 });
