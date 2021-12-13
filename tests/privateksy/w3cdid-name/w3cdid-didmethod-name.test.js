@@ -10,7 +10,7 @@ const testOptions = {
     noLogs: true, // Prevents from recording logs. (set to false if you want to record them);
     testName: 'w3cDIDMethodNameTest', // no spaces please. its used as a folder name (change for the unit being tested);
     timeout: 100000, // Sets timeout for the test.
-    fakeServer: false, // Decides if fake server is used (change if you want to use fake server);
+    fakeServer: true, // Decides if fake server is used (change if you want to use fake server);
     useCallback: true, // Decides if you want to use callback (change if you dont want to use it);
 };
 
@@ -79,6 +79,8 @@ const assert = dc.assert;
 const { argParser } = require('../../../bin/environment/utils');
 
 const opendsu = require("opendsu");
+const { sign } = require('crypto');
+const { SourceMap } = require('module');
 const w3cDID = opendsu.loadApi('w3cdid');
 const scAPI = opendsu.loadAPI("sc");
 
@@ -91,6 +93,63 @@ const config = argParser(options, process.argv);
 
 //################################################################################################
 
+/* Util Methods */
+const createIdentity = function(name, callback){
+    w3cDID.createIdentity(config.DID_METHOD, config.domain, name, (err, didDoc) => {
+        assert.false(err, `Error creating identity ${name}: ${err}`);
+
+        console.log(`${didDoc.getIdentifier()} created.`);
+        callback(didDoc);
+    })
+}
+
+const generateMessage = function(){
+    const message = `Message created at ${Date.now()}`;
+    return message;
+}
+
+const sendMessage = function(message, senderDIDDoc, receiverDIDString, callback) {
+    w3cDID.resolveDID(receiverDIDString, (err, receiverDIDDoc) => {
+        assert.false(err, `Error resolving did - ${receiverDIDString}: ${err}`);
+
+        console.log(`Successfully resolved DID - ${receiverDIDDoc.getIdentifier()}`);
+
+        senderDIDDoc.sign(message, (err, signature) => {
+            assert.false(err, `Error signing message: ${message} - ${err}`);
+
+            console.log(`Message was signed with signature ${signature}`);
+
+            senderDIDDoc.sendMessage(message, receiverDIDDoc, (err) => {
+                assert.false(err, `Error sending message: ${message} from ${senderDIDDoc.getIdentifier()} to ${receiverDIDDoc.getIdentifier()}: ${err}`);
+                
+                console.log(`${senderDIDDoc.getIdentifier()} sucessfuly sent message to ${receiverDIDDoc.getIdentifier()}: ${message}`);
+                callback(signature);
+            })
+        })
+    })
+}
+
+const receiveMessage = function(receiverDIDDoc, senderDIDString, signature, callback){
+    receiverDIDDoc.readMessage((err, decMessage) => {
+        assert.false(err, `${receiverDIDDoc.getIdentifier()} failed to receive message from ${senderDIDString} : ${decMessage}`);
+
+        console.log(`${receiverDIDDoc.getIdentifier()} received message from ${senderDIDString}: ${decMessage}`);
+      
+        w3cDID.resolveDID(senderDIDString, (err, senderDIDDoc) => {
+            assert.false(err, `Error resolving did - ${senderDIDDoc.getIdentifier()}: ${err}`);
+    
+            senderDIDDoc.verify(decMessage , signature, (err, verification) => {
+                assert.false(err, `Failed to verify signature: ${err}`);
+
+                assert.true(verification, 'Unable to verify signature resolving did after receiving message');
+                callback();
+            });
+        })    
+    })
+}
+
+//################################################################################################
+
 /* Run Test */ 
 
 const runTest = function(finishTest){
@@ -98,35 +157,37 @@ const runTest = function(finishTest){
     let sc = scAPI.getSecurityContext();
 
     sc.on('initialised', async () => {
-        
-        w3cDID.createIdentity(config.DID_METHOD, config.domain, config.DID_SENDERNAME, (err, senderDIDDoc) => {
-            assert.false(err, 'Could Not Create Identity: ', config.DID_SENDERNAME);
 
-            console.log(senderDIDDoc.getIdentifier(), ' created');
+        createIdentity(config.DID_SENDERNAME, (senderDIDDoc) => {
 
-            w3cDID.createIdentity(config.DID_METHOD, config.domain, config.DID_RECEIVERNAME, (err, receiverDIDDoc) => {
-                assert.false(err, 'Could Not Create Identity: ', config.DID_RECEIVERNAME);
+            createIdentity(config.DID_RECEIVERNAME, (receiverDIDDoc) => {
 
-                console.log(receiverDIDDoc.getIdentifier(), ' created');
+                const message = generateMessage();
 
-                const message = `Message created at ${Date.now()}`;
+                senderDIDDoc.sign(message, (err, signature) => {
+                    assert.false(err);
 
-                senderDIDDoc.sendMessage(JSON.stringify(message), receiverDIDDoc,  (err) => {
-                    assert.false(err, `${senderDIDDoc.getIdentifier()} failed to send message to ${receiverDIDDoc.getIdentifier()} : ${message}`);
-                    
-                    console.log(`${senderDIDDoc.getIdentifier()} sent message to ${receiverDIDDoc.getIdentifier()}`)
+                    console.log(signature);
 
-                    receiverDIDDoc.readMessage((err, decMessage) => {
-                        assert.false(err, `${receiverDIDDoc.getIdentifier()} failed to receive message from ${senderDIDDoc.getIdentifier()} : ${message}`);
-
-                        console.log(`${receiverDIDDoc.getIdentifier()} received message from ${senderDIDDoc.getIdentifier()}`); 
-                        console.log(decMessage); 
+                    senderDIDDoc.verify(message, signature, (err, verification) => {
+                        assert.false(err);
                         
-                        finishTest();
+                        assert.true(verification , 'Unable to verify without resolving did')
+
+                        sendMessage(generateMessage(), senderDIDDoc, receiverDIDDoc.getIdentifier(), (signature)=> {
+                            
+                            receiveMessage(receiverDIDDoc, senderDIDDoc.getIdentifier(), signature, () => {    
+                                finishTest();    
+                            })
+                        })
                     })
-                });
-            });   
+                })
+            })
         });
+
+                
+
+         
 
     });
 
