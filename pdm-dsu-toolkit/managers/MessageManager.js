@@ -1,6 +1,6 @@
 const Manager = require('./Manager')
 const { _err } = require('../services/utils')
-const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE } = require('../constants');
+const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE, DOMAIN } = require('../constants');
 
 /**
  * @typedef W3cDID
