@@ -41,6 +41,8 @@ const DEFAULT_QUERY_OPTIONS = {
 
 const INPUT_FIELD_PREFIX = 'input-'
 
+const DOMAIN = 'traceability';
+
 module.exports = {
     INFO_PATH,
     PARTICIPANT_MOUNT_PATH,
