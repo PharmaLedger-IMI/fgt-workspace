@@ -26,7 +26,7 @@ class Batch {
     constructor(batch) {
         if (typeof batch !== undefined)
             for (let prop in batch)
-                if (batch.hasOwnProperty(prop))
+                if(batch.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = batch[prop];
 
         if (this.expiry && typeof this.expiry === 'string')

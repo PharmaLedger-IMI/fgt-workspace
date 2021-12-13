@@ -39,7 +39,7 @@ class TrackingCode{
     constructor(code) {
         if (typeof code !== undefined)
             for (let prop in code)
-                if (code.hasOwnProperty(prop))
+                if (code.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = code[prop];
     }
 

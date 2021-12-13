@@ -27,7 +27,7 @@ class ShipmentCode extends TrackingCode {
         super(shipmentCode);
         if (typeof shipmentCode !== undefined)
             for (let prop in shipmentCode)
-                if (shipmentCode.hasOwnProperty(prop))
+                if (shipmentCode.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = shipmentCode[prop];
     }
 

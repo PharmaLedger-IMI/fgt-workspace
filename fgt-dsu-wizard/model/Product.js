@@ -16,7 +16,7 @@ class Product {
     constructor(product) {
         if (typeof product !== undefined)
             for (let prop in product)
-                if (product.hasOwnProperty(prop))
+                if (product.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = product[prop];
     }
 

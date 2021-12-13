@@ -22,7 +22,7 @@ class ShipmentLine{
     constructor(line) {
         if (typeof line !== undefined)
             for (let prop in line)
-                if (line.hasOwnProperty(prop))
+                if (line.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = line[prop];
 
         if (this.serialNumbers && this.serialNumbers.length)

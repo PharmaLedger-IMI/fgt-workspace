@@ -21,7 +21,7 @@ class IndividualProduct {
     constructor(individualProduct) {
         if (typeof individualProduct !== undefined)
             for (let prop in individualProduct)
-                if (individualProduct.hasOwnProperty(prop))
+                if (individualProduct.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = individualProduct[prop];
 
         if(typeof this.expiry === 'string'){

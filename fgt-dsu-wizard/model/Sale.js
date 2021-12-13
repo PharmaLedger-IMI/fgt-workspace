@@ -17,7 +17,7 @@ class Sale {
     constructor(sale) {
         if (typeof sale !== undefined)
             for (let prop in sale)
-                if (sale.hasOwnProperty(prop))
+                if (sale.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = sale[prop];
 
         if (this.productList)
