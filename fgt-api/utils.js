@@ -82,6 +82,7 @@ const saveSeed = function(seed, callback){
 
 
 const initApis = function(express, apis, walletName, ...managerInitMethods){
+    log(`InitApi: ${walletName}`)
 
     getSeed(process.cwd(), walletName, (err, keySSI, walletDSU) => {
         if (err)

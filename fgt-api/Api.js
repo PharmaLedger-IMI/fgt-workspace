@@ -59,6 +59,7 @@ const parseRequestBody = function(req, callback){
 
 
 class Api {
+    model;
     endpoint;
     participantManager;
 
@@ -68,11 +69,52 @@ class Api {
      * @param {string} endpoint the api endpoint (will be concatenated with {@link BASE_PATH)}
      * @param {[{endpoint: string, method: string, pathParams: string[]?}]} operations relates to {@link OPERATIONS}
      * @param {ParticipantManager} participantManager
+     * @param model
      */
-    constructor(server, endpoint,participantManager , operations ){
+    constructor(server, endpoint,participantManager , operations, model ){
         this.endpoint = endpoint;
         this.participantManager = participantManager;
+        this.model = model;
         this._initialize(server, ensureAllMethods(operations));
+    }
+
+    _validate(data, ...params) {
+        if(!this.model)
+            return ["Unable to validate, it's needed to define a model.", undefined]
+
+        if (!(data instanceof this.model))
+            data = new this.model(data);
+
+        const validateErr = data.validate(...params);
+        if (validateErr)
+            return [validateErr, undefined];
+        return [undefined, data];
+    }
+
+    /**
+     * @param {string} method {@link OPERATIONS}
+     * @param {{}} params request path params
+     * @param {{}} query request query params
+     * @param {{}} body request body
+     * @param callback
+     * @private
+     */
+    _methodMiddleware(method, params, query, body, callback) {
+        const self = this;
+        const methods = {
+            create() {self.create.call(self, ...Object.values(params), body, callback)},
+            createAll() {self.createAll.call(self, ...body, callback)},
+
+            get() {self.getOne.call(self, ...Object.values(params), callback)},
+            getAll() {self.getAll.call(self, query, callback)},
+
+            update() {self.update.call(self, ...Object.values(params), body, callback)},
+            updateAll() {self.updateAll.call(self, ...body, callback)},
+
+            delete() {self.delete.call(self, ...Object.values(params), callback)},
+            deleteAll() {self.deleteAll.call(self, /*query,*/ body, callback)},
+        }
+        methods[method]();
     }
 
     /**
@@ -91,7 +133,7 @@ class Api {
         const parseParams = (params) => {
             if (!params || !params.length)
                 return "";
-            return "/:" + params.join(":");
+            return "/:" + params.join("/:");
         }
 
         return BASE_PATH + parsePath(this.endpoint) + parsePath(operation) + parseParams(params);
@@ -140,14 +182,12 @@ class Api {
                 parseRequestBody(req, (err, body) => {
                     if (err)
                         return self._sendResponse(res, 500, "Could not parse request Body");
-                    const params = Object.values(req.params) || [];
-                    if (body)
-                        params.push(body);
-                    self[op.endpoint].call(self, ...params, (err, ...results) => {
+
+                    self._methodMiddleware(op.endpoint, req.params, req.query, body, (err, ...results) => {
                         if (err)
                             return self._sendResponse(res, 501, `Could not execute select method: ${err}`);
                         self._sendResponse(res, 200, results);
-                    });
+                    })
                 });
             });
         });
@@ -197,7 +237,7 @@ class Api {
         functionCallIterator(this.update.bind(this), keys, models, callback);
     }
 
-    get(key, callback){
+    getOne(key, callback){
         return callback(`Not Implemented in master Class`);
     }
 
