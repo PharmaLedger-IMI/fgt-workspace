@@ -22,7 +22,7 @@
         },
         {
             "name": "privatesky",
-            "src": "http://github.com/privatesky/privatesky.git",
+            "src": "http://github.com/privatesky/psk-release.git",
             "actions": [
                 {
                     "type": "smartClone",
