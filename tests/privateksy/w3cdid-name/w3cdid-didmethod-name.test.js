@@ -10,7 +10,7 @@ const testOptions = {
     noLogs: true, // Prevents from recording logs. (set to false if you want to record them);
     testName: 'w3cDIDMethodNameTest', // no spaces please. its used as a folder name (change for the unit being tested);
     timeout: 100000, // Sets timeout for the test.
-    fakeServer: true, // Decides if fake server is used (change if you want to use fake server);
+    fakeServer: false, // Decides if fake server is used (change if you want to use fake server);
     useCallback: true, // Decides if you want to use callback (change if you dont want to use it);
 };
 
@@ -120,7 +120,8 @@ const runTest = function(finishTest){
                         assert.false(err, `${receiverDIDDoc.getIdentifier()} failed to receive message from ${senderDIDDoc.getIdentifier()} : ${message}`);
 
                         console.log(`${receiverDIDDoc.getIdentifier()} received message from ${senderDIDDoc.getIdentifier()}`); 
-                        console.log(decMessage);                       
+                        console.log(decMessage); 
+                        
                         finishTest();
                     })
                 });
