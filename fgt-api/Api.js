@@ -193,7 +193,7 @@ class Api {
                     if (err)
                         return self._handleError(res, new BadRequest("Could not parse request Body"));
 
-                    self._methodMiddleware(op.endpoint, req.params, req.query, body, (err, ...results) => {
+                    self._methodMiddleware(op.endpoint, req.params, req.query, body, (err, results) => {
                         if (err)
                             return self._handleError(res, err);
                         self._sendResponse(res, 200, results);

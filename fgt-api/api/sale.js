@@ -18,7 +18,7 @@ module.exports = class SaleApi extends Api {
 
     /**
      * @param {Sale} sale
-     * @param {function(err?, Sale?, KeySSI?)} callback
+     * @param {function(err?, Sale?)} callback
      */
     create(sale, callback){
         const self = this;
@@ -30,7 +30,7 @@ module.exports = class SaleApi extends Api {
         self.saleManager.create(_sale, (err, keySSI) => {
             if (err)
                 return callback(err);
-            callback(undefined, _sale, keySSI.getIdentifier());
+            callback(undefined, {..._sale, keySSI: keySSI.getIdentifier()});
         });
     }
 

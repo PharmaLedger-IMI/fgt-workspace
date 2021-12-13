@@ -35,7 +35,7 @@ class ProductApi extends Api {
             self.productManager.getOne(_product.gtin, true, (err, insertedProduct) => {
                 if (err)
                     return callback(err);
-                callback(undefined, insertedProduct, keySSI.getIdentifier());
+                callback(undefined, {...insertedProduct, keySSI: keySSI.getIdentifier()});
             });
         });
     }
