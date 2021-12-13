@@ -25,7 +25,7 @@ const Product = require('../model/Product');
  */
 class ProductManager extends Manager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.products, ['gtin'], callback);
+        super(participantManager, DB.products, ['gtin', 'name', 'manufName'], callback);
         this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
     }
 
