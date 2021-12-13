@@ -7,12 +7,13 @@ const getProductManager = require('../../../fgt-dsu-wizard/managers/ProductManag
 const getBatchManager = require('../../../fgt-dsu-wizard/managers/BatchManager');
 const getShipmentLineManager = require('../../../fgt-dsu-wizard/managers/ShipmentLineManager');
 const getTraceabilityManager = require('../../../fgt-dsu-wizard/managers/TraceabilityManager');
+const getStockManager = require('../../../fgt-dsu-wizard/managers/StockManager');
+const getSaleManager = require('../../../fgt-dsu-wizard/managers/SaleManager');
 const getReceiptManager = require('../../../fgt-dsu-wizard/managers/ReceiptManager');
 
 
 function init(){
-    console.log("here")
-    initApis(express, api, APPS.MAH, getProductManager, getBatchManager, getShipmentLineManager, getTraceabilityManager, getReceiptManager);
+    initApis(express, api, APPS.MAH, getProductManager, getBatchManager, getShipmentLineManager, getTraceabilityManager, getStockManager, getSaleManager, getReceiptManager);
 }
 
 init();
