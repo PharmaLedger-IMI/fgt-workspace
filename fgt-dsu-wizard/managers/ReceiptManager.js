@@ -2,6 +2,7 @@ const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../con
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Receipt = require('../model/Receipt');
 const IndividualReceipt = require('../model/IndividualReceipt');
+const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 
 /**
  * Stock Manager Class

@@ -1,6 +1,7 @@
 const {INFO_PATH, ANCHORING_DOMAIN, DB, DEFAULT_QUERY_OPTIONS} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const IndividualProduct = require('../model/IndividualProduct');
+const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 
 /**
  * IndividualProduct Manager Class
@@ -193,18 +194,6 @@ class IndividualProductManager extends Manager {
         options = options || defaultOptions();
 
         super.getAll(readDSU, options, callback);
-    }
-
-    /**
-     * Converts the text typed in a general text box into the query for the db
-     * Subclasses should override this
-     * @param {string} keyword
-     * @return {string[]} query
-     * @protected
-     */
-    _keywordToQuery(keyword){
-        keyword = keyword || '.*';
-        return [`gtin like /${keyword}/g`];
     }
 
     /**

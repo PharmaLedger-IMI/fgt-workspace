@@ -3,6 +3,7 @@ const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const {Batch, Notification} = require('../model');
 const getStockManager = require('./StockManager');
 const getNotificationManager = require('./NotificationManager');
+const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 
 /**
  * Batch Manager Class
@@ -302,18 +303,6 @@ class BatchManager extends Manager{
         });
     }
 
-    /**
-     * Converts the text typed in a general text box into the query for the db
-     * Subclasses should override this
-     * @param {string} keyword
-     * @return {string[]} query
-     * @protected
-     * @override
-     */
-    _keywordToQuery(keyword){
-        keyword = keyword || '.*';
-        return [`gtin like /${keyword}/g`];
-    }
 }
 
 /**

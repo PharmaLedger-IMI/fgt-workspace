@@ -2,6 +2,7 @@ const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const ShipmentManager = require("./ShipmentManager");
 const getReceivedOrderManager = require("./ReceivedOrderManager");
 const {Shipment, Order, OrderStatus, ShipmentStatus, Wholesaler, Batch} = require('../model');
+const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 
 
 /**
@@ -26,7 +27,7 @@ const {Shipment, Order, OrderStatus, ShipmentStatus, Wholesaler, Batch} = requir
  */
 class IssuedShipmentManager extends ShipmentManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.issuedShipments, ['requesterId'], callback);
+        super(participantManager, DB.issuedShipments, ['shipmentId', 'senderId', 'requesterId', 'status'], callback);
         this.participantManager = participantManager;
         this.stockManager = participantManager.stockManager;
     }

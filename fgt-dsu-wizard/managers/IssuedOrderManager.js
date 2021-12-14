@@ -2,6 +2,7 @@ const { DB, DEFAULT_QUERY_OPTIONS, SHIPMENT_PATH, INFO_PATH } = require('../cons
 const OrderManager = require("./OrderManager");
 const {Order, OrderStatus, ShipmentStatus, Batch} = require('../model');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
+const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 const utils = require('../services').utils
 
 /**
@@ -26,7 +27,7 @@ const utils = require('../services').utils
  */
 class IssuedOrderManager extends OrderManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.issuedOrders, ['senderId', 'shipmentId'], callback);
+        super(participantManager, DB.issuedOrders, ['orderId', 'senderId', 'shipmentId', 'status'], callback);
         this.stockManager = participantManager.stockManager;
     }
 

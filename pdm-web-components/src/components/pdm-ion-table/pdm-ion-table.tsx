@@ -39,7 +39,7 @@ export class PdmIonTable implements ComponentInterface {
   @Prop({attribute: 'icon-name'}) iconName?: string = undefined;
   @Prop({attribute: 'no-content-message', mutable: true}) noContentMessage?: string = "No Content";
   @Prop({attribute: 'loading-message', mutable: true}) loadingMessage?: string = "Loading...";
-  @Prop({attribute: 'query-placeholder', mutable: true}) searchBarPlaceholder?: string =  "enter search terms...";
+  @Prop({attribute: 'search-bar-placeholder', mutable: true}) searchBarPlaceholder?: string =  "enter search terms...";
   // @Prop({attribute: 'buttons', mutable: true}) buttons?: string[] | {} = [];
   // @Prop({attribute: 'send-real-events', mutable: true}) sendRealEvents: boolean = false;
 
@@ -87,13 +87,6 @@ export class PdmIonTable implements ComponentInterface {
 
   @State() model = undefined;
 
-  async componentWillLoad() {
-    if (!this.host.isConnected)
-      return;
-    if (this.autoLoad)
-      await this.loadContents();
-  }
-
   private updateTable(newModel){
     if (!this.model){
       this.model = [...newModel];
@@ -113,6 +106,11 @@ export class PdmIonTable implements ComponentInterface {
         if (e.refresh)
           await e.refresh();
     });
+  }
+
+  async performSearch(evt: any) {
+    console.log(`# ${this.manager} search keyword=${evt.detail}`)
+    this.query = evt.detail;
   }
 
   async loadContents(pageNumber?: number){
@@ -233,8 +231,7 @@ export class PdmIonTable implements ComponentInterface {
         return;
       return (
         <div class="ion-margin-end">
-          <ion-searchbar debounce={1000} placeholder={self.searchBarPlaceholder}
-                         search-icon="search-outline"></ion-searchbar>
+          <pdm-search-bar onSearch={self.performSearch.bind(self)} placeholder={self.searchBarPlaceholder}> </pdm-search-bar>
         </div>
       )
     }
@@ -274,6 +271,13 @@ export class PdmIonTable implements ComponentInterface {
       </ion-row>
     )
   };
+
+  async componentWillLoad() {
+    if (!this.host.isConnected)
+      return;
+    if (this.autoLoad)
+      await this.loadContents();
+  }
 
   render() {
     return (

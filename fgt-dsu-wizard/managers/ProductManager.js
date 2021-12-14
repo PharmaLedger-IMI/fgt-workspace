@@ -188,18 +188,6 @@ class ProductManager extends Manager {
     }
 
     /**
-     * Converts the text typed in a general text box into the query for the db
-     * Subclasses should override this
-     * @param {string} keyword
-     * @return {string[]} query
-     * @protected
-     */
-    _keywordToQuery(keyword){
-        keyword = keyword || '.*';
-        return [`gtin like /${keyword}/g`];
-    }
-
-    /**
      *
      * @param model
      * @returns {Product}

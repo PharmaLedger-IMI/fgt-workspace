@@ -390,36 +390,6 @@ class StockManager extends Manager{
         });
     }
 
-    /**
-     * Returns a page object
-     * @param {number} itemsPerPage
-     * @param {number} page
-     * @param {string} keyword
-     * @param {string} sort
-     * @param {boolean} readDSU
-     * @param {function(err, Page)}callback
-     */
-     getPage(itemsPerPage, page, keyword, sort, readDSU, callback){
-        const self = this;
-        let receivedPage = page || 1;
-
-        const options = {
-            query: keyword ? self._keywordToQuery(keyword) : ["__timestamp > 0", "quantity > 0"],
-            sort: sort || "dsc",
-            limit: undefined
-        }
-
-        self.getAll(readDSU, options, (err, records) => {
-           if (err)
-               return self._err(`Could not retrieve records to page`, err, callback);
-            if (records.length === 0)
-                return callback(undefined, toPage(0, 0, records, itemsPerPage));
-           if (records.length <= itemsPerPage)
-               return callback(undefined, toPage(1, 1, records, itemsPerPage));
-           const page = paginate(records, itemsPerPage, receivedPage);
-           callback(undefined, page);
-        });
-    }
 }
 
 

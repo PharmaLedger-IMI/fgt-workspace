@@ -2,6 +2,7 @@ const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../con
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Sale = require('../model/Sale');
 const Batch = require('../model/Batch');
+const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 const utils = require('../services').utils;
 
 /**
@@ -300,6 +301,7 @@ class SaleManager extends Manager{
             callback(undefined, records.map(r => new Sale(r)));
         });
     }
+
 }
 
 
