@@ -232,12 +232,20 @@ class MessageManager extends Manager{
         this._getDID(this.didString, callback);
     }
 
+    /**
+     * Resolves DID From DID String or Creates One If DID doens't exist.
+     * @param {string} didString Reference to the DID
+     * @param {function(err, didDoc)} callback 
+     */
+
     _getDID(didString, callback){
-        this.w3cDID.resolveDID(didString, (err, resolvedDIDDoc) => err 
-            ? this.w3cDID.createIdentity(DID_METHOD, DOMAIN, didString, (err, createdDIDDoc) => err
-                ? _err(`Could not create or resolve DID identity`, err, callback)
-                : callback(undefined, createdDIDDoc))
-            : callback(undefined, resolvedDIDDoc));
+                this.w3cDID.createIdentity(DID_METHOD, 'traceability', didString, (err, createdDIDDoc) => {
+                    if(err)
+                        return _err(`Could not create or resolve DID identity`, err, callback);
+                    
+                    return callback(undefined, createdDIDDoc);
+                });
+
     }
 }
 
