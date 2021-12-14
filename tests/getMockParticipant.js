@@ -135,11 +135,15 @@ const getFakeDSUStorage = function(domain, identity, callback){
     });
 }
 
-const getMockParticipantManager = function(domain, identity, callback){
+const getMockParticipantManager = function(domain, identity, force, callback){
+    if(!callback){
+        callback = force,
+        force = false;
+    }
     getFakeDSUStorage(domain, identity,(err, dsuStorage) => {
         if (err)
             return callback(err);
-        getParticipantManager(dsuStorage, (err, manager) => {
+        getParticipantManager(dsuStorage, force, (err, manager) => {
             if (err)
                 return callback(err);
             callback(undefined, manager);
