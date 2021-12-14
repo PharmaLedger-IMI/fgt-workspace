@@ -8,7 +8,7 @@
 
 const testOptions = {
     noLogs: true, // Prevents from recording logs. (set to false if you want to record them);
-    testName: 'w3cDIDMethodNameTest', // no spaces please. its used as a folder name (change for the unit being tested);
+    testName: 'SendingMessagesWithCredentials', // no spaces please. its used as a folder name (change for the unit being tested);
     timeout: 100000, // Sets timeout for the test.
     fakeServer: true, // Decides if fake server is used (change if you want to use fake server);
     useCallback: true, // Decides if you want to use callback (change if you dont want to use it);
@@ -93,7 +93,62 @@ const config = argParser(options, process.argv);
 
 //################################################################################################
 
+// /*Specific Dependencies*/
+
+ const { getCredentials, APPS } = require('../../../bin/environment/credentials/credentials3');
+ const { getMockParticipantManager } = require('../../getMockParticipant');
+ const whs = {};
+ const mah = {};
+
+
+// //################################################################################################
+
 /* Util Methods */
+const createMAH = function (callback){
+    const credentials = getCredentials(APPS.MAH); // Creates Credentials
+
+    let id = credentials['id']['secret'];
+    mah['id'] = id;
+
+    const finalCredentials = Object.keys(credentials).reduce((accum, key) => {
+        if (credentials[key].public)
+            accum[key] = credentials[key].secret;
+        return accum;
+    }, {});
+
+    createIdentity(mah['id'],(didDoc) => {
+
+        mah['didDoc'] = didDoc;
+        getMockParticipantManager(config.domain, finalCredentials, (err, participantManager) => {
+            assert.false(err, 'Error creating participant manager');
+
+            mah['pm'] = participantManager;
+    
+            callback(participantManager);
+    
+        })
+    })
+
+
+
+
+}
+
+const createWHOLESALER = function(callback){
+    const credentials = getCredentials(APPS.WHOLESALER); // Creates Credentials
+
+    let id = credentials['id']['secret'];
+    whs['id'] = id;
+
+    const finalCredentials = Object.keys(credentials).reduce((accum, key) => {
+        if (credentials[key].public)
+            accum[key] = credentials[key].secret;
+        return accum;
+    }, {});
+
+}
+
+
 const createIdentity = function(name, callback){
     w3cDID.createIdentity(config.DID_METHOD, config.domain, name, (err, didDoc) => {
         assert.false(err, `Error creating identity ${name}: ${err}`);
@@ -158,36 +213,12 @@ const runTest = function(finishTest){
 
     sc.on('initialised', async () => {
 
-        createIdentity(config.DID_SENDERNAME, (senderDIDDoc) => {
+        createMAH((participantManager) => {
 
-            createIdentity(config.DID_RECEIVERNAME, (receiverDIDDoc) => {
+            finishTest();
+        })
 
-                const message = generateMessage();
-
-                senderDIDDoc.sign(message, (err, signature) => {
-                    assert.false(err);
-
-                    console.log(signature);
-
-                    senderDIDDoc.verify(message, signature, (err, verification) => {
-                        assert.false(err);
-                        
-                        assert.true(verification , 'Unable to verify without resolving did')
-
-                        sendMessage(generateMessage(), senderDIDDoc, receiverDIDDoc.getIdentifier(), (signature)=> {
-                            
-                            receiveMessage(receiverDIDDoc, senderDIDDoc.getIdentifier(), signature, () => {    
-
-                                receiveMessage(receiverDIDDoc, senderDIDDoc.getIdentifier(), signature, () => {
-
-                                    finishTest();    
-                                })
-                            })
-                        })
-                    })
-                })
-            })
-        });
+        
 
                 
 
@@ -315,16 +346,7 @@ assert.callback(testOptions.testName, (testFinished) => {
 
 // const createWholesaler = function (callback){
 
-//     const credentials = getCredentials(APPS.WHOLESALER); // Creates Credentials
 
-//     let id = credentials['id']['secret'];
-//     whs['id'] = id;
-
-//     const finalCredentials = Object.keys(credentials).reduce((accum, key) => {
-//         if (credentials[key].public)
-//             accum[key] = credentials[key].secret;
-//         return accum;
-//     }, {});
 
 //     w3cDID.createIdentity(config.didMethod, id, (err, didDOC) => {
 //         assert.false(err, 'Failed to Create Identity: ', id,' : ', err);
