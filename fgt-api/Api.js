@@ -1,5 +1,5 @@
 const {log} = require('./utils');
-const {BadRequest, InternalServerError} = require("./utils/errorHandler");
+const {BadRequest, NotImplemented} = require("./utils/errorHandler");
 const BASE_PATH = '/traceability';
 const ALL_SUFFIX = "All";
 
@@ -159,7 +159,7 @@ class Api {
     }
 
     _handleError(res, err) {
-        err = !(err instanceof Error ) || !err.statusCode ? new InternalServerError() : err;
+        err = !(err instanceof Error ) || !err.statusCode ? new NotImplemented(err) : err;
         this._sendResponse(res, err.statusCode, {
             status: err.statusCode,
             error: err.message,
