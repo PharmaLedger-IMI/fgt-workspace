@@ -62,6 +62,7 @@ const parseRequestBody = function(req, callback){
 class Api {
     model;
     endpoint;
+    manager;
     participantManager;
 
     /**
@@ -104,10 +105,27 @@ class Api {
         const self = this;
         const methods = {
             create() {self.create.call(self, ...Object.values(params), body, callback)},
-            createAll() {self.createAll.call(self, ...body, callback)},
+            createAll() {self.createAll.call(self, body, callback)},
 
             get() {self.getOne.call(self, ...Object.values(params), callback)},
-            getAll() {self.getAll.call(self, query, callback)},
+            getAll() {
+                const parsePaginateResponse = (paginate) => {
+                    return {
+                        meta: {
+                            page: paginate.currentPage,
+                            itemPerPage: paginate.itemPerPage,
+                            totalPages: paginate.totalPages,
+                            query
+                        },
+                        results: paginate.items
+                    }
+                }
+                self.getAll.call(self, query, (err, paginate) => {
+                    if (err)
+                        callback(err)
+                    callback(undefined, parsePaginateResponse(paginate))
+                })
+            },
 
             update() {self.update.call(self, ...Object.values(params), body, callback)},
             updateAll() {self.updateAll.call(self, ...body, callback)},
@@ -206,6 +224,31 @@ class Api {
     }
 
     /**
+     *
+     * @param {{}} queryParams
+     * @param {string[]} allowedParams
+     * @returns {string | string[]}
+     * @private
+     */
+    _queryParamsTransform(queryParams, allowedParams ) {
+        let {keyword, sort, page, itemPerPage, ...query} = queryParams;
+        if (keyword)
+            return keyword;
+
+        query = Object.entries(query).reduce((accum, curr, ) => {
+            const [key, value] = curr;
+            if (allowedParams) {
+                if (allowedParams.indexOf(key) >= 0)
+                    accum.push(`${key} == ${value}`);
+            }
+            else
+                accum.push(`${key} == ${value}`);
+            return accum;
+        }, [])
+        return  ['__timestamp > 0', ...query];
+    }
+
+    /**
      * Creates a new Model Object
      * @param {string} [key] can be optional if can be generated from model object
      * @param {{}} model the model object
@@ -247,12 +290,25 @@ class Api {
         functionCallIterator(this.update.bind(this), keys, models, callback);
     }
 
+    /**
+     * get object entity from provided key
+     * @param {string} key
+     * @param {function(err?, {}?)} callback
+     */
     getOne(key, callback){
         return callback(`Not Implemented in master Class`);
     }
 
-    getAll(keys, callback){
-        functionCallIterator(this.getOne.bind(this), keys, callback);
+    /**
+     * get a paginated results from provided query params
+     * @param {{}} queryParams
+     * @param {function(err?, {}?)} callback
+     */
+    getAll(queryParams, callback){
+        const query = this._queryParamsTransform(queryParams, this.manager.indexes);
+        this.manager.getPage(queryParams.itemPerPage || 10, queryParams.page || 1, query, queryParams.sort, true, (err, paginate) => {
+            callback(err, paginate);
+        });
     }
 
     delete(key, callback){

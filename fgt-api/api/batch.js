@@ -7,13 +7,13 @@ const BATCH_CREATE = Object.assign({}, OPERATIONS.CREATE, {pathParams: ['gtin']}
 const BATCH_UPDATE = Object.assign({}, OPERATIONS.UPDATE, {pathParams: ['gtin', 'batchNumber']});
 
 module.exports = class BatchApi extends Api {
-    batchManager;
+    manager;
     productManager;
 
     constructor(server, participantManager) {
         super(server, 'batch', participantManager, [BATCH_CREATE, BATCH_GET, BATCH_UPDATE], Batch);
         try {
-            this.batchManager = participantManager.getManager("BatchManager");
+            this.manager = participantManager.getManager("BatchManager");
             this.productManager = participantManager.getManager("ProductManager");
         } catch (e) {
             throw new Error(`Could not get ${this.endpoint}Manager: ${e}`);
@@ -36,10 +36,10 @@ module.exports = class BatchApi extends Api {
             if (validateErr)
                 return callback(validateErr);
 
-            self.batchManager.create(product, _batch, (err, keySSI) => {
+            self.manager.create(product, _batch, (err, keySSI) => {
                 if (err)
                     return callback(err);
-                self.batchManager.getOne(product.gtin, _batch.batchNumber, true, (err, _batch) => {
+                self.manager.getOne(product.gtin, _batch.batchNumber, true, (err, _batch) => {
                     if (err)
                         return callback(err);
                     callback(undefined, {..._batch, keySSI: keySSI.getIdentifier()});
@@ -56,21 +56,21 @@ module.exports = class BatchApi extends Api {
     createAll(gtins, batches, callback){
         const self = this;
         try{
-            self.batchManager.beginBatch();
+            self.manager.beginBatch();
         } catch (e) {
-            return self.batchManager.batchSchedule(() => self.createAll.call(self, gtins, batches, callback));
+            return self.manager.batchSchedule(() => self.createAll.call(self, gtins, batches, callback));
         }
 
         super.createAll(gtins, batches, (err, ...results) => {
             if (err){
                 console.log(err);
-                return self.batchManager.cancelBatch((_) => callback(err));
+                return self.manager.cancelBatch((_) => callback(err));
             }
 
-            self.batchManager.commitBatch((err) => {
+            self.manager.commitBatch((err) => {
                 if (err){
                     console.log(err);
-                    return self.batchManager.cancelBatch((_) => callback(err));
+                    return self.manager.cancelBatch((_) => callback(err));
                 }
                 const [created, keySSIs] = results;
                 callback(undefined, created, keySSIs);
@@ -84,7 +84,7 @@ module.exports = class BatchApi extends Api {
      * @param {function(err?, Batch?)} callback
      */
     getOne(gtin, batchNumber, callback) {
-        this.batchManager.getOne(gtin, batchNumber, true, (err, batch) => {
+        this.manager.getOne(gtin, batchNumber, true, (err, batch) => {
             if (err)
                 return callback(err);
             callback(undefined, batch);
@@ -92,15 +92,11 @@ module.exports = class BatchApi extends Api {
     }
 
     /**
-     * @param {{}} query
-     * @param {function(err?, [Batch]?)} callback
+     * @param queryParams
+     * @param callback
      */
-    getAll(query, callback) {
-        this.batchManager.getAll(true, (err, batches) => {
-            if (err)
-                return callback(err);
-            callback(undefined, batches);
-        })
+    getAll(queryParams, callback) {
+        super.getAll(queryParams, callback);
     }
 
     /**
@@ -112,7 +108,7 @@ module.exports = class BatchApi extends Api {
     update(gtin, batchNumber, statusUpdate, callback){
         const self = this;
 
-        self.batchManager.getOne(gtin, batchNumber, (err, batch) => {
+        self.manager.getOne(gtin, batchNumber, (err, batch) => {
             if (err)
                 callback(err)
 
@@ -123,7 +119,7 @@ module.exports = class BatchApi extends Api {
             if (_err)
                 return callback(_err);
 
-            self.batchManager.update(gtin, _batch, (err, updatedBatch) => {
+            self.manager.update(gtin, _batch, (err, updatedBatch) => {
                 if (err)
                     return callback(err);
                 callback(undefined, updatedBatch);
@@ -139,21 +135,21 @@ module.exports = class BatchApi extends Api {
     updateAll(keys, models, callback){
         const self = this;
         try{
-            self.batchManager.beginBatch();
+            self.manager.beginBatch();
         } catch (e) {
-            return self.batchManager.batchSchedule(() => self.updateAll.call(self, keys, models, callback));
+            return self.manager.batchSchedule(() => self.updateAll.call(self, keys, models, callback));
         }
 
         super.updateAll(keys, models, (err, created) => {
             if (err){
                 console.log(err);
-                return self.batchManager.cancelBatch((_) => callback(err));
+                return self.manager.cancelBatch((_) => callback(err));
             }
 
-            self.batchManager.commitBatch((err) => {
+            self.manager.commitBatch((err) => {
                 if (err){
                     console.log(err);
-                    return self.batchManager.cancelBatch((_) => callback(err));
+                    return self.manager.cancelBatch((_) => callback(err));
                 }
                 callback(undefined, created);
             });

@@ -5,12 +5,12 @@ const Sale = require("../../fgt-dsu-wizard/model/Sale");
 const SALE_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['saleId']});
 
 module.exports = class SaleApi extends Api {
-    saleManager;
+    manager;
 
     constructor(server, participantManager) {
         super(server, 'sale', participantManager, [OPERATIONS.CREATE, SALE_GET], Sale);
         try {
-            this.saleManager = participantManager.getManager("SaleManager");
+            this.manager = participantManager.getManager("SaleManager");
         } catch (e) {
             throw new Error(`Could not get ${this.endpoint}Manager: ${e}`);
         }
@@ -27,7 +27,7 @@ module.exports = class SaleApi extends Api {
         if (err)
             return callback(err);
 
-        self.saleManager.create(_sale, (err, keySSI) => {
+        self.manager.create(_sale, (err, keySSI) => {
             if (err)
                 return callback(err);
             callback(undefined, {..._sale, keySSI: keySSI.getIdentifier()});
@@ -42,21 +42,21 @@ module.exports = class SaleApi extends Api {
     createAll(keys, models, callback){
         const self = this;
         try{
-            self.saleManager.beginBatch();
+            self.manager.beginBatch();
         } catch (e) {
-            return self.saleManager.batchSchedule(() => self.createAll.call(self, keys, models, callback));
+            return self.manager.batchSchedule(() => self.createAll.call(self, keys, models, callback));
         }
 
         super.createAll( keys, models, (err, ...results) => {
             if (err){
                 console.log(err);
-                return self.saleManager.cancelBatch((_) => callback(err));
+                return self.manager.cancelBatch((_) => callback(err));
             }
 
-            self.saleManager.commitBatch((err) => {
+            self.manager.commitBatch((err) => {
                 if (err){
                     console.log(err);
-                    return self.saleManager.cancelBatch((_) => callback(err));
+                    return self.manager.cancelBatch((_) => callback(err));
                 }
                 const [created, keySSIs] = results;
                 callback(undefined, created, keySSIs);
@@ -69,7 +69,7 @@ module.exports = class SaleApi extends Api {
      * @param callback
      */
     getOne(saleId, callback) {
-        this.saleManager.getOne(saleId, true, (err, batch) => {
+        this.manager.getOne(saleId, true, (err, batch) => {
             if (err)
                 return callback(err);
             callback(undefined, batch);
@@ -77,14 +77,10 @@ module.exports = class SaleApi extends Api {
     }
 
     /**
-     * @param query
+     * @param queryParams
      * @param callback
      */
-    getAll(query, callback) {
-        this.saleManager.getAll(true, (err, batches) => {
-            if (err)
-                return callback(err);
-            callback(undefined, batches);
-        })
+    getAll(queryParams, callback) {
+        super.getAll(queryParams, callback);
     }
 }

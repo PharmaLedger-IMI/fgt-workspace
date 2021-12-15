@@ -5,12 +5,12 @@ const Stock = require("../../fgt-dsu-wizard/model/Stock");
 const STOCK_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['gtin']});
 
 module.exports = class StockApi extends Api {
-    stockManager;
+    manager;
 
     constructor(server, participantManager) {
         super(server, 'stock', participantManager, [STOCK_GET], Stock);
         try {
-            this.stockManager = participantManager.getManager("StockManager");
+            this.manager = participantManager.getManager("StockManager");
         } catch (e) {
             throw new Error(`Could not get ${this.endpoint}Manager: ${e}`);
         }
@@ -21,7 +21,7 @@ module.exports = class StockApi extends Api {
      * @param callback
      */
     getOne(gtin, callback) {
-        this.stockManager.getOne(gtin, true, (err, stock) => {
+        this.manager.getOne(gtin, true, (err, stock) => {
             if (err)
                 return callback(err);
             callback(undefined, stock);
@@ -29,14 +29,10 @@ module.exports = class StockApi extends Api {
     }
 
     /**
-     * @param query
+     * @param {{}}queryParams
      * @param callback
      */
-    getAll(query, callback) {
-        this.stockManager.getAll(true, (err, stockList) => {
-            if (err)
-                return callback(err);
-            callback(undefined, stockList);
-        })
+    getAll(queryParams, callback) {
+        super.getAll(queryParams, callback);
     }
 }
