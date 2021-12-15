@@ -233,7 +233,10 @@ class MessageManager extends Manager{
     }
 
     _getDID(didString, callback){
-        this.w3cDID.resolveDID(didString, (err, resolvedDIDDoc) => err 
+
+        let didIdentifier = `did:ssi:name:${DOMAIN}:${didString}`;
+
+        this.w3cDID.resolveDID(didIdentifier, (err, resolvedDIDDoc) => err 
             ? this.w3cDID.createIdentity(DID_METHOD, DOMAIN, didString, (err, createdDIDDoc) => err
                 ? _err(`Could not create or resolve DID identity`, err, callback)
                 : callback(undefined, createdDIDDoc))
