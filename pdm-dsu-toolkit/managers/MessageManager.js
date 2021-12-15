@@ -232,8 +232,13 @@ class MessageManager extends Manager{
         this._getDID(this.didString, callback);
     }
 
-    _getDID(didString, callback){
+    /**
+     * Resolves DID From DID String or Creates One If DID doens't exist.
+     * @param {string} didString Reference to the DID
+     * @param {function(err, didDoc)} callback 
+     */
 
+    _getDID(didString, callback){
         let didIdentifier = `did:ssi:name:${DOMAIN}:${didString}`;
 
         this.w3cDID.resolveDID(didIdentifier, (err, resolvedDIDDoc) => err 
