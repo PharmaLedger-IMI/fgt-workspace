@@ -23,7 +23,7 @@ const IDENTITY_MOUNT_PATH = '/id'
 
 const DATABASE_MOUNT_PATH = '/db'
 
-const DID_METHOD = 'demo'
+const DID_METHOD = 'ssi:name'
 
 const MESSAGE_REFRESH_RATE = 1000;
 const MESSAGE_TABLE = 'messages'
@@ -44,6 +44,7 @@ const INPUT_FIELD_PREFIX = 'input-'
 const DOMAIN = 'traceability';
 
 module.exports = {
+    DOMAIN,
     INFO_PATH,
     PARTICIPANT_MOUNT_PATH,
     IDENTITY_MOUNT_PATH,
