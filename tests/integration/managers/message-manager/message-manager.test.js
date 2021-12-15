@@ -137,12 +137,22 @@ const runTest = function(finishTest){
 
         console.log(apps['ids'][0]);
 
-        messageManagerMAH._getDID(apps['ids'][0], (err, didDoc) => {
-            assert.false(err, 'No DID doc');
+        createAPP(APPS.WHOLESALER, true, (participantManager) => {
 
-            console.log(didDoc.getIdentifier());
-            finishTest();
-        });
+            const messageManagerWHS = getMessageManager(participantManager);
+            console.log(apps['ids'][1]);
+
+            const message = new Message('test', 'hello');
+
+            messageManagerMAH.sendMessage(apps['ids'][1], message, (err) => {
+                assert.false(err,'error sending message')
+
+                finishTest();
+            })
+
+          
+
+        })
 
 
     
