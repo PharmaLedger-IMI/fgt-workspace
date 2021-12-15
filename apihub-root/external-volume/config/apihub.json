@@ -17,7 +17,8 @@
     "pdm-dsu-toolkit-app-commands",
     "fgt-dsu-wizard",
     "gtin-dsu-wizard",
-    "staticServer"
+    "staticServer",
+    "mq"
   ],
   "componentsConfig": {
     "gtin-dsu-wizard": {
@@ -59,3 +60,4 @@
     "/mq"
   ]
 }
+

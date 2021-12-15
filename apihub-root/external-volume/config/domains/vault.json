@@ -2,5 +2,10 @@
   "anchoring": {
     "type": "FS",
     "option": {}
-  }
+  },
+  "enable": ["mq", "enclave"],
+  "skipOAuth": [
+    "/bricking/vault",
+    "/anchor/vault"
+  ]
 }
