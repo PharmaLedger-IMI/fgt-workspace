@@ -1,3 +1,4 @@
+const { getIssuedShipmentManager } = require('./IssuedShipmentManager');
 /**
  * Manager Classes in this context should do the bridge between the controllers
  * and the services exposing only the necessary api to the controllers while encapsulating <strong>all</strong> business logic.
@@ -22,7 +23,7 @@ module.exports = {
     getStockManager: require('./StockManager'),
     getSaleManager: require('./SaleManager'),
     getShipmentLineManager: require('./ShipmentLineManager'),
-    getIssuedShipmentManager: require('./IssuedShipmentManager'),
+    getIssuedShipmentManager,
     getReceivedShipmentManager: require('./ReceivedShipmentManager'),
     getReceiptManager: require('./ReceiptManager'),
     getIndividualProductManager: require('./IndividualProductManager'),

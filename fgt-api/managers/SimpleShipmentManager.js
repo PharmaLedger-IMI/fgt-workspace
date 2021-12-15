@@ -323,11 +323,11 @@ class SimpleShipmentManager extends ShipmentManager {
 const getIssuedShipmentManager = function (participantManager,  callback) {
     let manager;
     try {
-        manager = participantManager.getManager(IssuedShipmentManager);
+        manager = participantManager.getManager(SimpleShipmentManager);
         if (callback)
             return callback(undefined, manager);
     } catch (e){
-        manager = new IssuedShipmentManager(participantManager, callback);
+        manager = new SimpleShipmentManager(participantManager, callback);
     }
 
     return manager;

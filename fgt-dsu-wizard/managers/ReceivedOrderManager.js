@@ -167,7 +167,7 @@ class ReceivedOrderManager extends OrderManager {
                         return self._err(`Could not update order`, err, callback);
                     if (!orderObj.shipmentId)
                         return callback(`Missing shipment Id`);
-                    const getIssuedShipmentManager = require('./IssuedShipmentManager');
+                    const {getIssuedShipmentManager} = require('./IssuedShipmentManager');
                     getIssuedShipmentManager(self.participantManager, (err, issuedShipmentManager) => {
                         if (err)
                             return self._err(`could not get issued shipment manager`, err, callback);

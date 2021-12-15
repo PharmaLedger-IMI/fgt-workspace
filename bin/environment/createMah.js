@@ -14,7 +14,7 @@ try{
 }
 
 const dt = require('./../../pdm-dsu-toolkit/services/dt');
-const getIssuedShipmentManager = require("../../fgt-dsu-wizard/managers/IssuedShipmentManager");
+const { getIssuedShipmentManager } = require("../../fgt-dsu-wizard/managers/IssuedShipmentManager");
 const { getParticipantManager, getProductManager, getBatchManager, getShipmentLineManager, getStockManager, getReceivedOrderManager, getReceiptManager} = require('../../fgt-dsu-wizard/managers');
 const { impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 const ROLE = require('../../fgt-dsu-wizard/model/DirectoryEntry').ROLE;
