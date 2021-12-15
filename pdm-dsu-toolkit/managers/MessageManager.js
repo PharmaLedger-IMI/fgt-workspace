@@ -1,6 +1,6 @@
 const Manager = require('./Manager')
 const { _err } = require('../services/utils')
-const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE, DOMAIN } = require('../constants');
+const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE, DOMAIN} = require('../constants');
 
 /**
  * @typedef W3cDID
@@ -229,7 +229,10 @@ class MessageManager extends Manager{
     getOwnDID(callback){
         if (this.did)
             return callback(undefined, this.did);
-        this._getDID(this.didString, callback);
+        this._getDID(this.didString, (err, didDoc) => {
+            this.did = didDoc;
+            callback(undefined , didDoc);
+        });
     }
 
     /**
