@@ -239,6 +239,7 @@ class MessageManager extends Manager{
      */
 
     _getDID(didString, callback){
+
         let didIdentifier = `did:ssi:name:${DOMAIN}:${didString}`;
 
         this.w3cDID.resolveDID(didIdentifier, (err, resolvedDIDDoc) => err 
