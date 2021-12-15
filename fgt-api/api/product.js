@@ -44,29 +44,8 @@ class ProductApi extends Api {
      * @param {[Products]} products
      * @param {function(err?, [{}]?, KeySSI[]?)} callback
      */
-    createAll(products, callback){
-        const self = this;
-        try{
-            self.manager.beginBatch();
-        } catch (e) {
-            return self.manager.batchSchedule(() => self.createAll.call(self, products, callback));
-        }
-
-        super.createAll([], products, (err, ...results) => {
-            if (err){
-                console.log(err);
-                return self.manager.cancelBatch((_) => callback(err));
-            }
-
-            self.manager.commitBatch((err) => {
-                if (err){
-                    console.log(err);
-                    return self.manager.cancelBatch((_) => callback(err));
-                }
-                const [created, keySSIs] = results;
-                callback(undefined, created, keySSIs);
-            });
-        });
+    createAll(keys, models, callback) {
+        return super.createAll(keys, models, callback);
     }
 
     /**

@@ -1,6 +1,7 @@
 
 const {Api, OPERATIONS} = require('../Api');
 const Sale = require("../../fgt-dsu-wizard/model/Sale");
+const {BadRequest, NotImplemented} = require("../utils/errorHandler");
 
 const SALE_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['saleId']});
 
@@ -25,43 +26,22 @@ module.exports = class SaleApi extends Api {
 
         const [err, _sale] = self._validate(sale);
         if (err)
-            return callback(err);
+            return callback(new BadRequest(err));
 
-        self.manager.create(_sale, (err, keySSI) => {
+        self.manager.create(_sale, (err, insertedSale) => {
             if (err)
-                return callback(err);
-            callback(undefined, {..._sale, keySSI: keySSI.getIdentifier()});
+                return callback(new NotImplemented(err));
+            callback(undefined, insertedSale);
         });
     }
 
     /**
      * @param {string[]} [keys] can be optional if can be generated from model object
-     * @param {[{}]} models a list of model objects
+     * @param {[{}]} body a list of model objects
      * @param {function(err?, [{}]?, KeySSI[]?)} callback
      */
-    createAll(keys, models, callback){
-        const self = this;
-        try{
-            self.manager.beginBatch();
-        } catch (e) {
-            return self.manager.batchSchedule(() => self.createAll.call(self, keys, models, callback));
-        }
-
-        super.createAll( keys, models, (err, ...results) => {
-            if (err){
-                console.log(err);
-                return self.manager.cancelBatch((_) => callback(err));
-            }
-
-            self.manager.commitBatch((err) => {
-                if (err){
-                    console.log(err);
-                    return self.manager.cancelBatch((_) => callback(err));
-                }
-                const [created, keySSIs] = results;
-                callback(undefined, created, keySSIs);
-            });
-        });
+    createAll(keys, body, callback) {
+        return super.createAll(keys, body, callback);
     }
 
     /**

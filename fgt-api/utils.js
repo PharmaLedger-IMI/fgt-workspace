@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 
-const {functionCallIterator, getResolver, getKeySSISpace} = require('../pdm-dsu-toolkit/services/utils');
+const {getResolver, getKeySSISpace} = require('../pdm-dsu-toolkit/services/utils');
 const getParticipantManager = require('../fgt-dsu-wizard/managers/ParticipantManager');
 const {instantiateSSApp, impersonateDSUStorage} = require('../bin/environment/utils');
 const {APPS} = require('../bin/environment/credentials/credentials3');
@@ -154,7 +154,6 @@ const initManagers = function(participantManager, ...managerInitMethods){
 }
 
 module.exports = {
-    functionCallIterator,
     initApis,
     APPS,
     log

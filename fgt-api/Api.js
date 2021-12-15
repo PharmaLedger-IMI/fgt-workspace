@@ -1,4 +1,4 @@
-const {functionCallIterator, log} = require('./utils');
+const {log} = require('./utils');
 const {BadRequest, InternalServerError} = require("./utils/errorHandler");
 const BASE_PATH = '/traceability';
 const ALL_SUFFIX = "All";
@@ -105,7 +105,7 @@ class Api {
         const self = this;
         const methods = {
             create() {self.create.call(self, ...Object.values(params), body, callback)},
-            createAll() {self.createAll.call(self, body, callback)},
+            createAll() {self.createAll.call(self, [], body, callback)},
 
             get() {self.getOne.call(self, ...Object.values(params), callback)},
             getAll() {
@@ -128,7 +128,7 @@ class Api {
             },
 
             update() {self.update.call(self, ...Object.values(params), body, callback)},
-            updateAll() {self.updateAll.call(self, ...body, callback)},
+            updateAll() {self.updateAll.call(self, [], body, callback)},
 
             delete() {self.delete.call(self, ...Object.values(params), callback)},
             deleteAll() {self.deleteAll.call(self, /*query,*/ body, callback)},
@@ -249,6 +249,37 @@ class Api {
     }
 
     /**
+     * iterate an array of records/models to call the function with value of keys as parameter
+     * @param {{function}} func
+     * @param {[]} accum
+     * @param {string[]} keys
+     * @param {{}} records
+     * @param {function(err?, []?)} callback
+     * @private
+     */
+    _bindIterator(func, accum, keys, records, callback) {
+        const record = records.shift();
+        if (!record)
+            return callback(undefined, accum);
+
+        const keyValues = keys.map((key) => record[key]).filter(v => !!v);
+        if (keys.length > 0 && keyValues.length === 0)
+            return callback(new BadRequest(`[${keys.join(', ')}] property doesn't exists on record ${accum.length + 1}.`));
+
+        try{
+            func(...keyValues, record, (err, result) => {
+                if (err)
+                    return callback(err);
+                accum.push(result);
+                this._bindIterator(func, accum, keys, records, callback);
+            });
+        } catch(e){
+            return callback(e);
+        }
+    }
+
+
+    /**
      * Creates a new Model Object
      * @param {string} [key] can be optional if can be generated from model object
      * @param {{}} model the model object
@@ -262,11 +293,31 @@ class Api {
     /**
      * Creates several new Model Object
      * @param {string[]} [keys] can be optional if can be generated from model object
-     * @param {[{}]} models a list of model objects
+     * @param {[{}]} body a list of model objects
      * @param {function(err?, [{}]?)} callback
      */
-    createAll(keys, models, callback){
-        functionCallIterator(this.create.bind(this), keys, models, callback);
+    createAll(keys, body, callback){
+        const self = this;
+        try{
+            self.manager.beginBatch();
+        } catch (e) {
+            return self.manager.batchSchedule(() => self.createAll.call(self, keys, body, callback));
+        }
+        if (!Array.isArray(body))
+            callback(new BadRequest('Invalid body format'));
+
+        this._bindIterator(this.create.bind(this), [], keys, body.slice(), (err, results) => {
+            if (err){
+                return self.manager.cancelBatch((_) => callback(err));
+            }
+
+            self.manager.commitBatch((err) => {
+                if (err){
+                    return self.manager.cancelBatch((_) => callback(err));
+                }
+                callback(undefined, results);
+            });
+        });
     }
 
     /**
@@ -282,12 +333,32 @@ class Api {
     /**
      * updates several Model Objects
      * @param {string[]} [keys] can be optional if can be generated from model object
-     * @param {[{}]} models a list of model objects
+     * @param {[{}]} body a list of model objects
      * @param {function(err?, [{}]?)} callback
      * @returns {*}
      */
-    updateAll(keys, models, callback){
-        functionCallIterator(this.update.bind(this), keys, models, callback);
+    updateAll(keys, body, callback){
+        const self = this;
+        try{
+            self.manager.beginBatch();
+        } catch (e) {
+            return self.manager.batchSchedule(() => self.createAll.call(self, keys, body, callback));
+        }
+        if (!Array.isArray(body))
+            callback(new BadRequest('Invalid body format'));
+
+        this._bindIterator(this.update.bind(this), [], keys, body.slice(), (err, results) => {
+            if (err){
+                return self.manager.cancelBatch((_) => callback(err));
+            }
+
+            self.manager.commitBatch((err) => {
+                if (err){
+                    return self.manager.cancelBatch((_) => callback(err));
+                }
+                callback(undefined, results);
+            });
+        });
     }
 
     /**
@@ -316,7 +387,7 @@ class Api {
     }
 
     deleteAll(keys, callback){
-        functionCallIterator(this.delete.bind(this), keys, callback);
+        return callback(`Not Implemented in master Class`);
     }
 }
 

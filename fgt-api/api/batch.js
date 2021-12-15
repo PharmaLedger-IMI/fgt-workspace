@@ -1,6 +1,7 @@
 
 const {Api, OPERATIONS} = require('../Api');
 const Batch = require("../../fgt-dsu-wizard/model/Batch");
+const {BadRequest, NotImplemented} = require("../utils/errorHandler");
 
 const BATCH_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['gtin', 'batchNumber']});
 const BATCH_CREATE = Object.assign({}, OPERATIONS.CREATE, {pathParams: ['gtin']});
@@ -49,33 +50,12 @@ module.exports = class BatchApi extends Api {
     }
 
     /**
-     * @param {string[]} [gtins] a list of GTIN's
-     * @param {[Batch]} batches a list of model objects
+     * @param keys
+     * @param body
      * @param {function(err?, [{Batch}]?, KeySSI[]?)} callback
      */
-    createAll(gtins, batches, callback){
-        const self = this;
-        try{
-            self.manager.beginBatch();
-        } catch (e) {
-            return self.manager.batchSchedule(() => self.createAll.call(self, gtins, batches, callback));
-        }
-
-        super.createAll(gtins, batches, (err, ...results) => {
-            if (err){
-                console.log(err);
-                return self.manager.cancelBatch((_) => callback(err));
-            }
-
-            self.manager.commitBatch((err) => {
-                if (err){
-                    console.log(err);
-                    return self.manager.cancelBatch((_) => callback(err));
-                }
-                const [created, keySSIs] = results;
-                callback(undefined, created, keySSIs);
-            });
-        });
+    createAll(keys, body, callback) {
+        return super.createAll(['gtin'], body, callback);
     }
 
     /**
@@ -100,9 +80,9 @@ module.exports = class BatchApi extends Api {
     }
 
     /**
-     * @param {string} gtin
-     * @param {string} batchNumber
-     * @param {{status: string, extraInfo: string}} statusUpdate
+     * @param {string} gtin: path param
+     * @param {string} batchNumber: path param
+     * @param {{status: string, extraInfo: string}} statusUpdate: request.body
      * @param {function(err?, Batch?)} callback
      */
     update(gtin, batchNumber, statusUpdate, callback){
@@ -110,18 +90,18 @@ module.exports = class BatchApi extends Api {
 
         self.manager.getOne(gtin, batchNumber, (err, batch) => {
             if (err)
-                callback(err)
+                callback(new BadRequest(err))
 
             const oldStatus = batch.batchStatus.status;
             batch.batchStatus.status = statusUpdate.status;
             batch.batchStatus.extraInfo = statusUpdate.extraInfo;
             const [_err, _batch] = self._validate(batch, oldStatus);
             if (_err)
-                return callback(_err);
+                return callback(new BadRequest(_err));
 
             self.manager.update(gtin, _batch, (err, updatedBatch) => {
                 if (err)
-                    return callback(err);
+                    return callback(new NotImplemented(err));
                 callback(undefined, updatedBatch);
             });
         })
@@ -129,31 +109,11 @@ module.exports = class BatchApi extends Api {
 
     /**
      * @param {string[]} [keys] can be optional if can be generated from model object
-     * @param {[{}]} models a list of model objects
+     * @param {[{}]} body a list of model objects
      * @param {function(err?, [{}]?)} callback
      */
-    updateAll(keys, models, callback){
-        const self = this;
-        try{
-            self.manager.beginBatch();
-        } catch (e) {
-            return self.manager.batchSchedule(() => self.updateAll.call(self, keys, models, callback));
-        }
-
-        super.updateAll(keys, models, (err, created) => {
-            if (err){
-                console.log(err);
-                return self.manager.cancelBatch((_) => callback(err));
-            }
-
-            self.manager.commitBatch((err) => {
-                if (err){
-                    console.log(err);
-                    return self.manager.cancelBatch((_) => callback(err));
-                }
-                callback(undefined, created);
-            });
-        });
+    updateAll(keys, body, callback) {
+        super.updateAll(['gtin', 'batchNumber'], body, callback);
     }
 
 }
