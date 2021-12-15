@@ -230,6 +230,9 @@ class MessageManager extends Manager{
         if (this.did)
             return callback(undefined, this.did);
         this._getDID(this.didString, (err, didDoc) => {
+            if(err)
+                _err(`Could not get own did`, err, callback);
+                
             this.did = didDoc;
             callback(undefined , didDoc);
         });
