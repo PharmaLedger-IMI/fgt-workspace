@@ -10,10 +10,11 @@ const getTraceabilityManager = require('../../../fgt-dsu-wizard/managers/Traceab
 const getStockManager = require('../../../fgt-dsu-wizard/managers/StockManager');
 const getSaleManager = require('../../../fgt-dsu-wizard/managers/SaleManager');
 const getReceiptManager = require('../../../fgt-dsu-wizard/managers/ReceiptManager');
+const getSimpleShipmentManager = require('../../managers/SimpleShipmentManager');
 
 
 function init(){
-    initApis(express, api, APPS.MAH, getProductManager, getBatchManager, getShipmentLineManager, getTraceabilityManager, getStockManager, getSaleManager, getReceiptManager);
+    initApis(express, api, APPS.MAH, getProductManager, getBatchManager, getShipmentLineManager, getTraceabilityManager, getStockManager, getSaleManager, getReceiptManager, getSimpleShipmentManager);
 }
 
 init();

@@ -1,14 +1,18 @@
 
 const {Api, OPERATIONS} = require('../Api');
 const Shipment = require("../../fgt-dsu-wizard/model/Shipment");
+const SimpleShipment = require('../model/SimpleShipment')
+const {BadRequest} = require("../utils/errorHandler");
 
 class ShipmentApi extends Api {
+    manager;
     issuedShipmentManager;
 
     constructor(server, participantManager) {
-        super(server, 'shipment', participantManager, [OPERATIONS.CREATE, OPERATIONS.GET, OPERATIONS.UPDATE]);
+        super(server, 'shipment', participantManager, [OPERATIONS.CREATE, OPERATIONS.GET, OPERATIONS.UPDATE], SimpleShipment);
         try {
-            this.issuedShipmentManager = participantManager.getManager("IssuedShipmentManager");
+            this.manager = participantManager.getManager("SimpleShipmentManager");
+            // this.issuedShipmentManager = participantManager.getManager("IssuedShipmentManager");
         } catch (e) {
             throw new Error(`Could not get ${this.endpoint}Manager: ${e}`);
         }
@@ -16,25 +20,23 @@ class ShipmentApi extends Api {
 
     /**
      *
-     * @param {string} [gtin]
-     * @param {Batch} batch
-     * @param {function(err?, Batch?, KeySSI?)} callback
+     * @param orderId
+     * @param shipment
+     * @param {function(err?, {}?)} callback
      * @override
      */
-    create(id, shipment, callback){
+    create(shipment, callback){
         const self = this;
 
-        if (!(batch instanceof Batch))
-            batch = new Batch(batch);
-
-        const err = batch.validate();
+        const [err, _shipment] = this._validate(shipment)
         if (err)
-            return callback(err.join(', '));
+            return callback(new BadRequest(err))
 
-        self.batchManager.create({gtin: gtin}, batch, (err, keySSI) => {
+        const { shipmentId } = _shipment
+        self.manager.create(shipmentId, _shipment, (err, keySSI) => {
             if (err)
                 return callback(err);
-            self.batchManager.getOne(gtin, batch.batchNumber, true, (err, savedBatch) => {
+            self.manager.getOne(id, batch.batchNumber, true, (err, savedBatch) => {
                 if (err)
                     return callback(err);
                 callback(undefined, savedBatch, keySSI.getIdentifier());
@@ -48,29 +50,18 @@ class ShipmentApi extends Api {
      * @param {[{}]} models a list of model objects
      * @param {function(err?, [{}]?, KeySSI[]?)} callback
      */
-    createAll(keys, models, callback){
-        const self = this;
-        try{
-            self.batchManager.beginBatch();
-        } catch (e) {
-            return self.batchManager.batchSchedule(() => self.createAll.call(self, keys, models, callback));
-        }
+    createAll(keys, body, callback) {
+        return super.createAll(['orderId'], body, callback);
+    }
 
-        super.createAll( keys, models, (err, ...results) => {
-            if (err){
-                console.log(err);
-                return self.batchManager.cancelBatch((_) => callback(err));
-            }
+    getOne(key, callback) {
+        this.manager.getAll(true, (err, records) => {
+            callback(err, records);
+        })
+    }
 
-            self.batchManager.commitBatch((err) => {
-                if (err){
-                    console.log(err);
-                    return self.batchManager.cancelBatch((_) => callback(err));
-                }
-                const [created, keySSIs] = results;
-                callback(undefined, created, keySSIs);
-            });
-        });
+    getAll(queryParams, callback) {
+        super.getAll(queryParams, callback);
     }
 
     update(gtin, newBatch, callback){
@@ -89,7 +80,6 @@ class ShipmentApi extends Api {
             callback(undefined, updatedBatch);
         });
     }
-
 
     /**
      * Creates a new Model Object
@@ -121,3 +111,5 @@ class ShipmentApi extends Api {
         });
     }
 }
+
+module.exports = ShipmentApi;

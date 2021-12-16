@@ -5,7 +5,7 @@ const ShipmentLine = require('../../fgt-dsu-wizard/model/ShipmentLine');
  * @memberOf Model
  */
 class SimpleShipment {
-    id;
+    shipmentId;
     requesterId;
     senderId;
     status;
@@ -14,7 +14,7 @@ class SimpleShipment {
     constructor(simpleShipment){
         if (typeof simpleShipment !== undefined)
             for (let prop in simpleShipment)
-                if (simpleShipment.hasOwnProperty(prop))
+                if (simpleShipment.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = simpleShipment[prop];
 
         this.shipmentLines = this.shipmentLines ? this.shipmentLines.map(sl => new ShipmentLine(sl)) : undefined;
@@ -22,12 +22,10 @@ class SimpleShipment {
 
     validate(){
         const errors = [];
-        if (!this.id)
-            errors.push(`Id is mandatory`);
+        if (!this.shipmentId)
+            errors.push(`shipmentId is mandatory`);
         if (!this.requesterId)
             errors.push(`RequesterId is mandatory`);
-        if (!this.senderId)
-            errors.push(`SenderId is mandatory`);
         if (!this.senderId)
             errors.push(`SenderId is mandatory`);
         if (!this.status)
@@ -37,3 +35,5 @@ class SimpleShipment {
         return errors ? errors.join("\n") : undefined;
     }
 }
+
+module.exports = SimpleShipment;
