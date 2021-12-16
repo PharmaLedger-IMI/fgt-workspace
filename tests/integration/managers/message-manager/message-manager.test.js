@@ -96,6 +96,8 @@ const { getMessageManager, Message } = require('../../../../pdm-dsu-toolkit/mana
 
 const apps = {};
 
+
+const { create , setup } = require('../../../../bin/environment/createMah');
 // //################################################################################################
 
 /* Test API */
@@ -129,30 +131,43 @@ const createAPP = function (app, force, callback) {
 /* Run Test */ 
 
 const runTest = function(finishTest){
+    const initialCredentials = getCredentials(APPS.MAH); // Creates Credentials
+
+    const finalCredentials = Object.keys(initialCredentials). reduce((acum, key) => {
+        if(initialCredentials[key].public)
+            acum[key] = initialCredentials[key].secret;
+        
+        return acum;
+    }, {});
+
+    create(finalCredentials, "../../", (err, app) => {
+
+        finishTest();
+    })
     
-    createAPP(APPS.MAH, false, (participantManager) => {
+    // createAPP(APPS.MAH, false, (participantManager) => {
         
 
-        const messageManagerMAH = getMessageManager(participantManager);
+    //     const messageManagerMAH = getMessageManager(participantManager);
 
-        console.log(apps['ids'][0]);
+    //     console.log(apps['ids'][0]);
 
-        createAPP(APPS.WHOLESALER, true, (participantManager) => {
+    //     createAPP(APPS.WHOLESALER, true, (participantManager) => {
 
-            const messageManagerWHS = getMessageManager(participantManager);
-            console.log(apps['ids'][1]);
+    //         const messageManagerWHS = getMessageManager(participantManager);
+    //         console.log(apps['ids'][1]);
 
-            const message = new Message('test', 'hello');
+    //         const message = new Message('test', 'hello');
 
-            messageManagerMAH.sendMessage(apps['ids'][1], message, (err) => {
-                assert.false(err,'error sending message')
+    //         messageManagerMAH.sendMessage(apps['ids'][1], message, (err) => {
+    //             assert.false(err,'error sending message')
 
-                finishTest();
-            })
+    //             finishTest();
+    //         })
 
           
 
-        })
+    //     })
 
 
     
@@ -185,7 +200,7 @@ const runTest = function(finishTest){
           
         // })            
            
-    })
+   // })
 };
 
 //################################################################################################
