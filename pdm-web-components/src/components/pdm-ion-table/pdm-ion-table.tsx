@@ -260,14 +260,6 @@ export class PdmIonTable implements ComponentInterface {
     let props = {};
     props[this.itemReference] = 'header';
     props['isHeader'] = true;
-    
-
-    // if (!!this.itemProps){
-    //   this.itemProps.split(';').forEach(ip => {
-    //     const keyValue = ip.split(':');
-    //     props[keyValue[0]] = keyValue[1];
-    //   });
-    // }
 
     return (<Tag {...props}></Tag>);
   }

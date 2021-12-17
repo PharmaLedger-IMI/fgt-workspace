@@ -109,20 +109,21 @@ export class ManagedBatchListItem {
       return;
     const gtinBatch = `${self.individualProduct.gtin}-${self.individualProduct.batchNumber}`;
 
-    self.productManager.getOne(self.individualProduct.gtin, true, (err, product) => {
-      if (err)
-        return self.sendError(`Could not get Product with gtin ${self.individualProduct.gtin}`, err);
-      self.batchManager.getOne(gtinBatch, true, (err, batch: typeof Batch) => {
+    if(!this.isHeader)
+      self.productManager.getOne(self.individualProduct.gtin, true, (err, product) => {
         if (err)
-          return self.sendError(`Could not get Batch with code ${gtinBatch}`, err);
+          return self.sendError(`Could not get Product with gtin ${self.individualProduct.gtin}`, err);
+        self.batchManager.getOne(gtinBatch, true, (err, batch: typeof Batch) => {
+          if (err)
+            return self.sendError(`Could not get Batch with code ${gtinBatch}`, err);
 
-        self.individualProduct = new IndividualProduct(Object.assign(self.individualProduct, {
-          name: product.name,
-          expiry: batch.expiry,
-          status: batch.batchStatus
-        }));
+          self.individualProduct = new IndividualProduct(Object.assign(self.individualProduct, {
+            name: product.name,
+            expiry: batch.expiry,
+            status: batch.batchStatus
+          }));
+        });
       });
-    });
   }
 
   @Watch('gtinBatchSerial')

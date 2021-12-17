@@ -158,7 +158,7 @@ export class ManagedProductListItem {
               </span>    
             </ion-col>
           </ion-row>
-      </ion-label>
+        </ion-label>
       )
       
 

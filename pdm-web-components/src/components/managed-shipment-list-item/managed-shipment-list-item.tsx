@@ -65,6 +65,8 @@ export class ManagedShipmentListItem{
 
   @Prop({attribute: 'type'}) type?: string = SHIPMENT_TYPE.ISSUED;
 
+  @Prop() isHeader: boolean;
+
   @State() shipment: typeof Shipment = undefined;
 
   private manager: WebResolver = undefined;
@@ -81,13 +83,15 @@ export class ManagedShipmentListItem{
     let self = this;
     if (!self.manager)
       return;
-    self.manager.getOne(self.shipmentId, true, (err, shipment) => {
-      if (err){
-        self.sendError(`Could not get Shipment with id ${self.shipmentId}`, err);
-        return;
-      }
-      self.shipment = shipment;
-    });
+
+    if(!self.isHeader)
+      self.manager.getOne(self.shipmentId, true, (err, shipment) => {
+        if (err){
+          self.sendError(`Could not get Shipment with id ${self.shipmentId}`, err);
+          return;
+        }
+        self.shipment = shipment;
+      });
   }
 
   @Watch('shipmentId')
@@ -100,12 +104,18 @@ export class ManagedShipmentListItem{
     const self = this;
 
     const getShipmentId = function(){
+      if(self.isHeader)
+        return 'Shipment ID';
+
       if (!self.shipment || !self.shipment.shipmentId)
         return (<ion-skeleton-text animated></ion-skeleton-text>)
       return self.shipment.shipmentId;
     }
 
     const getIdLabel = function(){
+      if(self.isHeader)
+        return 'Requester ID';
+
       if (!self.shipment)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
       const attribute = self.shipment[self.type === SHIPMENT_TYPE.ISSUED ? 'requesterId' : 'senderId'];
@@ -125,6 +135,9 @@ export class ManagedShipmentListItem{
     }
 
     const getStatusBadge = function(){
+      if(self.isHeader)
+        return 'Status';
+
       if (!self.shipment)
         return;
       return (
@@ -133,6 +146,29 @@ export class ManagedShipmentListItem{
         </ion-col>
       )
     }
+
+    if(this.isHeader)
+      return(
+        <ion-label slot="label" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg={2}>
+              <span class="ion-padding-start">
+              {getShipmentId()}
+              </span>       
+            </ion-col>
+            <ion-col col-12 col-sm align-self-end size-lg={3}>
+              <span class="ion-padding-start">
+                {getIdLabel()}
+              </span>    
+            </ion-col>
+            <ion-col col-12 col-sm align-self-end size-lg={1}>
+              <span class="ion-padding-start">
+                {getStatusBadge()}
+              </span>    
+            </ion-col>
+          </ion-row>
+      </ion-label>
+      )
 
     return(
       <ion-row  slot="label" className="ion-align-items-center">
@@ -144,6 +180,21 @@ export class ManagedShipmentListItem{
   }
 
   private addShipmentLines() {
+    const self = this;
+    
+    if(self.isHeader){
+      return (
+        <ion-label slot="content" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg={6}>
+                <span class="ion-padding-end">
+                  {"Shipment Lines"}
+                </span>       
+            </ion-col>
+          </ion-row>
+        </ion-label>
+      )
+    }
     if (!this.shipment || !this.shipment.shipmentLines)
       return (<ion-skeleton-text slot="content" animated></ion-skeleton-text>);
     return(
@@ -174,6 +225,17 @@ export class ManagedShipmentListItem{
 
   private addButtons(){
     let self = this;
+
+    if(self.isHeader){
+      return (
+          <div slot = "buttons">
+            <ion-label color="secondary">
+              {"Actions"}
+            </ion-label>
+          </div>
+      )
+    }
+    
     if (!self.shipment)
       return (<ion-skeleton-text animated></ion-skeleton-text>);
 
