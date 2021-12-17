@@ -244,6 +244,7 @@ export namespace Components {
         "updateDirectory": () => Promise<void>;
     }
     interface ManagedSaleListItem {
+        "isHeader": boolean;
         "refresh": () => Promise<void>;
         "saleRef": string;
     }
@@ -1160,6 +1161,7 @@ declare namespace LocalJSX {
         "titleString"?: string;
     }
     interface ManagedSaleListItem {
+        "isHeader"?: boolean;
         /**
           * Through this event navigation requests to tabs are made
          */
