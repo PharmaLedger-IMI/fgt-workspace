@@ -65,6 +65,8 @@ export class ManagedOrderListItem {
 
   @Prop({attribute: 'type'}) type?: string = ORDER_TYPE.ISSUED;
 
+  @Prop() isHeader: boolean;
+
   private orderManager: WebResolver = undefined;
 
   @State() order: typeof Order = undefined;
@@ -81,13 +83,15 @@ export class ManagedOrderListItem {
     let self = this;
     if (!self.orderManager)
       return;
-    self.orderManager.getOne(self.orderId, true, (err, order) => {
-      if (err){
-        self.sendError(`Could not get Order with id ${self.orderId}`, err);
-        return;
-      }
-      self.order = {...order};
-    });
+
+    if(!self.isHeader)
+      self.orderManager.getOne(self.orderId, true, (err, order) => {
+        if (err){
+          self.sendError(`Could not get Order with id ${self.orderId}`, err);
+          return;
+        }
+        self.order = {...order};
+      });
   }
 
   @Watch('orderId')
@@ -101,12 +105,18 @@ export class ManagedOrderListItem {
     const self = this;
 
     const getOrderIdLabel = function(){
+      if(self.isHeader)
+        return 'Order ID';
+
       if (!self.order || !self.order.orderId)
         return (<ion-skeleton-text animated></ion-skeleton-text>)
       return self.order.orderId;
     }
 
     const getRequesterIdLabel = function(){
+      if(self.isHeader)
+        return 'Requester ID';
+
       if (!self.order || !self.order.requesterId)
         return (<ion-skeleton-text animated></ion-skeleton-text>)
       return self.order.requesterId;
@@ -123,6 +133,9 @@ export class ManagedOrderListItem {
     }
 
     const getStatusBadge = function(){
+      if(self.isHeader)
+        return 'Status';
+
       if (!self.order)
         return;
       return (
@@ -131,6 +144,29 @@ export class ManagedOrderListItem {
         </ion-col>
       )
     }
+
+    if(this.isHeader)
+      return(
+        <ion-label slot="label" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg={2}>
+              <span class="ion-padding-start">
+              {getOrderIdLabel()}
+              </span>       
+            </ion-col>
+            <ion-col col-12 col-sm align-self-end size-lg={3}>
+              <span class="ion-padding-start">
+                {getRequesterIdLabel()}
+              </span>    
+            </ion-col>
+            <ion-col col-12 col-sm align-self-end size-lg={1}>
+              <span class="ion-padding-start">
+                {getStatusBadge()}
+              </span>    
+            </ion-col>
+          </ion-row>
+      </ion-label>
+      )
 
     return(
       <ion-row  slot="label" className="ion-align-items-center">
@@ -142,6 +178,20 @@ export class ManagedOrderListItem {
   }
 
   addOrderLines() {
+    if(this.isHeader){
+      return (
+        <ion-label slot="content" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg={6}>
+                <span class="ion-padding-end">
+                  {"Order Lines"}
+                </span>       
+            </ion-col>
+          </ion-row>
+        </ion-label>
+      )
+    }
+
     if (!this.order || !this.order.orderLines)
       return (<ion-skeleton-text slot="content" animated></ion-skeleton-text>);
     return(
@@ -171,6 +221,17 @@ export class ManagedOrderListItem {
 
   addButtons(){
     let self = this;
+    
+    if(self.isHeader){
+      return (
+          <div slot = "buttons">
+            <ion-label color="secondary">
+              {"Actions"}
+            </ion-label>
+          </div>
+      )
+    }
+
     if (!self.order)
       return (<ion-skeleton-text animated></ion-skeleton-text>);
 

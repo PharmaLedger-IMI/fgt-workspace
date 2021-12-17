@@ -7,10 +7,11 @@
 
 ## Properties
 
-| Property  | Attribute  | Description | Type     | Default             |
-| --------- | ---------- | ----------- | -------- | ------------------- |
-| `orderId` | `order-id` |             | `string` | `undefined`         |
-| `type`    | `type`     |             | `string` | `ORDER_TYPE.ISSUED` |
+| Property   | Attribute   | Description | Type      | Default             |
+| ---------- | ----------- | ----------- | --------- | ------------------- |
+| `isHeader` | `is-header` |             | `boolean` | `undefined`         |
+| `orderId`  | `order-id`  |             | `string`  | `undefined`         |
+| `type`     | `type`      |             | `string`  | `ORDER_TYPE.ISSUED` |
 
 
 ## Events

@@ -115,8 +115,8 @@ export class ManagedProductListItem {
         return (<ion-skeleton-text animated></ion-skeleton-text>);
       return (
         <ion-badge>
-        {self.stock.getQuantity()}
-      </ion-badge>
+          {self.stock.getQuantity()}
+        </ion-badge>
       )
     }
 
@@ -240,7 +240,7 @@ export class ManagedProductListItem {
           </div>
       )
     }
-    
+
     if (!self.stock)
       return (<ion-skeleton-text animated></ion-skeleton-text>);
 

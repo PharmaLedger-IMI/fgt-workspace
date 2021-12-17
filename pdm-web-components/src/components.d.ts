@@ -189,6 +189,7 @@ export namespace Components {
         "updateDirectory": () => Promise<void>;
     }
     interface ManagedOrderListItem {
+        "isHeader": boolean;
         "orderId": string;
         "refresh": (newOrder?: any, oldOrder?: any) => Promise<void>;
         "type"?: string;
@@ -1065,6 +1066,7 @@ declare namespace LocalJSX {
         "unavailableString"?: string;
     }
     interface ManagedOrderListItem {
+        "isHeader"?: boolean;
         /**
           * Through this event navigation requests to tabs are made
          */
