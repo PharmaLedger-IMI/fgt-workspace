@@ -142,17 +142,17 @@ export class ManagedProductListItem {
       return(
         <ion-label slot="label" color="secondary">
           <ion-row>
-            <ion-col col-12 col-sm align-self-end size-lg={2}>
+            <ion-col col-12 col-sm align-self-end size-lg="auto">
               <span class="ion-padding-start">
               {getGtinLabel()}
               </span>       
             </ion-col>
-            <ion-col col-12 col-sm align-self-end size-lg={2}>
+            <ion-col col-12 col-sm align-self-end size-lg="auto">
               <span class="ion-padding-start">
                 {getQuantityLabel()}
               </span>    
             </ion-col>
-            <ion-col col-12 col-sm align-self-end size-lg={2}>
+            <ion-col col-12 col-sm align-self-end size-lg="auto">
               <span class="ion-padding-start">
                 {getNameLabel()}
               </span>    
@@ -178,7 +178,7 @@ export class ManagedProductListItem {
       return (
         <ion-label slot="content" color="secondary">
           <ion-row>
-            <ion-col col-12 col-sm align-self-end size-lg={6}>
+            <ion-col col-12 col-sm align-self-end size-lg = "auto">
                 <span class="ion-padding-end">
                   {"Batches"}
                 </span>       
