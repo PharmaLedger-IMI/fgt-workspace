@@ -234,8 +234,8 @@ export class ManagedProductListItem {
     if(self.isHeader){
       return (
           <div slot = "buttons">
-            <ion-label>
-              {"Options"}
+            <ion-label color="secondary">
+              {"Actions"}
             </ion-label>
           </div>
       )
