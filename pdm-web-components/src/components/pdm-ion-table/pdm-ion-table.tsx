@@ -134,6 +134,7 @@ export class PdmIonTable implements ComponentInterface {
           this.sendError(`Could not list items`, err);
           return;
         }
+        console.log(contents);
         this.updateTable(contents);
       });
     }
@@ -254,6 +255,23 @@ export class PdmIonTable implements ComponentInterface {
     )
   }
 
+  getheaders(){
+    const Tag = this.itemType;
+    let props = {};
+    props[this.itemReference] = 'header';
+    props['isHeader'] = true;
+    
+
+    // if (!!this.itemProps){
+    //   this.itemProps.split(';').forEach(ip => {
+    //     const keyValue = ip.split(':');
+    //     props[keyValue[0]] = keyValue[1];
+    //   });
+    // }
+
+    return (<Tag {...props}></Tag>);
+  }
+
   getPagination(){
     if (!this.paginated)
       return;
@@ -284,6 +302,7 @@ export class PdmIonTable implements ComponentInterface {
       <Host>
         {this.getTableHeader()}
         <div id="ion-table-content" class="ion-padding">
+          {this.getheaders()}
           {this.getContent()}
         </div>
         {this.getPagination()}
