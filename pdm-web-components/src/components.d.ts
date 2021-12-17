@@ -298,6 +298,7 @@ export namespace Components {
     }
     interface ManagedStockListItem {
         "gtin": string;
+        "isHeader": boolean;
         "refresh": () => Promise<void>;
     }
     interface ManagedStockProductInput {
@@ -1238,6 +1239,7 @@ declare namespace LocalJSX {
     }
     interface ManagedStockListItem {
         "gtin"?: string;
+        "isHeader"?: boolean;
         "onFgt-track-request"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event navigation requests to tabs are made
