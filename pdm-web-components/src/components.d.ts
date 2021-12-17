@@ -224,6 +224,7 @@ export namespace Components {
     interface ManagedProductListItem {
         "batchDisplayCount": number;
         "gtin": string;
+        "isHeader": boolean;
         "refresh": () => Promise<void>;
     }
     interface ManagedSale {
@@ -1126,6 +1127,7 @@ declare namespace LocalJSX {
     interface ManagedProductListItem {
         "batchDisplayCount"?: number;
         "gtin"?: string;
+        "isHeader"?: boolean;
         /**
           * Through this event navigation requests to tabs are made
          */
