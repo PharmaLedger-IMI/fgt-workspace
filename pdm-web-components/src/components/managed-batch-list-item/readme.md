@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property    | Attribute    | Description | Type     | Default     |
-| ----------- | ------------ | ----------- | -------- | ----------- |
-| `gtinBatch` | `gtin-batch` |             | `string` | `undefined` |
+| Property    | Attribute    | Description | Type      | Default     |
+| ----------- | ------------ | ----------- | --------- | ----------- |
+| `gtinBatch` | `gtin-batch` |             | `string`  | `undefined` |
+| `isHeader`  | `is-header`  |             | `boolean` | `undefined` |
 
 
 ## Events

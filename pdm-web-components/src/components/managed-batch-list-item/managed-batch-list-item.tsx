@@ -67,6 +67,7 @@ export class ManagedBatchListItem {
   }
 
   @Prop({attribute: 'gtin-batch'}) gtinBatch: string;
+  @Prop() isHeader: boolean;
 
   private batchManager: WebManager = undefined;
 
@@ -85,14 +86,16 @@ export class ManagedBatchListItem {
     let self = this;
     if (!self.batchManager)
       return;
-    self.batchManager.getOne(this.gtinBatch, true, (err, batch) => {
-      if (err){
-        self.sendError(`Could not get Batch with code ${self.gtinBatch}`, err);
-        return;
-      }
-      this.batch = new Batch(batch);
-      this.serialNumbers = batch.serialNumbers;
-    });
+
+    if(!this.isHeader)
+      self.batchManager.getOne(this.gtinBatch, true, (err, batch) => {
+        if (err){
+          self.sendError(`Could not get Batch with code ${self.gtinBatch}`, err);
+          return;
+        }
+        this.batch = new Batch(batch);
+        this.serialNumbers = batch.serialNumbers;
+      });
   }
 
   @Watch('gtinBatch')
@@ -125,6 +128,9 @@ export class ManagedBatchListItem {
     const self = this;
 
     const getBatchNumberLabel = function(){
+      if(self.isHeader)
+        return 'Batch Number';
+
       const batchNumber = self.getGtinAndBatchNumber().batchNumber;
       if (!self.gtinBatch)
         return (<ion-skeleton-text animated></ion-skeleton-text>)
@@ -132,17 +138,45 @@ export class ManagedBatchListItem {
     }
 
     const getExpiryLabel = function(){
+      if(self.isHeader)
+        return 'Expiry';
+
       if (!self.batch || !self.batch.expiry)
         return (<ion-skeleton-text animated></ion-skeleton-text>)
       return self.batch.expiry.toLocaleDateString();
     }
 
     const getStatusBadge = function(){
+      if(self.isHeader)
+        return 'Status';
       if (self.batch && self.batch.batchStatus)
         return (
           <status-badge slot="badges" status={self.batch.batchStatus.status}></status-badge>
         )
     }
+
+    if(this.isHeader)
+      return(
+        <ion-label slot="label" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg={3}>
+              <span class="ion-padding-start">
+              {getBatchNumberLabel()}
+              </span>       
+            </ion-col>
+            <ion-col col-12 col-sm align-self-end size-lg={2}>
+              <span class="ion-padding-start">
+                {getStatusBadge()}
+              </span>    
+            </ion-col>
+            <ion-col col-12 col-sm align-self-end size-lg={1}>
+              <span class="ion-padding-start">
+                {getExpiryLabel()}
+              </span>    
+            </ion-col>
+          </ion-row>
+      </ion-label>
+      )
 
     return(
       <ion-label slot="label" color="secondary">
@@ -153,6 +187,20 @@ export class ManagedBatchListItem {
   }
 
   addSerialsNumbers(){
+    
+    if(this.isHeader){
+      return (
+        <ion-label slot="content" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg={6}>
+                <span class="ion-padding-end">
+                  {"Serial Numbers"}
+                </span>       
+            </ion-col>
+          </ion-row>
+        </ion-label>
+      )
+    }
     if (!this.serialNumbers || !this.batch)
       return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
     return(
@@ -176,6 +224,16 @@ export class ManagedBatchListItem {
 
   addButtons(){
     let self = this;
+
+    if(self.isHeader){
+      return (
+          <div slot = "buttons">
+            <ion-label color="secondary">
+              {"Actions"}
+            </ion-label>
+          </div>
+      )
+    }
 
     const getButton = function(slot, color, icon, handler){
       if (!self.batch)

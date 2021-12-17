@@ -239,9 +239,8 @@ export class ManagedProductListItem {
             </ion-label>
           </div>
       )
-      
-
     }
+    
     if (!self.stock)
       return (<ion-skeleton-text animated></ion-skeleton-text>);
 
