@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property         | Attribute        | Description | Type     | Default     |
-| ---------------- | ---------------- | ----------- | -------- | ----------- |
-| `notificationid` | `notificationid` |             | `string` | `undefined` |
+| Property         | Attribute        | Description | Type      | Default     |
+| ---------------- | ---------------- | ----------- | --------- | ----------- |
+| `isHeader`       | `is-header`      |             | `boolean` | `undefined` |
+| `notificationid` | `notificationid` |             | `string`  | `undefined` |
 
 
 ## Events

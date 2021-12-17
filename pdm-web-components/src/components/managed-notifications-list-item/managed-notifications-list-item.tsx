@@ -54,6 +54,7 @@ export class ManagedNotificationListItem {
   }
 
   @Prop() notificationid: string;
+  @Prop() isHeader: boolean;
 
   private notificationManager: WebManager = undefined;
 
@@ -91,6 +92,21 @@ export class ManagedNotificationListItem {
     const self = this;
 
     const getActionLabel = function(){
+
+      if(self.isHeader){
+        return (
+          <ion-label slot="content" color="secondary">
+            <ion-row>
+              <ion-col col-12 col-sm align-self-end size-lg={6}>
+                  <span class="ion-padding-end">
+                    {"Message"}
+                  </span>       
+              </ion-col>
+            </ion-row>
+          </ion-label>
+        )
+      }
+
       if (!self.notification.body.batch.batchStatus.log)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
 
@@ -114,19 +130,41 @@ export class ManagedNotificationListItem {
   addLabel(){
     const self = this;
 
-   
-
     const getSenderLabel = function(){
+      if(self.isHeader)
+        return 'Sender';
+
       if (!self.notification || !self.notification.senderId)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
       return self.notification.senderId;
     }
 
     const getSubjectLabel = function(){
+      if(self.isHeader)
+        return 'Subject';
+
       if (!self.notification || !self.notification.subject)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
       return self.notification.subject;
     }
+
+    if(this.isHeader)
+      return(
+        <ion-label slot="label" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg={3}>
+              <span class="ion-padding-start">
+              {getSenderLabel()}
+              </span>       
+            </ion-col>
+            <ion-col col-12 col-sm align-self-end size-lg={3}>
+              <span class="ion-padding-start">
+                {getSubjectLabel()}
+              </span>    
+            </ion-col>
+          </ion-row>
+      </ion-label>
+      )
 
     return(
       <ion-label slot="label" color="secondary">
@@ -137,6 +175,17 @@ export class ManagedNotificationListItem {
 
   addButtons(){
     let self = this;
+    
+    if(self.isHeader){
+      return (
+          <div slot = "buttons">
+            <ion-label color="secondary">
+              {"Actions"}
+            </ion-label>
+          </div>
+      )
+    }
+
     if (!self.notification)
       return (<ion-skeleton-text animated></ion-skeleton-text>);
 
