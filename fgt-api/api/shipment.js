@@ -1,114 +1,102 @@
-
 const {Api, OPERATIONS} = require('../Api');
-const Shipment = require("../../fgt-dsu-wizard/model/Shipment");
 const SimpleShipment = require('../model/SimpleShipment')
-const {BadRequest} = require("../utils/errorHandler");
+const {BadRequest, NotImplemented, InternalServerError} = require("../utils/errorHandler");
+
+const SHIPMENT_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['partnerId', 'orderId']});
+const SHIPMENT_UPDATE = Object.assign({}, OPERATIONS.UPDATE, {pathParams: ['partnerId', 'orderId']});
 
 class ShipmentApi extends Api {
     manager;
-    issuedShipmentManager;
 
     constructor(server, participantManager) {
-        super(server, 'shipment', participantManager, [OPERATIONS.CREATE, OPERATIONS.GET, OPERATIONS.UPDATE], SimpleShipment);
+        super(server, 'shipment', participantManager, [OPERATIONS.CREATE, SHIPMENT_GET, SHIPMENT_UPDATE], SimpleShipment);
         try {
             this.manager = participantManager.getManager("SimpleShipmentManager");
-            // this.issuedShipmentManager = participantManager.getManager("IssuedShipmentManager");
         } catch (e) {
             throw new Error(`Could not get ${this.endpoint}Manager: ${e}`);
         }
     }
 
     /**
-     *
-     * @param orderId
-     * @param shipment
+     * create a SimpleShipment
+     * @param {SimpleShipment} simpleShipment
      * @param {function(err?, {}?)} callback
      * @override
      */
-    create(shipment, callback){
+    create(simpleShipment, callback) {
         const self = this;
 
-        const [err, _shipment] = this._validate(shipment)
+        const [err, _simpleShipment] = this._validate(simpleShipment);
         if (err)
-            return callback(new BadRequest(err))
+            return callback(new BadRequest(err));
 
-        const { shipmentId } = _shipment
-        self.manager.create(shipmentId, _shipment, (err, keySSI) => {
+        self.manager.create(_simpleShipment, (err, keySSI) => {
             if (err)
                 return callback(err);
-            self.manager.getOne(id, batch.batchNumber, true, (err, savedBatch) => {
+            self.manager.getOne(_simpleShipment.requesterId, _simpleShipment.orderId, (err, record) => {
                 if (err)
-                    return callback(err);
-                callback(undefined, savedBatch, keySSI.getIdentifier());
-            });
+                    return callback(new InternalServerError(err))
+                callback(undefined, {
+                    ...record,
+                    keySSI: keySSI.getIdentifier()
+                });
+            })
         });
     }
 
     /**
-     * Creates a new Model Object
-     * @param {string[]} [keys] can be optional if can be generated from model object
-     * @param {[{}]} models a list of model objects
-     * @param {function(err?, [{}]?, KeySSI[]?)} callback
+     * Creates one or more SimpleShipment from a list in body request.
+     * @param {string[]} [keys] not used
+     * @param {SimpleShipment} body
+     * @param {function(err?, [{SimpleShipment}]?)} callback
      */
     createAll(keys, body, callback) {
-        return super.createAll(['orderId'], body, callback);
+        return super.createAll(keys, body, callback);
     }
 
-    getOne(key, callback) {
-        this.manager.getAll(true, (err, records) => {
+    /**
+     * @param {string} requesterId
+     * @param {string} orderId
+     * @param {function(err, SimpleShipment?)} callback
+     */
+    getOne(requesterId, orderId, callback) {
+        this.manager.getOne(requesterId, orderId, true, (err, records) => {
             callback(err, records);
-        })
+        });
     }
 
+    /**
+     * Performer a query to dsu based on queryParameters (property filters according to the index)
+     * @param {{}} queryParams:
+     * @param {function(err, [SimpleShipment]?)} callback
+     */
     getAll(queryParams, callback) {
         super.getAll(queryParams, callback);
     }
 
-    update(gtin, newBatch, callback){
-        const self = this;
-
-        if (!(newBatch instanceof Batch))
-            newBatch = new Batch(newBatch);
-
-        const err = newBatch.validate();
-        if (err)
-            return callback(err.join(', '));
-
-        self.batchManager.update(gtin, newBatch, (err, updatedBatch) => {
+    /**
+     * Update ONLY status from provided SimpleShipment
+     * @param {string} requesterId
+     * @param {string} orderId
+     * @param {{status: string, extraInfo: string}}statusUpdate
+     * @param {function(err, SimpleShipment?)} callback
+     */
+    update(requesterId, orderId, statusUpdate, callback) {
+        this.manager.update(requesterId, orderId, statusUpdate, (err, updatedSimpleShipment) => {
             if (err)
-                return callback(err);
-            callback(undefined, updatedBatch);
-        });
+                return callback(new BadRequest(err));
+            callback(undefined, updatedSimpleShipment);
+        })
     }
 
     /**
-     * Creates a new Model Object
-     * @param {string[]} [keys] can be optional if can be generated from model object
-     * @param {[{}]} models a list of model objects
+     *  Update a list of SimpleShipment
+     * @param {string[]} [keys]
+     * @param body
      * @param {function(err?, [{}]?)} callback
      */
-    updateAll(keys, models, callback){
-        const self = this;
-        try{
-            self.batchManager.beginBatch();
-        } catch (e) {
-            return self.batchManager.batchSchedule(() => self.updateAll.call(self, keys, models, callback));
-        }
-
-        super.updateAll( keys, models, (err, created) => {
-            if (err){
-                console.log(err);
-                return self.batchManager.cancelBatch((_) => callback(err));
-            }
-
-            self.batchManager.commitBatch((err) => {
-                if (err){
-                    console.log(err);
-                    return self.batchManager.cancelBatch((_) => callback(err));
-                }
-                callback(undefined, created);
-            });
-        });
+    updateAll(keys, body, callback) {
+        return super.updateAll(['requesterId', 'orderId'], body, callback);
     }
 }
 

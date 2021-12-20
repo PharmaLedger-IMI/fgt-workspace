@@ -1,10 +1,8 @@
-const { DB, DEFAULT_QUERY_OPTIONS } = require('../../fgt-dsu-wizard/constants');
-const ShipmentManager = require("../../fgt-dsu-wizard/managers/ShipmentManager");
-const getReceivedOrderManager = require("../../fgt-dsu-wizard/managers/ReceivedOrderManager");
-const ShipmentLine = require('../../fgt-dsu-wizard/model/ShipmentLine');
+const {log} = require('../utils');
 const Batch = require('../../fgt-dsu-wizard/model/Batch');
-const Wholesaler = require('../../fgt-dsu-wizard/model/Wholesaler');
-const SimpleShipment = require('../model/SimpleShipment');
+const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
+const {BadRequest, InternalServerError} = require("../utils/errorHandler");
+const {DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../constants');
 
 
 /**
@@ -27,11 +25,13 @@ const SimpleShipment = require('../model/SimpleShipment');
  * @extends ShipmentManager
  * @memberOf Managers
  */
-class SimpleShipmentManager extends ShipmentManager {
+class SimpleShipmentManager extends Manager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.issuedShipments, ['requesterId'], callback);
+        super(participantManager, DB.issuedShipments, ['requesterId', 'orderId'], callback);
         this.participantManager = participantManager;
         this.stockManager = participantManager.getManager("StockManager");
+
+        this.simpleShipmentService = new (require('../services/SimpleShipmentService'))(ANCHORING_DOMAIN);
     }
 
     /**
@@ -52,113 +52,116 @@ class SimpleShipmentManager extends ShipmentManager {
      * @override
      */
     _indexItem(key, item, record) {
-        if (!record){
+        if (!record) {
             record = item;
             item = key;
             key = undefined;
         }
-        return {...super._indexItem(key, item, record), requesterId: item.requesterId};
+        const dbIndexes = {...super._indexItem(key, item, record)};
+        this.indexes.forEach((index) => {
+            dbIndexes[index] = item[index];
+        })
+        return dbIndexes;
     }
 
     /**
-     * Binds the {@link SimpleShipment#id} to the shipment and fills in participant details;
-     * @param {SimpleShipment} shipment
-     * @param {function(err, SimpleShipment)} callback
-     * @private
+     * generates the db's key for the SimpleShipment
+     * @param {string|number} requesterId
+     * @param {string|number} orderId
+     * @return {string}
+     * @protected
      */
-    _bindParticipant(shipment, callback){
-        shipment.id = shipment.id || Date.now();
-
-        let self = this;
-        self.getIdentity((err, wholesaler) => {
-            if (err)
-                return self._err(`Could not retrieve identity`, err, callback);
-            wholesaler = new Wholesaler(wholesaler);
-            shipment.senderId = wholesaler.id;
-            shipment.shipFromAddress = wholesaler.originAddress || wholesaler.address;
-            shipment.shipmentLines = shipment.shipmentLines.map(sl => {
-                sl.senderId = wholesaler.id;
-                sl.status = shipment.status;
-                return sl;
-            })
-            callback(undefined, shipment);
-        });
+    _genCompostKey(requesterId, orderId) {
+        return `${requesterId}-${orderId}`;
     }
 
-
     /**
-     * Creates a {@link Shipment} dsu
-     * @param {string} orderId the id to the received order that generates the shipment
-     * @param {Shipment} shipment
-     * @param {function(err, KeySSI, dbPath)} callback where the dbPath follows a "tableName/shipmentId" template.
+     * Creates a {@link SimpleShipment} dsu
+     * @param {SimpleShipment} simpleShipment
+     * @param {function(err?, KeySSI?, dbPath?)} callback where the dbPath follows a "tableName/shipmentId" template.
      * @override
      */
-    create(orderId, shipment, callback) {
+    create(simpleShipment, callback) {
         let self = this;
+        const dbKey = this._genCompostKey(simpleShipment.requesterId, simpleShipment.orderId);
 
-        const cb = function(err, ...results){
+        const callbackCancelBatch = (err, ...results) => {
             if (err)
-                return self.cancelBatch(err2 => {
-                    callback(err);
-                });
+                return self.cancelBatch((_) => callback(err));
             callback(undefined, ...results);
         }
 
-        const createInner = function(callback){
-            const receivedOrderManager = getReceivedOrderManager(self.participantManager);
-            const receivedOrderKey = receivedOrderManager._genCompostKey(shipment.requesterId, orderId);
+        const createInner = function (_callback) {
+            self.simpleShipmentService.create(simpleShipment, (err, keySSI, shipmentLinesSSIs) => {
+                if (err)
+                    return callbackCancelBatch(`Could not create product DSU for ${simpleShipment.orderId}`);
+                const shipmentSSI = keySSI.getIdentifier();
+                log("Shipment SSI=" + shipmentSSI);
+                self.insertRecord(dbKey, self._indexItem(simpleShipment, shipmentSSI), (err) => {
+                    if (err)
+                        return callbackCancelBatch(new BadRequest(`Could not insert record with orderId ${simpleShipment.orderId} on table ${self.tableName}. Trying to insert a existing record.`));
 
-            receivedOrderManager.getOne(receivedOrderKey, true, (err, order, orderDSU, orderSSI) => {
-                if(err)
-                    return cb(`Could not retrieve received order ${orderId}`);
-                self.shipmentService.create(shipment, orderSSI, (err, keySSI, shipmentLinesSSIs) => {
-                    if(err)
-                        return cb(`Could not create product DSU for ${shipment}`);
-                    const record = keySSI.getIdentifier();
-                    console.log("Shipment SSI=" + record);
-                    self.insertRecord(self._genCompostKey(shipment.requesterId, shipment.shipmentId), self._indexItem(shipment, record), (err) => {
-                        if(err)
-                            return cb(`Could not insert record with shipmentId ${shipment.shipmentId} on table ${self.tableName}`);
-
-                        const path = `${self.tableName}/${shipment.shipmentId}`;
-                        console.log(`Shipment ${shipment.shipmentId} created stored at DB '${path}'`);
-                        const aKey = keySSI.getIdentifier();
-                        self.sendMessagesAsync(shipment, shipmentLinesSSIs, aKey);
-                        callback(undefined, keySSI, path);
-                    });
+                    const path = `${self.tableName}/${simpleShipment.orderId}`;
+                    log(`Shipment ${dbKey} created stored at DB '${path}'`);
+                    self.sendMessagesAsync(simpleShipment, shipmentLinesSSIs, shipmentSSI);
+                    _callback(undefined, keySSI, path);
                 });
             });
         }
 
-        const gtinIterator = function(gtins, batchesObj, callback){
+        const gtinIterator = function (gtins, batchesObj, _callback) {
             const gtin = gtins.shift();
             if (!gtin)
-                return callback();
+                return _callback();
             if (!(gtin in batchesObj))
-                return callback(`gtins not found in batches`);
+                return _callback(`gtin ${gtin} not found in batches`);
             const batches = batchesObj[gtin];
             self.batchAllow(self.stockManager);
-            self.stockManager.manageAll(gtin,  batches, (err, removed) => {
+            self.stockManager.manageAll(gtin, batches, (err, removed) => {
                 self.batchDisallow(self.stockManager);
 
-                if(err)
-                    return cb(`Could not update Stock`);
+                if (err)
+                    return callbackCancelBatch(`Could not update Stock`);
                 if (self.stockManager.serialization && self.stockManager.aggregation)
-                    shipment.shipmentLines.filter(sl => sl.gtin === gtin && Object.keys(removed).indexOf(sl.batch) !== -1).forEach(sl => {
+                    simpleShipment.shipmentLines.filter(sl => sl.gtin === gtin && Object.keys(removed).indexOf(sl.batch) !== -1).forEach(sl => {
                         sl.serialNumbers = removed[sl.batch];
                     });
                 else
-                    shipment.shipmentLines = shipment.shipmentLines.map(sl => {
+                    simpleShipment.shipmentLines = simpleShipment.shipmentLines.map(sl => {
                         sl.serialNumbers = undefined;
                         return sl;
                     });
-                gtinIterator(gtins, batchesObj, callback);
+                gtinIterator(gtins, batchesObj, _callback);
             })
         }
 
-        const gtins = shipment.shipmentLines.map(sl => sl.gtin);
-        const batchesObj = shipment.shipmentLines.reduce((accum, sl) => {
-            accum[sl.gtin] = accum[sl.gtin] || [];
+        const dbAction = function (gtins, batchesObj, _callback) {
+            try {
+                self.beginBatch();
+            } catch (e) {
+                return self.batchSchedule(() => dbAction(gtins, batchesObj, _callback));
+            }
+
+            gtinIterator(gtins, batchesObj, (err) => {
+                if (err)
+                    return callbackCancelBatch(`Could not retrieve info from stock`);
+                log(`Shipment updated after Stock confirmation`);
+                createInner((err, keySSI, path) => {
+                    if (err)
+                        return callbackCancelBatch(`Could not create Shipment`);
+                    self.commitBatch((err) => {
+                        if (err)
+                            return callbackCancelBatch(err);
+                        log(`Shipment created from orderId: ${simpleShipment.orderId}`);
+                        _callback(undefined, keySSI, path);
+                    });
+                })
+            });
+        }
+
+        const aggBatchesByGtin = simpleShipment.shipmentLines.reduce((accum, sl) => {
+            if (!accum.hasOwnProperty(sl.gtin))
+                accum[sl.gtin] = [];
             accum[sl.gtin].push(new Batch({
                 batchNumber: sl.batch,
                 quantity: (-1) * sl.quantity
@@ -166,66 +169,33 @@ class SimpleShipmentManager extends ShipmentManager {
             return accum;
         }, {});
 
-        const dbAction = function (gtins, batchesObj, callback){
-
-            try {
-                self.beginBatch();
-            } catch (e){
-                return self.batchSchedule(() => dbAction(gtins, batchesObj, callback));
-                //return callback(e);
-            }
-
-            gtinIterator(gtins, batchesObj, (err) => {
-                if(err)
-                    return cb(`Could not retrieve info from stock`);
-                console.log(`Shipment updated after Stock confirmation`);
-                createInner((err, keySSI, path) => {
-                    if(err)
-                        return cb(`Could not create Shipment`);
-                    self.commitBatch((err) => {
-                        if(err)
-                            return cb(err);
-                        console.log(`Shipment ${shipment.shipmentId} created!`);
-                        callback(undefined, keySSI, path);
-                    });
-                })
-            });
-        }
-
-        dbAction(gtins, batchesObj, callback);
-    }
-
-    sendMessagesAsync(shipment, shipmentLinesSSIs, aKey){
-        if (!aKey){
-            aKey = shipmentLinesSSIs;
-            shipmentLinesSSIs = undefined;
-        }
-
-        const self = this;
-        self.sendMessage(shipment.requesterId, DB.receivedShipments, aKey, (err) =>
-            self._messageCallback(err ? `Could not sent message to ${shipment.shipmentId} with ${DB.receivedShipments}: ${err}` : err,
-                `Message sent to ${shipment.requesterId}, ${DB.receivedShipments}, ${aKey}`));
-        if (shipmentLinesSSIs)
-            self.sendShipmentLinesToMAH([...shipment.shipmentLines], [...shipmentLinesSSIs], (err) =>
-                self._messageCallback( err ? `Could not transmit shipmentLines to The manufacturers` : 'Lines Notice sent to Manufacturers'));
+        dbAction(Object.keys(aggBatchesByGtin), aggBatchesByGtin, callback);
     }
 
     /**
-     *
-     * @param err
-     * @param message
-     * @protected
-     * @override
+     * @param {string | number} requesterId
+     * @param {string | number} orderId
+     * @param {boolean} readDSU
+     * @param {function(err, SimpleShipment?)} callback
      */
-    _messageCallback(err, message) {
-        super._messageCallback(err, message);
+    getOne(requesterId, orderId, readDSU, callback) {
+        const key = this._genCompostKey(requesterId, orderId);
+        this.getRecord(key, (err, record) => {
+            if (err)
+                callback(err);
+            this.simpleShipmentService.get(record.value, (err, simpleShipment, dsu, linesSSI) => {
+                if (err)
+                    callback(err);
+                callback(undefined, simpleShipment);
+            })
+        });
     }
 
     /**
-     * Lists all issued orders.
+     * Lists all SimpleShipments.
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
      * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
-     * @param {function(err, Order[])} callback
+     * @param {function(err, SimpleShipment[]?)} callback
      */
     getAll(readDSU, options, callback) {
         const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS);
@@ -249,68 +219,119 @@ class SimpleShipmentManager extends ShipmentManager {
 
         options = options || defaultOptions();
 
-        let self = this;
         super.getAll(readDSU, options, (err, result) => {
             if (err)
-                return self._err(`Could not parse IssuedShipments ${JSON.stringify(result)}`, err, callback);
-            console.log(`Parsed ${result.length} shipments`);
+                return callback(new InternalServerError(`Could not parse SimpleShipments ${JSON.stringify(result)}`));
+            log(`Parsed ${result.length} simpleShipments`);
             callback(undefined, result);
         });
     }
 
     /**
-     * updates an Issued Shipment
-     *
-     * @param {string} [key] key is optional so child classes can override them
-     * @param {Shipment} shipment
+     * updates an SimpleShipment
+     * @param {string | number} requesterId
+     * @param {string  | number} orderId
+     * @param {SimpleShipment} statusUpdate
      * @param {function(err, Shipment?, Archive?)} callback
      */
-    update(key, shipment, callback){
-        if (!callback){
-            callback = shipment;
-            shipment = key;
-            key = this._genCompostKey(shipment.requesterId, shipment.shipmentId);
-        }
+    update(requesterId, orderId, statusUpdate, callback) {
         const self = this;
-        super.update(key, shipment, (err, updatedShipment, keySSI, orderId, linesSSIs) => {
+        const key = self._genCompostKey(requesterId, orderId);
+        self.getRecord(key, (err, record) => {
             if (err)
-                return self._err(`Could not update Shipment`, err, callback);
-            try {
-                self.sendMessagesAsync(updatedShipment, linesSSIs, keySSI);
-            } catch (e) {
-                console.log(e);
-            }
-            callback(undefined, updatedShipment, keySSI);
+                return callback(new BadRequest(err));
+            self.simpleShipmentService.update(record.value, statusUpdate, record.senderId, (err, updatedSimpleShipment, keySSI, linesSSIs) => {
+                if (err)
+                    return callback(new InternalServerError(`Could not update Shipment from orderId ${orderId}. ${err}`));
+                try {
+                    self.sendMessagesAsync(updatedSimpleShipment, linesSSIs, keySSI);
+                } catch (e) {
+                    log(e);
+                }
+                callback(undefined, updatedSimpleShipment, keySSI);
+            })
         });
     }
 
-    updateByOrder(shipmentId, order, callback){
-        const shipmentKey = this._genCompostKey(order.requesterId, shipmentId);
+    /**
+     * messages to all MAHs.
+     * the shipment is the same for the orderlines and their ssis because of the way the code is written
+     * @param shipmentLines
+     * @param shipmentLinesSSI
+     * @param callback
+     * @return {*}
+     */
+    sendShipmentLinesToMAH(shipmentLines, shipmentLinesSSI, callback) {
         const self = this;
-        self.getOne(shipmentKey, false, (err, record) => {
-            if (err)
-                return self._err(`Could not get Shipment to update`, err, callback);
-            self._getDSUInfo(record, (err, shipment) => {
+        if (shipmentLines.length !== shipmentLinesSSI.length)
+            return callback(`Invalid arguments`);
+
+        const orderLineIterator = function (linesCopy, mahs, callback) {
+            if (!callback) {
+                callback = mahs;
+                mahs = [];
+            }
+
+            const shipmentLine = linesCopy.shift();
+
+            if (!shipmentLine) {
+                log(`All MAHs resolved`)
+                return callback(undefined, mahs);
+            }
+
+            self.simpleShipmentService.resolveMAH(shipmentLine, (err, mahId) => {
                 if (err)
-                    return self._err(`Unable to read shipment DSU`, err, callback);
-                shipment.status = order.status
-                self.shipmentService.update(record, shipment, (err, updatedShipment, dsu, orderId, shipmentLinesSSIs) => {
-                    if (err)
-                        return self._err(`Could not update shipment dsu`, err, callback);
-                    self.updateRecord(shipmentKey, self._indexItem(shipmentKey, updatedShipment, record), (err) => {
-                        if (err)
-                            return self._err(`Could not update shipment record`, err, callback);
-                        self.sendShipmentLinesToMAH([...shipment.shipmentLines], [...shipmentLinesSSIs], (err) =>
-                            self._messageCallback( err ? `Could not transmit shipmentLines to The manufacturers` : 'Lines Notice sent to Manufacturers'));
-                        self.refreshController({
-                            mode: 'issued',
-                            shipment: updatedShipment
-                        });
-                        callback();
-                    });
-                });
+                    return self._err(`Could not resolve MAH for ${shipmentLine}`, err, callback);
+                mahs.push(mahId);
+                orderLineIterator(linesCopy, mahs, callback);
             });
+        }
+
+        orderLineIterator(shipmentLines.slice(), (err, resolvedMahs) => {
+            if (err)
+                return self._err(`Error resolving MAHs`, err, callback);
+
+            const byMAH = resolvedMahs.reduce((accum, mah, i) => {
+                (accum[mah] = accum[mah] || []).push(shipmentLinesSSI[i]);
+                return accum;
+            }, {});
+
+            Object.keys(byMAH).forEach(mahId => {
+                const ssis = byMAH[mahId].map(k => typeof k === 'string' ? k : k.getIdentifier());
+                const message = JSON.stringify(ssis);
+                self.sendMessage(mahId, DB.shipmentLines, message, (err) =>
+                    self._messageCallback(err ? `Could not send message to MAH ${mahId} for shipmentLines ${JSON.stringify(byMAH[mahId])} with ssis ${ssis} ${err}` : err,
+                        `ShipmentLines ${message} transmitted to MAH ${mahId}`));
+            });
+
+            callback();
         });
+    }
+
+    sendMessagesAsync(shipment, shipmentLinesSSIs, aKey) {
+        if (!aKey) {
+            aKey = shipmentLinesSSIs;
+            shipmentLinesSSIs = undefined;
+        }
+
+        const self = this;
+        self.sendMessage(shipment.requesterId, DB.receivedShipments, aKey, (err) =>
+            self._messageCallback(err ? `Could not sent message to ${shipment.shipmentId} with ${DB.receivedShipments}: ${err}` : err,
+                `Message sent to ${shipment.requesterId}, ${DB.receivedShipments}, ${aKey}`));
+        if (shipmentLinesSSIs)
+            self.sendShipmentLinesToMAH([...shipment.shipmentLines], [...shipmentLinesSSIs], (err) =>
+                self._messageCallback(err ? `Could not transmit shipmentLines to The manufacturers` : 'Lines Notice sent to Manufacturers'));
+    }
+
+    /**
+     *
+     * @param err
+     * @param message
+     * @protected
+     * @override
+     */
+    _messageCallback(err, message) {
+        super._messageCallback(err, message);
     }
 }
 
@@ -320,13 +341,13 @@ class SimpleShipmentManager extends ShipmentManager {
  * @returns {IssuedShipmentManager}
  * @memberOf Managers
  */
-const getIssuedShipmentManager = function (participantManager,  callback) {
+const getIssuedShipmentManager = function (participantManager, callback) {
     let manager;
     try {
         manager = participantManager.getManager(SimpleShipmentManager);
         if (callback)
             return callback(undefined, manager);
-    } catch (e){
+    } catch (e) {
         manager = new SimpleShipmentManager(participantManager, callback);
     }
 
