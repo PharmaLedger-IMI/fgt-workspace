@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "run-mah": "node ./participants/mah/index.js",
+    "run-whs": "node ./participants/whs/index.js",
+    "run-pha": "node ./participants/pha/index.js",
     "test": "test"
   },
   "devDependencies": {

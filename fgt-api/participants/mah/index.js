@@ -14,7 +14,7 @@ const getSimpleShipmentManager = require('../../managers/SimpleShipmentManager')
 
 
 function init(){
-    initApis(express, api, APPS.MAH, getProductManager, getBatchManager, getShipmentLineManager, getTraceabilityManager, getStockManager, getSaleManager, getReceiptManager, getSimpleShipmentManager);
+    initApis(express, api, 8081, APPS.MAH, getProductManager, getBatchManager, getShipmentLineManager, getTraceabilityManager, getStockManager, getSaleManager, getReceiptManager, getSimpleShipmentManager);
 }
 
 init();
