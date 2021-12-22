@@ -1,3 +1,4 @@
+const Shipment = require("../../fgt-dsu-wizard/model/Shipment");
 const ShipmentLine = require('../../fgt-dsu-wizard/model/ShipmentLine');
 const ShipmentStatus = require("../../fgt-dsu-wizard/model/ShipmentStatus");
 
@@ -33,24 +34,9 @@ class SimpleShipment {
             errors.push(`Status is mandatory`);
         if (!this.shipmentLines || !this.shipmentLines.length)
             errors.push(`shipmentLines is mandatory`);
-        if (oldStatus && SimpleShipment.getAllowedStatusUpdates(oldStatus).indexOf(this.status.status || this.status) === -1)
+        if (oldStatus && Shipment.getAllowedStatusUpdates(oldStatus).indexOf(this.status.status || this.status) === -1)
             errors.push(`Status update from ${oldStatus} to ${this.status.status || this.status} is not allowed`);
         return errors ? errors.join("\n") : undefined;
-    }
-
-    static getAllowedStatusUpdates(status){
-        switch(status){
-            case ShipmentStatus.CREATED:
-                return [ShipmentStatus.REJECTED, ShipmentStatus.ON_HOLD, ShipmentStatus.PICKUP]
-            case ShipmentStatus.ON_HOLD:
-                return [ShipmentStatus.PICKUP, ShipmentStatus.REJECTED]
-            case ShipmentStatus.PICKUP:
-                return [ShipmentStatus.ON_HOLD, ShipmentStatus.REJECTED, ShipmentStatus.TRANSIT]
-            case ShipmentStatus.TRANSIT:
-                return [ShipmentStatus.REJECTED, ShipmentStatus.ON_HOLD, ShipmentStatus.DELIVERED]
-            default:
-                return [];
-        }
     }
 }
 

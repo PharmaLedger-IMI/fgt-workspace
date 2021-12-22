@@ -45,7 +45,7 @@ function SimpleShipmentService(domain, strategy) {
      * @param {function(err, SimpleShipment?, Archive?)} callback
      */
     this.get = function (keySSI, callback) {
-        utils.getResolver().loadDSU(keySSI, (err, dsu) => {
+        utils.getResolver().loadDSU(keySSI, {skipCache: true}, (err, dsu) => {
             if (err)
                 return callback(err);
             dsu.readFile(INFO_PATH, (err, data) => {
@@ -168,7 +168,7 @@ function SimpleShipmentService(domain, strategy) {
     }
 
     /**
-     * Creates the original SimpleShipmentStatus DSU
+     * Creates the SimpleShipmentStatus DSU
      * @param {string} id the id for the operation
      * @param {string} [status]: defaults to ShipmentStatus.CREATED
      * @param {function(err, keySSI?)} callback
@@ -187,10 +187,10 @@ function SimpleShipmentService(domain, strategy) {
     }
 
     /**
-     * Creates OrderLines DSUs for each orderLine in shipment
+     * Creates ShipmentLines DSUs for each shipmentLine in {@link SimpleShipment}
      * @param {SimpleShipment} simpleShipment
      * @param {function} callback
-     * @param {KeySSI} statusSSI keySSI to the OrderStatus DSU
+     * @param {KeySSI} statusSSI keySSI to the SimpleShipmentStatus DSU
      * @return {Object[]} keySSIs
      */
     const _createShipmentLines = function (simpleShipment, statusSSI, callback) {
@@ -209,55 +209,63 @@ function SimpleShipmentService(domain, strategy) {
         iterator([], simpleShipment, simpleShipment.shipmentLines.slice(), callback);
     }
 
-    this.update = function (keySSI, statusUpdate, senderId, callback) {
+    /**
+     * @param {string} keySSI
+     * @param {Status} statusUpdate
+     * @param {string | number} requesterId: participantId who is requesting update
+     * @param {function(err, SimpleShipment?)} callback
+     */
+    this.update = function (keySSI, statusUpdate, requesterId, callback) {
         if (!isSimple)
             return callback(`Update strategy not implemented.`);
 
         const self = this;
-        if (!callback && !(statusUpdate instanceof SimpleShipment))
-            return callback('Unable to update without senderId identifier.')
-        else if (!callback && statusUpdate instanceof SimpleShipment) {
-            callback = senderId;
-            senderId = statusUpdate.senderId;
-            statusUpdate = statusUpdate.status;
-        }
-
-
-        keySSI = utils.getKeySSISpace().parse(keySSI);
-        utils.getResolver().loadDSU(keySSI, {skipCache: true}, (err, dsu) => {
+        self.get(keySSI, (err, simpleShipment) => {
             if (err)
                 return callback(err);
 
-            const cancelBatchCallback = function (err, ...results) {
+            const oldStatus = simpleShipment.status.status;
+            simpleShipment.status.status = statusUpdate.status;
+            simpleShipment.status.extraInfo = statusUpdate.extraInfo;
+            err = simpleShipment.validate(oldStatus);
+            if (err)
+                return callback(err);
+
+            keySSI = utils.getKeySSISpace().parse(keySSI);
+            utils.getResolver().loadDSU(keySSI, {skipCache: true}, (err, dsu) => {
                 if (err)
-                    return dsu.cancelBatch(_ => callback(err));
-                callback(undefined, ...results);
-            }
+                    return callback(err);
 
-            try {
-                dsu.beginBatch();
-            } catch (e) {
-                return callback(e);
-            }
+                const cancelBatchCallback = function (err, ...results) {
+                    if (err)
+                        return dsu.cancelBatch(_ => callback(err));
+                    callback(undefined, ...results);
+                }
 
-            utils.getMounts(dsu, '/', STATUS_MOUNT_PATH, (err, mounts) => {
-                if (err)
-                    return cancelBatchCallback(err);
-                if (!mounts[STATUS_MOUNT_PATH])
-                    return cancelBatchCallback(`Missing mount ${STATUS_MOUNT_PATH}`);
+                try {
+                    dsu.beginBatch();
+                } catch (e) {
+                    return callback(e);
+                }
 
-                statusService.update(mounts[STATUS_MOUNT_PATH], statusUpdate, senderId, (err) => {
+                utils.getMounts(dsu, '/', STATUS_MOUNT_PATH, (err, mounts) => {
                     if (err)
                         return cancelBatchCallback(err);
-                    dsu.commitBatch((err) => {
+                    if (!mounts[STATUS_MOUNT_PATH])
+                        return cancelBatchCallback(`Missing mount ${STATUS_MOUNT_PATH}`);
+
+                    statusService.update(mounts[STATUS_MOUNT_PATH], statusUpdate, requesterId, (err) => {
                         if (err)
                             return cancelBatchCallback(err);
-                        self.get(keySSI, callback);
+                        dsu.commitBatch((err) => {
+                            if (err)
+                                return cancelBatchCallback(err);
+                            self.get(keySSI, callback);
+                        });
                     });
                 });
             });
-        });
-
+        })
     }
 
 }

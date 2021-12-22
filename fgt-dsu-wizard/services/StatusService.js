@@ -184,7 +184,7 @@ function StatusService(domain, strategy){
                     if (err)
                         return callback(err);
                     try{
-                        prevStatus = JSON.parse(prevStatus).status;
+                        prevStatus = JSON.parse(prevStatus);
                     } catch (e){
                         return callback(e);
                     }

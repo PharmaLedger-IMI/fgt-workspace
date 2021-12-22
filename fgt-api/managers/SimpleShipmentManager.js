@@ -27,7 +27,7 @@ const {DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../constants');
  */
 class SimpleShipmentManager extends Manager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.issuedShipments, ['requesterId', 'orderId'], callback);
+        super(participantManager, DB.issuedShipments, ['requesterId', 'orderId', 'senderId'], callback);
         this.participantManager = participantManager;
         this.stockManager = participantManager.getManager("StockManager");
 
@@ -182,10 +182,10 @@ class SimpleShipmentManager extends Manager {
         const key = this._genCompostKey(requesterId, orderId);
         this.getRecord(key, (err, record) => {
             if (err)
-                callback(err);
+                return callback(err);
             this.simpleShipmentService.get(record.value, (err, simpleShipment, dsu, linesSSI) => {
                 if (err)
-                    callback(err);
+                    return callback(err);
                 callback(undefined, simpleShipment);
             })
         });
@@ -198,6 +198,7 @@ class SimpleShipmentManager extends Manager {
      * @param {function(err, SimpleShipment[]?)} callback
      */
     getAll(readDSU, options, callback) {
+        const self = this;
         const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS);
 
         if (!callback) {
@@ -221,14 +222,44 @@ class SimpleShipmentManager extends Manager {
 
         super.getAll(readDSU, options, (err, result) => {
             if (err)
-                return callback(new InternalServerError(`Could not parse SimpleShipments ${JSON.stringify(result)}`));
+                return callback(new InternalServerError(`Could not parse SimpleShipments`));
             log(`Parsed ${result.length} simpleShipments`);
-            callback(undefined, result);
+
+            const statusPopulateIterator = (accum, records, _callback) => {
+                const record = records.shift();
+                if (!record)
+                    return _callback(undefined, accum);
+                self.getOne(record.requesterId, record.orderId, true, (err, simpleShipment) => {
+                    if (err)
+                        return _callback(err);
+                    accum.push(simpleShipment);
+                    statusPopulateIterator(accum, records, _callback);
+                })
+            }
+
+            statusPopulateIterator([], result.slice(), (err, simpleShipments) => {
+                if (err)
+                    return callback(err);
+                callback(undefined, simpleShipments);
+            })
         });
     }
 
     /**
-     * updates an SimpleShipment
+     * Returns a page object from provided dsuQuery or a keyword
+     * @param {number} itemsPerPage
+     * @param {number} page
+     * @param {string | string[] } searchBy: dsuQuery or keyword
+     * @param {string} sort
+     * @param {boolean} readDSU
+     * @param {function(err, Page)}callback
+     */
+    getPage(itemsPerPage, page, searchBy, sort, readDSU, callback) {
+        return super.getPage.call(this, itemsPerPage, page, searchBy, sort, readDSU, callback);
+    }
+
+    /**
+     * updates one SimpleShipment status (just the SimpleShipment can be updated)
      * @param {string | number} requesterId
      * @param {string  | number} orderId
      * @param {SimpleShipment} statusUpdate
@@ -240,9 +271,9 @@ class SimpleShipmentManager extends Manager {
         self.getRecord(key, (err, record) => {
             if (err)
                 return callback(new BadRequest(err));
-            self.simpleShipmentService.update(record.value, statusUpdate, record.senderId, (err, updatedSimpleShipment, keySSI, linesSSIs) => {
+            self.simpleShipmentService.update(record.value, statusUpdate, requesterId, (err, updatedSimpleShipment, keySSI, linesSSIs) => {
                 if (err)
-                    return callback(new InternalServerError(`Could not update Shipment from orderId ${orderId}. ${err}`));
+                    return callback(`Could not update Shipment from orderId ${orderId}. ${err}`);
                 try {
                     self.sendMessagesAsync(updatedSimpleShipment, linesSSIs, keySSI);
                 } catch (e) {
@@ -251,6 +282,16 @@ class SimpleShipmentManager extends Manager {
                 callback(undefined, updatedSimpleShipment, keySSI);
             })
         });
+    }
+
+    /**
+     * updates one or more SimpleShipment status (just the SimpleShipment can be updated)
+     * @param {string[]} [keys] object keys that identify the record to be updated
+     * @param {Object[]} statusUpdate: object with fields to be updated
+     * @param {function(err, SimpleShipment[])} callback
+     */
+    updateAll(keys, statusUpdate, callback) {
+        return super.updateAll(keys, statusUpdate, callback);
     }
 
     /**
@@ -341,7 +382,7 @@ class SimpleShipmentManager extends Manager {
  * @returns {IssuedShipmentManager}
  * @memberOf Managers
  */
-const getIssuedShipmentManager = function (participantManager, callback) {
+const getSimpleShipmentManager = function (participantManager, callback) {
     let manager;
     try {
         manager = participantManager.getManager(SimpleShipmentManager);
@@ -354,4 +395,4 @@ const getIssuedShipmentManager = function (participantManager, callback) {
     return manager;
 }
 
-module.exports = getIssuedShipmentManager;
+module.exports = getSimpleShipmentManager;
