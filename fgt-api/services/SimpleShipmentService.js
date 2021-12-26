@@ -93,12 +93,11 @@ function SimpleShipmentService(domain, strategy) {
      */
     this.create = function (simpleShipment, callback) {
 
-        if (!(simpleShipment instanceof SimpleShipment)) {
+        if (!(simpleShipment instanceof SimpleShipment))
             simpleShipment = new SimpleShipment(simpleShipment);
-            const err = simpleShipment.validate();
-            if (err)
-                return callback(err);
-        }
+        const err = simpleShipment.validate();
+        if (err)
+            return callback(err);
 
         if (!isSimple)
             callback(`Strategy type to create a Simple Shipment is not supported.`);

@@ -113,7 +113,7 @@ class Api {
                     return {
                         meta: {
                             page: paginate.currentPage,
-                            itemPerPage: paginate.itemPerPage,
+                            itemsPerPage: paginate.itemsPerPage,
                             totalPages: paginate.totalPages,
                             query
                         },

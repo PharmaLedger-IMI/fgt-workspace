@@ -1,12 +1,12 @@
 const Shipment = require("../../fgt-dsu-wizard/model/Shipment");
 const ShipmentLine = require('../../fgt-dsu-wizard/model/ShipmentLine');
-const ShipmentStatus = require("../../fgt-dsu-wizard/model/ShipmentStatus");
 
 /**
  * @class SimpleShipment
  * @memberOf Model
  */
 class SimpleShipment {
+    shipmentId;
     orderId;
     requesterId;
     senderId;
@@ -19,7 +19,12 @@ class SimpleShipment {
                 if (simpleShipment.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = simpleShipment[prop];
 
-        this.shipmentLines = this.shipmentLines ? this.shipmentLines.map(sl => new ShipmentLine(sl)) : undefined;
+        this.shipmentId = simpleShipment.shipmentId ? simpleShipment.shipmentId : Date.now();
+        this.shipmentLines = this.shipmentLines ? this.shipmentLines.map(sl => {
+            sl.requesterId = simpleShipment.requesterId;
+            sl.senderId = simpleShipment.senderId;
+            return new ShipmentLine(sl)
+        }) : undefined;
     }
 
     validate(oldStatus){
@@ -32,8 +37,20 @@ class SimpleShipment {
             errors.push(`SenderId is mandatory`);
         if (!this.status)
             errors.push(`Status is mandatory`);
-        if (!this.shipmentLines || !this.shipmentLines.length)
+
+        if (!this.shipmentLines || !this.shipmentLines.length) {
             errors.push(`shipmentLines is mandatory`);
+        } else {
+            this.shipmentLines.forEach((shipmentLine, shipmentLineIndex) => {
+                let shipmentLinesError = shipmentLine.validate();
+                if (shipmentLinesError) {
+                    shipmentLinesError.forEach((error) => {
+                        errors.push("Shipment Line "+shipmentLineIndex+": "+error);
+                    });
+                }
+            });
+        }
+
         if (oldStatus && Shipment.getAllowedStatusUpdates(oldStatus).indexOf(this.status.status || this.status) === -1)
             errors.push(`Status update from ${oldStatus} to ${this.status.status || this.status} is not allowed`);
         return errors ? errors.join("\n") : undefined;

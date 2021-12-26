@@ -41,7 +41,7 @@ module.exports = class SaleApi extends Api {
      * @param {function(err?, [{}]?, KeySSI[]?)} callback
      */
     createAll(keys, body, callback) {
-        return super.createAll(keys, body, callback);
+        super.createAll(keys, body, callback);
     }
 
     /**
@@ -49,11 +49,7 @@ module.exports = class SaleApi extends Api {
      * @param callback
      */
     getOne(saleId, callback) {
-        this.manager.getOne(saleId, true, (err, batch) => {
-            if (err)
-                return callback(err);
-            callback(undefined, batch);
-        })
+        this.manager.getOne(saleId, true, callback)
     }
 
     /**

@@ -90,7 +90,7 @@ module.exports = class BatchApi extends Api {
 
         self.manager.getOne(gtin, batchNumber, (err, batch) => {
             if (err)
-                callback(new BadRequest(err))
+                return callback(new BadRequest(err))
 
             const oldStatus = batch.batchStatus.status;
             batch.batchStatus.status = statusUpdate.status;

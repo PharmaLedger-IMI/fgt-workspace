@@ -54,7 +54,7 @@ class IndividualProduct {
             errors.push('Manufacturer Name is required');
 
         if (!this.status)
-            errors.push('Serial Number is required.');
+            errors.push('Status is required.');
 
         if (oldStatus && IndividualProduct.getAllowedStatusUpdates(oldStatus).indexOf(this.status) === -1)
             errors.push(`Status update from ${oldStatus} to ${this.status} is not allowed`);
