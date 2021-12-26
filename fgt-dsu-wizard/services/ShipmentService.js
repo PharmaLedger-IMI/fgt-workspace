@@ -290,15 +290,20 @@ function ShipmentService(domain, strategy) {
             id = shipment.senderId;
         }
 
-        if (typeof shipment === 'object') {
-            let err = shipment.validate();
-            if (err)
-                return callback(err);
-        }
         const self = this;
         if (isSimple) {
             keySSI = utils.getKeySSISpace().parse(keySSI);
-            utils.getResolver().loadDSU(keySSI, {skipCache: true}, (err, dsu) => {
+
+            self.get(keySSI, (err, shipmentSSI, dsu) => {
+                if (err)
+                    return callback(err);
+
+                if(!(shipment instanceof Shipment))
+                    shipment = new Shipment(shipment);
+                err = shipment.validate(shipmentSSI.status.status);
+                if(err)
+                    return callback(err);
+
                 if (err)
                     return callback(err);
 
@@ -309,7 +314,7 @@ function ShipmentService(domain, strategy) {
                         });
                     callback(undefined, ...results);
                 }
-                    
+
                 try{
                     dsu.beginBatch();
                 }catch(e){
@@ -331,7 +336,10 @@ function ShipmentService(domain, strategy) {
                         });
                     });
                 });
-            });
+
+
+
+            })
         } else {
             return callback(`Not implemented`);
         }
