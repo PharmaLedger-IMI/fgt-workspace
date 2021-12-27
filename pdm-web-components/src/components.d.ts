@@ -96,6 +96,8 @@ export namespace Components {
     interface ListItemLayoutDefault {
         "buttons": boolean;
         "labelConfig": string;
+        "lines": 'none' | 'inset' | 'full';
+        "orientation": "start" | "end";
         "start": boolean;
     }
     interface ManagedBatch {
@@ -971,6 +973,8 @@ declare namespace LocalJSX {
     interface ListItemLayoutDefault {
         "buttons"?: boolean;
         "labelConfig"?: string;
+        "lines"?: 'none' | 'inset' | 'full';
+        "orientation"?: "start" | "end";
         "start"?: boolean;
     }
     interface ManagedBatch {
