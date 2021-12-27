@@ -1,0 +1,7 @@
+:host {
+  display: block;
+}
+
+ion-col {
+  border: 2px solid #0049e7;
+}
