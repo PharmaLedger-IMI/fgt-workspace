@@ -235,15 +235,14 @@ export class ListItemLayoutDefault {
   createSmallSizePage(){
     const self = this;
 
-    // if(self.start && self.buttons)
+    if(self.start && self.buttons)
       return (
         <ion-list>
           <ion-item-sliding>
           {/* class={`main-item${this.cssClass ? this.cssClass : ''}`} lines={this.lines} color={this.color} */}
             <ion-item >
-              <ion-grid>
-              {/* class="ion-align-items-center" */}
-                <ion-row>
+              <ion-grid>              
+                <ion-row class="ion-align-items-center">
                   {this.createPlaceHolders()}
                 </ion-row>
               </ion-grid>
@@ -258,59 +257,59 @@ export class ListItemLayoutDefault {
         </ion-list>
       )
 
-    // if(self.buttons)
-    //   return (
-    //     <ion-list>
-    //       <ion-item-sliding>
-    //       {/* class={`main-item${this.cssClass ? this.cssClass : ''}`} lines={this.lines} color={this.color} */}
-    //         <ion-item >
-    //           <ion-grid>
-    //             <ion-row class="ion-align-items-center">
-    //               {this.createPlaceHolders()}
-    //             </ion-row>
-    //           </ion-grid>
-    //         </ion-item>
-    //         <ion-item-options side="end">
-    //           {this.createButtonPlaceholder()}
-    //         </ion-item-options>
-    //       </ion-item-sliding>
-    //     </ion-list>
-    //   )
+    if(self.buttons)
+      return (
+        <ion-list>
+          <ion-item-sliding>
+          {/* class={`main-item${this.cssClass ? this.cssClass : ''}`} lines={this.lines} color={this.color} */}
+            <ion-item >
+              <ion-grid>
+                <ion-row class="ion-align-items-center">
+                  {this.createPlaceHolders()}
+                </ion-row>
+              </ion-grid>
+            </ion-item>
+            <ion-item-options side="end">
+              {this.createButtonPlaceholder()}
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+      )
 
-    // if(self.start)
-    //   return (
-    //     <ion-list>
-    //       <ion-item-sliding>
-    //       {/* class={`main-item${this.cssClass ? this.cssClass : ''}`} lines={this.lines} color={this.color} */}
-    //         <ion-item >
-    //           <ion-grid>
-    //             <ion-row class="ion-align-items-center">
-    //               {this.createPlaceHolders()}
-    //             </ion-row>
-    //           </ion-grid>
-    //         </ion-item>
-    //         <ion-item-options side="start">
-    //           {this.createStartPlaceholder()}
-    //         </ion-item-options>
-    //       </ion-item-sliding>
-    //     </ion-list>
-    //   )
+    if(self.start)
+      return (
+        <ion-list>
+          <ion-item-sliding>
+          {/* class={`main-item${this.cssClass ? this.cssClass : ''}`} lines={this.lines} color={this.color} */}
+            <ion-item >
+              <ion-grid>
+                <ion-row class="ion-align-items-center">
+                  {this.createPlaceHolders()}
+                </ion-row>
+              </ion-grid>
+            </ion-item>
+            <ion-item-options side="start">
+              {this.createStartPlaceholder()}
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+      )
 
 
-    // return (
-    //   <ion-list>
-    //     <ion-item-sliding>
-    //     {/* class={`main-item${this.cssClass ? this.cssClass : ''}`} lines={this.lines} color={this.color} */}
-    //       <ion-item >
-    //         <ion-grid>
-    //           <ion-row class="ion-align-items-center">
-    //             {this.createPlaceHolders()}
-    //           </ion-row>
-    //         </ion-grid>
-    //       </ion-item>
-    //     </ion-item-sliding>
-    //   </ion-list>
-    // )
+    return (
+      <ion-list>
+        <ion-item-sliding>
+        {/* class={`main-item${this.cssClass ? this.cssClass : ''}`} lines={this.lines} color={this.color} */}
+          <ion-item >
+            <ion-grid>
+              <ion-row class="ion-align-items-center">
+                {this.createPlaceHolders()}
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-item-sliding>
+      </ion-list>
+    )
   }
 
   render() {
