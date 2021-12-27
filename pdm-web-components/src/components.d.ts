@@ -93,6 +93,11 @@ export namespace Components {
         "lines": 'none' | 'inset' | 'full';
         "orientation": "start" | "end";
     }
+    interface ListItemLayoutDefault {
+        "buttons": boolean;
+        "labelConfig": string;
+        "start": boolean;
+    }
     interface ManagedBatch {
         "addBatchString": string;
         "backString": string;
@@ -298,6 +303,7 @@ export namespace Components {
     }
     interface ManagedStockListItem {
         "gtin": string;
+        "isHeader": boolean;
         "refresh": () => Promise<void>;
     }
     interface ManagedStockProductInput {
@@ -359,6 +365,50 @@ export namespace Components {
         "type": string;
     }
     interface PdmIonTable {
+        /**
+          * the querying attribute name so the items can query their own value
+         */
+        "autoLoad": boolean;
+        /**
+          * Shows the search bar or not.
+         */
+        "canQuery"?: boolean;
+        "currentPage"?: number;
+        "iconName"?: string;
+        /**
+          * Option props to be passed to child elements in from a JSON object in value key format only format
+         */
+        "itemProps"?: any;
+        /**
+          * the querying attribute name so the items can query their own value
+         */
+        "itemReference": string;
+        /**
+          * The tag for the item type that the table should use eg: 'li' would create list items
+         */
+        "itemType": string;
+        "itemsPerPage"?: number;
+        "loadingMessage"?: string;
+        /**
+          * sets the name of the manager to use
+         */
+        "manager"?: string;
+        "noContentMessage"?: string;
+        "pageCount"?: number;
+        "paginated"?: boolean;
+        /**
+          * Querying/paginating Params - only available when mode is set by ref
+         */
+        "query"?: string;
+        "refresh": () => Promise<void>;
+        "searchBarPlaceholder"?: string;
+        "sort"?: string;
+        /**
+          * Graphical Params
+         */
+        "tableTitle": string;
+    }
+    interface PdmIonTableDefault {
         /**
           * the querying attribute name so the items can query their own value
          */
@@ -534,6 +584,12 @@ declare global {
         prototype: HTMLListItemLayoutElement;
         new (): HTMLListItemLayoutElement;
     };
+    interface HTMLListItemLayoutDefaultElement extends Components.ListItemLayoutDefault, HTMLStencilElement {
+    }
+    var HTMLListItemLayoutDefaultElement: {
+        prototype: HTMLListItemLayoutDefaultElement;
+        new (): HTMLListItemLayoutDefaultElement;
+    };
     interface HTMLManagedBatchElement extends Components.ManagedBatch, HTMLStencilElement {
     }
     var HTMLManagedBatchElement: {
@@ -684,6 +740,12 @@ declare global {
         prototype: HTMLPdmIonTableElement;
         new (): HTMLPdmIonTableElement;
     };
+    interface HTMLPdmIonTableDefaultElement extends Components.PdmIonTableDefault, HTMLStencilElement {
+    }
+    var HTMLPdmIonTableDefaultElement: {
+        prototype: HTMLPdmIonTableDefaultElement;
+        new (): HTMLPdmIonTableDefaultElement;
+    };
     interface HTMLPdmItemOrganizerElement extends Components.PdmItemOrganizer, HTMLStencilElement {
     }
     var HTMLPdmItemOrganizerElement: {
@@ -759,6 +821,7 @@ declare global {
         "generic-chip": HTMLGenericChipElement;
         "line-stock-manager": HTMLLineStockManagerElement;
         "list-item-layout": HTMLListItemLayoutElement;
+        "list-item-layout-default": HTMLListItemLayoutDefaultElement;
         "managed-batch": HTMLManagedBatchElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-individual-product": HTMLManagedIndividualProductElement;
@@ -784,6 +847,7 @@ declare global {
         "pdm-barcode-scanner-controller": HTMLPdmBarcodeScannerControllerElement;
         "pdm-chartjs": HTMLPdmChartjsElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
+        "pdm-ion-table-default": HTMLPdmIonTableDefaultElement;
         "pdm-item-organizer": HTMLPdmItemOrganizerElement;
         "pdm-search-bar": HTMLPdmSearchBarElement;
         "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
@@ -903,6 +967,11 @@ declare namespace LocalJSX {
         "labelCol"?: number;
         "lines"?: 'none' | 'inset' | 'full';
         "orientation"?: "start" | "end";
+    }
+    interface ListItemLayoutDefault {
+        "buttons"?: boolean;
+        "labelConfig"?: string;
+        "start"?: boolean;
     }
     interface ManagedBatch {
         "addBatchString"?: string;
@@ -1238,6 +1307,7 @@ declare namespace LocalJSX {
     }
     interface ManagedStockListItem {
         "gtin"?: string;
+        "isHeader"?: boolean;
         "onFgt-track-request"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event navigation requests to tabs are made
@@ -1321,6 +1391,53 @@ declare namespace LocalJSX {
         "type"?: string;
     }
     interface PdmIonTable {
+        /**
+          * the querying attribute name so the items can query their own value
+         */
+        "autoLoad"?: boolean;
+        /**
+          * Shows the search bar or not.
+         */
+        "canQuery"?: boolean;
+        "currentPage"?: number;
+        "iconName"?: string;
+        /**
+          * Option props to be passed to child elements in from a JSON object in value key format only format
+         */
+        "itemProps"?: any;
+        /**
+          * the querying attribute name so the items can query their own value
+         */
+        "itemReference"?: string;
+        /**
+          * The tag for the item type that the table should use eg: 'li' would create list items
+         */
+        "itemType"?: string;
+        "itemsPerPage"?: number;
+        "loadingMessage"?: string;
+        /**
+          * sets the name of the manager to use
+         */
+        "manager"?: string;
+        "noContentMessage"?: string;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "pageCount"?: number;
+        "paginated"?: boolean;
+        /**
+          * Querying/paginating Params - only available when mode is set by ref
+         */
+        "query"?: string;
+        "searchBarPlaceholder"?: string;
+        "sort"?: string;
+        /**
+          * Graphical Params
+         */
+        "tableTitle"?: string;
+    }
+    interface PdmIonTableDefault {
         /**
           * the querying attribute name so the items can query their own value
          */
@@ -1472,6 +1589,7 @@ declare namespace LocalJSX {
         "generic-chip": GenericChip;
         "line-stock-manager": LineStockManager;
         "list-item-layout": ListItemLayout;
+        "list-item-layout-default": ListItemLayoutDefault;
         "managed-batch": ManagedBatch;
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-individual-product": ManagedIndividualProduct;
@@ -1497,6 +1615,7 @@ declare namespace LocalJSX {
         "pdm-barcode-scanner-controller": PdmBarcodeScannerController;
         "pdm-chartjs": PdmChartjs;
         "pdm-ion-table": PdmIonTable;
+        "pdm-ion-table-default": PdmIonTableDefault;
         "pdm-item-organizer": PdmItemOrganizer;
         "pdm-search-bar": PdmSearchBar;
         "pdm-ssapp-loader": PdmSsappLoader;
@@ -1522,6 +1641,7 @@ declare module "@stencil/core" {
             "generic-chip": LocalJSX.GenericChip & JSXBase.HTMLAttributes<HTMLGenericChipElement>;
             "line-stock-manager": LocalJSX.LineStockManager & JSXBase.HTMLAttributes<HTMLLineStockManagerElement>;
             "list-item-layout": LocalJSX.ListItemLayout & JSXBase.HTMLAttributes<HTMLListItemLayoutElement>;
+            "list-item-layout-default": LocalJSX.ListItemLayoutDefault & JSXBase.HTMLAttributes<HTMLListItemLayoutDefaultElement>;
             "managed-batch": LocalJSX.ManagedBatch & JSXBase.HTMLAttributes<HTMLManagedBatchElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-individual-product": LocalJSX.ManagedIndividualProduct & JSXBase.HTMLAttributes<HTMLManagedIndividualProductElement>;
@@ -1547,6 +1667,7 @@ declare module "@stencil/core" {
             "pdm-barcode-scanner-controller": LocalJSX.PdmBarcodeScannerController & JSXBase.HTMLAttributes<HTMLPdmBarcodeScannerControllerElement>;
             "pdm-chartjs": LocalJSX.PdmChartjs & JSXBase.HTMLAttributes<HTMLPdmChartjsElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
+            "pdm-ion-table-default": LocalJSX.PdmIonTableDefault & JSXBase.HTMLAttributes<HTMLPdmIonTableDefaultElement>;
             "pdm-item-organizer": LocalJSX.PdmItemOrganizer & JSXBase.HTMLAttributes<HTMLPdmItemOrganizerElement>;
             "pdm-search-bar": LocalJSX.PdmSearchBar & JSXBase.HTMLAttributes<HTMLPdmSearchBarElement>;
             "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;

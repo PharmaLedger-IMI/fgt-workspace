@@ -42,7 +42,6 @@
  - [managed-sale-list-item](../managed-sale-list-item)
  - [managed-shipment-list-item](../managed-shipment-list-item)
  - [managed-shipmentline-list-item](../managed-shipmentline-list-item)
- - [managed-stock-list-item](../managed-stock-list-item)
 
 ### Depends on
 
@@ -61,7 +60,6 @@ graph TD;
   managed-sale-list-item --> pdm-item-organizer
   managed-shipment-list-item --> pdm-item-organizer
   managed-shipmentline-list-item --> pdm-item-organizer
-  managed-stock-list-item --> pdm-item-organizer
   style pdm-item-organizer fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
