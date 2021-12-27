@@ -104,104 +104,100 @@ export class ManagedProductListItem {
     await this.loadStock();
   }
 
-  // addBatches(){
-  //   const self = this;
+  addBatches(){
+    const self = this;
 
-  //   if(self.isHeader){
-  //     return (
-  //       <ion-label class="ion-padding-end" slot="content" color="secondary">
-  //         <ion-row>
-  //           <ion-col size= "auto">
-  //             <div>
-  //               {"Batches"}
-  //             </div>       
-  //           </ion-col>
-  //         </ion-row>
-  //       </ion-label>
-  //     )
-  //   }
+    if(self.isHeader){
+      return (
+            <ion-col slot="content" color="secondary" size= "auto">
+              <div class="ion-padding-end">
+                {"Batches"}
+              </div>       
+            </ion-col>
+      )
+    }
 
-  //   if (!this.stock || !this.batches)
-  //     return (<ion-skeleton-text slot="content" animated></ion-skeleton-text>);
+    if (!this.stock || !this.batches)
+      return (<ion-skeleton-text slot="content" animated></ion-skeleton-text>);
       
-  //   const displayedBatches = this.batches.filter( (batch) => batch.quantity > 0);
+    const displayedBatches = this.batches.filter( (batch) => batch.quantity > 0);
     
-  //   return(
-  //     <pdm-item-organizer slot="content"  component-name="batch-chip"
-  //                         component-props={JSON.stringify(displayedBatches.map(batch => ({
-  //                           "gtin-batch": this.stock.gtin + '-' + batch.batchNumber,
-  //                           "quantity": (new Batch(batch)).getQuantity(),
-  //                           "status": batch.batchStatus.status,
-  //                           "mode": "detail",
-  //                           "loader-type": SUPPORTED_LOADERS.bubblingSmall
-  //                         })))}
-  //                         id-prop="gtin-batch"
-  //                         is-ion-item="false"
-  //                         display-count="2"
-  //                         display-count-divider="326"
-  //                         more-chips-position="start"
-  //                         orientation={this.getOrientation()}
-  //                         onSelectEvent={(evt) => {
-  //                           evt.preventDefault();
-  //                           evt.stopImmediatePropagation();
-  //                           console.log('Selected', evt);
-  //                           const gtinBatch = evt.detail.split('-');
-  //                           self.trackRequestAction.emit(new IndividualProduct({
-  //                             gtin: gtinBatch[0],
-  //                             batchNumber: gtinBatch[1],
-  //                             name: self.stock.name,
-  //                             manufName: self.stock.manufName,
-  //                           }))
-  //                         }}> </pdm-item-organizer>
-  //   )
-  // }
+    return(
+      <pdm-item-organizer slot="content"  component-name="batch-chip"
+                          component-props={JSON.stringify(displayedBatches.map(batch => ({
+                            "gtin-batch": this.stock.gtin + '-' + batch.batchNumber,
+                            "quantity": (new Batch(batch)).getQuantity(),
+                            "status": batch.batchStatus.status,
+                            "mode": "detail",
+                            "loader-type": SUPPORTED_LOADERS.bubblingSmall
+                          })))}
+                          id-prop="gtin-batch"
+                          is-ion-item="false"
+                          display-count="2"
+                          display-count-divider="326"
+                          more-chips-position="start"
+                          orientation={this.getOrientation()}
+                          onSelectEvent={(evt) => {
+                            evt.preventDefault();
+                            evt.stopImmediatePropagation();
+                            console.log('Selected', evt);
+                            const gtinBatch = evt.detail.split('-');
+                            self.trackRequestAction.emit(new IndividualProduct({
+                              gtin: gtinBatch[0],
+                              batchNumber: gtinBatch[1],
+                              name: self.stock.name,
+                              manufName: self.stock.manufName,
+                            }))
+                          }}> </pdm-item-organizer>
+    )
+  }
 
-  // private getOrientation(){
-  //   const layoutEl: ListItemLayout = this.element.querySelector('list-item-layout-default');
-  //   return layoutEl ? layoutEl.orientation : 'end';
+  private getOrientation(){
+    const layoutEl: ListItemLayout = this.element.querySelector('list-item-layout-default');
+    return layoutEl ? layoutEl.orientation : 'end';
 
-  // }
+  }
 
-  // addButtons(){
-  //   let self = this;
+  addButtons(){
+    let self = this;
 
     
-  //   const getButton = function(slot, color, icon, handler){
-  //     return (
-  //       <ion-button slot={slot} color={color} fill="clear" onClick={handler}>
-  //         <ion-icon size="large" slot="icon-only" name={icon}></ion-icon>
-  //       </ion-button>
-  //     )
-  //   }
+    const getButton = function(slot, color, icon, handler){
+      return (
+        <ion-button slot={slot} color={color} fill="clear" onClick={handler}>
+          <ion-icon size="large" slot="icon-only" name={icon}></ion-icon>
+        </ion-button>
+      )
+    }
 
-  //   const getMockButton = function(){
-  //     return (
-  //       <ion-button slot="buttons" color="secondary" fill="clear" disabled="true">
-  //         <ion-icon size="large" slot="icon-only" name="some-name"></ion-icon>
-  //         {/* <ion-icon size="large" slot="icon-only" name="information-circle-sharp"></ion-icon> */}
-  //       </ion-button>
-  //     )
-  //   }
+    const getMockButton = function(){
+      return (
+        <ion-button slot="buttons" color="secondary" fill="clear" disabled="true">
+          <ion-icon size="large" slot="icon-only" name="some-name"></ion-icon>
+          {/* <ion-icon size="large" slot="icon-only" name="information-circle-sharp"></ion-icon> */}
+        </ion-button>
+      )
+    }
 
-  //   if(self.isHeader)
-  //     return[
-  //       getMockButton(),
-  //       getMockButton()
-  //     ]
+    if(self.isHeader)
+      return[
+        getMockButton(),
+        getMockButton()
+      ]
     
-  //   if (!self.stock)
-  //     return (<ion-skeleton-text animated></ion-skeleton-text>);
+    if (!self.stock)
+      return (<ion-skeleton-text animated></ion-skeleton-text>);
     
-  //   return [
-  //     getButton("buttons", "medium", "barcode", (evt) => getBarCodePopOver({
-  //       type: "code128",
-  //       size: "32",
-  //       scale: "6",
-  //       data: self.gtin
-  //     }, evt)),
-  //     getButton("buttons", "medium", "eye", () => self.navigateToTab('tab-batches', {gtin: self.gtin}))
-  //   ]
-  // }
+    return [
+      getButton("buttons", "medium", "barcode", (evt) => getBarCodePopOver({
+        type: "code128",
+        size: "32",
+        scale: "6",
+        data: self.gtin
+      }, evt)),
+      getButton("buttons", "medium", "eye", () => self.navigateToTab('tab-batches', {gtin: self.gtin}))
+    ]
+  }
 
   addGtinLabel(){
     const self = this;
@@ -223,51 +219,50 @@ export class ManagedProductListItem {
     )
   }
 
-  // addQuantityLabel(){
-  //   const self = this;
+  addQuantityLabel(){
+    const self = this;
 
-  //   const getQuantityLabel = function(){
-  //     if(self.isHeader)
-  //       return "QTY"; 
+    const getQuantityLabel = function(){
+      if(self.isHeader)
+        return "QTY"; 
 
-  //     if (!self.stock || !self.stock.batches)
-  //       return (<ion-skeleton-text animated></ion-skeleton-text>)
+      if (!self.stock || !self.stock.batches)
+        return (<ion-skeleton-text animated></ion-skeleton-text>)
       
-  //     return (
-  //         <ion-badge>
-  //           {self.stock.getQuantity()}
-  //         </ion-badge>
-  //     )
-  //   }
+      return (
+          <ion-badge>
+            {self.stock.getQuantity()}
+          </ion-badge>
+      )
+    }
 
-  //   return(
-  //     <ion-label slot="label1" color="secondary">
-  //       {getQuantityLabel()}
-  //     </ion-label>
-  //   )
+    return(
+      <ion-label slot="label1" color="secondary">
+        {getQuantityLabel()}
+      </ion-label>
+    )
+  }
 
-  // }
+  addNameLabel(){
+    const self = this;
 
-  // addNameLabel(){
-  //   const self = this;
+    const getNameLabel = function(){
+      if(self.isHeader)
+        return "Product Name"
 
-  //   const getNameLabel = function(){
-  //     if(self.isHeader)
-  //       return "Product Name"
+      if (!self.stock || !self.stock.name)
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
 
-  //     if (!self.stock || !self.stock.name)
-  //       return (<ion-skeleton-text animated></ion-skeleton-text>);
+      return self.stock.name;
+    }
 
-  //     return self.stock.name;
-  //   }
+    return(
+      <ion-label slot="label2" color="secondary">
+        {getNameLabel()}
+      </ion-label>
+    )
 
-  //   return(
-  //     <ion-label  slot="label2" color="secondary">
-  //       {getNameLabel()}
-  //     </ion-label>
-  //   )
-
-  // }
+  }
 
   generateLabelLayoutConfig(){
     const obj = {
@@ -312,10 +307,10 @@ export class ManagedProductListItem {
         
         <list-item-layout-default buttons={true}  label-col-config={this.generateLabelLayoutConfig()}>
           {this.addGtinLabel()}
-          {/* {this.addQuantityLabel()}
+          {this.addQuantityLabel()}
           {this.addNameLabel()}
           {this.addBatches()}
-          {this.addButtons()} */}
+          {this.addButtons()}
         </list-item-layout-default>
       </Host>
     );
