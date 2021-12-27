@@ -309,8 +309,8 @@ export class ManagedProductListItem {
   render() {
     return (
       <Host>
-        {/* buttons={true} */}
-        <list-item-layout-default  label-col-config={this.generateLabelLayoutConfig()}>
+        
+        <list-item-layout-default buttons={true}  label-col-config={this.generateLabelLayoutConfig()}>
           {this.addGtinLabel()}
           {/* {this.addQuantityLabel()}
           {this.addNameLabel()}
