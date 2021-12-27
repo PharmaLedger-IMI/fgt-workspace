@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type     | Default     |
-| -------- | --------- | ----------- | -------- | ----------- |
-| `gtin`   | `gtin`    |             | `string` | `undefined` |
+| Property   | Attribute   | Description | Type      | Default     |
+| ---------- | ----------- | ----------- | --------- | ----------- |
+| `gtin`     | `gtin`      |             | `string`  | `undefined` |
+| `isHeader` | `is-header` |             | `boolean` | `undefined` |
 
 
 ## Events
@@ -38,15 +39,12 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [pdm-item-organizer](../pdm-item-organizer)
-- [list-item-layout](../list-item-layout)
+- [list-item-layout-default](../list-item-layout-default)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-stock-list-item --> pdm-item-organizer
-  managed-stock-list-item --> list-item-layout
-  pdm-item-organizer --> more-chip
+  managed-stock-list-item --> list-item-layout-default
   style managed-stock-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
