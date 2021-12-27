@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Host, Prop} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Host, Listen, Prop} from '@stencil/core';
 import {HostElement} from "../../decorators";
 
 @Component({
@@ -21,6 +21,11 @@ export class PdmSearchBar {
     this.search.emit(el.value)
   }
 
+  @Listen('ionClear')
+  listenIonClear(){
+    this.search.emit('');
+  }
+
   render() {
     const self = this;
     return (
@@ -33,6 +38,7 @@ export class PdmSearchBar {
                 debounce={1000}
                 placeholder={self.placeholder}
                 search-icon="undefined"
+                enterkeyhint="enter"
               >
               </ion-searchbar>
             </ion-col>
