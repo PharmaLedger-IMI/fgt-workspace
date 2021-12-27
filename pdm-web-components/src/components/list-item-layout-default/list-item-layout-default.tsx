@@ -13,16 +13,13 @@ export class ListItemLayoutDefault {
 
   @Element() element;
 
-  // @Prop({attribute: "class"}) cssClass: string = "ion-margin-bottom";
+  @Prop({attribute: "orientation", mutable: true, reflect: true}) orientation: "start" | "end" = "end";
 
-  // @Prop({attribute: "orientation", mutable: true, reflect: true}) orientation: "start" | "end" = "end";
-
-  // @Prop({attribute: "lines"}) lines: 'none' | 'inset' | 'full' = "none";
+  @Prop({attribute: "lines"}) lines: 'none' | 'inset' | 'full' = "none";
 
   // @Prop({attribute: "color"}) color: string = "light";
 
   @Prop({attribute: "label-col-config"}) labelConfig: string = "";
-  // @Prop({attribute: "content-col-config"}) contentConfig: string = "";
   
   @Prop({attribute: "buttons"}) buttons: boolean = false;
   @Prop({attribute: "start"}) start: boolean = false;
@@ -33,9 +30,6 @@ export class ListItemLayoutDefault {
   private children;
 
   private configL;
-  // private configC;
-
-  // private fixedSizeOrientation = "start";
 
   async componentWillLoad() {
     if (!this.host.isConnected)
@@ -58,20 +52,13 @@ export class ListItemLayoutDefault {
     this.children = { hasChildren: slotted && slotted.length > 0, numberOfChildren: slotted && slotted.length };
   }
 
-  // private getAdjustment(){
-  //   return this.orientation === "start" ? "ion-justify-content-start" : "ion-justify-content-end";
-  // }
+  private getLabelColAjustment(center){
+      return center ? "ion-justify-content-center" : "ion-justify-content-start";
+  }
 
-  // private getLabelColAjustment(isBadge){
-  //     return isBadge ? "ion-justify-content-center ion-margin-vertical" : "ion-justify-content-start ion-margin-vertical";
-  // }
-
-  // private getContentColAjustment(isItemOrganizer){
-  //   if(!isItemOrganizer)
-  //     return this.orientation === "start" ? "ion-justify-content-start ion-margin-vertical" : "ion-justify-content-end ion-margin-vertical";
-
-  //   return this.orientation === "start" ? "ion-justify-content-start" : "ion-justify-content-end";
-  // }
+  private getContentColAjustment(){
+    return this.orientation === "start" ? "ion-justify-content-start" : "ion-justify-content-end";
+  }
 
   createPlaceHolders(){
     const self = this;
@@ -83,7 +70,7 @@ export class ListItemLayoutDefault {
     const labelKeys = Object.keys(self.configL);
 
     labelKeys.forEach(col => {
-      content.push(self.createLabelPlaceholder(placeholderPosition, self.configL[col].sizeByScreen[self.currentBreakpoint]));
+      content.push(self.createLabelPlaceholder(placeholderPosition, self.configL[col].sizeByScreen[self.currentBreakpoint], self.configL[col].center));
       placeholderPosition++;
     })
 
@@ -97,12 +84,6 @@ export class ListItemLayoutDefault {
     content.push(self.createContentPlaceholder(emptySpace))
     return content;
   }
-
-
-
-  
-
-  
 
   /**
    *  Functions to generate placeholders dynamically
@@ -127,13 +108,12 @@ export class ListItemLayoutDefault {
    * @param {Number} size //Represents the size of the col when placeholder doenst have fixed size
    * @returns placeholder slot label(N)(N represents a number);
    */
-  createLabelPlaceholder(placeholderPosition, size){
+  createLabelPlaceholder(placeholderPosition, size, position){
     const placeHolderName = "label" + placeholderPosition;
 
     return(
       <ion-col size={size}>
-         {/* class="flex ion-justify-content-center" */}
-        <div>
+        <div class={`flex ${this.getLabelColAjustment(position)}`}>
           <slot name={placeHolderName}></slot>
         </div>
       </ion-col>
@@ -149,8 +129,7 @@ export class ListItemLayoutDefault {
   createContentPlaceholder(size){
     return(
       <ion-col size={size}>
-        {/* class="flex ion-align-items-center" */}
-        <div>
+        <div class={`flex ion-align-items-center ${this.getContentColAjustment()}`}>
           <slot name="content"></slot>
         </div>
       </ion-col>
@@ -163,8 +142,7 @@ export class ListItemLayoutDefault {
    */
   createButtonPlaceholder(){
     return(
-      // class={`flex ion-justify-content-center ion-margin-vertical`}
-      <div  slot="end">
+      <div class="flex ion-align-items-center" slot="end">
         <slot name="buttons"></slot>
       </div>
     )
@@ -214,12 +192,11 @@ export class ListItemLayoutDefault {
   createBigSizePage(){
     
     return(
-      // class={`main-item${this.cssClass ? this.cssClass : ''}`} lines={this.lines} color={this.color}
-      <ion-item >
+      // class={`main-item${this.cssClass ? this.cssClass : ''}`} color={this.color}
+      <ion-item lines={this.lines}>
         {this.createStartPlaceholder()}
         <ion-grid>
-        {/* class="ion-align-items-center" */}
-          <ion-row>
+          <ion-row class="ion-align-items-center">
             {this.createPlaceHolders()}
           </ion-row>
         </ion-grid>
@@ -239,8 +216,8 @@ export class ListItemLayoutDefault {
       return (
         <ion-list>
           <ion-item-sliding>
-          {/* class={`main-item${this.cssClass ? this.cssClass : ''}`} lines={this.lines} color={this.color} */}
-            <ion-item >
+          {/* class={`main-item${this.cssClass ? this.cssClass : ''}`} color={this.color} */}
+            <ion-item lines={this.lines}>
               <ion-grid>              
                 <ion-row class="ion-align-items-center">
                   {this.createPlaceHolders()}
@@ -262,7 +239,7 @@ export class ListItemLayoutDefault {
         <ion-list>
           <ion-item-sliding>
           {/* class={`main-item${this.cssClass ? this.cssClass : ''}`} lines={this.lines} color={this.color} */}
-            <ion-item >
+            <ion-item lines={this.lines}>
               <ion-grid>
                 <ion-row class="ion-align-items-center">
                   {this.createPlaceHolders()}
@@ -281,7 +258,7 @@ export class ListItemLayoutDefault {
         <ion-list>
           <ion-item-sliding>
           {/* class={`main-item${this.cssClass ? this.cssClass : ''}`} lines={this.lines} color={this.color} */}
-            <ion-item >
+            <ion-item lines={this.lines}>
               <ion-grid>
                 <ion-row class="ion-align-items-center">
                   {this.createPlaceHolders()}
@@ -300,7 +277,7 @@ export class ListItemLayoutDefault {
       <ion-list>
         <ion-item-sliding>
         {/* class={`main-item${this.cssClass ? this.cssClass : ''}`} lines={this.lines} color={this.color} */}
-          <ion-item >
+          <ion-item lines={this.lines}>
             <ion-grid>
               <ion-row class="ion-align-items-center">
                 {this.createPlaceHolders()}

@@ -7,11 +7,13 @@
 
 ## Properties
 
-| Property      | Attribute          | Description | Type      | Default |
-| ------------- | ------------------ | ----------- | --------- | ------- |
-| `buttons`     | `buttons`          |             | `boolean` | `false` |
-| `labelConfig` | `label-col-config` |             | `string`  | `""`    |
-| `start`       | `start`            |             | `boolean` | `false` |
+| Property      | Attribute          | Description | Type                          | Default  |
+| ------------- | ------------------ | ----------- | ----------------------------- | -------- |
+| `buttons`     | `buttons`          |             | `boolean`                     | `false`  |
+| `labelConfig` | `label-col-config` |             | `string`                      | `""`     |
+| `lines`       | `lines`            |             | `"full" \| "inset" \| "none"` | `"none"` |
+| `orientation` | `orientation`      |             | `"end" \| "start"`            | `"end"`  |
+| `start`       | `start`            |             | `boolean`                     | `false`  |
 
 
 ## Dependencies
