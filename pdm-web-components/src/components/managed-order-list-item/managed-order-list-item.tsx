@@ -65,6 +65,8 @@ export class ManagedOrderListItem {
 
   @Prop({attribute: 'type'}) type?: string = ORDER_TYPE.ISSUED;
 
+  @Prop() isHeader: boolean;
+
   private orderManager: WebResolver = undefined;
 
   @State() order: typeof Order = undefined;
@@ -81,13 +83,15 @@ export class ManagedOrderListItem {
     let self = this;
     if (!self.orderManager)
       return;
-    self.orderManager.getOne(self.orderId, true, (err, order) => {
-      if (err){
-        self.sendError(`Could not get Order with id ${self.orderId}`, err);
-        return;
-      }
-      self.order = {...order};
-    });
+      
+    if(!self.isHeader)
+      self.orderManager.getOne(self.orderId, true, (err, order) => {
+        if (err){
+          self.sendError(`Could not get Order with id ${self.orderId}`, err);
+          return;
+        }
+        self.order = {...order};
+      });
   }
 
   @Watch('orderId')
@@ -97,56 +101,25 @@ export class ManagedOrderListItem {
     await this.loadOrders();
   }
 
-  addLabel(){
+  addOrderLines() {
     const self = this;
 
-    const getOrderIdLabel = function(){
-      if (!self.order || !self.order.orderId)
-        return (<ion-skeleton-text animated></ion-skeleton-text>)
-      return self.order.orderId;
-    }
-
-    const getRequesterIdLabel = function(){
-      if (!self.order || !self.order.requesterId)
-        return (<ion-skeleton-text animated></ion-skeleton-text>)
-      return self.order.requesterId;
-    }
-
-    const buildLabelElement = (props: any) =>{
+    if(self.isHeader){
       return (
-        <ion-col className="ion-padding-start" size="auto">
-          <ion-label color="secondary">
-            {props}
-          </ion-label>
-        </ion-col>
+            <ion-col slot="content" color="secondary" size= "auto">
+              <ion-label color="secondary">
+                {"Order Lines"}
+              </ion-label>       
+            </ion-col>
       )
     }
 
-    const getStatusBadge = function(){
-      if (!self.order)
-        return;
-      return (
-        <ion-col className="ion-padding-start" size="auto">
-          <status-badge status={self.order.status.status}></status-badge>
-        </ion-col>
-      )
-    }
-
-    return(
-      <ion-row  slot="label" className="ion-align-items-center">
-        {buildLabelElement(getOrderIdLabel())}
-        {buildLabelElement(getRequesterIdLabel())}
-        {getStatusBadge()}
-      </ion-row>
-    )
-  }
-
-  addOrderLines() {
-    if (!this.order || !this.order.orderLines)
+    if(!self.order || !self.order.orderLines)
       return (<ion-skeleton-text slot="content" animated></ion-skeleton-text>);
+    
     return(
       <pdm-item-organizer slot="content" component-name="managed-orderline-stock-chip"
-                          component-props={JSON.stringify(this.order.orderLines.map(ol => ({
+                          component-props={JSON.stringify(self.order.orderLines.map(ol => ({
                             "gtin": ol.gtin,
                             "quantity": ol.quantity,
                             "mode": "detail"
@@ -155,7 +128,7 @@ export class ManagedOrderListItem {
                           is-ion-item="false"
                           display-count="3"
                           display-count-divider="200"
-                          orientation={this.getOrientation()}
+                          orientation={self.getOrientation()}
                           onSelectEvent={(evt) => {
                             evt.preventDefault();
                             evt.stopImmediatePropagation();
@@ -171,9 +144,7 @@ export class ManagedOrderListItem {
 
   addButtons(){
     let self = this;
-    if (!self.order)
-      return (<ion-skeleton-text animated></ion-skeleton-text>);
-
+    
     const getButton = function(slot, color, icon, handler){
       return (
         <ion-button slot={slot} color={color} fill="clear" onClick={handler}>
@@ -181,10 +152,22 @@ export class ManagedOrderListItem {
         </ion-button>
       )
     }
+    const getMockButton = function(iconName, disabled){
+      return (
+        <ion-button slot="buttons" color={disabled ? "danger":"secondary"} fill="clear" disabled="true">
+          <ion-icon size="large" slot="icon-only" name={iconName ? iconName : "some-name"}></ion-icon>
+          {/* <ion-icon size="large" slot="icon-only" name="information-circle-sharp"></ion-icon> */}
+        </ion-button>
+      )
+    }
 
     const getProcessOrderButton = function(){
       if (self.type === ORDER_TYPE.ISSUED)
         return;
+
+      if(self.isHeader)
+        return getMockButton("", false);
+      
       return getButton("buttons", "medium", "cog",
         () => self.navigateToTab('tab-shipment', {
           mode: ORDER_TYPE.ISSUED,
@@ -193,22 +176,41 @@ export class ManagedOrderListItem {
     }
 
     const getViewShipmentButton = function(){
-      if (self.type !== ORDER_TYPE.ISSUED || !self.order || !self.order.shipmentId)
+      if(self.type === ORDER_TYPE.RECEIVED)
         return;
+      
+      if(self.isHeader)
+        return getMockButton("", false);
+      
+      if (!self.order.shipmentId || !self.order)
+        return getMockButton("subway", true);
+      
       return getButton("buttons", "medium", "subway",
-        () => self.navigateToTab('tab-shipment', {
-          mode: ORDER_TYPE.RECEIVED,
-          shipment: {
-            shipmentId: self.order.shipmentId,
-            senderId: self.order.senderId
-          }
-        }));
+      () => self.navigateToTab('tab-shipment', {
+        mode: ORDER_TYPE.RECEIVED,
+        shipment: {
+          shipmentId: self.order.shipmentId,
+          senderId: self.order.senderId
+        }
+      }));
     }
+    
+    if(self.isHeader)
+    return[
+      getMockButton("", false),
+      getMockButton("", false),
+      getProcessOrderButton(),
+      getViewShipmentButton()
+    ]
+    
+    if (!self.order)
+      return (<ion-skeleton-text animated></ion-skeleton-text>);
 
     const props = {
       mode: self.type,
       order: self.order
     };
+
 
     return [
       getButton("buttons", "medium", "barcode", (evt) => getBarCodePopOver({
@@ -223,14 +225,119 @@ export class ManagedOrderListItem {
     ]
   }
 
+  addOrderIDLabel(){
+    const self = this;
+
+    const getOrderIdLabel = function(){
+      if(self.isHeader)
+        return "Order ID";
+
+      if (!self.order || !self.order.orderId)
+        return (<ion-skeleton-text animated></ion-skeleton-text>)
+
+      return self.order.orderId;
+    }
+
+    return(
+      <ion-label slot="label0" color="secondary">
+          {getOrderIdLabel()}
+      </ion-label>
+    )
+  }
+
+  addRequesterLabel(){
+    const self = this;
+
+    const getRequesterIdLabel = function(){
+      if(self.isHeader) 
+        return (self.type === ORDER_TYPE.ISSUED) ? "Sender ID" :"Requester ID";
+      
+
+      if (!self.order || !self.order.requesterId)
+        return (<ion-skeleton-text animated></ion-skeleton-text>)
+
+   
+      return (self.type === ORDER_TYPE.ISSUED) ?  self.order.senderId : self.order.requesterId;
+
+    }
+
+    return(
+      <ion-label slot="label1" color="secondary">
+          {getRequesterIdLabel()}
+      </ion-label>
+    )
+  }
+
+  addStatusLabel(){
+    const self = this;
+
+    const getStatusBadge = function(){
+
+      if(self.isHeader)
+        return "Status";
+
+      if (!self.order)
+        return (<ion-skeleton-text animated></ion-skeleton-text>)
+
+      return (   
+          <status-badge status={self.order.status.status}></status-badge>
+      )
+    }
+
+    return(
+      <ion-label slot="label2" color="secondary">
+        {getStatusBadge()}
+      </ion-label>
+    )
+  }
+
+  generateLabelLayoutConfig(){
+    const obj = {
+      0 : {
+        sizeByScreen: {
+          "xs": 4,
+          "sm": 3,
+          "md": 3,
+          "lg": 3,
+          "xl":2
+        },
+        center: false,
+      },
+      1 : {
+        sizeByScreen: {
+          "xs": 3,
+          "sm": 3,
+          "md": 2,
+          "lg": 3,
+          "xl":2
+        },
+        center: false,
+      },
+      2 : {
+        sizeByScreen: {
+          "xs": 3,
+          "sm": 3,
+          "md": 2,
+          "lg": 2,
+          "xl":2
+        },
+        center: true,
+      }    
+    }
+
+    return JSON.stringify(obj);
+  }
+
   render() {
     return (
       <Host>
-        <list-item-layout>
-          {this.addLabel()}
+        <list-item-layout-default buttons={true}  label-col-config={this.generateLabelLayoutConfig()}>
+          {this.addOrderIDLabel()}
+          {this.addRequesterLabel()}
+          {this.addStatusLabel()}
           {this.addOrderLines()}
           {this.addButtons()}
-        </list-item-layout>
+        </list-item-layout-default>
       </Host>
     );
   }
