@@ -23,7 +23,7 @@ export default class IssuedShipmentsController extends LocalizedController {
             console.log(evt);
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            self.element.querySelector('pdm-ion-table').refresh()
+            self.element.querySelector('pdm-ion-table-default').refresh()
         }, {capture: true});
 
         // pressing "NEW" to create a new Issued Order
