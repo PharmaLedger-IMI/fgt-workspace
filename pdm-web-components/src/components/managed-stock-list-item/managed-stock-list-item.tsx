@@ -14,7 +14,7 @@ const {Stock, Batch, IndividualProduct} = wizard.Model;
   styleUrl: 'managed-stock-list-item.css',
   shadow: false,
 })
-export class ManagedProductListItem {
+export class ManagedStockListItem {
 
   @HostElement() host: HTMLElement;
 
@@ -161,7 +161,6 @@ export class ManagedProductListItem {
   addButtons(){
     let self = this;
 
-    
     const getButton = function(slot, color, icon, handler){
       return (
         <ion-button slot={slot} color={color} fill="clear" onClick={handler}>
@@ -316,3 +315,4 @@ export class ManagedProductListItem {
     );
   }
 }
+
