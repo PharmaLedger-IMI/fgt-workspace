@@ -16,7 +16,7 @@ export default class IssuedOrdersController extends LocalizedController {
 
         const participantManager = wizard.Managers.getParticipantManager();
         this.issuedOrderManager = wizard.Managers.getIssuedOrderManager(participantManager);
-        this.table = this.element.querySelector('pdm-ion-table');
+        this.table = this.element.querySelector('pdm-ion-table-default');
         HistoryNavigator.registerTab({
             'tab-issued-orders': this.translate('title')
         })
