@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property    | Attribute    | Description | Type     | Default     |
-| ----------- | ------------ | ----------- | -------- | ----------- |
-| `gtinBatch` | `gtin-batch` |             | `string` | `undefined` |
+| Property    | Attribute    | Description | Type      | Default     |
+| ----------- | ------------ | ----------- | --------- | ----------- |
+| `gtinBatch` | `gtin-batch` |             | `string`  | `undefined` |
+| `isHeader`  | `is-header`  |             | `boolean` | `undefined` |
 
 
 ## Events
@@ -38,18 +39,18 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [status-badge](../status-badge)
 - [multi-spinner](../multi-spinner)
 - [pdm-item-organizer](../pdm-item-organizer)
-- [list-item-layout](../list-item-layout)
+- [status-badge](../status-badge)
+- [list-item-layout-default](../list-item-layout-default)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-batch-list-item --> status-badge
   managed-batch-list-item --> multi-spinner
   managed-batch-list-item --> pdm-item-organizer
-  managed-batch-list-item --> list-item-layout
+  managed-batch-list-item --> status-badge
+  managed-batch-list-item --> list-item-layout-default
   pdm-item-organizer --> more-chip
   style managed-batch-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```

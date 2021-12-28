@@ -67,6 +67,7 @@ export class ManagedBatchListItem {
   }
 
   @Prop({attribute: 'gtin-batch'}) gtinBatch: string;
+  @Prop() isHeader: boolean;
 
   private batchManager: WebManager = undefined;
 
@@ -85,14 +86,15 @@ export class ManagedBatchListItem {
     let self = this;
     if (!self.batchManager)
       return;
-    self.batchManager.getOne(this.gtinBatch, true, (err, batch) => {
-      if (err){
-        self.sendError(`Could not get Batch with code ${self.gtinBatch}`, err);
-        return;
-      }
-      this.batch = new Batch(batch);
-      this.serialNumbers = batch.serialNumbers;
-    });
+    if(!self.isHeader)
+      self.batchManager.getOne(self.gtinBatch, true, (err, batch) => {
+        if (err){
+          self.sendError(`Could not get Batch with code ${self.gtinBatch}`, err);
+          return;
+        }
+        self.batch = new Batch(batch);
+        self.serialNumbers = batch.serialNumbers;
+      });
   }
 
   @Watch('gtinBatch')
@@ -121,40 +123,22 @@ export class ManagedBatchListItem {
     })
   }
 
-  addLabel(){
+  addSerialsNumbers(){
     const self = this;
 
-    const getBatchNumberLabel = function(){
-      const batchNumber = self.getGtinAndBatchNumber().batchNumber;
-      if (!self.gtinBatch)
-        return (<ion-skeleton-text animated></ion-skeleton-text>)
-      return batchNumber
+    if(self.isHeader){
+      return (
+            <ion-col slot="content" color="secondary" size= "auto">
+              <div class="ion-padding-end">
+                {"Serial Nº"}
+              </div>       
+            </ion-col>
+      )
     }
 
-    const getExpiryLabel = function(){
-      if (!self.batch || !self.batch.expiry)
-        return (<ion-skeleton-text animated></ion-skeleton-text>)
-      return self.batch.expiry.toLocaleDateString();
-    }
-
-    const getStatusBadge = function(){
-      if (self.batch && self.batch.batchStatus)
-        return (
-          <status-badge slot="badges" status={self.batch.batchStatus.status}></status-badge>
-        )
-    }
-
-    return(
-      <ion-label slot="label" color="secondary">
-        {getBatchNumberLabel()}
-        {getStatusBadge()}
-        <span class="ion-padding-start">{getExpiryLabel()}</span>
-      </ion-label>)
-  }
-
-  addSerialsNumbers(){
     if (!this.serialNumbers || !this.batch)
       return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
+
     return(
       <pdm-item-organizer slot="content" component-name="generic-chip"
                           component-props={JSON.stringify(this.batch.serialNumbers.map(serial => ({
@@ -169,7 +153,7 @@ export class ManagedBatchListItem {
   }
 
   private getOrientation(){
-    const layoutEl: ListItemLayout = this.element.querySelector('list-item-layout');
+    const layoutEl: ListItemLayout = this.element.querySelector('list-item-layout-default');
     return layoutEl ? layoutEl.orientation : 'end';
 
   }
@@ -186,6 +170,22 @@ export class ManagedBatchListItem {
         </ion-button>
       )
     }
+
+    const getMockButton = function(){
+      return (
+        <ion-button slot="buttons" color="secondary" fill="clear" disabled="true">
+          <ion-icon size="large" slot="icon-only" name="some-name"></ion-icon>
+          {/* <ion-icon size="large" slot="icon-only" name="information-circle-sharp"></ion-icon> */}
+        </ion-button>
+      )
+    }
+
+    if(self.isHeader)
+      return[
+        getMockButton(),
+        getMockButton(),
+        getMockButton()
+      ]
 
     return [
       getButton("buttons", "medium", "barcode", (evt) => getBarCodePopOver({
@@ -207,14 +207,117 @@ export class ManagedBatchListItem {
     ]
   }
 
+  addBatchNumberLabel(){
+    const self = this;
+
+    const getBatchNumberLabel = function(){
+      if(self.isHeader)
+        return "Batch Nº";
+
+      const batchNumber = self.getGtinAndBatchNumber().batchNumber;
+
+      if (!self.gtinBatch)
+        return (<ion-skeleton-text animated></ion-skeleton-text>)
+
+      return batchNumber
+    }
+
+    return(
+      <ion-label slot="label0" color="secondary">
+          {getBatchNumberLabel()}
+      </ion-label>
+    )
+  }
+
+  addStatusLabel(){
+    const self = this;
+
+    const getStatusBadge = function(){
+      if(self.isHeader)
+        return "Status";
+
+      if(!self.batch || !self.batch.batchStatus)
+        return (<ion-skeleton-text animated></ion-skeleton-text>)
+
+      return (
+        <status-badge slot="badges" status={self.batch.batchStatus.status}></status-badge>
+      )
+    }
+
+    return(
+      <ion-label slot="label1" color="secondary">
+        {getStatusBadge()}
+      </ion-label>
+    )
+  }
+
+  addExpiryLabel(){
+    const self = this;
+
+    const getExpiryLabel = function(){
+      if(self.isHeader)
+        return "Expiry"
+
+      if (!self.batch || !self.batch.expiry)
+        return (<ion-skeleton-text animated></ion-skeleton-text>)
+
+      return self.batch.expiry.toLocaleDateString();
+    }
+
+    return(
+      <ion-label slot="label2" color="secondary">
+        {getExpiryLabel()}
+      </ion-label>
+    )
+  }
+
+  generateLabelLayoutConfig(){
+    const obj = {
+      0 : {
+        sizeByScreen: {
+          "xs": 2,
+          "sm": 2,
+          "md": 2,
+          "lg": 2,
+          "xl":1
+        },
+        center: false,
+      },
+      1 : {
+        sizeByScreen: {
+          "xs": 4,
+          "sm": 3,
+          "md": 3,
+          "lg": 3,
+          "xl":2
+        },
+        center: true,
+      },
+      2 : {
+        sizeByScreen: {
+          "xs": 2,
+          "sm": 2,
+          "md": 2,
+          "lg": 2,
+          "xl":1
+        },
+        center: false,
+      }    
+    }
+
+    return JSON.stringify(obj);
+  }
+
   render() {
     return (
       <Host>
-        <list-item-layout>
-          {this.addLabel()}
+        <list-item-layout-default buttons={true}  label-col-config={this.generateLabelLayoutConfig()}>
+          {this.addBatchNumberLabel()}
+          {this.addStatusLabel()}
+          {this.addExpiryLabel()}
           {this.addSerialsNumbers()}
           {this.addButtons()}
-        </list-item-layout>
+        </list-item-layout-default>
       </Host>
     );
   }
