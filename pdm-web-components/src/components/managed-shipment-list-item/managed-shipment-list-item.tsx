@@ -107,9 +107,9 @@ export class ManagedShipmentListItem{
     if(self.isHeader){
       return (
         <ion-col slot="content" color="secondary" size= "auto">
-          <div>
+          <ion-label color="secondary">
             {"Shipment Lines"}
-          </div>       
+          </ion-label>       
         </ion-col>
       )    
     }

@@ -129,9 +129,9 @@ export class ManagedBatchListItem {
     if(self.isHeader){
       return (
             <ion-col slot="content" color="secondary" size= "auto">
-              <div>
+              <ion-label color="secondary">
                 {"Serial Nº"}
-              </div>       
+              </ion-label>       
             </ion-col>
       )
     }

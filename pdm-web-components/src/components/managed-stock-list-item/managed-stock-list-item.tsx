@@ -110,9 +110,9 @@ export class ManagedProductListItem {
     if(self.isHeader){
       return (
             <ion-col slot="content" color="secondary" size= "auto">
-              <div>
+              <ion-label color="secondary">
                 {"Batches"}
-              </div>       
+              </ion-label>       
             </ion-col>
       )
     }
