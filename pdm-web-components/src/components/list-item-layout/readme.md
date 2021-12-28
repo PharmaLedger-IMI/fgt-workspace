@@ -20,7 +20,6 @@
 
 ### Used by
 
- - [managed-individual-product-list-item](../managed-individual-product-list-item)
  - [managed-notifications-list-item](../managed-notifications-list-item)
  - [managed-order-list-item](../managed-order-list-item)
  - [managed-sale-list-item](../managed-sale-list-item)
@@ -29,7 +28,6 @@
 ### Graph
 ```mermaid
 graph TD;
-  managed-individual-product-list-item --> list-item-layout
   managed-notifications-list-item --> list-item-layout
   managed-order-list-item --> list-item-layout
   managed-sale-list-item --> list-item-layout

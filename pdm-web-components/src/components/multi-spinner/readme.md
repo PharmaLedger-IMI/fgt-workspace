@@ -19,7 +19,6 @@
  - [batch-chip](../batch-chip)
  - [managed-batch](../managed-batch)
  - [managed-batch-list-item](../managed-batch-list-item)
- - [managed-individual-product-list-item](../managed-individual-product-list-item)
  - [managed-product-list-item](../managed-product-list-item)
  - [managed-shipmentline-list-item](../managed-shipmentline-list-item)
  - [pdm-ion-table](../pdm-ion-table)
@@ -33,7 +32,6 @@ graph TD;
   batch-chip --> multi-spinner
   managed-batch --> multi-spinner
   managed-batch-list-item --> multi-spinner
-  managed-individual-product-list-item --> multi-spinner
   managed-product-list-item --> multi-spinner
   managed-shipmentline-list-item --> multi-spinner
   pdm-ion-table --> multi-spinner

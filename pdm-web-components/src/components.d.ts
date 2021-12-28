@@ -145,6 +145,7 @@ export namespace Components {
     }
     interface ManagedIndividualProductListItem {
         "gtinBatchSerial": string;
+        "isHeader": boolean;
         "refresh": (newValue?: any) => Promise<void>;
         "showCloseButton": boolean;
         "showTrackButton": boolean;
@@ -1058,6 +1059,7 @@ declare namespace LocalJSX {
     }
     interface ManagedIndividualProductListItem {
         "gtinBatchSerial"?: string;
+        "isHeader"?: boolean;
         /**
           * Through this event tracking requests are made
          */

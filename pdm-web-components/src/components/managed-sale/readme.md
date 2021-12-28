@@ -79,9 +79,9 @@ graph TD;
   managed-sale --> create-manage-view-layout
   managed-sale --> pdm-barcode-scanner-controller
   managed-stock-product-input --> managed-individual-product-list-item
-  managed-individual-product-list-item --> multi-spinner
   managed-individual-product-list-item --> generic-chip
-  managed-individual-product-list-item --> list-item-layout
+  managed-individual-product-list-item --> status-badge
+  managed-individual-product-list-item --> list-item-layout-default
   style managed-sale fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

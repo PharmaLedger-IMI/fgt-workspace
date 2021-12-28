@@ -55,9 +55,9 @@ Type: `Promise<void>`
 ```mermaid
 graph TD;
   managed-stock-product-input --> managed-individual-product-list-item
-  managed-individual-product-list-item --> multi-spinner
   managed-individual-product-list-item --> generic-chip
-  managed-individual-product-list-item --> list-item-layout
+  managed-individual-product-list-item --> status-badge
+  managed-individual-product-list-item --> list-item-layout-default
   managed-sale --> managed-stock-product-input
   style managed-stock-product-input fill:#f9f,stroke:#333,stroke-width:4px
 ```
