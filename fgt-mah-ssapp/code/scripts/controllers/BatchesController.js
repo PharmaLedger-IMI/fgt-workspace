@@ -48,7 +48,7 @@ export default class BatchesController extends LocalizedController {
                 if (self.model.query !== "")
                     self.model.query = "";
             }
-            self.element.querySelector('pdm-ion-table').refresh();
+            self.element.querySelector('pdm-ion-table-default').refresh();
         }, {capture: true});
     }
 
