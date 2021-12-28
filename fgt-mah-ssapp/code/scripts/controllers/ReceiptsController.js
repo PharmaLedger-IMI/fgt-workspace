@@ -15,7 +15,7 @@ export default class ReceiptsController extends LocalizedController {
         const participantManager = wizard.Managers.getParticipantManager();
         this.receiptManager = wizard.Managers.getReceiptManager(participantManager);
         this.receiptManager.bindController(this);
-        this.table = this.element.querySelector('pdm-ion-table');
+        this.table = this.element.querySelector('pdm-ion-table-default');
 
         let self = this;
         // the HomeController takes care of sending refresh events for each tab.
