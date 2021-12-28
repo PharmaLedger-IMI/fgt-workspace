@@ -65,6 +65,8 @@ export class ManagedShipmentListItem{
 
   @Prop({attribute: 'type'}) type?: string = SHIPMENT_TYPE.ISSUED;
 
+  @Prop() isHeader: boolean;
+
   @State() shipment: typeof Shipment = undefined;
 
   private manager: WebResolver = undefined;
@@ -79,15 +81,18 @@ export class ManagedShipmentListItem{
 
   async loadShipment(){
     let self = this;
+
     if (!self.manager)
       return;
-    self.manager.getOne(self.shipmentId, true, (err, shipment) => {
-      if (err){
-        self.sendError(`Could not get Shipment with id ${self.shipmentId}`, err);
-        return;
-      }
-      self.shipment = shipment;
-    });
+
+    if(!self.isHeader)
+      self.manager.getOne(self.shipmentId, true, (err, shipment) => {
+        if (err){
+          self.sendError(`Could not get Shipment with id ${self.shipmentId}`, err);
+          return;
+        }
+        self.shipment = shipment;
+      });
   }
 
   @Watch('shipmentId')
@@ -96,59 +101,25 @@ export class ManagedShipmentListItem{
     await this.loadShipment();
   }
 
-  private addLabel(){
+  private addShipmentLines() {
     const self = this;
 
-    const getShipmentId = function(){
-      if (!self.shipment || !self.shipment.shipmentId)
-        return (<ion-skeleton-text animated></ion-skeleton-text>)
-      return self.shipment.shipmentId;
-    }
-
-    const getIdLabel = function(){
-      if (!self.shipment)
-        return (<ion-skeleton-text animated></ion-skeleton-text>);
-      const attribute = self.shipment[self.type === SHIPMENT_TYPE.ISSUED ? 'requesterId' : 'senderId'];
-      if (!attribute)
-        return (<ion-skeleton-text animated></ion-skeleton-text>)
-      return attribute;
-    }
-
-    const buildLabelElement = (props: any) =>{
+    if(self.isHeader){
       return (
-        <ion-col className="ion-padding-start" size="auto">
-          <ion-label color="secondary">
-            {props}
-          </ion-label>
+        <ion-col slot="content" color="secondary" size= "auto">
+          <div>
+            {"Shipment Lines"}
+          </div>       
         </ion-col>
-      )
+      )    
     }
 
-    const getStatusBadge = function(){
-      if (!self.shipment)
-        return;
-      return (
-        <ion-col className="ion-padding-start" size="auto">
-          <status-badge status={self.shipment.status.status}></status-badge>
-        </ion-col>
-      )
-    }
-
-    return(
-      <ion-row  slot="label" className="ion-align-items-center">
-        {buildLabelElement(getShipmentId())}
-        {buildLabelElement(getIdLabel())}
-        {getStatusBadge()}
-      </ion-row>
-    )
-  }
-
-  private addShipmentLines() {
-    if (!this.shipment || !this.shipment.shipmentLines)
+    if (!self.shipment || !self.shipment.shipmentLines)
       return (<ion-skeleton-text slot="content" animated></ion-skeleton-text>);
+
     return(
       <pdm-item-organizer slot="content"  component-name="managed-orderline-stock-chip"
-                          component-props={JSON.stringify(this.shipment.shipmentLines.map(ol => ({
+                          component-props={JSON.stringify(self.shipment.shipmentLines.map(ol => ({
                             "gtin": ol.gtin,
                             "quantity": ol.quantity,
                             "mode": "detail"
@@ -167,16 +138,13 @@ export class ManagedShipmentListItem{
   }
 
   private getOrientation(){
-    const layoutEl: ListItemLayout = this.element.querySelector('list-item-layout');
+    const layoutEl: ListItemLayout = this.element.querySelector('list-item-layout-default');
     return layoutEl ? layoutEl.orientation : 'end';
-
   }
 
   private addButtons(){
     let self = this;
-    if (!self.shipment)
-      return (<ion-skeleton-text animated></ion-skeleton-text>);
-
+    
     const getButton = function(slot, color, icon, handler){
       return (
         <ion-button slot={slot} color={color} fill="clear" onClick={handler}>
@@ -185,24 +153,143 @@ export class ManagedShipmentListItem{
       )
     }
 
+    const getMockButton = function(){
+      return (
+        <ion-button slot="buttons" color="secondary" fill="clear" disabled="true">
+          <ion-icon size="large" slot="icon-only" name="some-name"></ion-icon>
+          {/* <ion-icon size="large" slot="icon-only" name="information-circle-sharp"></ion-icon> */}
+        </ion-button>
+      )
+    }
+
+    if(self.isHeader)
+      return  [
+        getMockButton(),
+      ]
+
+    if (!self.shipment)
+      return (<ion-skeleton-text animated></ion-skeleton-text>);
+
     return [
       getButton("buttons", "medium", self.type === SHIPMENT_TYPE.ISSUED ? "cog" : "eye", () => self.navigateToTab('tab-shipment', {
         shipment: self.shipment,
         mode: self.type
       }))
     ]
+  }
 
+  addShipmentIDLabel(){
+    const self = this;
+
+    const getShipmentIdLabel = function(){
+      if(self.isHeader)
+        return "Shipment ID";
+
+      if (!self.shipment || !self.shipment.shipmentId)
+        return (<ion-skeleton-text animated></ion-skeleton-text>)
+
+      return self.shipment.shipmentId;
+    }
+
+    return(
+      <ion-label slot="label0" color="secondary">
+          {getShipmentIdLabel()}
+      </ion-label>
+    )
+  }
+
+  addDestinationLabel(){
+    const self = this;
+
+    const getIdLabel = function(){
+      
+      if(self.isHeader)
+        return (self.type === SHIPMENT_TYPE.ISSUED) ? "Requester ID" : "Sender ID";
+
+      if (!self.shipment)
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
+
+      return self.shipment[self.type === SHIPMENT_TYPE.ISSUED ? 'requesterId' : 'senderId'];
+    }
+
+    return(
+      <ion-label slot="label1" color="secondary">
+          {getIdLabel()}
+      </ion-label>
+    )
+  }
+
+  addStatusLabel(){
+    const self = this;
+
+    const getStatusBadge = function(){
+      if(self.isHeader)
+        return "Status";
+      
+      if (!self.shipment)
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
+
+      return (
+        <status-badge status={self.shipment.status.status}></status-badge>
+      )
+    }
+
+    return(
+      <ion-label slot="label2" color="secondary">
+        {getStatusBadge()}
+      </ion-label>
+    )
+  }
+
+  generateLabelLayoutConfig(){
+    const obj = {
+      0 : {
+        sizeByScreen: {
+          "xs": 3,
+          "sm": 3,
+          "md": 3,
+          "lg": 2,
+          "xl":2
+        },
+        center: false,
+      },
+      1 : {
+        sizeByScreen: {
+          "xs": 3,
+          "sm": 3,
+          "md": 3,
+          "lg": 2,
+          "xl":2
+        },
+        center: false,
+      },
+      2 : {
+        sizeByScreen: {
+          "xs": 3,
+          "sm": 3,
+          "md": 2,
+          "lg": 2,
+          "xl":2
+        },
+        center: true,
+      }    
+    }
+
+    return JSON.stringify(obj);
   }
 
   render() {
     return (
       <Host>
-        <list-item-layout>
-          {this.addLabel()}
+        <list-item-layout-default buttons={true}  label-col-config={this.generateLabelLayoutConfig()}>
+          {this.addShipmentIDLabel()}
+          {this.addDestinationLabel()}
+          {this.addStatusLabel()}
           {this.addShipmentLines()}
           {this.addButtons()}
-        </list-item-layout>
+        </list-item-layout-default>
       </Host>
     );
   }
 }
+

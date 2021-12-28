@@ -287,6 +287,7 @@ export namespace Components {
         "updateDirectory": () => Promise<void>;
     }
     interface ManagedShipmentListItem {
+        "isHeader": boolean;
         "refresh": () => Promise<void>;
         "shipmentId": string;
         "shipmentLineCount"?: number;
@@ -1280,6 +1281,7 @@ declare namespace LocalJSX {
         "unavailableString"?: string;
     }
     interface ManagedShipmentListItem {
+        "isHeader"?: boolean;
         /**
           * Through this event navigation requests to tabs are made
          */

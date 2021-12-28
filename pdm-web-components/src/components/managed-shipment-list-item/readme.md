@@ -7,11 +7,12 @@
 
 ## Properties
 
-| Property            | Attribute             | Description | Type     | Default                |
-| ------------------- | --------------------- | ----------- | -------- | ---------------------- |
-| `shipmentId`        | `shipment-id`         |             | `string` | `undefined`            |
-| `shipmentLineCount` | `shipment-line-count` |             | `number` | `4`                    |
-| `type`              | `type`                |             | `string` | `SHIPMENT_TYPE.ISSUED` |
+| Property            | Attribute             | Description | Type      | Default                |
+| ------------------- | --------------------- | ----------- | --------- | ---------------------- |
+| `isHeader`          | `is-header`           |             | `boolean` | `undefined`            |
+| `shipmentId`        | `shipment-id`         |             | `string`  | `undefined`            |
+| `shipmentLineCount` | `shipment-line-count` |             | `number`  | `4`                    |
+| `type`              | `type`                |             | `string`  | `SHIPMENT_TYPE.ISSUED` |
 
 
 ## Events
@@ -39,16 +40,16 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [status-badge](../status-badge)
 - [pdm-item-organizer](../pdm-item-organizer)
-- [list-item-layout](../list-item-layout)
+- [status-badge](../status-badge)
+- [list-item-layout-default](../list-item-layout-default)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-shipment-list-item --> status-badge
   managed-shipment-list-item --> pdm-item-organizer
-  managed-shipment-list-item --> list-item-layout
+  managed-shipment-list-item --> status-badge
+  managed-shipment-list-item --> list-item-layout-default
   pdm-item-organizer --> more-chip
   style managed-shipment-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
