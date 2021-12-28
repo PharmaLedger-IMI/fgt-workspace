@@ -23,7 +23,7 @@ export default class ReceivedOrdersController extends LocalizedController {
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            self.element.querySelector('pdm-ion-table').refresh()
+            self.element.querySelector('pdm-ion-table-default').refresh()
         }, {capture: true});
 
     }
