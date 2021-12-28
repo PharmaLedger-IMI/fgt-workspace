@@ -118,6 +118,7 @@ export namespace Components {
     }
     interface ManagedBatchListItem {
         "gtinBatch": string;
+        "isHeader": boolean;
         "refresh": () => Promise<void>;
     }
     interface ManagedIndividualProduct {
@@ -1009,6 +1010,7 @@ declare namespace LocalJSX {
     }
     interface ManagedBatchListItem {
         "gtinBatch"?: string;
+        "isHeader"?: boolean;
         "onFgt-request-stock-trace"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event navigation requests to tabs are made
