@@ -17,7 +17,7 @@ export default class ReceivedShipmentsController extends LocalizedController {
         const participantManager = wizard.Managers.getParticipantManager();
         this.receivedShipmentManager = wizard.Managers.getReceivedShipmentManager(participantManager);
         this.receivedShipmentManager.bindController(this);
-        this.table = this.element.querySelector('pdm-ion-table');
+        this.table = this.element.querySelector('pdm-ion-table-default');
         HistoryNavigator.registerTab({
             'tab-received-shipments': this.translate('title')
         })

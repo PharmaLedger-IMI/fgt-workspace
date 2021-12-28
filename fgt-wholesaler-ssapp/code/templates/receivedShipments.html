@@ -1,14 +1,14 @@
 <webc-container controller="ReceivedShipmentsController">
-    <pdm-ion-table
+    <pdm-ion-table-default
             table-title="@title"
             paginated="true"
             manager="ReceivedShipmentManager"
             icon-name="stats-chart"
-            items-per-page="10"
+            items-per-page="5"
             item-type="managed-shipment-list-item"
             item-reference="shipment-id"
             item-props="type:received">
-    </pdm-ion-table>
+    </pdm-ion-table-default>
 </webc-container>
 
 
