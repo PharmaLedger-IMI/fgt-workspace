@@ -21,6 +21,7 @@
 ### Used by
 
  - [managed-batch-list-item](../managed-batch-list-item)
+ - [managed-product-list-item](../managed-product-list-item)
  - [managed-shipment-list-item](../managed-shipment-list-item)
  - [managed-stock-list-item](../managed-stock-list-item)
 
@@ -28,6 +29,7 @@
 ```mermaid
 graph TD;
   managed-batch-list-item --> list-item-layout-default
+  managed-product-list-item --> list-item-layout-default
   managed-shipment-list-item --> list-item-layout-default
   managed-stock-list-item --> list-item-layout-default
   style list-item-layout-default fill:#f9f,stroke:#333,stroke-width:4px
