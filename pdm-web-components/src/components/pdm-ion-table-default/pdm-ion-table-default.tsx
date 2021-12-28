@@ -168,16 +168,18 @@ export class PdmIonTableDefault implements ComponentInterface {
     // @ts-ignore
     return (
       <ion-grid>
-        <ion-row class="ion-justify-content-center">
-          <ion-col size="4" class="ion-justify-content-center">
-              <ion-button slot="start" fill="clear" onClick={() => this.refresh()}>
-                <ion-icon slot="icon-only" name="refresh"></ion-icon>
-              </ion-button>
-              <ion-label class="text-align-center">
+        <ion-row class="ion-align-items-center">
+          <ion-col size="12">
+              <ion-label class="flex ion-justify-content-center">
                 {this.noContentMessage}
               </ion-label>
           </ion-col>
         </ion-row>
+        <ion-row class="ion-justify-content-center ion-align-items-center">
+          <ion-button fill="clear" size="large" color="medium" onClick={() => this.refresh()}>
+            <ion-icon slot="icon-only" name="refresh"></ion-icon>
+          </ion-button>
+      </ion-row>
       </ion-grid>
     )
   }
