@@ -57,7 +57,7 @@ export class ListItemLayoutDefault {
   }
 
   private getContentColAjustment(){
-    return this.orientation === "start" ? "ion-justify-content-start" : "ion-justify-content-end";
+    return this.orientation === "start" ? "ion-justify-content-start" : "ion-justify-content-end ion-padding-end";
   }
 
   createPlaceHolders(){
@@ -129,7 +129,7 @@ export class ListItemLayoutDefault {
   createContentPlaceholder(size){
     return(
       <ion-col size={size}>
-        <div class={`flex ion-align-items-center ${this.getContentColAjustment()}`}>
+        <div class={`flex ${this.getContentColAjustment()}`}>
           <slot name="content"></slot>
         </div>
       </ion-col>
@@ -170,13 +170,18 @@ export class ListItemLayoutDefault {
 
     switch(self.currentBreakpoint){
       case 'xs':
+        self.orientation="start"
+        screenRender = self.createSmallSizePage();
+        break;
       case 'sm':
       case 'md':
+        self.orientation = "end"
         screenRender = self.createSmallSizePage();
         break;
       case 'lg':
       case 'xl':
       default:
+        self.orientation = "end"
         screenRender = self.createBigSizePage();
         break;
     }
