@@ -7,10 +7,11 @@
 
 ## Properties
 
-| Property            | Attribute             | Description | Type     | Default     |
-| ------------------- | --------------------- | ----------- | -------- | ----------- |
-| `batchDisplayCount` | `batch-display-count` |             | `number` | `3`         |
-| `gtin`              | `gtin`                |             | `string` | `undefined` |
+| Property            | Attribute             | Description | Type      | Default     |
+| ------------------- | --------------------- | ----------- | --------- | ----------- |
+| `batchDisplayCount` | `batch-display-count` |             | `number`  | `3`         |
+| `gtin`              | `gtin`                |             | `string`  | `undefined` |
+| `isHeader`          | `is-header`           |             | `boolean` | `undefined` |
 
 
 ## Events
@@ -40,14 +41,14 @@ Type: `Promise<void>`
 
 - [multi-spinner](../multi-spinner)
 - [pdm-item-organizer](../pdm-item-organizer)
-- [list-item-layout](../list-item-layout)
+- [list-item-layout-default](../list-item-layout-default)
 
 ### Graph
 ```mermaid
 graph TD;
   managed-product-list-item --> multi-spinner
   managed-product-list-item --> pdm-item-organizer
-  managed-product-list-item --> list-item-layout
+  managed-product-list-item --> list-item-layout-default
   pdm-item-organizer --> more-chip
   style managed-product-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```

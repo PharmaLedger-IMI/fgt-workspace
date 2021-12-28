@@ -58,6 +58,7 @@ export class ManagedProductListItem {
 
   @Prop({attribute: "gtin", mutable: true}) gtin: string;
   @Prop({attribute: "batch-display-count", mutable: true}) batchDisplayCount: number = 3;
+  @Prop() isHeader: boolean;
 
   private productManager: WebManager = undefined;
   private batchManager: WebManager = undefined;
@@ -77,20 +78,22 @@ export class ManagedProductListItem {
     let self = this;
     if (!self.productManager)
       return;
-    self.productManager.getOne(self.gtin, true, (err, product) => {
-      if (err){
-        self.sendError(`Could not get Product with gtin ${self.gtin}`, err);
-        return;
-      }
-      this.product = product;
-      self.batchManager.getAll(false, {query: `gtin == ${self.gtin}`}, (err, batches) => {
+
+    if(!self.isHeader)   
+      self.productManager.getOne(self.gtin, true, (err, product) => {
         if (err){
-          self.sendError(`Could not load batches for product ${self.gtin}`);
+          self.sendError(`Could not get Product with gtin ${self.gtin}`, err);
           return;
         }
-        self.batches = batches;
+        this.product = product;
+        self.batchManager.getAll(false, {query: `gtin == ${self.gtin}`}, (err, batches) => {
+          if (err){
+            self.sendError(`Could not load batches for product ${self.gtin}`);
+            return;
+          }
+          self.batches = batches;
+        });
       });
-    });
   }
 
   private triggerSelect(evt){
@@ -110,45 +113,26 @@ export class ManagedProductListItem {
     await this.loadProduct();
   }
 
-  addLabel(){
+  addBatches(){
     const self = this;
 
-    const getGtinLabel = function(){
-      if (!self.product || !self.product.gtin)
-        return (<ion-skeleton-text animated></ion-skeleton-text>);
-      return self.product.gtin;
+    if(self.isHeader){
+      return (
+            <ion-col slot="content" color="secondary" size= "auto">
+              <ion-label color="secondary">
+                {"Batches"}
+              </ion-label>       
+            </ion-col>
+      )
     }
 
-    const getNameLabel = function(){
-      if (!self.product || !self.product.name)
-        return (<ion-skeleton-text animated></ion-skeleton-text>);
-      return self.product.name;
-    }
-
-    return(
-      <ion-row slot="label" class="ion-align-items-center">
-        <ion-col class="ion-padding-start" size="auto">
-          <ion-label color="secondary">
-            {getGtinLabel()}
-          </ion-label>
-        </ion-col >
-
-        <ion-col class="ion-padding-start" size="auto">
-          <ion-label color="secondary">
-            {getNameLabel()}
-          </ion-label>
-        </ion-col>
-      </ion-row>
-    )
-  }
-
-  addBatches(){
-    if (!this.product || !this.batches)
+    if (!self.product || !self.batches)
       return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
+
     const dummyProp = Date.now(); // to ensure the item organizer updates even with the same data
     return(
       <pdm-item-organizer slot="content" component-name="batch-chip"
-                          component-props={JSON.stringify(this.batches.map(gtinBatch => ({
+                          component-props={JSON.stringify(self.batches.map(gtinBatch => ({
                             "gtin-batch": gtinBatch,
                             "mode": "detail",
                             "loader-type": SUPPORTED_LOADERS.bubblingSmall,
@@ -166,11 +150,26 @@ export class ManagedProductListItem {
   private getOrientation(){
     const layoutEl: ListItemLayout = this.element.querySelector('list-item-layout');
     return layoutEl ? layoutEl.orientation : 'end';
-
   }
 
   addButtons(){
     let self = this;
+
+    const getMockButton = function(){
+      return (
+        <ion-button slot="buttons" color="secondary" fill="clear" disabled="true">
+          <ion-icon size="large" slot="icon-only" name="some-name"></ion-icon>
+          {/* <ion-icon size="large" slot="icon-only" name="information-circle-sharp"></ion-icon> */}
+        </ion-button>
+      )
+    }
+
+    if(self.isHeader)
+      return[
+        getMockButton(),
+        getMockButton()
+      ]
+
     if (!self.product)
       return (<ion-skeleton-text animated></ion-skeleton-text>);
 
@@ -193,15 +192,89 @@ export class ManagedProductListItem {
    ]
   }
 
+  addGtinLabel(){
+    const self = this;
+
+    const getGtinLabel = function(){
+      if(self.isHeader)
+        return "Gtin";
+
+      if (!self.product || !self.product.gtin)
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
+
+      return self.product.gtin;
+    }
+
+    return(
+      <ion-label slot="label0" color="secondary">
+          {getGtinLabel()}
+      </ion-label>
+    )
+  }
+
+  addNameLabel(){
+    const self = this;
+
+    const getNameLabel = function(){
+      if(self.isHeader)
+        return "Product Name";
+
+      if (!self.product || !self.product.name)
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
+
+      return self.product.name;
+    }
+
+    return(
+      <ion-label slot="label1" color="secondary">
+          {getNameLabel()}
+      </ion-label>
+    )
+  }
+
+  generateLabelLayoutConfig(){
+    const obj = {
+      0 : {
+        sizeByScreen: {
+          "xs": 4,
+          "sm": 4,
+          "md": 3,
+          "lg": 3,
+          "xl":2
+        },
+        center: false,
+      },
+      1 : {
+        sizeByScreen: {
+          "xs": 4,
+          "sm": 4,
+          "md": 3,
+          "lg": 3,
+          "xl":2
+        },
+        center: false,
+      }, 
+    }
+
+    return JSON.stringify(obj);
+  }
+
   render() {
     return (
       <Host>
-        <list-item-layout>
-          {this.addLabel()}
+        <list-item-layout-default buttons={true}  label-col-config={this.generateLabelLayoutConfig()}>
+          {this.addGtinLabel()}
+          {this.addNameLabel()}
           {this.addBatches()}
           {this.addButtons()}
-        </list-item-layout>
+        </list-item-layout-default>
       </Host>
     );
   }
 }
+
+
+
+
+
+
