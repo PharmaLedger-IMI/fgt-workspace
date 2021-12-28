@@ -1,5 +1,5 @@
 <webc-container controller="IssuedOrdersController">
-    <pdm-ion-table
+    <pdm-ion-table-default
             table-title="@title"
             item-reference="order-id"
             paginated="true"
@@ -12,7 +12,7 @@
             {{ @buttons.new-issued-order }}
             <ion-icon slot="end" name="add-circle"></ion-icon>
         </ion-button>
-    </pdm-ion-table>
+    </pdm-ion-table-default>
 </webc-container>
 
 
