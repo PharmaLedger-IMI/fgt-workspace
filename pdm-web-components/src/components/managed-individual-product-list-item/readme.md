@@ -10,6 +10,7 @@
 | Property          | Attribute           | Description | Type      | Default     |
 | ----------------- | ------------------- | ----------- | --------- | ----------- |
 | `gtinBatchSerial` | `gtin-batch-serial` |             | `string`  | `undefined` |
+| `isHeader`        | `is-header`         |             | `boolean` | `undefined` |
 | `showCloseButton` | `show-close-button` |             | `boolean` | `true`      |
 | `showTrackButton` | `show-track-button` |             | `boolean` | `true`      |
 
@@ -44,16 +45,16 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [multi-spinner](../multi-spinner)
 - [generic-chip](../generic-chip)
-- [list-item-layout](../list-item-layout)
+- [status-badge](../status-badge)
+- [list-item-layout-default](../list-item-layout-default)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-individual-product-list-item --> multi-spinner
   managed-individual-product-list-item --> generic-chip
-  managed-individual-product-list-item --> list-item-layout
+  managed-individual-product-list-item --> status-badge
+  managed-individual-product-list-item --> list-item-layout-default
   managed-stock-product-input --> managed-individual-product-list-item
   style managed-individual-product-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
