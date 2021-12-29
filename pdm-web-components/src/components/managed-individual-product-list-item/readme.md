@@ -45,16 +45,17 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [generic-chip](../generic-chip)
+- [pdm-item-organizer](../pdm-item-organizer)
 - [status-badge](../status-badge)
 - [list-item-layout-default](../list-item-layout-default)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-individual-product-list-item --> generic-chip
+  managed-individual-product-list-item --> pdm-item-organizer
   managed-individual-product-list-item --> status-badge
   managed-individual-product-list-item --> list-item-layout-default
+  pdm-item-organizer --> more-chip
   managed-stock-product-input --> managed-individual-product-list-item
   style managed-individual-product-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```

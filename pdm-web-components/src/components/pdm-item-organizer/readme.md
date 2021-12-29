@@ -37,6 +37,7 @@
  - [managed-batch](../managed-batch)
  - [managed-batch-list-item](../managed-batch-list-item)
  - [managed-individual-product-chip](../managed-individual-product-chip)
+ - [managed-individual-product-list-item](../managed-individual-product-list-item)
  - [managed-order-list-item](../managed-order-list-item)
  - [managed-product-list-item](../managed-product-list-item)
  - [managed-sale-list-item](../managed-sale-list-item)
@@ -56,6 +57,7 @@ graph TD;
   managed-batch --> pdm-item-organizer
   managed-batch-list-item --> pdm-item-organizer
   managed-individual-product-chip --> pdm-item-organizer
+  managed-individual-product-list-item --> pdm-item-organizer
   managed-order-list-item --> pdm-item-organizer
   managed-product-list-item --> pdm-item-organizer
   managed-sale-list-item --> pdm-item-organizer

@@ -155,7 +155,6 @@ export class ManagedBatchListItem {
   private getOrientation(){
     const layoutEl: ListItemLayout = this.element.querySelector('list-item-layout-default');
     return layoutEl ? layoutEl.orientation : 'end';
-
   }
 
   addButtons(){

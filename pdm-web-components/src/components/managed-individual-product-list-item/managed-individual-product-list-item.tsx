@@ -4,6 +4,7 @@ import {WebManager, WebManagerService} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
 import {getBarCodePopOver} from "../../utils/popOverUtils";
+import {ListItemLayout} from "../list-item-layout/list-item-layout";
 
 const {Batch, IndividualProduct, utils} = wizard.Model;
 
@@ -145,6 +146,11 @@ export class ManagedIndividualProductListItem {
     await this.loadProduct();
   }
 
+  private getOrientation(){
+    const layoutEl: ListItemLayout = this.element.querySelector('list-item-layout-default');
+    return layoutEl ? layoutEl.orientation : 'end';
+  }
+
   addSerialsNumber(){
     const self = this;
   
@@ -161,8 +167,19 @@ export class ManagedIndividualProductListItem {
     if (!this.individualProduct || !this.individualProduct.serialNumber)
       return (<ion-skeleton-text animated></ion-skeleton-text>);
 
-    return (
-      <generic-chip slot="content" chip-label={this.individualProduct.serialNumber}></generic-chip>
+    const serials = [];
+    serials.push(self.individualProduct.serialNumber);
+
+    return(
+      <pdm-item-organizer slot="content" component-name="generic-chip"
+                          component-props={JSON.stringify(serials.map(serial => ({
+                            "chip-label": serial,
+                            "class": "ion-margin-start"
+                          })))}
+                          id-prop="chip-label"
+                          is-ion-item="false"
+                          orientation={this.getOrientation()}
+                          ></pdm-item-organizer>
     )
   }
 
