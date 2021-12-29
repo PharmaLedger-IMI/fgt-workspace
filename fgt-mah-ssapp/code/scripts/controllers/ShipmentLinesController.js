@@ -25,7 +25,7 @@ export default class ShipmentLinesController extends LocalizedController {
             'tab-shipmentLines': this.translate('title')
         })
 
-        this.table = this.element.querySelector('pdm-ion-table');
+        this.table = this.element.querySelector('pdm-ion-table-default');
 
         let self = this;
         self.on(EVENT_REFRESH, (evt) => {
