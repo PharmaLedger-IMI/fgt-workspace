@@ -25,7 +25,7 @@ export default class NotificationsController extends LocalizedController {
             self._handleNotifications.call(self,notification);
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            self.element.querySelector('pdm-ion-table').refresh();
+            self.element.querySelector('pdm-ion-table-default').refresh();
         }, {capture: true});
     }
 
