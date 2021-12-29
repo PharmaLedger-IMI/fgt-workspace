@@ -151,6 +151,7 @@ export namespace Components {
         "showTrackButton": boolean;
     }
     interface ManagedNotificationsListItem {
+        "isHeader": boolean;
         "notificationid": string;
         "refresh": () => Promise<void>;
     }
@@ -1078,6 +1079,7 @@ declare namespace LocalJSX {
         "showTrackButton"?: boolean;
     }
     interface ManagedNotificationsListItem {
+        "isHeader"?: boolean;
         "notificationid"?: string;
         "onFgt-track-request"?: (event: CustomEvent<any>) => void;
         /**
