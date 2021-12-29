@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property  | Attribute  | Description | Type     | Default     |
-| --------- | ---------- | ----------- | -------- | ----------- |
-| `saleRef` | `sale-ref` |             | `string` | `undefined` |
+| Property   | Attribute   | Description | Type      | Default     |
+| ---------- | ----------- | ----------- | --------- | ----------- |
+| `isHeader` | `is-header` |             | `boolean` | `undefined` |
+| `saleRef`  | `sale-ref`  |             | `string`  | `undefined` |
 
 
 ## Events
@@ -38,13 +39,13 @@ Type: `Promise<void>`
 ### Depends on
 
 - [pdm-item-organizer](../pdm-item-organizer)
-- [list-item-layout](../list-item-layout)
+- [list-item-layout-default](../list-item-layout-default)
 
 ### Graph
 ```mermaid
 graph TD;
   managed-sale-list-item --> pdm-item-organizer
-  managed-sale-list-item --> list-item-layout
+  managed-sale-list-item --> list-item-layout-default
   pdm-item-organizer --> more-chip
   style managed-sale-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```

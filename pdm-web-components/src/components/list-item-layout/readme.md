@@ -16,19 +16,6 @@
 | `orientation` | `orientation` |             | `"end" \| "start"`            | `"end"`               |
 
 
-## Dependencies
-
-### Used by
-
- - [managed-sale-list-item](../managed-sale-list-item)
-
-### Graph
-```mermaid
-graph TD;
-  managed-sale-list-item --> list-item-layout
-  style list-item-layout fill:#f9f,stroke:#333,stroke-width:4px
-```
-
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*
