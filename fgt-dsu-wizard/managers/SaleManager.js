@@ -58,12 +58,16 @@ class SaleManager extends Manager{
     /**
      * Creates a {@link Sale} entry
      * @param {Sale} sale
-     * @param {function(err, keySSI, string)} callback where the string is the mount path relative to the main DSU
+     * @param {function(err, keySSI?, string?)} callback where the string is the mount path relative to the main DSU
      */
     create(sale, callback) {
         let self = this;
-        if (sale.validate())
-            return callback(`Invalid sale`);
+
+        if (!(sale instanceof Sale))
+            sale = new Sale(sale);
+        let err = sale.validate();
+        if (err)
+            return callback(`Invalid sale. ${err}`);
 
         self.stockManager.getAll(true, {
             query: [
@@ -73,13 +77,12 @@ class SaleManager extends Manager{
             if (err)
                 return self._err(`Could not get stocks for sale`, err, callback);
 
+
             const toManage = {};
 
             const cb = function(err, ...results){
                 if (err)
-                    return self.cancelBatch(err2 => {
-                        callback(err);
-                    });
+                    return self.cancelBatch(_ => callback(err));
                 callback(undefined, ...results);
             }
 
