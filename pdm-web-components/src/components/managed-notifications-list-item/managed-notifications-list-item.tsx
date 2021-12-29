@@ -54,6 +54,7 @@ export class ManagedNotificationListItem {
   }
 
   @Prop() notificationid: string;
+  @Prop() isHeader: boolean;
 
   private notificationManager: WebManager = undefined;
 
@@ -71,14 +72,16 @@ export class ManagedNotificationListItem {
     let self = this;
     if (!self.notificationManager)
       return;
-    self.notificationManager.getOne(self.notificationid, true, (err, notification) => {
-      if (err){
-        self.sendError(`Could not get Notification with key ${self.notificationid}`, err);
-        return;
-      }
 
-      self.notification = new Notification(notification);
-    });
+    if(!self.isHeader)
+      self.notificationManager.getOne(self.notificationid, true, (err, notification) => {
+        if (err){
+          self.sendError(`Could not get Notification with key ${self.notificationid}`, err);
+          return;
+        }
+
+        self.notification = new Notification(notification);
+      });
   }
 
   @Watch('notificationid')
@@ -91,6 +94,9 @@ export class ManagedNotificationListItem {
     const self = this;
 
     const getActionLabel = function(){
+      if(self.isHeader)
+        return "Message";
+
       if (!self.notification.body.batch.batchStatus.log)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
 
@@ -111,57 +117,94 @@ export class ManagedNotificationListItem {
 
   }
 
-  addLabel(){
+  addSenderLabel(){
     const self = this;
 
-   
-
     const getSenderLabel = function(){
+      
+      if(self.isHeader)
+        return "Sender ID";
+
       if (!self.notification || !self.notification.senderId)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
+
       return self.notification.senderId;
     }
 
+    return(
+      <ion-label slot="label0" color="secondary">
+          {getSenderLabel()}
+      </ion-label>
+    )
+  }
+
+  addSubjectLabel(){
+    const self = this;
+
     const getSubjectLabel = function(){
+      
+      if(self.isHeader)
+        return "Subject";
+
       if (!self.notification || !self.notification.subject)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
+
       return self.notification.subject;
     }
 
     return(
-      <ion-label slot="label" color="secondary">
-        {getSenderLabel()}
-        <span class="ion-padding-start">{getSubjectLabel()}</span>
-      </ion-label>)
+      <ion-label slot="label1" color="secondary">
+        {getSubjectLabel()}
+      </ion-label>
+    )
+
   }
 
-  addButtons(){
-    let self = this;
-    if (!self.notification)
-      return (<ion-skeleton-text animated></ion-skeleton-text>);
-
-    const getButton = function(slot, color, icon, handler){
-      return (
-        <ion-button slot={slot} color={color} fill="clear" onClick={handler}>
-          <ion-icon size="large" slot="icon-only" name={icon}></ion-icon>
-        </ion-button>
-      )
+  generateLabelLayoutConfig(){
+    const obj = {
+      0 : {
+        sizeByScreen: {
+          "xs": 3,
+          "sm": 3,
+          "md": 3,
+          "lg": 2,
+          "xl":2
+        },
+        center: false,
+      },
+      1 : {
+        sizeByScreen: {
+          "xs": 2,
+          "sm": 2,
+          "md": 2,
+          "lg": 1,
+          "xl":1
+        },
+        center: false,
+      },  
     }
 
-    return [
-      getButton("buttons", "medium", "eye", () => console.log(self.notification.body))
-    ]
+    return JSON.stringify(obj);
   }
 
   render() {
     return (
       <Host>
-        <list-item-layout>
-          {this.addLabel()}
+        <list-item-layout-default label-col-config={this.generateLabelLayoutConfig()}>
+          {this.addSenderLabel()}
+          {this.addSubjectLabel()}
           {this.addContent()}
-          {this.addButtons()}
-        </list-item-layout>
+        </list-item-layout-default>
       </Host>
     );
   }
 }
+
+
+
+
+
+
+
+
+

@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property         | Attribute        | Description | Type     | Default     |
-| ---------------- | ---------------- | ----------- | -------- | ----------- |
-| `notificationid` | `notificationid` |             | `string` | `undefined` |
+| Property         | Attribute        | Description | Type      | Default     |
+| ---------------- | ---------------- | ----------- | --------- | ----------- |
+| `isHeader`       | `is-header`      |             | `boolean` | `undefined` |
+| `notificationid` | `notificationid` |             | `string`  | `undefined` |
 
 
 ## Events
@@ -38,12 +39,12 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [list-item-layout](../list-item-layout)
+- [list-item-layout-default](../list-item-layout-default)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-notifications-list-item --> list-item-layout
+  managed-notifications-list-item --> list-item-layout-default
   style managed-notifications-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
