@@ -15,7 +15,7 @@ export default class SalesController extends LocalizedController {
         const participantManager = wizard.Managers.getParticipantManager();
         this.salesManager = wizard.Managers.getSaleManager(participantManager);
         this.salesManager.bindController(this);
-        this.table = this.element.querySelector('pdm-ion-table');
+        this.table = this.element.querySelector('pdm-ion-table-default');
 
         let self = this;
         // the HomeController takes care of sending refresh events for each tab.
