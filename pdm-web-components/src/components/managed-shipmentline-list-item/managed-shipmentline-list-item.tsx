@@ -7,14 +7,14 @@ import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
 import {ListItemLayout} from "../list-item-layout/list-item-layout";
 import {getBarCodePopOver} from "../../utils/popOverUtils";
 
-const {ShipmentLine, Product, Batch} = wizard.Model;
+const {ShipmentLine, Product, Batch, BatchStatus, ShipmentStatus} = wizard.Model;
 
 @Component({
   tag: 'managed-shipmentline-list-item',
   styleUrl: 'managed-shipmentline-list-item.css',
   shadow: false,
 })
-export class ManagedOrderlineListItem {
+export class ManagedShipmentlineListItem {
 
   @HostElement() host: HTMLElement;
 
@@ -74,6 +74,8 @@ export class ManagedOrderlineListItem {
   @Prop({attribute: 'status-label', mutable: true}) statusLabel?: string = "Status:";
 
   @Prop({attribute: 'quantity-label', mutable: true}) quantityLabel?: string = "Quantity:";
+  
+  @Prop() isHeader: boolean;
 
   private shipmentLineManager: WebResolver = undefined;
 
@@ -98,31 +100,34 @@ export class ManagedOrderlineListItem {
 
   private async loadShipmentLine(){
     let self = this;
+
     if (!self.shipmentLineManager || !self.shipmentLine)
       return;
-    self.shipmentLineManager.getOne(self.shipmentLine, true, (err, line) => {
-      if (err){
-        self.sendError(`Could not get ShipmentLine with reference ${self.shipmentLine}`, err);
-        return;
-      }
-      self.line = line;
 
-      self.productManager.getOne(self.line.gtin, true, (err, product: typeof Product) => {
+    if(!self.isHeader)
+      self.shipmentLineManager.getOne(self.shipmentLine, true, (err, line) => {
         if (err){
-          self.sendError(`Could not get Product data from ${self.line.gtin}`, err);
+          self.sendError(`Could not get ShipmentLine with reference ${self.shipmentLine}`, err);
           return;
         }
-        self.product = product;
+        self.line = line;
 
-        self.batchManager.getOne(`${self.line.gtin}-${self.line.batch}`, true, (err, batch) => {
+        self.productManager.getOne(self.line.gtin, true, (err, product: typeof Product) => {
           if (err){
-            self.sendError(`Could not get batch data from ${self.line.gtin}'s ${self.line.batch}`, err);
+            self.sendError(`Could not get Product data from ${self.line.gtin}`, err);
             return;
           }
-          self.batch = batch;
+          self.product = product;
+
+          self.batchManager.getOne(`${self.line.gtin}-${self.line.batch}`, true, (err, batch) => {
+            if (err){
+              self.sendError(`Could not get batch data from ${self.line.gtin}'s ${self.line.batch}`, err);
+              return;
+            }
+            self.batch = batch;
+          });
         });
       });
-    });
   }
 
   @Watch('shipmentLine')
@@ -156,11 +161,24 @@ export class ManagedOrderlineListItem {
   }
 
   addSerials(){
-    if (!this.batch)
+    const self = this;
+
+    if(self.isHeader){
+      return (
+            <ion-col slot="content" color="secondary" size= "auto">
+              <ion-label color="secondary">
+                {"S.Nº"}
+              </ion-label>       
+            </ion-col>
+      )
+    }
+
+    if (!self.batch)
       return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
+
     return(
       <pdm-item-organizer slot="content" component-name="generic-chip"
-                          component-props={JSON.stringify(this.batch.serialNumbers.map(serial => ({
+                          component-props={JSON.stringify(self.batch.serialNumbers.map(serial => ({
                             "chip-label": serial,
                             "class": "ion-margin-start"
                           })))}
@@ -172,76 +190,6 @@ export class ManagedOrderlineListItem {
     )
   }
 
-  addDetails(){
-    const props = this.getPropsFromKey();
-    const buildLabelElement = (props) => {
-      return (
-        <ion-col>
-          <ion-label color="secondary">
-            {props}
-          </ion-label>
-        </ion-col>
-      )
-    }
-
-    return (
-      <ion-col slot="content" size-md="4" size-lg="3">
-        <ion-row className="ion-align-items-center">
-          {buildLabelElement(props.requesterId)}
-          {buildLabelElement(props.senderId)}
-        </ion-row>
-      </ion-col>
-    )
-  }
-
-  addLabel(){
-    const props = this.getPropsFromKey();
-    const self = this;
-
-    const getBatchLabel = function(){
-      if (!self.batch)
-        return (<ion-skeleton-text animated className="label-batch"></ion-skeleton-text>)
-      return self.batch.batchNumber;
-    }
-
-    const getQuantityLabel = function(){
-      if (!self.line)
-        return (<ion-skeleton-text animated className="label-quantity"></ion-skeleton-text>)
-      return self.line.getQuantity();
-    }
-
-    const getStatusLabel = function(){
-      if (!self.line)
-        return;
-      return (
-        <ion-col className="ion-padding-start" size="auto">
-          <status-badge status={self.line.status.status}></status-badge>
-        </ion-col>
-      )
-    }
-
-    const buildLabelElement = (props: any) =>{
-      return (
-        <ion-col className="ion-padding-start" size="auto">
-          <ion-label color="secondary">
-            {props}
-          </ion-label>
-        </ion-col>
-      )
-    }
-
-    return(
-      <ion-col  slot="label" size="3">
-        <ion-row class="ion-align-items-center">
-          {buildLabelElement(props.gtin)}
-          {buildLabelElement(getBatchLabel())}
-          {buildLabelElement(getQuantityLabel())}
-          {getStatusLabel()}
-        </ion-row>
-      </ion-col>
-    )
-  }
-
   private getOrientation(){
     const layout: ListItemLayout = this.element.querySelector('list-item-layout');
     return layout ? layout.orientation : 'end';
@@ -249,6 +197,21 @@ export class ManagedOrderlineListItem {
 
   addButtons(){
     let self = this;
+
+    const getMockButton = function(){
+      return (
+        <ion-button slot="buttons" color="secondary" fill="clear" disabled="true">
+          <ion-icon size="large" slot="icon-only" name="some-name"></ion-icon>
+          {/* <ion-icon size="large" slot="icon-only" name="information-circle-sharp"></ion-icon> */}
+        </ion-button>
+      )
+    }
+
+    if(self.isHeader)
+      return[
+        getMockButton(),
+      ]
+
     if (!self.shipmentLine)
       return (<ion-skeleton-text animated></ion-skeleton-text>);
 
@@ -270,17 +233,167 @@ export class ManagedOrderlineListItem {
     ]
   }
 
+  addGtinLabel(){
+    const self = this;
+    const props = this.getPropsFromKey();
+
+    const getGtinLabel = function(){
+      if(self.isHeader)
+        return "Gtin";
+
+      if (!self.line)
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
+
+      return props.gtin;
+    }
+
+    return(
+      <ion-label slot="label0" color="secondary">
+          {getGtinLabel()}
+      </ion-label>
+    )
+  }
+
+  addDetailsLabel(){
+    const self = this;
+    const props = this.getPropsFromKey();
+
+    const getRequesterDetails = function(){
+      if(self.isHeader)
+        return "Requester";
+      
+      if (!self.line)
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
+
+      return props.requesterId;
+    }
+
+    const getSenderDetails = function(){
+      if(self.isHeader)
+        return "Sender";
+
+      if (!self.line)
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
+
+      return props.senderId;
+    }
+
+    return(
+      <ion-label slot="label2" color="secondary">
+        {getRequesterDetails()}{" - "} {getSenderDetails()}
+      </ion-label>
+    )
+  }
+
+  addBatchLabel(){
+    const self = this;
+
+    const getBatchNumber = function(){
+      return self.batch.batchNumber;
+    }
+
+    const getStatus = function(status){
+ 
+      switch(status){
+        case BatchStatus.COMMISSIONED:
+        case ShipmentStatus.CREATED:
+        case ShipmentStatus.ACKNOWLEDGED:
+        case ShipmentStatus.PICKUP:
+        case ShipmentStatus.CONFIRMED:
+          return 'success';
+        case BatchStatus.QUARANTINED:
+        case ShipmentStatus.ON_HOLD:
+          return 'warning';
+        case BatchStatus.RECALL:
+        case ShipmentStatus.REJECTED:
+          return 'danger';
+        default:
+          return 'secondary';
+      }
+     
+    }
+
+    const getQuantity = function(){
+      return self.line.getQuantity();
+    }
+
+    const getBatchInfoLabel = function(){
+      if(self.isHeader)
+        return "Shipment Info"
+
+      if(!self.batch || !self.line)
+        return (<ion-skeleton-text animated className="label-batch"></ion-skeleton-text>);
+
+      return(
+        <ion-badge color={getStatus(self.line.status.status)}>
+          <ion-badge color="light">
+          {getBatchNumber()}
+          </ion-badge>
+          <ion-badge color="light">
+            {getQuantity()}
+          </ion-badge>
+        </ion-badge>
+      )
+
+    }
+
+    return(
+      <ion-label slot="label1" color="secondary">
+        {getBatchInfoLabel()}        
+      </ion-label>
+    )
+  }
+
+  generateLabelLayoutConfig(){
+    const obj = {
+      0 : {
+        sizeByScreen: {
+          "xs": 3,
+          "sm": 3,
+          "md": 3,
+          "lg": 2,
+          "xl":2
+        },
+        center: false,
+      },
+      1 : {
+        sizeByScreen: {
+          "xs": 3,
+          "sm": 3,
+          "md": 3,
+          "lg": 2,
+          "xl":2
+        },
+        center: true,
+      },
+      2 : {
+        sizeByScreen: {
+          "xs": 5,
+          "sm": 5,
+          "md": 5,
+          "lg": 4,
+          "xl":4
+        },
+        center: false,
+      },      
+    }
+
+    return JSON.stringify(obj);
+  }
+
   render() {
     if(!this.host.isConnected)
       return;
+
     return (
       <Host>
-        <list-item-layout>
-          {this.addLabel()}
-          {this.addDetails()}
+        <list-item-layout-default buttons={true}  label-col-config={this.generateLabelLayoutConfig()}>
+          {this.addGtinLabel()}
+          {this.addBatchLabel()}
+          {this.addDetailsLabel()}
           {this.addSerials()}
           {this.addButtons()}
-        </list-item-layout>
+        </list-item-layout-default>
       </Host>
     );
   }

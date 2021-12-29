@@ -7,17 +7,18 @@
 
 ## Properties
 
-| Property         | Attribute          | Description | Type     | Default         |
-| ---------------- | ------------------ | ----------- | -------- | --------------- |
-| `batchLabel`     | `bach-label`       |             | `string` | `"Batch:"`      |
-| `createdOnLabel` | `created-on-label` |             | `string` | `"Created on:"` |
-| `gtinLabel`      | `gtin-label`       |             | `string` | `"Gtin:"`       |
-| `nameLabel`      | `name-label`       |             | `string` | `"Name:"`       |
-| `quantityLabel`  | `quantity-label`   |             | `string` | `"Quantity:"`   |
-| `requesterLabel` | `requester-label`  |             | `string` | `"Requester:"`  |
-| `senderLabel`    | `sender-label`     |             | `string` | `"Sender:"`     |
-| `shipmentLine`   | `shipment-line`    |             | `string` | `undefined`     |
-| `statusLabel`    | `status-label`     |             | `string` | `"Status:"`     |
+| Property         | Attribute          | Description | Type      | Default         |
+| ---------------- | ------------------ | ----------- | --------- | --------------- |
+| `batchLabel`     | `bach-label`       |             | `string`  | `"Batch:"`      |
+| `createdOnLabel` | `created-on-label` |             | `string`  | `"Created on:"` |
+| `gtinLabel`      | `gtin-label`       |             | `string`  | `"Gtin:"`       |
+| `isHeader`       | `is-header`        |             | `boolean` | `undefined`     |
+| `nameLabel`      | `name-label`       |             | `string`  | `"Name:"`       |
+| `quantityLabel`  | `quantity-label`   |             | `string`  | `"Quantity:"`   |
+| `requesterLabel` | `requester-label`  |             | `string`  | `"Requester:"`  |
+| `senderLabel`    | `sender-label`     |             | `string`  | `"Sender:"`     |
+| `shipmentLine`   | `shipment-line`    |             | `string`  | `undefined`     |
+| `statusLabel`    | `status-label`     |             | `string`  | `"Status:"`     |
 
 
 ## Events
@@ -47,16 +48,14 @@ Type: `Promise<void>`
 
 - [multi-spinner](../multi-spinner)
 - [pdm-item-organizer](../pdm-item-organizer)
-- [status-badge](../status-badge)
-- [list-item-layout](../list-item-layout)
+- [list-item-layout-default](../list-item-layout-default)
 
 ### Graph
 ```mermaid
 graph TD;
   managed-shipmentline-list-item --> multi-spinner
   managed-shipmentline-list-item --> pdm-item-organizer
-  managed-shipmentline-list-item --> status-badge
-  managed-shipmentline-list-item --> list-item-layout
+  managed-shipmentline-list-item --> list-item-layout-default
   pdm-item-organizer --> more-chip
   style managed-shipmentline-list-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
