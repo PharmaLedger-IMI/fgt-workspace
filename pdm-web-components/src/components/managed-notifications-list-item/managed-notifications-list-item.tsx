@@ -1,8 +1,9 @@
-import {Component, Host, h, Element, Prop, State, Watch, Method, Event, EventEmitter} from '@stencil/core';
+import {Component, Host, h, Element, Prop, State, Watch, Method, Event, EventEmitter, Listen} from '@stencil/core';
 
 import {WebManagerService, WebManager} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import wizard from '../../services/WizardService';
+import {calcBreakPoint} from "../../utils/utilFunctions";
 
 const {Notification} = wizard.Model;
 
@@ -59,6 +60,11 @@ export class ManagedNotificationListItem {
   private notificationManager: WebManager = undefined;
 
   @State() notification: typeof Notification = undefined;
+  @State() showMessage = false;
+  @State() currentBreakpoint = "xl";
+  
+
+  private message;
 
 
   async componentWillLoad() {
@@ -90,6 +96,12 @@ export class ManagedNotificationListItem {
     await this.loadNotification();
   }
 
+  @Listen('resize', { target: 'window' })
+  async updateBreakPoint(){
+    this.currentBreakpoint = calcBreakPoint();
+    this.refresh();
+  }
+
   addContent(){
     const self = this;
 
@@ -106,9 +118,41 @@ export class ManagedNotificationListItem {
                             ${statusInfo[2]} 
                             batch: ${self.notification.body.batch.batchNumber} 
                             ${statusInfo.splice(3).join(' ')}`
-    
-      return finalMessage;
-    }
+
+      const getMessageButton = function(showMessage){
+        if(showMessage)
+          return (
+            <ion-button slot="buttons" color="secondary" fill="clear" onClick={() => {
+              self.showMessage = false;
+              self.refresh();
+            }}>
+              <ion-icon size="large" slot="icon-only" name="caret-up-circle-outline"></ion-icon>
+            </ion-button>
+          )
+
+        return (
+          <ion-button slot="buttons" color="secondary" fill="clear" onClick={() => {
+            self.showMessage = true;
+            self.refresh();
+          }}>
+            <ion-icon size="large" slot="icon-only" name="caret-down-circle-outline"></ion-icon>
+          </ion-button>
+        )
+      }
+
+      switch(self.currentBreakpoint){
+        case 'xs':
+        case 'sm':
+        case 'md':
+          self.message = finalMessage;
+          return getMessageButton(self.showMessage);
+        case 'lg':
+        case 'xl':
+        default:
+          self.showMessage = false;
+          return finalMessage;
+      }
+  }
   
   return(
     <ion-label slot="content" color="secondary">
@@ -187,14 +231,39 @@ export class ManagedNotificationListItem {
     return JSON.stringify(obj);
   }
 
-  render() {
-    return (
-      <Host>
+  showPage(){
+    if(this.showMessage)
+      return[
         <list-item-layout-default label-col-config={this.generateLabelLayoutConfig()}>
           {this.addSenderLabel()}
           {this.addSubjectLabel()}
           {this.addContent()}
-        </list-item-layout-default>
+        </list-item-layout-default>,
+        <ion-grid>
+          <ion-row class="ion-align-items-center">
+            <ion-col size={12}>
+              <ion-label class={`flex ion-justify-content-end ion-padding-end`} color="secondary">
+                {this.message}
+              </ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      ]
+
+    return(
+      <list-item-layout-default label-col-config={this.generateLabelLayoutConfig()}>
+        {this.addSenderLabel()}
+        {this.addSubjectLabel()}
+        {this.addContent()}
+      </list-item-layout-default>
+    )
+
+  }
+
+  render() {
+    return (
+      <Host>
+        {this.showPage()}
       </Host>
     );
   }
