@@ -22,14 +22,12 @@
 
  - [managed-notifications-list-item](../managed-notifications-list-item)
  - [managed-sale-list-item](../managed-sale-list-item)
- - [managed-shipmentline-list-item](../managed-shipmentline-list-item)
 
 ### Graph
 ```mermaid
 graph TD;
   managed-notifications-list-item --> list-item-layout
   managed-sale-list-item --> list-item-layout
-  managed-shipmentline-list-item --> list-item-layout
   style list-item-layout fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

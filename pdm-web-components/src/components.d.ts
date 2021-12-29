@@ -300,6 +300,7 @@ export namespace Components {
         "batchLabel"?: string;
         "createdOnLabel"?: string;
         "gtinLabel"?: string;
+        "isHeader": boolean;
         "nameLabel"?: string;
         "quantityLabel"?: string;
         "refresh": () => Promise<void>;
@@ -1304,6 +1305,7 @@ declare namespace LocalJSX {
         "batchLabel"?: string;
         "createdOnLabel"?: string;
         "gtinLabel"?: string;
+        "isHeader"?: boolean;
         "nameLabel"?: string;
         /**
           * Through this event navigation requests to tabs are made
