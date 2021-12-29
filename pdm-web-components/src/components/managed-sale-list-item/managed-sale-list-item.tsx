@@ -209,7 +209,6 @@ export class ManagedSaleListItem {
   }
 
   generateLabelLayoutConfig(){
-    const self = this;
     const obj = {
       0 : {
         sizeByScreen: {
