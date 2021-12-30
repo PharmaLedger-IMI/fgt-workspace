@@ -17,3 +17,7 @@ ion-item.main-item{
     opacity: 1;
   }
 }
+
+#expandable{
+  border-bottom: 1px dashed rgb(207, 207, 207);
+}

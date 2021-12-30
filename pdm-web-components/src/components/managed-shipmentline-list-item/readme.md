@@ -46,6 +46,7 @@ Type: `Promise<void>`
 
 ### Depends on
 
+- [status-badge](../status-badge)
 - [multi-spinner](../multi-spinner)
 - [pdm-item-organizer](../pdm-item-organizer)
 - [list-item-layout-default](../list-item-layout-default)
@@ -53,6 +54,7 @@ Type: `Promise<void>`
 ### Graph
 ```mermaid
 graph TD;
+  managed-shipmentline-list-item --> status-badge
   managed-shipmentline-list-item --> multi-spinner
   managed-shipmentline-list-item --> pdm-item-organizer
   managed-shipmentline-list-item --> list-item-layout-default
