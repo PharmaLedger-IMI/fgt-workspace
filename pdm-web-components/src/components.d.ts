@@ -492,6 +492,7 @@ export namespace Components {
     }
     interface PdmSearchBar {
         "btnLabel": string;
+        "displayType": "full" | "normal";
         "placeholder": string;
     }
     interface PdmSsappLoader {
@@ -1535,6 +1536,7 @@ declare namespace LocalJSX {
     }
     interface PdmSearchBar {
         "btnLabel"?: string;
+        "displayType"?: "full" | "normal";
         "onSearch"?: (event: CustomEvent<any>) => void;
         "placeholder"?: string;
     }

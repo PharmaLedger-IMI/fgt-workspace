@@ -7,10 +7,11 @@
 
 ## Properties
 
-| Property      | Attribute     | Description | Type     | Default                   |
-| ------------- | ------------- | ----------- | -------- | ------------------------- |
-| `btnLabel`    | `btn-label`   |             | `string` | `'Search'`                |
-| `placeholder` | `placeholder` |             | `string` | `'enter search terms...'` |
+| Property      | Attribute      | Description | Type                 | Default                   |
+| ------------- | -------------- | ----------- | -------------------- | ------------------------- |
+| `btnLabel`    | `btn-label`    |             | `string`             | `'Search'`                |
+| `displayType` | `display-type` |             | `"full" \| "normal"` | `"normal"`                |
+| `placeholder` | `placeholder`  |             | `string`             | `'enter search terms...'` |
 
 
 ## Events

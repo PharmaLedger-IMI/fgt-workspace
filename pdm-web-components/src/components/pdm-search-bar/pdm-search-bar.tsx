@@ -12,6 +12,7 @@ export class PdmSearchBar {
   @Element() element;
   @Prop({attribute: 'placeholder'}) placeholder: string = 'enter search terms...'
   @Prop({attribute: 'btn-label'}) btnLabel: string = 'Search'
+  @Prop({attribute: 'display-type'}) displayType: "full" | "normal" = "normal";
 
   @Event()
   search: EventEmitter;
@@ -21,10 +22,28 @@ export class PdmSearchBar {
     this.search.emit(el.value)
   }
 
-  render() {
+  display(){
     const self = this;
-    return (
-      <Host>
+
+    if(self.displayType === "full")
+      return[
+        <ion-col size={12}>
+          <ion-searchbar
+            id="search-bar"
+            debounce={1000}
+            placeholder={self.placeholder}
+            search-icon="undefined"
+          >
+          </ion-searchbar>
+        </ion-col>,
+        <ion-col size={12}>
+          <ion-button color="secondary" expand="full" onClick={self.searchEvt.bind(self)}>
+            Search
+          </ion-button>
+        </ion-col>
+      ]
+
+      return(
         <ion-grid>
           <ion-row className="ion-justify-content-end ion-align-items-end">
             <ion-col size="auto" className="ion-align-self-center">
@@ -43,6 +62,15 @@ export class PdmSearchBar {
             </ion-col>
           </ion-row>
         </ion-grid>
+      )
+
+  }
+
+  render() {
+    const self = this;
+    return (
+      <Host>
+        {self.display()}
       </Host>
     );
   }

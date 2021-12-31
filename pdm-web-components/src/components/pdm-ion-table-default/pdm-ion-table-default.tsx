@@ -1,7 +1,8 @@
 import {WebManager, WebManagerService} from '../../services/WebManagerService';
 import {HostElement} from '../../decorators'
 import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
-import {Component, ComponentInterface, EventEmitter, h, Host, Prop, Element, Event, State, Watch, Method} from "@stencil/core";
+import {Component, ComponentInterface, EventEmitter, h, Host, Prop, Element, Event, State, Watch, Method, Listen} from "@stencil/core";
+import {calcBreakPoint} from "../../utils/utilFunctions";
 
 
 @Component({
@@ -86,6 +87,8 @@ export class PdmIonTableDefault implements ComponentInterface {
   private webManager: WebManager = undefined;
 
   @State() model = undefined;
+  @State() currentBreakpoint: string = calcBreakPoint();
+  @State() showSearch: boolean = false;
 
   private updateTable(newModel){
     if (!this.model){
@@ -157,6 +160,15 @@ export class PdmIonTableDefault implements ComponentInterface {
     await this.loadContents();
   }
 
+  @Listen('resize', { target: 'window' })
+  async updateComponent(){
+    const self = this;
+    if(self.currentBreakpoint !== calcBreakPoint()){
+      self.currentBreakpoint = calcBreakPoint();
+      self.refresh();
+    }
+  }
+
   private async changePage(offset: number){
     if (this.currentPage + offset > 0 || this.currentPage + offset <= this.pageCount){
       this.model = undefined;
@@ -175,11 +187,6 @@ export class PdmIonTableDefault implements ComponentInterface {
               </ion-label>
           </ion-col>
         </ion-row>
-        <ion-row class="ion-justify-content-center ion-align-items-center">
-          <ion-button fill="clear" size="large" color="medium" onClick={() => this.refresh()}>
-            <ion-icon slot="icon-only" name="refresh"></ion-icon>
-          </ion-button>
-      </ion-row>
       </ion-grid>
     )
   }
@@ -272,6 +279,88 @@ export class PdmIonTableDefault implements ComponentInterface {
     return (<Tag {...props}></Tag>);
   }
 
+  getSearchButton(){
+    const self = this;
+
+    const getSearchButton = function(){
+
+      if(self.showSearch)
+        return(
+          <ion-button color="secondary" onClick={() => {
+            self.showSearch = false;
+            self.refresh()
+          }}>
+            <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
+          </ion-button>
+        )
+
+      return(
+        <ion-button color="secondary" onClick={() => {
+          self.showSearch = true;
+          self.refresh();
+        }}>
+          <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+        </ion-button>
+      )
+    }
+
+    const getSearch = function(){
+      if (!self.canQuery)
+        return;
+      return (
+        <pdm-search-bar display-type="full" onSearch={self.performSearch.bind(self)} placeholder={self.searchBarPlaceholder}> </pdm-search-bar>
+      )
+    }
+
+    if(self.showSearch)
+      return (
+        // <div class="ion-margin-top ion-padding-horizontal">
+        <ion-grid>
+          <ion-row class="ion-align-items-center ion-justify-content-between">
+            <ion-col>
+              <ion-icon size="large" color="secondary" name={self.iconName}></ion-icon>
+              <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">{self.tableTitle}</ion-label>
+            </ion-col>
+            <ion-col class={`flex ion-justify-content-end`}>
+              {getSearchButton()}
+            </ion-col>
+            </ion-row>
+          <ion-row class="ion-align-items-center ion-padding-start ion-padding-end">
+            {getSearch()}
+          </ion-row>
+        </ion-grid>
+      )
+
+    return(
+      <ion-grid>
+          <ion-row class="ion-align-items-center ion-justify-content-between">
+            <ion-col>
+              <ion-icon size="large" color="secondary" name={self.iconName}></ion-icon>
+              <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">{self.tableTitle}</ion-label>
+            </ion-col>
+            <ion-col class={`flex ion-justify-content-end`}>
+              {getSearchButton()}
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+    )
+  }
+
+  showTop(){
+    const self = this;
+
+    switch(self.currentBreakpoint){
+      case 'xs':
+      case 'sm':
+        return self.getSearchButton();
+      case 'md':
+      case 'lg':
+      case 'xl':
+      default:
+        return self.getTableHeader();
+    }
+  }
+
   getPagination(){
     if (!this.paginated)
       return;
@@ -300,7 +389,7 @@ export class PdmIonTableDefault implements ComponentInterface {
   render() {
     return (
       <Host>
-        {this.getTableHeader()}
+        {this.showTop()}
         <div id="ion-table-content" class="ion-padding">
           {this.getHeaders()}
           {this.getContent()}
