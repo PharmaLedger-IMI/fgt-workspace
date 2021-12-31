@@ -78,9 +78,6 @@ export class ListItemLayoutDefault {
       emptySpace -= self.configL[col].sizeByScreen[self.currentBreakpoint];
     })
 
-    console.log("Empty Spaces = ", emptySpace);
-    console.log("BreakPoint =", self.currentBreakpoint)
-
     content.push(self.createContentPlaceholder(emptySpace))
     return content;
   }

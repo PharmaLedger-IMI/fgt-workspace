@@ -26,22 +26,26 @@ export class PdmSearchBar {
     const self = this;
 
     if(self.displayType === "full")
-      return[
-        <ion-col size={12}>
-          <ion-searchbar
-            id="search-bar"
-            debounce={1000}
-            placeholder={self.placeholder}
-            search-icon="undefined"
-          >
-          </ion-searchbar>
-        </ion-col>,
-        <ion-col size={12}>
-          <ion-button color="secondary" expand="full" onClick={self.searchEvt.bind(self)}>
-            Search
-          </ion-button>
-        </ion-col>
-      ]
+    return(
+      <ion-grid>
+        <ion-row className="ion-justify-content-end ion-align-items-end">
+          <ion-col size={12} className="ion-align-self-center">
+            <ion-searchbar
+              id="search-bar"
+              debounce={1000}
+              placeholder={self.placeholder}
+              search-icon="undefined"
+            >
+            </ion-searchbar>
+          </ion-col>
+          <ion-col size={12}>
+              <ion-button color="secondary" expand="block" onClick={self.searchEvt.bind(self)}>
+                Search
+              </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    )
 
       return(
         <ion-grid>
@@ -56,7 +60,7 @@ export class PdmSearchBar {
               </ion-searchbar>
             </ion-col>
             <ion-col>
-              <ion-button color="secondary" expand="full" onClick={self.searchEvt.bind(self)}>
+              <ion-button color="secondary" expand="block" onClick={self.searchEvt.bind(self)}>
                 <ion-icon name="search-outline"> </ion-icon>
               </ion-button>
             </ion-col>

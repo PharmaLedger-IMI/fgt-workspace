@@ -286,30 +286,36 @@ export class PdmIonTableDefault implements ComponentInterface {
 
       if(self.showSearch)
         return(
-          <ion-button color="secondary" onClick={() => {
-            self.showSearch = false;
-            self.refresh()
-          }}>
-            <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
-          </ion-button>
+          <div class="ion-margin-end">
+            <ion-button color="secondary" fill="clear" onClick={() => {
+              self.showSearch = false;
+              self.refresh()
+            }}>
+              <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
+            </ion-button>
+          </div>
         )
 
       return(
-        <ion-button color="secondary" onClick={() => {
-          self.showSearch = true;
-          self.refresh();
-        }}>
-          <ion-icon slot="icon-only" name="search-outline"></ion-icon>
-        </ion-button>
-      )
+        <div class="ion-margin-end">
+          <ion-button fill="solid" color="secondary" onClick={() => {
+            self.showSearch = true;
+            self.refresh();
+          }}>
+            <ion-icon  slot="icon-only" name="search-outline"></ion-icon>
+          </ion-button>
+        </div>
+        )
     }
 
     const getSearch = function(){
       if (!self.canQuery)
         return;
-      return (
-        <pdm-search-bar display-type="full" onSearch={self.performSearch.bind(self)} placeholder={self.searchBarPlaceholder}> </pdm-search-bar>
-      )
+        return (
+          <div class="ion-margin-end">
+            <pdm-search-bar display-type="full" onSearch={self.performSearch.bind(self)} placeholder={self.searchBarPlaceholder}> </pdm-search-bar>
+          </div>
+        )
     }
 
     if(self.showSearch)
@@ -325,7 +331,7 @@ export class PdmIonTableDefault implements ComponentInterface {
               {getSearchButton()}
             </ion-col>
             </ion-row>
-          <ion-row class="ion-align-items-center ion-padding-start ion-padding-end">
+          <ion-row class="ion-align-items-center ion-padding-start ion-padding-end block">
             {getSearch()}
           </ion-row>
         </ion-grid>
@@ -351,8 +357,8 @@ export class PdmIonTableDefault implements ComponentInterface {
 
     switch(self.currentBreakpoint){
       case 'xs':
-      case 'sm':
         return self.getSearchButton();
+      case 'sm':
       case 'md':
       case 'lg':
       case 'xl':
