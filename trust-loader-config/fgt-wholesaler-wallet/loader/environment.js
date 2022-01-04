@@ -7,6 +7,8 @@ export default {
   "browser": "any",
   "mode": "dev-secure",
   "domain": "traceability",
+  "didDomain": "traceability",
+  "enclaveType":"WalletDBEnclave",
   "sw": true,
   "pwa": true,
   "basePath": "/fgt-wholesaler-wallet/loader/",
