@@ -1,6 +1,8 @@
 const Manager = require('./Manager')
 const { _err } = require('../services/utils')
 const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE, DOMAIN} = require('../constants');
+const opendsu = require("opendsu");
+const scAPI = opendsu.loadAPI("sc");
 
 /**
  * @typedef W3cDID
@@ -53,10 +55,13 @@ class MessageManager extends Manager{
             manager._listeners = {};
             manager.timer = undefined;
 
+            let sc = scAPI.getSecurityContext();
+
+            sc.on('initialised', async () => {
             manager.getOwnDID((err, didDoc) => err
                 ? console.log(`Could not get Own DID`, err)
                 : manager._startMessageListener(didDoc));
-
+            })
             if (callback)
                 callback(undefined, manager);
         });
@@ -247,13 +252,17 @@ class MessageManager extends Manager{
     _getDID(didString, callback){
 
         let didIdentifier = `did:ssi:name:${DOMAIN}:${didString}`;
-
-        this.w3cDID.resolveDID(didIdentifier, (err, resolvedDIDDoc) => err 
+        if(scAPI.securityContextIsInitialised()){
+            this.w3cDID.resolveDID(didIdentifier, (err, resolvedDIDDoc) => err 
             ? this.w3cDID.createIdentity(DID_METHOD, DOMAIN, didString, (err, createdDIDDoc) => err
                 ? _err(`Could not create or resolve DID identity`, err, callback)
                 : callback(undefined, createdDIDDoc))
             : callback(undefined, resolvedDIDDoc));
-    }
+        } else {
+            callback("error");
+        }
+
+        }
 }
 
 /**
