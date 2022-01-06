@@ -29,6 +29,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
 
 
   @State() currentBreakPoint: string = undefined;
+  @State() showSearch: boolean = false;
 
   @Method()
   async refresh(){
@@ -50,9 +51,65 @@ export class PdmIonContentDisplay implements ComponentInterface{
   /**
    * Content Header Render
    */
+  private getSearchButton(){
+    const self = this;
+
+    if(self.showSearch)
+      return(
+        <ion-button class={self.buttonDataTag ? "ion-margin-end" : ""} color="secondary" fill="clear" onClick={() => {
+          self.showSearch = false;
+        }}>
+          <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
+        </ion-button>
+      )
+
+    return(
+      <ion-button class={self.buttonDataTag ? "ion-margin-end" : ""} fill="solid" color="secondary" onClick={() => {
+        self.showSearch = true;
+      }}>
+        <ion-icon  slot="icon-only" name="search-outline"></ion-icon>
+      </ion-button>
+    )
+  }
 
   private getSearchBar(){
     const self = this;
+
+    //     const getSearch = function(){
+//       if (!self.canQuery)
+//         return;
+//       return (
+//         <div class="ion-margin-end">
+//           <pdm-search-bar onSearch={self.performSearch.bind(self)} placeholder={self.searchBarPlaceholder}> </pdm-search-bar>
+//         </div>
+//       )
+//     }
+
+//     const getSearchBar = function () {
+//       if(!self.canQuery)
+//         return;
+//       //Falta para ecras pequenos
+//       return(
+//         <pdm-ion-grid-search-bar 
+
+//         > 
+//         </pdm-ion-grid-search-bar>
+//       )
+//     }
+//   private getSearchBar(isFull){
+//     const self = this;
+
+//     if(!self.canQuery)
+//         return;
+//       //Falta para ecras pequenos
+//     return(
+//       <pdm-ion-grid-search-bar 
+//         onSearch={self.performSearch.bind(self)} 
+//         placeholder={self.searchBarPlaceholder}
+//       > 
+//       </pdm-ion-grid-search-bar>
+//     )
+//   }
 
     return(
       <pdm-ion-grid-search-bar></pdm-ion-grid-search-bar>
@@ -73,10 +130,9 @@ export class PdmIonContentDisplay implements ComponentInterface{
     )
   }
 
-  private getContentHeaderBigScreens(){
+  private getContentHeaderSmallScreens(){
     const self = this;
 
-    //Render for XL Screen Size
     return(
       <ion-grid>
         <ion-row class="ion-align-items-center ion-padding-horizontal ion-margin-vertical">
@@ -87,64 +143,39 @@ export class PdmIonContentDisplay implements ComponentInterface{
             <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">{self.contentTitle}</ion-label>
           </ion-col>
           <ion-col></ion-col>
-          {/* class={"ion-justify-content-end"} */}
-          <ion-col>
-            {self.getSearchBar()}
+          <ion-col size="auto">
+            {self.getSearchButton()}
           </ion-col>
-          {/* class= ion-padding-start" */}
           <ion-col size="auto">
             {self.getHeaderButton()}
           </ion-col>
         </ion-row>
       </ion-grid>
     )
+  }
 
+  private getContentHeaderBigScreens(){
+    const self = this;
 
-
-
-
-    //   private getTableHeader(){
-//     const self = this;
-
-//     const getSearch = function(){
-//       if (!self.canQuery)
-//         return;
-//       return (
-//         <div class="ion-margin-end">
-//           <pdm-search-bar onSearch={self.performSearch.bind(self)} placeholder={self.searchBarPlaceholder}> </pdm-search-bar>
-//         </div>
-//       )
-//     }
-
-
-//---------------------------------------------------------------------
-
-
-    //   getGridHeader(screenSize){
-//     const self = this;
-
-//     const getSearchBar = function () {
-//       if(!self.canQuery)
-//         return;
-//       //Falta para ecras pequenos
-//       return(
-//         <pdm-ion-grid-search-bar 
-
-//         > 
-//         </pdm-ion-grid-search-bar>
-//       )
-//     }
-
-
-
-
-
-
-//   }
-
-
-
-
+    return(
+      <ion-grid>
+        <ion-row class="ion-align-items-center ion-padding-horizontal ion-margin-vertical">
+          <ion-col size="auto">
+            <ion-icon size="large" color="secondary" name={self.iconName}></ion-icon>
+          </ion-col>
+          <ion-col size="auto">
+            <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">{self.contentTitle}</ion-label>
+          </ion-col>
+          <ion-col></ion-col>
+          <ion-col size="auto">
+            {self.getSearchBar()}
+          </ion-col>
+          <ion-col size="auto">
+            {self.getHeaderButton()}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    )
   }
 
   getContentHeader(){
@@ -156,10 +187,12 @@ export class PdmIonContentDisplay implements ComponentInterface{
       case 'xs':
       case 'sm':
       case 'md':
+        return self.getContentHeaderSmallScreens();
       case 'lg':
-      case 'xl':
-      default:
+      case 'xl': 
         return self.getContentHeaderBigScreens();
+      default:
+        return;
       }
     }
 
@@ -431,47 +464,11 @@ export class PdmIonContentDisplay implements ComponentInterface{
 
 
 
-//   private getSearchBar(isFull){
-//     const self = this;
-
-//     if(!self.canQuery)
-//         return;
-//       //Falta para ecras pequenos
-//     return(
-//       <pdm-ion-grid-search-bar 
-//         onSearch={self.performSearch.bind(self)} 
-//         placeholder={self.searchBarPlaceholder}
-//       > 
-//       </pdm-ion-grid-search-bar>
-//     )
-//   }
 
 
 
 
 
-//     const getGridTopSmallScreen = function(){
-//       return(
-//         <ion-grid>
-//           <ion-row class="ion-margin-top ion-align-items-center ion-padding-horizontal">
-//             <ion-col size="auto">
-//               <ion-icon size="large" color="secondary" name={self.iconName}></ion-icon>
-//             </ion-col>
-//             <ion-col size="auto">
-//               <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">{self.tableTitle}</ion-label>
-//             </ion-col>
-//             <ion-col></ion-col>
-//             {/* <ion-col class={"ion-justify-content-end"}>
-//               {getSearchBar()}
-//             </ion-col> */}
-//             <ion-col size="auto" class="ion-justify-content-end ion-padding-start">
-//               {self.getTopButton()}
-//             </ion-col>
-//           </ion-row>
-//         </ion-grid>
-//       )
-
-//     }
 
 
 
@@ -483,12 +480,6 @@ export class PdmIonContentDisplay implements ComponentInterface{
 // import {Component, ComponentInterface, EventEmitter, h, Host, Prop, Element, Event, State, Watch, Method} from "@stencil/core";
 
 
-// @Component({
-//   tag: 'pdm-ion-table',
-//   styleUrl: 'pdm-ion-table.css',
-//   shadow: false
-// })
-// export class PdmIonTable implements ComponentInterface {
 //   @HostElement() host: HTMLElement;
 
 //   @Element() element;
@@ -514,8 +505,6 @@ export class PdmIonContentDisplay implements ComponentInterface{
 //    * Graphical Params
 //    */
 
-//   @Prop({attribute: 'table-title'}) tableTitle = 'PDM Ionic Table';
-//   @Prop({attribute: 'icon-name'}) iconName?: string = undefined;
 //   @Prop({attribute: 'no-content-message', mutable: true}) noContentMessage?: string = "No Content";
 //   @Prop({attribute: 'loading-message', mutable: true}) loadingMessage?: string = "Loading...";
 //   @Prop({attribute: 'search-bar-placeholder', mutable: true}) searchBarPlaceholder?: string =  "enter search terms...";
