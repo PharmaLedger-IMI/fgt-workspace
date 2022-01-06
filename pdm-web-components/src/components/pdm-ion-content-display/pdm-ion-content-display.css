@@ -1,0 +1,15 @@
+:host {
+  display: block;
+}
+
+ion-grid{
+  border: 1px solid red;
+}
+
+ion-row{
+  border: 1px solid yellowgreen;
+}
+
+ion-col{
+  border: 1px solid blue;
+}
