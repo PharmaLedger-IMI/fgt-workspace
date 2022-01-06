@@ -1,16 +1,53 @@
 <webc-container controller="ProductsController">
-    <pdm-ion-table table-title="@title"
-                   item-reference="gtin"
-                   paginated="true"
-                   manager="ProductManager"
-                   icon-name="reader"
-                   item-type="managed-product-list-item"
-                   items-per-page="10">
-        <ion-button slot="buttons" color="secondary" data-tag="add-product" fill="solid">
-            {{ @buttons.add-product.label }}
-            <ion-icon slot="end" name="add-circle"></ion-icon>
-        </ion-button>
-    </pdm-ion-table>
+    <pdm-ion-content-display
+        content-title="@title"
+        icon-name="reader"
+        button-text="@buttons.add-product.label"
+        button-data-tag="add-product"
+   
+    
+    >
+    </pdm-ion-content-display>
+
+    <!-- optional
+        Ion Content Header Graphical Params and Setup Params
+
+            content-title="Name of the table being presented"
+                defaults to PDM Ionic Content
+                you can import from json using "@title"
+
+            icon-name="icon name from ionic"
+                defaults to albums
+
+            button-text="label for the button"
+                you can import from json file using "@buttons.add-product.label"
+
+            button-data-tag="add-product"
+                gives functionality to the button
+
+
+
+    no-content-message="message you want to display"  string
+
+    content-type = "grid"  defaults to grid can be set to (table or list or grid)
+
+
+     icon-name="reader"
+        table-title="@title"
+        
+
+        
+
+        item-reference="gtin"
+        item-type="managed-product-list-item"
+
+        paginated="true"
+        items-per-page="10"
+
+        manager="ProductManager"
+
+-->
+
 </webc-container>
 
 

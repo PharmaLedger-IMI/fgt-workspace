@@ -32,7 +32,7 @@ export default class ProductsController extends LocalizedController {
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-            self.element.querySelector('pdm-ion-table').refresh();
+            self.element.querySelector('pdm-ion-content-display').refresh();
         }, {capture: true});
     }
 }
