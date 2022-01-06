@@ -1,0 +1,1830 @@
+{
+	"info": {
+		"_postman_id": "6e3c9140-f9cc-4425-ac70-c3aa48eb553f",
+		"name": "Pharmaledger FGT Api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "mah",
+			"item": [
+				{
+					"name": "product",
+					"item": [
+						{
+							"name": "create",
+							"protocolProfileBehavior": {
+								"strictSSL": false
+							},
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"gtin\": \"5124547785496229\",\r\n  \"name\": \"Number One\",\r\n  \"description\": \"this is a product number one description\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api:mah}}/product/create",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"product",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createAll",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"gtin\": \"5124547785491\",\r\n    \"name\": \"BAYA15X\",\r\n    \"description\": \"this is a description\"\r\n  },\r\n  {\r\n    \"gtin\": \"5124547785492\",\r\n    \"name\": \"BAYA15X\",\r\n    \"description\": \"this is a description\"\r\n  }\r\n]"
+								},
+								"url": {
+									"raw": "{{api:mah}}/product/createAll",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"product",
+										"createAll"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAll",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:mah}}/product/getAll",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"product",
+										"getAll"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "5124547785492",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "itemPerPage",
+											"value": "10",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "dsc",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOne",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:mah}}/product/get/:gtin",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"product",
+										"get",
+										":gtin"
+									],
+									"variable": [
+										{
+											"key": "gtin",
+											"value": "51245477854923"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "batch",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"expiry\": \"2023-01-01\",\r\n  \"serialNumbers\": [\r\n    11001,\r\n    11002,\r\n    11003,\r\n    11004,\r\n    11005,\r\n    11006,\r\n    11007,\r\n    11008,\r\n    11009,\r\n    11000\r\n  ]\r\n}"
+								},
+								"url": {
+									"raw": "{{api:mah}}/batch/create/:gtin",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"batch",
+										"create",
+										":gtin"
+									],
+									"variable": [
+										{
+											"key": "gtin",
+											"value": "51245477854969"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createAll",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"gtin\": \"51245477854969\",\r\n    \"expiry\": \"2023-01-01\",\r\n    \"serialNumbers\": [\r\n      11001,\r\n      11002,\r\n      11003\r\n    ]\r\n  },\r\n  {\r\n    \"gtin\": \"51245477854969\",\r\n    \"expiry\": \"2023-01-01\",\r\n    \"serialNumbers\": [\r\n      11001,\r\n      11002\r\n    ]\r\n  },\r\n  {\r\n    \"gtin\": \"51245477854969\",\r\n    \"expiry\": \"2022-01-01\",\r\n    \"serialNumbers\": [\r\n\t\t11001\r\n    ]\r\n  }\r\n]"
+								},
+								"url": {
+									"raw": "{{api:mah}}/batch/createAll",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"batch",
+										"createAll"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAll",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:mah}}/batch/getAll?sort=dsc",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"batch",
+										"getAll"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "5124547785492",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "itemPerPage",
+											"value": "5",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "dsc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOne",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:mah}}/batch/get/:gtin/:batchNumber",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"batch",
+										"get",
+										":gtin",
+										":batchNumber"
+									],
+									"variable": [
+										{
+											"key": "gtin",
+											"value": "51245477854969"
+										},
+										{
+											"key": "batchNumber",
+											"value": "LF0618"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"status\": \"recall\",\r\n  \"extraInfo\": \"[api] this is a extra info that update status\"\r\n}"
+								},
+								"url": {
+									"raw": "{{api:mah}}/batch/update/:gtin/:batchNumber",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"batch",
+										"update",
+										":gtin",
+										":batchNumber"
+									],
+									"variable": [
+										{
+											"key": "gtin",
+											"value": "51245477854969"
+										},
+										{
+											"key": "batchNumber",
+											"value": "LF0618"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateAll",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"gtin\": \"51245477854969\",\r\n    \"batchNumber\": \"MH4214\",\r\n    \"status\": \"recall\",\r\n    \"extraInfo\": \"[api] update extra info with any info\"\r\n  }\r\n]"
+								},
+								"url": {
+									"raw": "{{api:mah}}/batch/updateAll",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"batch",
+										"updateAll"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "shipment",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"orderId\": \"001\",\r\n  \"requesterId\": \"PHA324353426\",\r\n  \"senderId\": \"MAH324353426\",\r\n  \"status\": \"created\",\r\n  \"shipmentLines\": [\r\n    {\r\n      \"gtin\": \"51245477854969\",\r\n      \"batch\": \"BB0461\",\r\n      \"senderId\": \"MAH324353426\",\r\n      \"requesterId\": \"PHA324353426\",\r\n      \"quantity\": 1,\r\n      \"status\": \"created\"\r\n    }\r\n  ]\r\n}"
+								},
+								"url": {
+									"raw": "{{api:mah}}/shipment/create",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"shipment",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createAll",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"orderId\": \"002\",\r\n    \"requesterId\": \"WHS482899623\",\r\n    \"senderId\": \"MAH280478981\",\r\n    \"status\": \"created\",\r\n    \"shipmentLines\": [\r\n      {\r\n        \"gtin\": \"51245477854969\",\r\n        \"batch\": \"BB0461\",\r\n        \"quantity\": 1,\r\n        \"senderId\": \"MAH280478981\",\r\n        \"requesterId\": \"WHS482899623\",\r\n        \"status\": \"created\"\r\n      }\r\n    ]\r\n  }\r\n]"
+								},
+								"url": {
+									"raw": "{{api:mah}}/shipment/createAll",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"shipment",
+										"createAll"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAll",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:mah}}/shipment/getAll",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"shipment",
+										"getAll"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "5124547785492",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "itemPerPage",
+											"value": "5",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "dsc",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOne",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:mah}}/shipment/get/:partnerId/:orderId",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"shipment",
+										"get",
+										":partnerId",
+										":orderId"
+									],
+									"variable": [
+										{
+											"key": "partnerId",
+											"value": "PHA324353426"
+										},
+										{
+											"key": "orderId",
+											"value": "001"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"status\": \"hold\",\r\n  \"extraInfo\": \"[api] extraInfo status update test\"\r\n}"
+								},
+								"url": {
+									"raw": "{{api:mah}}/shipment/update/:partnerId/:orderId",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"shipment",
+										"update",
+										":partnerId",
+										":orderId"
+									],
+									"variable": [
+										{
+											"key": "partnerId",
+											"value": "PHA324353426"
+										},
+										{
+											"key": "orderId",
+											"value": "001"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateAll",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"orderId\": \"001\",\r\n    \"requesterId\": \"PHA324353426\",\r\n    \"status\": \"pickup\",\r\n    \"extraInfo\": \"[api] updateAll extraInfo update to pickup\"\r\n  }\r\n]"
+								},
+								"url": {
+									"raw": "{{api:mah}}/shipment/updateAll",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"shipment",
+										"updateAll"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "stock",
+					"item": [
+						{
+							"name": "getAll",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:mah}}/stock/getAll?sort=dsc",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"stock",
+										"getAll"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "5124547785492",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "itemPerPage",
+											"value": "5",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "dsc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOne",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:mah}}/stock/get/:gtin",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"stock",
+										"get",
+										":gtin"
+									],
+									"variable": [
+										{
+											"key": "gtin",
+											"value": "51245477854969"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "sale (test)",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"sellerId\": \"PHA324353426\",\r\n  \"productList\": [\r\n    {\r\n      \"gtin\": \"51245477854969\",\r\n      \"batchNumber\": \"AE0816\",\r\n\t  \"serialNumber\": \"11003\",\r\n\t  \"manufName\": \"MAH324353426\"\r\n    }\r\n  ]\r\n}"
+								},
+								"url": {
+									"raw": "{{api:mah}}/sale/create",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"sale",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createAll",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"id\": \"1234412344\",\r\n    \"sellerId\": \"MAH324353425\",\r\n    \"productList\": [\r\n      {\r\n        \"name\": \"BAYAAA15X9\",\r\n        \"gtin\": \"15151515\",\r\n        \"batchNumber\": \"WS0066\",\r\n        \"serialNumber\": \"1222\",\r\n        \"manufName\": \"MAH324353425\",\r\n        \"expiry\": \"2021-01-02T00:00:00.000Z\",\r\n        \"status\": \"commissioned\",\r\n        \"description\": \"testando...\"\r\n      }\r\n    ]\r\n  }\r\n]"
+								},
+								"url": {
+									"raw": "{{api:mah}}/sale/createAll",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"sale",
+										"createAll"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAll",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:mah}}/sale/getAll?sort=dsc",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"sale",
+										"getAll"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "5124547785492",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "itemPerPage",
+											"value": "5",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "dsc"
+										},
+										{
+											"key": "id",
+											"value": "001",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOne",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:mah}}/sale/get/:saleId",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"sale",
+										"get",
+										":saleId"
+									],
+									"variable": [
+										{
+											"key": "saleId",
+											"value": "001"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "receipt",
+					"item": [
+						{
+							"name": "getAll",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:mah}}/receipt/getAll",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"receipt",
+										"getAll"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "5124547785492",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "itemPerPage",
+											"value": "5",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "dsc",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOne",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:mah}}/receipt/get/:gtin",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"receipt",
+										"get",
+										":gtin"
+									],
+									"variable": [
+										{
+											"key": "gtin",
+											"value": "51245477854969"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "traceability",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"gtin\": \"5124547785496229\",\r\n  \"batchNumber\": \"BB0461\"\r\n}"
+								},
+								"url": {
+									"raw": "{{api:mah}}/traceability/create",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"traceability",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createAll",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\n\t{\n\t\t\"gtin\": \"5124547785496229\",\n\t\t\"batchNumber\": \"BA0461\"\n\t}\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api:mah}}/traceability/createAll",
+									"host": [
+										"{{api:mah}}"
+									],
+									"path": [
+										"traceability",
+										"createAll"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "pharmacy",
+			"item": [
+				{
+					"name": "stock",
+					"item": [
+						{
+							"name": "getAll",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:pha}}/stock/getAll?sort=dsc",
+									"host": [
+										"{{api:pha}}"
+									],
+									"path": [
+										"stock",
+										"getAll"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "5124547785492",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "itemPerPage",
+											"value": "5",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "dsc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOne",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:pha}}/stock/get/:gtin",
+									"host": [
+										"{{api:pha}}"
+									],
+									"path": [
+										"stock",
+										"get",
+										":gtin"
+									],
+									"variable": [
+										{
+											"key": "gtin",
+											"value": "51245477854969"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "sale",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"001\",\r\n  \"sellerId\": \"PHA324353426\",\r\n  \"productList\": [\r\n    {\r\n      \"gtin\": \"51245477854969\",\r\n      \"batchNumber\": \"AE0816\",\r\n\t  \"serialNumber\": \"11003\",\r\n\t  \"manufName\": \"MAH324353426\"\r\n    }\r\n  ]\r\n}"
+								},
+								"url": {
+									"raw": "{{api:pha}}/sale/create",
+									"host": [
+										"{{api:pha}}"
+									],
+									"path": [
+										"sale",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createAll",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"id\": \"1234412344\",\r\n    \"sellerId\": \"MAH324353425\",\r\n    \"productList\": [\r\n      {\r\n        \"name\": \"BAYAAA15X9\",\r\n        \"gtin\": \"15151515\",\r\n        \"batchNumber\": \"WS0066\",\r\n        \"serialNumber\": \"1222\",\r\n        \"manufName\": \"MAH324353425\",\r\n        \"expiry\": \"2021-01-02T00:00:00.000Z\",\r\n        \"status\": \"commissioned\",\r\n        \"description\": \"testando...\"\r\n      }\r\n    ]\r\n  }\r\n]"
+								},
+								"url": {
+									"raw": "{{api:pha}}/sale/createAll",
+									"host": [
+										"{{api:pha}}"
+									],
+									"path": [
+										"sale",
+										"createAll"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAll",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:pha}}/sale/getAll?sort=dsc&id=001",
+									"host": [
+										"{{api:pha}}"
+									],
+									"path": [
+										"sale",
+										"getAll"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "5124547785492",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "itemPerPage",
+											"value": "5",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "dsc"
+										},
+										{
+											"key": "id",
+											"value": "001"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOne",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:pha}}/sale/get/:saleId",
+									"host": [
+										"{{api:pha}}"
+									],
+									"path": [
+										"sale",
+										"get",
+										":saleId"
+									],
+									"variable": [
+										{
+											"key": "saleId",
+											"value": "001"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "receipt",
+					"item": [
+						{
+							"name": "getAll",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:pha}}/receipt/getAll",
+									"host": [
+										"{{api:pha}}"
+									],
+									"path": [
+										"receipt",
+										"getAll"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "5124547785492",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "itemPerPage",
+											"value": "5",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "dsc",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOne",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:pha}}/receipt/get/:gtin",
+									"host": [
+										"{{api:pha}}"
+									],
+									"path": [
+										"receipt",
+										"get",
+										":gtin"
+									],
+									"variable": [
+										{
+											"key": "gtin",
+											"value": "51245477854969"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "shipment",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"orderId\": \"001\",\r\n  \"requesterId\": \"PHA324353426\",\r\n  \"senderId\": \"MAH324353426\",\r\n  \"status\": \"created\",\r\n  \"shipmentLines\": [\r\n    {\r\n      \"gtin\": \"51245477854969\",\r\n      \"batch\": \"BB0461\",\r\n      \"senderId\": \"MAH324353426\",\r\n      \"requesterId\": \"PHA324353426\",\r\n      \"quantity\": 1,\r\n      \"status\": \"created\"\r\n    }\r\n  ]\r\n}"
+								},
+								"url": {
+									"raw": "{{api:pha}}/shipment/create",
+									"host": [
+										"{{api:pha}}"
+									],
+									"path": [
+										"shipment",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createAll",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"orderId\": \"002\",\r\n    \"requesterId\": \"WHS482899623\",\r\n    \"senderId\": \"MAH280478981\",\r\n    \"status\": \"created\",\r\n    \"shipmentLines\": [\r\n      {\r\n        \"gtin\": \"51245477854969\",\r\n        \"batch\": \"BB0461\",\r\n        \"quantity\": 1,\r\n        \"senderId\": \"MAH280478981\",\r\n        \"requesterId\": \"WHS482899623\",\r\n        \"status\": \"created\"\r\n      }\r\n    ]\r\n  }\r\n]"
+								},
+								"url": {
+									"raw": "{{api:pha}}/shipment/createAll",
+									"host": [
+										"{{api:pha}}"
+									],
+									"path": [
+										"shipment",
+										"createAll"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAll",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:pha}}/shipment/getAll",
+									"host": [
+										"{{api:pha}}"
+									],
+									"path": [
+										"shipment",
+										"getAll"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "5124547785492",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "itemPerPage",
+											"value": "5",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "dsc",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOne",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:pha}}/shipment/get/:partnerId/:orderId",
+									"host": [
+										"{{api:pha}}"
+									],
+									"path": [
+										"shipment",
+										"get",
+										":partnerId",
+										":orderId"
+									],
+									"variable": [
+										{
+											"key": "partnerId",
+											"value": "PHA324353426"
+										},
+										{
+											"key": "orderId",
+											"value": "001"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"status\": \"hold\",\r\n  \"extraInfo\": \"[api] extraInfo status update test\"\r\n}"
+								},
+								"url": {
+									"raw": "{{api:pha}}/shipment/update/:partnerId/:orderId",
+									"host": [
+										"{{api:pha}}"
+									],
+									"path": [
+										"shipment",
+										"update",
+										":partnerId",
+										":orderId"
+									],
+									"variable": [
+										{
+											"key": "partnerId",
+											"value": "PHA324353426"
+										},
+										{
+											"key": "orderId",
+											"value": "001"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateAll",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"orderId\": \"001\",\r\n    \"requesterId\": \"PHA324353426\",\r\n    \"status\": \"pickup\",\r\n    \"extraInfo\": \"[api] updateAll extraInfo update to pickup\"\r\n  }\r\n]"
+								},
+								"url": {
+									"raw": "{{api:pha}}/shipment/updateAll",
+									"host": [
+										"{{api:pha}}"
+									],
+									"path": [
+										"shipment",
+										"updateAll"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "wholesaler",
+			"item": [
+				{
+					"name": "stock",
+					"item": [
+						{
+							"name": "getAll",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:whs}}/stock/getAll?sort=dsc",
+									"host": [
+										"{{api:whs}}"
+									],
+									"path": [
+										"stock",
+										"getAll"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "5124547785492",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "itemPerPage",
+											"value": "5",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "dsc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOne",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:whs}}/stock/get/:gtin",
+									"host": [
+										"{{api:whs}}"
+									],
+									"path": [
+										"stock",
+										"get",
+										":gtin"
+									],
+									"variable": [
+										{
+											"key": "gtin",
+											"value": "51245477854969"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "shipment",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"orderId\": \"001\",\r\n  \"requesterId\": \"PHA324353426\",\r\n  \"senderId\": \"MAH324353426\",\r\n  \"status\": \"created\",\r\n  \"shipmentLines\": [\r\n    {\r\n      \"gtin\": \"51245477854969\",\r\n      \"batch\": \"BB0461\",\r\n      \"senderId\": \"MAH324353426\",\r\n      \"requesterId\": \"PHA324353426\",\r\n      \"quantity\": 1,\r\n      \"status\": \"created\"\r\n    }\r\n  ]\r\n}"
+								},
+								"url": {
+									"raw": "{{api:whs}}/shipment/create",
+									"host": [
+										"{{api:whs}}"
+									],
+									"path": [
+										"shipment",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createAll",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"orderId\": \"002\",\r\n    \"requesterId\": \"WHS482899623\",\r\n    \"senderId\": \"MAH280478981\",\r\n    \"status\": \"created\",\r\n    \"shipmentLines\": [\r\n      {\r\n        \"gtin\": \"51245477854969\",\r\n        \"batch\": \"BB0461\",\r\n        \"quantity\": 1,\r\n        \"senderId\": \"MAH280478981\",\r\n        \"requesterId\": \"WHS482899623\",\r\n        \"status\": \"created\"\r\n      }\r\n    ]\r\n  }\r\n]"
+								},
+								"url": {
+									"raw": "{{api:whs}}/shipment/createAll",
+									"host": [
+										"{{api:whs}}"
+									],
+									"path": [
+										"shipment",
+										"createAll"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAll",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:whs}}/shipment/getAll",
+									"host": [
+										"{{api:whs}}"
+									],
+									"path": [
+										"shipment",
+										"getAll"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "5124547785492",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "itemPerPage",
+											"value": "5",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "dsc",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOne",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{api:whs}}/shipment/get/:partnerId/:orderId",
+									"host": [
+										"{{api:whs}}"
+									],
+									"path": [
+										"shipment",
+										"get",
+										":partnerId",
+										":orderId"
+									],
+									"variable": [
+										{
+											"key": "partnerId",
+											"value": "PHA324353426"
+										},
+										{
+											"key": "orderId",
+											"value": "001"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"status\": \"hold\",\r\n  \"extraInfo\": \"[api] extraInfo status update test\"\r\n}"
+								},
+								"url": {
+									"raw": "{{api:whs}}/shipment/update/:partnerId/:orderId",
+									"host": [
+										"{{api:whs}}"
+									],
+									"path": [
+										"shipment",
+										"update",
+										":partnerId",
+										":orderId"
+									],
+									"variable": [
+										{
+											"key": "partnerId",
+											"value": "PHA324353426"
+										},
+										{
+											"key": "orderId",
+											"value": "001"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateAll",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"orderId\": \"001\",\r\n    \"requesterId\": \"PHA324353426\",\r\n    \"status\": \"pickup\",\r\n    \"extraInfo\": \"[api] updateAll extraInfo update to pickup\"\r\n  }\r\n]"
+								},
+								"url": {
+									"raw": "{{api:whs}}/shipment/updateAll",
+									"host": [
+										"{{api:whs}}"
+									],
+									"path": [
+										"shipment",
+										"updateAll"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "Server 1",
+			"value": "DefaultParameterValue/traceability"
+		},
+		{
+			"key": "Server 2",
+			"value": "DefaultParameterValue/traceability"
+		}
+	]
+}
