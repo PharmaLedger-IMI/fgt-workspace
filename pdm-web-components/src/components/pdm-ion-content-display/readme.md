@@ -7,12 +7,14 @@
 
 ## Properties
 
-| Property        | Attribute         | Description                     | Type     | Default               |
-| --------------- | ----------------- | ------------------------------- | -------- | --------------------- |
-| `buttonDataTag` | `button-data-tag` |                                 | `string` | `undefined`           |
-| `buttonLabel`   | `button-text`     |                                 | `string` | `undefined`           |
-| `contentTitle`  | `content-title`   | Content Header Graphical Params | `string` | `'PDM Ionic Content'` |
-| `iconName`      | `icon-name`       |                                 | `string` | `"albums"`            |
+| Property        | Attribute               | Description                     | Type      | Default                    |
+| --------------- | ----------------------- | ------------------------------- | --------- | -------------------------- |
+| `buttonDataTag` | `button-data-tag`       |                                 | `string`  | `undefined`                |
+| `buttonLabel`   | `button-text`           |                                 | `string`  | `undefined`                |
+| `canQuery`      | `can-query`             | Shows the search bar or not.    | `boolean` | `true`                     |
+| `contentTitle`  | `content-title`         | Content Header Graphical Params | `string`  | `'PDM Ionic Content'`      |
+| `iconName`      | `icon-name`             |                                 | `string`  | `"albums"`                 |
+| `placeholder`   | `searchbar-placeholder` |                                 | `string`  | `'enters search terms...'` |
 
 
 ## Methods

@@ -1,11 +1,11 @@
 import { Component, Method, State, Host, h, Listen, ComponentInterface, Prop } from "@stencil/core"
 import { calcBreakPoint } from "../../utils/utilFunctions"
-// import { Prop} from "@stencil/core";
+
 
 // // import {WebManager, WebManagerService} from '../../services/WebManagerService';
 // // import {HostElement} from '../../decorators'
 // // import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
-// // import {ComponentInterface, EventEmitter, Element, Event, Watch} from "@stencil/core";
+// // import { EventEmitter, Element, Event, Watch} from "@stencil/core";
 
 
 
@@ -24,6 +24,11 @@ export class PdmIonContentDisplay implements ComponentInterface{
   @Prop({attribute: 'icon-name'}) iconName?: string = "albums";
   @Prop({attribute: 'button-text'}) buttonLabel?: string = undefined;
   @Prop({attribute: 'button-data-tag'}) buttonDataTag?: string = undefined;
+  /**
+   * Shows the search bar or not.
+   */
+  @Prop({attribute: 'can-query'}) canQuery?: boolean = true;
+  @Prop({attribute: 'searchbar-placeholder'}) placeholder: string = 'enters search terms...'
 
 
 
@@ -54,6 +59,9 @@ export class PdmIonContentDisplay implements ComponentInterface{
   private getSearchButton(){
     const self = this;
 
+    if(!self.canQuery)
+      return;
+
     if(self.showSearch)
       return(
         <ion-button class={self.buttonDataTag ? "ion-margin-end" : ""} color="secondary" fill="clear" onClick={() => {
@@ -72,12 +80,13 @@ export class PdmIonContentDisplay implements ComponentInterface{
     )
   }
 
-  private getSearchBar(){
+  private getSearchBar(searchBarType){
     const self = this;
 
-    //     const getSearch = function(){
-//       if (!self.canQuery)
-//         return;
+    if(!self.canQuery)
+      return;
+
+
 //       return (
 //         <div class="ion-margin-end">
 //           <pdm-search-bar onSearch={self.performSearch.bind(self)} placeholder={self.searchBarPlaceholder}> </pdm-search-bar>
@@ -85,9 +94,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
 //       )
 //     }
 
-//     const getSearchBar = function () {
-//       if(!self.canQuery)
-//         return;
+
 //       //Falta para ecras pequenos
 //       return(
 //         <pdm-ion-grid-search-bar 
@@ -96,11 +103,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
 //         </pdm-ion-grid-search-bar>
 //       )
 //     }
-//   private getSearchBar(isFull){
-//     const self = this;
 
-//     if(!self.canQuery)
-//         return;
 //       //Falta para ecras pequenos
 //     return(
 //       <pdm-ion-grid-search-bar 
@@ -112,7 +115,11 @@ export class PdmIonContentDisplay implements ComponentInterface{
 //   }
 
     return(
-      <pdm-ion-grid-search-bar></pdm-ion-grid-search-bar>
+      <pdm-ion-grid-search-bar
+      placeholder={self.placeholder}
+      search-bar-type={searchBarType}
+      >
+      </pdm-ion-grid-search-bar>
     )
   }
 
@@ -132,6 +139,33 @@ export class PdmIonContentDisplay implements ComponentInterface{
 
   private getContentHeaderSmallScreens(){
     const self = this;
+
+    if(self.showSearch)
+      return(
+        <ion-grid>
+          <ion-row class="ion-align-items-center ion-padding-horizontal ion-margin-vertical">
+            <ion-col size="auto">
+              <ion-icon size="large" color="secondary" name={self.iconName}></ion-icon>
+            </ion-col>
+            <ion-col size="auto">
+              <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">{self.contentTitle}</ion-label>
+            </ion-col>
+            <ion-col></ion-col>
+            <ion-col size="auto">
+              {self.getSearchButton()}
+            </ion-col>
+            <ion-col size="auto">
+              {self.getHeaderButton()}
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-align-items-center ion-margin-vertical">
+            <ion-col size="12">
+              {self.getSearchBar("full")}
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+      )
 
     return(
       <ion-grid>
@@ -168,7 +202,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
           </ion-col>
           <ion-col></ion-col>
           <ion-col size="auto">
-            {self.getSearchBar()}
+            {self.getSearchBar("default")}
           </ion-col>
           <ion-col size="auto">
             {self.getHeaderButton()}
@@ -190,6 +224,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
         return self.getContentHeaderSmallScreens();
       case 'lg':
       case 'xl': 
+        self.showSearch = false;
         return self.getContentHeaderBigScreens();
       default:
         return;
@@ -225,10 +260,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
 
 
 //   @Prop({attribute: 'search-bar-placeholder', mutable: true}) searchBarPlaceholder?: string =  "enter search terms...";
-//   /**
-//    * Shows the search bar or not.
-//    */
-//    @Prop({attribute: 'can-query'}) canQuery?: boolean = true;
+
 
 //   /*
 //    *Content Header Component Setup
@@ -269,20 +301,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
 //   @Prop({attribute: 'query', mutable: true}) query?: string = undefined;
 
   
-//   /**
-//    * Current State of the screen size
-//    */
 
-//   @State() currentBreakpoint = calcBreakPoint()
-//   /**
-//    * Listen to the resize of the screen and refresh
-//    */
-
-//   @Listen('resize', { target: 'window' })
-//   async updateBreakPoint(){
-//     const self = this;
-//     self.currentBreakpoint = calcBreakPoint();
-//   }
 
 //   @Method()
 //   async refresh(){
@@ -303,19 +322,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
 //   /*
 //    * Content Header Render
 //    */ 
-//   private getContentHeaderButton(){
-//     const self = this;
 
-//     if(!self.buttonDataTag || !self.buttonLabel)
-//       return
-
-//     return(
-//       <ion-button color="secondary" data-tag={self.buttonDataTag} fill="solid">
-//           {self.buttonLabel}
-//           <ion-icon class="ion-padding-start" slot="end" name="add-circle"></ion-icon>
-//       </ion-button>
-//     )
-//   }
 
 
 //   /**
@@ -426,7 +433,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
 //   private webManager: WebManager = undefined;
 
 //   @State() model = undefined;
-//   @State() currentBreakpoint = calcBreakPoint();
+
 
 
 
@@ -508,17 +515,13 @@ export class PdmIonContentDisplay implements ComponentInterface{
 //   @Prop({attribute: 'no-content-message', mutable: true}) noContentMessage?: string = "No Content";
 //   @Prop({attribute: 'loading-message', mutable: true}) loadingMessage?: string = "Loading...";
 //   @Prop({attribute: 'search-bar-placeholder', mutable: true}) searchBarPlaceholder?: string =  "enter search terms...";
-//   // @Prop({attribute: 'buttons', mutable: true}) buttons?: string[] | {} = [];
-//   // @Prop({attribute: 'send-real-events', mutable: true}) sendRealEvents: boolean = false;
+
 
 //   /**
 //    * Component Setup Params
 //    */
 
-//   /**
-//    * Shows the search bar or not.
-//    */
-//   @Prop({attribute: 'can-query'}) canQuery?: boolean = true;
+
 //   /**
 //    * sets the name of the manager to use
 //    */
