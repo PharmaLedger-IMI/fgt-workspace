@@ -69,16 +69,13 @@ class SaleManager extends Manager{
         if (err)
             return callback(`Invalid sale. ${err}`);
 
-        self.stockManager.getAll(true, {
-            query: [
-                `gtin like /${sale.productList.map(il => il.gtin).join('|')}/g`
-            ]
-        }, (err, stocks) => {
+        const query = {query: [`gtin like /${sale.productList.map(il => il.gtin).join('|')}/g`]};
+        self.stockManager.getAll(true, query, (err, stocks) => {
             if (err)
                 return self._err(`Could not get stocks for sale`, err, callback);
 
-
-            const toManage = {};
+            if (!stocks || stocks.length === 0)
+                return callback(`Not available stock for sale.`);
 
             const cb = function(err, ...results){
                 if (err)
@@ -86,34 +83,54 @@ class SaleManager extends Manager{
                 callback(undefined, ...results);
             }
 
-            const stockVerificationIterator = function(stocksCopy, callback){
-                const stock = stocksCopy.shift();
-                if (!stock)
-                    return callback(undefined, toManage);
+            const stockVerificationIterator = (accum, stock, saleList, _callback) => {
+                const stockProduct = stock.shift();
+                if (!stockProduct) {
+                    return _callback(undefined, accum);
+                }
 
-                toManage[stock.gtin] = sale.productList.filter(ip => ip.gtin === stock.gtin).reduce((accum, ip) => {
-                    let preExisting = accum.find(b => b.batchNumber === ip.batchNumber);
-                    if (!preExisting){
-                        preExisting = new Batch({
-                            batchNumber: ip.batchNumber,
-                            serialNumbers: []
-                        });
-                        accum.push(preExisting);
+                const err = [];
+                const productsSold = saleList.reduce((_accum, productSold, index) => {
+                    if (productSold.gtin === stockProduct.gtin) {
+                        const batch = stockProduct.batches.find((batch) => batch.batchNumber === productSold.batchNumber);
+                        if (!batch)
+                            err.push(`Product ${index + 1}: BatchNumber not found in stock.`);
+                        else {
+                            const serialNumberIndex = batch.serialNumbers.indexOf(productSold.serialNumber);
+                            if (serialNumberIndex === -1) { // serial number doesn't exist
+                                err.push(`Product ${index + 1}: SerialNumber not found in stock.`);
+                            } else {
+                                batch.serialNumbers.splice(serialNumberIndex, 1); // remove from stock
+                                const id = `${productSold.gtin}-${productSold.batchNumber}`;
+                                if (_accum.hasOwnProperty(id)) {
+                                    _accum[id].serialNumbers.push(productSold.serialNumber);
+                                } else {
+                                    _accum[id] = new Batch({
+                                        batchNumber: productSold.batchNumber,
+                                        serialNumbers: [productSold.serialNumber],
+                                    });
+                                }
+                            }
+                        }
+                    } else {
+                        err.push(`Product ${index + 1}: Not found in stock.`)
                     }
-                    preExisting.serialNumbers.push(ip.serialNumber);
-                    return accum;
-                }, []).map(b => {
-                    b.quantity = - b.getQuantity();
-                    return b;
-                });
+                    return _accum;
+                }, {});
 
-                stockVerificationIterator(stocksCopy, callback);
+                if (err.length > 0)
+                    return _callback(err.join(' '));
+
+                accum[stockProduct.gtin] = Object.values(productsSold).map((productSold) => {
+                    productSold.quantity = productSold.getQuantity() * -1; // update qty because when create a Batch, there is a qty validation
+                    return productSold;
+                });
+                stockVerificationIterator(accum, stock, saleList, _callback);
             }
 
-
-            stockVerificationIterator(stocks.slice(), (err, toBeManaged) => {
+            stockVerificationIterator({}, stocks.slice(),  sale.productList, (err, toBeManaged) => {
                 if (err)
-                    return self._err(`Not enough stock`, err, callback);
+                    return callback(err); //self._err(`Not enough stock`, err, callback);
 
                 const productIterator = function(gtins, result, callback){
                     const gtin = gtins.shift();
