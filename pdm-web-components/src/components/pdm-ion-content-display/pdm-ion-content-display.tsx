@@ -1,11 +1,11 @@
-import { Component, Method, State, Host, h, Listen, ComponentInterface, Prop } from "@stencil/core"
+import { Component, Method, State, Host, h, Listen, ComponentInterface, Prop, EventEmitter, Event } from "@stencil/core"
 import { calcBreakPoint } from "../../utils/utilFunctions"
+import {WebManager, WebManagerService} from '../../services/WebManagerService';
 
 
-// // import {WebManager, WebManagerService} from '../../services/WebManagerService';
 // // import {HostElement} from '../../decorators'
 // // import {SUPPORTED_LOADERS} from "../multi-spinner/supported-loader";
-// // import { EventEmitter, Element, Event, Watch} from "@stencil/core";
+// // import { Element, Watch} from "@stencil/core";
 
 
 
@@ -15,6 +15,24 @@ import { calcBreakPoint } from "../../utils/utilFunctions"
   shadow: false,
 })
 export class PdmIonContentDisplay implements ComponentInterface{
+
+  /**
+   * Through this event errors are passed
+   */
+
+  @Event({
+    eventName: 'ssapp-send-error',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  sendErrorEvent: EventEmitter;
+
+  private sendError(message: string, err?: object){
+    const event = this.sendErrorEvent.emit(message);
+    if (!event.defaultPrevented || err)
+      console.log(`ION-CONTENT-DISPLAY ERROR: ${message}`, err);
+  }
 
   /**
    * Content Header Graphical Params
@@ -28,7 +46,16 @@ export class PdmIonContentDisplay implements ComponentInterface{
    * Shows the search bar or not.
    */
   @Prop({attribute: 'can-query'}) canQuery?: boolean = true;
-  @Prop({attribute: 'searchbar-placeholder'}) placeholder: string = 'enters search terms...'
+  @Prop({attribute: 'searchbar-placeholder', mutable: true}) placeholder: string = 'enters search terms...'
+
+  /**
+   * Content Component Setup
+   */
+
+  /**
+   * sets the name of the manager to use
+   */
+  @Prop() manager?: string;
 
 
 
@@ -36,9 +63,13 @@ export class PdmIonContentDisplay implements ComponentInterface{
   @State() currentBreakPoint: string = undefined;
   @State() showSearch: boolean = false;
 
+  private webManager: WebManager = undefined;
+
   @Method()
   async refresh(){
     const self = this;
+
+    await self.loadContents();
 
     self.currentBreakPoint = calcBreakPoint();
   }
@@ -48,9 +79,45 @@ export class PdmIonContentDisplay implements ComponentInterface{
     const self = this;
 
     if(self.currentBreakPoint !== calcBreakPoint())
-      self.currentBreakPoint = calcBreakPoint();
+      self.refresh();
   }
 
+  /**
+   * Content Display Render
+   */
+
+  async loadContents(){
+  // async loadContents(pageNumber?: number){
+    const self = this;
+
+    self.webManager = self.webManager || await WebManagerService.getWebManager(self.manager);
+    
+    if(!self.webManager)
+      return;
+
+        //   if (this.paginated){
+  //     await this.webManager.getPage(this.itemsPerPage, pageNumber || this.currentPage, this.query, this.sort, false, (err, contents) => {
+  //       if (err){
+  //         this.sendError(`Could not list items`, err);
+  //         return;
+  //       }
+  //       this.currentPage = contents.currentPage;
+  //       this.pageCount = contents.totalPages;
+  //       this.updateTable(contents.items);
+  //     });
+  //   } else {
+
+    await self.webManager.getAll(false, undefined,(err, contents) => {
+      if(err){
+        self.sendError(`Could not list items`, err);
+        return;
+      }
+
+      console.log('## contents: ', contents)
+       //       this.updateTable(contents);
+    })
+  }
+  
 
 
   /**
@@ -66,6 +133,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
       return(
         <ion-button class={self.buttonDataTag ? "ion-margin-end" : ""} color="secondary" fill="clear" onClick={() => {
           self.showSearch = false;
+          self.refresh(); //erase after
         }}>
           <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
         </ion-button>
@@ -74,6 +142,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
     return(
       <ion-button class={self.buttonDataTag ? "ion-margin-end" : ""} fill="solid" color="secondary" onClick={() => {
         self.showSearch = true;
+        self.refresh(); //erase after
       }}>
         <ion-icon  slot="icon-only" name="search-outline"></ion-icon>
       </ion-button>
@@ -241,6 +310,9 @@ export class PdmIonContentDisplay implements ComponentInterface{
     return(
       <Host>
         {self.getContentHeader()}
+          <pdm-ion-grid>
+
+          </pdm-ion-grid>
           {/* id="ion-table-content" class="ion-padding" */}
           {/* {self.getContent()} */}
         {/* {this.getPagination()} } */}
@@ -251,20 +323,6 @@ export class PdmIonContentDisplay implements ComponentInterface{
 }
 
 
-
-
-//   /**
-//    * Content Header Graphical Params
-//    */
-
-
-
-//   @Prop({attribute: 'search-bar-placeholder', mutable: true}) searchBarPlaceholder?: string =  "enter search terms...";
-
-
-//   /*
-//    *Content Header Component Setup
-//    */
 
 
 //   /*
@@ -278,10 +336,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
 //   /**
 //    * Content Component Setup Params
 //    */
-//   /**
-//    * sets the name of the manager to use
-//    */
-//   @Prop() manager?: string;
+
 
 //   /**
 //    * The tag for the item type that the table should use eg: 'li' would create list items
@@ -378,22 +433,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
 
 //   @Element() element;
 
-//   /**
-//    * Through this event errors are passed
-//    */
-//   @Event({
-//     eventName: 'ssapp-send-error',
-//     bubbles: true,
-//     composed: true,
-//     cancelable: true,
-//   })
-//   sendErrorEvent: EventEmitter;
 
-//   private sendError(message: string, err?: object){
-//     const event = this.sendErrorEvent.emit(message);
-//     if (!event.defaultPrevented || err)
-//       console.log(`ION-GRID ERROR: ${message}`, err);
-//   }
 
 //   /**
 //    * Graphical Params
@@ -403,12 +443,8 @@ export class PdmIonContentDisplay implements ComponentInterface{
 
 //   @Prop({attribute: 'loading-message', mutable: true}) loadingMessage?: string = "Loading...";
 
-//   // @Prop({attribute: 'buttons', mutable: true}) buttons?: string[] | {} = [];
-//   // @Prop({attribute: 'send-real-events', mutable: true}) sendRealEvents: boolean = false;
 
-//   /**
-//    * Component Setup Params
-//    */
+
 
 
 
@@ -491,22 +527,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
 
 //   @Element() element;
 
-//   /**
-//    * Through this event errors are passed
-//    */
-//   @Event({
-//     eventName: 'ssapp-send-error',
-//     bubbles: true,
-//     composed: true,
-//     cancelable: true,
-//   })
-//   sendErrorEvent: EventEmitter;
 
-//   private sendError(message: string, err?: object){
-//     const event = this.sendErrorEvent.emit(message);
-//     if (!event.defaultPrevented || err)
-//       console.log(`ION-TABLE ERROR: ${message}`, err);
-//   }
 
 //   /**
 //    * Graphical Params
@@ -514,7 +535,6 @@ export class PdmIonContentDisplay implements ComponentInterface{
 
 //   @Prop({attribute: 'no-content-message', mutable: true}) noContentMessage?: string = "No Content";
 //   @Prop({attribute: 'loading-message', mutable: true}) loadingMessage?: string = "Loading...";
-//   @Prop({attribute: 'search-bar-placeholder', mutable: true}) searchBarPlaceholder?: string =  "enter search terms...";
 
 
 //   /**
@@ -554,7 +574,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
 //   @Prop({attribute: 'current-page', mutable: true}) currentPage?: number = 0;
 //   @Prop({mutable: true}) sort?: string = undefined;
 
-//   private webManager: WebManager = undefined;
+
 
 //   @State() model = undefined;
 
@@ -584,31 +604,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
 //     this.query = evt.detail;
 //   }
 
-//   async loadContents(pageNumber?: number){
-//     this.webManager = this.webManager || await WebManagerService.getWebManager(this.manager);
-//     if (!this.webManager)
-//       return;
 
-//     if (this.paginated){
-//       await this.webManager.getPage(this.itemsPerPage, pageNumber || this.currentPage, this.query, this.sort, false, (err, contents) => {
-//         if (err){
-//           this.sendError(`Could not list items`, err);
-//           return;
-//         }
-//         this.currentPage = contents.currentPage;
-//         this.pageCount = contents.totalPages;
-//         this.updateTable(contents.items);
-//       });
-//     } else {
-//       await this.webManager.getAll( false, undefined, (err, contents) => {
-//         if (err){
-//           this.sendError(`Could not list items`, err);
-//           return;
-//         }
-//         this.updateTable(contents);
-//       });
-//     }
-//   }
 
 //   @Watch('query')
 //   async _updateByQuery(newQuery: string, oldQuery:string){
