@@ -1398,7 +1398,7 @@ declare namespace LocalJSX {
     }
     interface PdmSearchBar {
         "btnLabel"?: string;
-        "onSearch"?: (event: CustomEvent<any>) => void;
+        "onSearchEvt"?: (event: CustomEvent<any>) => void;
         "placeholder"?: string;
     }
     interface PdmSsappLoader {

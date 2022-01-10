@@ -14,16 +14,16 @@ export class PdmSearchBar {
   @Prop({attribute: 'btn-label'}) btnLabel: string = 'Search'
 
   @Event()
-  search: EventEmitter;
+  searchEvt: EventEmitter;
 
-  searchEvt() {
-    const el = this.element.querySelector('#search-bar')
-    this.search.emit(el.value)
+  search() {
+    const el = this.element.querySelector('#search-bar');
+    this.searchEvt.emit(el.value)
   }
 
   @Listen('ionClear')
   listenIonClear(){
-    this.search.emit('');
+    this.searchEvt.emit('');
   }
 
   render() {
@@ -39,11 +39,12 @@ export class PdmSearchBar {
                 placeholder={self.placeholder}
                 search-icon="undefined"
                 enterkeyhint="enter"
+                onSearch={self.search.bind(self)}
               >
               </ion-searchbar>
             </ion-col>
             <ion-col>
-              <ion-button color="secondary" expand="full" onClick={self.searchEvt.bind(self)}>
+              <ion-button color="secondary" expand="full" onClick={self.search.bind(self)}>
                 <ion-icon name="search-outline"> </ion-icon>
               </ion-button>
             </ion-col>

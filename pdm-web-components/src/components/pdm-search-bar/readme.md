@@ -15,9 +15,9 @@
 
 ## Events
 
-| Event    | Description | Type               |
-| -------- | ----------- | ------------------ |
-| `search` |             | `CustomEvent<any>` |
+| Event       | Description | Type               |
+| ----------- | ----------- | ------------------ |
+| `searchEvt` |             | `CustomEvent<any>` |
 
 
 ## Dependencies

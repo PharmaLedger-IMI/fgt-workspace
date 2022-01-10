@@ -231,7 +231,7 @@ export class PdmIonTable implements ComponentInterface {
         return;
       return (
         <div class="ion-margin-end">
-          <pdm-search-bar onSearch={self.performSearch.bind(self)} placeholder={self.searchBarPlaceholder}> </pdm-search-bar>
+          <pdm-search-bar onSearchEvt={self.performSearch.bind(self)} placeholder={self.searchBarPlaceholder}> </pdm-search-bar>
         </div>
       )
     }
