@@ -368,6 +368,7 @@ export namespace Components {
          */
         "canQuery"?: boolean;
         "currentPage"?: number;
+        "customQueryConditions"?: string;
         "iconName"?: string;
         /**
           * Option props to be passed to child elements in from a JSON object in value key format only format
@@ -1330,6 +1331,7 @@ declare namespace LocalJSX {
          */
         "canQuery"?: boolean;
         "currentPage"?: number;
+        "customQueryConditions"?: string;
         "iconName"?: string;
         /**
           * Option props to be passed to child elements in from a JSON object in value key format only format

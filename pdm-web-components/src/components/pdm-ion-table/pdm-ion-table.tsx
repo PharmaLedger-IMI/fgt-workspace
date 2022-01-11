@@ -77,6 +77,7 @@ export class PdmIonTable implements ComponentInterface {
    * Querying/paginating Params - only available when mode is set by ref
    */
   @Prop({attribute: 'query', mutable: true}) query?: string = undefined;
+  @Prop({attribute: 'custom-query-conditions', mutable: true}) customQueryConditions?: string = '{}';
   @Prop({attribute: 'paginated', mutable: true}) paginated?: boolean = true;
   @Prop({attribute: 'page-count', mutable: true}) pageCount?: number = 0;
   @Prop({attribute: 'items-per-page', mutable: true}) itemsPerPage?: number = 10;
@@ -119,7 +120,14 @@ export class PdmIonTable implements ComponentInterface {
       return;
 
     if (this.paginated){
-      await this.webManager.getPage(this.itemsPerPage, pageNumber || this.currentPage, this.query, this.sort, false, (err, contents) => {
+      let customQueryConditions;
+      try {
+        customQueryConditions = JSON.parse(this.customQueryConditions);
+      } catch (e) {
+        customQueryConditions = {};
+      }
+
+      await this.webManager.getPage(this.itemsPerPage, pageNumber || this.currentPage, customQueryConditions, this.query, this.sort, false, (err, contents) => {
         if (err){
           this.sendError(`Could not list items`, err);
           return;
