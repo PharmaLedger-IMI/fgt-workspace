@@ -358,6 +358,31 @@ export namespace Components {
         "tableDataStruct": string;
         "type": string;
     }
+    interface PdmIonContentDisplay {
+        "buttonDataTag"?: string;
+        "buttonLabel"?: string;
+        /**
+          * Shows the search bar or not.
+         */
+        "canQuery"?: boolean;
+        /**
+          * Content Header Graphical Params
+         */
+        "contentTitle": string;
+        "iconName"?: string;
+        /**
+          * sets the name of the manager to use
+         */
+        "manager"?: string;
+        "placeholder": string;
+        "refresh": () => Promise<void>;
+    }
+    interface PdmIonGrid {
+    }
+    interface PdmIonGridSearchBar {
+        "placeholder": string;
+        "searchBarType": 'default' | 'full';
+    }
     interface PdmIonTable {
         /**
           * the querying attribute name so the items can query their own value
@@ -678,6 +703,24 @@ declare global {
         prototype: HTMLPdmChartjsElement;
         new (): HTMLPdmChartjsElement;
     };
+    interface HTMLPdmIonContentDisplayElement extends Components.PdmIonContentDisplay, HTMLStencilElement {
+    }
+    var HTMLPdmIonContentDisplayElement: {
+        prototype: HTMLPdmIonContentDisplayElement;
+        new (): HTMLPdmIonContentDisplayElement;
+    };
+    interface HTMLPdmIonGridElement extends Components.PdmIonGrid, HTMLStencilElement {
+    }
+    var HTMLPdmIonGridElement: {
+        prototype: HTMLPdmIonGridElement;
+        new (): HTMLPdmIonGridElement;
+    };
+    interface HTMLPdmIonGridSearchBarElement extends Components.PdmIonGridSearchBar, HTMLStencilElement {
+    }
+    var HTMLPdmIonGridSearchBarElement: {
+        prototype: HTMLPdmIonGridSearchBarElement;
+        new (): HTMLPdmIonGridSearchBarElement;
+    };
     interface HTMLPdmIonTableElement extends Components.PdmIonTable, HTMLStencilElement {
     }
     var HTMLPdmIonTableElement: {
@@ -783,6 +826,9 @@ declare global {
         "pdm-barcode-scanner": HTMLPdmBarcodeScannerElement;
         "pdm-barcode-scanner-controller": HTMLPdmBarcodeScannerControllerElement;
         "pdm-chartjs": HTMLPdmChartjsElement;
+        "pdm-ion-content-display": HTMLPdmIonContentDisplayElement;
+        "pdm-ion-grid": HTMLPdmIonGridElement;
+        "pdm-ion-grid-search-bar": HTMLPdmIonGridSearchBarElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "pdm-item-organizer": HTMLPdmItemOrganizerElement;
         "pdm-search-bar": HTMLPdmSearchBarElement;
@@ -1320,6 +1366,30 @@ declare namespace LocalJSX {
         "tableDataStruct"?: string;
         "type"?: string;
     }
+    interface PdmIonContentDisplay {
+        "buttonDataTag"?: string;
+        "buttonLabel"?: string;
+        /**
+          * Shows the search bar or not.
+         */
+        "canQuery"?: boolean;
+        /**
+          * Content Header Graphical Params
+         */
+        "contentTitle"?: string;
+        "iconName"?: string;
+        /**
+          * sets the name of the manager to use
+         */
+        "manager"?: string;
+        "placeholder"?: string;
+    }
+    interface PdmIonGrid {
+    }
+    interface PdmIonGridSearchBar {
+        "placeholder"?: string;
+        "searchBarType"?: 'default' | 'full';
+    }
     interface PdmIonTable {
         /**
           * the querying attribute name so the items can query their own value
@@ -1496,6 +1566,9 @@ declare namespace LocalJSX {
         "pdm-barcode-scanner": PdmBarcodeScanner;
         "pdm-barcode-scanner-controller": PdmBarcodeScannerController;
         "pdm-chartjs": PdmChartjs;
+        "pdm-ion-content-display": PdmIonContentDisplay;
+        "pdm-ion-grid": PdmIonGrid;
+        "pdm-ion-grid-search-bar": PdmIonGridSearchBar;
         "pdm-ion-table": PdmIonTable;
         "pdm-item-organizer": PdmItemOrganizer;
         "pdm-search-bar": PdmSearchBar;
@@ -1546,6 +1619,9 @@ declare module "@stencil/core" {
             "pdm-barcode-scanner": LocalJSX.PdmBarcodeScanner & JSXBase.HTMLAttributes<HTMLPdmBarcodeScannerElement>;
             "pdm-barcode-scanner-controller": LocalJSX.PdmBarcodeScannerController & JSXBase.HTMLAttributes<HTMLPdmBarcodeScannerControllerElement>;
             "pdm-chartjs": LocalJSX.PdmChartjs & JSXBase.HTMLAttributes<HTMLPdmChartjsElement>;
+            "pdm-ion-content-display": LocalJSX.PdmIonContentDisplay & JSXBase.HTMLAttributes<HTMLPdmIonContentDisplayElement>;
+            "pdm-ion-grid": LocalJSX.PdmIonGrid & JSXBase.HTMLAttributes<HTMLPdmIonGridElement>;
+            "pdm-ion-grid-search-bar": LocalJSX.PdmIonGridSearchBar & JSXBase.HTMLAttributes<HTMLPdmIonGridSearchBarElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "pdm-item-organizer": LocalJSX.PdmItemOrganizer & JSXBase.HTMLAttributes<HTMLPdmItemOrganizerElement>;
             "pdm-search-bar": LocalJSX.PdmSearchBar & JSXBase.HTMLAttributes<HTMLPdmSearchBarElement>;
