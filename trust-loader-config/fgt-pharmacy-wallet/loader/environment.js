@@ -7,7 +7,7 @@ export default {
   "browser": "any",
   "mode": "dev-secure",
   "domain": "traceability",
-  "didDomain": "traceability",
+  "vaultDomain": "traceability",
   "enclaveType":"WalletDBEnclave",
   "sw": true,
   "pwa": true,

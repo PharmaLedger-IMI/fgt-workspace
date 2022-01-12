@@ -1,11 +1,10 @@
-
-function genDate(offsetFromToday){
+function genDate(offsetFromToday) {
     let date = new Date();
     date.setDate(date.getDate() + offsetFromToday);
     return date;
 }
 
-function generateGtin(){
+function generateGtin() {
     function pad(n, width, padding) {
         padding = padding || '0';
         n = n + '';
@@ -17,7 +16,7 @@ function generateGtin(){
     return `${beforeChecksum}${checksum}`;
 }
 
-function validateGtin(gtin){
+function validateGtin(gtin) {
     gtin = gtin + '';
     if (!gtin.match(/\d{14}/g))
         return false
@@ -27,11 +26,11 @@ function validateGtin(gtin){
 }
 
 // https://www.gs1.org/services/how-calculate-check-digit-manually
-function calculateGtinCheckSum(digits){
+function calculateGtinCheckSum(digits) {
     digits = '' + digits;
     if (digits.length !== 13)
         throw new Error(`needs to received 13 digits`);
-    const multiplier = [3,1,3,1,3,1,3,1,3,1,3,1,3];
+    const multiplier = [3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3];
     let sum = 0;
     try {
         // multiply each digit for its multiplier according to the table
@@ -41,13 +40,13 @@ function calculateGtinCheckSum(digits){
         // Find the nearest equal or higher multiple of ten
         const remainder = sum % 10;
         let nearest;
-        if (remainder  === 0)
+        if (remainder === 0)
             nearest = sum;
         else
             nearest = sum - remainder + 10;
 
         return nearest - sum;
-    } catch (e){
+    } catch (e) {
         throw new Error(`Did this received numbers? ${e}`);
     }
 }
@@ -58,20 +57,20 @@ function generateProductName() {
     const name = [];
 
     let syllableCount = Math.floor(Math.random() * 4) + 2;
-    while (syllableCount >= 0){
+    while (syllableCount >= 0) {
         name.push(syllables[Math.floor(Math.random() * syllables.length)]);
-        syllableCount --;
+        syllableCount--;
     }
     name.push(suffixes[Math.floor(Math.random() * suffixes.length)]);
     return name.join('');
 }
 
-function generateBatchNumber(length = 6){
+function generateBatchNumber(length = 6) {
     const chars = 'ABCDEFGHIJKLMNOPQRSUVWXYZ';
     const numbers = '1234567890';
     const options = [chars, numbers];
     const batchNumber = []
-    for (let i = 0 ; i < length; i++){
+    for (let i = 0; i < length; i++) {
         const slot = Math.floor(Math.random() * 2);
         batchNumber.push(options[slot].charAt(Math.floor(Math.random() * options[slot].length)));
     }
@@ -84,11 +83,11 @@ function generateRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 }
 
-function impersonateDSUStorage(dsu){
+function impersonateDSUStorage(dsu) {
     dsu.directAccessEnabled = false;
     dsu.enableDirectAccess = (callback) => callback();
 
-    const setObject = function(path, data, callback) {
+    const setObject = function (path, data, callback) {
         try {
             dsu.writeFile(path, JSON.stringify(data), callback);
         } catch (e) {
@@ -96,26 +95,26 @@ function impersonateDSUStorage(dsu){
         }
     }
 
-    const getObject = function(path, callback) {
+    const getObject = function (path, callback) {
         dsu.readFile(path, (err, data) => {
-           if (err)
-               return callback(createOpenDSUErrorWrapper("getObject failed" ,err));
+            if (err)
+                return callback(createOpenDSUErrorWrapper("getObject failed", err));
 
-           try{
-               data = JSON.parse(data);
-           } catch (e){
-               return callback(createOpenDSUErrorWrapper(`Could not parse JSON ${data.toString()}`, e));
-           }
-           callback(undefined, data);
+            try {
+                data = JSON.parse(data);
+            } catch (e) {
+                return callback(createOpenDSUErrorWrapper(`Could not parse JSON ${data.toString()}`, e));
+            }
+            callback(undefined, data);
         });
     }
 
     dsu.getObject = getObject;
     dsu.setObject = setObject;
     return dsu;
- }
+}
 
-const argParser = function(defaultOpts, args){
+const argParser = function (defaultOpts, args) {
     let config = JSON.parse(JSON.stringify(defaultOpts));
     if (!args)
         return config;
@@ -123,7 +122,7 @@ const argParser = function(defaultOpts, args){
     const recognized = Object.keys(config);
     const notation = recognized.map(r => '--' + r);
     args.forEach(arg => {
-        if (arg.includes('=')){
+        if (arg.includes('=')) {
             let splits = arg.split('=');
             if (notation.indexOf(splits[0]) !== -1) {
                 let result
@@ -139,11 +138,11 @@ const argParser = function(defaultOpts, args){
     return config;
 }
 
-const parseEnvJS = function(strEnv){
+const parseEnvJS = function (strEnv) {
     return JSON.parse(strEnv.replace(/^export\sdefault\s/, ''));
 }
 
-const getEnvJs = function(app, pathToApps,callback){
+const getEnvJs = function (app, pathToApps, callback) {
     const appPath = require('path').join(process.cwd(), pathToApps, "trust-loader-config", app, "loader", "environment.js");
     require('fs').readFile(appPath, (err, data) => {
         if (err)
@@ -152,26 +151,40 @@ const getEnvJs = function(app, pathToApps,callback){
     });
 }
 
-const instantiateSSApp = function(app, pathToApps, dt, credentials, callback){
-    getEnvJs(app, pathToApps,(err, env) => {
+const instantiateSSApp = function (app, pathToApps, dt, credentials, callback) {
+    getEnvJs(app, pathToApps, (err, env) => {
         if (err)
             throw err;
 
-        let config = require("opendsu").loadApi("config");
-        config.autoconfigFromEnvironment(env);
-
-        const appService = new (dt.AppBuilderService)(env);
-        appService.buildWallet(credentials, (err, keySII, dsu) => {
+        const openDSU = require("opendsu");
+        let config = openDSU.loadApi("config");
+        let enclaveAPI = openDSU.loadApi("enclave");
+        let scAPI = openDSU.loadApi("sc");
+        const enclave = enclaveAPI.createEnclave(env.enclaveType);
+        enclave.getKeySSI((err, keySSI) => {
             if (err)
                 throw err;
-            console.log(`App ${env.appName} created with credentials ${JSON.stringify(credentials, undefined, 2)}.\nSSI: ${{keySII}}`);
-            callback(undefined, keySII, dsu, credentials);
+            env.enclaveKeySSI = keySSI;
+            scAPI.configEnvironment(env, false, (err, sc) => {
+                if (err)
+                    throw err;
+
+                config.autoconfigFromEnvironment(env);
+
+                const appService = new (dt.AppBuilderService)(env);
+                appService.buildWallet(credentials, (err, keySII, dsu) => {
+                    if (err)
+                        throw err;
+                    console.log(`App ${env.appName} created with credentials ${JSON.stringify(credentials, undefined, 2)}.\nSSI: ${{keySII}}`);
+                    callback(undefined, keySII, dsu, credentials);
+                });
+            });
         });
     });
 }
 
-function jsonStringifyReplacer(key, value){
-    if(key === 'manager' && value.constructor.name)
+function jsonStringifyReplacer(key, value) {
+    if (key === 'manager' && value.constructor.name)
         return value.constructor.name;
     if (key === 'serialNumbers')
         return value.join(', ');

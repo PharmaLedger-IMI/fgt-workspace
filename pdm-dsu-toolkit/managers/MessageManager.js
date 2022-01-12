@@ -42,23 +42,30 @@ class Message{
  * @class MessageManager
  */
 class MessageManager extends Manager{
-    constructor(baseManager, didString, callback){
+    constructor(baseManager, didString, callback) {
         super(baseManager, MESSAGE_TABLE, ['api'], (err, manager) => {
             if (err)
                 return callback(err);
 
-            manager.w3cDID = require('opendsu').loadApi('w3cdid');
+            const openDSU = require('opendsu');
+            const scAPI = openDSU.loadApi("sc");
+            manager.w3cDID = openDSU.loadApi('w3cdid');
             manager.didString = didString;
             manager.did = undefined;
             manager._listeners = {};
             manager.timer = undefined;
 
-            manager.getOwnDID((err, didDoc) => err
-                ? console.log(`Could not get Own DID`, err)
-                : manager._startMessageListener(didDoc));
+            scAPI.getMainEnclave((err, mainEnclave) => {
+                if (err) {
+                    console.log("Could not get main enclave", err);
+                }
+                manager.getOwnDID((err, didDoc) => err
+                    ? console.log(`Could not get Own DID`, err)
+                    : manager._startMessageListener(didDoc));
 
-            if (callback)
-                callback(undefined, manager);
+                if (callback)
+                    callback(undefined, manager);
+            });
         });
         this.w3cDID = this.w3cDID || require('opendsu').loadApi('w3cdid');
         this.didString = this.didString || didString;
@@ -162,7 +169,7 @@ class MessageManager extends Manager{
      * Delete a message from the MESSAGE_TABLE.
      * @param {string} [tableName] defaults to MESSAGE_TABLE
      * @param {object} message. Must have a key property.
-     * @param {function(err)} callback 
+     * @param {function(err)} callback
      */
     deleteMessage(tableName, message, callback) {
         if (!callback){
@@ -232,7 +239,7 @@ class MessageManager extends Manager{
         this._getDID(this.didString, (err, didDoc) => {
             if(err)
                 _err(`Could not get own did`, err, callback);
-                
+
             this.did = didDoc;
             callback(undefined , didDoc);
         });
@@ -241,14 +248,14 @@ class MessageManager extends Manager{
     /**
      * Resolves DID From DID String or Creates One If DID doens't exist.
      * @param {string} didString Reference to the DID
-     * @param {function(err, didDoc)} callback 
+     * @param {function(err, didDoc)} callback
      */
 
     _getDID(didString, callback){
 
         let didIdentifier = `did:ssi:name:${DOMAIN}:${didString}`;
 
-        this.w3cDID.resolveDID(didIdentifier, (err, resolvedDIDDoc) => err 
+        this.w3cDID.resolveDID(didIdentifier, (err, resolvedDIDDoc) => err
             ? this.w3cDID.createIdentity(DID_METHOD, DOMAIN, didString, (err, createdDIDDoc) => err
                 ? _err(`Could not create or resolve DID identity`, err, callback)
                 : callback(undefined, createdDIDDoc))

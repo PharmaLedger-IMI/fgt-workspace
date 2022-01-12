@@ -35,7 +35,7 @@
     "docs": "node ./node_modules/octopus/scripts/run docs devmode",
     "incversion": "npm --no-git-tag-version version patch",
     "environment": "cd ./bin/environment && node --trace-warnings ./setup.js --app=traceability --exportCredentials=true",
-    "environment-trace": "cd ./bin/environment && node --trace-warnings ./setup.js --app=traceability --attachLogic=true --exportCredentials=true",
+    "environment-trace": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"cd ./bin/environment && node --trace-warnings ./setup.js --app=traceability --attachLogic=true --exportCredentials=true\"",
     "environment-test": "cd ./bin/environment && node --trace-warnings ./setup.js --app=test --attachLogic=true --exportCredentials=true",
     "deploy-test-chain": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run deploy-chain\""
   },
