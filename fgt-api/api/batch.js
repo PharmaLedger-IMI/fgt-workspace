@@ -4,7 +4,6 @@ const Batch = require("../../fgt-dsu-wizard/model/Batch");
 const {BadRequest, NotImplemented} = require("../utils/errorHandler");
 
 const BATCH_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['gtin', 'batchNumber']});
-const BATCH_CREATE = Object.assign({}, OPERATIONS.CREATE, {pathParams: ['gtin']});
 const BATCH_UPDATE = Object.assign({}, OPERATIONS.UPDATE, {pathParams: ['gtin', 'batchNumber']});
 
 module.exports = class BatchApi extends Api {
@@ -12,7 +11,7 @@ module.exports = class BatchApi extends Api {
     productManager;
 
     constructor(server, participantManager) {
-        super(server, 'batch', participantManager, [BATCH_CREATE, BATCH_GET, BATCH_UPDATE], Batch);
+        super(server, 'batch', participantManager, [OPERATIONS.CREATE, BATCH_GET, BATCH_UPDATE], Batch);
         try {
             this.manager = participantManager.getManager("BatchManager");
             this.productManager = participantManager.getManager("ProductManager");
@@ -22,12 +21,15 @@ module.exports = class BatchApi extends Api {
     }
 
     /**
-     * @param {string} gtin
      * @param {Batch} batch
      * @param {function(err?, Batch?, KeySSI?)} callback
      */
-    create(gtin, batch, callback){
+    create(batch, callback){
         const self = this;
+
+        const {gtin} = batch;
+        if (!gtin)
+            return callback(`Can't find a product without gtin.`);
 
         self.productManager.getOne(gtin, (err, product) => {
             if (err)
@@ -55,7 +57,7 @@ module.exports = class BatchApi extends Api {
      * @param {function(err?, [{Batch}]?, KeySSI[]?)} callback
      */
     createAll(keys, body, callback) {
-        return super.createAll(['gtin'], body, callback);
+        return super.createAll([], body, callback);
     }
 
     /**
