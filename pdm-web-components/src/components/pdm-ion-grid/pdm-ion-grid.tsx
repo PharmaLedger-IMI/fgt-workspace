@@ -1,4 +1,4 @@
-import { Component, ComponentInterface, Host, h} from "@stencil/core"
+import { Component, ComponentInterface, Host, h, Prop} from "@stencil/core"
 
 // import { State, Prop, Event, EventEmitter, Element, Watch } from "@stencil/core";
 // import { WebManagerService, WebManager } from "../../services/WebManagerService";
@@ -14,6 +14,12 @@ import { Component, ComponentInterface, Host, h} from "@stencil/core"
 })
 export class PdmIonGrid implements ComponentInterface{
 
+  @Prop({attribute: 'reference-list'}) referenceList?: string[] = [];
+
+  getContent(){
+    console.log('check out new model: ', this.referenceList);
+  }
+
 
   render() {
     const self = this;
@@ -21,7 +27,7 @@ export class PdmIonGrid implements ComponentInterface{
     return(
       <Host>
         <ion-grid>
-
+          {self.getContent()}
         </ion-grid>
       </Host>
     )

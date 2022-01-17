@@ -359,8 +359,6 @@ export namespace Components {
         "type": string;
     }
     interface PdmIonContentDisplay {
-        "buttonDataTag"?: string;
-        "buttonLabel"?: string;
         /**
           * Shows the search bar or not.
          */
@@ -369,6 +367,7 @@ export namespace Components {
           * Content Header Graphical Params
          */
         "contentTitle": string;
+        "hasButton"?: boolean;
         "iconName"?: string;
         /**
           * sets the name of the manager to use
@@ -378,6 +377,7 @@ export namespace Components {
         "refresh": () => Promise<void>;
     }
     interface PdmIonGrid {
+        "referenceList"?: string[];
     }
     interface PdmIonGridSearchBar {
         "placeholder": string;
@@ -1367,8 +1367,6 @@ declare namespace LocalJSX {
         "type"?: string;
     }
     interface PdmIonContentDisplay {
-        "buttonDataTag"?: string;
-        "buttonLabel"?: string;
         /**
           * Shows the search bar or not.
          */
@@ -1377,6 +1375,7 @@ declare namespace LocalJSX {
           * Content Header Graphical Params
          */
         "contentTitle"?: string;
+        "hasButton"?: boolean;
         "iconName"?: string;
         /**
           * sets the name of the manager to use
@@ -1389,6 +1388,7 @@ declare namespace LocalJSX {
         "placeholder"?: string;
     }
     interface PdmIonGrid {
+        "referenceList"?: string[];
     }
     interface PdmIonGridSearchBar {
         "placeholder"?: string;

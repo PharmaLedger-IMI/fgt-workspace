@@ -40,6 +40,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
 
   @Prop({attribute: 'content-title'}) contentTitle = 'PDM Ionic Content';
   @Prop({attribute: 'icon-name'}) iconName?: string = "albums";
+  @Prop({attribute: 'has-button'}) hasButton?: boolean = false;
   
   /**
    * Shows the search bar or not.
@@ -130,18 +131,16 @@ export class PdmIonContentDisplay implements ComponentInterface{
 
     if(self.showSearch)
       return(
-        <ion-button class={self.buttonDataTag ? "ion-margin-end" : ""} color="secondary" fill="clear" onClick={() => {
+        <ion-button class={self.hasButton ? "ion-margin-end" : ""} color="secondary" fill="clear" onClick={() => {
           self.showSearch = false;
-          self.refresh(); //erase after
         }}>
           <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
         </ion-button>
       )
 
     return(
-      <ion-button class={self.buttonDataTag ? "ion-margin-end" : ""} fill="solid" color="secondary" onClick={() => {
+      <ion-button class={self.hasButton ? "ion-margin-end" : ""} fill="solid" color="secondary" onClick={() => {
         self.showSearch = true;
-        self.refresh(); //erase after
       }}>
         <ion-icon  slot="icon-only" name="search-outline"></ion-icon>
       </ion-button>
@@ -191,20 +190,6 @@ export class PdmIonContentDisplay implements ComponentInterface{
     )
   }
 
-  private getHeaderButton(){
-    const self = this;
-
-    if(!self.buttonDataTag || !self.buttonLabel)
-      return;
-
-    return(
-      <ion-button color="secondary" fill="solid">
-        {self.buttonLabel}
-        <ion-icon class="ion-padding-start" slot="end" name="add-circle" data-tag={self.buttonDataTag}></ion-icon> 
-      </ion-button>
-    )
-  }
-
   private getContentHeaderSmallScreens(){
     const self = this;
 
@@ -223,7 +208,9 @@ export class PdmIonContentDisplay implements ComponentInterface{
               {self.getSearchButton()}
             </ion-col>
             <ion-col size="auto">
-              {self.getHeaderButton()}
+              <ion-buttons>
+                <slot name="buttons"></slot>
+              </ion-buttons>
             </ion-col>
           </ion-row>
           <ion-row class="ion-align-items-center ion-margin-vertical">
@@ -313,9 +300,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
     return(
       <Host>
         {self.getContentHeader()}
-          <pdm-ion-grid>
-
-          </pdm-ion-grid>
+         
           {/* id="ion-table-content" class="ion-padding" */}
           {/* {self.getContent()} */}
         {/* {this.getPagination()} } */}

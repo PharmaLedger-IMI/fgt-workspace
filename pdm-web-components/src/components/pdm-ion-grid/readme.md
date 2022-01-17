@@ -5,18 +5,12 @@
 <!-- Auto Generated Below -->
 
 
-## Dependencies
+## Properties
 
-### Used by
+| Property        | Attribute | Description | Type       | Default |
+| --------------- | --------- | ----------- | ---------- | ------- |
+| `referenceList` | --        |             | `string[]` | `[]`    |
 
- - [pdm-ion-content-display](../pdm-ion-content-display)
-
-### Graph
-```mermaid
-graph TD;
-  pdm-ion-content-display --> pdm-ion-grid
-  style pdm-ion-grid fill:#f9f,stroke:#333,stroke-width:4px
-```
 
 ----------------------------------------------
 
