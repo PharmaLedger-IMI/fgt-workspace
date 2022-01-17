@@ -18,6 +18,13 @@
 | `placeholder`   | `searchbar-placeholder` |                                     | `string`  | `'enters search terms...'` |
 
 
+## Events
+
+| Event              | Description                          | Type               |
+| ------------------ | ------------------------------------ | ------------------ |
+| `ssapp-send-error` | Through this event errors are passed | `CustomEvent<any>` |
+
+
 ## Methods
 
 ### `refresh() => Promise<void>`

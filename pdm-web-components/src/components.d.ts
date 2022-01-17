@@ -1382,6 +1382,10 @@ declare namespace LocalJSX {
           * sets the name of the manager to use
          */
         "manager"?: string;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "placeholder"?: string;
     }
     interface PdmIonGrid {

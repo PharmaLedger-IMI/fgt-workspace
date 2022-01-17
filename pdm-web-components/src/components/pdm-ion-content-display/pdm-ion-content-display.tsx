@@ -250,7 +250,9 @@ export class PdmIonContentDisplay implements ComponentInterface{
             {self.getSearchButton()}
           </ion-col>
           <ion-col size="auto">
-            {self.getHeaderButton()}
+            <ion-buttons>
+              <slot name="buttons"></slot>
+            </ion-buttons>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -274,7 +276,9 @@ export class PdmIonContentDisplay implements ComponentInterface{
             {self.getSearchBar("default")}
           </ion-col>
           <ion-col size="auto">
-            {self.getHeaderButton()}
+            <ion-buttons>
+              <slot name="buttons"></slot>
+            </ion-buttons>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -298,7 +302,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
       default:
         return;
       }
-    }
+  }
 
   /**
    * Component Render
