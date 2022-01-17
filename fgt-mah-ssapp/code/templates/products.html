@@ -2,12 +2,15 @@
     <pdm-ion-content-display
         content-title="@title"
         icon-name="reader"
-        button-text="@buttons.add-product.label"
-        button-data-tag="add-product"
+  
 
         manager="ProductManager"
        
     >
+    <ion-button slot="buttons" fill="solid" color="secondary" data-tag="add-product">
+        {{@buttons.add-product.label}}
+        <ion-icon slot="end" name="add-circle"></ion-icon>
+    </ion-button>
     </pdm-ion-content-display>
 
     <!-- optional
