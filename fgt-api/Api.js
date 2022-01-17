@@ -345,7 +345,7 @@ class Api {
             return self.manager.batchSchedule(() => self.createAll.call(self, keys, body, callback));
         }
         if (!Array.isArray(body))
-            callback(new BadRequest('Invalid body format'));
+            return callback(new BadRequest('Invalid body format'));
 
         this._bindIterator(this.update.bind(this), [], keys, body.slice(), (err, results) => {
             if (err){

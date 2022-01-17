@@ -164,7 +164,7 @@ class SaleManager extends Manager{
                                 return cb(`Could not Crease Sales DSUs`);
                             self.insertRecord(sale.id, self._indexItem(sale), (err) => {
                                 if (err)
-                                    return cb(`Could not insert record with gtin ${sale.id} on table ${self.tableName}`);
+                                    return cb(`Could not insert record with id ${sale.id} on table ${self.tableName}`);
                                 self.commitBatch((err) => {
                                     if(err)
                                         return cb(err);

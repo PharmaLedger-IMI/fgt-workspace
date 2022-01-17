@@ -19,7 +19,7 @@ const log = function(message, ...args){
 }
 
 const getCredentials = function(basePath, walletName, callback){
-    const credentialsFilePath = path.join(process.cwd(), "..", "fgt-api", "config", walletName, "credentials.json");
+    const credentialsFilePath = path.join(basePath, walletName, "credentials.json");
     if (!fs.existsSync(credentialsFilePath))
         return callback(`No credentials file found`);
 
@@ -62,7 +62,7 @@ const load = function(keySSI, callback){
 }
 
 const getSeed = function(basePath, walletName, callback){
-    const seedFilePath = path.join(process.cwd(), "..", "fgt-api", "config", walletName, "seed");
+    const seedFilePath = path.join(basePath, walletName, "seed");
     if (!fs.existsSync(seedFilePath))
         return instantiate(basePath, walletName, callback);
 
@@ -75,8 +75,8 @@ const getSeed = function(basePath, walletName, callback){
     });
 }
 
-const saveSeed = function(seed, walletName, callback){
-    const seedFilePath = path.join(process.cwd(), "..", "fgt-api", "config", walletName, "seed");
+const saveSeed = function(basePath, seed, walletName, callback){
+    const seedFilePath = path.join(basePath, walletName, "seed");
     fs.writeFile(seedFilePath, seed.toString(), callback);
 }
 
@@ -84,7 +84,8 @@ const saveSeed = function(seed, walletName, callback){
 const initApis = function(express, apis, port, walletName, ...managerInitMethods){
     log(`InitApi: ${walletName} on :${port}`)
 
-    getSeed(process.cwd(), walletName, (err, keySSI, walletDSU) => {
+    const credentialPath = path.join(process.cwd(), "config");
+    getSeed(credentialPath, walletName, (err, keySSI, walletDSU) => {
         if (err)
             throw err;
 
@@ -97,6 +98,10 @@ const initApis = function(express, apis, port, walletName, ...managerInitMethods
                         throw err;
 
                     const server = express();
+                    server.use(function (req, res, next) {
+                        res.contentType('application/json');
+                        next();
+                    });
                     server.set('query parser', 'simple');
 
                     Object.values(apis).forEach(api => {
@@ -116,7 +121,7 @@ const initApis = function(express, apis, port, walletName, ...managerInitMethods
             walletDSU.getKeySSIAsObject((err, keySSI) => {
                 if (err)
                     return callback(err);
-                saveSeed(keySSI.getIdentifier(),  walletName,(err) => {
+                saveSeed(credentialPath, keySSI.getIdentifier(),  walletName,(err) => {
                     if (err)
                         return callback(err);
                     init(walletDSU);

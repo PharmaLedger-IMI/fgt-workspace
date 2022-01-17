@@ -85,7 +85,7 @@ class ProductManager extends Manager {
      * Creates a {@link Product} dsu
      * @param {string|number} [gtin] the table key
      * @param {Product} product
-     * @param {function(err, keySSI, string)} callback where the string is the mount path relative to the main DSU
+     * @param {function(err, keySSI?, string?)} callback where the string is the mount path relative to the main DSU
      * @override
      */
     create(gtin, product, callback) {
@@ -100,7 +100,8 @@ class ProductManager extends Manager {
                 return self._err(`Could not bind mah to product`, err, callback);
             self.productService.create(product, (err, keySSI) => {
                 if (err)
-                    return self._err(`Could not create product DSU for ${JSON.stringify(product, undefined, 2)}`, err, callback);
+                    // return self._err(`Could not create product DSU for ${product.gtin} GTIN because already exists.`, err, callback);
+                    return callback(`Could not create product DSU of GTIN ${product.gtin} because it already exists.`);
                 const record = keySSI.getIdentifier();
                 self.insertRecord(gtin, self._indexItem(gtin, product, record), (err) => {
                     if (err)
