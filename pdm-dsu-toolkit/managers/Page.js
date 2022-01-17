@@ -33,7 +33,7 @@ function paginate(items, itemsPerPage, page){
         startIndex = startIndex === 0 ? startIndex : startIndex - 1;
         const endIndex = startIndex + itemsPerPage >= items.length ? undefined: startIndex + itemsPerPage;
         const sliced = items.slice(startIndex, endIndex);
-        return toPage(page, totalPages, sliced);
+        return toPage(page, totalPages, sliced, itemsPerPage);
 }
 module.exports = {
     Page,
