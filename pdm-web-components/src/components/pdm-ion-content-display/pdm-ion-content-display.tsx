@@ -40,8 +40,7 @@ export class PdmIonContentDisplay implements ComponentInterface{
 
   @Prop({attribute: 'content-title'}) contentTitle = 'PDM Ionic Content';
   @Prop({attribute: 'icon-name'}) iconName?: string = "albums";
-  @Prop({attribute: 'button-text'}) buttonLabel?: string = undefined;
-  @Prop({attribute: 'button-data-tag'}) buttonDataTag?: string = undefined;
+  
   /**
    * Shows the search bar or not.
    */
