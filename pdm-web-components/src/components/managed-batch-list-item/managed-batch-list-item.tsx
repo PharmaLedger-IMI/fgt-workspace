@@ -130,7 +130,7 @@ export class ManagedBatchListItem {
       return (
             <ion-col slot="content" color="secondary" size= "auto">
               <ion-label color="secondary">
-                {"Serial Nº"}
+                {"S.Nº"}
               </ion-label>       
             </ion-col>
       )
