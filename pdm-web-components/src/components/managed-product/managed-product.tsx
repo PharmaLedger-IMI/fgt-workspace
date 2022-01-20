@@ -246,7 +246,7 @@ export class ManagedProduct implements CreateManageView{
     if (this.isCreate())
       return;
     return (
-      <pdm-ion-table table-title={this.batchesTitle + ` ${this.gtin}`}
+      <pdm-ion-table-default table-title={this.batchesTitle + ` ${this.gtin}`}
                      item-reference="gtin-batch"
                      query={this.gtin}
                      auto-load={true}
@@ -265,7 +265,7 @@ export class ManagedProduct implements CreateManageView{
           {this.batchesAddButton}
           <ion-icon slot="end" name="add-circle"></ion-icon>
         </ion-button>
-      </pdm-ion-table>
+      </pdm-ion-table-default>
     )
   }
 

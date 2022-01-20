@@ -62,16 +62,16 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [pdm-ion-table](../pdm-ion-table)
+- [pdm-ion-table-default](../pdm-ion-table-default)
 - [create-manage-view-layout](../create-manage-view-layout)
 
 ### Graph
 ```mermaid
 graph TD;
-  managed-product --> pdm-ion-table
+  managed-product --> pdm-ion-table-default
   managed-product --> create-manage-view-layout
-  pdm-ion-table --> multi-spinner
-  pdm-ion-table --> pdm-search-bar
+  pdm-ion-table-default --> multi-spinner
+  pdm-ion-table-default --> pdm-search-bar
   style managed-product fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

@@ -50,6 +50,10 @@ Type: `Promise<void>`
 
 ## Dependencies
 
+### Used by
+
+ - [managed-product](../managed-product)
+
 ### Depends on
 
 - [multi-spinner](../multi-spinner)
@@ -60,6 +64,7 @@ Type: `Promise<void>`
 graph TD;
   pdm-ion-table-default --> multi-spinner
   pdm-ion-table-default --> pdm-search-bar
+  managed-product --> pdm-ion-table-default
   style pdm-ion-table-default fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

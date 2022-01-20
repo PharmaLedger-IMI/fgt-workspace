@@ -246,20 +246,25 @@ export class PdmIonTableDefault implements ComponentInterface {
     }
 
     return (
-      <div class="ion-margin-top ion-padding-horizontal">
-        <ion-row class="ion-align-items-center ion-justify-content-between">
-          <div class="flex ion-align-items-center">
+      <ion-grid>
+        <ion-row class="ion-align-items-center ion-padding-horizontal ion-margin-vertical">
+          <ion-col size="auto">
             <ion-icon size="large" color="secondary" name={self.iconName}></ion-icon>
+          </ion-col>
+          <ion-col size="auto">
             <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">{self.tableTitle}</ion-label>
-          </div>
-          <ion-row class="ion-align-items-center">
+          </ion-col>
+          <ion-col></ion-col>
+          <ion-col size="auto">
             {getSearch()}
+          </ion-col>
+          <ion-col size="auto">
             <ion-buttons>
               <slot name="buttons"></slot>
             </ion-buttons>
-          </ion-row>
+          </ion-col>
         </ion-row>
-      </div>
+      </ion-grid>
     )
   }
 
@@ -321,34 +326,88 @@ export class PdmIonTableDefault implements ComponentInterface {
     if(self.showSearch)
       return (
         // <div class="ion-margin-top ion-padding-horizontal">
+        // <ion-grid>
+        //   <ion-row class="ion-align-items-center ion-justify-content-between">
+        //     <ion-col>
+        //       <ion-icon size="large" color="secondary" name={self.iconName}></ion-icon>
+        //       <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">{self.tableTitle}</ion-label>
+        //     </ion-col>
+        //     <ion-col class={`flex ion-justify-content-end`}>
+        //       {getSearchButton()}
+        //     </ion-col>
+        //     <ion-col>
+        //       <ion-buttons>
+        //         <slot name="buttons"></slot>
+        //       </ion-buttons>
+        //     </ion-col>
+        //     </ion-row>
+        //   <ion-row class="ion-align-items-center ion-padding-start ion-padding-end block">
+        //     {getSearch()}
+        //   </ion-row>
+        // </ion-grid>
+
         <ion-grid>
-          <ion-row class="ion-align-items-center ion-justify-content-between">
-            <ion-col>
+          <ion-row class="ion-align-items-center ion-padding-horizontal ion-margin-vertical">
+            <ion-col size="auto">
               <ion-icon size="large" color="secondary" name={self.iconName}></ion-icon>
+            </ion-col>
+            <ion-col size="auto">
               <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">{self.tableTitle}</ion-label>
             </ion-col>
-            <ion-col class={`flex ion-justify-content-end`}>
+            <ion-col></ion-col>
+            <ion-col size="auto">
               {getSearchButton()}
             </ion-col>
-            </ion-row>
-          <ion-row class="ion-align-items-center ion-padding-start ion-padding-end block">
-            {getSearch()}
+            <ion-col size="auto">
+              <ion-buttons>
+                <slot name="buttons"></slot>
+              </ion-buttons>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-align-items-center ion-margin-vertical">
+            <ion-col size="12">
+              {getSearch()}
+            </ion-col>
           </ion-row>
         </ion-grid>
       )
 
     return(
+      // <ion-grid>
+      //     <ion-row class="ion-align-items-center ion-justify-content-between">
+      //       <ion-col>
+      //         <ion-icon size="large" color="secondary" name={self.iconName}></ion-icon>
+      //         <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">{self.tableTitle}</ion-label>
+      //       </ion-col>
+      //       <ion-col class={`flex ion-justify-content-end`}>
+      //         {getSearchButton()}
+      //       </ion-col>
+      //       <ion-col>
+      //       <ion-buttons>
+      //         <slot name="buttons"></slot>
+      //       </ion-buttons>
+      //       </ion-col>
+      //     </ion-row>
+      //   </ion-grid>
       <ion-grid>
-          <ion-row class="ion-align-items-center ion-justify-content-between">
-            <ion-col>
-              <ion-icon size="large" color="secondary" name={self.iconName}></ion-icon>
-              <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">{self.tableTitle}</ion-label>
-            </ion-col>
-            <ion-col class={`flex ion-justify-content-end`}>
-              {getSearchButton()}
-            </ion-col>
-          </ion-row>
-        </ion-grid>
+        <ion-row class="ion-align-items-center ion-padding-horizontal ion-margin-vertical">
+          <ion-col size="auto">
+            <ion-icon size="large" color="secondary" name={self.iconName}></ion-icon>
+          </ion-col>
+          <ion-col size="auto">
+            <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">{self.tableTitle}</ion-label>
+          </ion-col>
+          <ion-col></ion-col>
+          <ion-col size="auto">
+            {getSearchButton()}
+          </ion-col>
+          <ion-col size="auto">
+            <ion-buttons>
+              <slot name="buttons"></slot>
+            </ion-buttons>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     )
   }
 
@@ -357,9 +416,9 @@ export class PdmIonTableDefault implements ComponentInterface {
 
     switch(self.currentBreakpoint){
       case 'xs':
-        return self.getSearchButton();
       case 'sm':
       case 'md':
+        return self.getSearchButton();
       case 'lg':
       case 'xl':
       default:
