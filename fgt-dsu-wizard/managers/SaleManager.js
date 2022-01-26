@@ -2,6 +2,7 @@ const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../con
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Sale = require('../model/Sale');
 const Batch = require('../model/Batch');
+const IndividualProduct = require('../model/IndividualProduct');
 const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 const utils = require('../services').utils;
 
@@ -56,6 +57,80 @@ class SaleManager extends Manager{
     }
 
     /**
+     * Verify if the sale can be done. Some conditions that are checked:
+     *  -> gtin e batch existe
+     *  -> verificar se a venda não é duplicada
+     * -> verificar a quantidade
+     * -> verificar se o produto já n foi vendido (receipt)
+     * @param aggStock
+     * @param productList
+     * @param callback
+     */
+    _checkStockAvailability(aggStock, productList, callback) {
+        const qtySoldByGtinBatch = {}; // qty sold by gtin and batch, cannot sale more than exists on stock
+        const qtySoldBySn = {}; // qty sold by serial number, cannot sale same product more than once
+        const aggBatchesByGtin = {} // "001": [Batch]
+        const aggIndividualProductsByMAH = {}; // "MAH": [IndividualProduct]
+
+        const iterator = (_aggStock, _productList, _callback) => {
+            const productSold = _productList.shift();
+            if (!productSold)
+                return _callback(undefined, aggBatchesByGtin, aggIndividualProductsByMAH);
+
+            const gtinBatchNumber = `${productSold.gtin}-${productSold.batchNumber}`;
+            if(!(_aggStock.hasOwnProperty(gtinBatchNumber)))
+                return _callback(`Product ${index + 1}: product gtin ${productSold.gtin}, batchNumber ${productSold.batchNumber} not found in stock.`);
+
+            // check if selling the same product more than once
+            const indProductId = `${productSold.gtin}-${productSold.batchNumber}-${productSold.serialNumber}`;
+            qtySoldBySn[indProductId] = 1 + (qtySoldBySn[indProductId]  || 0);
+            if (qtySoldBySn[indProductId] > 1)
+                return _callback(`Product ${index + 1}: trying to sold a product more than once.`);
+
+            const stockProduct = _aggStock[gtinBatchNumber];
+            // check if sale qty is available in stock
+            qtySoldByGtinBatch[gtinBatchNumber] = 1 + (qtySoldByGtinBatch[gtinBatchNumber] || 0);
+            if (stockProduct.batch.quantity - qtySoldByGtinBatch[gtinBatchNumber] <= 0)
+                return _callback(`Product ${index + 1}: quantity not enough in stock.`);
+
+            const individualProductSold = new IndividualProduct({
+                gtin: productSold.gtin,
+                batchNumber: productSold.batchNumber,
+                serialNumber: productSold.serialNumber,
+                name: stockProduct.name,
+                manufName: stockProduct.manufName,
+                expiry: stockProduct.batch.expiry,
+                status: stockProduct.batch.batchStatus.status
+            });
+
+            // add to aggIndividualProductsByMAH
+            const mah = stockProduct.manufName;
+            if (aggIndividualProductsByMAH.hasOwnProperty(mah))
+                aggIndividualProductsByMAH[mah].push(individualProductSold);
+            else
+                aggIndividualProductsByMAH[mah] = [individualProductSold];
+
+            // add to aggBatchesByGtin
+            if (aggBatchesByGtin.hasOwnProperty(productSold.gtin)) {
+                const batch = aggBatchesByGtin[productSold.gtin].find((batch) => batch.batchNumber === productSold.batchNumber);
+                batch.serialNumbers.push(productSold.serialNumber);
+                batch.quantity = batch.getQuantity() * -1; // update qty because when create a Batch, there is a qty validation
+            } else {
+                const batch = new Batch({
+                    batchNumber: productSold.batchNumber,
+                    serialNumbers: [productSold.serialNumber],
+                });
+                batch.quantity = batch.getQuantity() * -1; // update qty because when create a Batch, there is a qty validation
+                aggBatchesByGtin[productSold.gtin] = [batch]
+            }
+
+            iterator(_aggStock, _productList, _callback);
+        }
+
+        iterator(aggStock, productList.slice(), callback);
+    }
+
+    /**
      * Creates a {@link Sale} entry
      * @param {Sale} sale
      * @param {function(err, keySSI?, string?)} callback where the string is the mount path relative to the main DSU
@@ -65,9 +140,6 @@ class SaleManager extends Manager{
 
         if (!(sale instanceof Sale))
             sale = new Sale(sale);
-        let err = sale.validate();
-        if (err)
-            return callback(`Invalid sale. ${err}`);
 
         const query = {query: [`gtin like /${sale.productList.map(il => il.gtin).join('|')}/g`]};
         self.stockManager.getAll(true, query, (err, stocks) => {
@@ -83,149 +155,118 @@ class SaleManager extends Manager{
                 callback(undefined, ...results);
             }
 
-            const stockVerificationIterator = (accum, stock, saleList, _callback) => {
-                const stockProduct = stock.shift();
-                if (!stockProduct) {
-                    return _callback(undefined, accum);
-                }
+            const aggStockByGtinBatch = (accum, _stock, _callback) => {
+                const stock = _stock.shift();
+                if (!stock)
+                    return _callback(accum);
 
-                const err = [];
-                const productsSold = saleList.reduce((_accum, productSold, index) => {
-                    if (productSold.gtin === stockProduct.gtin) {
-                        const batch = stockProduct.batches.find((batch) => batch.batchNumber === productSold.batchNumber);
-                        if (!batch)
-                            err.push(`Product ${index + 1}: BatchNumber not found in stock.`);
-                        else {
-                            const serialNumberIndex = batch.serialNumbers.indexOf(productSold.serialNumber);
-                            if (serialNumberIndex === -1) { // serial number doesn't exist
-                                err.push(`Product ${index + 1}: SerialNumber not found in stock.`);
-                            } else {
-                                batch.serialNumbers.splice(serialNumberIndex, 1); // remove from stock
-                                const id = `${productSold.gtin}-${productSold.batchNumber}`;
-                                if (_accum.hasOwnProperty(id)) {
-                                    _accum[id].serialNumbers.push(productSold.serialNumber);
-                                } else {
-                                    _accum[id] = new Batch({
-                                        batchNumber: productSold.batchNumber,
-                                        serialNumbers: [productSold.serialNumber],
-                                    });
-                                }
-                            }
-                        }
-                    } else {
-                        err.push(`Product ${index + 1}: Not found in stock.`)
-                    }
+                const batches = stock.batches.reduce((_accum, batch) => {
+                    _accum[`${stock.gtin}-${batch.batchNumber}`] = {
+                        gtin: stock.gtin,
+                        name: stock.name,
+                        manufName: stock.manufName,
+                        batch: batch
+                    };
                     return _accum;
                 }, {});
 
-                if (err.length > 0)
-                    return _callback(err.join(' '));
-
-                accum[stockProduct.gtin] = Object.values(productsSold).map((productSold) => {
-                    productSold.quantity = productSold.getQuantity() * -1; // update qty because when create a Batch, there is a qty validation
-                    return productSold;
-                });
-                stockVerificationIterator(accum, stock, saleList, _callback);
+                accum = {...accum, ...batches};
+                aggStockByGtinBatch(accum, _stock, _callback);
             }
 
-            stockVerificationIterator({}, stocks.slice(),  sale.productList, (err, toBeManaged) => {
-                if (err)
-                    return callback(err); //self._err(`Not enough stock`, err, callback);
+            aggStockByGtinBatch({}, stocks.slice(), (resultAggStockByGtinBatch) => {
 
-                const productIterator = function(gtins, result, callback){
-                    const gtin = gtins.shift();
-                    if (!gtin)
-                        return callback(undefined, result);
+                self._checkStockAvailability(resultAggStockByGtinBatch, sale.productList, (err, aggBatchesByGtin, aggIndividualProductsByMAH) => {
+                    if (err)
+                        return callback(err);
 
-                    self.batchAllow(self.stockManager);
-                    self.stockManager.manageAll(gtin, toBeManaged[gtin].slice(), (err, serials, stocks) => {
-                        self.batchDisallow(self.stockManager);
-                        if (err)
-                            return cb(err);
-                        result.push(...stocks);
-                        productIterator(gtins, result, callback);
-                    });
-                }
+                    const dbAction = function(sale, aggBatchesByGtin, aggIndividualProductsByMAH, _callback) {
+                        try {
+                            self.beginBatch();
+                        } catch (e){
+                            return self.batchSchedule(() => dbAction(sale, aggBatchesByGtin, aggIndividualProductsByMAH, _callback));
+                        }
 
-                const dbAction = function(sale, toBeManaged, callback) {
-                    try {
-                        self.beginBatch();
-                    } catch (e){
-                        return self.batchSchedule(() => dbAction(sale, toBeManaged,  callback));
-                        //return callback(e);
-                    }
+                        const removeFromStock = function(gtins, _aggBatchesByGtin, _callback){
+                            const gtin = gtins.shift();
+                            if (!gtin)
+                                return _callback(undefined);
 
-                    productIterator(Object.keys(toBeManaged), [], (err, results) => {
-                        if (err)
-                            return cb(err);
-                        console.log(`Creating sale entry for: ${sale.productList.map(p => `${p.gtin}-${p.batchNumber}-${p.serialNumber}`).join(', ')}`);
-                        self.splitSalesByMAHAndCreate(sale, (err, SSis) => {
-                            if (err)
-                                return cb(`Could not Crease Sales DSUs`);
-                            self.insertRecord(sale.id, self._indexItem(sale), (err) => {
+                            self.batchAllow(self.stockManager);
+                            self.stockManager.manageAll(gtin, _aggBatchesByGtin[gtin].slice(), (err, serials, stocks) => {
+                                self.batchDisallow(self.stockManager);
                                 if (err)
-                                    return cb(`Could not insert record with id ${sale.id} on table ${self.tableName}`);
-                                self.commitBatch((err) => {
-                                    if(err)
-                                        return cb(err);
-                                    const path =`${self.tableName}/${sale.id}`;
-                                    console.log(`Sale stored at '${path}'`);
-                                    callback(undefined, sale, path);
+                                    return _callback(err);
+                                removeFromStock(gtins, _aggBatchesByGtin, _callback);
+                            });
+                        }
+
+                        removeFromStock(Object.keys(aggBatchesByGtin), aggBatchesByGtin, (err) => {
+                            if (err)
+                                return cb(err);
+                            console.log(`Creating sale entry for: ${sale.productList.map(p => `${p.gtin}-${p.batchNumber}-${p.serialNumber}`).join(', ')}`);
+                            self._addSale(sale.id, aggIndividualProductsByMAH, (err, SSis, insertedSale) => {
+                                if (err)
+                                    return cb(`Could not Crease Sales DSUs`);
+                                self.insertRecord(insertedSale.id, self._indexItem(insertedSale), (err) => {
+                                    if (err)
+                                        return cb(`Could not insert record with id ${insertedSale.id} on table ${self.tableName}`);
+                                    self.commitBatch((err) => {
+                                        if(err)
+                                            return cb(err);
+                                        const path =`${self.tableName}/${insertedSale.id}`;
+                                        console.log(`Sale stored at '${path}'`);
+                                        _callback(undefined, insertedSale, path);
+                                    });
                                 });
                             });
                         });
-                    });
-                }
+                    }
 
-                dbAction(sale, toBeManaged,  callback);
-            });
-        });
+                    dbAction(sale, aggBatchesByGtin,  aggIndividualProductsByMAH, callback);
+                });
+            })
+
+        }); // stockManager.getAll end
     }
 
-    splitSalesByMAHAndCreate(sale, callback){
+    _addSale(saleId, aggIndividualProductsByMAH, callback){
         const self = this;
-
         const sellerId = self.getIdentity().id;
+        const insertedSale = new Sale({
+            id: saleId,
+            sellerId: sellerId,
+            productList: []
+        });
 
-        const prodsByMAH = sale.productList.reduce((accum, ip) => {
-            accum[ip.manufName] = accum[ip.manufName] || [];
-            accum[ip.manufName].push(ip);
-            return accum;
-        }, {});
-
-        const createIterator = function(products, accumulator, callback){
-            if (!callback){
-                callback = accumulator;
-                accumulator = [];
-            }
-            const splitSale = new Sale({
-               id: sale.id,
-               sellerId: sellerId,
-               productList: products
+        const createIterator = function(products, accumulator, _callback){
+            const saleByMAH = new Sale({
+                id: saleId,
+                sellerId: sellerId,
+                productList: products
             });
+            const saleErr = saleByMAH.validate();
+            if (saleErr)
+                return self._err(`Sale validate error`, saleErr, _callback);
+            insertedSale.productList.push(...saleByMAH.productList);
 
-            self.saleService.create(splitSale, (err, keySSI, dsu) => {
+            self.saleService.create(saleByMAH, (err, keySSI, dsu) => {
                 if (err)
-                    return self._err(`Could not create Sale DSU`, err, callback);
+                    return self._err(`Could not create Sale DSU`, err, _callback);
                 accumulator.push(keySSI.getIdentifier());
-                console.log(`Created split Sale with SSI ${keySSI.getIdentifier()}`);
-                callback(undefined, accumulator);
+                console.log(`Created Sale with SSI ${keySSI.getIdentifier()}`);
+                _callback(undefined, accumulator);
             });
         }
 
-        const createAndNotifyIterator = function(mahs, accumulator, callback){
-            if (!callback){
-                callback = accumulator;
-                accumulator = {};
-            }
-
+        const createAndNotifyIterator = function(mahs, accumulator, _callback){
             const mah = mahs.shift();
             if (!mah)
-                return callback(undefined, accumulator);
+                return _callback(undefined, accumulator, insertedSale);
 
-            createIterator(prodsByMAH[mah].slice(), (err, keySSIs) => {
+            createIterator(aggIndividualProductsByMAH[mah].slice(), [], (err, keySSIs) => {
                 if (err)
-                    return callback(err);
+                    return _callback(err);
                 accumulator[mah] = keySSIs;
                 const keySSISpace = utils.getKeySSISpace();
 
@@ -234,16 +275,16 @@ class SaleManager extends Manager{
                 try {
                     readSSIs = keySSIs.map(k => keySSISpace.parse(k).derive().getIdentifier())
                 } catch(e) {
-                    return callback(`Invalid keys found`);
+                    return _callback(`Invalid keys found`);
                 }
 
                 self.sendMessage(mah, DB.receipts, readSSIs, err =>
                     self._messageCallback(err ? `Could not send message` : `Message to Mah ${mah} sent with sales`));
-                createAndNotifyIterator(mahs, accumulator, callback);
+                createAndNotifyIterator(mahs, accumulator, _callback);
             });
         }
 
-        createAndNotifyIterator(Object.keys(prodsByMAH), callback);
+        createAndNotifyIterator(Object.keys(aggIndividualProductsByMAH), {}, callback);
     }
 
     /**
