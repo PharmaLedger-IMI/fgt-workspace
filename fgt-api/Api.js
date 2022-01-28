@@ -6,12 +6,12 @@ const ALL_SUFFIX = "All";
 const OPERATIONS = {
     CREATE: {
         endpoint: 'create',
-        method: 'PUT',
+        method: 'POST',
         pathParams: undefined
     },
     UPDATE: {
         endpoint: 'update',
-        method: 'POST',
+        method: 'PUT',
         pathParams: undefined
     },
     GET: {
@@ -190,9 +190,9 @@ class Api {
                 case OPERATIONS.GET.method:
                     return server.get.bind(server);
                 case OPERATIONS.CREATE.method:
-                    return server.put.bind(server);
-                case OPERATIONS.UPDATE.method:
                     return server.post.bind(server);
+                case OPERATIONS.UPDATE.method:
+                    return server.put.bind(server);
                 case OPERATIONS.DELETE.method:
                     return server.delete.bind(server);
                 default:
