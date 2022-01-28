@@ -120,10 +120,10 @@ const initApis = function(express, apis, port, walletName, ...managerInitMethods
         if (walletDSU){
             walletDSU.getKeySSIAsObject((err, keySSI) => {
                 if (err)
-                    return callback(err);
+                    throw err;
                 saveSeed(credentialPath, keySSI.getIdentifier(),  walletName,(err) => {
                     if (err)
-                        return callback(err);
+                        throw err;
                     init(walletDSU);
                 });
             });
