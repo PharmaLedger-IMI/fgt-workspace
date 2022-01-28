@@ -10,12 +10,12 @@ const {BASE_PATH} = require("../controls/utils");
 describe('traceabilityApi', function () {
     require('./saleApi.test');
 
-    describe('GET /traceability/get', function () {
+    describe('POST /traceability/create', function () {
         const sale = db.sales[0].productList[0];
 
         it ('should get traceability by GTIN and batchNumber', (done) => {
             chai.request(BASE_PATH)
-                .put(`/traceability/create`)
+                .post(`/traceability/create`)
                 .send({
                     gtin: sale.gtin,
                     batchNumber: sale.batchNumber
@@ -33,7 +33,7 @@ describe('traceabilityApi', function () {
 
         it ('should get traceability by GTIN, batchNumber and serialNumber', (done) => {
             chai.request(BASE_PATH)
-                .put(`/traceability/create`)
+                .post(`/traceability/create`)
                 .send({
                     gtin: sale.gtin,
                     batchNumber: sale.batchNumber,
@@ -52,7 +52,7 @@ describe('traceabilityApi', function () {
 
         it ('should get all traceability', (done) => {
             chai.request(BASE_PATH)
-                .put('/traceability/createAll')
+                .post('/traceability/createAll')
                 .send([{
                     gtin: sale.gtin,
                     batchNumber: sale.batchNumber

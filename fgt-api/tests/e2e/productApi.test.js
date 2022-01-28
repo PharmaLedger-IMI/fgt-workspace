@@ -10,11 +10,11 @@ const {BASE_PATH} = require("../controls/utils");
 describe('productApi', function () {
     const product = db.products[0];
 
-    describe('PUT /product/create', function () {
+    describe('POST /product/create', function () {
 
         it ('should create a new product', (done) => {
             chai.request(BASE_PATH)
-                .put('/product/create')
+                .post('/product/create')
                 .send(product)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -30,7 +30,7 @@ describe('productApi', function () {
 
         it ('should return a error when product already exists', (done) => {
             chai.request(BASE_PATH)
-                .put('/product/create')
+                .post('/product/create')
                 .send(product)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);

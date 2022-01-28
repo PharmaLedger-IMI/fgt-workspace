@@ -13,10 +13,10 @@ describe('shipmentApi', function () {
     const batch = db.batches[0];
     const shipment = db.shipments[0];
 
-    describe('PUT /shipment/create', function () {
+    describe('POST /shipment/create', function () {
         it('should create a shipment', (done) => {
             chai.request(BASE_PATH)
-                .put('/shipment/create')
+                .post('/shipment/create')
                 .send(shipment)
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -36,7 +36,7 @@ describe('shipmentApi', function () {
 
         it('should return a error when shipment order already exists', (done) => {
             chai.request(BASE_PATH)
-                .put('/shipment/create')
+                .post('/shipment/create')
                 .send(shipment)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -49,11 +49,11 @@ describe('shipmentApi', function () {
         });
     });
 
-    describe('POST /shipment/update', function () {
+    describe('PUT /shipment/update', function () {
 
         it('should update shipment status to pickup', (done) => {
             chai.request(BASE_PATH)
-                .post(`/shipment/update/${shipment.requesterId}/${shipment.orderId}`)
+                .put(`/shipment/update/${shipment.requesterId}/${shipment.orderId}`)
                 .send({
                     status: "pickup",
                     extraInfo: "update status to pickup"
@@ -81,7 +81,7 @@ describe('shipmentApi', function () {
 
         it("shouldn't update shipment status when is not allowed", (done) => {
             chai.request(BASE_PATH)
-                .post(`/shipment/update/${shipment.requesterId}/${shipment.orderId}`)
+                .put(`/shipment/update/${shipment.requesterId}/${shipment.orderId}`)
                 .send({status: "delivered"})
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);

@@ -11,11 +11,11 @@ describe('saleApi', function () {
     require("./batchApi.test");
     const sale = db.sales[0];
 
-    describe('PUT /sale/create', function () {
+    describe('POST /sale/create', function () {
 
         it('should create a sale', (done) => {
             chai.request(BASE_PATH)
-                .put('/sale/create')
+                .post('/sale/create')
                 .send(sale)
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -34,7 +34,7 @@ describe('saleApi', function () {
             const productList = [...sale.productList, ...sale.productList];
             const _sale = Object.assign({}, sale, {productList});
             chai.request(BASE_PATH)
-                .put('/sale/create')
+                .post('/sale/create')
                 .send(_sale)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -49,7 +49,7 @@ describe('saleApi', function () {
         it('should return a error when out of stock', (done) => {
             const _sale = db.sales[1];
             chai.request(BASE_PATH)
-                .put('/sale/create')
+                .post('/sale/create')
                 .send(_sale)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);

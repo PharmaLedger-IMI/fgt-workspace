@@ -11,11 +11,11 @@ describe('batchApi', function () {
     require("./productApi.test");
     const batch = db.batches[0];
 
-    describe('PUT /batch/create', function () {
+    describe('POST /batch/create', function () {
 
         it ('should create a new batch', (done) => {
             chai.request(BASE_PATH)
-                .put('/batch/create')
+                .post('/batch/create')
                 .send(batch)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -36,7 +36,7 @@ describe('batchApi', function () {
 
         it ('should return a error when batch already exists', (done) => {
             chai.request(BASE_PATH)
-                .put('/batch/create')
+                .post('/batch/create')
                 .send(batch)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -49,11 +49,11 @@ describe('batchApi', function () {
         });
     });
 
-    describe('POST /batch/update', function () {
+    describe('PUT /batch/update', function () {
 
         it ('should update a batch status to recall', (done) => {
             chai.request(BASE_PATH)
-                .post(`/batch/update/${batch.gtin}/${batch.batchNumber}`)
+                .put(`/batch/update/${batch.gtin}/${batch.batchNumber}`)
                 .send({
                     status: "recall",
                     extraInfo: "update status to recall"
