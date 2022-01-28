@@ -356,7 +356,7 @@ class SimpleShipmentManager extends Manager {
         }
 
         const self = this;
-        self.sendMessage(shipment.requesterId, DB.receivedShipments, aKey, (err) =>
+        self.sendMessage(shipment.requesterId, DB.stock, aKey, (err) =>
             self._messageCallback(err ? `Could not sent message to ${shipment.shipmentId} with ${DB.receivedShipments}: ${err}` : err,
                 `Message sent to ${shipment.requesterId}, ${DB.receivedShipments}, ${aKey}`));
         if (shipmentLinesSSIs)
