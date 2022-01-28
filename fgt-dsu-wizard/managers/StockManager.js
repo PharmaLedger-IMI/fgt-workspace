@@ -7,6 +7,7 @@ const StockStatus = require('../model/StockStatus');
 const StockManagementService = require("../services/StockManagementService");
 const Page = require('../../pdm-dsu-toolkit/managers/Page');
 const { toPage, paginate } = require('../../pdm-dsu-toolkit/managers/Page');
+const ShipmentStatus = require("../model/ShipmentStatus");
 
 /**
  * Stock Manager Class
@@ -36,6 +37,14 @@ class StockManager extends Manager{
         this.productService = undefined;
         this.batchService = undefined;
         this.participantManager = participantManager;
+
+        const self = this;
+        self.registerMessageListener((message, cb) => {
+            self.processMessageRecord(message, (err) => {
+                self.refreshController();
+                cb(err);
+            });
+        });
     }
 
     _getProduct(gtin, callback){
@@ -341,6 +350,64 @@ class StockManager extends Manager{
             callback(undefined, records.map(r => new Stock(r)));
         });
     }
+
+    _processMessageRecord(message, callback) {
+        let self = this;
+        if (!message || typeof message !== "string")
+            return callback(`Message ${message} does not have non-empty string with keySSI. Skipping record.`);
+
+        self._getDSUInfo(message, (err, simpleShipment) => {
+            if (err)
+                return self._err(`Could not read DSU from message keySSI in record ${message}. Skipping record.`, err, callback);
+
+            console.log(`Received SimpleShipment`, simpleShipment);
+            const shipmentStatus = simpleShipment.status.status || simpleShipment.status;
+            if (shipmentStatus !== ShipmentStatus.CONFIRMED)
+                return; // console.log(`Not allowed to update stock. ShipmentStatus updated to ${shipmentStatus}.`);
+
+            const gtins = simpleShipment.shipmentLines.map(sl => sl.gtin);
+            const batchesToAdd = simpleShipment.shipmentLines.reduce((accum, sl) => {
+                accum[sl.gtin] = accum[sl.gtin] || [];
+                accum[sl.gtin].push(new Batch({
+                    batchNumber: sl.batch,
+                    quantity: sl.quantity,
+                    serialNumbers: []
+                }))
+                return accum;
+            }, {});
+
+            const cb = function(err, ...results){
+                if (err)
+                    return self.cancelBatch(_ => callback(err));
+                callback(undefined, ...results);
+            }
+
+            const gtinIterator = function(accum, gtins, batchObj, callback){
+                const gtin = gtins.shift();
+                if (!gtin)
+                    return callback(undefined, accum);
+                const batches = batchObj[gtin];
+                self.manageAll(gtin, batches, (err, newStocks) => {
+                    if (err)
+                        return callback(err);
+                    accum[gtin] = accum[gtin] || [];
+                    accum[gtin].push(newStocks);
+                    gtinIterator(accum, gtins, batchObj, callback);
+                });
+            }
+
+            gtinIterator({}, gtins.slice(), batchesToAdd, (err, result) => {
+                if (err)
+                    return cb(`Could not update Stock`);
+                self.commitBatch((err) => {
+                    if(err)
+                        return cb(err);
+                    console.log(`Stock updated from simpleShipment received.`, result);
+                });
+            })
+
+        });
+    };
 
     /**
      * Get partner stock products that were shipped by MAH/manufName
