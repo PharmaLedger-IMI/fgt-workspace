@@ -115,7 +115,7 @@ class SimpleShipmentManager extends Manager {
                     if (err)
                         return callbackCancelBatch(new BadRequest(`Could not insert record with orderId ${simpleShipment.orderId} on table ${self.tableName}. Trying to insert a existing record.`));
 
-                    const path = `${self.tableName}/${simpleShipment.orderId}`;
+                    const path = `${self.tableName}/${dbKey}`;
                     log(`Shipment ${dbKey} created stored at DB '${path}'`);
                     self.sendMessagesAsync(simpleShipment, shipmentLinesSSIs, shipmentSSI);
                     _callback(undefined, keySSI, path);

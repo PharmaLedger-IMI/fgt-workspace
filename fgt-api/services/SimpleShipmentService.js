@@ -63,7 +63,7 @@ function SimpleShipmentService(domain, strategy) {
                 utils.getMounts(dsu, '/', STATUS_MOUNT_PATH, SIMPLE_SHIPMENT_MOUNT_PATH, (err, mounts) => {
                     if (err)
                         return callback(err);
-                    if (!mounts[STATUS_MOUNT_PATH] || !mounts[SIMPLE_SHIPMENT_MOUNT_PATH])
+                    if (!mounts[STATUS_MOUNT_PATH])
                         return callback(`Could not find status/simpleShipment mount`);
                     statusService.get(mounts[STATUS_MOUNT_PATH], (err, status) => {
                         if (err)
