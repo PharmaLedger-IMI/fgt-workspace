@@ -136,26 +136,22 @@ function SimpleShipmentService(domain, strategy) {
                             return cancelBatchCallback(err);
                         log(`SimpleShipmentStatus DSU (${statusSSI.getIdentifier(true)}) mounted at ${STATUS_MOUNT_PATH}`);
 
-                        dsu.mount(SIMPLE_SHIPMENT_MOUNT_PATH, templateKeySSI, (err) => {
+                        _createShipmentLines(simpleShipment, statusSSI, (err, shipmentLinesKeySSIs) => {
                             if (err)
                                 return cancelBatchCallback(err);
-                            _createShipmentLines(simpleShipment, statusSSI, (err, shipmentLinesKeySSIs) => {
+                            const lines = JSON.stringify(shipmentLinesKeySSIs.map(o => o.getIdentifier()));
+                            dsu.writeFile(LINES_PATH, lines, (err) => {
                                 if (err)
                                     return cancelBatchCallback(err);
-                                const lines = JSON.stringify(shipmentLinesKeySSIs.map(o => o.getIdentifier()));
-                                dsu.writeFile(LINES_PATH, lines, (err) => {
+
+                                dsu.commitBatch((err) => {
                                     if (err)
                                         return cancelBatchCallback(err);
-
-                                    dsu.commitBatch((err) => {
+                                    dsu.getKeySSIAsObject((err, keySSI) => {
                                         if (err)
-                                            return cancelBatchCallback(err);
-                                        dsu.getKeySSIAsObject((err, keySSI) => {
-                                            if (err)
-                                                return callback(err);
-                                            log("Finished creating SimpleShipment " + keySSI.getIdentifier(true));
-                                            callback(undefined, keySSI, shipmentLinesKeySSIs, statusSSI.getIdentifier());
-                                        });
+                                            return callback(err);
+                                        log("Finished creating SimpleShipment " + keySSI.getIdentifier(true));
+                                        callback(undefined, keySSI, shipmentLinesKeySSIs, statusSSI.getIdentifier());
                                     });
                                 });
                             });
