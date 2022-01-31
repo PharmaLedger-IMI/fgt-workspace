@@ -1,3 +1,5 @@
+const ModelUtils = require('../model/utils');
+
 /**
  * @class Product
  * @memberOf Model
@@ -33,6 +35,9 @@ class Product {
         if (!this.gtin) {
             errors.push('GTIN is required.');
         }
+
+        if (ModelUtils.validateGtin(this.gtin))
+            errors.push('Gtin is invalid');
 
         return errors.length === 0 ? undefined : errors;
     }
