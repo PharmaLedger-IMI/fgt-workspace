@@ -106,7 +106,7 @@ function SimpleShipmentService(domain, strategy) {
 
     const _createSimple = function (simpleShipment, callback) {
         const keyGenFunction = require('../../fgt-dsu-wizard/commands/setShipmentSSI').createShipmentSSI;
-        const templateKeySSI = keyGenFunction(`${simpleShipment.requesterId}-${simpleShipment.orderId}`, domain);
+        const templateKeySSI = keyGenFunction({data: `${simpleShipment.requesterId}-${simpleShipment.orderId}`}, domain);
         utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);
