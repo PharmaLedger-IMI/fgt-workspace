@@ -70,7 +70,9 @@ const DB = {
     sales: 'sales',
     receipts: 'receipts',
     traceability: 'traceability',
-    notifications: 'notifications'
+    notifications: 'notifications',
+    simpleShipments: 'simpleShipments',
+    receivedSimpleShipments: 'receivedSimpleShipments'
 }
 
 /**
