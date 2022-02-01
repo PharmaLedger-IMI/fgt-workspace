@@ -97,7 +97,6 @@ class SimpleShipmentManager extends Manager {
      */
     create(simpleShipment, callback) {
         let self = this;
-        const dbKey = this._genCompostKey(simpleShipment.requesterId, simpleShipment.orderId);
 
         const callbackCancelBatch = (err, ...results) => {
             if (err)
@@ -111,12 +110,12 @@ class SimpleShipmentManager extends Manager {
                     return callbackCancelBatch(`Could not create product DSU for ${simpleShipment.orderId}`);
                 const shipmentSSI = keySSI.getIdentifier();
                 log("Shipment SSI=" + shipmentSSI);
-                self.insertRecord(dbKey, self._indexItem(simpleShipment, shipmentSSI), (err) => {
+                self.insertRecord(simpleShipment.shipmentId, self._indexItem(simpleShipment, shipmentSSI), (err) => {
                     if (err)
                         return callbackCancelBatch(new BadRequest(`Could not insert record with orderId ${simpleShipment.orderId} on table ${self.tableName}. Trying to insert a existing record.`));
 
-                    const path = `${self.tableName}/${dbKey}`;
-                    log(`Shipment ${dbKey} created stored at DB '${path}'`);
+                    const path = `${self.tableName}/${simpleShipment.shipmentId}`;
+                    log(`Shipment ${simpleShipment.shipmentId} created stored at DB '${path}'`);
                     self.sendMessagesAsync(simpleShipment, shipmentLinesSSIs, shipmentSSI);
                     _callback(undefined, keySSI, path);
                 });
@@ -187,14 +186,12 @@ class SimpleShipmentManager extends Manager {
     }
 
     /**
-     * @param {string | number} requesterId
-     * @param {string | number} orderId
+     * @param {string | number} shipmentId
      * @param {boolean} readDSU
      * @param {function(err, SimpleShipment?)} callback
      */
-    getOne(requesterId, orderId, readDSU, callback) {
-        const key = this._genCompostKey(requesterId, orderId);
-        this.getRecord(key, (err, record) => {
+    getOne(shipmentId, readDSU, callback) {
+        this.getRecord(shipmentId, (err, record) => {
             if (err)
                 return callback(err);
             this.simpleShipmentService.get(record.value, (err, simpleShipment, dsu, linesSSI) => {
@@ -243,7 +240,7 @@ class SimpleShipmentManager extends Manager {
                 const record = records.shift();
                 if (!record)
                     return _callback(undefined, accum);
-                self.getOne(record.requesterId, record.orderId, true, (err, simpleShipment) => {
+                self.getOne(record.shipmentId, true, (err, simpleShipment) => {
                     if (err)
                         return _callback(err);
                     accum.push(simpleShipment);
@@ -274,21 +271,19 @@ class SimpleShipmentManager extends Manager {
 
     /**
      * updates one SimpleShipment status (just the SimpleShipment can be updated)
-     * @param {string | number} requesterId
-     * @param {string  | number} orderId
+     * @param {string | number} shipmentId
      * @param {SimpleShipment} statusUpdate
      * @param {function(err, Shipment?, Archive?)} callback
      */
-    update(requesterId, orderId, statusUpdate, callback) {
+    update(shipmentId, statusUpdate, callback) {
         const self = this;
-        const key = self._genCompostKey(requesterId, orderId);
-        self.getRecord(key, (err, record) => {
+        self.getRecord(shipmentId, (err, record) => {
             if (err)
                 return callback(new BadRequest(err));
             const shipmentSSI = record.value;
             self.simpleShipmentService.update(shipmentSSI, statusUpdate, requesterId, (err, updatedSimpleShipment, keySSI, linesSSIs) => {
 
-                self.updateRecord(key, self._indexItem(key, updatedSimpleShipment, shipmentSSI), (err) => {
+                self.updateRecord(shipmentId, self._indexItem(shipmentId, updatedSimpleShipment, shipmentSSI), (err) => {
                     if (err)
                         return callback(`Could not update Shipment from orderId ${orderId}. ${err}`);
                     try {
@@ -314,7 +309,6 @@ class SimpleShipmentManager extends Manager {
 
     _createReceiveShipment(simpleShipment, callback) {
         let self = this;
-        const dbKey = this._genCompostKey(simpleShipment.shipmentId, simpleShipment.orderId);
 
         const callbackCancelBatch = (err, ...results) => {
             if (err)
@@ -328,12 +322,12 @@ class SimpleShipmentManager extends Manager {
                     return callbackCancelBatch(`Could not create product DSU for ${simpleShipment.orderId}`);
                 const shipmentSSI = keySSI.getIdentifier();
                 log("Shipment SSI=" + shipmentSSI);
-                self.insertRecord(dbKey, self._indexItem(simpleShipment, shipmentSSI), (err) => {
+                self.insertRecord(simpleShipment.shipmentId, self._indexItem(simpleShipment, shipmentSSI), (err) => {
                     if (err)
                         return callbackCancelBatch(new BadRequest(`Could not insert record with orderId ${simpleShipment.orderId} on table ${self.tableName}. Trying to insert a existing record.`));
 
                     const path = `${self.tableName}/${simpleShipment.orderId}`;
-                    log(`Shipment ${dbKey} created stored at DB '${path}'`);
+                    log(`Shipment ${simpleShipment.shipmentId} created stored at DB '${path}'`);
                     _callback(undefined, keySSI, path);
                 });
             });
@@ -406,8 +400,7 @@ class SimpleShipmentManager extends Manager {
 
     _updateReceiveShipment(shipmentId, orderId, statusUpdate, callback) {
         const self = this;
-        const key = self._genCompostKey(shipmentId, orderId);
-        self.getRecord(key, (err, record) => {
+        self.getRecord(shipmentId, (err, record) => {
             if (err)
                 return callback(new BadRequest(err));
             self.simpleShipmentService.update(record.value, statusUpdate, requesterId, (err, updatedSimpleShipment, keySSI, linesSSIs) => {

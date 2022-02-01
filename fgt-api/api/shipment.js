@@ -2,8 +2,8 @@ const {Api, OPERATIONS} = require('../Api');
 const SimpleShipment = require('../model/SimpleShipment')
 const {BadRequest, NotImplemented, InternalServerError} = require("../utils/errorHandler");
 
-const SHIPMENT_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['partnerId', 'orderId']});
-const SHIPMENT_UPDATE = Object.assign({}, OPERATIONS.UPDATE, {pathParams: ['partnerId', 'orderId']});
+const SHIPMENT_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ["shipmentId"]});
+const SHIPMENT_UPDATE = Object.assign({}, OPERATIONS.UPDATE, {pathParams: ["shipmentId"]});
 
 class ShipmentApi extends Api {
     manager;
@@ -33,7 +33,7 @@ class ShipmentApi extends Api {
         self.manager.create(_simpleShipment, (err, keySSI) => {
             if (err)
                 return callback(err);
-            self.manager.getOne(_simpleShipment.requesterId, _simpleShipment.orderId, true, (err, record) => {
+            self.manager.getOne(_simpleShipment.shipmentId, true, (err, record) => {
                 if (err)
                     return callback(new InternalServerError(err))
                 callback(undefined, {
@@ -55,12 +55,11 @@ class ShipmentApi extends Api {
     }
 
     /**
-     * @param {string} requesterId
-     * @param {string} orderId
+     * @param {string} shipmentId
      * @param {function(err, SimpleShipment?)} callback
      */
-    getOne(requesterId, orderId, callback) {
-        this.manager.getOne(requesterId, orderId, true, (err, records) => {
+    getOne(shipmentId, callback) {
+        this.manager.getOne(shipmentId, true, (err, records) => {
             callback(err, records);
         });
     }
@@ -76,13 +75,12 @@ class ShipmentApi extends Api {
 
     /**
      * Update ONLY status from provided SimpleShipment
-     * @param {string} requesterId
-     * @param {string} orderId
+     * @param {string} shipmentId
      * @param {{status: string, extraInfo: string}}statusUpdate
      * @param {function(err, SimpleShipment?)} callback
      */
-    update(requesterId, orderId, statusUpdate, callback) {
-        this.manager.update(requesterId, orderId, statusUpdate, (err, updatedSimpleShipment) => {
+    update(shipmentId, statusUpdate, callback) {
+        this.manager.update(shipmentId, statusUpdate, (err, updatedSimpleShipment) => {
             if (err)
                 return callback(err);
             callback(undefined, updatedSimpleShipment);
@@ -96,7 +94,7 @@ class ShipmentApi extends Api {
      * @param {function(err?, [{}]?)} callback
      */
     updateAll(keys, body, callback) {
-        return super.updateAll(['requesterId', 'orderId'], body, callback);
+        return super.updateAll(['shipmentId'], body, callback);
     }
 }
 
