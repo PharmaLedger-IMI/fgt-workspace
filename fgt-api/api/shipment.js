@@ -38,7 +38,7 @@ class ShipmentApi extends Api {
                     return callback(new InternalServerError(err))
                 callback(undefined, {
                     ...record,
-                    keySSI: keySSI.getIdentifier()
+                    keySSI: keySSI.derive().getIdentifier()
                 });
             })
         });

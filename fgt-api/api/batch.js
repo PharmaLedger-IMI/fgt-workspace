@@ -45,7 +45,7 @@ module.exports = class BatchApi extends Api {
                 self.manager.getOne(product.gtin, _batch.batchNumber, true, (err, _batch) => {
                     if (err)
                         return callback(err);
-                    callback(undefined, {..._batch, keySSI: keySSI.getIdentifier()});
+                    callback(undefined, {..._batch, keySSI: keySSI.derive().getIdentifier()});
                 });
             });
         })
