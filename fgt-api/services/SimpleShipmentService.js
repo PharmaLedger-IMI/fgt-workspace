@@ -207,10 +207,10 @@ function SimpleShipmentService(domain, strategy) {
     /**
      * @param {string} keySSI
      * @param {Status} statusUpdate
-     * @param {string | number} requesterId: participantId who is requesting update
+     * @param {string | number} participantId: participantId who is requesting update
      * @param {function(err, SimpleShipment?)} callback
      */
-    this.update = function (keySSI, statusUpdate, requesterId, callback) {
+    this.update = function (keySSI, statusUpdate, participantId, callback) {
         if (!isSimple)
             return callback(`Update strategy not implemented.`);
 
@@ -225,6 +225,12 @@ function SimpleShipmentService(domain, strategy) {
             err = simpleShipment.validate(oldStatus);
             if (err)
                 return callback(err);
+
+            const allowedRequesterStatusUpdate = simpleShipment.allowedRequesterStatusUpdate();
+            if (participantId === simpleShipment.requesterId && !allowedRequesterStatusUpdate)
+                return callback(`Requester is not able to update to status: ${simpleShipment.status.status}.`);
+            if (participantId === simpleShipment.senderId && allowedRequesterStatusUpdate)
+                return callback(`Shipment sender is not able to update to status: ${simpleShipment.status.status}.`);
 
             keySSI = utils.getKeySSISpace().parse(keySSI);
             utils.getResolver().loadDSU(keySSI, {skipCache: true}, (err, dsu) => {
@@ -249,7 +255,7 @@ function SimpleShipmentService(domain, strategy) {
                     if (!mounts[STATUS_MOUNT_PATH])
                         return cancelBatchCallback(`Missing mount ${STATUS_MOUNT_PATH}`);
 
-                    statusService.update(mounts[STATUS_MOUNT_PATH], statusUpdate, requesterId, (err) => {
+                    statusService.update(mounts[STATUS_MOUNT_PATH], statusUpdate, participantId, (err) => {
                         if (err)
                             return cancelBatchCallback(err);
                         dsu.commitBatch((err) => {
