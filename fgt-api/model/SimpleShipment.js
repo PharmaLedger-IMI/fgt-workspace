@@ -20,7 +20,7 @@ class SimpleShipment {
                 if (simpleShipment.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = simpleShipment[prop];
 
-        this.shipmentId = simpleShipment.shipmentId ? simpleShipment.shipmentId : Date.now();
+        this.shipmentId = simpleShipment.shipmentId ? `${simpleShipment.shipmentId}` : Date.now() + `${Math.random()}`.substring(2, 9);
         this.shipmentLines = this.shipmentLines ? this.shipmentLines.map(sl => {
             sl.requesterId = simpleShipment.requesterId;
             sl.senderId = simpleShipment.senderId;
