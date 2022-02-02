@@ -87,9 +87,11 @@ class Api {
         if (!(data instanceof this.model))
             data = new this.model(data);
 
-        const validateErr = data.validate(...params);
-        if (validateErr)
+        let validateErr = data.validate(...params);
+        if (validateErr) {
+            validateErr = Array.isArray(validateErr) ? validateErr.join(' ') : validateErr;
             return [validateErr, undefined];
+        }
         return [undefined, data];
     }
 

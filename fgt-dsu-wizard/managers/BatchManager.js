@@ -289,7 +289,7 @@ class BatchManager extends Manager{
                                         self.notificationManager.pushToAll(toBeNotified, batchNotification, (err) => {
                                             if (err)
                                                 console.log(`Could not send notifications to partners`, err);
-                                            callback(undefined, newBatch);
+                                            callback(undefined, updatedBatch);
                                         });
                                     });
                                 });

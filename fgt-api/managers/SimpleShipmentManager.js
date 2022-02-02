@@ -113,7 +113,7 @@ class SimpleShipmentManager extends Manager {
                 log("Shipment SSI=" + shipmentSSI);
                 self.insertRecord(simpleShipment.shipmentId, self._indexItem(simpleShipment, shipmentSSI), (err) => {
                     if (err)
-                        return callbackCancelBatch(new BadRequest(`Could not insert record with orderId ${simpleShipment.orderId} on table ${self.tableName}. Trying to insert a existing record.`));
+                        return callbackCancelBatch(new BadRequest(`Could not insert record with shipmentId ${simpleShipment.shipmentId} on table ${self.tableName}. Trying to insert a existing record.`));
 
                     const path = `${self.tableName}/${simpleShipment.shipmentId}`;
                     log(`Shipment ${simpleShipment.shipmentId} created stored at DB '${path}'`);

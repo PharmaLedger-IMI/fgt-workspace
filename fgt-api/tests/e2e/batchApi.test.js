@@ -74,14 +74,13 @@ describe('batchApi', function () {
                     res.body.batchStatus.should.have.property('extraInfo');
                     res.body.batchStatus.extraInfo.should.be.a('object');
                     res.body.batchStatus.extraInfo.should.have.property('recall');
-                    res.body.should.have.property('keySSI');
                     done();
                 });
         });
 
         it ("shouldn't update a batch status when current status is recall", (done) => {
             chai.request(BASE_PATH)
-                .post(`/batch/update/${batch.gtin}/${batch.batchNumber}`)
+                .put(`/batch/update/${batch.gtin}/${batch.batchNumber}`)
                 .send({status: "quarantined"})
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);

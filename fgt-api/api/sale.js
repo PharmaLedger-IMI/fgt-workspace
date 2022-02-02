@@ -28,10 +28,10 @@ module.exports = class SaleApi extends Api {
         if (err)
             return callback(new BadRequest(err));
 
-        self.manager.create(_sale, (err, insertedSale) => {
+        self.manager.create(_sale, (err, insertedSale, path, keySSIs) => {
             if (err)
                 return callback(new NotImplemented(err));
-            callback(undefined, insertedSale);
+            callback(undefined, {...insertedSale, keySSIs: keySSIs});
         });
     }
 

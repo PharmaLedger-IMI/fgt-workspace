@@ -2,6 +2,7 @@ const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../con
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Sale = require('../model/Sale');
 const Batch = require('../model/Batch');
+const BatchStatus = require('../model/BatchStatus');
 const IndividualProduct = require('../model/IndividualProduct');
 const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 const utils = require('../services').utils;
@@ -58,19 +59,19 @@ class SaleManager extends Manager{
 
     /**
      * Verify if the sale can be done. Some conditions that are checked:
-     *  -> gtin e batch existe
-     *  -> verificar se a venda não é duplicada
-     * -> verificar a quantidade
-     * -> verificar se o produto já n foi vendido (receipt)
-     * @param aggStock
-     * @param productList
+     *  - GTIN and BATCH need exists in stock
+     * - Check if product qty in stock is enough
+     *  - Check if sale is not duplicated (product already sold)
+     * - Check if product status is not recalled or quarantined
+     * @param {{[key: string]: [Batch]}}aggStock: key is a GTIN, value is an array of BATCHES
+     * @param {{[key: string]: [IndividualProduct]}}productList: key is a manufName identifier, value is an array of IndividualProduct
      * @param callback
      */
     _checkStockAvailability(aggStock, productList, callback) {
         const qtySoldByGtinBatch = {}; // qty sold by gtin and batch, cannot sale more than exists on stock
         const qtySoldBySn = {}; // qty sold by serial number, cannot sale same product more than once
-        const aggBatchesByGtin = {} // "001": [Batch]
-        const aggIndividualProductsByMAH = {}; // "MAH": [IndividualProduct]
+        const aggBatchesByGtin = {}
+        const aggIndividualProductsByMAH = {};
 
         const iterator = (_aggStock, _productList, _callback) => {
             const productSold = _productList.shift();
@@ -79,19 +80,22 @@ class SaleManager extends Manager{
 
             const gtinBatchNumber = `${productSold.gtin}-${productSold.batchNumber}`;
             if(!(_aggStock.hasOwnProperty(gtinBatchNumber)))
-                return _callback(`Product ${index + 1}: product gtin ${productSold.gtin}, batchNumber ${productSold.batchNumber} not found in stock.`);
+                return _callback(`Product gtin ${productSold.gtin}, batchNumber ${productSold.batchNumber} not found in stock.`);
 
             // check if selling the same product more than once
             const indProductId = `${productSold.gtin}-${productSold.batchNumber}-${productSold.serialNumber}`;
             qtySoldBySn[indProductId] = 1 + (qtySoldBySn[indProductId]  || 0);
             if (qtySoldBySn[indProductId] > 1)
-                return _callback(`Product ${index + 1}: trying to sold a product more than once.`);
+                return _callback(`Product ${productSold.gtin}: trying to sold a product more than once.`);
 
             const stockProduct = _aggStock[gtinBatchNumber];
             // check if sale qty is available in stock
             qtySoldByGtinBatch[gtinBatchNumber] = 1 + (qtySoldByGtinBatch[gtinBatchNumber] || 0);
-            if (stockProduct.batch.quantity - qtySoldByGtinBatch[gtinBatchNumber] <= 0)
-                return _callback(`Product ${index + 1}: quantity not enough in stock.`);
+            if (stockProduct.batch.quantity - qtySoldByGtinBatch[gtinBatchNumber] < 0)
+                return _callback(`Product ${productSold.gtin}: quantity not enough in stock.`);
+
+            if (stockProduct.batch.batchStatus.status !== BatchStatus.COMMISSIONED)
+                return _callback(`Product gtin ${productSold.gtin}, batch ${productSold.batchNumber}: is not available for sale, because batchStatus is ${stockProduct.batch.batchStatus.status}. `)
 
             const individualProductSold = new IndividualProduct({
                 gtin: productSold.gtin,
@@ -205,7 +209,7 @@ class SaleManager extends Manager{
                             if (err)
                                 return cb(err);
                             console.log(`Creating sale entry for: ${sale.productList.map(p => `${p.gtin}-${p.batchNumber}-${p.serialNumber}`).join(', ')}`);
-                            self._addSale(sale.id, aggIndividualProductsByMAH, (err, SSis, insertedSale) => {
+                            self._addSale(sale.id, aggIndividualProductsByMAH, (err, readSSis, insertedSale, ) => {
                                 if (err)
                                     return cb(`Could not Crease Sales DSUs`);
                                 self.insertRecord(insertedSale.id, self._indexItem(insertedSale), (err) => {
@@ -216,7 +220,7 @@ class SaleManager extends Manager{
                                             return cb(err);
                                         const path =`${self.tableName}/${insertedSale.id}`;
                                         console.log(`Sale stored at '${path}'`);
-                                        _callback(undefined, insertedSale, path);
+                                        _callback(undefined, insertedSale, path, readSSis);
                                     });
                                 });
                             });
@@ -238,6 +242,7 @@ class SaleManager extends Manager{
             sellerId: sellerId,
             productList: []
         });
+        const saleReadSSIs = [];
 
         const createIterator = function(products, accumulator, _callback){
             const saleByMAH = new Sale({
@@ -262,7 +267,7 @@ class SaleManager extends Manager{
         const createAndNotifyIterator = function(mahs, accumulator, _callback){
             const mah = mahs.shift();
             if (!mah)
-                return _callback(undefined, accumulator, insertedSale);
+                return _callback(undefined, saleReadSSIs, insertedSale);
 
             createIterator(aggIndividualProductsByMAH[mah].slice(), [], (err, keySSIs) => {
                 if (err)
@@ -274,6 +279,7 @@ class SaleManager extends Manager{
 
                 try {
                     readSSIs = keySSIs.map(k => keySSISpace.parse(k).derive().getIdentifier())
+                    saleReadSSIs.push(...readSSIs);
                 } catch(e) {
                     return _callback(`Invalid keys found`);
                 }
