@@ -4,7 +4,7 @@ chai.use(chaiHttp);
 chai.should();
 
 const db = require("../controls/db/db");
-const {BASE_PATH} = require("../controls/utils");
+const {MAH_API} = require("../controls/utils");
 
 
 describe('traceabilityApi', function () {
@@ -14,7 +14,7 @@ describe('traceabilityApi', function () {
         const sale = db.sales[0].productList[0];
 
         it ('should get traceability by GTIN and batchNumber', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .post(`/traceability/create`)
                 .send({
                     gtin: sale.gtin,
@@ -32,7 +32,7 @@ describe('traceabilityApi', function () {
         });
 
         it ('should get traceability by GTIN, batchNumber and serialNumber', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .post(`/traceability/create`)
                 .send({
                     gtin: sale.gtin,
@@ -51,7 +51,7 @@ describe('traceabilityApi', function () {
         });
 
         it ('should get all traceability', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .post('/traceability/createAll')
                 .send([{
                     gtin: sale.gtin,

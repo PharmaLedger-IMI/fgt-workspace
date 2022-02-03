@@ -4,7 +4,7 @@ chai.use(chaiHttp);
 chai.should();
 
 const db = require("../controls/db/db");
-const {BASE_PATH} = require("../controls/utils");
+const {MAH_API} = require("../controls/utils");
 
 
 describe('batchApi', function () {
@@ -13,29 +13,41 @@ describe('batchApi', function () {
 
     describe('POST /batch/create', function () {
 
-        it ('should create a new batch', (done) => {
-            chai.request(BASE_PATH)
-                .post('/batch/create')
-                .send(batch)
+        it ('should create batches', (done) => {
+            const batches = db.batches;
+            chai.request(MAH_API)
+                .post('/batch/createAll')
+                .send(batches)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
                     res.should.have.status(200);
-                    res.body.should.have.property('batchNumber').equal(batch.batchNumber);
-                    res.body.should.have.property('expiry').equal(new Date(batch.expiry).toISOString());
-                    res.body.should.have.property('serialNumbers');
-                    res.body.serialNumbers.should.be.a('array');
-                    res.body.should.have.property('quantity').equal(batch.serialNumbers.length);
-                    res.body.should.have.property('batchStatus').should.be.a('object');
-                    res.body.batchStatus.should.have.property('status').equal('commissioned');
-                    res.body.batchStatus.should.have.property('log');
-                    res.body.batchStatus.log.should.be.a('array');
-                    res.body.should.have.property('keySSI');
+                    res.body[0].should.have.property('batchNumber').equal(batches[0].batchNumber);
+                    res.body[0].should.have.property('expiry').equal(new Date(batches[0].expiry).toISOString());
+                    res.body[0].should.have.property('serialNumbers');
+                    res.body[0].serialNumbers.should.be.a('array');
+                    res.body[0].should.have.property('quantity').equal(batches[0].serialNumbers.length);
+                    res.body[0].should.have.property('batchStatus').should.be.a('object');
+                    res.body[0].batchStatus.should.have.property('status').equal('commissioned');
+                    res.body[0].batchStatus.should.have.property('log');
+                    res.body[0].batchStatus.log.should.be.a('array');
+                    res.body[0].should.have.property('keySSI');
+
+                    res.body[1].should.have.property('batchNumber').equal(batches[1].batchNumber);
+                    res.body[1].should.have.property('expiry').equal(new Date(batches[1].expiry).toISOString());
+                    res.body[1].should.have.property('serialNumbers');
+                    res.body[1].serialNumbers.should.be.a('array');
+                    res.body[1].should.have.property('quantity').equal(batches[1].serialNumbers.length);
+                    res.body[1].should.have.property('batchStatus').should.be.a('object');
+                    res.body[1].batchStatus.should.have.property('status').equal('commissioned');
+                    res.body[1].batchStatus.should.have.property('log');
+                    res.body[1].batchStatus.log.should.be.a('array');
+                    res.body[1].should.have.property('keySSI');
                     done();
                 });
         });
 
         it ('should return a error when batch already exists', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .post('/batch/create')
                 .send(batch)
                 .end((err, res) => {
@@ -52,7 +64,7 @@ describe('batchApi', function () {
     describe('PUT /batch/update', function () {
 
         it ('should update a batch status to recall', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .put(`/batch/update/${batch.gtin}/${batch.batchNumber}`)
                 .send({
                     status: "recall",
@@ -79,7 +91,7 @@ describe('batchApi', function () {
         });
 
         it ("shouldn't update a batch status when current status is recall", (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .put(`/batch/update/${batch.gtin}/${batch.batchNumber}`)
                 .send({status: "quarantined"})
                 .end((err, res) => {
@@ -97,7 +109,7 @@ describe('batchApi', function () {
     describe('GET /batch/get', function () {
 
         it ('should get batch by GTIN and batchNumber', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .get(`/batch/get/${batch.gtin}/${batch.batchNumber}`)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -119,7 +131,7 @@ describe('batchApi', function () {
         });
 
         it ('should get all batches', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .get('/batch/getAll')
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);

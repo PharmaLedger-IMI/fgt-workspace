@@ -4,7 +4,7 @@ chai.use(chaiHttp);
 chai.should();
 
 const db = require("../controls/db/db");
-const {BASE_PATH} = require("../controls/utils");
+const {MAH_API} = require("../controls/utils");
 
 
 describe('productApi', function () {
@@ -13,7 +13,7 @@ describe('productApi', function () {
     describe('POST /product/create', function () {
 
         it ('should create a new product', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .post('/product/create')
                 .send(product)
                 .end((err, res) => {
@@ -29,7 +29,7 @@ describe('productApi', function () {
         });
 
         it ('should return a error when product already exists', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .post('/product/create')
                 .send(product)
                 .end((err, res) => {
@@ -46,7 +46,7 @@ describe('productApi', function () {
     describe('GET /product/get', function () {
 
         it ('should get product by GTIN', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .get(`/product/get/${product.gtin}`)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -60,7 +60,7 @@ describe('productApi', function () {
         });
 
         it ('should get all products', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .get('/product/getAll')
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);

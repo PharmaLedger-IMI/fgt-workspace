@@ -4,18 +4,16 @@ chai.use(chaiHttp);
 chai.should();
 
 const db = require("../controls/db/db");
-const {BASE_PATH} = require("../controls/utils");
+const {MAH_API} = require("../controls/utils");
 
 
 describe('shipmentApi', function () {
     require("./batchApi.test");
-    const product = db.products[0];
-    const batch = db.batches[0];
     const shipment = db.shipments[0];
 
     describe('POST /shipment/create', function () {
         it('should create a shipment', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .post('/shipment/create')
                 .send(shipment)
                 .end((err, res) => {
@@ -34,8 +32,8 @@ describe('shipmentApi', function () {
                 });
         });
 
-        it('should return a error when shipment order already exists', (done) => {
-            chai.request(BASE_PATH)
+        it('should return a error when shipmentId already exists', (done) => {
+            chai.request(MAH_API)
                 .post('/shipment/create')
                 .send(shipment)
                 .end((err, res) => {
@@ -43,7 +41,7 @@ describe('shipmentApi', function () {
                     res.should.have.status(400);
                     res.body.should.have.property("status").equal(400);
                     res.body.should.have.property("error").equal("Bad Request");
-                    res.body.should.have.property("message").equal(`Could not insert record with orderId ${shipment.orderId} on table issuedShipments. Trying to insert a existing record.`);
+                    res.body.should.have.property("message").equal(`Could not insert record with shipmentId ${shipment.shipmentId} on table simpleShipments. Trying to insert a existing record.`);
                     done();
                 });
         });
@@ -52,8 +50,8 @@ describe('shipmentApi', function () {
     describe('PUT /shipment/update', function () {
 
         it('should update shipment status to pickup', (done) => {
-            chai.request(BASE_PATH)
-                .put(`/shipment/update/${shipment.requesterId}/${shipment.orderId}`)
+            chai.request(MAH_API)
+                .put(`/shipment/update/${shipment.shipmentId}`)
                 .send({
                     status: "pickup",
                     extraInfo: "update status to pickup"
@@ -80,15 +78,15 @@ describe('shipmentApi', function () {
         });
 
         it("shouldn't update shipment status when is not allowed", (done) => {
-            chai.request(BASE_PATH)
-                .put(`/shipment/update/${shipment.requesterId}/${shipment.orderId}`)
+            chai.request(MAH_API)
+                .put(`/shipment/update/${shipment.shipmentId}`)
                 .send({status: "delivered"})
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
                     res.should.have.status(501);
                     res.body.should.have.property('status').equal(501);
                     res.body.should.have.property('error').equal('Not implemented');
-                    res.body.should.have.property('message').equal(`Could not update Shipment from orderId ${shipment.orderId}. Status update from pickup to delivered is not allowed`);
+                    res.body.should.have.property('message').equal(`Status update from pickup to delivered is not allowed`);
                     done();
                 });
         });
@@ -97,9 +95,9 @@ describe('shipmentApi', function () {
 
     describe('GET /shipment/get', function () {
 
-        it('should get shipment by orderId', (done) => {
-            chai.request(BASE_PATH)
-                .get(`/shipment/get/${shipment.requesterId}/${shipment.orderId}`)
+        it('should get shipment by shipmentId', (done) => {
+            chai.request(MAH_API)
+                .get(`/shipment/get/${shipment.shipmentId}`)
                 .end((err, res) => {
                     res.should.have.status(200);
                     chai.assert.isNotEmpty(res.body);
@@ -122,7 +120,7 @@ describe('shipmentApi', function () {
         });
 
         it('should get all shipments', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .get('/shipment/getAll')
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);

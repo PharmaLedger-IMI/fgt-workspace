@@ -4,7 +4,7 @@ chai.use(chaiHttp);
 chai.should();
 
 const db = require("../controls/db/db");
-const {BASE_PATH} = require("../controls/utils");
+const {MAH_API} = require("../controls/utils");
 
 
 describe('stockApi', function () {
@@ -15,7 +15,7 @@ describe('stockApi', function () {
     describe('GET /stock/get', function () {
 
         it ('should get stock by GTIN', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .get(`/stock/get/${batch.gtin}`)
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -31,7 +31,7 @@ describe('stockApi', function () {
         });
 
         it ('should get all stock', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .get('/stock/getAll')
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);

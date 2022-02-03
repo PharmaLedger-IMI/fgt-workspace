@@ -81,6 +81,14 @@ const shipments = [
                 senderId: mahParticipant,
                 quantity: 1,
                 status: "created"
+            },
+            {
+                gtin: batches[1].gtin,
+                batch: batches[1].batchNumber,
+                requesterId: phaParticipant,
+                senderId: mahParticipant,
+                quantity: 1,
+                status: "created"
             }
         ]
     },
@@ -127,7 +135,31 @@ const sales = [
                 manufName: mahParticipant
             }
         ]
-    }
+    },
+    {
+        id: `${genId()}`,
+        sellerId: phaParticipant,
+        productList: [
+            {
+                gtin: batches[1].gtin,
+                batchNumber: batches[1].batchNumber,
+                serialNumber: batches[1].serialNumbers[0],
+                manufName: mahParticipant
+            }
+        ]
+    },
+    {
+        id: `${genId()}`,
+        sellerId: phaParticipant,
+        productList: [
+            {
+                gtin: batches[1].gtin,
+                batchNumber: batches[1].batchNumber,
+                serialNumber: batches[1].serialNumbers[0],
+                manufName: mahParticipant
+            }
+        ]
+    },
 ]
 
 let initialize = undefined;

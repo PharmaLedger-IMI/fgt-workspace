@@ -4,7 +4,7 @@ chai.use(chaiHttp);
 chai.should();
 
 const db = require("../controls/db/db");
-const {BASE_PATH} = require("../controls/utils");
+const {MAH_API} = require("../controls/utils");
 
 
 describe('receiptApi', function () {
@@ -14,7 +14,7 @@ describe('receiptApi', function () {
     describe('GET /receipt/get', function () {
 
         it ('should get receipt by receiptId', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .get(`/receipt/get/${undefined}`)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -30,7 +30,7 @@ describe('receiptApi', function () {
         });
 
         it ('should get all receipts', (done) => {
-            chai.request(BASE_PATH)
+            chai.request(MAH_API)
                 .get('/receipt/getAll')
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
