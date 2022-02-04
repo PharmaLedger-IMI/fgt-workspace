@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "6caa5f1c-ddf9-42e8-a66e-4c98861612a0",
+		"_postman_id": "ed68b088-15fd-4d30-b6dd-063f1c567fa3",
 		"name": "Pharmaledger FGT Api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -30,7 +30,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n\t\"gtin\": \"001\",\r\n\t\"name\": \"Product 001\",\r\n\t\"description\": \"this is a Product 001 description\"\r\n}",
+									"raw": "{\r\n\t\"gtin\": \"84327843812938\",\r\n\t\"name\": \"Product 001\",\r\n\t\"description\": \"this is a Product 001 description\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -48,7 +48,54 @@
 									]
 								}
 							},
-							"response": []
+							"response": [
+								{
+									"name": "standard success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n\t\"gtin\": \"84327843812938\",\r\n\t\"name\": \"Product 001\",\r\n\t\"description\": \"this is a Product 001 description\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{api:mah}}/product/create",
+											"host": [
+												"{{api:mah}}"
+											],
+											"path": [
+												"product",
+												"create"
+											]
+										}
+									},
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [],
+									"body": "{\n\t\"name\": \"Product Name\",\n\t\"gtin\": \"Valid GTIN\",\n\t\"description\": \"product description\",\n\t\"manufName\": \"MAH324353426\",\n\t\"keySSI\": \"PPnBCBqMz3ZRLwgJp8JTRs3uxgHaEcaD1xV4fNj8txa53EB8vya71vicrP6nVCKg4xkzX7qCr8apt7CRtH3t6Y4U8hreTPXUK\"\n}"
+								}
+							]
 						},
 						{
 							"name": "createAll",
@@ -66,7 +113,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "[\r\n\t{\r\n\t\t\"gtin\": \"002\",\r\n\t\t\"name\": \"Product 002\",\r\n\t\t\"description\": \"this is Product 002 description\"\r\n\t},\r\n\t{\r\n\t\t\"gtin\": \"003\",\r\n\t\t\"name\": \"Product 003\",\r\n\t\t\"description\": \"this is Product 003 description\"\r\n\t}\r\n]"
+									"raw": "[\r\n\t{\r\n\t\t\"gtin\": \"84327843812938\",\r\n\t\t\"name\": \"Product 003\",\r\n\t\t\"description\": \"this is Product 002 description\"\r\n\t},\r\n\t{\r\n\t\t\"gtin\": \"12438776234391\",\r\n\t\t\"name\": \"Product 004\",\r\n\t\t\"description\": \"this is Product 003 description\"\r\n\t}\r\n]"
 								},
 								"url": {
 									"raw": "{{api:mah}}/product/createAll",
@@ -120,6 +167,11 @@
 											"key": "sort",
 											"value": "dsc",
 											"disabled": true
+										},
+										{
+											"key": "gtin",
+											"value": "84327843812938",
+											"disabled": true
 										}
 									]
 								}
@@ -149,7 +201,7 @@
 									"variable": [
 										{
 											"key": "gtin",
-											"value": "001"
+											"value": "84327843812938"
 										}
 									]
 								}
@@ -177,7 +229,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n\t\"gtin\": \"001\",\r\n\t\"expiry\": \"2025-01-01\",\r\n\t\"serialNumbers\": [\r\n\t\t11001,\r\n\t\t11002,\r\n\t\t11003\r\n\t]\r\n}"
+									"raw": "{\r\n\t\"gtin\": \"84327843812938\",\r\n\t\"expiry\": \"2025-01-01\",\r\n\t\"serialNumbers\": [\r\n\t\t11001,\r\n\t\t11002,\r\n\t\t11003,\r\n\t\t11004,\r\n\t\t11005,\r\n\t\t11006,\r\n\t\t1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30\r\n\t]\r\n}"
 								},
 								"url": {
 									"raw": "{{api:mah}}/batch/create",
@@ -292,11 +344,11 @@
 									"variable": [
 										{
 											"key": "gtin",
-											"value": "001"
+											"value": "84327843812938"
 										},
 										{
 											"key": "batchNumber",
-											"value": "BY502X4"
+											"value": "LX9241"
 										}
 									]
 								}
@@ -398,7 +450,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"orderId\": \"001\",\r\n  \"requesterId\": \"PHA324353426\",\r\n  \"senderId\": \"MAH324353426\",\r\n  \"status\": \"created\",\r\n  \"shipmentLines\": [\r\n    {\r\n      \"gtin\": \"001\",\r\n      \"batch\": \"RK5000\",\r\n\t  \"requesterId\": \"PHA324353426\",\r\n      \"senderId\": \"MAH324353426\",\r\n      \"quantity\": 1,\r\n      \"status\": \"created\"\r\n    }\r\n  ]\r\n}"
+									"raw": "{\r\n  \"orderId\": \"1\",\r\n  \"requesterId\": \"WHS324353426\",\r\n  \"senderId\": \"MAH324353426\",\r\n  \"status\": \"created\",\r\n  \"shipmentLines\": [\r\n    {\r\n      \"gtin\": \"84327843812938\",\r\n      \"batch\": \"FA1723\",\r\n\t  \"requesterId\": \"WHS324353426\",\r\n      \"senderId\": \"MAH324353426\",\r\n      \"quantity\": 1,\r\n      \"status\": \"created\"\r\n    }\r\n  ]\r\n}"
 								},
 								"url": {
 									"raw": "{{api:mah}}/shipment/create",
@@ -500,24 +552,19 @@
 									}
 								],
 								"url": {
-									"raw": "{{api:mah}}/shipment/get/:partnerId/:orderId",
+									"raw": "{{api:mah}}/shipment/get/:shipmentId",
 									"host": [
 										"{{api:mah}}"
 									],
 									"path": [
 										"shipment",
 										"get",
-										":partnerId",
-										":orderId"
+										":shipmentId"
 									],
 									"variable": [
 										{
-											"key": "partnerId",
-											"value": "PHA324353426"
-										},
-										{
-											"key": "orderId",
-											"value": "001"
+											"key": "shipmentId",
+											"value": "16438174033347517081"
 										}
 									]
 								}
@@ -540,27 +587,22 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"status\": \"transit\",\r\n  \"extraInfo\": \"[api] extraInfo status update test\"\r\n}"
+									"raw": "{\r\n  \"status\": \"received\",\r\n  \"extraInfo\": \"[api] extraInfo status update test\"\r\n}"
 								},
 								"url": {
-									"raw": "{{api:mah}}/shipment/update/:partnerId/:orderId",
+									"raw": "{{api:mah}}/shipment/update/:shipmentId",
 									"host": [
 										"{{api:mah}}"
 									],
 									"path": [
 										"shipment",
 										"update",
-										":partnerId",
-										":orderId"
+										":shipmentId"
 									],
 									"variable": [
 										{
-											"key": "partnerId",
-											"value": "PHA324353426"
-										},
-										{
-											"key": "orderId",
-											"value": "0064"
+											"key": "shipmentId",
+											"value": "16438817559437662682"
 										}
 									]
 								}
@@ -902,7 +944,7 @@
 									"variable": [
 										{
 											"key": "gtin",
-											"value": "51245477854969"
+											"value": "84327843812938"
 										}
 									]
 								}
@@ -930,7 +972,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"001\",\r\n  \"sellerId\": \"PHA324353426\",\r\n  \"productList\": [\r\n    {\r\n      \"gtin\": \"51245477854969\",\r\n      \"batchNumber\": \"AE0816\",\r\n\t  \"serialNumber\": \"11003\",\r\n\t  \"manufName\": \"MAH324353426\"\r\n    }\r\n  ]\r\n}"
+									"raw": "{\r\n  \"id\": \"7342607143\",\r\n  \"sellerId\": \"PHA324353426\",\r\n  \"productList\": [\r\n    {\r\n      \"gtin\": \"14536880930883\",\r\n      \"batchNumber\": \"2036415160\",\r\n      \"serialNumber\": 20220101,\r\n      \"manufName\": \"MAH324353426\"\r\n    }\r\n  ]\r\n}"
 								},
 								"url": {
 									"raw": "{{api:pha}}/sale/create",
@@ -1047,7 +1089,7 @@
 									"variable": [
 										{
 											"key": "saleId",
-											"value": "001"
+											"value": "1627721276"
 										}
 									]
 								}
@@ -1140,68 +1182,6 @@
 					"name": "shipment",
 					"item": [
 						{
-							"name": "create",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Accept",
-										"value": "*/*"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"orderId\": \"001\",\r\n  \"requesterId\": \"PHA324353426\",\r\n  \"senderId\": \"MAH324353426\",\r\n  \"status\": \"created\",\r\n  \"shipmentLines\": [\r\n    {\r\n      \"gtin\": \"001\",\r\n      \"batch\": \"RK5000\",\r\n\t  \"requesterId\": \"PHA324353426\",\r\n      \"senderId\": \"MAH324353426\",\r\n      \"quantity\": 2,\r\n      \"status\": \"created\"\r\n    }\r\n  ]\r\n}"
-								},
-								"url": {
-									"raw": "{{api:pha}}/shipment/create",
-									"host": [
-										"{{api:pha}}"
-									],
-									"path": [
-										"shipment",
-										"create"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "createAll",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Accept",
-										"value": "*/*"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "[\r\n  {\r\n    \"orderId\": \"002\",\r\n    \"requesterId\": \"WHS482899623\",\r\n    \"senderId\": \"MAH280478981\",\r\n    \"status\": \"created\",\r\n    \"shipmentLines\": [\r\n      {\r\n        \"gtin\": \"51245477854969\",\r\n        \"batch\": \"BB0461\",\r\n        \"quantity\": 1,\r\n        \"senderId\": \"MAH280478981\",\r\n        \"requesterId\": \"WHS482899623\",\r\n        \"status\": \"created\"\r\n      }\r\n    ]\r\n  }\r\n]"
-								},
-								"url": {
-									"raw": "{{api:pha}}/shipment/createAll",
-									"host": [
-										"{{api:pha}}"
-									],
-									"path": [
-										"shipment",
-										"createAll"
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "getAll",
 							"request": {
 								"method": "GET",
@@ -1257,24 +1237,19 @@
 									}
 								],
 								"url": {
-									"raw": "{{api:pha}}/shipment/get/:partnerId/:orderId",
+									"raw": "{{api:pha}}/shipment/get/:shipmentId",
 									"host": [
 										"{{api:pha}}"
 									],
 									"path": [
 										"shipment",
 										"get",
-										":partnerId",
-										":orderId"
+										":shipmentId"
 									],
 									"variable": [
 										{
-											"key": "partnerId",
-											"value": "PHA324353426"
-										},
-										{
-											"key": "orderId",
-											"value": "001"
+											"key": "shipmentId",
+											"value": "1643806345858"
 										}
 									]
 								}
@@ -1297,27 +1272,22 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"status\": \"hold\",\r\n  \"extraInfo\": \"[api] extraInfo status update test\"\r\n}"
+									"raw": "{\r\n  \"status\": \"received\",\r\n  \"extraInfo\": \"[api] extraInfo status update test\"\r\n}"
 								},
 								"url": {
-									"raw": "{{api:pha}}/shipment/update/:partnerId/:orderId",
+									"raw": "{{api:pha}}/shipment/update/:shipmentId",
 									"host": [
 										"{{api:pha}}"
 									],
 									"path": [
 										"shipment",
 										"update",
-										":partnerId",
-										":orderId"
+										":shipmentId"
 									],
 									"variable": [
 										{
-											"key": "partnerId",
-											"value": "PHA324353426"
-										},
-										{
-											"key": "orderId",
-											"value": "001"
+											"key": "shipmentId",
+											"value": "16438174033347517081"
 										}
 									]
 								}
@@ -1562,24 +1532,19 @@
 									}
 								],
 								"url": {
-									"raw": "{{api:whs}}/shipment/get/:partnerId/:orderId",
+									"raw": "{{api:whs}}/shipment/get/:shipmentId",
 									"host": [
 										"{{api:whs}}"
 									],
 									"path": [
 										"shipment",
 										"get",
-										":partnerId",
-										":orderId"
+										":shipmentId"
 									],
 									"variable": [
 										{
-											"key": "partnerId",
-											"value": "PHA324353426"
-										},
-										{
-											"key": "orderId",
-											"value": "001"
+											"key": "shipmentId",
+											"value": "16438817559437662682"
 										}
 									]
 								}
@@ -1605,24 +1570,19 @@
 									"raw": "{\r\n  \"status\": \"hold\",\r\n  \"extraInfo\": \"[api] extraInfo status update test\"\r\n}"
 								},
 								"url": {
-									"raw": "{{api:whs}}/shipment/update/:partnerId/:orderId",
+									"raw": "{{api:whs}}/shipment/update/:shipmentId",
 									"host": [
 										"{{api:whs}}"
 									],
 									"path": [
 										"shipment",
 										"update",
-										":partnerId",
-										":orderId"
+										":shipmentId"
 									],
 									"variable": [
 										{
-											"key": "partnerId",
-											"value": "PHA324353426"
-										},
-										{
-											"key": "orderId",
-											"value": "001"
+											"key": "shipmentId",
+											"value": "16438817559437662682"
 										}
 									]
 								}
@@ -1665,14 +1625,39 @@
 			]
 		}
 	],
-	"variable": [
+	"event": [
 		{
-			"key": "Server 1",
-			"value": "DefaultParameterValue/traceability"
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		},
 		{
-			"key": "Server 2",
-			"value": "DefaultParameterValue/traceability"
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "api:mah",
+			"value": "http://localhost:8081/traceability"
+		},
+		{
+			"key": "api:whs",
+			"value": "http://localhost:3001/traceability"
+		},
+		{
+			"key": "api:pha",
+			"value": "http://localhost:3002/traceability",
+			"type": "string"
 		}
 	]
 }
