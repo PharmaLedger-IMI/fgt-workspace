@@ -668,7 +668,7 @@
         },
         {
             "name":"blockchain-node",
-            "src": "https://Pharmaledger:x_Jp6JwvD4sQFu4cQA3T@gitlab.pdmfc.com/pharmaledger/blockchain-node-workspace.git",
+            "src": "https://github.com/PharmaLedger-IMI/blockchain-node-workspace.git",
             "actions": [
                 {
                     "type": "smartClone",
