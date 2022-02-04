@@ -759,14 +759,15 @@ class Manager{
      * Converts the text typed in a general text box into the query for the db
      * Subclasses should override this
      * @param {string} keyword
+     * @param queryConditions
      * @return {string[string[]]} query
      * @protected
      */
-    _keywordToQuery(keyword){
+    _keywordToQuery(keyword, queryConditions){
         if (!keyword)
-            return [['__timestamp > 0']]
+            return [[...queryConditions, '__timestamp > 0']]
         return this.indexes.map((index) => {
-            return [`${index} like /${keyword}/g`, '__timestamp > 0']
+            return [...queryConditions, `${index} like /${keyword}/g`, '__timestamp > 0']
         })
     }
 
@@ -774,20 +775,21 @@ class Manager{
      * Returns a page object from provided dsuQuery or a keyword
      * @param {number} itemsPerPage
      * @param {number} page
-     * @param {string | string[] } searchBy: dsuQuery or keyword
+     * @param {string[]} dsuQuery: force a fixed CONDITION in all keyword query or for a simple query paginated.
+     * @param {string} keyword:  keyword to search on all indexes
      * @param {string} sort
      * @param {boolean} readDSU
      * @param {function(err, Page)}callback
      */
-    getPage(itemsPerPage, page, searchBy, sort, readDSU, callback){
+    getPage(itemsPerPage, page, dsuQuery, keyword, sort, readDSU, callback){
         const self = this;
         let receivedPage = page || 1;
         sort = SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] ? SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] : SORT_OPTIONS.DSC;
 
-        if(Array.isArray(searchBy))
-            return self._getPage(itemsPerPage, page, searchBy, sort, readDSU, callback)
+        if(!keyword)
+            return self._getPage(itemsPerPage, page, dsuQuery, sort, readDSU, callback);
 
-        const queries = self._keywordToQuery(searchBy)
+        const queries = self._keywordToQuery(keyword, dsuQuery);
         const iterator = (accum, queriesArray, _callback) => {
             const query = queriesArray.shift()
             if (!query)
@@ -836,7 +838,7 @@ class Manager{
     _getPage(itemsPerPage, page, dsuQuery, sort, readDSU, callback){
         const self = this;
         let receivedPage = page || 1;
-
+        dsuQuery = [...dsuQuery, '__timestamp > 0'];
         self.getAll(readDSU, {query: dsuQuery, sort: sort,  limit: undefined}, (err, records) => {
             if (err)
                 return self._err(`Could not retrieve records to page`, err, callback);

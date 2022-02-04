@@ -39,8 +39,10 @@ export default class ProductController extends LocalizedController {
             const label = !!state.previousTab ? state.previousTab.label : HistoryNavigator.getPreviousTab().label;
             self.model.back = this.translate('back', label);
             if (state && state.gtin){
-                if (state.gtin === self.model.gtinRef)
-                    return self.productEl.refresh();
+                if (state.gtin === self.model.gtinRef) {
+                    self.productEl.refresh();
+                    return self.element.querySelector('pdm-ion-table').refresh();
+                }
                 self.model.gtinRef = state.gtin;
             }
             else

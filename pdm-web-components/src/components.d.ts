@@ -368,6 +368,7 @@ export namespace Components {
          */
         "canQuery"?: boolean;
         "currentPage"?: number;
+        "dsuQuery"?: string;
         "iconName"?: string;
         /**
           * Option props to be passed to child elements in from a JSON object in value key format only format
@@ -382,6 +383,10 @@ export namespace Components {
          */
         "itemType": string;
         "itemsPerPage"?: number;
+        /**
+          * Querying/paginating Params - only available when mode is set by ref
+         */
+        "keywordQuery"?: string;
         "loadingMessage"?: string;
         /**
           * sets the name of the manager to use
@@ -390,10 +395,6 @@ export namespace Components {
         "noContentMessage"?: string;
         "pageCount"?: number;
         "paginated"?: boolean;
-        /**
-          * Querying/paginating Params - only available when mode is set by ref
-         */
-        "query"?: string;
         "refresh": () => Promise<void>;
         "searchBarPlaceholder"?: string;
         "sort"?: string;
@@ -1330,6 +1331,7 @@ declare namespace LocalJSX {
          */
         "canQuery"?: boolean;
         "currentPage"?: number;
+        "dsuQuery"?: string;
         "iconName"?: string;
         /**
           * Option props to be passed to child elements in from a JSON object in value key format only format
@@ -1344,6 +1346,10 @@ declare namespace LocalJSX {
          */
         "itemType"?: string;
         "itemsPerPage"?: number;
+        /**
+          * Querying/paginating Params - only available when mode is set by ref
+         */
+        "keywordQuery"?: string;
         "loadingMessage"?: string;
         /**
           * sets the name of the manager to use
@@ -1356,10 +1362,6 @@ declare namespace LocalJSX {
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "pageCount"?: number;
         "paginated"?: boolean;
-        /**
-          * Querying/paginating Params - only available when mode is set by ref
-         */
-        "query"?: string;
         "searchBarPlaceholder"?: string;
         "sort"?: string;
         /**
@@ -1398,7 +1400,7 @@ declare namespace LocalJSX {
     }
     interface PdmSearchBar {
         "btnLabel"?: string;
-        "onSearch"?: (event: CustomEvent<any>) => void;
+        "onSearchEvt"?: (event: CustomEvent<any>) => void;
         "placeholder"?: string;
     }
     interface PdmSsappLoader {
