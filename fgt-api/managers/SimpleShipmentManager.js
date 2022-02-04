@@ -27,7 +27,7 @@ const {DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../constants');
  */
 class SimpleShipmentManager extends Manager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.simpleShipments, ['requesterId', 'orderId', 'senderId'], (err, manager) => {
+        super(participantManager, DB.simpleShipments, ['shipmentId', 'requesterId', 'orderId', 'senderId'], (err, manager) => {
             if (err)
                 return callback ? callback(err) : console.log(err);
             manager.registerMessageListener((message, cb) => {
