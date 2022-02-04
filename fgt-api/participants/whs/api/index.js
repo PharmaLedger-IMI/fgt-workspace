@@ -1,11 +1,9 @@
-const ProductApi = require('../../../api/product');
-const BatchApi = require('../../../api/batch');
 const StockApi = require('../../../api/stock');
 const ShipmentApi = require('../../../api/shipment');
+const TraceabilityApi = require('../../../api/traceability');
 
 module.exports = {
-    // ProductApi,
-    // BatchApi,
     StockApi,
-    ShipmentApi
+    ShipmentApi,
+    TraceabilityApi
 }

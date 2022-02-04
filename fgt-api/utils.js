@@ -82,7 +82,10 @@ const saveSeed = function(basePath, seed, walletName, callback){
 
 
 const initApis = function(express, apis, port, walletName, ...managerInitMethods){
-    log(`InitApi: ${walletName} on :${port}`)
+    log(`InitApi: ${walletName} on :${port}`);
+
+    if (Object.keys(apis).length !== managerInitMethods.length)
+        throw new Error("Must be exists a initialized manager for each API.");
 
     const credentialPath = path.join(process.cwd(), "config");
     getSeed(credentialPath, walletName, (err, keySSI, walletDSU) => {
