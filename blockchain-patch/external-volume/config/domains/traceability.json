@@ -2,7 +2,7 @@
   "anchoring": {
     "type": "ETH",
     "option": {
-      "endpoint": "http://172.16.63.51:3000"
+      "endpoint": "http://localhost:3000"
     },
     "commands": {
       "addAnchor": "anchor"

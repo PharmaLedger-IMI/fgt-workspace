@@ -1,8 +1,8 @@
 {
   "anchoring": {
-    "type": "FS",
+    "type": "ETH",
     "option": {
-      "enableBricksLedger": false
+      "endpoint": "http://localhost:3000"
     },
     "commands": {
       "addAnchor": "anchor"
