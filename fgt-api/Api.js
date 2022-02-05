@@ -226,7 +226,7 @@ class Api {
     }
 
     /**
-     *
+     * Transform keyword and queryParams (key: value object) to dsuQuery: [key == value]
      * @param {{}} queryParams
      * @param {string[]} allowedParams
      * @returns {string | string[]}
@@ -234,8 +234,6 @@ class Api {
      */
     _queryParamsTransform(queryParams, allowedParams ) {
         let {keyword, sort, page, itemPerPage, ...query} = queryParams;
-        if (keyword)
-            return keyword;
 
         query = Object.entries(query).reduce((accum, curr, ) => {
             const [key, value] = curr;
@@ -247,7 +245,11 @@ class Api {
                 accum.push(`${key} == ${value}`);
             return accum;
         }, [])
-        return  ['__timestamp > 0', ...query];
+
+        return  {
+            keyword,
+            dsuQuery: ['__timestamp > 0', ...query]
+        }
     }
 
     /**
@@ -378,10 +380,16 @@ class Api {
      * @param {function(err?, {}?)} callback
      */
     getAll(queryParams, callback){
-        const query = this._queryParamsTransform(queryParams, this.manager.indexes);
-        this.manager.getPage(queryParams.itemPerPage || 10, queryParams.page || 1, query, queryParams.sort, true, (err, paginate) => {
-            callback(err, paginate);
-        });
+        const {dsuQuery, keyword} = this._queryParamsTransform(queryParams, this.manager.indexes);
+        this.manager.getPage(
+            queryParams.itemPerPage || 10,  // items per page
+            queryParams.page || 1, // page number
+            dsuQuery, // dsuQuery
+            keyword, // keyword
+            queryParams.sort, // sort
+            true,  // readDSU
+            callback
+        );
     }
 
     delete(key, callback){

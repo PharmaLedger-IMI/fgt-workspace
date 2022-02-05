@@ -786,8 +786,25 @@ class Manager{
         let receivedPage = page || 1;
         sort = SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] ? SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] : SORT_OPTIONS.DSC;
 
+        const getPageByDSUQuery = (itemsPerPage, page, dsuQuery, sort, readDSU, callback) => {
+            const self = this;
+            let receivedPage = page || 1;
+            dsuQuery = [...dsuQuery, '__timestamp > 0'];
+            self.getAll(readDSU, {query: dsuQuery, sort: sort,  limit: undefined}, (err, records) => {
+                if (err)
+                    return self._err(`Could not retrieve records to page`, err, callback);
+                if (records.length === 0)
+                    return callback(undefined, toPage(0, 0, records, itemsPerPage));
+
+                if (records.length <= itemsPerPage)
+                    return callback(undefined, toPage(1, 1, records, itemsPerPage));
+                const page = paginate(records, itemsPerPage, receivedPage);
+                callback(undefined, page);
+            })
+        }
+
         if(!keyword)
-            return self._getPage(itemsPerPage, page, dsuQuery, sort, readDSU, callback);
+            return getPageByDSUQuery(itemsPerPage, page, dsuQuery, sort, readDSU, callback);
 
         const queries = self._keywordToQuery(keyword, dsuQuery);
         const iterator = (accum, queriesArray, _callback) => {
@@ -818,32 +835,6 @@ class Manager{
                     return accum
                 }, {})
             );
-
-            if (records.length <= itemsPerPage)
-                return callback(undefined, toPage(1, 1, records, itemsPerPage));
-            const page = paginate(records, itemsPerPage, receivedPage);
-            callback(undefined, page);
-        })
-    }
-
-    /**
-     * Returns a page object from provided dsuQuery
-     * @param {number} itemsPerPage
-     * @param {number} page
-     * @param {string[]} dsuQuery
-     * @param {string} sort
-     * @param {boolean} readDSU
-     * @param {function(err, Page)}callback
-     */
-    _getPage(itemsPerPage, page, dsuQuery, sort, readDSU, callback){
-        const self = this;
-        let receivedPage = page || 1;
-        dsuQuery = [...dsuQuery, '__timestamp > 0'];
-        self.getAll(readDSU, {query: dsuQuery, sort: sort,  limit: undefined}, (err, records) => {
-            if (err)
-                return self._err(`Could not retrieve records to page`, err, callback);
-            if (records.length === 0)
-                return callback(undefined, toPage(0, 0, records, itemsPerPage));
 
             if (records.length <= itemsPerPage)
                 return callback(undefined, toPage(1, 1, records, itemsPerPage));

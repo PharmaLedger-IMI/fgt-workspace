@@ -263,19 +263,6 @@ class SimpleShipmentManager extends Manager {
     }
 
     /**
-     * Returns a page object from provided dsuQuery or a keyword
-     * @param {number} itemsPerPage
-     * @param {number} page
-     * @param {string | string[] } searchBy: dsuQuery or keyword
-     * @param {string} sort
-     * @param {boolean} readDSU
-     * @param {function(err, Page)}callback
-     */
-    getPage(itemsPerPage, page, searchBy, sort, readDSU, callback) {
-        return super.getPage.call(this, itemsPerPage, page, searchBy, sort, readDSU, callback);
-    }
-
-    /**
      * updates one SimpleShipment status (just the SimpleShipment can be updated)
      * @param {string | number} shipmentId
      * @param {Status} statusUpdate
