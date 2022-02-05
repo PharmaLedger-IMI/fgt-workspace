@@ -182,7 +182,7 @@ class IssuedOrderManager extends OrderManager {
 
         const update = super.update.bind(this);
 
-        console.log(`Updating order ${orderId} witj shipment ${shipment.shipmentId}`);
+        console.log(`Updating order ${orderId} with shipment ${shipment.shipmentId}`);
 
         const self = this;
         const key = this._genCompostKey(shipment.senderId, orderId);

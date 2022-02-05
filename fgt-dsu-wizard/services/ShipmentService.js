@@ -284,27 +284,24 @@ function ShipmentService(domain, strategy) {
         return callback();
     }
 
-    this.update = function(keySSI, shipment, id, callback){
+    this.update = function(keySSI, newShipment, id, callback){
         if (!callback && typeof id === 'function'){
             callback = id;
-            id = shipment.senderId;
+            id = newShipment.senderId;
         }
 
         const self = this;
         if (isSimple) {
             keySSI = utils.getKeySSISpace().parse(keySSI);
 
-            self.get(keySSI, (err, shipmentSSI, dsu) => {
+            self.get(keySSI, (err, shipment, dsu) => {
                 if (err)
                     return callback(err);
 
-                if(!(shipment instanceof Shipment))
-                    shipment = new Shipment(shipment);
-                err = shipment.validate(shipmentSSI.status.status);
+                if(!(newShipment instanceof Shipment))
+                    newShipment = new Shipment(newShipment);
+                err = newShipment.validate(shipment.status.status);
                 if(err)
-                    return callback(err);
-
-                if (err)
                     return callback(err);
 
                 const cb = function(err, ...results){
@@ -326,7 +323,7 @@ function ShipmentService(domain, strategy) {
                         return cb(err);
                     if (!mounts[STATUS_MOUNT_PATH])
                         return cb(`Missing mount ${STATUS_MOUNT_PATH}`);
-                    statusService.update(mounts[STATUS_MOUNT_PATH], shipment.status, shipment.senderId, (err) => {
+                    statusService.update(mounts[STATUS_MOUNT_PATH], newShipment.status, shipment.senderId, (err) => {
                         if (err)
                             return cb(err);
                         dsu.commitBatch((err) => {
