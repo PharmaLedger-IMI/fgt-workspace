@@ -658,7 +658,7 @@
             "actions": [
                 {
                     "type": "copy",
-                    "src": "./blockchain-patch/external-volume",
+                    "src": "./blockchain-patch/apply/external-volume",
                     "target": "./apihub-root/external-volume",
                     "options": {
                         "overwrite": true
@@ -686,6 +686,38 @@
                 {
                     "type": "execute",
                     "cmd": "cd blockchain-node && npm run deploy-blockchain"
+                }
+            ]
+        }
+    ],
+    "switch-to-test-chain": [
+        {
+            "name":"Switch apihub configs to a local test blockchain. Apihub needs restart.",
+            "src": "",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./blockchain-patch/apply/external-volume",
+                    "target": "./apihub-root/external-volume",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        }
+    ],
+    "switch-to-simul-chain": [
+        {
+            "name":"Switch apihub configs to a local test blockchain. Apihub needs restart.",
+            "src": "",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./blockchain-patch/remove/external-volume",
+                    "target": "./apihub-root/external-volume",
+                    "options": {
+                        "overwrite": true
+                    }
                 }
             ]
         }
