@@ -665,7 +665,7 @@
     ],
     "deploy-chain": [
         {
-            "name": "change anchoring to blockchain",
+            "name": "change anchoring to blockchain like in switch-to-test-chain. PLEASE RESTART apihub after!",
             "src": "",
             "actions": [
                 {
@@ -685,7 +685,8 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false
+                    "collectLog": false,
+                    "commit": "86dfb347ee60e4d94c2ee372772382bec7863f24"
                 },
                 {
                     "type": "execute",

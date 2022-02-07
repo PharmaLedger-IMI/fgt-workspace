@@ -653,7 +653,7 @@
     ],
     "deploy-chain": [
         {
-            "name":"change anchoring to blockchain",
+            "name":"change anchoring to blockchain like in switch-to-test-chain. PLEASE RESTART apihub after!",
             "src": "",
             "actions": [
                 {
