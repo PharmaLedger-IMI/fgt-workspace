@@ -169,7 +169,7 @@ class StockManager extends Manager{
                     stock.batches.push(updatedBatch);
                     console.log(`Added batch ${updatedBatch.batchNumber} with ${updatedBatch.serialNumbers ? updatedBatch.serialNumbers.length : updatedBatch.getQuantity()} items`);
                 } else {
-                    const newQuantity = sb.batch.getQuantity() + updatedBatch.getQuantity() ;
+                    const newQuantity = sb.batch.getQuantity() + (updatedBatch.quantity || updatedBatch.getQuantity());
                     if (newQuantity < 0)
                         return callback(`Illegal quantity. Not enough Stock. requested ${batch.getQuantity() } of ${sb.batch.getQuantity() }`);
                     serials = sb.batch.manage(updatedBatch.getQuantity(), this.serialization);
