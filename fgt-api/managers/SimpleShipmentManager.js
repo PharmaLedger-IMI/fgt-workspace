@@ -3,6 +3,7 @@ const Batch = require('../../fgt-dsu-wizard/model/Batch');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const {BadRequest, InternalServerError} = require("../utils/errorHandler");
 const {DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../constants');
+const {ShipmentStatus} = require('../../fgt-dsu-wizard/model');
 
 
 /**
@@ -177,7 +178,7 @@ class SimpleShipmentManager extends Manager {
         }
 
         // multiplier factor to add or remove from stock
-        const factor = (self.getIdentity().id === simpleShipment.requesterId) ? 1 : (-1);
+        const factor = (self.getIdentity().id === simpleShipment.requesterId) ? 0 : (-1);
         const aggBatchesByGtin = simpleShipment.shipmentLines.reduce((accum, sl) => {
             if (!accum.hasOwnProperty(sl.gtin))
                 accum[sl.gtin] = [];
@@ -286,7 +287,64 @@ class SimpleShipmentManager extends Manager {
                     } catch (e) {
                         log(e);
                     }
-                    callback(undefined, updatedSimpleShipment, shipmentSSI);
+
+                    // early return, don't need to add to stock
+                    if (!(updatedSimpleShipment.requesterId === self.getIdentity().id && updatedSimpleShipment.status.status === ShipmentStatus.CONFIRMED))
+                        return callback(undefined, updatedSimpleShipment, shipmentSSI);
+
+                    // if requester and shipmentStatus confirmed, need to add to stock
+                    const callbackCancelBatch = (err, ...results) => {
+                        if (err)
+                            return self.cancelBatch((_) => callback(err));
+                        callback(undefined, ...results);
+                    }
+
+                    const dbAction = (gtins, batchesObj, _callback) => {
+                        try {
+                            self.beginBatch();
+                        } catch (e) {
+                            return self.batchSchedule(() => dbAction(gtins, batchesObj, _callback));
+                        }
+
+                        const gtinIterator = function(accum, gtins, batchObj, _callback){
+                            const gtin = gtins.shift();
+                            if (!gtin)
+                                return _callback(undefined, accum);
+                            const batches = batchObj[gtin];
+                            self.batchAllow(self.stockManager);
+                            self.stockManager.manageAll(gtin, batches, (err, newStocks) => {
+                                self.batchDisallow(self.stockManager);
+                                if (err)
+                                    return _callback(err);
+                                accum[gtin] = accum[gtin] || [];
+                                accum[gtin].push(newStocks);
+                                gtinIterator(accum, gtins, batchObj, _callback);
+                            });
+                        }
+
+                        gtinIterator({}, gtins, batchesObj, (err) => {
+                            if (err)
+                                return callbackCancelBatch(`Could not update Stock`);
+                            self.commitBatch((err) => {
+                                if (err)
+                                    return callbackCancelBatch(err);
+                                log(`Stock updated from shipmentId: ${updatedSimpleShipment.shipmentId}`);
+                                _callback(undefined, updatedSimpleShipment, shipmentSSI);
+                            });
+                        });
+                    }
+
+                    const aggBatchesByGtin = updatedSimpleShipment.shipmentLines.reduce((accum, sl) => {
+                        if (!accum.hasOwnProperty(sl.gtin))
+                            accum[sl.gtin] = [];
+                        accum[sl.gtin].push(new Batch({
+                            batchNumber: sl.batch,
+                            quantity: sl.quantity
+                        }))
+                        return accum;
+                    }, {});
+
+                    dbAction(Object.keys(aggBatchesByGtin), aggBatchesByGtin, callback);
                 });
             })
         });
