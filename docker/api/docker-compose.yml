@@ -1,7 +1,7 @@
 version: "2.3"
 x-participant-def:
   &participant-def
-  restart: "always"
+  restart: "unless-stopped"
   build:
     context: ../docker/api
   entrypoint: ["/bin/sh", "-c"]
@@ -64,27 +64,23 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.whoami.rule=PathPrefix(`/whoami`)"
       - "traefik.http.routers.whoami.entrypoints=web"
-#  fgt-workspace:
-#    container_name: fgt-workspace
-#    build:
-#      context: ../api/traceability
-#    hostname: fgt-workspace
-#    ports:
-#      - "8080:8080"
-#    labels:
-#      - "traefik.enable=true"
+  fgt-workspace:
+    container_name: fgt-workspace
+    build:
+      context: ../api/traceability
+    hostname: fgt-workspace
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traceability.rule=PathPrefix(`/traceability`)"
 #      - "traefik.http.routers.traceability.rule=HostRegexp(`fgt(:?\\-(?:dev|tst))?\\.pharmaledger\\.pdmfc\\.com`)"
-#      - "traefik.http.routers.traceability.entrypoints=web"
-#    volumes:
-#      - traceability_vol:/fgt-workspace/apihub-root/external-volume
-#    networks:
-#      traceability-net:
-#        ipv4_address: 172.16.63.2
-#    depends_on:
-#      traefik:
-#        condition: service_healthy
+      - "traefik.http.routers.traceability.entrypoints=web"
+    volumes:
+      - traceability_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      traceability-net:
+        ipv4_address: 172.16.63.2
 #    healthcheck:
-#      test: [ "CMD", "wget", "--spider", "--proxy", "off", "http://172.16.63.2:8080/dsu-explorer/wallet-patch/seed" ]
+#      test: [ "CMD", "wget", "--spider", "--proxy", "off", "http://localhost:8080/dsu-explorer/wallet-patch/seed" ]
 #      interval: 5s
 #      timeout: 3s
 #      retries: 20
@@ -154,8 +150,8 @@ networks:
       driver: default
       config:
         - subnet: 172.16.63.0/24
-#volumes:
-#  "traceability_vol":
+volumes:
+  "traceability_vol":
 #  "mah-roche_vol":
 #  "whs-takeda_vol":
 #  "pha-1_vol":
