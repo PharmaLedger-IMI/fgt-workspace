@@ -1,6 +1,7 @@
 
 const {Api, OPERATIONS} = require('../Api');
 const Stock = require("../../fgt-dsu-wizard/model/Stock");
+const {BadRequest} = require("../utils/errorHandler");
 
 const STOCK_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['gtin']});
 
@@ -23,7 +24,7 @@ module.exports = class StockApi extends Api {
     getOne(gtin, callback) {
         this.manager.getOne(gtin, true, (err, stock) => {
             if (err)
-                return callback(err);
+                return callback(new BadRequest(err));
             callback(undefined, stock);
         })
     }

@@ -1,6 +1,7 @@
 
 const {Api, OPERATIONS} = require('../Api');
 const Receipt = require("../../fgt-dsu-wizard/model/Receipt");
+const {BadRequest, InternalServerError} = require("../utils/errorHandler");
 
 const RECEIPT_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['receiptId']});
 
@@ -23,7 +24,7 @@ module.exports = class ReceiptApi extends Api {
     getOne(receiptId, callback) {
         this.manager.getOne(receiptId, true, (err, receipt) => {
             if (err)
-                return callback(err);
+                return callback(new BadRequest(err));
             callback(undefined, receipt);
         })
     }

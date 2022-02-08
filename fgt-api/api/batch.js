@@ -1,7 +1,7 @@
 
 const {Api, OPERATIONS} = require('../Api');
 const Batch = require("../../fgt-dsu-wizard/model/Batch");
-const {BadRequest, NotImplemented} = require("../utils/errorHandler");
+const {BadRequest, InternalServerError} = require("../utils/errorHandler");
 
 const BATCH_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['gtin', 'batchNumber']});
 const BATCH_UPDATE = Object.assign({}, OPERATIONS.UPDATE, {pathParams: ['gtin', 'batchNumber']});
@@ -33,18 +33,18 @@ module.exports = class BatchApi extends Api {
 
         self.productManager.getOne(gtin, (err, product) => {
             if (err)
-                return callback(err);
+                return callback(new BadRequest(err));
 
             const [validateErr, _batch] = self._validate(batch, batch.batchStatus);
             if (validateErr)
-                return callback(validateErr);
+                return callback(new BadRequest(validateErr));
 
             self.manager.create(product, _batch, (err, keySSI) => {
                 if (err)
-                    return callback(err);
+                    return callback(new InternalServerError(err));
                 self.manager.getOne(product.gtin, _batch.batchNumber, true, (err, _batch) => {
                     if (err)
-                        return callback(err);
+                        return callback(new InternalServerError(err));
                     callback(undefined, {..._batch, keySSI: keySSI.derive().getIdentifier()});
                 });
             });
@@ -68,7 +68,7 @@ module.exports = class BatchApi extends Api {
     getOne(gtin, batchNumber, callback) {
         this.manager.getOne(gtin, batchNumber, true, (err, batch) => {
             if (err)
-                return callback(err);
+                return callback(new BadRequest(err));
             callback(undefined, batch);
         })
     }
@@ -103,7 +103,7 @@ module.exports = class BatchApi extends Api {
 
             self.manager.update(gtin, _batch, (err, updatedBatch) => {
                 if (err)
-                    return callback(new NotImplemented(err));
+                    return callback(new InternalServerError(err));
                 callback(undefined, updatedBatch);
             });
         })

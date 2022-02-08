@@ -49,7 +49,11 @@ module.exports = class SaleApi extends Api {
      * @param callback
      */
     getOne(saleId, callback) {
-        this.manager.getOne(saleId, true, callback)
+        this.manager.getOne(saleId, true, (err, sale) => {
+            if (err)
+                return callback(new BadRequest(err));
+            callback(undefined, sale);
+        })
     }
 
     /**

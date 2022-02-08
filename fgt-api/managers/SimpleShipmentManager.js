@@ -277,11 +277,11 @@ class SimpleShipmentManager extends Manager {
             const shipmentSSI = record.value;
             self.simpleShipmentService.update(shipmentSSI, statusUpdate, self.getIdentity().id, (err, updatedSimpleShipment, keySSI, linesSSIs) => {
                 if (err)
-                    return callback(err);
+                    return callback(new BadRequest(err));
 
                 self.updateRecord(shipmentId, self._indexItem(shipmentId, updatedSimpleShipment, shipmentSSI), (err) => {
                     if (err)
-                        return callback(`Could not update Shipment from shipmentId ${shipmentId}. ${err}`);
+                        return callback(new BadRequest(`Could not update Shipment from shipmentId ${shipmentId}. ${err}`));
                     try {
                         self.sendMessagesAsync(updatedSimpleShipment, linesSSIs, shipmentSSI);
                     } catch (e) {
@@ -295,7 +295,7 @@ class SimpleShipmentManager extends Manager {
                     // if requester and shipmentStatus confirmed, need to add to stock
                     const callbackCancelBatch = (err, ...results) => {
                         if (err)
-                            return self.cancelBatch((_) => callback(err));
+                            return self.cancelBatch((_) => callback(new InternalServerError(err)));
                         callback(undefined, ...results);
                     }
 

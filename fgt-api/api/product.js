@@ -1,6 +1,7 @@
 
 const {Api, OPERATIONS} = require('../Api');
 const Product = require('../../fgt-dsu-wizard/model/Product');
+const {BadRequest, InternalServerError} = require("../utils/errorHandler");
 
 const PRODUCT_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['gtin']});
 
@@ -27,14 +28,14 @@ class ProductApi extends Api {
 
         const [err, _product] = self._validate(product);
         if (err)
-            return callback(err);
+            return callback(new BadRequest(err));
 
         self.manager.create(_product, (err, keySSI) => {
             if (err)
-                return callback(err);
+                return callback(new InternalServerError(err));
             self.manager.getOne(_product.gtin, true, (err, insertedProduct) => {
                 if (err)
-                    return callback(err);
+                    return callback(new InternalServerError(err));
                 callback(undefined, {...insertedProduct, keySSI: keySSI.derive().getIdentifier()});
             });
         });
@@ -55,7 +56,7 @@ class ProductApi extends Api {
     getOne(gtin, callback) {
         this.manager.getOne(gtin, true, (err, product) => {
             if (err)
-                return callback(err);
+                return callback(new BadRequest(err));
             callback(undefined, product);
         })
     }

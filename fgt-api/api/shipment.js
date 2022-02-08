@@ -32,7 +32,7 @@ class ShipmentApi extends Api {
 
         self.manager.create(_simpleShipment, (err, keySSI) => {
             if (err)
-                return callback(err);
+                return callback(new InternalServerError(err))
             self.manager.getOne(_simpleShipment.shipmentId, true, (err, record) => {
                 if (err)
                     return callback(new InternalServerError(err))
@@ -59,8 +59,10 @@ class ShipmentApi extends Api {
      * @param {function(err, SimpleShipment?)} callback
      */
     getOne(shipmentId, callback) {
-        this.manager.getOne(shipmentId, true, (err, records) => {
-            callback(err, records);
+        this.manager.getOne(shipmentId, true, (err, record) => {
+            if (err)
+                return callback(new BadRequest(err))
+            callback(undefined, record);
         });
     }
 

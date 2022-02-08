@@ -1,4 +1,5 @@
 const {Api, OPERATIONS} = require('../Api');
+const {BadRequest} = require("../utils/errorHandler");
 
 module.exports = class TraceabilityApi extends Api {
     manager;
@@ -20,7 +21,7 @@ module.exports = class TraceabilityApi extends Api {
     create(individualProduct, callback) {
         this.manager.getOne(individualProduct, (err, traceability) => {
             if (err)
-                return callback(err);
+                return callback(new BadRequest(err))
             callback(undefined, traceability);
         });
     }
