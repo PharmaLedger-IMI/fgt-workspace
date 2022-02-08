@@ -744,6 +744,10 @@
                 {
                     "type": "execute",
                     "cmd": "cd pdm-web-components && npm run docs"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-api && npm run docs"
                 }
             ]
         },
@@ -816,6 +820,15 @@
                     "type": "copy",
                     "src": "pdm-web-components/docs/",
                     "target": "docs/pdm-web-components",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+
+                    "type": "copy",
+                    "src": "fgt-api/docs/",
+                    "target": "docs/fgt-api",
                     "options": {
                         "overwrite": true
                     }
