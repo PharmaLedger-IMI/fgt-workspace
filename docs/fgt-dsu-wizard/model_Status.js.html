@@ -140,7 +140,7 @@ class Status {
     constructor(status) {
         if (typeof status !== undefined)
             for (let prop in status)
-                if (status.hasOwnProperty(prop))
+                if (status.hasOwnProperty(prop) &amp;&amp; this.hasOwnProperty(prop))
                     this[prop] = status[prop];
     }
 
@@ -181,6 +181,7 @@ module.exports = Status;
 <script src="scripts/linenumber.js"> </script>
 
 <script src="scripts/search.js"> </script>
+
 
 </body>
 </html>

@@ -191,7 +191,7 @@ $ npm run dev-install
 
 For latest 'stable' version do:
 ```sh
-$ npm install
+$ npm run install
 ```
 instead.
 

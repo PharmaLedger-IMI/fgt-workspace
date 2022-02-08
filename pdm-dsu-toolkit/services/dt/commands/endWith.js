@@ -23,7 +23,7 @@ class EndWithCommand extends Command{
      * @param {string[]|object} arg unused
      * @param {Archive} bar unused
      * @param {object} options unused
-     * @param {function(err, Archive|KeySSI)} callback
+     * @param {function(err, any)} callback
      * @protected
      */
     _runCommand(arg, bar, options, callback){

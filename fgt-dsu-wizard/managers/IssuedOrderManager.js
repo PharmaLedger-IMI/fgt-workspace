@@ -157,7 +157,7 @@ class IssuedOrderManager extends OrderManager {
          * so need to be sanitized to remove {SENDER_ID} and {TIMESTAMP}, because {REQUESTER_ID}
          * just needs the message
          * @param {Status} status
-         * @param {{[key: string]: string[]} }extraInfo
+         * @param {{}} extraInfo
          * @returns {string}
          */
         const getExtraInfoMsg = function (status, extraInfo) {

@@ -760,7 +760,7 @@ class Manager{
      * Subclasses should override this
      * @param {string} keyword
      * @param queryConditions
-     * @return {string[string[]]} query
+     * @return {string[]} query
      * @protected
      */
     _keywordToQuery(keyword, queryConditions){

@@ -137,7 +137,7 @@ class Batch {
     constructor(batch) {
         if (typeof batch !== undefined)
             for (let prop in batch)
-                if (batch.hasOwnProperty(prop))
+                if(batch.hasOwnProperty(prop) &amp;&amp; this.hasOwnProperty(prop))
                     this[prop] = batch[prop];
 
         if (this.expiry &amp;&amp; typeof this.expiry === 'string')
@@ -256,6 +256,7 @@ module.exports = Batch;
 <script src="scripts/linenumber.js"> </script>
 
 <script src="scripts/search.js"> </script>
+
 
 </body>
 </html>

@@ -29,7 +29,7 @@ function StockManagementService(requesterId, stockManager, shipmentLineManager, 
     /**
      * Stock taking from ShipmentLines
      * @param query
-     * // @param { function(err, { partnerId: {inStock: number, dispatched: number}[]})} callback
+     * @param {function(err, {})} _callback
      */
     const getStockFromPartners = (query, _callback) => {
         shipmentLineManager.getAll(true, {query, sort: 'dsc'}, (err, shipmentLines) => {

@@ -113,6 +113,7 @@
 const OrderManager = require("./OrderManager");
 const {Order, OrderStatus, ShipmentStatus, Batch} = require('../model');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
+const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 const utils = require('../services').utils
 
 /**
@@ -137,7 +138,7 @@ const utils = require('../services').utils
  */
 class IssuedOrderManager extends OrderManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.issuedOrders, ['senderId', 'shipmentId'], callback);
+        super(participantManager, DB.issuedOrders, ['orderId', 'senderId', 'shipmentId', 'status'], callback);
         this.stockManager = participantManager.stockManager;
     }
 
@@ -262,17 +263,46 @@ class IssuedOrderManager extends OrderManager {
             }
         }
 
+        /**
+         * Message/ExtraInfo by default follows the model: `{SENDER_ID} {TIMESTAMP} {MESSAGE}`,
+         * so need to be sanitized to remove {SENDER_ID} and {TIMESTAMP}, because {REQUESTER_ID}
+         * just needs the message
+         * @param {Status} status
+         * @param {{}} extraInfo
+         * @returns {string}
+         */
+        const getExtraInfoMsg = function (status, extraInfo) {
+            if (!extraInfo)
+                return '';
+
+            const statusStr = status.status;
+            if (!extraInfo.hasOwnProperty(statusStr))
+                return '';
+
+            const lastLog = status.log[status.log.length - 1]
+            const extraInfoUpdated = extraInfo[statusStr].filter(_extraInfo => {
+                // verify if extraInfo.timestamp ===log.timestamp
+                return _extraInfo.split(' ')[1].trim() === lastLog.split(' ')[1].trim()
+            })
+            if (extraInfoUpdated.length > 0) {
+                return extraInfoUpdated[0].split(' ').slice(2).join(' ').trim(); // sanitized
+            } else {
+                return '';
+            }
+        }
+
         const update = super.update.bind(this);
 
-        console.log(`Updating order ${orderId} witj shipment ${shipment.shipmentId}`);
+        console.log(`Updating order ${orderId} with shipment ${shipment.shipmentId}`);
 
         const self = this;
         const key = this._genCompostKey(shipment.senderId, orderId);
         self.getOne(key, true, (err, order) => {
             if (err)
                 return self._err(`Could not load Order`, err, callback);
-            order.status = getOrderStatusByShipment(shipment.status.status);
-            console.log(`Order Status for Issued Order ${key} to be updated to to ${order.status}`);
+            order.status['status'] = getOrderStatusByShipment(shipment.status.status);
+            order.status['extraInfo'] = getExtraInfoMsg(shipment.status, shipment.status.extraInfo);
+            console.log(`Order Status for Issued Order ${key} to be updated to ${order.status.status}`);
             order.shipmentSSI = shipmentSSI;
 
             const dbAction = function(key, order, callback){
@@ -521,6 +551,7 @@ module.exports = getIssuedOrderManager;
 <script src="scripts/linenumber.js"> </script>
 
 <script src="scripts/search.js"> </script>
+
 
 </body>
 </html>

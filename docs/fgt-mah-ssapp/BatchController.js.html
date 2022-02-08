@@ -167,9 +167,9 @@ export default class BatchController extends LocalizedController {
                 case BatchStatus.COMMISSIONED:
                     return self._handleCreateBatch.call(self, props);
                 default:
-                    const {newStatus, batch, popupOptions } = props;
+                    const {newStatus, batch, extraInfo } = props;
                     const gtin = this.model.gtinBatch.split('-')[0];
-                    return await self._handleUpdateBatchStatus.call(self, gtin, batch, newStatus, popupOptions);
+                    return await self._handleUpdateBatchStatus.call(self, gtin, batch, newStatus, extraInfo);
             }
         });
 
@@ -192,22 +192,19 @@ export default class BatchController extends LocalizedController {
         }, obj);
     }
 
-    async _handleUpdateBatchStatus(gtin, batch, newStatus, popupOptions){
+    async _handleUpdateBatchStatus(gtin, batch, newStatus, extraInfo){
         const self = this;
 
         const oldStatus = batch.batchStatus.status;
+        const oldExtraInfo = batch.batchStatus.extraInfo;
         batch.batchStatus.status = newStatus;
+        batch.batchStatus.extraInfo = extraInfo;
         const errors = batch.validate(oldStatus);
-        if (errors)
+        if (errors) {
+            batch.batchStatus.status = oldStatus; // rollback
+            batch.batchStatus.extraInfo = oldExtraInfo;
             return self.showErrorToast(self.translate(`manage.error.invalid`, errors.join('\n')));
-
-        const popupCallback = (evt) => batch.batchStatus.extraInfo = evt.extraInfo;
-        const alert = await self.showPopup('manage.confirm', popupOptions, popupCallback, oldStatus, newStatus);
-
-        const {role} = await alert.onDidDismiss();
-
-        if (BUTTON_ROLES.CONFIRM !== role)
-            return console.log(`Batch update canceled by clicking ${role}`);
+        }
 
         const loader = self._getLoader(self.translate('manage.loading'));
         await loader.present();
@@ -296,6 +293,7 @@ export default class BatchController extends LocalizedController {
 <script src="scripts/linenumber.js"> </script>
 
 <script src="scripts/search.js"> </script>
+
 
 </body>
 </html>

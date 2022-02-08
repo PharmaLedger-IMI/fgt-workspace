@@ -139,21 +139,13 @@ function StockManagementService(requesterId, stockManager, shipmentLineManager, 
 
     /**
      * Stock taking from ShipmentLines
-     * @param gtin
-     * @param batch
-     * @param callback
+     * @param query
+     * @param {function(err, {})} _callback
      */
-    const getStockFromPartners = (gtin, batch, callback) => {
-        shipmentLineManager.getAll(true, {
-            query: [
-                '__timestamp > 0',
-                `gtin == ${gtin}`,
-                `batch == ${batch}`
-            ],
-            sort: 'dsc'
-        }, (err, shipmentLines) => {
+    const getStockFromPartners = (query, _callback) => {
+        shipmentLineManager.getAll(true, {query, sort: 'dsc'}, (err, shipmentLines) => {
             if (err)
-                callback(err)
+                return _callback(err)
             const partnersStock = shipmentLines.reduce((accum, currShipmentLine) => {
                 const {requesterId, senderId, quantity} = currShipmentLine;
                 /* considering only status == confirmed to add to the requester stock, else still on sender stock */
@@ -166,7 +158,7 @@ function StockManagementService(requesterId, stockManager, shipmentLineManager, 
                 return accum;
             }, {});
             delete partnersStock[requesterId];
-            callback(undefined, partnersStock)
+            _callback(undefined, partnersStock)
         })
     }
 
@@ -174,36 +166,47 @@ function StockManagementService(requesterId, stockManager, shipmentLineManager, 
      * Stock taking from ShipmentLines and Receipts
      * @param { string }gtin
      * @param {string }batch
-     * @param { function(err, res )} callback
+     * @param { function(err, {results})} callback
      */
     this.traceStockManagement = function (gtin, batch, callback) {
+        if (!callback) {
+            callback = batch;
+            batch = undefined;
+        }
+
+        let query = ['__timestamp > 0', `gtin == ${gtin}`];
+        query = batch ? [...query, `batch == ${batch}`] : [...query];
+
         stockManager.getOne(gtin, true, (err, stock) => {
             if (err)
-                callback(err)
+                return callback(err)
             const {batches, ...stockInfo} = stock;
-            const batchStock = batches.filter((_batch) => _batch.batchNumber === batch)[0];
+            let batchStock = {batchNumber: undefined}
+            if (batch)
+                batchStock = batches.find((_batch) => batch &amp;&amp; _batch.batchNumber === batch);
 
-            getStockFromPartners(gtin, batch, (err, partnersStock) => {
+            getStockFromPartners(query, (err, partnersStock) => {
                 if (err)
-                    callback(err)
+                    return callback(err)
 
-                Object.keys(partnersStock).forEach((sellerId) => {
-                    receiptManager.getAll(true, {
-                        query: [
-                            '__timestamp > 0',
-                            `gtin == ${gtin}`,
-                            `batchNumber == ${batch}`,
-                            `sellerId == ${sellerId}`
-                        ],
-                        sort: 'dsc'
-                    }, (err, receipts) => {
+                console.log('#### partnersStock=', partnersStock)
+                const addReceiptsToDispatched = (objAccum, objKeys, _callback) => {
+                    const sellerId = objKeys.shift();
+                    if (!sellerId)
+                        return _callback(undefined, {...objAccum})
+                    receiptManager.getAll(true, {query: [...query, `sellerId == ${sellerId}`], sort: 'dsc'}, (err, receipts) => {
                         if (err)
-                            callback(err)
-
-                        partnersStock[sellerId] = removeFromStock(partnersStock[sellerId], receipts.length);
+                            return _callback(err)
+                        objAccum[sellerId] = removeFromStock(objAccum[sellerId], receipts.length);
+                        addReceiptsToDispatched(objAccum, objKeys, _callback)
                     })
+                }
+
+                addReceiptsToDispatched({...partnersStock}, Object.keys(partnersStock), (err, result) => {
+                    if (err)
+                        return callback(err)
+                    callback(undefined, {stock: stockInfo, batch: batchStock, partnersStock: result})
                 })
-                callback(undefined, {...stockInfo, ...batchStock, partnersStock})
             })
         })
     }
@@ -227,6 +230,7 @@ module.exports = StockManagementService;</code></pre>
 <script src="scripts/linenumber.js"> </script>
 
 <script src="scripts/search.js"> </script>
+
 
 </body>
 </html>
