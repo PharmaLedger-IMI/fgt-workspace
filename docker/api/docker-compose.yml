@@ -4,24 +4,37 @@ x-participant-def:
   restart: "always"
   build:
     context: ../docker/api
+  entrypoint: ["/bin/sh", "-c"]
   ports:
     - "8080:8080"
     - "8081:8081"
 x-mah-def:
   &mah-def
   << : *participant-def
+  command:
+    - |
+      npm run build-all
+      npm run run-mah
   depends_on:
     fgt-workspace:
       condition: service_healthy
 x-whs-def:
   &whs-def
   << : *participant-def
+  command:
+    - |
+      npm run build-all
+      npm run run-whs
   depends_on:
     mah-roche:
       condition: service_healthy
 x-pha-def:
   &pha-def
   << : *participant-def
+  command:
+    - |
+      npm run build-all
+      npm run run-pha
   depends_on:
     whs-takeda :
       condition: service_healthy
@@ -37,18 +50,20 @@ services:
       - "--entrypoints.web.address=:8080"
     ports:
       - "8080:8080"
+    healthcheck:
+      test: traefik healthcheck --ping
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
   fgt-workspace:
     container_name: fgt-workspace
     build:
-      context: ../docker
+      context: ../api/traceability
     hostname: fgt-workspace
     ports:
       - "8080:8080"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traceability.rule=HostRegexp(`fgt(:?\-(?:dev|tst))?\.pharmaledger\.pdmfc\.com`)"
+      - "traefik.http.routers.traceability.rule=HostRegexp(`fgt(:?\\-(?:dev|tst))?\\.pharmaledger\\.pdmfc\\.com`)"
       - "traefik.http.routers.traceability.entrypoints=web"
     volumes:
       - traceability_vol:/fgt-workspace/apihub-root/external-volume
@@ -64,63 +79,63 @@ services:
       timeout: 3s
       retries: 20
       start_period: 5s
-  mah-roche:
-    << : *mah-def
-    container_name: mah-roche
-    hostname: mah-roche
-    ports:
-      - "8080:8080"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traceability.rule=(HostRegexp(`fgt(:?\-(?:dev|tst))?\.pharmaledger\.pdmfc\.com`) && PathPrefix(`/mah-roche/`))"
-      - "traefik.http.routers.traceability.entrypoints=web"
-    volumes:
-      - mah-roche_vol:/fgt-workspace/apihub-root/external-volume
-    networks:
-      traceability-net:
-        ipv4_address: 172.16.63.10
-    env_file:
-      - ../docker/api/env/mah-roche.env
-    environment:
-      - ROLE=MAH
-  mhs-takeda:
-    <<: *whs-def
-    container_name: whs-takeda
-    hostname: whs-takeda
-    ports:
-      - "8080:8080"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traceability.rule=(HostRegexp(`fgt(:?\-(?:dev|tst))?\.pharmaledger\.pdmfc\.com`) && PathPrefix(`/whs-takeda/`))"
-      - "traefik.http.routers.traceability.entrypoints=web"
-    volumes:
-      - whs-takeda_vol:/fgt-workspace/apihub-root/external-volume
-    networks:
-      traceability-net:
-        ipv4_address: 172.16.63.51
-    env_file:
-      - ../docker/api/env/whs-takeda.env
-    environment:
-      - ROLE=WHS
-  pha-1:
-    <<: *pha-def
-    container_name: pha-1
-    hostname: pha-1
-    ports:
-      - "8080:8080"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traceability.rule=(HostRegexp(`fgt(:?\-(?:dev|tst))?\.pharmaledger\.pdmfc\.com`) && PathPrefix(`/pha-1/`))"
-      - "traefik.http.routers.traceability.entrypoints=web"
-    volumes:
-      - pha-1_vol:/fgt-workspace/apihub-root/external-volume
-    networks:
-      traceability-net:
-        ipv4_address: 172.16.63.71
-    env_file:
-      - ../docker/api/env/pha-1.env
-    environment:
-      - ROLE=PHA
+#  mah-roche:
+#    << : *mah-def
+#    container_name: mah-roche
+#    hostname: mah-roche
+#    ports:
+#      - "8080:8080"
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.traceability.rule=(HostRegexp(`fgt(:?\-(?:dev|tst))?\.pharmaledger\.pdmfc\.com`) && PathPrefix(`/mah-roche/`))"
+#      - "traefik.http.routers.traceability.entrypoints=web"
+#    volumes:
+#      - mah-roche_vol:/fgt-workspace/apihub-root/external-volume
+#    networks:
+#      traceability-net:
+#        ipv4_address: 172.16.63.10
+#    env_file:
+#      - ../docker/api/env/mah-roche.env
+#    environment:
+#      - ROLE=MAH
+#  mhs-takeda:
+#    <<: *whs-def
+#    container_name: whs-takeda
+#    hostname: whs-takeda
+#    ports:
+#      - "8080:8080"
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.traceability.rule=(HostRegexp(`fgt(:?\-(?:dev|tst))?\.pharmaledger\.pdmfc\.com`) && PathPrefix(`/whs-takeda/`))"
+#      - "traefik.http.routers.traceability.entrypoints=web"
+#    volumes:
+#      - whs-takeda_vol:/fgt-workspace/apihub-root/external-volume
+#    networks:
+#      traceability-net:
+#        ipv4_address: 172.16.63.51
+#    env_file:
+#      - ../docker/api/env/whs-takeda.env
+#    environment:
+#      - ROLE=WHS
+#  pha-1:
+#    <<: *pha-def
+#    container_name: pha-1
+#    hostname: pha-1
+#    ports:
+#      - "8080:8080"
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.traceability.rule=(HostRegexp(`fgt(:?\-(?:dev|tst))?\.pharmaledger\.pdmfc\.com`) && PathPrefix(`/pha-1/`))"
+#      - "traefik.http.routers.traceability.entrypoints=web"
+#    volumes:
+#      - pha-1_vol:/fgt-workspace/apihub-root/external-volume
+#    networks:
+#      traceability-net:
+#        ipv4_address: 172.16.63.71
+#    env_file:
+#      - ../docker/api/env/pha-1.env
+#    environment:
+#      - ROLE=PHA
 networks:
   traceability-net:
     name: traceability-net
