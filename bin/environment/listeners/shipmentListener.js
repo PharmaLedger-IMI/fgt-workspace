@@ -8,7 +8,7 @@ const {fulFillOrder} = require('./orderListener');
 
 const orderStatusUpdater = function(participantManager, order, batches, timeout){
     const identity = participantManager.getIdentity();
-    const possibleStatus = Order.getAllowedStatusUpdates(order.status.status).filter(os => os !== OrderStatus.REJECTED);
+    const possibleStatus = Order.getAllowedStatusUpdates(order.status.status).filter(os => [OrderStatus.REJECTED, OrderStatus.ON_HOLD].indexOf(os) === -1);
     if (!possibleStatus || !possibleStatus.length)
         return console.log(`${identity.id} - Order ${order.orderId} has no possible status updates`);
 
@@ -170,7 +170,7 @@ function shipmentListener(participantManager, batches, timeout = 1000){
                     return callback(err);
 
                 orderStatusUpdater(participantManager, order, batches, timeout);
-                callback(undefined, message);
+                callback();
             });
         });
     }
