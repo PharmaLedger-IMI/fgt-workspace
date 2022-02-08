@@ -63,8 +63,8 @@ class SaleManager extends Manager{
      * - Check if product qty in stock is enough
      *  - Check if sale is not duplicated (product already sold)
      * - Check if product status is not recalled or quarantined
-     * @param {{[key: string]: [Batch]}}aggStock: key is a GTIN, value is an array of BATCHES
-     * @param {{[key: string]: [IndividualProduct]}}productList: key is a manufName identifier, value is an array of IndividualProduct
+     * @param {{}} aggStock: key is a GTIN, value is an array of BATCHES
+     * @param {{}} productList: key is a manufName identifier, value is an array of IndividualProduct
      * @param callback
      */
     _checkStockAvailability(aggStock, productList, callback) {

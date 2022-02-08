@@ -60,7 +60,7 @@ class MountCommand extends Command{
     /**
      * @param {string[]|string} command the command split into words
      * @param {string[]} next the following Commands
-     * @param {function(err, string|string[]|object)} callback
+     * @param {function(err, any)} callback
      * @protected
      */
     _parseCommand(command, next, callback){

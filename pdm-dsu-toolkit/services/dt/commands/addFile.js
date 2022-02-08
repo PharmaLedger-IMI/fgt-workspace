@@ -31,7 +31,7 @@ class AddFileCommand extends Command{
     /**
      * @param {string[]|string} command the command split into words
      * @param {string[]} next discarded
-     * @param {function(err, string|object)} [callback] discarded
+     * @param {function(err, any)} [callback] discarded
      * @return {string|object} the command argument
      * <pre>
      *     {

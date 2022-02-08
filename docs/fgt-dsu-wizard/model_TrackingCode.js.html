@@ -150,7 +150,7 @@ class TrackingCode{
     constructor(code) {
         if (typeof code !== undefined)
             for (let prop in code)
-                if (code.hasOwnProperty(prop))
+                if (code.hasOwnProperty(prop) &amp;&amp; this.hasOwnProperty(prop))
                     this[prop] = code[prop];
     }
 
@@ -186,6 +186,7 @@ module.exports = TrackingCode;
 <script src="scripts/linenumber.js"> </script>
 
 <script src="scripts/search.js"> </script>
+
 
 </body>
 </html>

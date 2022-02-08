@@ -49,6 +49,8 @@ You will be present with a menu from where you can choose the SSApp you with to 
 
 # Modules
 
+[REST API](fgt-api/index.html)
+
 [PDM-DSU-Toolkit](pdm-dsu-toolkit/index.html)
 
 [FGT DSU Wizard](fgt-dsu-wizard/index.html)
@@ -62,6 +64,12 @@ You will be present with a menu from where you can choose the SSApp you with to 
 [Pharmacy Wallet](fgt-mah-ssapp/index.html)
 
 ### Architecture
+
+#### REST API Architecture
+
+As of release 0.8, Finished Goods Traceability moved from a UI based Wallet system, to an ERP integrated one, with all the Architectural considerations than came with that change.
+
+Please go to the REST API Module for details
 
 #### Concrete SSApp Architecture
 
@@ -191,7 +199,7 @@ $ npm run dev-install
 
 For latest 'stable' version do:
 ```sh
-$ npm install
+$ npm run install
 ```
 instead.
 
