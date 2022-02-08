@@ -43,42 +43,52 @@ services:
     image: "traefik:v2.6"
     container_name: "traefik"
     command:
-      #- "--log.level=DEBUG"
-      - "--api.insecure=true"
+      - "--log.level=DEBUG"
+      - "--api.insecure=false"
+      - "--api.dashboard=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:8080"
-    ports:
-      - "8080:8080"
-    healthcheck:
-      test: traefik healthcheck --ping
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-  fgt-workspace:
-    container_name: fgt-workspace
-    build:
-      context: ../api/traceability
-    hostname: fgt-workspace
-    ports:
-      - "8080:8080"
+        - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traceability.rule=HostRegexp(`fgt(:?\\-(?:dev|tst))?\\.pharmaledger\\.pdmfc\\.com`)"
-      - "traefik.http.routers.traceability.entrypoints=web"
-    volumes:
-      - traceability_vol:/fgt-workspace/apihub-root/external-volume
-    networks:
-      traceability-net:
-        ipv4_address: 172.16.63.1
-    depends_on:
-      traefik:
-        condition: service_healthy
-    healthcheck:
-      test: [ "CMD", "wget", "--spider", "--proxy", "off", "http://172.16.63.1:8080" ]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-      start_period: 5s
+      - "traefik.http.routers.dashboard.rule=(PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.dashboard.service=api@internal"
+    ports:
+      - "8080:8080"
+  whoami:
+    image: "traefik/whoami"
+    container_name: "whoami"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=PathPrefix(`/whoami`)"
+      - "traefik.http.routers.whoami.entrypoints=web"
+#  fgt-workspace:
+#    container_name: fgt-workspace
+#    build:
+#      context: ../api/traceability
+#    hostname: fgt-workspace
+#    ports:
+#      - "8080:8080"
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.traceability.rule=HostRegexp(`fgt(:?\\-(?:dev|tst))?\\.pharmaledger\\.pdmfc\\.com`)"
+#      - "traefik.http.routers.traceability.entrypoints=web"
+#    volumes:
+#      - traceability_vol:/fgt-workspace/apihub-root/external-volume
+#    networks:
+#      traceability-net:
+#        ipv4_address: 172.16.63.2
+#    depends_on:
+#      traefik:
+#        condition: service_healthy
+#    healthcheck:
+#      test: [ "CMD", "wget", "--spider", "--proxy", "off", "http://172.16.63.2:8080/dsu-explorer/wallet-patch/seed" ]
+#      interval: 5s
+#      timeout: 3s
+#      retries: 20
+#      start_period: 5s
 #  mah-roche:
 #    << : *mah-def
 #    container_name: mah-roche
@@ -144,8 +154,8 @@ networks:
       driver: default
       config:
         - subnet: 172.16.63.0/24
-volumes:
-  "traceability_vol":
-  "mah-roche_vol":
-  "whs-takeda_vol":
-  "pha-1_vol":
+#volumes:
+#  "traceability_vol":
+#  "mah-roche_vol":
+#  "whs-takeda_vol":
+#  "pha-1_vol":
