@@ -218,7 +218,29 @@ a viewing tool (initially swagger, but a GUI at a later stage) and exterior acce
 </code></pre>
 <h2>Example</h2>
 <pre><code>npm run run-swagger -- --port=3030 --participant=PHA
-</code></pre></article>
+</code></pre>
+<h4>Deployment</h4>
+<h5>Test Environment</h5>
+<p>Go to <code>./docker/api</code> and run</p>
+<pre class="prettyprint source lang-shell"><code>docker-compose build --no-cache 
+</code></pre>
+<p>This will build all the necessary images (and will take some time)</p>
+<p>Followed by</p>
+<pre class="prettyprint source lang-shell"><code>docker-compose up
+</code></pre>
+<p>After this command executes you can go to your browser and:</p>
+<ul>
+<li>localhost:8080/dashboard/ - Here you can see all the routing rules necessary to simulate the environment</li>
+<li>localhost:8080/ - Here you'll find Pharmaledger's Traceability Use Case Entry Page with access to the dossier Explorer (and the possibility to create new instances of the (deprecated) UI based wallets)</li>
+<li>For each participant, under ${ParticipantId}.fgt.pharmaledger.pdmfc.com:
+<ul>
+<li>.../ - The participants Entry Page (Should be the same as the Use Case's);</li>
+<li>.../api/** - The route to the Participant's REST API;</li>
+<li>.../swagger - The Participant's Swagger Dashboard, to replace the ERP's and allow partners to interact with the REST API;</li>
+<li>.../dashboard - A Graphical interface to consume the api and display relevant information/metrics</li>
+</ul>
+</li>
+</ul></article>
     </section>
 
 
