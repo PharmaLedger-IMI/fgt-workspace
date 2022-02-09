@@ -77,12 +77,6 @@ services:
       - traceability_vol:/fgt-workspace/apihub-root/external-volume
     networks:
       - traceability-net
-#    healthcheck:
-#      test: [ "CMD", "wget", "--spider", "--proxy", "off", "http://localhost:8080/dsu-explorer/wallet-patch/seed" ]
-#      interval: 5s
-#      timeout: 3s
-#      retries: 20
-#      start_period: 5s
 
   mah-roche:
     << : *mah-def
@@ -95,7 +89,7 @@ services:
         CREDENTIALS_FILE: mah-roche.json
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mah-roche.rule=PathPrefix(`/mah-roche`)"
+      - "traefik.http.routers.mah-roche.rule=Host(`mah-roche.localhost`)"
 #      - "traefik.http.routers.mah-roche.rule=(HostRegexp(`fgt(:?\-(?:dev|tst))?\.pharmaledger\.pdmfc\.com`) && PathPrefix(`/mah-roche/`))"
       - "traefik.http.routers.mah-roche.entrypoints=web"
     volumes:

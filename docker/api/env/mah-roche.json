@@ -1,26 +1,21 @@
 {
   "name": {
     "secret": "F. Hoffmann-La Roche AG",
-    "public": true,
-    "required": true
+    "public": true
   },
   "id": {
     "secret": "MAH116267986",
-    "public": true,
-    "required": true
+    "public": true
   },
   "email": {
     "secret": "roche@mah.pharmaledger.com",
-    "public": true,
-    "required": true
+    "public": true
   },
   "address": {
-    "required": true,
     "public": true,
     "secret": "Basel, Switzerland"
   },
   "pass": {
-    "required": true,
     "secret": "This1sSuchAS3curePassw0rd"
   },
   "passrepeat": {
