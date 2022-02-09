@@ -11,7 +11,7 @@ info:
     [License](https://github.com/PharmaLedger-IMI/fgt-workspace/blob/master/LICENSE.md)
   version: 1.0.0
 servers:
-  - url: http://localhost:3002/traceability
+  - url: http://{{api-pha}}
 tags:
   - name: stock
   - name: sale
@@ -524,6 +524,126 @@ paths:
                 status: 0
                 error: string
                 message: string
+  /shipment/create:
+    post:
+      tags:
+        - shipment
+      summary: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                orderId: string
+                requesterId: string
+                senderId: string
+                status: string
+                shipmentLines:
+                  - gtin: string
+                    batch: string
+                    requesterId: string
+                    senderId: string
+                    quantity: 0
+                    status: string
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                shipmentId: string
+                orderId: string
+                requesterId: string
+                senderId: string
+                status:
+                  status: string
+                  log: string[]
+                shipmentLines:
+                  - gtin: string
+                    batch: string
+                    quantity: 0
+                    senderId: string
+                    requesterId: string
+                    status: string
+                    createdOn: 0
+                keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /shipment/createAll:
+    post:
+      tags:
+        - shipment
+      summary: createAll
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - orderId: string
+                  requesterId: string
+                  senderId: string
+                  status: string
+                  shipmentLines:
+                    - gtin: string
+                      batch: string
+                      quantity: 0
+                      senderId: string
+                      requesterId: string
+                      status: string
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - shipmentId: string
+                  orderId: string
+                  requesterId: string
+                  senderId: string
+                  status:
+                    status: string
+                    log: string[]
+                  shipmentLines:
+                    - gtin: string
+                      batch: string
+                      quantity: 0
+                      senderId: string
+                      requesterId: string
+                      status: string
+                      createdOn: 0
+                  keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
   /shipment/getAll:
     get:
       tags:
@@ -731,8 +851,7 @@ paths:
             schema:
               type: object
               example:
-                - orderId: '001'
-                  requesterId: PHA324353426
+                - shipmentId: string
                   status: pickup
                   extraInfo: '[api] updateAll extraInfo update to pickup'
       responses:
@@ -845,116 +964,6 @@ paths:
                   title: string
                   parents: string[]
                   children: string[]
-        '501':
-          description: Not Implemented
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                status: 0
-                error: string
-                message: string
-  /shipment/create:
-    post:
-      tags:
-        - shipment
-      summary: create
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                orderId: string
-                requesterId: string
-                senderId: string
-                status: string
-                shipmentLines:
-                  - gtin: string
-                    batch: string
-                    requesterId: string
-                    senderId: string
-                    quantity: 0
-                    status: string
-      responses:
-        '200':
-          headers:
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                shipmentId: string
-                orderId: string
-                requesterId: string
-                senderId: string
-                status:
-                  status: string
-                  log:
-                    - string
-                shipmentLines:
-                  - gtin: string
-                    batch: string
-                    quantity: 0
-                    senderId: string
-                    requesterId: string
-                    status: string
-                    createdOn: 0
-                keySSI: string
-        '501':
-          description: Not Implemented
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                status: 0
-                error: string
-                message: string
-  /shipment/createAll:
-    post:
-      tags:
-        - shipment
-      summary: createAll
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example: "[\r\n  {\r\n    \"orderId\": \"002\",\r\n    \"requesterId\": \"WHS482899623\",\r\n    \"senderId\": \"MAH280478981\",\r\n    \"status\": \"created\",\r\n    \"shipmentLines\": [\r\n      {\r\n        \"gtin\": \"001\",\r\n        \"batch\": \"BB0461\",\r\n        \"quantity\": 1,\r\n        \"senderId\": \"MAH280478981\",\r\n        \"requesterId\": \"WHS482899623\",\r\n        \"status\": \"created\"\r\n      }\r\n    ]\r\n  },\r\n    {\r\n    \"orderId\": \"003\",\r\n    \"requesterId\": \"WHS482899623\",\r\n    \"senderId\": \"MAH280478981\",\r\n    \"status\": \"created\",\r\n    \"shipmentLines\": [\r\n      {\r\n        \"gtin\": \"001\",\r\n        \"batch\": \"BB0461\",\r\n        \"quantity\": 1,\r\n        \"senderId\": \"MAH280478981\",\r\n        \"requesterId\": \"WHS482899623\",\r\n        \"status\": \"created\"\r\n      }\r\n    ]\r\n  },\r\n]"
-      responses:
-        '200':
-          headers:
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                - shipmentId: string
-                  orderId: string
-                  requesterId: string
-                  senderId: string
-                  status:
-                    status: string
-                    log: string[]
-                  shipmentLines:
-                    - gtin: string
-                      batch: string
-                      quantity: 0
-                      senderId: string
-                      requesterId: string
-                      status: string
-                      createdOn: 0
-                  keySSI: string
         '501':
           description: Not Implemented
           content:

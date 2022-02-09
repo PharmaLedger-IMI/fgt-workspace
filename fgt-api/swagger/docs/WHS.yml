@@ -11,12 +11,146 @@ info:
     [License](https://github.com/PharmaLedger-IMI/fgt-workspace/blob/master/LICENSE.md)
   version: 1.0.0
 servers:
-  - url: http://localhost:3001/traceability
+  - url: http://{{api-whs}}
 tags:
-  - name: shipment
   - name: stock
+  - name: shipment
   - name: traceability
 paths:
+  /stock/getAll:
+    get:
+      tags:
+        - stock
+      summary: getAll
+      parameters:
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          description: >-
+            Search for a keyword in all tables indexes. search by keyword
+            disable other queries.
+        - name: page
+          in: query
+          schema:
+            type: string
+        - name: itemPerPage
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+          description: dsc or asc
+          example: dsc
+        - name: name
+          in: query
+          schema:
+            type: string
+          description: product name
+        - name: gtin
+          in: query
+          schema:
+            type: string
+          description: valid GTIN-14
+        - name: manufName
+          in: query
+          schema:
+            type: string
+          description: Marketing Authorization Holder identifier
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  page: 0
+                  itemsPerPage: 0
+                  totalPages: 0
+                  query: {}
+                results:
+                  - name: string
+                    gtin: string
+                    description: string
+                    manufName: string
+                    batches:
+                      - batchNumber: string
+                        expiry: string
+                        serialNumbers:
+                          - 0
+                        quantity: 0
+                        batchStatus:
+                          status: string
+                          log: string[]
+                          extraInfo: {}
+                    status: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /stock/get/{gtin}:
+    get:
+      tags:
+        - stock
+      summary: getOne
+      parameters:
+        - name: gtin
+          in: path
+          schema:
+            type: string
+          required: true
+          description: valid GTIN-14
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                name: string
+                gtin: string
+                description: string
+                manufName: string
+                batches:
+                  - batchNumber: string
+                    expiry: string
+                    serialNumbers:
+                      - 0
+                    quantity: 0
+                    batchStatus:
+                      status: string
+                      log: string[]
+                      extraInfo: {}
+                status: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
   /shipment/create:
     post:
       tags:
@@ -372,140 +506,6 @@ paths:
                       status: string
                       createdOn: 0
                   keySSI: string
-        '501':
-          description: Not Implemented
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                status: 0
-                error: string
-                message: string
-  /stock/getAll:
-    get:
-      tags:
-        - stock
-      summary: getAll
-      parameters:
-        - name: keyword
-          in: query
-          schema:
-            type: string
-          description: >-
-            Search for a keyword in all tables indexes. search by keyword
-            disable other queries.
-        - name: page
-          in: query
-          schema:
-            type: string
-        - name: itemPerPage
-          in: query
-          schema:
-            type: string
-        - name: sort
-          in: query
-          schema:
-            type: string
-          description: dsc or asc
-          example: dsc
-        - name: name
-          in: query
-          schema:
-            type: string
-          description: product name
-        - name: gtin
-          in: query
-          schema:
-            type: string
-          description: valid GTIN-14
-        - name: manufName
-          in: query
-          schema:
-            type: string
-          description: Marketing Authorization Holder identifier
-      responses:
-        '200':
-          headers:
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                meta:
-                  page: 0
-                  itemsPerPage: 0
-                  totalPages: 0
-                  query: {}
-                results:
-                  - name: string
-                    gtin: string
-                    description: string
-                    manufName: string
-                    batches:
-                      - batchNumber: string
-                        expiry: string
-                        serialNumbers:
-                          - 0
-                        quantity: 0
-                        batchStatus:
-                          status: string
-                          log: string[]
-                          extraInfo: {}
-                    status: string
-        '501':
-          description: Not Implemented
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                status: 0
-                error: string
-                message: string
-  /stock/get/{gtin}:
-    get:
-      tags:
-        - stock
-      summary: getOne
-      parameters:
-        - name: gtin
-          in: path
-          schema:
-            type: string
-          required: true
-          description: valid GTIN-14
-      responses:
-        '200':
-          headers:
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                name: string
-                gtin: string
-                description: string
-                manufName: string
-                batches:
-                  - batchNumber: string
-                    expiry: string
-                    serialNumbers:
-                      - 0
-                    quantity: 0
-                    batchStatus:
-                      status: string
-                      log: string[]
-                      extraInfo: {}
-                status: string
         '501':
           description: Not Implemented
           content:

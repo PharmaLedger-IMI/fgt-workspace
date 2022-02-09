@@ -7,6 +7,250 @@
 	},
 	"item": [
 		{
+			"name": "stock",
+			"item": [
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-whs}}/stock/getAll?keyword=&page=&itemPerPage=&sort=dsc&name&gtin&manufName",
+							"host": [
+								"{{api-whs}}"
+							],
+							"path": [
+								"stock",
+								"getAll"
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "",
+									"description": "Search for a keyword in all tables indexes. search by keyword disable other queries."
+								},
+								{
+									"key": "page",
+									"value": ""
+								},
+								{
+									"key": "itemPerPage",
+									"value": ""
+								},
+								{
+									"key": "sort",
+									"value": "dsc",
+									"description": "dsc or asc"
+								},
+								{
+									"key": "name",
+									"value": null,
+									"description": "product name"
+								},
+								{
+									"key": "gtin",
+									"value": null,
+									"description": "valid GTIN-14"
+								},
+								{
+									"key": "manufName",
+									"value": null,
+									"description": "Marketing Authorization Holder identifier"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{api-whs}}/stock/getAll",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"stock",
+										"getAll"
+									]
+								}
+							},
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n\t\"meta\": {\n\t\t\"page\": 0,\n\t\t\"itemsPerPage\": 0,\n\t\t\"totalPages\": 0,\n\t\t\"query\": {}\n\t},\n\t\"results\": [\n\t\t{\n\t\t\t\"name\": \"string\",\n\t\t\t\"gtin\": \"string\",\n\t\t\t\"description\": \"string\",\n\t\t\t\"manufName\": \"string\",\n\t\t\t\"batches\": [\n\t\t\t\t{\n\t\t\t\t\t\"batchNumber\": \"string\",\n\t\t\t\t\t\"expiry\": \"string\",\n\t\t\t\t\t\"serialNumbers\": [0],\n\t\t\t\t\t\"quantity\": 0,\n\t\t\t\t\t\"batchStatus\": {\n\t\t\t\t\t\t\"status\": \"string\",\n\t\t\t\t\t\t\"log\": \"string[]\",\n\t\t\t\t\t\t\"extraInfo\": {}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"status\": \"string\"\n\t\t}\n\t]\n}"
+						},
+						{
+							"name": "error response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{api-whs}}/stock/getAll",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"stock",
+										"getAll"
+									]
+								}
+							},
+							"status": "Not Implemented",
+							"code": 501,
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
+						}
+					]
+				},
+				{
+					"name": "getOne",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-whs}}/stock/get/:gtin",
+							"host": [
+								"{{api-whs}}"
+							],
+							"path": [
+								"stock",
+								"get",
+								":gtin"
+							],
+							"variable": [
+								{
+									"key": "gtin",
+									"value": "",
+									"description": "valid GTIN-14"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{api-whs}}/stock/get/:gtin",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"stock",
+										"get",
+										":gtin"
+									],
+									"variable": [
+										{
+											"key": "gtin",
+											"value": "95135785245600"
+										}
+									]
+								}
+							},
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n\t\"name\": \"string\",\n\t\"gtin\": \"string\",\n\t\"description\": \"string\",\n\t\"manufName\": \"string\",\n\t\"batches\": [\n\t\t{\n\t\t\t\"batchNumber\": \"string\",\n\t\t\t\"expiry\": \"string\",\n\t\t\t\"serialNumbers\": [0],\n\t\t\t\"quantity\": 0,\n\t\t\t\"batchStatus\": {\n\t\t\t\t\"status\": \"string\",\n\t\t\t\t\"log\": \"string[]\",\n\t\t\t\t\"extraInfo\": {}\n\t\t\t}\n\t\t}\n\t],\n\t\"status\": \"string\"\n}"
+						},
+						{
+							"name": "error response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{api-whs}}/stock/get/:gtin",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"stock",
+										"get",
+										":gtin"
+									],
+									"variable": [
+										{
+											"key": "gtin",
+											"value": "422236263248"
+										}
+									]
+								}
+							},
+							"status": "Not Implemented",
+							"code": 501,
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
 			"name": "shipment",
 			"item": [
 				{
@@ -16,7 +260,12 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"orderId\": \"string\",\r\n  \"requesterId\": \"string\",\r\n  \"senderId\": \"string\",\r\n  \"status\": \"string\",\r\n  \"shipmentLines\": [\r\n    {\r\n      \"gtin\": \"string\",\r\n      \"batch\": \"string\",\r\n\t  \"requesterId\": \"string\",\r\n      \"senderId\": \"string\",\r\n      \"quantity\": 0,\r\n      \"status\": \"string\"\r\n    }\r\n  ]\r\n}"
+							"raw": "{\r\n\t\"orderId\": \"string\",\r\n\t\"requesterId\": \"string\",\r\n\t\"senderId\": \"string\",\r\n\t\"status\": \"string\",\r\n\t\"shipmentLines\": [\r\n\t\t{\r\n\t\t\t\"gtin\": \"string\",\r\n\t\t\t\"batch\": \"string\",\r\n\t\t\t\"requesterId\": \"string\",\r\n\t\t\t\"senderId\": \"string\",\r\n\t\t\t\"quantity\": 0,\r\n\t\t\t\"status\": \"string\"\r\n\t\t}\r\n\t]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{api-whs}}/shipment/create",
@@ -496,7 +745,12 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"status\": \"string\",\r\n  \"extraInfo\": \"string\"\r\n}"
+							"raw": "{\r\n  \"status\": \"string\",\r\n  \"extraInfo\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{api-whs}}/shipment/update/:shipmentId",
@@ -629,7 +883,12 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\r\n\t{\r\n\t\t\"shipmentId\": \"string\",\r\n\t\t\"status\": \"string\",\r\n\t\t\"extraInfo\": \"string\"\r\n\t}\r\n]"
+							"raw": "[\r\n\t{\r\n\t\t\"shipmentId\": \"string\",\r\n\t\t\"status\": \"string\",\r\n\t\t\"extraInfo\": \"string\"\r\n\t}\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{api-whs}}/shipment/updateAll",
@@ -737,250 +996,6 @@
 			]
 		},
 		{
-			"name": "stock",
-			"item": [
-				{
-					"name": "getAll",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api-whs}}/stock/getAll?keyword=&page=&itemPerPage=&sort=dsc&name&gtin&manufName",
-							"host": [
-								"{{api-whs}}"
-							],
-							"path": [
-								"stock",
-								"getAll"
-							],
-							"query": [
-								{
-									"key": "keyword",
-									"value": "",
-									"description": "Search for a keyword in all tables indexes. search by keyword disable other queries."
-								},
-								{
-									"key": "page",
-									"value": ""
-								},
-								{
-									"key": "itemPerPage",
-									"value": ""
-								},
-								{
-									"key": "sort",
-									"value": "dsc",
-									"description": "dsc or asc"
-								},
-								{
-									"key": "name",
-									"value": null,
-									"description": "product name"
-								},
-								{
-									"key": "gtin",
-									"value": null,
-									"description": "valid GTIN-14"
-								},
-								{
-									"key": "manufName",
-									"value": null,
-									"description": "Marketing Authorization Holder identifier"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "success response",
-							"originalRequest": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Accept",
-										"value": "*/*",
-										"disabled": true
-									}
-								],
-								"url": {
-									"raw": "{{api-whs}}/stock/getAll",
-									"host": [
-										"{{api-whs}}"
-									],
-									"path": [
-										"stock",
-										"getAll"
-									]
-								}
-							},
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json",
-									"description": "",
-									"type": "text"
-								}
-							],
-							"cookie": [],
-							"body": "{\n\t\"meta\": {\n\t\t\"page\": 0,\n\t\t\"itemsPerPage\": 0,\n\t\t\"totalPages\": 0,\n\t\t\"query\": {}\n\t},\n\t\"results\": [\n\t\t{\n\t\t\t\"name\": \"string\",\n\t\t\t\"gtin\": \"string\",\n\t\t\t\"description\": \"string\",\n\t\t\t\"manufName\": \"string\",\n\t\t\t\"batches\": [\n\t\t\t\t{\n\t\t\t\t\t\"batchNumber\": \"string\",\n\t\t\t\t\t\"expiry\": \"string\",\n\t\t\t\t\t\"serialNumbers\": [0],\n\t\t\t\t\t\"quantity\": 0,\n\t\t\t\t\t\"batchStatus\": {\n\t\t\t\t\t\t\"status\": \"string\",\n\t\t\t\t\t\t\"log\": \"string[]\",\n\t\t\t\t\t\t\"extraInfo\": {}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"status\": \"string\"\n\t\t}\n\t]\n}"
-						},
-						{
-							"name": "error response",
-							"originalRequest": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Accept",
-										"value": "*/*",
-										"disabled": true
-									}
-								],
-								"url": {
-									"raw": "{{api-whs}}/stock/getAll",
-									"host": [
-										"{{api-whs}}"
-									],
-									"path": [
-										"stock",
-										"getAll"
-									]
-								}
-							},
-							"status": "Not Implemented",
-							"code": 501,
-							"_postman_previewlanguage": "json",
-							"header": null,
-							"cookie": [],
-							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
-						}
-					]
-				},
-				{
-					"name": "getOne",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api-whs}}/stock/get/:gtin",
-							"host": [
-								"{{api-whs}}"
-							],
-							"path": [
-								"stock",
-								"get",
-								":gtin"
-							],
-							"variable": [
-								{
-									"key": "gtin",
-									"value": "",
-									"description": "valid GTIN-14"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "success response",
-							"originalRequest": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Accept",
-										"value": "*/*",
-										"disabled": true
-									}
-								],
-								"url": {
-									"raw": "{{api-whs}}/stock/get/:gtin",
-									"host": [
-										"{{api-whs}}"
-									],
-									"path": [
-										"stock",
-										"get",
-										":gtin"
-									],
-									"variable": [
-										{
-											"key": "gtin",
-											"value": "95135785245600"
-										}
-									]
-								}
-							},
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json",
-									"description": "",
-									"type": "text"
-								}
-							],
-							"cookie": [],
-							"body": "{\n\t\"name\": \"string\",\n\t\"gtin\": \"string\",\n\t\"description\": \"string\",\n\t\"manufName\": \"string\",\n\t\"batches\": [\n\t\t{\n\t\t\t\"batchNumber\": \"string\",\n\t\t\t\"expiry\": \"string\",\n\t\t\t\"serialNumbers\": [0],\n\t\t\t\"quantity\": 0,\n\t\t\t\"batchStatus\": {\n\t\t\t\t\"status\": \"string\",\n\t\t\t\t\"log\": \"string[]\",\n\t\t\t\t\"extraInfo\": {}\n\t\t\t}\n\t\t}\n\t],\n\t\"status\": \"string\"\n}"
-						},
-						{
-							"name": "error response",
-							"originalRequest": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Accept",
-										"value": "*/*",
-										"disabled": true
-									}
-								],
-								"url": {
-									"raw": "{{api-whs}}/stock/get/:gtin",
-									"host": [
-										"{{api-whs}}"
-									],
-									"path": [
-										"stock",
-										"get",
-										":gtin"
-									],
-									"variable": [
-										{
-											"key": "gtin",
-											"value": "422236263248"
-										}
-									]
-								}
-							},
-							"status": "Not Implemented",
-							"code": 501,
-							"_postman_previewlanguage": "json",
-							"header": null,
-							"cookie": [],
-							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
-						}
-					]
-				}
-			]
-		},
-		{
 			"name": "traceability",
 			"item": [
 				{
@@ -990,7 +1005,12 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"gtin\": \"string\",\r\n\t\"batchNumber\": \"string\"\r\n}"
+							"raw": "{\r\n\t\"gtin\": \"string\",\r\n\t\"batchNumber\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{api-whs}}/traceability/create",
@@ -1215,6 +1235,33 @@
 					]
 				}
 			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "api-whs",
+			"value": "http://localhost:3001/traceability",
+			"type": "string"
 		}
 	]
 }
