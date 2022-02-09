@@ -89,7 +89,7 @@ services:
     networks:
       - traceability-net
 #    healthcheck:
-#      test: [ "CMD", "wget", "--spider", "--proxy", "off", "http://localhost:8080" ]
+#      test: [ "CMD", "wget", "--spider", "--proxy", "off", "http://localhost:8080/dsu-explorer/wallet-patch/seed" ]
 #      interval: 5s
 #      timeout: 3s
 #      retries: 20
