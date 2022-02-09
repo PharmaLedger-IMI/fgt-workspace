@@ -1,0 +1,1220 @@
+{
+	"info": {
+		"_postman_id": "ab0455a2-474f-4dfa-bed7-609d58fbf262",
+		"name": "WHS - Pharmaledger Finished Goods Traceability API",
+		"description": "## Wholesaler\n\n*   [Repository](https://github.com/PharmaLedger-IMI/fgt-workspace)\n*   [License](https://github.com/PharmaLedger-IMI/fgt-workspace/blob/master/LICENSE.md)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "shipment",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"orderId\": \"string\",\r\n  \"requesterId\": \"string\",\r\n  \"senderId\": \"string\",\r\n  \"status\": \"string\",\r\n  \"shipmentLines\": [\r\n    {\r\n      \"gtin\": \"string\",\r\n      \"batch\": \"string\",\r\n\t  \"requesterId\": \"string\",\r\n      \"senderId\": \"string\",\r\n      \"quantity\": 0,\r\n      \"status\": \"string\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-whs}}/shipment/create",
+							"host": [
+								"{{api-whs}}"
+							],
+							"path": [
+								"shipment",
+								"create"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"orderId\": \"7187522123\",\r\n  \"requesterId\": \"WHS324353426\",\r\n  \"senderId\": \"MAH324353426\",\r\n  \"status\": \"created\",\r\n  \"shipmentLines\": [\r\n    {\r\n      \"gtin\": \"95135785245600\",\r\n      \"batch\": \"VT3716\",\r\n\t  \"requesterId\": \"WHS324353426\",\r\n      \"senderId\": \"MAH324353426\",\r\n      \"quantity\": 1,\r\n      \"status\": \"created\"\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-whs}}/shipment/create",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"shipment",
+										"create"
+									]
+								}
+							},
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n\t\"shipmentId\": \"string\",\n\t\"orderId\": \"string\",\n\t\"requesterId\": \"string\",\n\t\"senderId\": \"string\",\n\t\"status\": {\n\t\t\"status\": \"string\",\n\t\t\"log\": \"string[]\"\n\t},\n\t\"shipmentLines\": [\n\t\t{\n\t\t\t\"gtin\": \"string\",\n\t\t\t\"batch\": \"string\",\n\t\t\t\"quantity\": 0,\n\t\t\t\"senderId\": \"string\",\n\t\t\t\"requesterId\": \"string\",\n\t\t\t\"status\": \"string\",\n\t\t\t\"createdOn\": 0\n\t\t}\n\t],\n\t\"keySSI\": \"string\"\n}"
+						},
+						{
+							"name": "error response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"orderId\": \"615752169\",\r\n  \"requesterId\": \"WHS324353426\",\r\n  \"senderId\": \"MAH324353426\",\r\n  \"status\": \"created\",\r\n  \"shipmentLines\": [\r\n    {\r\n      \"gtin\": \"422236263248\",\r\n      \"batch\": \"VT3716\",\r\n\t  \"requesterId\": \"WHS324353426\",\r\n      \"senderId\": \"MAH324353426\",\r\n      \"quantity\": 1,\r\n      \"status\": \"created\"\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-whs}}/shipment/create",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"shipment",
+										"create"
+									]
+								}
+							},
+							"status": "Not Implemented",
+							"code": 501,
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
+						}
+					]
+				},
+				{
+					"name": "createAll",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n\t{\r\n\t\t\"orderId\": \"string\",\r\n\t\t\"requesterId\": \"string\",\r\n\t\t\"senderId\": \"string\",\r\n\t\t\"status\": \"string\",\r\n\t\t\"shipmentLines\": [\r\n\t\t\t{\r\n\t\t\t\t\"gtin\": \"string\",\r\n\t\t\t\t\"batch\": \"string\",\r\n\t\t\t\t\"quantity\": 0,\r\n\t\t\t\t\"senderId\": \"string\",\r\n\t\t\t\t\"requesterId\": \"string\",\r\n\t\t\t\t\"status\": \"string\"\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-whs}}/shipment/createAll",
+							"host": [
+								"{{api-whs}}"
+							],
+							"path": [
+								"shipment",
+								"createAll"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n\t{\r\n\t\t\"orderId\": \"7187522123\",\r\n\t\t\"requesterId\": \"WHS324353426\",\r\n\t\t\"senderId\": \"MAH324353426\",\r\n\t\t\"status\": \"created\",\r\n\t\t\"shipmentLines\": [\r\n\t\t\t{\r\n\t\t\t\"gtin\": \"95135785245600\",\r\n\t\t\t\"batch\": \"VT3716\",\r\n\t\t\t\"requesterId\": \"WHS324353426\",\r\n\t\t\t\"senderId\": \"MAH324353426\",\r\n\t\t\t\"quantity\": 1,\r\n\t\t\t\"status\": \"created\"\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-whs}}/shipment/createAll",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"shipment",
+										"createAll"
+									]
+								}
+							},
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "[\n\t{\n\t\t\"shipmentId\": \"string\",\n\t\t\"orderId\": \"string\",\n\t\t\"requesterId\": \"string\",\n\t\t\"senderId\": \"string\",\n\t\t\"status\": {\n\t\t\t\"status\": \"string\",\n\t\t\t\"log\": \"string[]\"\n\t\t},\n\t\t\"shipmentLines\": [\n\t\t\t{\n\t\t\t\t\"gtin\": \"string\",\n\t\t\t\t\"batch\": \"string\",\n\t\t\t\t\"quantity\": 0,\n\t\t\t\t\"senderId\": \"string\",\n\t\t\t\t\"requesterId\": \"string\",\n\t\t\t\t\"status\": \"string\",\n\t\t\t\t\"createdOn\": 0\n\t\t\t}\n\t\t],\n\t\t\"keySSI\": \"string\"\n\t}\n]"
+						},
+						{
+							"name": "error response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n\t{\r\n\t\t\"orderId\": \"615752169\",\r\n\t\t\"requesterId\": \"WHS324353426\",\r\n\t\t\"senderId\": \"MAH324353426\",\r\n\t\t\"status\": \"created\",\r\n\t\t\"shipmentLines\": [\r\n\t\t\t{\r\n\t\t\t\t\"gtin\": \"422236263248\",\r\n\t\t\t\t\"batch\": \"VT3716\",\r\n\t\t\t\t\"requesterId\": \"WHS324353426\",\r\n\t\t\t\t\"senderId\": \"MAH324353426\",\r\n\t\t\t\t\"quantity\": 1,\r\n\t\t\t\t\"status\": \"created\"\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-whs}}/shipment/createAll",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"shipment",
+										"createAll"
+									]
+								}
+							},
+							"status": "Not Implemented",
+							"code": 501,
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
+						}
+					]
+				},
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-whs}}/shipment/getAll?keyword=&page=&itemPerPage=&sort=dsc&shipmentId&orderId=&senderId&requesterId",
+							"host": [
+								"{{api-whs}}"
+							],
+							"path": [
+								"shipment",
+								"getAll"
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": ""
+								},
+								{
+									"key": "page",
+									"value": ""
+								},
+								{
+									"key": "itemPerPage",
+									"value": ""
+								},
+								{
+									"key": "sort",
+									"value": "dsc",
+									"description": "dsc or asc"
+								},
+								{
+									"key": "shipmentId",
+									"value": null
+								},
+								{
+									"key": "orderId",
+									"value": "",
+									"description": "only for requester reference."
+								},
+								{
+									"key": "senderId",
+									"value": null,
+									"description": "partner identifier that shipped the products"
+								},
+								{
+									"key": "requesterId",
+									"value": null,
+									"description": "partner identifier that received the products"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{api-whs}}/shipment/getAll",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"shipment",
+										"getAll"
+									]
+								}
+							},
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n\t\"meta\": {\n\t\t\"page\": 0,\n\t\t\"itemsPerPage\": 0,\n\t\t\"totalPages\": 0,\n\t\t\"query\": {}\n\t},\n\t\"results\": [\n\t\t{\n\t\t\t\"shipmentId\": \"string\",\n\t\t\t\"orderId\": \"string\",\n\t\t\t\"requesterId\": \"string\",\n\t\t\t\"senderId\": \"string\",\n\t\t\t\"status\": {\n\t\t\t\t\"status\": \"string\",\n\t\t\t\t\"log\": \"string[]\"\n\t\t\t},\n\t\t\t\"shipmentLines\": [\n\t\t\t\t{\n\t\t\t\t\t\"gtin\": \"string\",\n\t\t\t\t\t\"batch\": \"string\",\n\t\t\t\t\t\"quantity\": 0,\n\t\t\t\t\t\"senderId\": \"string\",\n\t\t\t\t\t\"requesterId\": \"string\",\n\t\t\t\t\t\"status\": \"string\",\n\t\t\t\t\t\"createdOn\": 0\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"keySSI\": \"string\"\n\t\t}\n\t]\n}"
+						},
+						{
+							"name": "error response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{api-whs}}/shipment/getAll",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"shipment",
+										"getAll"
+									]
+								}
+							},
+							"status": "Not Implemented",
+							"code": 501,
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
+						}
+					]
+				},
+				{
+					"name": "getOne",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-whs}}/shipment/get/:shipmentId",
+							"host": [
+								"{{api-whs}}"
+							],
+							"path": [
+								"shipment",
+								"get",
+								":shipmentId"
+							],
+							"variable": [
+								{
+									"key": "shipmentId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{api-whs}}/shipment/get/:shipmentId",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"shipment",
+										"get",
+										":shipmentId"
+									],
+									"variable": [
+										{
+											"key": "shipmentId",
+											"value": "876437441337511954"
+										}
+									]
+								}
+							},
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n\t\"shipmentId\": \"string\",\n\t\"orderId\": \"string\",\n\t\"requesterId\": \"string\",\n\t\"senderId\": \"string\",\n\t\"status\": {\n\t\t\"status\": \"string\",\n\t\t\"log\": \"string[]\"\n\t},\n\t\"shipmentLines\": [\n\t\t{\n\t\t\t\"gtin\": \"string\",\n\t\t\t\"batch\": \"string\",\n\t\t\t\"quantity\": 0,\n\t\t\t\"senderId\": \"string\",\n\t\t\t\"requesterId\": \"string\",\n\t\t\t\"status\": \"string\",\n\t\t\t\"createdOn\": 0\n\t\t}\n\t],\n\t\"keySSI\": \"string\"\n}"
+						},
+						{
+							"name": "error response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\t\"gtin\": \"84327843812938\",\r\n\t\"name\": \"Product 001\",\r\n\t\"description\": \"this is a Product 001 description\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-whs}}/shipment/get/:shipmentId",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"shipment",
+										"get",
+										":shipmentId"
+									],
+									"variable": [
+										{
+											"key": "shipmentId",
+											"value": "847437449657511114"
+										}
+									]
+								}
+							},
+							"status": "Not Implemented",
+							"code": 501,
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
+						}
+					]
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": \"string\",\r\n  \"extraInfo\": \"string\"\r\n}"
+						},
+						"url": {
+							"raw": "{{api-whs}}/shipment/update/:shipmentId",
+							"host": [
+								"{{api-whs}}"
+							],
+							"path": [
+								"shipment",
+								"update",
+								":shipmentId"
+							],
+							"variable": [
+								{
+									"key": "shipmentId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"status\": \"hold\",\r\n  \"extraInfo\": \"awaiting release\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-whs}}/shipment/update/:shipmentId",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"shipment",
+										"update",
+										":shipmentId"
+									],
+									"variable": [
+										{
+											"key": "shipmentId",
+											"value": "16438817559437662682"
+										}
+									]
+								}
+							},
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n\t\"shipmentId\": \"string\",\n\t\"orderId\": \"string\",\n\t\"requesterId\": \"string\",\n\t\"senderId\": \"string\",\n\t\"status\": {\n\t\t\"status\": \"string\",\n\t\t\"log\": \"string[]\"\n\t},\n\t\"shipmentLines\": [\n\t\t{\n\t\t\t\"gtin\": \"string\",\n\t\t\t\"batch\": \"string\",\n\t\t\t\"quantity\": 0,\n\t\t\t\"senderId\": \"string\",\n\t\t\t\"requesterId\": \"string\",\n\t\t\t\"status\": \"string\",\n\t\t\t\"createdOn\": 0\n\t\t}\n\t],\n\t\"keySSI\": \"string\"\n}"
+						},
+						{
+							"name": "error response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"status\": \"delivered\",\r\n  \"extraInfo\": \"status not allowed\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-whs}}/shipment/update/:shipmentId",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"shipment",
+										"update",
+										":shipmentId"
+									],
+									"variable": [
+										{
+											"key": "shipmentId",
+											"value": "42438374463645"
+										}
+									]
+								}
+							},
+							"status": "Not Implemented",
+							"code": 501,
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
+						}
+					]
+				},
+				{
+					"name": "updateAll",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n\t{\r\n\t\t\"shipmentId\": \"string\",\r\n\t\t\"status\": \"string\",\r\n\t\t\"extraInfo\": \"string\"\r\n\t}\r\n]"
+						},
+						"url": {
+							"raw": "{{api-whs}}/shipment/updateAll",
+							"host": [
+								"{{api-whs}}"
+							],
+							"path": [
+								"shipment",
+								"updateAll"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n\t{\r\n\t\t\"shipmentId\": \"16438817559437662682\",\r\n\t\t\"status\": \"hold\",\r\n\t\t\"extraInfo\": \"awaiting release\"\r\n\t}\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-whs}}/shipment/updateAll",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"shipment",
+										"updateAll"
+									]
+								}
+							},
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "[\n\t{\n\t\t\"shipmentId\": \"string\",\n\t\t\"orderId\": \"string\",\n\t\t\"requesterId\": \"string\",\n\t\t\"senderId\": \"string\",\n\t\t\"status\": {\n\t\t\t\"status\": \"string\",\n\t\t\t\"log\": \"string[]\"\n\t\t},\n\t\t\"shipmentLines\": [\n\t\t\t{\n\t\t\t\t\"gtin\": \"string\",\n\t\t\t\t\"batch\": \"string\",\n\t\t\t\t\"quantity\": 0,\n\t\t\t\t\"senderId\": \"string\",\n\t\t\t\t\"requesterId\": \"string\",\n\t\t\t\t\"status\": \"string\",\n\t\t\t\t\"createdOn\": 0\n\t\t\t}\n\t\t],\n\t\t\"keySSI\": \"string\"\n\t}\n]"
+						},
+						{
+							"name": "error response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n\t{\r\n\t\t\"shipmentId\": \"42438374463645\",\r\n\t\t\"status\": \"delivered\",\r\n\t\t\"extraInfo\": \"status not allowed\"\r\n\t}\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-whs}}/shipment/updateAll",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"shipment",
+										"updateAll"
+									]
+								}
+							},
+							"status": "Not Implemented",
+							"code": 501,
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "stock",
+			"item": [
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-whs}}/stock/getAll?keyword=&page=&itemPerPage=&sort=dsc&name&gtin&manufName",
+							"host": [
+								"{{api-whs}}"
+							],
+							"path": [
+								"stock",
+								"getAll"
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "",
+									"description": "Search for a keyword in all tables indexes. search by keyword disable other queries."
+								},
+								{
+									"key": "page",
+									"value": ""
+								},
+								{
+									"key": "itemPerPage",
+									"value": ""
+								},
+								{
+									"key": "sort",
+									"value": "dsc",
+									"description": "dsc or asc"
+								},
+								{
+									"key": "name",
+									"value": null,
+									"description": "product name"
+								},
+								{
+									"key": "gtin",
+									"value": null,
+									"description": "valid GTIN-14"
+								},
+								{
+									"key": "manufName",
+									"value": null,
+									"description": "Marketing Authorization Holder identifier"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{api-whs}}/stock/getAll",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"stock",
+										"getAll"
+									]
+								}
+							},
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n\t\"meta\": {\n\t\t\"page\": 0,\n\t\t\"itemsPerPage\": 0,\n\t\t\"totalPages\": 0,\n\t\t\"query\": {}\n\t},\n\t\"results\": [\n\t\t{\n\t\t\t\"name\": \"string\",\n\t\t\t\"gtin\": \"string\",\n\t\t\t\"description\": \"string\",\n\t\t\t\"manufName\": \"string\",\n\t\t\t\"batches\": [\n\t\t\t\t{\n\t\t\t\t\t\"batchNumber\": \"string\",\n\t\t\t\t\t\"expiry\": \"string\",\n\t\t\t\t\t\"serialNumbers\": [0],\n\t\t\t\t\t\"quantity\": 0,\n\t\t\t\t\t\"batchStatus\": {\n\t\t\t\t\t\t\"status\": \"string\",\n\t\t\t\t\t\t\"log\": \"string[]\",\n\t\t\t\t\t\t\"extraInfo\": {}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"status\": \"string\"\n\t\t}\n\t]\n}"
+						},
+						{
+							"name": "error response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{api-whs}}/stock/getAll",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"stock",
+										"getAll"
+									]
+								}
+							},
+							"status": "Not Implemented",
+							"code": 501,
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
+						}
+					]
+				},
+				{
+					"name": "getOne",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-whs}}/stock/get/:gtin",
+							"host": [
+								"{{api-whs}}"
+							],
+							"path": [
+								"stock",
+								"get",
+								":gtin"
+							],
+							"variable": [
+								{
+									"key": "gtin",
+									"value": "",
+									"description": "valid GTIN-14"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{api-whs}}/stock/get/:gtin",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"stock",
+										"get",
+										":gtin"
+									],
+									"variable": [
+										{
+											"key": "gtin",
+											"value": "95135785245600"
+										}
+									]
+								}
+							},
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n\t\"name\": \"string\",\n\t\"gtin\": \"string\",\n\t\"description\": \"string\",\n\t\"manufName\": \"string\",\n\t\"batches\": [\n\t\t{\n\t\t\t\"batchNumber\": \"string\",\n\t\t\t\"expiry\": \"string\",\n\t\t\t\"serialNumbers\": [0],\n\t\t\t\"quantity\": 0,\n\t\t\t\"batchStatus\": {\n\t\t\t\t\"status\": \"string\",\n\t\t\t\t\"log\": \"string[]\",\n\t\t\t\t\"extraInfo\": {}\n\t\t\t}\n\t\t}\n\t],\n\t\"status\": \"string\"\n}"
+						},
+						{
+							"name": "error response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{api-whs}}/stock/get/:gtin",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"stock",
+										"get",
+										":gtin"
+									],
+									"variable": [
+										{
+											"key": "gtin",
+											"value": "422236263248"
+										}
+									]
+								}
+							},
+							"status": "Not Implemented",
+							"code": 501,
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "traceability",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"gtin\": \"string\",\r\n\t\"batchNumber\": \"string\"\r\n}"
+						},
+						"url": {
+							"raw": "{{api-whs}}/traceability/create",
+							"host": [
+								"{{api-whs}}"
+							],
+							"path": [
+								"traceability",
+								"create"
+							]
+						},
+						"description": "Traceability can be requested by gtin, batchNumber and serialNumber (optional)."
+					},
+					"response": [
+						{
+							"name": "success response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"gtin\": \"95135785245600\",\r\n  \"batchNumber\": \"VT3716\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-whs}}/traceability/create",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"traceability",
+										"create"
+									]
+								}
+							},
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n\t\"id\": 0,\n\t\"title\": \"string\",\n\t\"parents\": \"string[]\",\n\t\"children\": \"string[]\"\n}"
+						},
+						{
+							"name": "error response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"gtin\": \"95135785245600\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-whs}}/traceability/create",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"traceability",
+										"create"
+									]
+								}
+							},
+							"status": "Not Implemented",
+							"code": 501,
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
+						}
+					]
+				},
+				{
+					"name": "createAll",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n\t{\n\t\t\"gtin\": \"string\",\n\t\t\"batchNumber\": \"string\",\n\t\t\"serialNumber\": \"string\"\n\t}\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-whs}}/traceability/createAll",
+							"host": [
+								"{{api-whs}}"
+							],
+							"path": [
+								"traceability",
+								"createAll"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n\t{\r\n\t\t\"gtin\": \"95135785245600\",\r\n\t\t\"batchNumber\": \"VT3716\"\r\n\t}\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-whs}}/traceability/createAll",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"traceability",
+										"createAll"
+									]
+								}
+							},
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "[\n\t{\n\t\t\"id\": 0,\n\t\t\"title\": \"string\",\n\t\t\"parents\": \"string[]\",\n\t\t\"children\": \"string[]\"\n\t}\n]"
+						},
+						{
+							"name": "error response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n\t{\r\n\t\t\"gtin\": \"95135785245600\"\r\n\t}\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-whs}}/traceability/createAll",
+									"host": [
+										"{{api-whs}}"
+									],
+									"path": [
+										"traceability",
+										"createAll"
+									]
+								}
+							},
+							"status": "Not Implemented",
+							"code": 501,
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
