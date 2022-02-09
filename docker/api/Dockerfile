@@ -11,7 +11,7 @@ RUN cd $TARGET_FOLDER_NAME && \
 COPY config/ $TARGET_FOLDER_NAME/apihub-root/external-volume/config/
 
 RUN cd $TARGET_FOLDER_NAME && \
-    echo 'npm run server & \n sleep 5s \n npm run build-all \n npm run run-mah & \n sleep 5s \n cd fgt-api && npm run run-swagger & \n tail -f /dev/null' >> startup-script.sh
+    echo 'npm run server & \n sleep 5s \n npm run build-all \n cd fgt-api && npm run run-mah & \n sleep 5s \n cd fgt-api && npm run run-swagger & \n tail -f /dev/null' >> startup-script.sh
 RUN cd $TARGET_FOLDER_NAME && cat startup-script.sh
 
 EXPOSE 8080/tcp
