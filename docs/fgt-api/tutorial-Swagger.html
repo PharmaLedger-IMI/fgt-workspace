@@ -5,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pharmaledger's Finished Goods Traceability REST API Home</title>
+  <title>Pharmaledger's Finished Goods Traceability REST API Swagger</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -96,7 +96,7 @@
 </div>
     <div id="main">
         <div
-            class="sidebar "
+            class="sidebar tutorials"
             id="sidebarNav"
         >
             
@@ -106,89 +106,20 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"></div>
+                    <div class="category"><h3>Tutorials</h3><ul><li><a href="tutorial-Swagger.html">Swagger</a></li></ul></div>
                 
             </nav>
         </div>
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p></p>
-                    <h1>Home</h1>
+                    <p>Tutorial</p>
+                    <h1>Swagger</h1>
                 </header>
-                
+                <section>
 
-
-
-    
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-    <section>
-        <article><h1>UC3 Finished Goods Traceability REST API</h1>
-<h4>Architecture</h4>
-<p>The desired environment (one that would perfectly replicate a real world scenario) is described below:</p>
-<p><img src="../resources/drawings/finishedGoodsTraceabilityDSUTypes-fgt-api-deployment.png" alt="Real World Deployment Diagram"></p>
-<p>Where apart from the Traceability workspace running the OpenDSU API (Api-hub) and brickstorage for the 'traceability'
-domain and the initial nodes for the domain blockchain, each other participant would run, in its own environment, the
-Finished Goods Traceability REST API, connected to its ERP system. Running blockchain nodes for the 'traceability' domain
-would be optional, but recommended at least for MAHs.</p>
-<p>Since this is very hard to put in place at this stage, to simulate this environment and for testing purposes, PDM intends to
-deploy a test environment, containing all the participants, while providing access to a testing tool (swagger),
-a viewing tool (initially swagger, but a GUI at a later stage) and exterior access to the REST API for integration testing:</p>
-<p><img src="../resources/drawings/finishedGoodsTraceabilityDSUTypes-fgt-api-test-deployment.png" alt="Test Environment Deployment Diagram"></p>
-<h4>Installation</h4>
-<p>Each workspace is configured to run, along its Api-hub, one instance of each wallet type's REST API.</p>
-<p>To do so run (after the initial setup in the traceability workspace):</p>
-<ul>
-<li>For MAH: <code>npm run run-mah</code></li>
-<li>For WHS: <code>npm run run-whs</code></li>
-<li>For PHA: <code>npm run run-pha</code></li>
-</ul>
-<p>for each of these wallets, the credentials must be stored, in json format, under:
-<code>./fgt-api/config/fgt-[mah|whs|pha]-wallet/credentials.json</code></p>
-<p>the provided format should match (the id is mandatory, all others are optional):</p>
-<pre class="prettyprint source lang-json"><code>{
-  &quot;name&quot;: {
-    &quot;secret&quot;: &quot;PDM the MAH&quot;,
-    &quot;public&quot;: true
-  },
-  &quot;id&quot;: {
-    &quot;secret&quot;: &quot;MAH324353426&quot;,
-    &quot;public&quot;: true
-  },
-  &quot;email&quot;: {
-    &quot;secret&quot;: &quot;mah@mah.pharmaledger.com&quot;,
-    &quot;public&quot;: true
-  },
-  &quot;address&quot;: {
-    &quot;public&quot;: true,
-    &quot;secret&quot;: &quot;New York, USA&quot;
-  },
-  &quot;pass&quot;: {
-    &quot;secret&quot;: &quot;This1sSuchAS3curePassw0rd&quot;
-  },
-  &quot;passrepeat&quot;: {
-    &quot;secret&quot;: &quot;This1sSuchAS3curePassw0rd&quot;
-  }
-}
-</code></pre>
-<h1>Swagger API DOC</h1>
+<article>
+    <h1>Swagger API DOC</h1>
 <h2>Running server</h2>
 <p>On <code>fgt-api</code> folder, run <code>npm run run-swagger</code>. Navigate to http://localhost:3009.</p>
 <h3>Command Line Arguments</h3>
@@ -218,13 +149,10 @@ a viewing tool (initially swagger, but a GUI at a later stage) and exterior acce
 </code></pre>
 <h2>Example</h2>
 <pre><code>npm run run-swagger -- --port=3030 --participant=PHA
-</code></pre></article>
-    </section>
+</code></pre>
+</article>
 
-
-
-
-
+</section>
 
             </div>
             

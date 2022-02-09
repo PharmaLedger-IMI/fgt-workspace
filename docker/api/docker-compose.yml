@@ -89,10 +89,9 @@ services:
     hostname: mah-roche
     build:
       context: ../api
-      dockerfile: Dockerfile
       args:
         ROLE: mah
-        CREDENTIALS_FILE: ./env/mah-roche.json
+        CREDENTIALS_FILE: mah-roche.json
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-roche.rule=PathPrefix(`/mah-roche`)"

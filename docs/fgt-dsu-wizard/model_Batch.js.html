@@ -147,7 +147,7 @@ class Batch {
             this.batchNumber = Utils.generateSerialNumber(6);
 
         if (this.serialNumbers &amp;&amp; this.serialNumbers.length)
-            if (this.quantity !== this.serialNumbers.length)
+            if (Math.abs(this.quantity) !== this.serialNumbers.length)
                 this.quantity = this.serialNumbers.length;
 
         this.batchStatus = this.batchStatus || BatchStatus.COMMISSIONED;

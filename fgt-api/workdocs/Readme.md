@@ -57,4 +57,4 @@ the provided format should match (the id is mandatory, all others are optional):
 }
 ```
 
-running the above commands will also expose, on port 8085, a swagger dashboard to be used to test the API
+#include "workdocs/tutorials/Swagger.md"

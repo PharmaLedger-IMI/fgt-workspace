@@ -56,6 +56,22 @@
                     API Documentation
                 </a>
                 
+                <div class="dropdown is-hoverable is-right">
+                    <a class="dropdown-trigger link">
+                        Tutorials
+                        <i class="fas fa-chevron-down fa-xs"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-content">
+                        
+                            <a class="dropdown-item" href="tutorial-Swagger.html">
+                                Swagger
+                            </a>
+                        
+                        </div>
+                    </div>
+                </div>
+                
                  
                     
                         <a
@@ -172,7 +188,37 @@ a viewing tool (initially swagger, but a GUI at a later stage) and exterior acce
   }
 }
 </code></pre>
-<p>running the above commands will also expose, on port 8085, a swagger dashboard to be used to test the API</p></article>
+<h1>Swagger API DOC</h1>
+<h2>Running server</h2>
+<p>On <code>fgt-api</code> folder, run <code>npm run run-swagger</code>. Navigate to http://localhost:3009.</p>
+<h3>Command Line Arguments</h3>
+<h4>port</h4>
+<pre><code>swagger server listening port
+- argument: port
+- env variable name: SWAGGER_PORT
+- default: 3009
+</code></pre>
+<h4>participant</h4>
+<pre><code>.yml file name
+- argument: participant
+- env variable name: SWAGGER_PARTICIPANT
+- default: MAH
+</code></pre>
+<h4>path</h4>
+<pre><code>folder path to .yml file to load swagger UI
+- argument: path
+- env variable name: SWAGGER_PATH
+- default: ./docs
+</code></pre>
+<h4>server</h4>
+<pre><code>API url that swagger requests will be done
+- argument: server
+- env variable name: SWAGGER_SERVER
+- default: http://localhost:8081/traceability
+</code></pre>
+<h2>Example</h2>
+<pre><code>npm run run-swagger -- --port=3030 --participant=PHA
+</code></pre></article>
     </section>
 
 
