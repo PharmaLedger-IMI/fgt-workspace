@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+const cors = require("cors");
 
 const {getResolver, getKeySSISpace} = require('../pdm-dsu-toolkit/services/utils');
 const getParticipantManager = require('../fgt-dsu-wizard/managers/ParticipantManager');
@@ -105,6 +106,7 @@ const initApis = function(express, apis, port, walletName, ...managerInitMethods
                         res.contentType('application/json');
                         next();
                     });
+                    server.use(cors());
                     server.set('query parser', 'simple');
 
                     Object.values(apis).forEach(api => {
