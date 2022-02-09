@@ -21,3 +21,9 @@ On `fgt-api` folder, run `npm run run-swagger`. Navigate to http://localhost:300
     - argument: path
     - env variable name: SWAGGER_PATH
     - default: ./docs
+
+#### server
+    API url that swagger requests will be done
+    - argument: server
+    - env variable name: SWAGGER_SERVER
+    - default: http://localhost:8080/traceability

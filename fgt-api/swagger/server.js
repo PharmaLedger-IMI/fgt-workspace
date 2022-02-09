@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const YAML = require('yamljs');
 const express = require('express');
@@ -8,10 +9,12 @@ const config = require('./config');
 const PORT = config.port;
 const PATH = config.path;
 const PARTICIPANT = config.participant;
+const API_SERVER = config.server;
 console.log('[FGT-API] Swagger load config=', config);
 
 const swaggerPathResolve = path.resolve(PATH, PARTICIPANT + '.yml');
-const swaggerDocument = YAML.load(swaggerPathResolve);
+const swaggerDocument = YAML.parse(fs.readFileSync(swaggerPathResolve, 'utf8'));
+swaggerDocument.servers = [{url: API_SERVER}];
 const options = {
     customCss: '.swagger-ui .topbar { display: none }'
 };
@@ -26,4 +29,4 @@ app.get('*', (req, res) => {
     res.redirect('/api-docs');
 });
 
-app.listen(PORT, console.log(`[FGT-API] Swagger API DOC listening on ${PORT}`));
+app.listen(PORT, console.log(`[FGT-API] Swagger API DOC listening on :${PORT} and able to make requests to API: ${API_SERVER}`));

@@ -25,7 +25,8 @@ const argParser = function(defaultOpts, args){
 const config = argParser({
     port: process.env.SWAGGER_PORT || 3009,
     participant: process.env.SWAGGER_PARTICIPANT || "MAH" || "PHA" || "WHS",
-    path: process.env.SWAGGER_PATH || './docs'
+    path: process.env.SWAGGER_PATH || './docs',
+    server: process.env.SWAGGER_SERVER || 'http://localhost:8080/traceability'
 }, process.argv);
 
 module.exports = config;
