@@ -16,7 +16,7 @@
     "anchoringServices": [
       "localhost:8080"
     ]
-  }
+  },
   "vault": {
     "replicas": [],
     "brickStorages": [
