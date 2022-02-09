@@ -58,24 +58,25 @@ services:
     networks:
       - traceability-net
 
-#  fgt-workspace:
-#    container_name: fgt-workspace
-#    build:
-#      context: ../api/traceability
-#    hostname: fgt-workspace
-#    labels:
-#      - "traefik.enable=true"
+  fgt-workspace:
+    container_name: fgt-workspace
+    build:
+      context: ../api/traceability
+    hostname: fgt-workspace
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traceability.rule=Host(`traceability.localhost`)"
 #      - "traefik.http.routers.traceability.rule=PathPrefix(`/`)"
-#      - "traefik.http.routers.traceability.priority=1"
-##      - "traefik.http.routers.traceability.rule=HostRegexp(`fgt(:?\\-(?:dev|tst))?\\.pharmaledger\\.pdmfc\\.com`)"
-#      - "traefik.http.routers.traceability.entrypoints=web"
-##      - "traefik.http.middlewares.traceability.stripprefix.prefixes=/traceability"
-##      - "traefik.http.middlewares.traceability.stripprefix.forceSlash=false"
-##      - "traefik.http.routers.traceability.middlewares=traceability@docker"
-#    volumes:
-#      - traceability_vol:/fgt-workspace/apihub-root/external-volume
-#    networks:
-#      - traceability-net
+      - "traefik.http.routers.traceability.priority=1"
+#      - "traefik.http.routers.traceability.rule=HostRegexp(`fgt(:?\\-(?:dev|tst|local))?\\.pharmaledger\\.pdmfc\\.com`)"
+      - "traefik.http.routers.traceability.entrypoints=web"
+#      - "traefik.http.middlewares.traceability.stripprefix.prefixes=/traceability"
+#      - "traefik.http.middlewares.traceability.stripprefix.forceSlash=false"
+#      - "traefik.http.routers.traceability.middlewares=traceability@docker"
+    volumes:
+      - traceability_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      - traceability-net
 #    healthcheck:
 #      test: [ "CMD", "wget", "--spider", "--proxy", "off", "http://localhost:8080/dsu-explorer/wallet-patch/seed" ]
 #      interval: 5s

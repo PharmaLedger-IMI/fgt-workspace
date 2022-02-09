@@ -11,10 +11,10 @@
   "traceability": {
     "replicas": [],
     "brickStorages": [
-      "localhost:8080"
+      "traceability.localhost"
     ],
     "anchoringServices": [
-      "localhost:8080"
+      "traceability.localhost"
     ]
   },
   "vault": {

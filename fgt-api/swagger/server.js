@@ -12,7 +12,7 @@ const PARTICIPANT = config.participant;
 const API_SERVER = config.server;
 console.log('[FGT-API] Swagger load config=', config);
 
-const swaggerPathResolve = path.resolve(PATH, PARTICIPANT + '.yml');
+const swaggerPathResolve = path.resolve(PATH, PARTICIPANT.toUpperCase() + '.yml');
 const swaggerDocument = YAML.parse(fs.readFileSync(swaggerPathResolve, 'utf8'));
 swaggerDocument.servers = [{url: API_SERVER}];
 const options = {
