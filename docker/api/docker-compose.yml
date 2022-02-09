@@ -3,21 +3,17 @@ x-participant-def:
   &participant-def
   restart: "unless-stopped"
   build:
-    context: ../docker/api
-  entrypoint: ["/bin/sh", "-c"]
-  ports:
-    - "8080:8080"
-    - "8081:8081"
+    context: ../
+#  ports:
+#    - "8080:8080"
+#    - "8081:8081"
+#    - "8082:3009"
 x-mah-def:
   &mah-def
   << : *participant-def
-  command:
-    - |
-      npm run build-all
-      npm run run-mah
-  depends_on:
-    fgt-workspace:
-      condition: service_healthy
+#  depends_on:
+#    fgt-workspace:
+#      condition: service_healthy
 x-whs-def:
   &whs-def
   << : *participant-def
@@ -60,6 +56,7 @@ services:
       - "8080:8080"
     networks:
       - traceability-net
+
   whoami:
     image: "traefik/whoami"
     container_name: "whoami"
@@ -70,6 +67,7 @@ services:
       - "traefik.http.routers.whoami.entrypoints=web"
     networks:
       - traceability-net
+
   fgt-workspace:
     container_name: fgt-workspace
     build:
@@ -94,25 +92,24 @@ services:
 #      timeout: 3s
 #      retries: 20
 #      start_period: 5s
-#  mah-roche:
-#    << : *mah-def
-#    container_name: mah-roche
-#    hostname: mah-roche
-#    ports:
-#      - "8080:8080"
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.traceability.rule=(HostRegexp(`fgt(:?\-(?:dev|tst))?\.pharmaledger\.pdmfc\.com`) && PathPrefix(`/mah-roche/`))"
-#      - "traefik.http.routers.traceability.entrypoints=web"
-#    volumes:
-#      - mah-roche_vol:/fgt-workspace/apihub-root/external-volume
-#    networks:
-#      traceability-net:
-#        ipv4_address: 172.16.63.10
-#    env_file:
-#      - ../docker/api/env/mah-roche.env
-#    environment:
-#      - ROLE=MAH
+
+  mah-roche:
+    << : *mah-def
+    container_name: mah-roche
+    hostname: mah-roche
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mah-roche.rule=PathPrefix(`/mah-roche`)"
+#      - "traefik.http.routers.mah-roche.rule=(HostRegexp(`fgt(:?\-(?:dev|tst))?\.pharmaledger\.pdmfc\.com`) && PathPrefix(`/mah-roche/`))"
+      - "traefik.http.routers.mah-roche.entrypoints=web"
+    volumes:
+      - mah-roche_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      - traceability-net
+    env_file:
+      - ../api/env/mah-roche.env
+    environment:
+      - ROLE=MAH
 #  mhs-takeda:
 #    <<: *whs-def
 #    container_name: whs-takeda
@@ -157,6 +154,6 @@ networks:
     driver: bridge
 volumes:
   "traceability_vol":
-#  "mah-roche_vol":
+  "mah-roche_vol":
 #  "whs-takeda_vol":
 #  "pha-1_vol":
