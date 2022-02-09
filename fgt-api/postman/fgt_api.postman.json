@@ -684,7 +684,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "[\r\n\t{\r\n\t\t\"gtin\": \"string\",\r\n\t\t\"batchNumber\": \"string\",\r\n\t\t\"expiry\": \"YYYY-MM-dd\",\r\n\t\t\"serialNumbers\": [\r\n\t\t\t11001,\r\n\t\t\t11002,\r\n\t\t\t11003,\r\n\t\t\t11004,\r\n\t\t\t11005\r\n\t\t]\r\n\t}\r\n]"
+									"raw": "[\r\n\t{\r\n\t\t\"gtin\": \"string\",\r\n\t\t\"batchNumber\": \"string\",\r\n\t\t\"expiry\": \"YYYY-MM-dd\",\r\n\t\t\"serialNumbers\": [0]\r\n\t}\r\n]"
 								},
 								"url": {
 									"raw": "{{api-mah}}/batch/createAll",
@@ -1505,7 +1505,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "[\r\n  {\r\n    \"orderId\": \"002\",\r\n    \"requesterId\": \"WHS482899623\",\r\n    \"senderId\": \"MAH280478981\",\r\n    \"status\": \"created\",\r\n    \"shipmentLines\": [\r\n      {\r\n        \"gtin\": \"001\",\r\n        \"batch\": \"BB0461\",\r\n        \"quantity\": 1,\r\n        \"senderId\": \"MAH280478981\",\r\n        \"requesterId\": \"WHS482899623\",\r\n        \"status\": \"created\"\r\n      }\r\n    ]\r\n  },\r\n    {\r\n    \"orderId\": \"003\",\r\n    \"requesterId\": \"WHS482899623\",\r\n    \"senderId\": \"MAH280478981\",\r\n    \"status\": \"created\",\r\n    \"shipmentLines\": [\r\n      {\r\n        \"gtin\": \"001\",\r\n        \"batch\": \"BB0461\",\r\n        \"quantity\": 1,\r\n        \"senderId\": \"MAH280478981\",\r\n        \"requesterId\": \"WHS482899623\",\r\n        \"status\": \"created\"\r\n      }\r\n    ]\r\n  },\r\n]"
+									"raw": "[\r\n\t{\r\n\t\t\"orderId\": \"string\",\r\n\t\t\"requesterId\": \"string\",\r\n\t\t\"senderId\": \"string\",\r\n\t\t\"status\": \"string\",\r\n\t\t\"shipmentLines\": [\r\n\t\t\t{\r\n\t\t\t\t\"gtin\": \"string\",\r\n\t\t\t\t\"batch\": \"string\",\r\n\t\t\t\t\"quantity\": 0,\r\n\t\t\t\t\"senderId\": \"string\",\r\n\t\t\t\t\"requesterId\": \"string\",\r\n\t\t\t\t\"status\": \"string\"\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n]"
 								},
 								"url": {
 									"raw": "{{api-mah}}/shipment/createAll",
