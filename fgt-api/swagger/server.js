@@ -4,9 +4,14 @@ const express = require('express');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 
-const PORT = process.env.SWAGGER_PORT || 3009;
-const swaggerDocAbsPath = path.resolve("./swagger.yml");
-const swaggerDocument = YAML.load(swaggerDocAbsPath);
+const config = require('./config');
+const PORT = config.port;
+const PATH = config.path;
+const PARTICIPANT = config.participant;
+console.log('[FGT-API] Swagger load config=', config);
+
+const swaggerPathResolve = path.resolve(PATH, PARTICIPANT + '.yml');
+const swaggerDocument = YAML.load(swaggerPathResolve);
 const options = {
     customCss: '.swagger-ui .topbar { display: none }'
 };
