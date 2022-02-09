@@ -11,7 +11,7 @@ info:
     [License](https://github.com/PharmaLedger-IMI/fgt-workspace/blob/master/LICENSE.md)
   version: 1.0.0
 servers:
-  - url: http://localhost:8081/traceability
+  - url: http://{{api-mah}}
 tags:
   - name: product
   - name: batch
@@ -73,12 +73,9 @@ paths:
             schema:
               type: object
               example:
-                - gtin: '84327843812938'
-                  name: Product 003
-                  description: this is Product 002 description
-                - gtin: '12438776234391'
-                  name: Product 004
-                  description: this is Product 003 description
+                - gtin: string
+                  name: string
+                  description: string
       responses:
         '200':
           headers:
@@ -191,9 +188,8 @@ paths:
         - name: gtin
           in: path
           schema:
-            type: integer
+            type: string
           required: true
-          example: '84327843812938'
       responses:
         '200':
           headers:
@@ -202,10 +198,14 @@ paths:
                 type: string
                 example: application/json
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-              example: "{\n\t\"name\": string,\n\t\"gtin\": string,\n\t\"description\": string,\n\t\"manufName\": string\n}"
+                type: object
+              example:
+                name: string
+                gtin: string
+                description: string
+                manufName: string
         '501':
           description: Not Implemented
           content:
@@ -760,9 +760,8 @@ paths:
         - name: shipmentId
           in: path
           schema:
-            type: integer
+            type: string
           required: true
-          example: '16438174033347517081'
       responses:
         '200':
           headers:
@@ -869,10 +868,9 @@ paths:
             schema:
               type: object
               example:
-                - orderId: '001'
-                  requesterId: PHA324353426
-                  status: pickup
-                  extraInfo: '[api] updateAll extraInfo update test'
+                - shipmentId: string
+                  status: string
+                  extraInfo: string
       responses:
         '200':
           headers:

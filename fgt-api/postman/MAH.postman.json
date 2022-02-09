@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "9d3f395a-0b36-4744-a4f2-3157ebadcfc4",
+		"_postman_id": "0a8127fb-7547-444e-8716-7e94c9a301ad",
 		"name": "MAH - Pharmaledger Finished Goods Traceability API",
 		"description": "## Marketing Authorization Holder\n\n*   [Repository](https://github.com/PharmaLedger-IMI/fgt-workspace)\n*   [License](https://github.com/PharmaLedger-IMI/fgt-workspace/blob/master/LICENSE.md)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -123,7 +123,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n    \"status\": \"number\",\n    \"error\": \"string\",\n    \"message\": \"string\"\n}"
 						}
@@ -136,7 +136,12 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\r\n\t{\r\n\t\t\"gtin\": \"84327843812938\",\r\n\t\t\"name\": \"Product 003\",\r\n\t\t\"description\": \"this is Product 002 description\"\r\n\t},\r\n\t{\r\n\t\t\"gtin\": \"12438776234391\",\r\n\t\t\"name\": \"Product 004\",\r\n\t\t\"description\": \"this is Product 003 description\"\r\n\t}\r\n]"
+							"raw": "[\r\n\t{\r\n\t\t\"gtin\": \"string\",\r\n\t\t\"name\": \"string\",\r\n\t\t\"description\": \"string\"\r\n\t}\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{api-mah}}/product/createAll",
@@ -234,7 +239,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n    \"status\": \"number\",\n    \"error\": \"string\",\n    \"message\": \"string\"\n}"
 						}
@@ -378,7 +383,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
 						}
@@ -402,7 +407,7 @@
 							"variable": [
 								{
 									"key": "gtin",
-									"value": "84327843812938"
+									"value": ""
 								}
 							]
 						}
@@ -452,7 +457,7 @@
 								}
 							},
 							"code": 200,
-							"_postman_previewlanguage": null,
+							"_postman_previewlanguage": "json",
 							"header": [
 								{
 									"key": "Content-Type",
@@ -462,7 +467,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n\t\"name\": string,\n\t\"gtin\": string,\n\t\"description\": string,\n\t\"manufName\": string\n}"
+							"body": "{\n\t\"name\": \"string\",\n\t\"gtin\": \"string\",\n\t\"description\": \"string\",\n\t\"manufName\": \"string\"\n}"
 						},
 						{
 							"name": "error response",
@@ -510,7 +515,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
 						}
@@ -528,7 +533,12 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"gtin\": \"string\",\r\n\t\"batchNumber\": \"string\",\r\n\t\"expiry\": \"YYYY-MM-dd\",\r\n\t\"serialNumbers\": [0]\r\n}"
+							"raw": "{\r\n\t\"gtin\": \"string\",\r\n\t\"batchNumber\": \"string\",\r\n\t\"expiry\": \"YYYY-MM-dd\",\r\n\t\"serialNumbers\": [0]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{api-mah}}/batch/create",
@@ -630,7 +640,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
 						}
@@ -643,7 +653,12 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\r\n\t{\r\n\t\t\"gtin\": \"string\",\r\n\t\t\"batchNumber\": \"string\",\r\n\t\t\"expiry\": \"YYYY-MM-dd\",\r\n\t\t\"serialNumbers\": [0]\r\n\t}\r\n]"
+							"raw": "[\r\n\t{\r\n\t\t\"gtin\": \"string\",\r\n\t\t\"batchNumber\": \"string\",\r\n\t\t\"expiry\": \"YYYY-MM-dd\",\r\n\t\t\"serialNumbers\": [0]\r\n\t}\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{api-mah}}/batch/createAll",
@@ -745,7 +760,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n    \"status\": 0,\n    \"error\": \"string\",\n    \"message\": \"string\"\n}"
 						}
@@ -886,7 +901,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
 						}
@@ -1030,7 +1045,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n    \"status\": 0,\n    \"error\": \"string\",\n    \"message\": \"string\"\n}"
 						}
@@ -1043,7 +1058,12 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"status\": \"string\",\r\n  \"extraInfo\": \"string\"\r\n}"
+							"raw": "{\r\n  \"status\": \"string\",\r\n  \"extraInfo\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{api-mah}}/batch/update/:gtin/:batchNumber",
@@ -1178,7 +1198,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n    \"status\": 0,\n    \"error\": \"string\",\n    \"message\": \"string\"\n}"
 						}
@@ -1191,7 +1211,12 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\r\n\t{\r\n\t\t\"status\": \"string\",\r\n\t\t\"extraInfo\": \"string\"\r\n\t}\r\n]"
+							"raw": "[\r\n\t{\r\n\t\t\"status\": \"string\",\r\n\t\t\"extraInfo\": \"string\"\r\n\t}\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{api-mah}}/batch/updateAll",
@@ -1289,7 +1314,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n    \"status\": 0,\n    \"error\": \"string\",\n    \"message\": \"string\"\n}"
 						}
@@ -1307,7 +1332,12 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"orderId\": \"string\",\r\n  \"requesterId\": \"string\",\r\n  \"senderId\": \"string\",\r\n  \"status\": \"string\",\r\n  \"shipmentLines\": [\r\n    {\r\n      \"gtin\": \"string\",\r\n      \"batch\": \"string\",\r\n\t  \"requesterId\": \"string\",\r\n      \"senderId\": \"string\",\r\n      \"quantity\": 0,\r\n      \"status\": \"string\"\r\n    }\r\n  ]\r\n}"
+							"raw": "{\r\n  \"orderId\": \"string\",\r\n  \"requesterId\": \"string\",\r\n  \"senderId\": \"string\",\r\n  \"status\": \"string\",\r\n  \"shipmentLines\": [\r\n    {\r\n      \"gtin\": \"string\",\r\n      \"batch\": \"string\",\r\n\t  \"requesterId\": \"string\",\r\n      \"senderId\": \"string\",\r\n      \"quantity\": 0,\r\n      \"status\": \"string\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{api-mah}}/shipment/create",
@@ -1405,7 +1435,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
 						}
@@ -1521,7 +1551,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
 						}
@@ -1668,7 +1698,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
 						}
@@ -1692,7 +1722,7 @@
 							"variable": [
 								{
 									"key": "shipmentId",
-									"value": "16438174033347517081"
+									"value": ""
 								}
 							]
 						}
@@ -1796,7 +1826,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
 						}
@@ -1809,7 +1839,12 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"status\": \"string\",\r\n  \"extraInfo\": \"string\"\r\n}"
+							"raw": "{\r\n  \"status\": \"string\",\r\n  \"extraInfo\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{api-mah}}/shipment/update/:shipmentId",
@@ -1928,7 +1963,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
 						}
@@ -1941,7 +1976,12 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\r\n  {\r\n    \"orderId\": \"001\",\r\n    \"requesterId\": \"PHA324353426\",\r\n    \"status\": \"pickup\",\r\n    \"extraInfo\": \"[api] updateAll extraInfo update test\"\r\n  }\r\n]"
+							"raw": "[\r\n  {\r\n    \"shipmentId\": \"string\",\r\n    \"status\": \"string\",\r\n    \"extraInfo\": \"string\"\r\n  }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{api-mah}}/shipment/updateAll",
@@ -2039,7 +2079,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
 						}
@@ -2187,7 +2227,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
 						}
@@ -2318,7 +2358,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
 						}
@@ -2464,7 +2504,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
 						}
@@ -2586,7 +2626,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
 						}
@@ -2604,7 +2644,12 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"gtin\": \"string\",\r\n\t\"batchNumber\": \"string\",\r\n\t\"serialNumber\": \"string\"\r\n}"
+							"raw": "{\r\n\t\"gtin\": \"string\",\r\n\t\"batchNumber\": \"string\",\r\n\t\"serialNumber\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{api-mah}}/traceability/create",
@@ -2704,7 +2749,7 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
 						}
@@ -2822,13 +2867,40 @@
 							"status": "Not Implemented",
 							"code": 501,
 							"_postman_previewlanguage": "json",
-							"header": null,
+							"header": [],
 							"cookie": [],
 							"body": "{\n\t\"status\": 0,\n\t\"error\": \"string\",\n\t\"message\": \"string\"\n}"
 						}
 					]
 				}
 			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "api-mah",
+			"value": "http://localhost:8081/traceability",
+			"type": "string"
 		}
 	]
 }
