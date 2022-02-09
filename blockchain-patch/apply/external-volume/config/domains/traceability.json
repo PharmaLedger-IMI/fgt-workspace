@@ -1,0 +1,11 @@
+{
+  "anchoring": {
+    "type": "ETH",
+    "option": {
+      "endpoint": "http://172.16.16.16:3000"
+    },
+    "commands": {
+      "addAnchor": "anchor"
+    }
+  }
+}

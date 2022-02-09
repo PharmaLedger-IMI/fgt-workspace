@@ -662,12 +662,12 @@
     ],
     "deploy-chain": [
         {
-            "name":"change anchoring to blockchain",
+            "name":"change anchoring to blockchain like in switch-to-test-chain. PLEASE RESTART apihub after!",
             "src": "",
             "actions": [
                 {
                     "type": "copy",
-                    "src": "./blockchain-patch/external-volume",
+                    "src": "./blockchain-patch/apply/external-volume",
                     "target": "./apihub-root/external-volume",
                     "options": {
                         "overwrite": true
@@ -677,7 +677,7 @@
         },
         {
             "name":"blockchain-node",
-            "src": "https://Pharmaledger:x_Jp6JwvD4sQFu4cQA3T@gitlab.pdmfc.com/pharmaledger/blockchain-node-workspace.git",
+            "src": "https://github.com/PharmaLedger-IMI/blockchain-node-workspace.git",
             "actions": [
                 {
                     "type": "smartClone",
@@ -695,6 +695,38 @@
                 {
                     "type": "execute",
                     "cmd": "cd blockchain-node && npm run deploy-blockchain"
+                }
+            ]
+        }
+    ],
+    "switch-to-test-chain": [
+        {
+            "name":"Switch apihub configs to a local test blockchain. Apihub needs restart.",
+            "src": "",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./blockchain-patch/apply/external-volume",
+                    "target": "./apihub-root/external-volume",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        }
+    ],
+    "switch-to-simul-chain": [
+        {
+            "name":"Switch apihub configs to a local test blockchain. Apihub needs restart.",
+            "src": "",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./blockchain-patch/remove/external-volume",
+                    "target": "./apihub-root/external-volume",
+                    "options": {
+                        "overwrite": true
+                    }
                 }
             ]
         }
