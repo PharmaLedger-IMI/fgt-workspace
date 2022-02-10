@@ -58,25 +58,25 @@ services:
     networks:
       - traceability-net
 
-#  fgt-workspace:
-#    container_name: fgt-workspace
-#    build:
-#      context: ../api/traceability
-#    hostname: fgt-workspace
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.traceability.rule=Host(`traceability.localhost`)"
-##      - "traefik.http.routers.traceability.rule=PathPrefix(`/`)"
-#      - "traefik.http.routers.traceability.priority=1"
-##      - "traefik.http.routers.traceability.rule=HostRegexp(`fgt(:?\\-(?:dev|tst|local))?\\.pharmaledger\\.pdmfc\\.com`)"
-#      - "traefik.http.routers.traceability.entrypoints=web"
-##      - "traefik.http.middlewares.traceability.stripprefix.prefixes=/traceability"
-##      - "traefik.http.middlewares.traceability.stripprefix.forceSlash=false"
-##      - "traefik.http.routers.traceability.middlewares=traceability@docker"
-#    volumes:
-#      - traceability_vol:/fgt-workspace/apihub-root/external-volume
-#    networks:
-#      - traceability-net
+  fgt-workspace:
+    container_name: fgt-workspace
+    build:
+      context: ../api/traceability
+    hostname: fgt-workspace
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traceability.rule=Host(`traceability.localhost`)"
+#      - "traefik.http.routers.traceability.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.traceability.priority=1"
+#      - "traefik.http.routers.traceability.rule=HostRegexp(`fgt(:?\\-(?:dev|tst|local))?\\.pharmaledger\\.pdmfc\\.com`)"
+      - "traefik.http.routers.traceability.entrypoints=web"
+#      - "traefik.http.middlewares.traceability.stripprefix.prefixes=/traceability"
+#      - "traefik.http.middlewares.traceability.stripprefix.forceSlash=false"
+#      - "traefik.http.routers.traceability.middlewares=traceability@docker"
+    volumes:
+      - traceability_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      - traceability-net
 
   mah-roche:
     << : *mah-def
@@ -92,15 +92,15 @@ services:
       - "traefik.http.routers.mah-roche.rule=Host(`mah-roche.localhost`)"
       - "traefik.http.routers.mah-roche.entrypoints=web"
 
-      - "traefik.http.routers.mah-roche-api.rule=Host(`mah-roche.localhost`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.mah-roche-api.entrypoints=web"
-      - "traefik.http.services.mah-roche-api.loadbalancer.server.port=8081"
-      - "traefik.http.services.mah-roche-api.loadbalancer.sticky=true"
-
-      - "traefik.http.routers.mah-roche-swagger.rule=Host(`mah-roche.localhost`) && PathPrefix(`/swagger`)"
-      - "traefik.http.routers.mah-roche-swagger.entrypoints=web"
-      - "traefik.http.services.mah-roche-swagger.loadbalancer.server.port=3009"
-      - "traefik.http.services.mah-roche-swagger.loadbalancer.sticky=true"
+#      - "traefik.http.routers.mah-roche-api.rule=Host(`mah-roche.localhost`) && PathPrefix(`/api`)"
+#      - "traefik.http.routers.mah-roche-api.entrypoints=web"
+#      - "traefik.http.services.mah-roche-api.loadbalancer.server.port=8081"
+#      - "traefik.http.services.mah-roche-api.loadbalancer.sticky=true"
+#
+#      - "traefik.http.routers.mah-roche-swagger.rule=Host(`mah-roche.localhost`) && PathPrefix(`/swagger`)"
+#      - "traefik.http.routers.mah-roche-swagger.entrypoints=web"
+#      - "traefik.http.services.mah-roche-swagger.loadbalancer.server.port=3009"
+#      - "traefik.http.services.mah-roche-swagger.loadbalancer.sticky=true"
     volumes:
       - mah-roche_vol:/fgt-workspace/apihub-root/external-volume
     networks:
