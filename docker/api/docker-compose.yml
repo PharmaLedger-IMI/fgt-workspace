@@ -97,10 +97,12 @@ services:
 #      - "traefik.http.services.mah-roche-api.loadbalancer.server.port=8081"
 #      - "traefik.http.services.mah-roche-api.loadbalancer.sticky=true"
 #
-#      - "traefik.http.routers.mah-roche-swagger.rule=Host(`mah-roche.localhost`) && PathPrefix(`/swagger`)"
-#      - "traefik.http.routers.mah-roche-swagger.entrypoints=web"
-#      - "traefik.http.services.mah-roche-swagger.loadbalancer.server.port=3009"
-#      - "traefik.http.services.mah-roche-swagger.loadbalancer.sticky=true"
+      - "traefik.http.routers.mah-roche-swagger.rule=Host(`mah-roche.localhost`) && PathPrefix(`/swagger`)"
+      - "traefik.http.routers.mah-roche-swagger.entrypoints=web"
+      - "traefik.http.middlewares.mah-roche-swagger.stripprefix.prefixes=/swagger"
+      - "traefik.http.middlewares.mah-roche-swagger.stripprefix.forceSlash=false"
+      - "traefik.http.routers.mah-roche-swagger.middlewares=mah-roche-swagger@docker"
+      - "traefik.http.services.mah-roche-swagger.loadbalancer.server.port=3009"
     volumes:
       - mah-roche_vol:/fgt-workspace/apihub-root/external-volume
     networks:
