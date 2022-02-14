@@ -55,23 +55,23 @@ services:
       - "traefik.http.routers.whoami.entrypoints=web"
     networks:
       - traceability-net
-#
-#  fgt-workspace:
-#    container_name: fgt-workspace
-#    build:
-#      context: ../api/traceability
-#    hostname: fgt-workspace
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.traceability.rule=Host(`traceability.localhost`)"
-#      - "traefik.http.middlewares.traceability-headers.headers.accesscontrolalloworigin=*"
-#      - "traefik.http.routers.traceability.middlewares=traceability-headers@docker"
-##      - "traefik.http.routers.traceability.rule=HostRegexp(`fgt(:?\\-(?:dev|tst|local))?\\.pharmaledger\\.pdmfc\\.com`)"
-#      - "traefik.http.routers.traceability.entrypoints=web"
-#    volumes:
-#      - traceability_vol:/fgt-workspace/apihub-root/external-volume
-#    networks:
-#      - traceability-net
+
+  fgt-workspace:
+    container_name: fgt-workspace
+    build:
+      context: ../api/traceability
+    hostname: fgt-workspace
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traceability.rule=Host(`traceability.localhost`)"
+      - "traefik.http.middlewares.traceability-headers.headers.accesscontrolalloworigin=*"
+      - "traefik.http.routers.traceability.middlewares=traceability-headers@docker"
+#      - "traefik.http.routers.traceability.rule=HostRegexp(`fgt(:?\\-(?:dev|tst|local))?\\.pharmaledger\\.pdmfc\\.com`)"
+      - "traefik.http.routers.traceability.entrypoints=web"
+    volumes:
+      - traceability_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      - traceability-net
 
 #  mah-roche:
 #    << : *mah-def
