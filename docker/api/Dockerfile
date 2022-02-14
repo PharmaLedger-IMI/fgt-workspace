@@ -16,7 +16,6 @@ COPY config/ $TARGET_FOLDER_NAME/apihub-root/external-volume/config/
 
 # Copy the desired credentials to the ROLE specific folder
 COPY env/$CREDENTIALS_FILE $TARGET_FOLDER_NAME/fgt-api/config/fgt-${ROLE}-wallet/credentials.json
-COPY server.js $TARGET_FOLDER_NAME/fgt-api/swagger/server.js
 
 RUN cd $TARGET_FOLDER_NAME && \
     npm install --unsafe-perm
