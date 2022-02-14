@@ -2,10 +2,10 @@
   "default": {
     "replicas": [],
     "brickStorages": [
-      "$ORIGIN"
+      "http://traceability.localhost:8080"
     ],
     "anchoringServices": [
-      "$ORIGIN"
+      "http://traceability.localhost:8080"
     ]
   },
   "traceability": {
@@ -20,10 +20,10 @@
   "vault": {
     "replicas": [],
     "brickStorages": [
-      "$ORIGIN"
+      "http://traceability.localhost:8080"
     ],
     "anchoringServices": [
-      "$ORIGIN"
+      "http://traceability.localhost:8080"
     ]
   }
 }
