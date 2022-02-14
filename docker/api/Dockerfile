@@ -1,6 +1,7 @@
 FROM node:14.16-buster
 ARG ROLE=mah
 ARG CREDENTIALS_FILE=mah-roche.json
+ARG SWAGGER_SERVER=http://api.mah-roche.localhost:8080/traceability
 
 ENV ROLE "$ROLE"
 RUN echo "Environment ROLE recognized as $ROLE"
