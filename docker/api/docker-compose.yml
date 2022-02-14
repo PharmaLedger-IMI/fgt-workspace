@@ -77,10 +77,10 @@ services:
     hostname: mah-roche
     build:
       context: ../api
-    environment:
-      ROLE: mah
-      CREDENTIALS_FILE: mah-roche.json
-      SWAGGER_SERVER: http://api.mah-roche.localhost:8080/traceability
+      args:
+        ROLE: mah
+        CREDENTIALS_FILE: mah-roche.json
+        SWAGGER_SERVER: http://api.mah-roche.localhost:8080/traceability
     labels:
       - "traefik.enable=true"
 

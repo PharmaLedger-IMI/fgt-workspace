@@ -1,10 +1,15 @@
 FROM node:14.16-buster
+ARG ROLE=mah
+ARG CREDENTIALS_FILE=mah-roche.json
 
 ENV ROLE "$ROLE"
 RUN echo "Environment ROLE recognized as $ROLE"
 
 ENV CREDENTIALS_FILE "$CREDENTIALS_FILE"
 RUN echo "Environment CREDENTIALS recognized as $CREDENTIALS_FILE"
+
+ENV SWAGGER_SERVER "$SWAGGER_SERVER"
+RUN echo "Environment SWAGGER_SERVER recognized as $SWAGGER_SERVER"
 
 RUN npm install -g node-gyp
 
