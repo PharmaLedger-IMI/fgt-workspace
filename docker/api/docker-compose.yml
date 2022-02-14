@@ -77,9 +77,6 @@ services:
     hostname: mah-roche
     build:
       context: ../api
-      args:
-        ROLE: mah
-        CREDENTIALS_FILE: mah-roche.json
     environment:
       ROLE: mah
       CREDENTIALS_FILE: mah-roche.json
