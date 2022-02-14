@@ -87,10 +87,27 @@ services:
       args:
         ROLE: mah
         CREDENTIALS_FILE: mah-roche.json
+    environment:
+      ROLE: mah
+      CREDENTIALS_FILE: mah-roche.json
+      SWAGGER_SERVER: http://api.mah-roche.localhost:8080/traceability
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mah-roche.rule=Host(`mah-roche.localhost`)"
+
+      - "traefik.http.routers.mah-roche.rule=Host(`app.mah-roche.localhost`)"
       - "traefik.http.routers.mah-roche.entrypoints=web"
+      - "traefik.http.routers.mah-roche.service=mah-roche"
+      - "traefik.http.services.mah-roche.loadbalancer.server.port=8080"
+
+      - "traefik.http.routers.mah-roche-swagger.rule=Host(`swagger.mah-roche.localhost`)"
+      - "traefik.http.routers.mah-roche-swagger.entrypoints=web"
+      - "traefik.http.routers.mah-roche-swagger.service=mah-roche-swagger"
+      - "traefik.http.services.mah-roche-swagger.loadbalancer.server.port=3009"
+
+      - "traefik.http.routers.mah-roche-api.rule=Host(`api.mah-roche.localhost`)"
+      - "traefik.http.routers.mah-roche-api.entrypoints=web"
+      - "traefik.http.routers.mah-roche-api.service=mah-roche-api"
+      - "traefik.http.services.mah-roche-api.loadbalancer.server.port=8081"
 
 #      - "traefik.http.routers.mah-roche-api.rule=Host(`mah-roche.localhost`) && PathPrefix(`/api`)"
 #      - "traefik.http.routers.mah-roche-api.entrypoints=web"
