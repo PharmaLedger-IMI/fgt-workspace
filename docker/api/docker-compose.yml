@@ -154,7 +154,8 @@ services:
     volumes:
       - whs1_vol:/fgt-workspace/apihub-root/external-volume
     networks:
-      - traceability-net
+      traceability-net:
+        ipv4_address: 172.16.63.101
 
   pha-1:
     << : *pha-def
@@ -193,7 +194,9 @@ services:
     volumes:
       - pha1_vol:/fgt-workspace/apihub-root/external-volume
     networks:
-      - traceability-net
+      traceability-net:
+        ipv4_address: 172.16.63.151
+
 networks:
   traceability-net:
     name: traceability-net
