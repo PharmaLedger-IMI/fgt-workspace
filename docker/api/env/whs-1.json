@@ -1,0 +1,24 @@
+{
+  "name": {
+    "secret": "PDM the Wholesaler",
+    "public": true
+  },
+  "id": {
+    "secret": "WHS000001",
+    "public": true
+  },
+  "email": {
+    "secret": "wholesaler@whs.pharmaledger.com",
+    "public": true
+  },
+  "address": {
+    "public": true,
+    "secret": "Lisbon, Portugal"
+  },
+  "pass": {
+    "secret": "This1sSuchAS3curePassw0rd"
+  },
+  "passrepeat": {
+    "secret": "This1sSuchAS3curePassw0rd"
+  }
+}

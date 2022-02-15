@@ -1,10 +1,14 @@
 FROM node:14.16-buster
 ARG ROLE=mah
+ARG WALLET=mah
 ARG CREDENTIALS_FILE=mah-roche.json
 ARG SWAGGER_SERVER=http://api.mah-roche.localhost:8080/traceability
 
 ENV ROLE "$ROLE"
 RUN echo "Environment ROLE recognized as $ROLE"
+
+ENV WALLET "$WALLET"
+RUN echo "Environment WALLET recognized as $WALLET"
 
 ENV CREDENTIALS_FILE "$CREDENTIALS_FILE"
 RUN echo "Environment CREDENTIALS recognized as $CREDENTIALS_FILE"
@@ -21,7 +25,7 @@ RUN git clone https://github.com/PharmaLedger-IMI/fgt-workspace.git $TARGET_FOLD
 COPY config/ $TARGET_FOLDER_NAME/apihub-root/external-volume/config/
 
 # Copy the desired credentials to the ROLE specific folder
-COPY env/$CREDENTIALS_FILE $TARGET_FOLDER_NAME/fgt-api/config/fgt-${ROLE}-wallet/credentials.json
+COPY env/$CREDENTIALS_FILE $TARGET_FOLDER_NAME/fgt-api/config/fgt-${WALLET}-wallet/credentials.json
 
 RUN cd $TARGET_FOLDER_NAME && \
     npm install --unsafe-perm
