@@ -76,8 +76,6 @@ services:
       - traceability_vol:/fgt-workspace/apihub-root/external-volume
     networks:
       - traceability-net
-    ports:
-      - "8081:8080"
 
   mah-roche:
     << : *mah-def
