@@ -11,10 +11,10 @@
   "traceability": {
     "replicas": [],
     "brickStorages": [
-      "http://traceability.localhost:8080"
+      "http://mah-roche.fgt.pharmaledger.pdmfc.com:8080"
     ],
     "anchoringServices": [
-      "http://traceability.localhost:8080"
+      "http://mah-roche.fgt.pharmaledger.pdmfc.com:8080"
     ]
   },
   "vault": {
