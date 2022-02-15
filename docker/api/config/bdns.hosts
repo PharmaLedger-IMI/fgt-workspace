@@ -14,13 +14,13 @@
   "traceability": {
     "replicas": [],
     "brickStorages": [
-      "http://traceability.fgt.pharmaledger.pdmfc.com:8080"
+      "http://traceability.localhost:8080"
     ],
     "anchoringServices": [
-      "http://traceability.fgt.pharmaledger.pdmfc.com:8080"
+      "http://traceability.localhost:8080"
     ],
     "notifications": [
-      "http://traceability.fgt.pharmaledger.pdmfc.com:8080"
+      "http://traceability.localhost:8080"
     ]
   },
   "vault": {
