@@ -14,13 +14,13 @@
   "traceability": {
     "replicas": [],
     "brickStorages": [
-      "http://traceability.localhost:8080"
+      "http://172.16.63.51:8080"
     ],
     "anchoringServices": [
-      "http://traceability.localhost:8080"
+      "http://172.16.63.51:8080"
     ],
     "notifications": [
-      "http://traceability.localhost:8080"
+      "http://172.16.63.51:8080"
     ]
   },
   "vault": {

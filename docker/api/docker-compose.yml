@@ -70,12 +70,13 @@ services:
       - "traefik.http.middlewares.traceability-headers.headers.accessControlMaxAge=100"
       - "traefik.http.middlewares.traceability-headers.headers.addVaryHeader=true"
       - "traefik.http.routers.traceability.middlewares=traceability-headers"
-#      - "traefik.http.routers.traceability.rule=HostRegexp(`fgt(:?\\-(?:dev|tst|local))?\\.pharmaledger\\.pdmfc\\.com`)"
+      - "traefik.http.services.traceability.loadbalancer.server.port=8080"
       - "traefik.http.routers.traceability.entrypoints=web"
     volumes:
       - traceability_vol:/fgt-workspace/apihub-root/external-volume
     networks:
-      - traceability-net
+      traceability-net:
+        ipv4_address: 172.16.63.51
 
   mah-roche:
     << : *mah-def
@@ -89,7 +90,7 @@ services:
         SWAGGER_SERVER: http://api.mah-roche.localhost:8080/traceability
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traceability.rule=Host(`mah-roche.localhost`)"
+      - "traefik.http.routers.mah-roche.rule=Host(`mah-roche.localhost`)"
       - "traefik.http.middlewares.mah-roche-headers.headers.accessControlAllowOriginListRegex=.*?"
       - "traefik.http.middlewares.mah-roche-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
       - "traefik.http.middlewares.mah-roche-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
@@ -122,7 +123,8 @@ services:
     volumes:
       - mah-roche_vol:/fgt-workspace/apihub-root/external-volume
     networks:
-      - traceability-net
+      traceability-net:
+        ipv4_address: 172.16.63.61
 
 #  mhs-takeda:
 #    <<: *whs-def
@@ -166,6 +168,10 @@ networks:
   traceability-net:
     name: traceability-net
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.63.0/24
 volumes:
   "traceability_vol":
   "mah-roche_vol":
