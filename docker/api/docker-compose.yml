@@ -5,7 +5,7 @@ x-participant-def:
   build:
     context: ../api
   healthcheck:
-    test: [ "CMD", "curl", "--fail", "http://localhost:8080/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed" ]
+    test: [ "CMD", "curl", "--fail", "http://localhost:3009" ]
     interval: 5s
     timeout: 3s
     retries: 20
