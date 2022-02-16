@@ -14,4 +14,4 @@ fi
 
 echo "Launching docker compose in $params"
 
-DOMAIN=$params SWAGGER=$swagger docker-compose up &
+DOMAIN=$params SWAGGER=$swagger docker-compose up -d

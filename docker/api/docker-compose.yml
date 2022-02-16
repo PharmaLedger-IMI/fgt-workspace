@@ -50,16 +50,6 @@ services:
     networks:
       - traceability-net
 
-  whoami:
-    image: "traefik/whoami"
-    container_name: "whoami"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=PathPrefix(`/whoami`)"
-      - "traefik.http.routers.whoami.entrypoints=web"
-    networks:
-      - traceability-net
-
   fgt-workspace:
     container_name: fgt-workspace
     build:
