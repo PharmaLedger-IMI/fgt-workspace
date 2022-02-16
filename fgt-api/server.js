@@ -2,6 +2,8 @@ const {ROLE, CREDENTIALS_FILE, SWAGGER_SERVER} = process.env;
 const fs = require('fs');
 const path = require('path');
 
+const currentPath = process.cwd();
+
 if (!ROLE){
     console.log("No ROLE Definition found. Assuming simple APIHUB")
     process.exit(0);
@@ -26,12 +28,12 @@ function getWallet(){
 }
 
 function overWriteCredentialsByRole(){
-    fs.copyFileSync(path.join("..", "docker", "env", CREDENTIALS_FILE),
-        path.join("config", `fgt-${getWallet()}-wallet`, "credentials.json"))
+    fs.copyFileSync(path.join(currentPath, "..", "docker", "api", "env", CREDENTIALS_FILE),
+        path.join(currentPath, "config", `fgt-${getWallet()}-wallet`, "credentials.json"))
 }
 
 function bootAPIServer(){
-    require(path.join("participants", ROLE, "index.js"));
+    require(path.join(currentPath, "participants", ROLE, "index.js"));
 }
 
 function bootSwagger(){
