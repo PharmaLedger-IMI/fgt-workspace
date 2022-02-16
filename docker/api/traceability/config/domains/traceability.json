@@ -7,5 +7,6 @@
     "commands": {
       "addAnchor": "anchor"
     }
-  }
+  },
+  "enable": ["mq"]
 }

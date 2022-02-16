@@ -13,6 +13,9 @@
     "brickStorages": [
       "$ORIGIN"
     ],
+    "mqEndpoints": [
+      "$ORIGIN"
+    ],
     "anchoringServices": [
       "$ORIGIN"
     ]
