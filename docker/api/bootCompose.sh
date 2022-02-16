@@ -11,4 +11,5 @@ fi
 
 echo "Launching docker compose in $params"
 
-DOMAIN=$params docker-compose up -d
+DOMAIN=$params docker-compose up -d &
+docker-compose logs -f -t --tail="all"
