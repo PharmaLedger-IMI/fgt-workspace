@@ -2,6 +2,11 @@ const {ROLE, CREDENTIALS_FILE, SWAGGER_SERVER} = process.env;
 const fs = require('fs');
 const path = require('path');
 
+if (!ROLE){
+    console.log("No ROLE Definition found. Assuming simple APIHUB")
+    process.exit(0);
+}
+
 console.log(`ENVIRONMENT VARIABLES: ROLE: ${ROLE}, CREDENTIALS_FILE: ${CREDENTIALS_FILE} and SWAGGER_SERVER: ${SWAGGER_SERVER}`)
 
 function failServerBoot(reason){
