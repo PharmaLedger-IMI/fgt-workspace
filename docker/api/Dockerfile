@@ -13,7 +13,7 @@ COPY config/ $TARGET_FOLDER_NAME/apihub-root/external-volume/config/
 
 # Start the server, run build-all, run the ROLE specific API and run the swagger instance<
 RUN cd $TARGET_FOLDER_NAME && \
-    $(npm run server & > server.log) \n sleep 5s \n npm run build-all > build.log \n cd fgt-api && npm run boot-api > api.log' >> startup-script.sh
+    echo 'npm run server > server.log 2>&1 & \n sleep 5s \n npm run build-all > build.log \n cd fgt-api && npm run boot-api > api.log 2>&1' >> startup-script.sh
 RUN cd $TARGET_FOLDER_NAME && cat startup-script.sh
 
 EXPOSE 8080/tcp
