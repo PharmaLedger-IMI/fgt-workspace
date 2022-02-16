@@ -14,16 +14,16 @@
   "traceability": {
     "replicas": [],
     "brickStorages": [
-      "http://172.16.63.51:8080"
+      "https://traceability-fgt-dev.pharmaledger.pdmfc.com"
     ],
     "mqEndpoints": [
-       "http://172.16.63.51:8080"
+      "https://traceability-fgt-dev.pharmaledger.pdmfc.com"
     ],
     "anchoringServices": [
-      "http://172.16.63.51:8080"
+      "https://traceability-fgt-dev.pharmaledger.pdmfc.com"
     ],
     "notifications": [
-      "http://172.16.63.51:8080"
+      "https://traceability-fgt-dev.pharmaledger.pdmfc.com"
     ]
   },
   "vault": {
