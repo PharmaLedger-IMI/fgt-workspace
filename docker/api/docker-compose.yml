@@ -2,28 +2,32 @@ version: "2.3"
 x-participant-def:
   &participant-def
   restart: "unless-stopped"
-#  ports:
-#    - "8080:8080"
-#    - "8081:8081"
-#    - "8082:3009"
+  build:
+    context: ../api
+  healthcheck:
+    test: [ "CMD", "curl", "--fail", "http://localhost:8080/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed" ]
+    interval: 5s
+    timeout: 3s
+    retries: 20
+    start_period: 20s
 x-mah-def:
   &mah-def
   << : *participant-def
-#  depends_on:
-#    fgt-workspace:
-#      condition: service_healthy
+  depends_on:
+    fgt-workspace:
+      condition: service_healthy
 x-whs-def:
   &whs-def
   << : *participant-def
-#  depends_on:
-#    mah-roche:
-#      condition: service_healthy
+  depends_on:
+    mah-roche:
+      condition: service_healthy
 x-pha-def:
   &pha-def
   << : *participant-def
-#  depends_on:
-#    whs-takeda :
-#      condition: service_healthy
+  depends_on:
+    whs-takeda :
+      condition: service_healthy
 services:
   traefik:
     image: "traefik:v2.6"
@@ -77,18 +81,21 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.51
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 20s
 
   mah-roche:
     << : *mah-def
     container_name: mah-roche
     hostname: mah-roche
-    build:
-      context: ../api
-      args:
-        ROLE: mah
-        WALLET: mah
-        CREDENTIALS_FILE: mah-roche.json
-        SWAGGER_SERVER: http://api.mah-roche.localhost:8080/traceability
+    environment:
+      ROLE: mah
+      CREDENTIALS_FILE: mah-roche.json
+      SWAGGER_SERVER: http://api.mah-roche.localhost:8080/traceability
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-roche.rule=Host(`mah-roche.localhost`)"
@@ -117,17 +124,15 @@ services:
       traceability-net:
         ipv4_address: 172.16.63.61
 
+
   whs-1:
     << : *whs-def
     container_name: whs1
     hostname: whs1
-    build:
-      context: ../api
-      args:
-        ROLE: whs
-        WALLET: wholesaler
-        CREDENTIALS_FILE: whs-1.json
-        SWAGGER_SERVER: http://api.whs1.localhost:8080/traceability
+    environment:
+      ROLE: whs
+      CREDENTIALS_FILE: whs-1.json
+      SWAGGER_SERVER: http://api.whs1.localhost:8080/traceability
     labels:
       - "traefik.enable=true"
 
@@ -156,46 +161,46 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.101
-
-  pha-1:
-    << : *pha-def
-    container_name: pha1
-    hostname: pha1
-    build:
-      context: ../api
-      args:
-        ROLE: pha
-        WALLET: pharmacy
-        CREDENTIALS_FILE: pha-1.json
-        SWAGGER_SERVER: http://api.pha1.localhost:8080/traceability
-    labels:
-      - "traefik.enable=true"
-
-      - "traefik.http.routers.pha1.rule=Host(`pha1.localhost`)"
-      - "traefik.http.middlewares.pha1-headers.headers.accessControlAllowOriginListRegex=.*?"
-      - "traefik.http.middlewares.pha1-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
-      - "traefik.http.middlewares.pha1-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
-      - "traefik.http.middlewares.pha1-headers.headers.accessControlMaxAge=100"
-      - "traefik.http.middlewares.pha1-headers.headers.addVaryHeader=true"
-      - "traefik.http.routers.pha1.middlewares=pha1-headers"
-      - "traefik.http.routers.pha1.entrypoints=web"
-      - "traefik.http.routers.pha1.service=pha1"
-      - "traefik.http.services.pha1.loadbalancer.server.port=8080"
-
-      - "traefik.http.routers.pha1-swagger.rule=Host(`swagger.pha1.localhost`)"
-      - "traefik.http.routers.pha1-swagger.entrypoints=web"
-      - "traefik.http.routers.pha1-swagger.service=pha1-swagger"
-      - "traefik.http.services.pha1-swagger.loadbalancer.server.port=3009"
-
-      - "traefik.http.routers.pha1-api.rule=Host(`api.pha1.localhost`)"
-      - "traefik.http.routers.pha1-api.entrypoints=web"
-      - "traefik.http.routers.pha1-api.service=pha1-api"
-      - "traefik.http.services.pha1-api.loadbalancer.server.port=3002"
-    volumes:
-      - pha1_vol:/fgt-workspace/apihub-root/external-volume
-    networks:
-      traceability-net:
-        ipv4_address: 172.16.63.151
+#
+#  pha-1:
+#    << : *pha-def
+#    container_name: pha1
+#    hostname: pha1
+#    build:
+#      context: ../api
+#      args:
+#        ROLE: pha
+#        WALLET: pharmacy
+#        CREDENTIALS_FILE: pha-1.json
+#        SWAGGER_SERVER: http://api.pha1.localhost:8080/traceability
+#    labels:
+#      - "traefik.enable=true"
+#
+#      - "traefik.http.routers.pha1.rule=Host(`pha1.localhost`)"
+#      - "traefik.http.middlewares.pha1-headers.headers.accessControlAllowOriginListRegex=.*?"
+#      - "traefik.http.middlewares.pha1-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
+#      - "traefik.http.middlewares.pha1-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
+#      - "traefik.http.middlewares.pha1-headers.headers.accessControlMaxAge=100"
+#      - "traefik.http.middlewares.pha1-headers.headers.addVaryHeader=true"
+#      - "traefik.http.routers.pha1.middlewares=pha1-headers"
+#      - "traefik.http.routers.pha1.entrypoints=web"
+#      - "traefik.http.routers.pha1.service=pha1"
+#      - "traefik.http.services.pha1.loadbalancer.server.port=8080"
+#
+#      - "traefik.http.routers.pha1-swagger.rule=Host(`swagger.pha1.localhost`)"
+#      - "traefik.http.routers.pha1-swagger.entrypoints=web"
+#      - "traefik.http.routers.pha1-swagger.service=pha1-swagger"
+#      - "traefik.http.services.pha1-swagger.loadbalancer.server.port=3009"
+#
+#      - "traefik.http.routers.pha1-api.rule=Host(`api.pha1.localhost`)"
+#      - "traefik.http.routers.pha1-api.entrypoints=web"
+#      - "traefik.http.routers.pha1-api.service=pha1-api"
+#      - "traefik.http.services.pha1-api.loadbalancer.server.port=3002"
+#    volumes:
+#      - pha1_vol:/fgt-workspace/apihub-root/external-volume
+#    networks:
+#      traceability-net:
+#        ipv4_address: 172.16.63.151
 
 networks:
   traceability-net:
