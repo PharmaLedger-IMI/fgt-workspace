@@ -18,10 +18,14 @@ function failServerBoot(reason){
 
 function getWallet(){
     switch (ROLE){
+        case "mah":
+            return "mah"
         case "whs":
             return 'wholesaler';
         case "pha":
             return "pharmacy";
+        default:
+            return ROLE;
     }
 }
 
@@ -74,7 +78,7 @@ async function bootSwagger(){
 
 try {
     overWriteCredentialsByRole();
-    Promise.all([bootAPIServer(), bootSwagger()])
+    Promise.all([bootAPIServer(), bootSwagger()]).then(_ => console.log(`Completed Boot`)).catch(e => failServerBoot(e.message));
 } catch (e){
     failServerBoot(e.message);
 }
