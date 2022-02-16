@@ -296,6 +296,32 @@ $ npm run build-all
 <li>Windows:
 <code>echo &quot;${PATH_TO_DRAW_IO}\drawio.exe&quot;</code></li>
 </ul>
+<h3>API</h3>
+<h4>Deployment Diagram</h4>
+<h5>Real World Scenario</h5>
+<p>The proposed REST Api deployment diagram is as follows</p>
+<p><img src="resources/drawings/finishedGoodsTraceabilityDSUTypes-fgt-api-deployment.png" alt="Proposed Intrastructure"></p>
+<p>where each participant has its own environment, running it's own:</p>
+<ul>
+<li>ERP System;</li>
+<li>OpenDSU API (ApiHub);</li>
+<li>FGT REST API;</li>
+<li>(optional, typically for MAHs) blockchain node;</li>
+</ul>
+<h5>Testing Scenario</h5>
+<p>Because the above infrastructure is not testable at this moment, we propose to deploy the following on our servers:</p>
+<p><img src="resources/drawings/finishedGoodsTraceabilityDSUTypes-fgt-api-test-deployment.png" alt="Proposed Intrastructure"></p>
+<p>where each participant has its own environment, running it's own:</p>
+<ul>
+<li>Swagger Instance (mocks the ERP System);</li>
+<li>OpenDSU API (ApiHub);</li>
+<li>FGT REST API;</li>
+</ul>
+<p><strong>How to deploy</strong></p>
+<p>ssh into the machine;
+clone the workspace;
+go to <code>fgt-workspace/docker/api</code>
+run <code>./bootCompose.sh ${env}</code> where env can be nothing (localhost), dev (fgt-dev.pharmaledger.pdmfc.com) or anything else (fgt.pharmaledger.pdmfc.com)</p>
 <h3>Deploy and test with a local blockchain</h3>
 <ul>
 <li>(optional) clean 'fake' blockchain: <code>npm run clean</code></li>
