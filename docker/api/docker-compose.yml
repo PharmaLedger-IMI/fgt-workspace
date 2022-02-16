@@ -68,7 +68,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traceability.rule=Host(`traceability.localhost`)"
-      - "traefik.http.middlewares.traceability-headers.headers.accessControlAllowOriginListRegex=.*?"
+      - "traefik.http.middlewares.traceability-headers.headers.accessControlAllowOriginListRegex=.*"
       - "traefik.http.middlewares.traceability-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
       - "traefik.http.middlewares.traceability-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
       - "traefik.http.middlewares.traceability-headers.headers.accessControlMaxAge=100"
@@ -99,7 +99,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-roche.rule=Host(`mah-roche.localhost`)"
-      - "traefik.http.middlewares.mah-roche-headers.headers.accessControlAllowOriginListRegex=.*?"
+      - "traefik.http.middlewares.mah-roche-headers.headers.accessControlAllowOriginListRegex=.*"
       - "traefik.http.middlewares.mah-roche-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
       - "traefik.http.middlewares.mah-roche-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
       - "traefik.http.middlewares.mah-roche-headers.headers.accessControlMaxAge=100"
@@ -137,7 +137,7 @@ services:
       - "traefik.enable=true"
 
       - "traefik.http.routers.whs1.rule=Host(`whs1.localhost`)"
-      - "traefik.http.middlewares.whs1-headers.headers.accessControlAllowOriginListRegex=.*?"
+      - "traefik.http.middlewares.whs1-headers.headers.accessControlAllowOriginListRegex=.*"
       - "traefik.http.middlewares.whs1-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
       - "traefik.http.middlewares.whs1-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
       - "traefik.http.middlewares.whs1-headers.headers.accessControlMaxAge=100"
