@@ -1,11 +1,11 @@
 #!/bin/bash -xe
 if test -z "$1"; then
-  params="localhost"
+  params=".localhost"
 else
   if test "$1" = "dev"; then
-    params="fgt-${1}.pharmaledger.pdmfc.com"
+    params="-fgt-${1}.pharmaledger.pdmfc.com"
   else
-    params="fgt.pharmaledger.pdmfc.com"
+    params="-fgt.pharmaledger.pdmfc.com"
   fi
 fi
 

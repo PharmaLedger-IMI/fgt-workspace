@@ -67,7 +67,7 @@ services:
     hostname: fgt-workspace
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traceability.rule=Host(`traceability.${DOMAIN}`)"
+      - "traefik.http.routers.traceability.rule=Host(`traceability${DOMAIN}`)"
       - "traefik.http.middlewares.traceability-headers.headers.accessControlAllowOriginListRegex=.*"
       - "traefik.http.middlewares.traceability-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
       - "traefik.http.middlewares.traceability-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
@@ -98,7 +98,7 @@ services:
       SWAGGER_SERVER: http://api.mah-roche.localhost:8080/traceability
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mah-roche.rule=Host(`mah-roche.${DOMAIN}`)"
+      - "traefik.http.routers.mah-roche.rule=Host(`mah-roche${DOMAIN}`)"
       - "traefik.http.middlewares.mah-roche-headers.headers.accessControlAllowOriginListRegex=.*"
       - "traefik.http.middlewares.mah-roche-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
       - "traefik.http.middlewares.mah-roche-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
@@ -109,12 +109,12 @@ services:
       - "traefik.http.routers.mah-roche.service=mah-roche"
       - "traefik.http.services.mah-roche.loadbalancer.server.port=8080"
 
-      - "traefik.http.routers.mah-roche-swagger.rule=Host(`swagger.mah-roche.${DOMAIN}`)"
+      - "traefik.http.routers.mah-roche-swagger.rule=Host(`swagger-mah-roche${DOMAIN}`)"
       - "traefik.http.routers.mah-roche-swagger.entrypoints=web"
       - "traefik.http.routers.mah-roche-swagger.service=mah-roche-swagger"
       - "traefik.http.services.mah-roche-swagger.loadbalancer.server.port=3009"
 
-      - "traefik.http.routers.mah-roche-api.rule=Host(`api.mah-roche.${DOMAIN}`)"
+      - "traefik.http.routers.mah-roche-api.rule=Host(`api-mah-roche${DOMAIN}`)"
       - "traefik.http.routers.mah-roche-api.entrypoints=web"
       - "traefik.http.routers.mah-roche-api.service=mah-roche-api"
       - "traefik.http.services.mah-roche-api.loadbalancer.server.port=8081"
@@ -136,7 +136,7 @@ services:
     labels:
       - "traefik.enable=true"
 
-      - "traefik.http.routers.whs1.rule=Host(`whs1.${DOMAIN}`)"
+      - "traefik.http.routers.whs1.rule=Host(`whs1${DOMAIN}`)"
       - "traefik.http.middlewares.whs1-headers.headers.accessControlAllowOriginListRegex=.*"
       - "traefik.http.middlewares.whs1-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
       - "traefik.http.middlewares.whs1-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
@@ -147,12 +147,12 @@ services:
       - "traefik.http.routers.whs1.service=whs1"
       - "traefik.http.services.whs1.loadbalancer.server.port=8080"
 
-      - "traefik.http.routers.whs1-swagger.rule=Host(`swagger.whs1.${DOMAIN}`)"
+      - "traefik.http.routers.whs1-swagger.rule=Host(`swagger-whs1${DOMAIN}`)"
       - "traefik.http.routers.whs1-swagger.entrypoints=web"
       - "traefik.http.routers.whs1-swagger.service=whs1-swagger"
       - "traefik.http.services.whs1-swagger.loadbalancer.server.port=3009"
 
-      - "traefik.http.routers.whs1-api.rule=Host(`api.whs1.${DOMAIN}`)"
+      - "traefik.http.routers.whs1-api.rule=Host(`api-whs1${DOMAIN}`)"
       - "traefik.http.routers.whs1-api.entrypoints=web"
       - "traefik.http.routers.whs1-api.service=whs1-api"
       - "traefik.http.services.whs1-api.loadbalancer.server.port=3001"
