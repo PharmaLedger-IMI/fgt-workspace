@@ -18,8 +18,6 @@ function failServerBoot(reason){
 
 function getWallet(){
     switch (ROLE){
-        case "mah":
-            return "mah";
         case "whs":
             return 'wholesaler';
         case "pha":
@@ -32,11 +30,11 @@ function overWriteCredentialsByRole(){
         path.join(currentPath, "config", `fgt-${getWallet()}-wallet`, "credentials.json"))
 }
 
-function bootAPIServer(){
+async function bootAPIServer(){
     require(path.join(currentPath, "participants", ROLE, "index.js"));
 }
 
-function bootSwagger(){
+async function bootSwagger(){
     const YAML = require('yamljs');
     const express = require('express');
     const cors = require('cors');
@@ -76,8 +74,7 @@ function bootSwagger(){
 
 try {
     overWriteCredentialsByRole();
-    bootAPIServer();
-    bootSwagger();
+    Promise.all([bootAPIServer(), bootSwagger()])
 } catch (e){
     failServerBoot(e.message);
 }
