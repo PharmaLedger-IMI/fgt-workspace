@@ -5,11 +5,11 @@ RUN npm install -g node-gyp
 ENV TARGET_FOLDER_NAME="fgt-workspace"
 RUN git clone https://github.com/PharmaLedger-IMI/fgt-workspace.git $TARGET_FOLDER_NAME
 
-# Copy the API HUB Configs (BDNS, domains, etc)
-COPY config/ $TARGET_FOLDER_NAME/apihub-root/external-volume/config/
-
 RUN cd $TARGET_FOLDER_NAME && \
     npm install --unsafe-perm
+
+# Copy the API HUB Configs (BDNS, domains, etc)
+COPY config/ $TARGET_FOLDER_NAME/apihub-root/external-volume/config/
 
 # Start the server, run build-all, run the ROLE specific API and run the swagger instance<
 RUN cd $TARGET_FOLDER_NAME && \
