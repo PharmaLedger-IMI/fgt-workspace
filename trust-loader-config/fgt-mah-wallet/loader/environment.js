@@ -6,7 +6,7 @@ export default {
   "system": "any",
   "browser": "any",
   "mode": "dev-secure",
-  "vaultDomain":  "vault",
+  "vaultDomain":  "traceability",
   "didDomain":  "traceability",
   "enclaveType":"WalletDBEnclave",
   "domain": "traceability",

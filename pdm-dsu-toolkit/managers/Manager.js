@@ -86,6 +86,7 @@ class Manager{
         this.indexes = indexes;
         this.controllers = undefined;
         this.getIdentity = baseManager.getIdentity.bind(baseManager);
+        this.getEnvironment = baseManager.getEnvironment.bind(baseManager);
         this._getResolver = baseManager._getResolver;
         this._getKeySSISpace = baseManager._getKeySSISpace;
         this._loadDSU = baseManager._loadDSU;
@@ -144,6 +145,8 @@ class Manager{
         if (this.controllers)
             this.controllers.forEach(c => c.refresh(props));
     }
+
+    getEnvironment(callback){};
 
     beginBatch(){
         this.dbLock.beginBatch(this.tableName);

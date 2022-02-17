@@ -79,6 +79,8 @@ class BaseManager {
         this.identity = undefined;
         this.managerCache = {};
         this.controller = undefined;
+        this.environment = undefined;
+        this.sc = undefined;
         this._getResolver = getResolver;
         this._getKeySSISpace = getKeySSISpace;
         this._err = _err;
@@ -106,6 +108,19 @@ class BaseManager {
         }, 100)
 
     };
+
+    getEnvironment(callback){
+        if (this.environment)
+            return callback(undefined, this.environment);
+        if (!this.rootDSU)
+            return callback(`No Root DSU defined`);
+        this.rootDSU.getObject('/environment.json', (err, env) => {
+            if (err)
+                return callback(err);
+            this.environment = env;
+            callback(undefined, env);
+        });
+    }
 
     /**
      * Caches every other manager to enforce a singleton behaviour
@@ -302,17 +317,36 @@ class BaseManager {
                 }
             }
 
-            const loadMessenger = function(callback){
-                self.participantConstSSI = relevant[self._cleanPath(PARTICIPANT_MOUNT_PATH)];
-                self._getDIDString(identity, self.participantConstSSI, (err, didString) => {
+            const loadSC = function(callback){
+                self.getEnvironment((err, env) => {
                     if (err)
                         return callback(err);
-                    console.log(`DID String is ${didString}`);
-                    getMessageManager(self, didString, (err, messageManager) => {
+                    const scApi = require('opendsu').loadApi('sc');
+                    scApi.setMainDSU(self.rootDSU);
+                    // self.sc.autoconfigFromEnvironment(env);
+                    self.sc = scApi.refreshSecurityContext();
+                    self.sc.on('initialised', async () => {
+                        callback()
+                    });
+                })
+
+            }
+
+            const loadMessenger = function(callback){
+                loadSC((err) => {
+                    if (err)
+                        return callback(err);
+                    self.participantConstSSI = relevant[self._cleanPath(PARTICIPANT_MOUNT_PATH)];
+                    self._getDIDString(identity, self.participantConstSSI, (err, didString) => {
                         if (err)
                             return callback(err);
-                        self.messenger = messageManager;
-                        callback(undefined, self);
+                        console.log(`DID String is ${didString}`);
+                        getMessageManager(self, didString, (err, messageManager) => {
+                            if (err)
+                                return callback(err);
+                            self.messenger = messageManager;
+                            callback(undefined, self);
+                        });
                     });
                 });
             }
