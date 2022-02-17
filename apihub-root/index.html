@@ -24,9 +24,9 @@
             </div>
             <script>
                 const swaggerButton = document.body.querySelector(`#swagger`);
-                if (window.location.href.match(/-?(?:mah|whs|pha)[\-\d]/g)){
+                if (window.location.hostname.match(/[-\.]?(?:mah|whs|pha)[\-\d]/g)){
                     swaggerButton.setAttribute("style", "display: block;");
-                    swaggerButton.setAttribute("href", `swagger-${window.location.href}`);
+                    swaggerButton.setAttribute("href", `swagger-${window.location.hostname}`);
                 }
             </script>
         </a>
@@ -60,28 +60,28 @@
                     <li>
                         MAH:
                         <ul>
-                            <li class="participant" href="mah-pfizer" target="_blank">Pfizer</li>
-                            <li class="participant" href="mah-roche" target="_blank">Roche</li>
-                            <li class="participant" href="mah-msd" target="_blank">MSD</li>
-                            <li class="participant" href="mah-gsk" target="_blank">GSK</li>
-                            <li class="participant" href="mah-bayer" target="_blank">Bayer</li>
-                            <li class="participant" href="mah-novo-nordisk" target="_blank">Novo Nordisk</li>
-                            <li class="participant" href="mah-takeda" target="_blank">Takeda (Mock MAH)</li>
+                            <li><a class="participant" href="mah-pfizer" target="_blank">Pfizer</a></li>
+                            <li><a class="participant" href="mah-roche" target="_blank">Roche</a></li>
+                            <li><a class="participant" href="mah-msd" target="_blank">MSD</a></li>
+                            <li><a class="participant" href="mah-gsk" target="_blank">GSK</a></li>
+                            <li><a class="participant" href="mah-bayer" target="_blank">Bayer</a></li>
+                            <li><a class="participant" href="mah-novo-nordisk" target="_blank">Novo Nordisk</a></li>
+                            <li><a class="participant" href="mah-takeda" target="_blank">Takeda (Mock MAH)</a></li>
                         </ul>
                     </li>
                     <li>
                         Wholesalers:
                         <ul>
-                            <li class="participant" href="whs-takeda" target="_blank">Takeda (Mock MAH)</li>
-                            <li class="participant" href="whs1" target="_blank">Wholesaler 1</li>
-                            <li class="participant" href="whs2" target="_blank">Wholesaler 2</li>
+                            <li><a class="participant" href="whs-takeda" target="_blank">Takeda</a></li>
+                            <li><a class="participant" href="whs1" target="_blank">Wholesaler 1</a></li>
+                            <li><a class="participant" href="whs2" target="_blank">Wholesaler 2</a></li>
                         </ul>
                     </li>
                     <li>
                         Pharmacies:
                         <ul>
-                            <li class="participant" href="pha1" target="_blank">Pharmacy 1</li>
-                            <li class="participant" href="pha2" target="_blank">Pharmacy 2</li>
+                            <li><a class="participant" href="pha1" target="_blank">Pharmacy 1</a></li>
+                            <li><a class="participant" href="pha2" target="_blank">Pharmacy 2</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -90,7 +90,7 @@
                 const traceabilityDiv = document.body.querySelector('div[id="traceability"]');
                 const url = window.location.href;
 
-                if (url.match(/-?(?:mah|whs|pha)[\-\d]/g)){
+                if (url.match(/[-\.]?(?:mah|whs|pha)[\-\d]/g)){
                     traceabilityDiv.setAttribute("style", "display: none;");
                 } else {
                     const lis = traceabilityDiv.querySelectorAll('.participant');
@@ -118,7 +118,7 @@
             </p>
             <script>
                 const participantDiv = document.body.querySelector(`div[id="participant"]`);
-                if (window.location.href.match(/-?(?:mah|whs|pha)[\-\d]/g))
+                if (window.location.hostname.match(/[-\.]?(?:mah|whs|pha)[\-\d]/g))
                     participantDiv.setAttribute("style", "display: block;");
 
             </script>
