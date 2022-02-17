@@ -9,7 +9,6 @@ export default {
   "vaultDomain":  "vault",
   "didDomain":  "traceability",
   "enclaveType":"WalletDBEnclave",
-  "domain": "traceability",
   "sw": true,
   "pwa": true,
   "basePath": "/fgt-mah-wallet/loader/",

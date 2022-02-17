@@ -8,7 +8,6 @@ export default {
   "mode": "dev-secure",
   "vaultDomain":  "vault",
   "didDomain":  "traceability",
-  "domain": "traceability",
   "sw": true,
   "pwa": true,
   "basePath": "/fgt-pharmacy-wallet/loader/",
