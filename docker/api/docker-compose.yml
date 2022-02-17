@@ -73,7 +73,7 @@ services:
     hostname: fgt-workspace
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traceability.rule=Host(`traceability${DOMAIN}`)"
+      - "traefik.http.routers.traceability.rule=Host(`traceability${DOMAIN}`) || !(PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
       - "traefik.http.middlewares.traceability-headers.headers.accessControlAllowOriginListRegex=.*"
       - "traefik.http.middlewares.traceability-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
       - "traefik.http.middlewares.traceability-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
@@ -376,7 +376,7 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.101
-        
+
   whs-2:
     <<: *whs-def
     container_name: whs2
