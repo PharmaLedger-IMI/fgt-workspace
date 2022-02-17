@@ -8,6 +8,7 @@ export default {
   "mode": "dev-secure",
   "vaultDomain":  "vault",
   "didDomain":  "traceability",
+  "domain": "traceability",
   "enclaveType":"WalletDBEnclave",
   "sw": true,
   "pwa": true,
