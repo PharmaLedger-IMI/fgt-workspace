@@ -1,6 +1,6 @@
 const Manager = require('./Manager')
 const { _err } = require('../services/utils')
-const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE } = require('../constants');
+const { MESSAGE_REFRESH_RATE, DID_METHOD, DID_DOMAIN, MESSAGE_TABLE } = require('../constants');
 
 /**
  * @typedef W3cDID
@@ -233,12 +233,18 @@ class MessageManager extends Manager{
     }
 
     _getDID(didString, callback){
-        this.w3cDID.createIdentity(DID_METHOD, didString, (err, didDoc) => {
-            if (err)
-                return _err(`Could not create DID identity`, err, callback);
-            didDoc.setDomain('traceability');
-            callback(undefined, didDoc)
-        });
+        const didIdentifier = `did:ssi:name:${DID_DOMAIN}:${didString}`;
+        this.w3cDID.resolveDID(didIdentifier, (err, resolvedDIDDoc) => {
+            if (!err)
+                return callback(undefined, resolvedDIDDoc);
+
+            this.w3cDID.createIdentity(DID_METHOD, DID_DOMAIN, didString, (err, didDoc) => {
+                if (err)
+                    return _err(`Could not create DID identity`, err, callback);
+                // didDoc.setDomain('traceability');
+                callback(undefined, didDoc);
+            });
+        })
     }
 }
 
