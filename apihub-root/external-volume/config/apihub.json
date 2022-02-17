@@ -32,6 +32,10 @@
       "module": "./../../fgt-dsu-wizard",
       "function": "Init"
     },
+    "mq":{
+      "module": "./components/mqHub",
+      "function": "MQHub"
+    },
     "bricking": {},
     "anchoring": {}
   },

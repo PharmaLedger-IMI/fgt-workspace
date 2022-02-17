@@ -6,6 +6,8 @@ export default {
   "system": "any",
   "browser": "any",
   "mode": "dev-secure",
+  "vaultDomain":  "vault",
+  "didDomain":  "traceability",
   "domain": "traceability",
   "sw": true,
   "pwa": true,
