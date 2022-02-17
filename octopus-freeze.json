@@ -244,7 +244,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "21fd1451020a665f1b192b6f61565ec2542e1cd3"
+                    "commit": "40c87b51336b7a160672731472785681830f10fe"
                 },
                 {
                     "type": "execute",
@@ -864,7 +864,6 @@
                     }
                 },
                 {
-
                     "type": "copy",
                     "src": "fgt-api/docs/",
                     "target": "docs/fgt-api",
@@ -902,14 +901,3 @@
         }
     ]
 }
-
-
-
-
-
-
-
-
-
-
-
