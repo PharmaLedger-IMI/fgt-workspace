@@ -6,10 +6,10 @@ x-participant-def:
     context: ../api
   healthcheck:
     test: [ "CMD", "curl", "--fail", "http://localhost:3009" ] # looks for the swagger instance, the last thing to boot
-    interval: 5s
+    interval: 15s
     timeout: 3s
-    retries: 20
-    start_period: 20s
+    retries: 100
+    start_period: 40s
 x-mah-def:
   &mah-def
   << : *participant-def
@@ -164,8 +164,6 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.62
-        
-        
   mah-gsk:
     <<: *mah-def
     container_name: mah-gsk
@@ -200,8 +198,7 @@ services:
       - mah-gsk_vol:/fgt-workspace/apihub-root/external-volume
     networks:
       traceability-net:
-        ipv4_address: 172.16.63.63     
-        
+        ipv4_address: 172.16.63.63
   mah-msd:
     <<: *mah-def
     container_name: mah-msd
@@ -236,8 +233,7 @@ services:
       - mah-msd_vol:/fgt-workspace/apihub-root/external-volume
     networks:
       traceability-net:
-        ipv4_address: 172.16.63.64      
-        
+        ipv4_address: 172.16.63.64
   mah-novo-nordisk:
     <<: *mah-def
     container_name: mah-novo-nordisk
@@ -272,7 +268,7 @@ services:
       - mah-novo-nordisk_vol:/fgt-workspace/apihub-root/external-volume
     networks:
       traceability-net:
-        ipv4_address: 172.16.63.65      
+        ipv4_address: 172.16.63.65
   mah-pfizer:
     <<: *mah-def
     container_name: mah-pfizer
@@ -346,8 +342,8 @@ services:
 
   whs-1:
     << : *whs-def
-    container_name: whs-1
-    hostname: whs-1
+    container_name: whs1
+    hostname: whs1
     environment:
       ROLE: whs
       CREDENTIALS_FILE: whs-1.json
@@ -380,11 +376,11 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.101
-        
+
   whs-2:
     <<: *whs-def
-    container_name: whs-2
-    hostname: whs-2
+    container_name: whs2
+    hostname: whs2
     environment:
       ROLE: whs
       CREDENTIALS_FILE: whs-2.json
@@ -416,14 +412,14 @@ services:
       - whs2_vol:/fgt-workspace/apihub-root/external-volume
     networks:
       traceability-net:
-        ipv4_address: 172.16.63.102      
+        ipv4_address: 172.16.63.102
   whs-takeda:
     <<: *whs-def
     container_name: whs-takeda
     hostname: whs-takeda
     environment:
       ROLE: whs
-      CREDENTIALS_FILE: whs-1.json
+      CREDENTIALS_FILE: whs-takeda.json
       SWAGGER_SERVER: ${PROTOCOL}://api-whs-takeda${SWAGGER}/traceability
     labels:
       - "traefik.enable=true"
@@ -456,11 +452,11 @@ services:
 
   pha-1:
     << : *pha-def
-    container_name: pha-1
-    hostname: pha-1
+    container_name: pha1
+    hostname: pha1
     environment:
       ROLE: pha
-      CREDENTIALS_FILE: pha-1.json.json
+      CREDENTIALS_FILE: pha-1.json
       SWAGGER_SERVER: ${PROTOCOL}://api-pha1${SWAGGER}/traceability
     labels:
       - "traefik.enable=true"
@@ -492,11 +488,11 @@ services:
         ipv4_address: 172.16.63.151
   pha-2:
     <<: *pha-def
-    container_name: pha-2
-    hostname: pha-2
+    container_name: pha2
+    hostname: pha2
     environment:
       ROLE: pha
-      CREDENTIALS_FILE: pha-2.json.json
+      CREDENTIALS_FILE: pha-2.json
       SWAGGER_SERVER: ${PROTOCOL}://api-pha2${SWAGGER}/traceability
     labels:
       - "traefik.enable=true"
