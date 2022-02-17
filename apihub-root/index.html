@@ -88,21 +88,21 @@
             </p>
             <script>
                 const traceabilityDiv = document.body.querySelector('div[id="traceability"]');
-                const url = window.location.href;
+                const url = window.location.hostname;
 
                 if (url.match(/[-\.]?(?:mah|whs|pha)[\-\d]/g)){
                     traceabilityDiv.setAttribute("style", "display: none;");
                 } else {
                     const lis = traceabilityDiv.querySelectorAll('.participant');
                     lis.forEach(l => {
-                        l.setAttribute('href', `${l.getAttribute('href')}-${url}`)
+                        l.setAttribute('href', `${l.getAttribute('href')}${url.startsWith('traceability') ? (url.endsWith('localhost') ? '.' : '-') : '.'}${url}`)
                     })
                 }
             </script>
         </div>
 
         <div id="participant" style="display:none;">
-            <h3>MAH Workspace</h3>
+            <h3>Participant Workspace</h3>
 
             <ul>
                 <li>
