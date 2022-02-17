@@ -1,6 +1,8 @@
 const Manager = require('./Manager')
 const { _err } = require('../services/utils')
 const { MESSAGE_REFRESH_RATE, DID_METHOD, DID_DOMAIN, MESSAGE_TABLE } = require('../constants');
+const opendsu = require("opendsu");
+const scAPI = opendsu.loadAPI("sc");
 
 /**
  * @typedef W3cDID
@@ -53,9 +55,13 @@ class MessageManager extends Manager{
             manager._listeners = {};
             manager.timer = undefined;
 
-            manager.getOwnDID((err, didDoc) => err
-                ? console.log(`Could not get Own DID`, err)
-                : manager._startMessageListener(didDoc));
+            let sc = scAPI.getSecurityContext();
+
+            sc.on('initialised', async () => {
+                manager.getOwnDID((err, didDoc) => err
+                    ? console.log(`Could not get Own DID`, err)
+                    : manager._startMessageListener(didDoc));
+            })
 
             if (callback)
                 callback(undefined, manager);
@@ -234,17 +240,22 @@ class MessageManager extends Manager{
 
     _getDID(didString, callback){
         const didIdentifier = `did:ssi:name:${DID_DOMAIN}:${didString}`;
-        this.w3cDID.resolveDID(didIdentifier, (err, resolvedDIDDoc) => {
-            if (!err)
-                return callback(undefined, resolvedDIDDoc);
 
-            this.w3cDID.createIdentity(DID_METHOD, DID_DOMAIN, didString, (err, didDoc) => {
-                if (err)
-                    return _err(`Could not create DID identity`, err, callback);
-                // didDoc.setDomain('traceability');
-                callback(undefined, didDoc);
-            });
-        })
+        if(scAPI.securityContextIsInitialised()){
+            return this.w3cDID.resolveDID(didIdentifier, (err, resolvedDIDDoc) => {
+                if (!err)
+                    return callback(undefined, resolvedDIDDoc);
+
+                this.w3cDID.createIdentity(DID_METHOD, DID_DOMAIN, didString, (err, didDoc) => {
+                    if (err)
+                        return _err(`Could not create DID identity`, err, callback);
+                    // didDoc.setDomain('traceability');
+                    callback(undefined, didDoc);
+                });
+            })
+        }
+
+        callback(`Security Context not initialised`)
     }
 }
 
