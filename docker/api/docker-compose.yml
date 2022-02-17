@@ -95,7 +95,7 @@ services:
     environment:
       ROLE: mah
       CREDENTIALS_FILE: mah-roche.json
-      SWAGGER_SERVER: https://api-mah-roche${SWAGGER}/traceability
+      SWAGGER_SERVER: ${PROTOCOL}://api-mah-roche${SWAGGER}/traceability
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-roche.rule=Host(`mah-roche${DOMAIN}`)"
@@ -131,7 +131,7 @@ services:
     environment:
       ROLE: whs
       CREDENTIALS_FILE: whs-1.json
-      SWAGGER_SERVER: https://api-whs1${SWAGGER}/traceability
+      SWAGGER_SERVER: ${PROTOCOL}://api-whs1${SWAGGER}/traceability
     labels:
       - "traefik.enable=true"
 
