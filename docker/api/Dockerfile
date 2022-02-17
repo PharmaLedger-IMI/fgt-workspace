@@ -6,7 +6,7 @@ ENV TARGET_FOLDER_NAME="fgt-workspace"
 RUN git clone https://github.com/PharmaLedger-IMI/fgt-workspace.git $TARGET_FOLDER_NAME
 
 RUN cd $TARGET_FOLDER_NAME && \
-    npm install --unsafe-perm \
+    npm install --unsafe-perm
 
 # Copy the API HUB Configs (BDNS, domains, etc)
 COPY config/ $TARGET_FOLDER_NAME/apihub-root/external-volume/config/
