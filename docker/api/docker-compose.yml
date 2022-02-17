@@ -5,7 +5,7 @@ x-participant-def:
   build:
     context: ../api
   healthcheck:
-    test: [ "CMD", "curl", "--fail", "http://localhost:3009" ]
+    test: [ "CMD", "curl", "--fail", "http://localhost:3009" ] # looks for the swagger instance, the last thing to boot
     interval: 5s
     timeout: 3s
     retries: 20
@@ -22,11 +22,27 @@ x-whs-def:
   depends_on:
     mah-roche:
       condition: service_healthy
+    mah-bayer:
+      condition: service_healthy
+    mah-gsk:
+      condition: service_healthy
+    mah-msd:
+      condition: service_healthy
+    mah-novo-nordisk:
+      condition: service_healthy
+    mah-pfizer:
+      condition: service_healthy
+    mah-takeda:
+      condition: service_healthy
 x-pha-def:
   &pha-def
   << : *participant-def
   depends_on:
     whs-takeda :
+      condition: service_healthy
+    whs-1:
+      condition: service_healthy
+    whs-2:
       condition: service_healthy
 services:
   traefik:
@@ -72,7 +88,7 @@ services:
       traceability-net:
         ipv4_address: 172.16.63.51
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8080/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed"]
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed"] # the last SSApp to be built
       interval: 5s
       timeout: 3s
       retries: 20
