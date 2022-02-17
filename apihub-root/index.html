@@ -172,9 +172,23 @@
         <p><span style="font-weight: bold;">WARNING:</span> Unstable software and environments. Use at your own risk! Data persistence at risk of unexpected reset!</p>
 
         <h2>v0.8.0 Release Notes 2021-02-17</h2>
-        <p>Migration to a REST API implementation, integratable with any ERP (There should be no more concurrency conflicts from having multiple wallets with the same id opened);</p>
+        <p>Migration to a REST API implementation, meant to integrate with any ERP (There should be no more concurrency conflicts from having multiple wallets with the same id opened);</p>
         <p>Creation and deployment of a fully configured Swagger instance for each environment. This allows for both testing the functionality in real time, but also as a guide for ERP integration;</p>
-        <p>Deployment of a test environment, simulation a real life scenario, where every participant has its own environment;</p>
+        <p>DID communication upgrade to using the latest DID method provided by OpenDSU.</p>
+        <p>Deployment of a test environment, simulation a real life scenario, where every participant has its own environment and can interact with the REST API:
+        <ul>
+            <li>
+                <p>Real World Infrastructure Architecture:</p>
+                <p>Each participant has its own environment, with integrated FGT REST API and ERP systems. Some run Traceability blockchain nodes (MAHs) as well as their own domains;</p>
+                <p><image src="https://pharmaledger-imi.github.io/fgt-workspace/resources/drawings/finishedGoodsTraceabilityDSUTypes-fgt-api-deployment.png"></image></p>
+            </li>
+            <li>
+                <p>Test Infrastructure Architecture:</p>
+                <p>Each participant has its own (simulated) environment, with integrated FGT REST API and 'ERP Dashboard' (the endpoint can bu used to actually integrate with ERPs).</p>
+                <p><image src="https://pharmaledger-imi.github.io/fgt-workspace/resources/drawings/finishedGoodsTraceabilityDSUTypes-fgt-api-test-deployment.png"></image></p>
+            </li>
+        </ul>
+        </p>
 
         <h2>v0.7.4 Release Notes 2021-11-25</h2>
         <p>Performance and stability improvements.</p>
@@ -336,7 +350,7 @@
         <br>
         This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 853992
         <br>&nbsp;<br>
-        v<!-- VERSION_START -->0.7.3-gfdff4d02<!-- VERSION_END --> &copy;&nbsp;2021 <a href="http://pharmaledger.eu">Pharmaledger.eu</a> - All Rights Reserved.
+        v<!-- VERSION_START -->0.8.0-g6d0c27fc<!-- VERSION_END --> &copy;&nbsp;2021 <a href="http://pharmaledger.eu">Pharmaledger.eu</a> - All Rights Reserved.
     </footer>
 
     <script type="application/javascript">
