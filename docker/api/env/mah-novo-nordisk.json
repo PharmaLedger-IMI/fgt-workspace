@@ -1,19 +1,19 @@
 {
   "name": {
-    "secret": "PDM the Pharmacy",
+    "secret": "Novo Nordisk A/S",
     "public": true
   },
   "id": {
-    "secret": "PHA000001",
+    "secret": "MAH24256790",
     "public": true
   },
   "email": {
-    "secret": "pharmacy@whs.pharmaledger.com",
+    "secret": "novo.nordisk@mah.pharmaledger.com",
     "public": true
   },
   "address": {
-    "secret": "Lisbon, Portugal",
-    "public": true
+    "public": true,
+    "secret": "Bagsvaerd, Denmark"
   },
   "pass": {
     "secret": "This1sSuchAS3curePassw0rd"

@@ -1,19 +1,19 @@
 {
   "name": {
-    "secret": "PDM the Pharmacy",
+    "secret": "GSK",
     "public": true
   },
   "id": {
-    "secret": "PHA000001",
+    "secret": "MAH239820839",
     "public": true
   },
   "email": {
-    "secret": "pharmacy@whs.pharmaledger.com",
+    "secret": "gsk@mah.pharmaledger.com",
     "public": true
   },
   "address": {
-    "secret": "Lisbon, Portugal",
-    "public": true
+    "public": true,
+    "secret": "Great Britain"
   },
   "pass": {
     "secret": "This1sSuchAS3curePassw0rd"
