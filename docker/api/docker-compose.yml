@@ -6,9 +6,9 @@ x-participant-def:
     context: ../api
   healthcheck:
     test: [ "CMD", "curl", "--fail", "http://localhost:3009" ] # looks for the swagger instance, the last thing to boot
-    interval: 10s
+    interval: 15s
     timeout: 3s
-    retries: 20
+    retries: 100
     start_period: 40s
 x-mah-def:
   &mah-def
@@ -73,7 +73,7 @@ services:
     hostname: fgt-workspace
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traceability.rule=Host(`traceability${DOMAIN}`) || !(PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.traceability.rule=Host(`traceability${DOMAIN}`)"
       - "traefik.http.middlewares.traceability-headers.headers.accessControlAllowOriginListRegex=.*"
       - "traefik.http.middlewares.traceability-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
       - "traefik.http.middlewares.traceability-headers.headers.accessControlAllowHeaders=content-type,x-content-length"

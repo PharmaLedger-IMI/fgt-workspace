@@ -99,7 +99,8 @@
                     const isRoot = !url.startsWith('traceability')
                     lis.forEach(l => {
                         const name = l.getAttribute('href');
-                        const newLink = `${isLocalhost ? 'http://' : 'https://'}${name}${isRoot && isLocalhost ? '.' : '-'}${!isRoot ? url.substring(0, 'traceability.'.length) : url}`
+                        const host = window.location.host;
+                        const newLink = `${isLocalhost ? 'http://' : 'https://'}${name}${isLocalhost ? '.'  : '-'}${!isRoot ? host.substring('traceability.'.length) : host}`
                         l.setAttribute('href', `${newLink}`)
                     })
                 }
