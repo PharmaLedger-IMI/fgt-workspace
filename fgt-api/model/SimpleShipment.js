@@ -20,7 +20,13 @@ class SimpleShipment {
                 if (simpleShipment.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = simpleShipment[prop];
 
-        this.shipmentId = simpleShipment.shipmentId ? `${simpleShipment.shipmentId}` : Date.now() + `${Math.random()}`.substring(2, 9);
+        if (simpleShipment.shipmentId) {
+            if (!`${simpleShipment.shipmentId}`.startsWith(simpleShipment.requesterId))
+                this.shipmentId = `${simpleShipment.requesterId}${simpleShipment.shipmentId}`
+        }
+        else
+            this.shipmentId = `${simpleShipment.requesterId}` + (Date.now() + `${Math.random()}`.substring(2, 9));
+
         this.shipmentLines = this.shipmentLines ? this.shipmentLines.map(sl => {
             sl.requesterId = simpleShipment.requesterId;
             sl.senderId = simpleShipment.senderId;
@@ -30,8 +36,16 @@ class SimpleShipment {
 
     validate(oldStatus){
         const errors = [];
+        if (!this.shipmentId)
+            errors.push(`shipmentId is mandatory`);
+        if (this.shipmentId && typeof this.shipmentId !== 'string')
+            errors.push(`shipmentId is not a string`);
+        if (this.shipmentId && !this.shipmentId.startsWith(this.requesterId))
+            errors.push(`shipmentId is invalid`);
         if (!this.orderId)
             errors.push(`orderId is mandatory`);
+        if (typeof this.orderId !== 'string')
+            errors.push(`orderId is not a string`);
         if (!this.requesterId)
             errors.push(`RequesterId is mandatory`);
         if (!this.senderId)
@@ -54,7 +68,7 @@ class SimpleShipment {
 
         if (oldStatus && Shipment.getAllowedStatusUpdates(oldStatus).indexOf(this.status.status || this.status) === -1)
             errors.push(`Status update from ${oldStatus} to ${this.status.status || this.status} is not allowed`);
-        return errors ? errors.join("\n") : undefined;
+        return errors ? errors.join(", ") : undefined;
     }
 
     allowedRequesterStatusUpdate() {

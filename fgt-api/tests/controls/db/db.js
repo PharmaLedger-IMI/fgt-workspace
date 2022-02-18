@@ -68,7 +68,7 @@ const batches = [
 
 const shipments = [
     {
-        shipmentId: `${genId()}`,
+        shipmentId: `${phaParticipant}${genId()}`,
         orderId: `${genId()}`,
         requesterId: phaParticipant,
         senderId: mahParticipant,
@@ -93,7 +93,7 @@ const shipments = [
         ]
     },
     {
-        shipmentId: `${genId()}`,
+        shipmentId: `${phaParticipant}${genId()}`,
         orderId: `${genId()}`,
         requesterId: phaParticipant,
         senderId: mahParticipant,
