@@ -248,9 +248,8 @@ export class ManagedProduct implements CreateManageView{
     return (
       <pdm-ion-table table-title={this.batchesTitle + ` ${this.gtin}`}
                      item-reference="gtin-batch"
-                     query={this.gtin}
+                     dsu-query={JSON.stringify([`gtin == ${this.gtin}`])}
                      auto-load={true}
-                     canQuery={false}
                      paginated={true}
                      manager="BatchManager"
                      icon-name="stats-chart"

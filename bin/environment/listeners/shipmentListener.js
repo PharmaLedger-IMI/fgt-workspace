@@ -8,7 +8,7 @@ const {fulFillOrder} = require('./orderListener');
 
 const orderStatusUpdater = function(participantManager, order, batches, timeout){
     const identity = participantManager.getIdentity();
-    const possibleStatus = Order.getAllowedStatusUpdates(order.status.status).filter(os => os !== OrderStatus.REJECTED);
+    const possibleStatus = Order.getAllowedStatusUpdates(order.status.status).filter(os => [OrderStatus.REJECTED, OrderStatus.ON_HOLD].indexOf(os) === -1);
     if (!possibleStatus || !possibleStatus.length)
         return console.log(`${identity.id} - Order ${order.orderId} has no possible status updates`);
 
@@ -95,6 +95,7 @@ const findOrderToFulfill = function(participantManager, receivedOrder, timeout, 
     const receivedOrderManager = participantManager.getManager("ReceivedOrderManager");
     const stockManager = participantManager.getManager('StockManager');
     submitEvent()
+    receivedOrderManager.countOrders = receivedOrderManager.countOrders || 0
     receivedOrderManager.getAll(true, (err, orders) => {
         if (err)
             return callback(err);
@@ -102,8 +103,8 @@ const findOrderToFulfill = function(participantManager, receivedOrder, timeout, 
             if (err)
                 return callback(err);
 
-            const order = orders.find((order) => {
-                return order.orderLines.every(ol => {
+            const order = orders.find((order, i) => {
+                return i >= receivedOrderManager.countOrders && order.orderLines.every(ol => {
                     const stock = stocks.find(s => s.gtin === ol.gtin);
                     return stock && stock.getQuantity() >= ol.quantity;
                 });
@@ -115,6 +116,7 @@ const findOrderToFulfill = function(participantManager, receivedOrder, timeout, 
             }
 
             console.log(`${identity.id} - Found and order that needs Fulfilling that matches the one that just arrived:`, order, receivedOrder);
+            receivedOrderManager.countOrders ++;
             setTimeout(() => {
                 fulFillOrder(participantManager, order, undefined, timeout, false, callback);
             }, timeout);
@@ -168,7 +170,7 @@ function shipmentListener(participantManager, batches, timeout = 1000){
                     return callback(err);
 
                 orderStatusUpdater(participantManager, order, batches, timeout);
-                callback(undefined, message);
+                callback();
             });
         });
     }

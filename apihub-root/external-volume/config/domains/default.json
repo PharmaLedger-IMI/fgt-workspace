@@ -7,5 +7,8 @@
     "commands": {
       "addAnchor": "anchor"
     }
-  }
+  },
+  "skipOAuth": [
+    "/bricking/default/get-brick"
+  ]
 }

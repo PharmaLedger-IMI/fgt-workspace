@@ -17,7 +17,7 @@ class IndividualReceipt extends IndividualProduct{
        super(individualReceipt);
         if (typeof individualReceipt !== undefined)
             for (let prop in individualReceipt)
-                if (individualReceipt.hasOwnProperty(prop))
+                if (individualReceipt.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = individualReceipt[prop];
     }
 }

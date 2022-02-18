@@ -7,6 +7,7 @@ const StockStatus = require('../model/StockStatus');
 const StockManagementService = require("../services/StockManagementService");
 const Page = require('../../pdm-dsu-toolkit/managers/Page');
 const { toPage, paginate } = require('../../pdm-dsu-toolkit/managers/Page');
+const ShipmentStatus = require("../model/ShipmentStatus");
 
 /**
  * Stock Manager Class
@@ -168,7 +169,7 @@ class StockManager extends Manager{
                     stock.batches.push(updatedBatch);
                     console.log(`Added batch ${updatedBatch.batchNumber} with ${updatedBatch.serialNumbers ? updatedBatch.serialNumbers.length : updatedBatch.getQuantity()} items`);
                 } else {
-                    const newQuantity = sb.batch.getQuantity() + updatedBatch.getQuantity() ;
+                    const newQuantity = sb.batch.getQuantity() + (updatedBatch.quantity || updatedBatch.getQuantity());
                     if (newQuantity < 0)
                         return callback(`Illegal quantity. Not enough Stock. requested ${batch.getQuantity() } of ${sb.batch.getQuantity() }`);
                     serials = sb.batch.manage(updatedBatch.getQuantity(), this.serialization);
@@ -232,7 +233,7 @@ class StockManager extends Manager{
 
             functionCallIterator(iterator(product).bind(this), batches, (err, ...results) => {
                 if (err)
-                    return cb(`Could not perform manage all on Stock`);
+                    return cb(`Could not perform manage all on Stock beacause ${err}`);
 
                 self.commitBatch((err) => {
                     if(err)
@@ -390,36 +391,6 @@ class StockManager extends Manager{
         });
     }
 
-    /**
-     * Returns a page object
-     * @param {number} itemsPerPage
-     * @param {number} page
-     * @param {string} keyword
-     * @param {string} sort
-     * @param {boolean} readDSU
-     * @param {function(err, Page)}callback
-     */
-     getPage(itemsPerPage, page, keyword, sort, readDSU, callback){
-        const self = this;
-        let receivedPage = page || 1;
-
-        const options = {
-            query: keyword ? self._keywordToQuery(keyword) : ["__timestamp > 0", "quantity > 0"],
-            sort: sort || "dsc",
-            limit: undefined
-        }
-
-        self.getAll(readDSU, options, (err, records) => {
-           if (err)
-               return self._err(`Could not retrieve records to page`, err, callback);
-            if (records.length === 0)
-                return callback(undefined, toPage(0, 0, records, itemsPerPage));
-           if (records.length <= itemsPerPage)
-               return callback(undefined, toPage(1, 1, records, itemsPerPage));
-           const page = paginate(records, itemsPerPage, receivedPage);
-           callback(undefined, page);
-        });
-    }
 }
 
 

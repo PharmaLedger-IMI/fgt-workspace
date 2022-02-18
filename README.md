@@ -49,6 +49,8 @@ You will be present with a menu from where you can choose the SSApp you with to 
 
 # Modules
 
+[REST API](fgt-api/index.html)
+
 [PDM-DSU-Toolkit](pdm-dsu-toolkit/index.html)
 
 [FGT DSU Wizard](fgt-dsu-wizard/index.html)
@@ -62,6 +64,12 @@ You will be present with a menu from where you can choose the SSApp you with to 
 [Pharmacy Wallet](fgt-mah-ssapp/index.html)
 
 ### Architecture
+
+#### REST API Architecture
+
+As of release 0.8, Finished Goods Traceability moved from a UI based Wallet system, to an ERP integrated one, with all the Architectural considerations than came with that change.
+
+Please go to the REST API Module for details
 
 #### Concrete SSApp Architecture
 
@@ -253,6 +261,42 @@ add a file under ```docs/bin``` called ```drawio_exec_command.os``` containing t
     ```echo "drawio"```
  - Windows:
     ```echo "${PATH_TO_DRAW_IO}\drawio.exe"```
+
+
+### API
+
+#### Deployment Diagram
+
+##### Real World Scenario
+
+The proposed REST Api deployment diagram is as follows
+
+![Proposed Intrastructure](resources/drawings/finishedGoodsTraceabilityDSUTypes-fgt-api-deployment.png)
+
+where each participant has its own environment, running it's own:
+ - ERP System;
+ - OpenDSU API (ApiHub);
+ - FGT REST API;
+ - (optional, typically for MAHs) blockchain node;
+
+##### Testing Scenario
+
+Because the above infrastructure is not testable at this moment, we propose to deploy the following on our servers:
+
+![Proposed Intrastructure](resources/drawings/finishedGoodsTraceabilityDSUTypes-fgt-api-test-deployment.png)
+
+where each participant has its own environment, running it's own:
+- Swagger Instance (mocks the ERP System);
+- OpenDSU API (ApiHub);
+- FGT REST API;
+
+**How to deploy**
+
+ssh into the machine;
+clone the workspace;
+go to ```fgt-workspace/docker/api```
+run ```./bootCompose.sh ${env}``` where env can be nothing (localhost), dev (fgt-dev.pharmaledger.pdmfc.com) or anything else (fgt.pharmaledger.pdmfc.com)
+
 
 
 ### Deploy and test with a local blockchain

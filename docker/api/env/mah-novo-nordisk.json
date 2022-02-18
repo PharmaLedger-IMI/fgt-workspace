@@ -1,0 +1,24 @@
+{
+  "name": {
+    "secret": "Novo Nordisk A/S",
+    "public": true
+  },
+  "id": {
+    "secret": "MAH24256790",
+    "public": true
+  },
+  "email": {
+    "secret": "novo.nordisk@mah.pharmaledger.com",
+    "public": true
+  },
+  "address": {
+    "public": true,
+    "secret": "Bagsvaerd, Denmark"
+  },
+  "pass": {
+    "secret": "This1sSuchAS3curePassw0rd"
+  },
+  "passrepeat": {
+    "secret": "This1sSuchAS3curePassw0rd"
+  }
+}

@@ -1,0 +1,51 @@
+{
+    "plugins": [
+        "plugins/markdown",
+        "plugins/summarize"
+    ],
+    "package": "package.json",
+    "recurseDepth": 10,
+    "source": {
+        "include": [
+            "./participants/mah/index.js",
+            "./participants/whs/index.js",
+            "./participants/pha/index.js"
+        ],
+        "exclude": [],
+        "includePattern": ".+\\.js(doc|x)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc","closure"]
+    },
+    "templates": {
+        "better-docs": {
+            "name": "Pharmaledger's Finished Goods Traceability REST API",
+            "title": "Pharmaledger's Finished Goods Traceability REST API",
+            "hideGenerator": true,
+            "navLinks": [
+                {
+                    "label": "Github",
+                    "href": "https://github.com/PharmaLedger-IMI/fgt-workspace.git"
+                },
+                {
+                    "label": "Workspace",
+                    "href": "https://fgt.pharmaledger.pdmfc.com/"
+                }
+            ]
+        },
+        "cleverLinks": false,
+        "monospaceLinks": false,
+        "search": true
+    },
+    "opts": {
+        "encoding": "utf-8",
+        "template": "./node_modules/better-docs",
+        "destination": "./docs/",
+        "readme": "./README.md",
+        "tutorials": "./workdocs/tutorials",
+        "recurse": true,
+        "verbose": true
+    }
+}

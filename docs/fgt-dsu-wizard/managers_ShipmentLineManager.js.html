@@ -111,6 +111,7 @@
         <article>
             <pre class="prettyprint source linenums"><code>const { DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN } = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
+const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 /**
  * ShipmentLine Manager Class
  *
@@ -200,18 +201,6 @@ class ShipmentLineManager extends Manager {
             value: record
         }
     };
-
-    /**
-     * Converts the text typed in a general text box into the query for the db
-     * Subclasses should override this
-     * @param {string} keyword
-     * @return {string[]} query
-     * @protected
-     */
-    _keywordToQuery(keyword) {
-        keyword = keyword || '.*';
-        return [`gtin like /${keyword}/g`];
-    }
 
     /**
      * reads ssi for that OrderLine in the db. loads is and reads the info at '/info' and the status at '/status/info
@@ -419,6 +408,7 @@ module.exports = getShipmentLineManager;
 <script src="scripts/linenumber.js"> </script>
 
 <script src="scripts/search.js"> </script>
+
 
 </body>
 </html>

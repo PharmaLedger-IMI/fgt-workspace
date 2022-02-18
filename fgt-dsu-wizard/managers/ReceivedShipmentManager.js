@@ -3,6 +3,7 @@ const ShipmentManager = require("./ShipmentManager");
 const {Order, Stock, OrderLine, OrderStatus} = require('../model');
 
 const getIssuedOrderManager = require('./IssuedOrderManager');
+const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 
 /**
  * Received Shipment Manager Class - concrete ShipmentManager for received Shipments.
@@ -26,7 +27,7 @@ const getIssuedOrderManager = require('./IssuedOrderManager');
  */
 class ReceivedShipmentManager extends ShipmentManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.receivedShipments, ['requesterId'], (err, manager) => {
+        super(participantManager, DB.receivedShipments, ['shipmentId', 'senderId', 'requesterId', 'status'], (err, manager) => {
             if (err)
                 return callback ? callback(err) : console.log(err);
 
@@ -83,21 +84,8 @@ class ReceivedShipmentManager extends ShipmentManager {
             item = key;
             key = undefined;
         }
-        return {...super._indexItem(key, item, record), senderId: item.senderId}
+        return {...super._indexItem(key, item, record), senderId: item.senderId, requesterId: item.requesterId}
     };
-
-    /**
-     * Converts the text typed in a general text box into the query for the db
-     * Subclasses should override this
-     * @param {string} keyword
-     * @return {string[]} query
-     * @protected
-     * @override
-     */
-    _keywordToQuery(keyword) {
-        keyword = keyword || '.*';
-        return [`orderId like /${keyword}/g`];
-    }
 
     /**
      * Lists all received orders.

@@ -1,6 +1,7 @@
 const ShipmentStatus = require('./ShipmentStatus');
 const ShipmentLine = require('./ShipmentLine');
 const Status = require('./Status');
+const OrderStatus = require("./OrderStatus");
 
 
 /**
@@ -78,6 +79,25 @@ class Shipment {
     }
 
     static getAllowedStatusUpdates(status){
+        switch(status){
+            case ShipmentStatus.CREATED:
+                return [ShipmentStatus.REJECTED, ShipmentStatus.ON_HOLD, ShipmentStatus.PICKUP]
+            case ShipmentStatus.ON_HOLD:
+                return [ShipmentStatus.PICKUP, ShipmentStatus.REJECTED]
+            case ShipmentStatus.PICKUP:
+                return [ShipmentStatus.ON_HOLD, ShipmentStatus.REJECTED, ShipmentStatus.TRANSIT]
+            case ShipmentStatus.TRANSIT:
+                return [ShipmentStatus.REJECTED, ShipmentStatus.ON_HOLD, ShipmentStatus.DELIVERED]
+            case ShipmentStatus.DELIVERED:
+                return [ShipmentStatus.REJECTED, ShipmentStatus.RECEIVED]
+            case ShipmentStatus.RECEIVED:
+                return [ShipmentStatus.CONFIRMED]
+            default:
+                return [];
+        }
+    }
+
+    static getAllowedStatusUpdateFromOrder(status) {
         switch(status){
             case ShipmentStatus.CREATED:
                 return [ShipmentStatus.REJECTED, ShipmentStatus.ON_HOLD, ShipmentStatus.PICKUP]

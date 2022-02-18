@@ -29,7 +29,7 @@ class Status {
     constructor(status) {
         if (typeof status !== undefined)
             for (let prop in status)
-                if (status.hasOwnProperty(prop))
+                if (status.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = status[prop];
     }
 

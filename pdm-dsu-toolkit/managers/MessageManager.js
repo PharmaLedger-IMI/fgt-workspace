@@ -1,6 +1,8 @@
 const Manager = require('./Manager')
 const { _err } = require('../services/utils')
-const { MESSAGE_REFRESH_RATE, DID_METHOD, MESSAGE_TABLE } = require('../constants');
+const { MESSAGE_REFRESH_RATE, DID_METHOD, DID_DOMAIN, MESSAGE_TABLE } = require('../constants');
+const opendsu = require("opendsu");
+const scAPI = opendsu.loadAPI("sc");
 
 /**
 * Util class to handle manager listeners registration
@@ -119,6 +121,7 @@ class MessageManager extends Manager{
             manager.did = undefined;
             manager._listeners = {};
             manager.timer = undefined;
+            manager.sc = baseManager.sc;
             manager.track = new TrackAndManageListeners();
         
             if (callback)
@@ -129,6 +132,7 @@ class MessageManager extends Manager{
         this.did = this.did || undefined;
         this._listeners = this._listeners || {};
         this.timer = this.timer || undefined;
+        this.sc = this.sc || undefined;
     }
 
     shutdown(){
@@ -194,7 +198,7 @@ class MessageManager extends Manager{
 
         this.getOwnDID((err, selfDID) => {
             console.log("Sending message", message, "to did", did.getIdentifier());
-            selfDID.sendMessage(JSON.stringify(message), did.getIdentifier(), err => err
+            selfDID.sendMessage(JSON.stringify(message), did, err => err
                 ? _err(`Could not send Message`, err, callback)
                 : callback());
                         
@@ -272,13 +276,33 @@ class MessageManager extends Manager{
     getOwnDID(callback){
         if (this.did)
             return callback(undefined, this.did);
-        this._getDID(this.didString, callback);
+        const self = this;
+        this._getDID(this.didString, (err, ownDID) => {
+            if (err)
+                return callback(err);
+            self.did = ownDID;
+            callback(undefined, self.did);
+        });
     }
 
     _getDID(didString, callback){
-        this.w3cDID.createIdentity(DID_METHOD, didString, (err, didDoc) => err
-            ? _err(`Could not create DID identity`, err, callback)
-            : callback(undefined, didDoc));
+        const didIdentifier = `did:ssi:name:${DID_DOMAIN}:${didString}`;
+
+        if(this.sc){
+            return this.w3cDID.resolveDID(didIdentifier, (err, resolvedDIDDoc) => {
+                if (!err)
+                    return callback(undefined, resolvedDIDDoc);
+
+                this.w3cDID.createIdentity(DID_METHOD, DID_DOMAIN, didString, (err, didDoc) => {
+                    if (err)
+                        return _err(`Could not create DID identity`, err, callback);
+                    // didDoc.setDomain('traceability');
+                    callback(undefined, didDoc);
+                });
+            })
+        }
+
+        callback(`Security Context not initialised`)
     }
 }
 

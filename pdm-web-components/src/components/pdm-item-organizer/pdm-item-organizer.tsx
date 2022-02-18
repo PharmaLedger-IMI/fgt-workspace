@@ -1,14 +1,13 @@
 import {Component, Element, Event, EventEmitter, h, Host, Listen, Prop, State, Watch} from '@stencil/core';
 import {HostElement} from "../../decorators";
 
-const ORGANIZER_CUSTOM_EL_NAME = "organizer-item-popover";
-
 @Component({
   tag: 'pdm-item-organizer',
   styleUrl: 'pdm-item-organizer.css',
   shadow: false,
 })
 export class PdmItemOrganizer {
+  ORGANIZER_CUSTOM_EL_NAME = `organizer-item-popover-${(Math.random()+'').substring(4, 10)}`;
 
   @HostElement() host: HTMLElement;
 
@@ -16,6 +15,14 @@ export class PdmItemOrganizer {
 
   @Event()
   selectEvent: EventEmitter<string>
+
+  get showedItems() {
+    return this.singleLine ? this.parsedProps.slice(0, this._displayCount) : this.parsedProps;
+  }
+
+  get hiddenItems() {
+    return this.singleLine || this._displayCount <= 0 ? this.parsedProps.slice(this._displayCount) : [];
+  }
 
   /**
    * display-count": The number of items to display (minimum is 0), defaults to 3
@@ -105,24 +112,21 @@ export class PdmItemOrganizer {
   private definePopOverContent(){
     const self = this;
 
-    if (!!customElements.get(ORGANIZER_CUSTOM_EL_NAME))
+    if (!!customElements.get(self.ORGANIZER_CUSTOM_EL_NAME))
       return;
 
-    customElements.define(ORGANIZER_CUSTOM_EL_NAME, class extends HTMLElement{
+    customElements.define(self.ORGANIZER_CUSTOM_EL_NAME, class extends HTMLElement{
       connectedCallback(){
         const contentEl = this;
-        const popOverElement: any = document.querySelector('ion-popover');
-        const {displayCount, parsedProps, componentName, isItem} = popOverElement.componentProps;
-        const listTag = isItem ? 'ion-list' : 'ul';
+        const listTag = self.isItem ? 'ion-list' : 'ul';
         this.innerHTML = `
 <ion-content>
   <${listTag} class="organizer-pop-over-list">
-    ${parsedProps.filter((props, i) => !!props && i >= displayCount)
-          .map(props => self.getComponentLiteral(isItem, componentName, props)).join('')}
+    ${self.hiddenItems.map(props => self.getComponentLiteral(self.isItem, self.componentName, props)).join('')}
   </${listTag}>
 </ion-content>`;
 
-        this.querySelectorAll(componentName).forEach(item => {
+        this.querySelectorAll(self.componentName).forEach(item => {
           item.addEventListener('click', () => {
             const popover: any = contentEl.closest('ion-popover');
             popover.dismiss(undefined, item.getAttribute(self.idProp));
@@ -139,14 +143,14 @@ export class PdmItemOrganizer {
       return `<${isClose ? '/' : ''}li>`
     }
     return `${getNotIonItemListItem()}<${componentName}${Object.keys(props).reduce((accum, prop) => {
-      return accum + ` ${prop}="${props[prop]}"`
+      return accum + ` ${prop}=${props[prop]}`
     }, '')}></${componentName}>${getNotIonItemListItem(true)}`;
   }
 
   private async getItemPopOver(evt){
     this.definePopOverContent();
     const popover: any = Object.assign(document.createElement('ion-popover'), {
-      component: ORGANIZER_CUSTOM_EL_NAME,
+      component: this.ORGANIZER_CUSTOM_EL_NAME,
       cssClass: 'organizer-popover',
       translucent: true,
       event: evt,
@@ -155,7 +159,7 @@ export class PdmItemOrganizer {
       backdropDismiss: true,
       componentProps: {
         displayCount: this._displayCount,
-        parsedProps: this.parsedProps,
+        parsedProps: this.hiddenItems,
         componentName: this.componentName,
         isItem: this.isItem
       }
@@ -189,35 +193,16 @@ export class PdmItemOrganizer {
   }
 
   private getFilteredComponents(){
-    const self = this;
     if (!this.parsedProps || !this.parsedProps.length)
       return [];
-    if (this.parsedProps.length <= this._displayCount)
-      return this.parsedProps.map(props => this.getComponentJSX(props));
 
-    const result = this.parsedProps.filter((props, i) => !!props && i < self._displayCount).map(props => this.getComponentJSX(props));
+    const result = this.showedItems.map(props => this.getComponentJSX(props));
 
-    if (this.singleLine || this._displayCount < 0){
+    if (this.hiddenItems.length > 0) {
       const operation = this.moreChipsPosition === "start" ? result.unshift.bind(result) : result.push.bind(result);
       operation(<more-chip float-more-button={!this.singleLine} label={this.moreLabel || ""} icon-name={this.moreIcon || ""}></more-chip>);
     }
     return result;
-  }
-
-  private selectRenderMode(){
-    if (this._displayCount >= 0) {
-      return (
-        <ion-col size="auto">
-          <ion-row className={`${this.singleLine ? "flex ion-nowrap " : "flex-break "} ion-justify-content-${this.orientation} ion-align-items-end`}>
-            {...this.getFilteredComponents()}
-          </ion-row>
-        </ion-col>
-      );
-    }
-
-    return (
-      this.getFilteredComponents()[0]
-    )
   }
 
   private calculateDisplayCount(width: number, divider: number) {
@@ -247,7 +232,11 @@ export class PdmItemOrganizer {
 
     return (
       <Host>
-        {this.selectRenderMode()}
+        <ion-col size="auto">
+          <ion-row className={`${this.singleLine ? "flex ion-nowrap " : "flex-break "} ion-justify-content-${this.orientation} ion-align-items-end`}>
+            {...this.getFilteredComponents()}
+          </ion-row>
+        </ion-col>
       </Host>
     );
   }

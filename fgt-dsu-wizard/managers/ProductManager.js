@@ -25,7 +25,7 @@ const Product = require('../model/Product');
  */
 class ProductManager extends Manager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.products, ['gtin'], callback);
+        super(participantManager, DB.products, ['gtin', 'name', 'manufName'], callback);
         this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
     }
 
@@ -85,7 +85,7 @@ class ProductManager extends Manager {
      * Creates a {@link Product} dsu
      * @param {string|number} [gtin] the table key
      * @param {Product} product
-     * @param {function(err, keySSI, string)} callback where the string is the mount path relative to the main DSU
+     * @param {function(err, keySSI?, string?)} callback where the string is the mount path relative to the main DSU
      * @override
      */
     create(gtin, product, callback) {
@@ -100,7 +100,8 @@ class ProductManager extends Manager {
                 return self._err(`Could not bind mah to product`, err, callback);
             self.productService.create(product, (err, keySSI) => {
                 if (err)
-                    return self._err(`Could not create product DSU for ${JSON.stringify(product, undefined, 2)}`, err, callback);
+                    // return self._err(`Could not create product DSU for ${product.gtin} GTIN because already exists.`, err, callback);
+                    return callback(`Could not create product DSU of GTIN ${product.gtin} because it already exists.`);
                 const record = keySSI.getIdentifier();
                 self.insertRecord(gtin, self._indexItem(gtin, product, record), (err) => {
                     if (err)
@@ -185,18 +186,6 @@ class ProductManager extends Manager {
         options = options || defaultOptions();
 
         super.getAll(readDSU, options, callback);
-    }
-
-    /**
-     * Converts the text typed in a general text box into the query for the db
-     * Subclasses should override this
-     * @param {string} keyword
-     * @return {string[]} query
-     * @protected
-     */
-    _keywordToQuery(keyword){
-        keyword = keyword || '.*';
-        return [`gtin like /${keyword}/g`];
     }
 
     /**

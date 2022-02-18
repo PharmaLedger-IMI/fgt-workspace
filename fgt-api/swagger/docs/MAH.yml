@@ -1,0 +1,1263 @@
+openapi: 3.0.0
+info:
+  title: MAH - Pharmaledger Finished Goods Traceability API
+  description: >-
+    ## Marketing Authorization Holder
+
+
+    *   [Repository](https://github.com/PharmaLedger-IMI/fgt-workspace)
+
+    *  
+    [License](https://github.com/PharmaLedger-IMI/fgt-workspace/blob/master/LICENSE.md)
+  version: 1.0.0
+servers:
+  - url: http://{{api-mah}}
+tags:
+  - name: product
+  - name: batch
+  - name: shipment
+  - name: stock
+  - name: receipt
+  - name: traceability
+paths:
+  /product/create:
+    post:
+      tags:
+        - product
+      summary: create
+      description: '*   GTIN must be a valid GTIN-14.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                gtin: string
+                name: string
+                description: string
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                name: string
+                gtin: string
+                description: string
+                manufName: string
+                keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: number
+                error: string
+                message: string
+  /product/createAll:
+    post:
+      tags:
+        - product
+      summary: createAll
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - gtin: string
+                  name: string
+                  description: string
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - name: string
+                  gtin: string
+                  description: string
+                  manufName: string
+                  keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: number
+                error: string
+                message: string
+  /product/getAll:
+    get:
+      tags:
+        - product
+      summary: getAll
+      parameters:
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          description: >-
+            search for a keyword in all tables indexes. search by keyword
+            disable other queries.
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: itemPerPage
+          in: query
+          schema:
+            type: integer
+          example: '10'
+        - name: sort
+          in: query
+          schema:
+            type: string
+          description: dsc or asc
+          example: dsc
+        - name: gtin
+          in: query
+          schema:
+            type: string
+        - name: name
+          in: query
+          schema:
+            type: string
+          description: product name
+        - name: manufName
+          in: query
+          schema:
+            type: string
+          description: Marketing Authorization Holder identifier
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  page: 0
+                  itemsPerPage: 0
+                  totalPages: 0
+                  query: {}
+                results:
+                  - name: string
+                    gtin: string
+                    description: string
+                    manufName: string
+                    keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /product/get/{gtin}:
+    get:
+      tags:
+        - product
+      summary: getOne
+      parameters:
+        - name: gtin
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                name: string
+                gtin: string
+                description: string
+                manufName: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /batch/create:
+    post:
+      tags:
+        - batch
+      summary: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                gtin: string
+                batchNumber: string
+                expiry: YYYY-MM-dd
+                serialNumbers:
+                  - 0
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                batchNumber: string
+                expiry: string
+                serialNumbers:
+                  - 0
+                quantity: 0
+                batchStatus:
+                  status: string
+                  log:
+                    - string
+                keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /batch/createAll:
+    post:
+      tags:
+        - batch
+      summary: createAll
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - gtin: string
+                  batchNumber: string
+                  expiry: YYYY-MM-dd
+                  serialNumbers:
+                    - 0
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - batchNumber: string
+                  expiry: string
+                  serialNumbers:
+                    - 0
+                  quantity: 0
+                  batchStatus:
+                    status: string
+                    log:
+                      - string
+                  keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /batch/getAll:
+    get:
+      tags:
+        - batch
+      summary: getAll
+      parameters:
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          description: >-
+            Search for a keyword in all tables indexes. search by keyword
+            disable other queries.
+        - name: page
+          in: query
+          schema:
+            type: string
+        - name: itemPerPage
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+          description: dsc or asc
+          example: dsc
+        - name: gtin
+          in: query
+          schema:
+            type: string
+          description: valid GTIN-14
+        - name: batchNumber
+          in: query
+          schema:
+            type: string
+        - name: expiry
+          in: query
+          schema:
+            type: string
+          description: YYYY-MM-dd
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  page: 0
+                  itemsPerPage: 0
+                  totalPages: 0
+                  query: {}
+                results:
+                  - batchNumber: string
+                    expiry: string
+                    serialNumbers:
+                      - 0
+                    quantity: 0
+                    batchStatus:
+                      status: string
+                      log:
+                        - string
+                    keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /batch/get/{gtin}/{batchNumber}:
+    get:
+      tags:
+        - batch
+      summary: getOne
+      parameters:
+        - name: gtin
+          in: path
+          schema:
+            type: string
+          required: true
+          description: valid GTIN-14
+        - name: batchNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                batchNumber: string
+                expiry: string
+                serialNumbers:
+                  - 0
+                quantity: 0
+                batchStatus:
+                  status: string
+                  log: string[]
+                keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /batch/update/{gtin}/{batchNumber}:
+    put:
+      tags:
+        - batch
+      summary: update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: string
+                extraInfo: string
+      parameters:
+        - name: gtin
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: batchNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                batchNumber: string
+                expiry: string
+                serialNumbers:
+                  - 0
+                quantity: 0
+                batchStatus:
+                  status: string
+                  log:
+                    - string
+                keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /batch/updateAll:
+    put:
+      tags:
+        - batch
+      summary: updateAll
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - status: string
+                  extraInfo: string
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - batchNumber: string
+                  expiry: string
+                  serialNumbers:
+                    - 0
+                  quantity: 0
+                  batchStatus:
+                    status: string
+                    log:
+                      - string
+                  keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /shipment/create:
+    post:
+      tags:
+        - shipment
+      summary: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                orderId: string
+                requesterId: string
+                senderId: string
+                status: string
+                shipmentLines:
+                  - gtin: string
+                    batch: string
+                    requesterId: string
+                    senderId: string
+                    quantity: 0
+                    status: string
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                shipmentId: string
+                orderId: string
+                requesterId: string
+                senderId: string
+                status:
+                  status: string
+                  log:
+                    - string
+                shipmentLines:
+                  - gtin: string
+                    batch: string
+                    quantity: 0
+                    senderId: string
+                    requesterId: string
+                    status: string
+                    createdOn: 0
+                keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /shipment/createAll:
+    post:
+      tags:
+        - shipment
+      summary: createAll
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - orderId: string
+                  requesterId: string
+                  senderId: string
+                  status: string
+                  shipmentLines:
+                    - gtin: string
+                      batch: string
+                      quantity: 0
+                      senderId: string
+                      requesterId: string
+                      status: string
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - shipmentId: string
+                  orderId: string
+                  requesterId: string
+                  senderId: string
+                  status:
+                    status: string
+                    log: string[]
+                  shipmentLines:
+                    - gtin: string
+                      batch: string
+                      quantity: 0
+                      senderId: string
+                      requesterId: string
+                      status: string
+                      createdOn: 0
+                  keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /shipment/getAll:
+    get:
+      tags:
+        - shipment
+      summary: getAll
+      parameters:
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          description: >-
+            Search for a keyword in all tables indexes. search by keyword
+            disable other queries.
+        - name: page
+          in: query
+          schema:
+            type: string
+        - name: itemPerPage
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+          description: dsc or asc
+          example: dsc
+        - name: shipmentId
+          in: query
+          schema:
+            type: string
+        - name: orderId
+          in: query
+          schema:
+            type: string
+          description: only for requester reference.
+        - name: senderId
+          in: query
+          schema:
+            type: string
+          description: partner identifier that shipped the products
+        - name: requesterId
+          in: query
+          schema:
+            type: string
+          description: partner identifier that received the products
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  page: 0
+                  itemsPerPage: 0
+                  totalPages: 0
+                  query: {}
+                results:
+                  - shipmentId: string
+                    orderId: string
+                    requesterId: string
+                    senderId: string
+                    status:
+                      status: string
+                      log: string[]
+                    shipmentLines:
+                      - gtin: string
+                        batch: string
+                        quantity: 0
+                        senderId: string
+                        requesterId: string
+                        status: string
+                        createdOn: 0
+                    keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /shipment/get/{shipmentId}:
+    get:
+      tags:
+        - shipment
+      summary: getOne
+      parameters:
+        - name: shipmentId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                shipmentId: string
+                orderId: string
+                requesterId: string
+                senderId: string
+                status:
+                  status: string
+                  log: string[]
+                shipmentLines:
+                  - gtin: string
+                    batch: string
+                    quantity: 0
+                    senderId: string
+                    requesterId: string
+                    status: string
+                    createdOn: 0
+                keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /shipment/update/{shipmentId}:
+    put:
+      tags:
+        - shipment
+      summary: update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: string
+                extraInfo: string
+      parameters:
+        - name: shipmentId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                shipmentId: string
+                orderId: string
+                requesterId: string
+                senderId: string
+                status:
+                  status: string
+                  log: string[]
+                shipmentLines:
+                  - gtin: string
+                    batch: string
+                    quantity: 0
+                    senderId: string
+                    requesterId: string
+                    status: string
+                    createdOn: 0
+                keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /shipment/updateAll:
+    put:
+      tags:
+        - shipment
+      summary: updateAll
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - shipmentId: string
+                  status: string
+                  extraInfo: string
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - shipmentId: string
+                  orderId: string
+                  requesterId: string
+                  senderId: string
+                  status:
+                    status: string
+                    log: string[]
+                  shipmentLines:
+                    - gtin: string
+                      batch: string
+                      quantity: 0
+                      senderId: string
+                      requesterId: string
+                      status: string
+                      createdOn: 0
+                  keySSI: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /stock/getAll:
+    get:
+      tags:
+        - stock
+      summary: getAll
+      parameters:
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          description: >-
+            Search for a keyword in all tables indexes. search by keyword
+            disable other queries.
+        - name: page
+          in: query
+          schema:
+            type: string
+        - name: itemPerPage
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+          description: dsc or asc
+          example: dsc
+        - name: name
+          in: query
+          schema:
+            type: string
+          description: productName
+        - name: gtin
+          in: query
+          schema:
+            type: string
+          description: valid GTIN-14
+        - name: manufName
+          in: query
+          schema:
+            type: string
+          description: Marketing Authorization Holder identifier
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  page: 0
+                  itemsPerPage: 0
+                  totalPages: 0
+                  query: {}
+                results:
+                  - name: string
+                    gtin: string
+                    description: string
+                    manufName: string
+                    batches:
+                      - batchNumber: string
+                        expiry: string
+                        serialNumbers:
+                          - 0
+                        quantity: 0
+                        batchStatus:
+                          status: string
+                          log: string[]
+                          extraInfo: {}
+                    status: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /stock/get/{gtin}:
+    get:
+      tags:
+        - stock
+      summary: getOne
+      parameters:
+        - name: gtin
+          in: path
+          schema:
+            type: string
+          required: true
+          description: valid GTIN-14
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                name: string
+                gtin: string
+                description: string
+                manufName: string
+                batches:
+                  - batchNumber: string
+                    expiry: string
+                    serialNumbers:
+                      - 0
+                    quantity: 0
+                    batchStatus:
+                      status: string
+                      log: string[]
+                      extraInfo: {}
+                status: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /receipt/getAll:
+    get:
+      tags:
+        - receipt
+      summary: getAll
+      parameters:
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          description: >-
+            Search for a keyword in all tables indexes. search by keyword
+            disable other queries.
+        - name: page
+          in: query
+          schema:
+            type: string
+        - name: itemPerPage
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+          description: dsc or asc
+          example: dsc
+        - name: gtin
+          in: query
+          schema:
+            type: string
+          description: valid GTIN-14
+        - name: batchNumber
+          in: query
+          schema:
+            type: string
+          description: product batch number
+        - name: sellerId
+          in: query
+          schema:
+            type: string
+          description: partnerId that sold the product
+        - name: serialNumber
+          in: query
+          schema:
+            type: string
+          description: product serial number
+        - name: manufName
+          in: query
+          schema:
+            type: string
+          description: Marketing Authorization Holder identifier
+        - name: status
+          in: query
+          schema:
+            type: string
+          description: commissioned, recall, dispensed, administered ,destroyed
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  page: 0
+                  itemsPerPage: 0
+                  totalPages: 0
+                  query: {}
+                results:
+                  - name: string
+                    gtin: string
+                    batchNumber: string
+                    serialNumber: 0
+                    manufName: string
+                    expiry: string
+                    status: string
+                    sellerId: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /receipt/get/{receiptId}:
+    get:
+      tags:
+        - receipt
+      summary: getOne
+      parameters:
+        - name: receiptId
+          in: path
+          schema:
+            type: string
+          required: true
+          description: receiptId format as follow gtin-batchNumber-serialNumber
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                name: string
+                gtin: string
+                batchNumber: string
+                serialNumber: 0
+                manufName: string
+                expiry: string
+                status: string
+                sellerId: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /traceability/create:
+    post:
+      tags:
+        - traceability
+      summary: create
+      description: >-
+        Traceability can be requested by gtin, batchNumber and serialNumber
+        (optional).
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                gtin: string
+                batchNumber: string
+                serialNumber: string
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                id: 0
+                title: string
+                parents: string[]
+                children: string[]
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /traceability/createAll:
+    post:
+      tags:
+        - traceability
+      summary: createAll
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - gtin: string
+                  batchNumber: string
+                  serialNumber: string
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - id: 0
+                  title: string
+                  parents: string[]
+                  children: string[]
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string

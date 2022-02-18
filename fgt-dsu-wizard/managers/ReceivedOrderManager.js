@@ -2,6 +2,7 @@ const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
 const OrderManager = require("./OrderManager");
 const getStockManager = require("./StockManager");
 const {Order} = require('../model');
+const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 
 /**
  * Received Order Manager Class - concrete OrderManager for receivedOrders.
@@ -25,7 +26,7 @@ const {Order} = require('../model');
  */
 class ReceivedOrderManager extends OrderManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.receivedOrders, ['orderId', 'requesterId'], (err, manager) => {
+        super(participantManager, DB.receivedOrders, ['orderId', 'requesterId', 'status'], (err, manager) => {
             if (err)
                 return callback ? callback(err) : console.log(err);
             manager.registerMessageListener((message, cb) => {
@@ -70,19 +71,6 @@ class ReceivedOrderManager extends OrderManager {
     _indexItem(key, item, record) {
         return {...super._indexItem(key, item, record), requesterId: item.requesterId}
     };
-
-    /**
-     * Converts the text typed in a general text box into the query for the db
-     * Subclasses should override this
-     * @param {string} keyword
-     * @return {string[]} query
-     * @protected
-     * @override
-     */
-    _keywordToQuery(keyword) {
-        keyword = keyword || '.*';
-        return [`orderId like /${keyword}/g`];
-    }
 
     /**
      * Lists all received orders.
@@ -179,7 +167,7 @@ class ReceivedOrderManager extends OrderManager {
                         return self._err(`Could not update order`, err, callback);
                     if (!orderObj.shipmentId)
                         return callback(`Missing shipment Id`);
-                    const getIssuedShipmentManager = require('./IssuedShipmentManager');
+                    const {getIssuedShipmentManager} = require('./IssuedShipmentManager');
                     getIssuedShipmentManager(self.participantManager, (err, issuedShipmentManager) => {
                         if (err)
                             return self._err(`could not get issued shipment manager`, err, callback);

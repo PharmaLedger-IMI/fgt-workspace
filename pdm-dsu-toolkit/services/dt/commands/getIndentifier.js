@@ -38,7 +38,7 @@ class GetIdentifierCommand extends Command{
      * @param {boolean} arg identifier as string (defaults to false)
      * @param {Archive|KeySSI} bar
      * @param {object} options unused
-     * @param {function(err, string|KeySSI)} callback
+     * @param {function(err, any)} callback
      * @protected
      */
     _runCommand(arg, bar, options, callback) {

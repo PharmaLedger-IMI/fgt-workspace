@@ -33,7 +33,7 @@ export interface WebResolver{
  */
 export interface WebManager extends WebResolver{
   getAll(readDSU, options, callback): void;
-  getPage(itemsPerPage, page, keyword, sort, readDSU, callback): void;
+  getPage(itemsPerPage, page, customQueryConditions, keyword, sort, readDSU, callback): void;
 }
 
 /**

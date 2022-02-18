@@ -113,6 +113,7 @@
 const OrderManager = require("./OrderManager");
 const getStockManager = require("./StockManager");
 const {Order} = require('../model');
+const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 
 /**
  * Received Order Manager Class - concrete OrderManager for receivedOrders.
@@ -136,7 +137,7 @@ const {Order} = require('../model');
  */
 class ReceivedOrderManager extends OrderManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.receivedOrders, ['orderId', 'requesterId'], (err, manager) => {
+        super(participantManager, DB.receivedOrders, ['orderId', 'requesterId', 'status'], (err, manager) => {
             if (err)
                 return callback ? callback(err) : console.log(err);
             manager.registerMessageListener((message, cb) => {
@@ -181,19 +182,6 @@ class ReceivedOrderManager extends OrderManager {
     _indexItem(key, item, record) {
         return {...super._indexItem(key, item, record), requesterId: item.requesterId}
     };
-
-    /**
-     * Converts the text typed in a general text box into the query for the db
-     * Subclasses should override this
-     * @param {string} keyword
-     * @return {string[]} query
-     * @protected
-     * @override
-     */
-    _keywordToQuery(keyword) {
-        keyword = keyword || '.*';
-        return [`orderId like /${keyword}/g`];
-    }
 
     /**
      * Lists all received orders.
@@ -255,13 +243,42 @@ class ReceivedOrderManager extends OrderManager {
                     console.log(`Received new Order: `, orderObj);
                     return self.insertRecord(dbKey, self._indexItem(orderId, orderObj, orderSReadSSIStr), callback);
                 }
-                console.log(`Updating order`)
+
+                /**
+                 * Message/ExtraInfo by default follows the model: `{SENDER_ID} {TIMESTAMP} {MESSAGE}`,
+                 * so need to be sanitized to remove {SENDER_ID} and {TIMESTAMP}, because receiver
+                 * just needs the message
+                 * @param {Status} statusObj
+                 * @returns {string}
+                 */
+                const getExtraInfoMsg = function (statusObj) {
+                    const { status, extraInfo } = statusObj;
+                    if (!extraInfo)
+                        return '';
+
+                    if (!extraInfo.hasOwnProperty(status))
+                        return '';
+
+                    const lastLog = statusObj.log[statusObj.log.length - 1]
+                    const extraInfoUpdated = extraInfo[status].filter(_extraInfo => {
+                        // verify if extraInfo.timestamp ===log.timestamp
+                        return _extraInfo.split(' ')[1].trim() === lastLog.split(' ')[1].trim()
+                    })
+                    if (extraInfoUpdated.length > 0) {
+                        return extraInfoUpdated[0].split(' ').slice(2).join(' ').trim(); // sanitized
+                    } else {
+                        return '';
+                    }
+                }
+
+                orderObj.status['extraInfo'] = getExtraInfoMsg(orderObj.status);
+                console.log(`Updating order ${orderObj.orderId} with status ${orderObj.status.status}`)
                 self.updateRecord(dbKey, self._indexItem(orderId, orderObj, orderSReadSSIStr), (err) => {
                     if (err)
                         return self._err(`Could not update order`, err, callback);
                     if (!orderObj.shipmentId)
                         return callback(`Missing shipment Id`);
-                    const getIssuedShipmentManager = require('./IssuedShipmentManager');
+                    const {getIssuedShipmentManager} = require('./IssuedShipmentManager');
                     getIssuedShipmentManager(self.participantManager, (err, issuedShipmentManager) => {
                         if (err)
                             return self._err(`could not get issued shipment manager`, err, callback);
@@ -329,6 +346,7 @@ module.exports = getReceivedOrderManager;
 <script src="scripts/linenumber.js"> </script>
 
 <script src="scripts/search.js"> </script>
+
 
 </body>
 </html>

@@ -222,7 +222,7 @@ class DirectoryManager extends Manager {
      */
     _keywordToQuery(keyword) {
         keyword = keyword || '.*';
-        return [`role like /${keyword}/g`];
+        return [[`role like /${keyword}/g`]];
     }
 
     /**
@@ -306,6 +306,7 @@ module.exports = getDirectoryManager;</code></pre>
 <script src="scripts/linenumber.js"> </script>
 
 <script src="scripts/search.js"> </script>
+
 
 </body>
 </html>

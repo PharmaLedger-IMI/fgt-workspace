@@ -29,7 +29,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "f256413e8d3833f3424d79315e7a68f6d91ed445"
+                    "commit": "6f5ad4c50f6eea9589a5eaeaf056767c4a43d2b8"
                 },
                 {
                     "type": "execute",
@@ -54,7 +54,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "27db074e8ac160ce84d5c1f48ce97d83a30b1956"
+                    "commit": "b7640b60cf0928e4a42547f243cf7d98b7da13ef"
                 },
                 {
                     "type": "execute",
@@ -244,7 +244,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "21fd1451020a665f1b192b6f61565ec2542e1cd3"
+                    "commit": "40c87b51336b7a160672731472785681830f10fe"
                 },
                 {
                     "type": "execute",
@@ -300,6 +300,15 @@
                 {
                     "type": "execute",
                     "cmd": "cd fgt-wholesaler-ssapp && npm install"
+                }
+            ]
+        },
+        {
+            "name": "fgt-api",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-api && npm install"
                 }
             ]
         },
@@ -665,12 +674,12 @@
     ],
     "deploy-chain": [
         {
-            "name": "change anchoring to blockchain",
+            "name": "change anchoring to blockchain like in switch-to-test-chain. PLEASE RESTART apihub after!",
             "src": "",
             "actions": [
                 {
                     "type": "copy",
-                    "src": "./blockchain-patch/external-volume",
+                    "src": "./blockchain-patch/apply/external-volume",
                     "target": "./apihub-root/external-volume",
                     "options": {
                         "overwrite": true
@@ -680,7 +689,7 @@
         },
         {
             "name": "blockchain-node",
-            "src": "https://Pharmaledger:x_Jp6JwvD4sQFu4cQA3T@gitlab.pdmfc.com/pharmaledger/blockchain-node-workspace.git",
+            "src": "https://github.com/PharmaLedger-IMI/blockchain-node-workspace.git",
             "actions": [
                 {
                     "type": "smartClone",
@@ -698,6 +707,38 @@
                 {
                     "type": "execute",
                     "cmd": "cd blockchain-node && npm run deploy-blockchain"
+                }
+            ]
+        }
+    ],
+    "switch-to-test-chain": [
+        {
+            "name": "Switch apihub configs to a local test blockchain. Apihub needs restart.",
+            "src": "",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./blockchain-patch/apply/external-volume",
+                    "target": "./apihub-root/external-volume",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        }
+    ],
+    "switch-to-simul-chain": [
+        {
+            "name": "Switch apihub configs to a local test blockchain. Apihub needs restart.",
+            "src": "",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./blockchain-patch/remove/external-volume",
+                    "target": "./apihub-root/external-volume",
+                    "options": {
+                        "overwrite": true
+                    }
                 }
             ]
         }
@@ -747,6 +788,10 @@
                 {
                     "type": "execute",
                     "cmd": "cd pdm-web-components && npm run docs"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-api && npm run docs"
                 }
             ]
         },
@@ -817,6 +862,14 @@
                     "options": {
                         "overwrite": true
                     }
+                },
+                {
+                    "type": "copy",
+                    "src": "fgt-api/docs/",
+                    "target": "docs/fgt-api",
+                    "options": {
+                        "overwrite": true
+                    }
                 }
             ]
         },
@@ -848,4 +901,5 @@
         }
     ]
 }
+
 

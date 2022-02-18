@@ -4,6 +4,8 @@ const {functionCallIterator} = require('../services/utils');
 
 const {Page, toPage, paginate } = require('./Page');
 
+const SORT_OPTIONS = {ASC: "asc", DSC: 'dsc'}
+
 
 /**
  * Manager Classes in this context should do the bridge between the controllers
@@ -84,6 +86,7 @@ class Manager{
         this.indexes = indexes;
         this.controllers = undefined;
         this.getIdentity = baseManager.getIdentity.bind(baseManager);
+        this.getEnvironment = baseManager.getEnvironment.bind(baseManager);
         this._getResolver = baseManager._getResolver;
         this._getKeySSISpace = baseManager._getKeySSISpace;
         this._loadDSU = baseManager._loadDSU;
@@ -142,6 +145,8 @@ class Manager{
         if (this.controllers)
             this.controllers.forEach(c => c.refresh(props));
     }
+
+    getEnvironment(callback){};
 
     beginBatch(){
         this.dbLock.beginBatch(this.tableName);
@@ -757,43 +762,88 @@ class Manager{
      * Converts the text typed in a general text box into the query for the db
      * Subclasses should override this
      * @param {string} keyword
+     * @param queryConditions
      * @return {string[]} query
      * @protected
      */
-    _keywordToQuery(keyword){
-        keyword = keyword || '.*';
-        return [`key like /${keyword}/g`];
+    _keywordToQuery(keyword, queryConditions){
+        if (!keyword)
+            return [[...queryConditions, '__timestamp > 0']]
+        return this.indexes.map((index) => {
+            return [...queryConditions, `${index} like /${keyword}/g`, '__timestamp > 0']
+        })
     }
 
     /**
-     * Returns a page object
+     * Returns a page object from provided dsuQuery or a keyword
      * @param {number} itemsPerPage
      * @param {number} page
-     * @param {string} keyword
+     * @param {string[]} dsuQuery: force a fixed CONDITION in all keyword query or for a simple query paginated.
+     * @param {string} keyword:  keyword to search on all indexes
      * @param {string} sort
      * @param {boolean} readDSU
      * @param {function(err, Page)}callback
      */
-    getPage(itemsPerPage, page, keyword, sort, readDSU, callback){
+    getPage(itemsPerPage, page, dsuQuery, keyword, sort, readDSU, callback){
         const self = this;
         let receivedPage = page || 1;
+        sort = SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] ? SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] : SORT_OPTIONS.DSC;
 
-        const options = {
-            query: keyword ? self._keywordToQuery(keyword) : ['__timestamp > 0'],
-            sort: sort || "dsc",
-            limit: undefined
+        const getPageByDSUQuery = (itemsPerPage, page, dsuQuery, sort, readDSU, callback) => {
+            const self = this;
+            let receivedPage = page || 1;
+            dsuQuery = [...dsuQuery, '__timestamp > 0'];
+            self.getAll(readDSU, {query: dsuQuery, sort: sort,  limit: undefined}, (err, records) => {
+                if (err)
+                    return self._err(`Could not retrieve records to page`, err, callback);
+                if (records.length === 0)
+                    return callback(undefined, toPage(0, 0, records, itemsPerPage));
+
+                if (records.length <= itemsPerPage)
+                    return callback(undefined, toPage(1, 1, records, itemsPerPage));
+                const page = paginate(records, itemsPerPage, receivedPage);
+                callback(undefined, page);
+            })
         }
 
-        self.getAll(readDSU, options, (err, records) => {
+        if(!keyword)
+            return getPageByDSUQuery(itemsPerPage, page, dsuQuery, sort, readDSU, callback);
+
+        const queries = self._keywordToQuery(keyword, dsuQuery);
+        const iterator = (accum, queriesArray, _callback) => {
+            const query = queriesArray.shift()
+            if (!query)
+                return _callback(undefined, accum)
+
+            self.getAll(readDSU, {query, sort: sort,  limit: undefined}, (err, records) => {
+                if (err)
+                    _callback(err)
+                iterator([...accum, ...records], queriesArray, _callback)
+            })
+        }
+
+        iterator([], queries.slice(), (err, records) => {
             if (err)
                 return self._err(`Could not retrieve records to page`, err, callback);
-             if (records.length === 0)
-                 return callback(undefined, toPage(0, 0, records, itemsPerPage));
+            if (records.length === 0)
+                return callback(undefined, toPage(0, 0, records, itemsPerPage));
+
+            // remove duplicates
+            records = Object.values(
+                records.reduce((accum, record) => {
+                    const key = JSON.stringify(record);
+                    if (!accum.hasOwnProperty(key)) {
+                        accum[key] = record;
+                    }
+                    return accum
+                }, {})
+            );
+
             if (records.length <= itemsPerPage)
                 return callback(undefined, toPage(1, 1, records, itemsPerPage));
             const page = paginate(records, itemsPerPage, receivedPage);
             callback(undefined, page);
-         });
+        })
     }
 
     /**

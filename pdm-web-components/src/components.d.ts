@@ -368,6 +368,7 @@ export namespace Components {
          */
         "canQuery"?: boolean;
         "currentPage"?: number;
+        "dsuQuery"?: string;
         "iconName"?: string;
         /**
           * Option props to be passed to child elements in from a JSON object in value key format only format
@@ -382,6 +383,10 @@ export namespace Components {
          */
         "itemType": string;
         "itemsPerPage"?: number;
+        /**
+          * Querying/paginating Params - only available when mode is set by ref
+         */
+        "keywordQuery"?: string;
         "loadingMessage"?: string;
         /**
           * sets the name of the manager to use
@@ -390,10 +395,6 @@ export namespace Components {
         "noContentMessage"?: string;
         "pageCount"?: number;
         "paginated"?: boolean;
-        /**
-          * Querying/paginating Params - only available when mode is set by ref
-         */
-        "query"?: string;
         "refresh": () => Promise<void>;
         "searchBarPlaceholder"?: string;
         "sort"?: string;
@@ -429,6 +430,10 @@ export namespace Components {
         "moreLabel": string;
         "orientation": "between" | "end" | "evenly" | "around" | "center" | "start";
         "singleLine": boolean;
+    }
+    interface PdmSearchBar {
+        "btnLabel": string;
+        "placeholder": string;
     }
     interface PdmSsappLoader {
         "loader"?: string;
@@ -686,6 +691,12 @@ declare global {
         prototype: HTMLPdmItemOrganizerElement;
         new (): HTMLPdmItemOrganizerElement;
     };
+    interface HTMLPdmSearchBarElement extends Components.PdmSearchBar, HTMLStencilElement {
+    }
+    var HTMLPdmSearchBarElement: {
+        prototype: HTMLPdmSearchBarElement;
+        new (): HTMLPdmSearchBarElement;
+    };
     interface HTMLPdmSsappLoaderElement extends Components.PdmSsappLoader, HTMLStencilElement {
     }
     var HTMLPdmSsappLoaderElement: {
@@ -775,6 +786,7 @@ declare global {
         "pdm-chartjs": HTMLPdmChartjsElement;
         "pdm-ion-table": HTMLPdmIonTableElement;
         "pdm-item-organizer": HTMLPdmItemOrganizerElement;
+        "pdm-search-bar": HTMLPdmSearchBarElement;
         "pdm-ssapp-loader": HTMLPdmSsappLoaderElement;
         "simple-managed-product-item": HTMLSimpleManagedProductItemElement;
         "slide-in-board": HTMLSlideInBoardElement;
@@ -1319,6 +1331,7 @@ declare namespace LocalJSX {
          */
         "canQuery"?: boolean;
         "currentPage"?: number;
+        "dsuQuery"?: string;
         "iconName"?: string;
         /**
           * Option props to be passed to child elements in from a JSON object in value key format only format
@@ -1333,6 +1346,10 @@ declare namespace LocalJSX {
          */
         "itemType"?: string;
         "itemsPerPage"?: number;
+        /**
+          * Querying/paginating Params - only available when mode is set by ref
+         */
+        "keywordQuery"?: string;
         "loadingMessage"?: string;
         /**
           * sets the name of the manager to use
@@ -1345,10 +1362,6 @@ declare namespace LocalJSX {
         "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
         "pageCount"?: number;
         "paginated"?: boolean;
-        /**
-          * Querying/paginating Params - only available when mode is set by ref
-         */
-        "query"?: string;
         "searchBarPlaceholder"?: string;
         "sort"?: string;
         /**
@@ -1384,6 +1397,11 @@ declare namespace LocalJSX {
         "onSelectEvent"?: (event: CustomEvent<string>) => void;
         "orientation"?: "between" | "end" | "evenly" | "around" | "center" | "start";
         "singleLine"?: boolean;
+    }
+    interface PdmSearchBar {
+        "btnLabel"?: string;
+        "onSearchEvt"?: (event: CustomEvent<any>) => void;
+        "placeholder"?: string;
     }
     interface PdmSsappLoader {
         "loader"?: string;
@@ -1482,6 +1500,7 @@ declare namespace LocalJSX {
         "pdm-chartjs": PdmChartjs;
         "pdm-ion-table": PdmIonTable;
         "pdm-item-organizer": PdmItemOrganizer;
+        "pdm-search-bar": PdmSearchBar;
         "pdm-ssapp-loader": PdmSsappLoader;
         "simple-managed-product-item": SimpleManagedProductItem;
         "slide-in-board": SlideInBoard;
@@ -1531,6 +1550,7 @@ declare module "@stencil/core" {
             "pdm-chartjs": LocalJSX.PdmChartjs & JSXBase.HTMLAttributes<HTMLPdmChartjsElement>;
             "pdm-ion-table": LocalJSX.PdmIonTable & JSXBase.HTMLAttributes<HTMLPdmIonTableElement>;
             "pdm-item-organizer": LocalJSX.PdmItemOrganizer & JSXBase.HTMLAttributes<HTMLPdmItemOrganizerElement>;
+            "pdm-search-bar": LocalJSX.PdmSearchBar & JSXBase.HTMLAttributes<HTMLPdmSearchBarElement>;
             "pdm-ssapp-loader": LocalJSX.PdmSsappLoader & JSXBase.HTMLAttributes<HTMLPdmSsappLoaderElement>;
             "simple-managed-product-item": LocalJSX.SimpleManagedProductItem & JSXBase.HTMLAttributes<HTMLSimpleManagedProductItemElement>;
             "slide-in-board": LocalJSX.SlideInBoard & JSXBase.HTMLAttributes<HTMLSlideInBoardElement>;

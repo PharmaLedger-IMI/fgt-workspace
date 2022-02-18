@@ -18,7 +18,7 @@ class Wholesaler extends Participant{
         super(wholesaler);
         if (typeof wholesaler !== undefined)
             for (let prop in wholesaler)
-                if (wholesaler.hasOwnProperty(prop))
+                if (wholesaler.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = wholesaler[prop];
     }
 }

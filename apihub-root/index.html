@@ -15,33 +15,22 @@
 <body>
     <div class="center-aligned-controls vertical-align">
 
-        <a class="dsu-fabric_button scale-up" href="fgt-mah-wallet/loader/" target="_blank">
+        <a id="swagger" class="dsu-fabric_button scale-up" href="swagger.localhost:8080" target="_blank" style="display:none">
             <div class="left-side">
-                <img src="assets/images/factory.png" alt="MAH-app">
+                <img src="assets/images/factory.png" alt="swagger">
             </div>
             <div class="right-side">
-                <p>MAH wallet</p>
+                <p>Swagger Instance</p>
             </div>
+            <script>
+                const swaggerButton = document.body.querySelector(`#swagger`);
+                if (window.location.hostname.match(/[-\.]?(?:mah|whs|pha)[\-\d]/g)){
+                    const isLocalhost = window.location.hostname.endsWith('localhost');
+                    swaggerButton.setAttribute("style", "display: block;");
+                    swaggerButton.setAttribute("href", `${isLocalhost ? 'http://' : 'https://'}swagger-${window.location.host}`);
+                }
+            </script>
         </a>
-
-        <a class="leaflet-wallet_button scale-up" href="fgt-wholesaler-wallet/loader/" target="_blank">
-            <div class="left-side">
-                <img src="assets/images/wholesaler.png" alt="Wholesaler-App">
-            </div>
-            <div class="right-side">
-                <p>Wholesaler Wallet</p>
-            </div>
-        </a>
-
-        <a class="web-wallet_button scale-up" href="fgt-pharmacy-wallet/loader" target="_blank">
-            <div class="left-side">
-                <img src="assets/images/pharmacy.png" alt="Pharmacy-App">
-            </div>
-            <div class="right-side">
-                <p>Pharmacy Wallet</p>
-            </div>
-        </a>
-
 
         <a class="web-wallet_button scale-up" href="dsu-explorer/loader/" target="_blank">
             <div class="left-side">
@@ -59,13 +48,87 @@
         <p>Demonstration of order and shipment management, mapping traceability of every lot (batch) using blockchain - through
             <a href="http://opendsu.com" target="_blank">OpenDSU</a> technology.</p>
 
-        <p>The web applications above (which should be easily compiled to native mobile Android/iOS applications) are just for
-            demonstration purposes, and will not exist in the future (so, no real effort was done on usability with large data
-            volumes). The <span style="font-weight: bold;">long-term vision</span> is that every company (MAH, Wholesaler,
-            Pharmacy) already has their own
-            ERPs, and integration with the blockchain should be provided by web service gateways that translate the existing
-            order/shipment management ERP operations on to blockchain read/write operations (so that each company operates as
-            usual as they already do today).</p>
+        <p>The Rest API Running on each server, capable of being integrated with each Participant's ERP system,
+            handles all the logic and automatically broadcasts the appropriate information is that every company (MAH, Wholesaler,
+            Pharmacy) according to need to know basis.
+            This ensures that each company operates as usual as they already do today.</p>
+
+        <div id="traceability" style="display:block;">
+            <h3>Traceability workspace</h3>
+            <p>This is the 'traceability' domain workspace. All DSU anchoring under the traceability domain happens here. You can use the DSu Explorer to inspect any DSUs</p>
+            <p>Below are the links to each participant's workspace:
+                <ul>
+                    <li>
+                        MAH:
+                        <ul>
+                            <li><a class="participant" href="mah-pfizer" target="_blank">Pfizer</a></li>
+                            <li><a class="participant" href="mah-roche" target="_blank">Roche</a></li>
+                            <li><a class="participant" href="mah-msd" target="_blank">MSD</a></li>
+                            <li><a class="participant" href="mah-gsk" target="_blank">GSK</a></li>
+                            <li><a class="participant" href="mah-bayer" target="_blank">Bayer</a></li>
+                            <li><a class="participant" href="mah-novo-nordisk" target="_blank">Novo Nordisk</a></li>
+                            <li><a class="participant" href="mah-takeda" target="_blank">Takeda (Mock MAH)</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        Wholesalers:
+                        <ul>
+                            <li><a class="participant" href="whs-takeda" target="_blank">Takeda</a></li>
+                            <li><a class="participant" href="whs1" target="_blank">Wholesaler 1</a></li>
+                            <li><a class="participant" href="whs2" target="_blank">Wholesaler 2</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        Pharmacies:
+                        <ul>
+                            <li><a class="participant" href="pha1" target="_blank">Pharmacy 1</a></li>
+                            <li><a class="participant" href="pha2" target="_blank">Pharmacy 2</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </p>
+            <script>
+                const traceabilityDiv = document.body.querySelector('div[id="traceability"]');
+                const url = window.location.hostname;
+
+                if (url.match(/[-\.]?(?:mah|whs|pha)[\-\d]/g)){
+                    traceabilityDiv.setAttribute("style", "display: none;");
+                } else {
+                    const lis = traceabilityDiv.querySelectorAll('.participant');
+                    const isLocalhost = url.endsWith('localhost');
+                    const isRoot = !url.startsWith('traceability')
+                    lis.forEach(l => {
+                        const name = l.getAttribute('href');
+                        const host = window.location.host;
+                        const newLink = `${isLocalhost ? 'http://' : 'https://'}${name}${isLocalhost ? '.'  : '-'}${!isRoot ? host.substring('traceability.'.length) : host}`
+                        l.setAttribute('href', `${newLink}`)
+                    })
+                }
+            </script>
+        </div>
+
+        <div id="participant" style="display:none;">
+            <h3>Participant Workspace</h3>
+
+            <ul>
+                <li>
+                   Click the Swagger button to access your swagger dashboard. There you can find:
+                    <ul>
+                        <li>The address the Finished Goods Traceability REST API is running under (this address can be used to test your own ERP integrations);</li>
+                        <li>A complete description of all the operations available to your ERP and the JSOn objects they receive/produce;</li>
+                        <li>A way to manually interact with the REST API via the 'try' button in each endpoint;</li>
+                    </ul>
+                </li>
+                <li>For most operations (create, update, etc) the successful return outputs a KeySSI. You can use DSU Explorer to inspect these DSUs;</li>
+            </ul>
+            </p>
+            <script>
+                const participantDiv = document.body.querySelector(`div[id="participant"]`);
+                if (window.location.hostname.match(/[-\.]?(?:mah|whs|pha)[\-\d]/g))
+                    participantDiv.setAttribute("style", "display: block;");
+
+            </script>
+        </div>
 
         <div id="credentials" style="display: none;">
             <p>Below are the necessary credentials to login with some pre-generated data:</p>
@@ -104,9 +167,31 @@
             </table>
         </div>
 
-        <p>For using other than the provided credentials, you are free to register/login as any on the Participants, but all the data will have to filled out manually</p>
+<!--        <p>For using other than the provided credentials, you are free to register/login as any on the Participants, but all the data will have to filled out manually</p>-->
 
         <p><span style="font-weight: bold;">WARNING:</span> Unstable software and environments. Use at your own risk! Data persistence at risk of unexpected reset!</p>
+
+        <h2>v0.8.0 Release Notes 2021-02-17</h2>
+        <p>Migration to a REST API implementation, meant to integrate with any ERP (There should be no more concurrency conflicts from having multiple wallets with the same id opened);</p>
+        <p>Creation and deployment of a fully configured Swagger instance for each environment. This allows for both testing the functionality in real time, but also as a guide for ERP integration;</p>
+        <p>DID communication upgrade to using the latest DID method provided by OpenDSU.</p>
+        <p>Deployment of a test environment, simulation a real life scenario, where every participant has its own environment and can interact with the REST API:
+        <ul>
+            <li>
+                <p>Real World Infrastructure Architecture:</p>
+                <p>Each participant has its own environment, with integrated FGT REST API and ERP systems. Some run Traceability blockchain nodes (MAHs) as well as their own domains;</p>
+                <p><image src="https://pharmaledger-imi.github.io/fgt-workspace/resources/drawings/finishedGoodsTraceabilityDSUTypes-fgt-api-deployment.png"></image></p>
+            </li>
+            <li>
+                <p>Test Infrastructure Architecture:</p>
+                <p>Each participant has its own (simulated) environment, with integrated FGT REST API and 'ERP Dashboard' (the endpoint can bu used to actually integrate with ERPs).</p>
+                <p><image src="https://pharmaledger-imi.github.io/fgt-workspace/resources/drawings/finishedGoodsTraceabilityDSUTypes-fgt-api-test-deployment.png"></image></p>
+            </li>
+        </ul>
+        </p>
+
+        <h2>v0.7.4 Release Notes 2021-11-25</h2>
+        <p>Performance and stability improvements.</p>
 
         <h2>v0.7.3 Release Notes 2021-11-22</h2>
         <p>Dashboard page updated with Most Sold Product, Stock & Shipments Status charts. For now, some functionalities are limited.</p>
@@ -265,7 +350,7 @@
         <br>
         This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 853992
         <br>&nbsp;<br>
-        v<!-- VERSION_START -->0.7.3-gb822bf11<!-- VERSION_END --> &copy;&nbsp;2021 <a href="http://pharmaledger.eu">Pharmaledger.eu</a> - All Rights Reserved.
+        v<!-- VERSION_START -->0.8.0-g6d0c27fc<!-- VERSION_END --> &copy;&nbsp;2021 <a href="http://pharmaledger.eu">Pharmaledger.eu</a> - All Rights Reserved.
     </footer>
 
     <script type="application/javascript">

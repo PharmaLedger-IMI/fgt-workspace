@@ -39,7 +39,7 @@ export class PdmIonTable implements ComponentInterface {
   @Prop({attribute: 'icon-name'}) iconName?: string = undefined;
   @Prop({attribute: 'no-content-message', mutable: true}) noContentMessage?: string = "No Content";
   @Prop({attribute: 'loading-message', mutable: true}) loadingMessage?: string = "Loading...";
-  @Prop({attribute: 'query-placeholder', mutable: true}) searchBarPlaceholder?: string =  "enter search terms...";
+  @Prop({attribute: 'search-bar-placeholder', mutable: true}) searchBarPlaceholder?: string =  "enter search terms...";
   // @Prop({attribute: 'buttons', mutable: true}) buttons?: string[] | {} = [];
   // @Prop({attribute: 'send-real-events', mutable: true}) sendRealEvents: boolean = false;
 
@@ -76,7 +76,8 @@ export class PdmIonTable implements ComponentInterface {
   /**
    * Querying/paginating Params - only available when mode is set by ref
    */
-  @Prop({attribute: 'query', mutable: true}) query?: string = undefined;
+  @Prop({attribute: 'keyword-query', mutable: true}) keywordQuery?: string = undefined;
+  @Prop({attribute: 'dsu-query', mutable: true}) dsuQuery?: string = '[]';
   @Prop({attribute: 'paginated', mutable: true}) paginated?: boolean = true;
   @Prop({attribute: 'page-count', mutable: true}) pageCount?: number = 0;
   @Prop({attribute: 'items-per-page', mutable: true}) itemsPerPage?: number = 10;
@@ -85,28 +86,50 @@ export class PdmIonTable implements ComponentInterface {
 
   private webManager: WebManager = undefined;
 
-  @State() model = undefined;
+  @State() _dataSource = undefined;
 
-  async componentWillLoad() {
-    if (!this.host.isConnected)
+  @Watch('keywordQuery')
+  async _updateByQuery(newQuery: string, oldQuery:string){
+    // issue #57 - doesn't update a state here because can stick in an infinite loop or rerender unnecessarily
+    if ((!newQuery && !oldQuery) || (newQuery === oldQuery))
       return;
-    if (this.autoLoad)
-      await this.loadContents();
+    this._dataSource = undefined;
+    await this.loadContents();
   }
 
+  @Watch('dsuQuery')
+  async updateDsuQuery(newDsuQuery, oldDsuQuery) {
+    //  issue #57 - doesn't update a state here because can stick in an infinite loop or rerender unnecessarily
+    if ((!newDsuQuery && !oldDsuQuery) || (newDsuQuery === oldDsuQuery))
+      return;
+    this._dataSource = undefined;
+    await this.loadContents();
+  }
+
+  @Method()
+  async refresh(){
+    await this.loadContents();
+  }
+
+  /** updateTable render logic:
+   *  - before first  render, the "loadContents" method is called to query database by "componentWillLoad"
+   *  -  when "loadContents" get the result, call "updateTable"
+   *  - "updateTable" update "_dataSource" that is a state, and then, call method "render()" by stencil lifecycle
+   *  - method "getContent" will update UI according to "_dataSource" variable
+   * */
   private updateTable(newModel){
-    if (!this.model){
-      this.model = [...newModel];
+    if (!this._dataSource){
+      this._dataSource = [...newModel];
       return;
     }
-    const model = this.model;
+    const model = this._dataSource;
     const equals = [];
     newModel.forEach((m,i) => {
       if (m === model[i])
         equals.push(i);
     });
 
-    this.model = [...newModel];
+    this._dataSource = [...newModel];
 
     this.element.querySelectorAll(`div[id="ion-table-content"] > *`).forEach(async (e,i) => {
       if (equals.indexOf(i) !== -1)
@@ -115,13 +138,24 @@ export class PdmIonTable implements ComponentInterface {
     });
   }
 
+  async performSearch(evt: any) {
+    console.log(`# ${this.manager} search keyword=${evt.detail}`)
+    this.keywordQuery = evt.detail;
+  }
+
   async loadContents(pageNumber?: number){
+    console.log('$$$ loadContent=')
     this.webManager = this.webManager || await WebManagerService.getWebManager(this.manager);
     if (!this.webManager)
       return;
 
+    let _dsuQuery = [];
+    try {
+      _dsuQuery = JSON.parse(this.dsuQuery)
+    } catch (e) {}
+
     if (this.paginated){
-      await this.webManager.getPage(this.itemsPerPage, pageNumber || this.currentPage, this.query, this.sort, false, (err, contents) => {
+      await this.webManager.getPage(this.itemsPerPage, pageNumber || this.currentPage, _dsuQuery, this.keywordQuery, this.sort, false, (err, contents) => {
         if (err){
           this.sendError(`Could not list items`, err);
           return;
@@ -131,7 +165,7 @@ export class PdmIonTable implements ComponentInterface {
         this.updateTable(contents.items);
       });
     } else {
-      await this.webManager.getAll( false, undefined, (err, contents) => {
+      await this.webManager.getAll( false, _dsuQuery, (err, contents) => {
         if (err){
           this.sendError(`Could not list items`, err);
           return;
@@ -141,27 +175,8 @@ export class PdmIonTable implements ComponentInterface {
     }
   }
 
-  @Watch('query')
-  async _updateByQuery(newQuery: string, oldQuery:string){
-    if (!this.host || !this.host.isConnected) // For WebCardinal Compatibility, otherwise it would trigger when they changed the value initially
-      return
-
-    if (!newQuery && !oldQuery)
-      return;
-    if (newQuery === oldQuery)
-      return;
-    this.model = undefined;
-    await this.refresh();
-  }
-
-  @Method()
-  async refresh(){
-    await this.loadContents();
-  }
-
   private async changePage(offset: number){
     if (this.currentPage + offset > 0 || this.currentPage + offset <= this.pageCount){
-      this.model = undefined;
       await this.loadContents(this.currentPage + offset);
     }
   }
@@ -212,17 +227,14 @@ export class PdmIonTable implements ComponentInterface {
   }
 
   private getContent(){
-    if (!this.model)
+    if (!this._dataSource)
       return this.getLoadingContent();
-    const content = [];
 
-    if (!this.model.length)
+    if (!this._dataSource.length)
       return this.getEmptyContent();
-    this.model.forEach(reference => {
-      content.push(this.getItem(reference));
-    });
 
-    return content;
+    const self = this;
+    return this._dataSource.map(reference => self.getItem(reference));
   }
 
   private getTableHeader(){
@@ -233,8 +245,7 @@ export class PdmIonTable implements ComponentInterface {
         return;
       return (
         <div class="ion-margin-end">
-          <ion-searchbar debounce={1000} placeholder={self.searchBarPlaceholder}
-                         search-icon="search-outline"></ion-searchbar>
+          <pdm-search-bar onSearchEvt={self.performSearch.bind(self)} placeholder={self.searchBarPlaceholder}> </pdm-search-bar>
         </div>
       )
     }
@@ -274,6 +285,13 @@ export class PdmIonTable implements ComponentInterface {
       </ion-row>
     )
   };
+
+  async componentWillLoad() {
+    if (!this.host.isConnected)
+      return;
+    if (this.autoLoad)
+      await this.loadContents();
+  }
 
   render() {
     return (

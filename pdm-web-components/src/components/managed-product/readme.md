@@ -71,6 +71,7 @@ graph TD;
   managed-product --> pdm-ion-table
   managed-product --> create-manage-view-layout
   pdm-ion-table --> multi-spinner
+  pdm-ion-table --> pdm-search-bar
   style managed-product fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

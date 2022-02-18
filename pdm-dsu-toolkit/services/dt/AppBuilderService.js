@@ -57,13 +57,13 @@ const OPTIONS = {
  * Convert the Environment object into the Options object
  * @memberOf dt
  */
-const envToOptions = function(env, opts){
+const envToOptions = function(env, opts, name){
     let options = Object.assign({}, OPTIONS, opts);
     options.environment = env;
     options.vault = env.vault;
     options.anchoring = env.domain;
     options.basePath = env.basePath;
-    options.walletPath = env.basePath.split('/').reduce((sum, s) => sum === '' && s !== '/' ? s : sum, '');
+    options.walletPath = env.basePath ? env.basePath.split('/').reduce((sum, s) => sum === '' && s !== '/' ? s : sum, '') : name;
     const opendsu = require('opendsu');
     options.hosts = $$.environmentType === 'browser'
         ? `${opendsu.loadApi('system').getEnvironmentVariable(opendsu.constants.BDNS_ROOT_HOSTS)}`
@@ -79,8 +79,8 @@ const envToOptions = function(env, opts){
  * @function AppBuilderService
  * @constructor
  */
-function AppBuilderService(environment, opts) {
-    const options = envToOptions(environment, opts);
+function AppBuilderService(environment, name, opts) {
+    const options = envToOptions(environment, opts, name);
     const dossierBuilder = new (require("./DossierBuilder"))();
 
     const fileService = new FileService(options);

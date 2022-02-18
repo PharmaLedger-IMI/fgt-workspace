@@ -159,6 +159,7 @@ SOFTWARE.</p>
 <p>To run the application launch your browser (preferably Chrome) in Incognito mode and access the http://localhost:8080 link.</p>
 <p>You will be present with a menu from where you can choose the SSApp you with to launch</p>
 <h1>Modules</h1>
+<p><a href="fgt-api/index.html">REST API</a></p>
 <p><a href="pdm-dsu-toolkit/index.html">PDM-DSU-Toolkit</a></p>
 <p><a href="fgt-dsu-wizard/index.html">FGT DSU Wizard</a></p>
 <p><a href="pdm-web-components/index.html">Web Components</a></p>
@@ -166,6 +167,9 @@ SOFTWARE.</p>
 <p><a href="fgt-wholesaler-ssapp/index.html">Wholesaler Wallet</a></p>
 <p><a href="fgt-mah-ssapp/index.html">Pharmacy Wallet</a></p>
 <h3>Architecture</h3>
+<h4>REST API Architecture</h4>
+<p>As of release 0.8, Finished Goods Traceability moved from a UI based Wallet system, to an ERP integrated one, with all the Architectural considerations than came with that change.</p>
+<p>Please go to the REST API Module for details</p>
 <h4>Concrete SSApp Architecture</h4>
 <p>SSApps built under the PDM Architecture present the following structure:</p>
 <p><img src="resources/drawings/finishedGoodsTraceabilityDSUTypes-BaseSSAppArchitecture.png" alt="Current SSApp Architecture"></p>
@@ -292,6 +296,32 @@ $ npm run build-all
 <li>Windows:
 <code>echo &quot;${PATH_TO_DRAW_IO}\drawio.exe&quot;</code></li>
 </ul>
+<h3>API</h3>
+<h4>Deployment Diagram</h4>
+<h5>Real World Scenario</h5>
+<p>The proposed REST Api deployment diagram is as follows</p>
+<p><img src="resources/drawings/finishedGoodsTraceabilityDSUTypes-fgt-api-deployment.png" alt="Proposed Intrastructure"></p>
+<p>where each participant has its own environment, running it's own:</p>
+<ul>
+<li>ERP System;</li>
+<li>OpenDSU API (ApiHub);</li>
+<li>FGT REST API;</li>
+<li>(optional, typically for MAHs) blockchain node;</li>
+</ul>
+<h5>Testing Scenario</h5>
+<p>Because the above infrastructure is not testable at this moment, we propose to deploy the following on our servers:</p>
+<p><img src="resources/drawings/finishedGoodsTraceabilityDSUTypes-fgt-api-test-deployment.png" alt="Proposed Intrastructure"></p>
+<p>where each participant has its own environment, running it's own:</p>
+<ul>
+<li>Swagger Instance (mocks the ERP System);</li>
+<li>OpenDSU API (ApiHub);</li>
+<li>FGT REST API;</li>
+</ul>
+<p><strong>How to deploy</strong></p>
+<p>ssh into the machine;
+clone the workspace;
+go to <code>fgt-workspace/docker/api</code>
+run <code>./bootCompose.sh ${env}</code> where env can be nothing (localhost), dev (fgt-dev.pharmaledger.pdmfc.com) or anything else (fgt.pharmaledger.pdmfc.com)</p>
 <h3>Deploy and test with a local blockchain</h3>
 <ul>
 <li>(optional) clean 'fake' blockchain: <code>npm run clean</code></li>
@@ -437,6 +467,7 @@ sdk.dir=/home/alex/Android/Sdk
 <script src="scripts/linenumber.js"> </script>
 
 <script src="scripts/search.js"> </script>
+
 
 </body>
 </html>

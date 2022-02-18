@@ -191,7 +191,15 @@ class TraceabilityManager extends Manager{
         });
     }
 
+    _validate(obj) {
+        const errors = [];
+        if (!obj.gtin)
+            errors.push('GTIN is required.');
 
+        if (!obj.batchNumber)
+            errors.push('batchNumber is required.');
+        return errors.join(' ');
+    }
 
     _replyToMessage(requestId, requesterId, startNode, endNode, nodeList, error, callback){
         const self = this;
@@ -242,7 +250,11 @@ class TraceabilityManager extends Manager{
     getOne(obj,  callback) {
         let self = this;
         if (!(obj instanceof IndividualProduct))
-            return callback(`Invalid Object Provided`);
+            obj = new IndividualProduct(obj);
+
+        const _err = self._validate(obj);
+        if (_err)
+            return callback(`Invalid Object Provided. ${_err}`);
 
         if (!obj.manufName)
             return self._getProduct(obj.gtin, (err, p) => {

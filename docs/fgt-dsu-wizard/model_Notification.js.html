@@ -129,7 +129,7 @@ class Notification {
     constructor(notification) {
         if (typeof notification !== undefined)
             for (let prop in notification)
-                if (notification.hasOwnProperty(prop))
+                if (notification.hasOwnProperty(prop) &amp;&amp; this.hasOwnProperty(prop))
                     this[prop] = notification[prop];
     }
 
@@ -166,6 +166,7 @@ module.exports = Notification;
 <script src="scripts/linenumber.js"> </script>
 
 <script src="scripts/search.js"> </script>
+
 
 </body>
 </html>

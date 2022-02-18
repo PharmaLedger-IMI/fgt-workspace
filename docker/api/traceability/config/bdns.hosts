@@ -1,0 +1,32 @@
+{
+  "default": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  },
+  "traceability": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "mqEndpoints": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  },
+  "vault": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  }
+}

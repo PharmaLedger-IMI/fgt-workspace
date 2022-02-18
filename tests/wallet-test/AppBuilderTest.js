@@ -11,7 +11,7 @@ let testName = 'Application Builder test';
 const defaultOps = {
     timeout: 30000000,
     fakeServer: false,
-    app: "fgt-mah-wallet",
+    app: "dsu-explorer",
     pathToApps: "../../"
 }
 
@@ -121,7 +121,7 @@ const runTest = function(testFinished){
         let config = require("opendsu").loadApi("config");
         config.autoconfigFromEnvironment(env);
 
-        const appService = new (dt.AppBuilderService)(env);
+        const appService = new (dt.AppBuilderService)(env, conf.app);
         const credentials = generateSecrets(Math.round(Math.random() * 999999999));
         appService.buildWallet(credentials, (err, keySII, dsu) => {
             if (err)

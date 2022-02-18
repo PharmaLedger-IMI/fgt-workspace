@@ -113,6 +113,7 @@
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Receipt = require('../model/Receipt');
 const IndividualReceipt = require('../model/IndividualReceipt');
+const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 
 /**
  * Stock Manager Class
@@ -172,7 +173,7 @@ class ReceiptManager extends Manager{
     }
 
     _genCompostKey(individualReceipt){
-        return `${individualReceipt.gtin}-${individualReceipt.batchNumber}-${individualReceipt.serialNumber}`;
+        return `${individualReceipt.gtin}-${individualReceipt.batchNumber}-${individualReceipt.serialNumber}-${Date.now()}`;
     }
 
     _getDSUInfo(keySSI, callback){
@@ -390,6 +391,7 @@ module.exports = getReceiptManager;</code></pre>
 <script src="scripts/linenumber.js"> </script>
 
 <script src="scripts/search.js"> </script>
+
 
 </body>
 </html>

@@ -98,6 +98,11 @@ function BatchService(domain, strategy){
     this.create = function(gtin, batch, callback){
 
         let data = typeof batch === 'object' ? JSON.stringify(batch) : batch;
+        if(!(batch instanceof Batch))
+            batch = new Batch(batch);
+        const _err = batch.validate();
+        if(_err)
+            return callback(_err);
 
         if (isSimple){
             let keySSI = this.generateKey(gtin, batch.batchNumber);
@@ -178,11 +183,11 @@ function BatchService(domain, strategy){
             if(err)
                 return callback(err);
 
-            if(typeof batch === 'object') {
-                let err = batch.validate(batchFromSSI.batchStatus.status);
-                if(err)
-                    return callback(err);
-            }
+            if(!(batch instanceof Batch))
+                batch = new Batch(batch);
+            err = batch.validate(batchFromSSI.batchStatus.status);
+            if(err)
+                return callback(err);
 
             const cb = function(err, ...results){
                 if(err)

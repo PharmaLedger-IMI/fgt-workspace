@@ -95,11 +95,11 @@ function OrderService(domain, strategy) {
      */
     this.create = function (order, callback) {
         // if product is invalid, abort immediatly.
-        if (typeof order === 'object') {
-            let err = order.validate();
-            if (err)
-                return callback(err);
-        }
+        if(!(order instanceof Order))
+            order = new Order(order);
+        const _err = order.validate();
+        if (_err)
+            return callback(_err);
 
         if (isSimple) {
             createSimple(order, callback);
@@ -128,11 +128,11 @@ function OrderService(domain, strategy) {
             if (err)
                 return callback(err);
 
-            if (typeof order === 'object') {
-                let err = order.validate();
-                if (err)
-                    return callback(err);
-            }
+            if(!(order instanceof Order))
+                order = new Order(order);
+            err = order.validate(orderFromSSI.status.status);
+            if (err)
+                return callback(err);
 
             const cb = function(err, ...results){
                 if (err)

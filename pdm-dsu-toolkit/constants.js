@@ -23,7 +23,8 @@ const IDENTITY_MOUNT_PATH = '/id'
 
 const DATABASE_MOUNT_PATH = '/db'
 
-const DID_METHOD = 'demo'
+const DID_METHOD = 'ssi:name';
+const DID_DOMAIN = 'traceability';
 
 const MESSAGE_REFRESH_RATE = 1000;
 const MESSAGE_TABLE = 'messages'
@@ -47,6 +48,7 @@ module.exports = {
     IDENTITY_MOUNT_PATH,
     DATABASE_MOUNT_PATH,
     DID_METHOD,
+    DID_DOMAIN,
     MESSAGE_REFRESH_RATE,
     MESSAGE_TABLE,
     DEFAULT_QUERY_OPTIONS,
