@@ -163,11 +163,28 @@ const instantiateSSApp = function(app, pathToApps, dt, credentials, callback){
         const appService = new (dt.AppBuilderService)(env);
         appService.buildWallet(credentials, (err, keySII, dsu) => {
             if (err)
-                throw err;
+                return callback(err);
             console.log(`App ${env.appName} created with credentials ${JSON.stringify(credentials, undefined, 2)}.\nSSI: ${{keySII}}`);
             callback(undefined, keySII, dsu, credentials);
         });
     });
+}
+
+const loadWallet = function(app, pathToApps, dt, credentials, callback){
+    getEnvJs(app, pathToApps,(err, env) => {
+        if (err)
+            throw err;
+
+        let config = require("opendsu").loadApi("config");
+        config.autoconfigFromEnvironment(env);
+        const appService = new (dt.AppBuilderService)(env);
+        appService.loadWallet(credentials, (err, keySSI, dsu) => {
+            if (err)
+                throw err;
+            console.log(`App ${env.appName} load with credentials ${JSON.stringify(credentials, undefined, 2)}.\nSSI: ${{keySSI}}`);
+            callback(undefined, keySSI, dsu);
+        });
+    })
 }
 
 function jsonStringifyReplacer(key, value){
@@ -191,5 +208,6 @@ module.exports = {
     parseEnvJS,
     argParser,
     instantiateSSApp,
+    loadWallet,
     jsonStringifyReplacer
 }

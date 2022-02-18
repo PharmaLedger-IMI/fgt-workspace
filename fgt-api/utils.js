@@ -4,7 +4,7 @@ const cors = require("cors");
 
 const {getResolver, getKeySSISpace} = require('../pdm-dsu-toolkit/services/utils');
 const getParticipantManager = require('../fgt-dsu-wizard/managers/ParticipantManager');
-const {instantiateSSApp, impersonateDSUStorage} = require('../bin/environment/utils');
+const {instantiateSSApp, loadWallet, impersonateDSUStorage} = require('../bin/environment/utils');
 const {APPS} = require('../bin/environment/credentials/credentials3');
 
 const AppBuilderService = require('../pdm-dsu-toolkit/services/dt/AppBuilderService');
@@ -41,8 +41,10 @@ const instantiate = function(basePath, walletName, callback){
         if (err)
             return callback(err);
         instantiateSSApp(walletName, "..", dt, credentials, (err, walletSSI, walletDSU) => {
-            if (err)
-                return callback(err);
+            if (err) {
+                console.log(`The wallet couldn't be created. Trying to load with credentials...` );
+                return loadWallet(walletName, "..", dt, credentials, callback);
+            }
             callback(undefined, walletSSI, walletDSU);
         });
     });
@@ -62,26 +64,6 @@ const load = function(keySSI, callback){
     });
 }
 
-const getSeed = function(basePath, walletName, callback){
-    const seedFilePath = path.join(basePath, walletName, "seed");
-    if (!fs.existsSync(seedFilePath))
-        return instantiate(basePath, walletName, callback);
-
-    fs.readFile(seedFilePath, (err, data) => {
-        if (err){
-            log(`Could not read seed file. Trying to instantiate`);
-            return instantiate(basePath, walletName, callback);
-        }
-        callback(undefined, data);
-    });
-}
-
-const saveSeed = function(basePath, seed, walletName, callback){
-    const seedFilePath = path.join(basePath, walletName, "seed");
-    fs.writeFile(seedFilePath, seed.toString(), callback);
-}
-
-
 const initApis = function(express, apis, port, walletName, ...managerInitMethods){
     log(`InitApi: ${walletName} on :${port}`);
 
@@ -89,7 +71,7 @@ const initApis = function(express, apis, port, walletName, ...managerInitMethods
         throw new Error("Must be exists a initialized manager for each API.");
 
     const credentialPath = path.join(process.cwd(), "config");
-    getSeed(credentialPath, walletName, (err, keySSI, walletDSU) => {
+    instantiate(credentialPath, walletName, (err, walletSSI, walletDSU) => {
         if (err)
             throw err;
 
@@ -122,27 +104,16 @@ const initApis = function(express, apis, port, walletName, ...managerInitMethods
             });
         }
 
-        if (walletDSU){
-            return walletDSU.getKeySSIAsObject((err, keySSI) => {
-                if (err)
-                    throw err;
-                saveSeed(credentialPath, keySSI.getIdentifier(),  walletName,(err) => {
-                    if (err)
-                        throw err;
-                    load(keySSI.getIdentifier(), (err, walletDSU) => {
-                        if (err)
-                            throw err;
-                        init(walletDSU);
-                    });
-                });
-            });
-        }
-
-        load(keySSI, (err, walletDSU) => {
+        walletDSU.getKeySSIAsObject((err, keySSI) => {
             if (err)
                 throw err;
-            init(walletDSU);
+            load(keySSI.getIdentifier(), (err, walletDSU) => {
+                if (err)
+                    throw err;
+                init(walletDSU);
+            });
         });
+
     });
 }
 

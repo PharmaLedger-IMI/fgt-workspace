@@ -531,6 +531,11 @@ function AppBuilderService(environment, name, opts) {
         });
     }
 
+    /**
+     * Load an existing wallet from the provided secrets
+     * @param {object|string} secrets according to {@link parseSecrets}
+     * @param {function(err, KeySSI?, Archive?)} callback
+     */
     this.loadWallet = function(secrets, callback){
         parseSecrets(true, secrets, (err, keyGenArgs, publicSecrets) => {
             if (err)
@@ -542,9 +547,11 @@ function AppBuilderService(environment, name, opts) {
                 _getResolver().loadDSU(keySSI, (err, wallet) => {
                     if (err)
                         return callback(`Could not load wallet DSU ${err}`);
-                    wallet = wallet.getWritableDSU();
+                    const writableDsu = wallet.getWritableDSU();
                     console.log(`wallet Loaded`);
-                    wallet.getKeySSIAsString(callback);
+                    writableDsu.getKeySSIAsString((err, keySSI) => {
+                        callback(err, keySSI, wallet);
+                    });
                 });
             });
         });
