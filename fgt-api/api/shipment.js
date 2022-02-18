@@ -84,7 +84,7 @@ class ShipmentApi extends Api {
     update(shipmentId, statusUpdate, callback) {
         this.manager.update(shipmentId, statusUpdate, (err, updatedSimpleShipment) => {
             if (err)
-                return callback(err);
+                return callback(new BadRequest(err));
             callback(undefined, updatedSimpleShipment);
         })
     }
