@@ -129,399 +129,399 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.61
-#  mah-bayer:
-#    <<: *mah-def
-#    container_name: mah-bayer
-#    hostname: mah-bayer
-#    environment:
-#      ROLE: mah
-#      CREDENTIALS_FILE: mah-bayer.json
-#      SWAGGER_SERVER: ${PROTOCOL}://api-mah-bayer${SWAGGER}/traceability
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.mah-bayer.rule=Host(`mah-bayer${DOMAIN}`)"
-#      - "traefik.http.middlewares.mah-bayer-headers.headers.accessControlAllowOriginListRegex=.*"
-#      - "traefik.http.middlewares.mah-bayer-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
-#      - "traefik.http.middlewares.mah-bayer-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
-#      - "traefik.http.middlewares.mah-bayer-headers.headers.accessControlMaxAge=100"
-#      - "traefik.http.middlewares.mah-bayer-headers.headers.addVaryHeader=true"
-#      - "traefik.http.routers.mah-bayer.middlewares=mah-bayer-headers"
-#      - "traefik.http.routers.mah-bayer.entrypoints=web"
-#      - "traefik.http.routers.mah-bayer.service=mah-bayer"
-#      - "traefik.http.services.mah-bayer.loadbalancer.server.port=8080"
-#
-#      - "traefik.http.routers.mah-bayer-swagger.rule=Host(`swagger-mah-bayer${DOMAIN}`)"
-#      - "traefik.http.routers.mah-bayer-swagger.entrypoints=web"
-#      - "traefik.http.routers.mah-bayer-swagger.service=mah-bayer-swagger"
-#      - "traefik.http.services.mah-bayer-swagger.loadbalancer.server.port=3009"
-#
-#      - "traefik.http.routers.mah-bayer-api.rule=Host(`api-mah-bayer${DOMAIN}`)"
-#      - "traefik.http.routers.mah-bayer-api.entrypoints=web"
-#      - "traefik.http.routers.mah-bayer-api.service=mah-bayer-api"
-#      - "traefik.http.services.mah-bayer-api.loadbalancer.server.port=8081"
-#    volumes:
-#      - mah-bayer_vol:/fgt-workspace/apihub-root/external-volume
-#    networks:
-#      traceability-net:
-#        ipv4_address: 172.16.63.62
-#  mah-gsk:
-#    <<: *mah-def
-#    container_name: mah-gsk
-#    hostname: mah-gsk
-#    environment:
-#      ROLE: mah
-#      CREDENTIALS_FILE: mah-gsk.json
-#      SWAGGER_SERVER: ${PROTOCOL}://api-mah-gsk${SWAGGER}/traceability
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.mah-gsk.rule=Host(`mah-gsk${DOMAIN}`)"
-#      - "traefik.http.middlewares.mah-gsk-headers.headers.accessControlAllowOriginListRegex=.*"
-#      - "traefik.http.middlewares.mah-gsk-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
-#      - "traefik.http.middlewares.mah-gsk-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
-#      - "traefik.http.middlewares.mah-gsk-headers.headers.accessControlMaxAge=100"
-#      - "traefik.http.middlewares.mah-gsk-headers.headers.addVaryHeader=true"
-#      - "traefik.http.routers.mah-gsk.middlewares=mah-gsk-headers"
-#      - "traefik.http.routers.mah-gsk.entrypoints=web"
-#      - "traefik.http.routers.mah-gsk.service=mah-gsk"
-#      - "traefik.http.services.mah-gsk.loadbalancer.server.port=8080"
-#
-#      - "traefik.http.routers.mah-gsk-swagger.rule=Host(`swagger-mah-gsk${DOMAIN}`)"
-#      - "traefik.http.routers.mah-gsk-swagger.entrypoints=web"
-#      - "traefik.http.routers.mah-gsk-swagger.service=mah-gsk-swagger"
-#      - "traefik.http.services.mah-gsk-swagger.loadbalancer.server.port=3009"
-#
-#      - "traefik.http.routers.mah-gsk-api.rule=Host(`api-mah-gsk${DOMAIN}`)"
-#      - "traefik.http.routers.mah-gsk-api.entrypoints=web"
-#      - "traefik.http.routers.mah-gsk-api.service=mah-gsk-api"
-#      - "traefik.http.services.mah-gsk-api.loadbalancer.server.port=8081"
-#    volumes:
-#      - mah-gsk_vol:/fgt-workspace/apihub-root/external-volume
-#    networks:
-#      traceability-net:
-#        ipv4_address: 172.16.63.63
-#  mah-msd:
-#    <<: *mah-def
-#    container_name: mah-msd
-#    hostname: mah-msd
-#    environment:
-#      ROLE: mah
-#      CREDENTIALS_FILE: mah-msd.json
-#      SWAGGER_SERVER: ${PROTOCOL}://api-mah-msd${SWAGGER}/traceability
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.mah-msd.rule=Host(`mah-msd${DOMAIN}`)"
-#      - "traefik.http.middlewares.mah-msd-headers.headers.accessControlAllowOriginListRegex=.*"
-#      - "traefik.http.middlewares.mah-msd-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
-#      - "traefik.http.middlewares.mah-msd-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
-#      - "traefik.http.middlewares.mah-msd-headers.headers.accessControlMaxAge=100"
-#      - "traefik.http.middlewares.mah-msd-headers.headers.addVaryHeader=true"
-#      - "traefik.http.routers.mah-msd.middlewares=mah-msd-headers"
-#      - "traefik.http.routers.mah-msd.entrypoints=web"
-#      - "traefik.http.routers.mah-msd.service=mah-msd"
-#      - "traefik.http.services.mah-msd.loadbalancer.server.port=8080"
-#
-#      - "traefik.http.routers.mah-msd-swagger.rule=Host(`swagger-mah-msd${DOMAIN}`)"
-#      - "traefik.http.routers.mah-msd-swagger.entrypoints=web"
-#      - "traefik.http.routers.mah-msd-swagger.service=mah-msd-swagger"
-#      - "traefik.http.services.mah-msd-swagger.loadbalancer.server.port=3009"
-#
-#      - "traefik.http.routers.mah-msd-api.rule=Host(`api-mah-msd${DOMAIN}`)"
-#      - "traefik.http.routers.mah-msd-api.entrypoints=web"
-#      - "traefik.http.routers.mah-msd-api.service=mah-msd-api"
-#      - "traefik.http.services.mah-msd-api.loadbalancer.server.port=8081"
-#    volumes:
-#      - mah-msd_vol:/fgt-workspace/apihub-root/external-volume
-#    networks:
-#      traceability-net:
-#        ipv4_address: 172.16.63.64
-#  mah-novo-nordisk:
-#    <<: *mah-def
-#    container_name: mah-novo-nordisk
-#    hostname: mah-novo-nordisk
-#    environment:
-#      ROLE: mah
-#      CREDENTIALS_FILE: mah-novo-nordisk.json
-#      SWAGGER_SERVER: ${PROTOCOL}://api-mah-novo-nordisk${SWAGGER}/traceability
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.mah-novo-nordisk.rule=Host(`mah-novo-nordisk${DOMAIN}`)"
-#      - "traefik.http.middlewares.mah-novo-nordisk-headers.headers.accessControlAllowOriginListRegex=.*"
-#      - "traefik.http.middlewares.mah-novo-nordisk-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
-#      - "traefik.http.middlewares.mah-novo-nordisk-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
-#      - "traefik.http.middlewares.mah-novo-nordisk-headers.headers.accessControlMaxAge=100"
-#      - "traefik.http.middlewares.mah-novo-nordisk-headers.headers.addVaryHeader=true"
-#      - "traefik.http.routers.mah-novo-nordisk.middlewares=mah-novo-nordisk-headers"
-#      - "traefik.http.routers.mah-novo-nordisk.entrypoints=web"
-#      - "traefik.http.routers.mah-novo-nordisk.service=mah-novo-nordisk"
-#      - "traefik.http.services.mah-novo-nordisk.loadbalancer.server.port=8080"
-#
-#      - "traefik.http.routers.mah-novo-nordisk-swagger.rule=Host(`swagger-mah-novo-nordisk${DOMAIN}`)"
-#      - "traefik.http.routers.mah-novo-nordisk-swagger.entrypoints=web"
-#      - "traefik.http.routers.mah-novo-nordisk-swagger.service=mah-novo-nordisk-swagger"
-#      - "traefik.http.services.mah-novo-nordisk-swagger.loadbalancer.server.port=3009"
-#
-#      - "traefik.http.routers.mah-novo-nordisk-api.rule=Host(`api-mah-novo-nordisk${DOMAIN}`)"
-#      - "traefik.http.routers.mah-novo-nordisk-api.entrypoints=web"
-#      - "traefik.http.routers.mah-novo-nordisk-api.service=mah-novo-nordisk-api"
-#      - "traefik.http.services.mah-novo-nordisk-api.loadbalancer.server.port=8081"
-#    volumes:
-#      - mah-novo-nordisk_vol:/fgt-workspace/apihub-root/external-volume
-#    networks:
-#      traceability-net:
-#        ipv4_address: 172.16.63.65
-#  mah-pfizer:
-#    <<: *mah-def
-#    container_name: mah-pfizer
-#    hostname: mah-pfizer
-#    environment:
-#      ROLE: mah
-#      CREDENTIALS_FILE: mah-pfizer.json
-#      SWAGGER_SERVER: ${PROTOCOL}://api-mah-pfizer${SWAGGER}/traceability
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.mah-pfizer.rule=Host(`mah-pfizer${DOMAIN}`)"
-#      - "traefik.http.middlewares.mah-pfizer-headers.headers.accessControlAllowOriginListRegex=.*"
-#      - "traefik.http.middlewares.mah-pfizer-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
-#      - "traefik.http.middlewares.mah-pfizer-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
-#      - "traefik.http.middlewares.mah-pfizer-headers.headers.accessControlMaxAge=100"
-#      - "traefik.http.middlewares.mah-pfizer-headers.headers.addVaryHeader=true"
-#      - "traefik.http.routers.mah-pfizer.middlewares=mah-pfizer-headers"
-#      - "traefik.http.routers.mah-pfizer.entrypoints=web"
-#      - "traefik.http.routers.mah-pfizer.service=mah-pfizer"
-#      - "traefik.http.services.mah-pfizer.loadbalancer.server.port=8080"
-#
-#      - "traefik.http.routers.mah-pfizer-swagger.rule=Host(`swagger-mah-pfizer${DOMAIN}`)"
-#      - "traefik.http.routers.mah-pfizer-swagger.entrypoints=web"
-#      - "traefik.http.routers.mah-pfizer-swagger.service=mah-pfizer-swagger"
-#      - "traefik.http.services.mah-pfizer-swagger.loadbalancer.server.port=3009"
-#
-#      - "traefik.http.routers.mah-pfizer-api.rule=Host(`api-mah-pfizer${DOMAIN}`)"
-#      - "traefik.http.routers.mah-pfizer-api.entrypoints=web"
-#      - "traefik.http.routers.mah-pfizer-api.service=mah-pfizer-api"
-#      - "traefik.http.services.mah-pfizer-api.loadbalancer.server.port=8081"
-#    volumes:
-#      - mah-pfizer_vol:/fgt-workspace/apihub-root/external-volume
-#    networks:
-#      traceability-net:
-#        ipv4_address: 172.16.63.66
-#  mah-takeda:
-#    <<: *mah-def
-#    container_name: mah-takeda
-#    hostname: mah-takeda
-#    environment:
-#      ROLE: mah
-#      CREDENTIALS_FILE: mah-takeda.json
-#      SWAGGER_SERVER: ${PROTOCOL}://api-mah-takeda${SWAGGER}/traceability
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.mah-takeda.rule=Host(`mah-takeda${DOMAIN}`)"
-#      - "traefik.http.middlewares.mah-takeda-headers.headers.accessControlAllowOriginListRegex=.*"
-#      - "traefik.http.middlewares.mah-takeda-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
-#      - "traefik.http.middlewares.mah-takeda-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
-#      - "traefik.http.middlewares.mah-takeda-headers.headers.accessControlMaxAge=100"
-#      - "traefik.http.middlewares.mah-takeda-headers.headers.addVaryHeader=true"
-#      - "traefik.http.routers.mah-takeda.middlewares=mah-takeda-headers"
-#      - "traefik.http.routers.mah-takeda.entrypoints=web"
-#      - "traefik.http.routers.mah-takeda.service=mah-takeda"
-#      - "traefik.http.services.mah-takeda.loadbalancer.server.port=8080"
-#
-#      - "traefik.http.routers.mah-takeda-swagger.rule=Host(`swagger-mah-takeda${DOMAIN}`)"
-#      - "traefik.http.routers.mah-takeda-swagger.entrypoints=web"
-#      - "traefik.http.routers.mah-takeda-swagger.service=mah-takeda-swagger"
-#      - "traefik.http.services.mah-takeda-swagger.loadbalancer.server.port=3009"
-#
-#      - "traefik.http.routers.mah-takeda-api.rule=Host(`api-mah-takeda${DOMAIN}`)"
-#      - "traefik.http.routers.mah-takeda-api.entrypoints=web"
-#      - "traefik.http.routers.mah-takeda-api.service=mah-takeda-api"
-#      - "traefik.http.services.mah-takeda-api.loadbalancer.server.port=8081"
-#    volumes:
-#      - mah-takeda_vol:/fgt-workspace/apihub-root/external-volume
-#    networks:
-#      traceability-net:
-#        ipv4_address: 172.16.63.67
-#
-#  whs-1:
-#    << : *whs-def
-#    container_name: whs1
-#    hostname: whs1
-#    environment:
-#      ROLE: whs
-#      CREDENTIALS_FILE: whs-1.json
-#      SWAGGER_SERVER: ${PROTOCOL}://api-whs1${SWAGGER}/traceability
-#    labels:
-#      - "traefik.enable=true"
-#
-#      - "traefik.http.routers.whs1.rule=Host(`whs1${DOMAIN}`)"
-#      - "traefik.http.middlewares.whs1-headers.headers.accessControlAllowOriginListRegex=.*"
-#      - "traefik.http.middlewares.whs1-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
-#      - "traefik.http.middlewares.whs1-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
-#      - "traefik.http.middlewares.whs1-headers.headers.accessControlMaxAge=100"
-#      - "traefik.http.middlewares.whs1-headers.headers.addVaryHeader=true"
-#      - "traefik.http.routers.whs1.middlewares=whs1-headers"
-#      - "traefik.http.routers.whs1.entrypoints=web"
-#      - "traefik.http.routers.whs1.service=whs1"
-#      - "traefik.http.services.whs1.loadbalancer.server.port=8080"
-#
-#      - "traefik.http.routers.whs1-swagger.rule=Host(`swagger-whs1${DOMAIN}`)"
-#      - "traefik.http.routers.whs1-swagger.entrypoints=web"
-#      - "traefik.http.routers.whs1-swagger.service=whs1-swagger"
-#      - "traefik.http.services.whs1-swagger.loadbalancer.server.port=3009"
-#
-#      - "traefik.http.routers.whs1-api.rule=Host(`api-whs1${DOMAIN}`)"
-#      - "traefik.http.routers.whs1-api.entrypoints=web"
-#      - "traefik.http.routers.whs1-api.service=whs1-api"
-#      - "traefik.http.services.whs1-api.loadbalancer.server.port=3001"
-#    volumes:
-#      - whs1_vol:/fgt-workspace/apihub-root/external-volume
-#    networks:
-#      traceability-net:
-#        ipv4_address: 172.16.63.101
-#
-#  whs-2:
-#    <<: *whs-def
-#    container_name: whs2
-#    hostname: whs2
-#    environment:
-#      ROLE: whs
-#      CREDENTIALS_FILE: whs-2.json
-#      SWAGGER_SERVER: ${PROTOCOL}://api-whs2${SWAGGER}/traceability
-#    labels:
-#      - "traefik.enable=true"
-#
-#      - "traefik.http.routers.whs2.rule=Host(`whs2${DOMAIN}`)"
-#      - "traefik.http.middlewares.whs2-headers.headers.accessControlAllowOriginListRegex=.*"
-#      - "traefik.http.middlewares.whs2-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
-#      - "traefik.http.middlewares.whs2-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
-#      - "traefik.http.middlewares.whs2-headers.headers.accessControlMaxAge=100"
-#      - "traefik.http.middlewares.whs2-headers.headers.addVaryHeader=true"
-#      - "traefik.http.routers.whs2.middlewares=whs2-headers"
-#      - "traefik.http.routers.whs2.entrypoints=web"
-#      - "traefik.http.routers.whs2.service=whs2"
-#      - "traefik.http.services.whs2.loadbalancer.server.port=8080"
-#
-#      - "traefik.http.routers.whs2-swagger.rule=Host(`swagger-whs2${DOMAIN}`)"
-#      - "traefik.http.routers.whs2-swagger.entrypoints=web"
-#      - "traefik.http.routers.whs2-swagger.service=whs2-swagger"
-#      - "traefik.http.services.whs2-swagger.loadbalancer.server.port=3009"
-#
-#      - "traefik.http.routers.whs2-api.rule=Host(`api-whs2${DOMAIN}`)"
-#      - "traefik.http.routers.whs2-api.entrypoints=web"
-#      - "traefik.http.routers.whs2-api.service=whs2-api"
-#      - "traefik.http.services.whs2-api.loadbalancer.server.port=3001"
-#    volumes:
-#      - whs2_vol:/fgt-workspace/apihub-root/external-volume
-#    networks:
-#      traceability-net:
-#        ipv4_address: 172.16.63.102
-#  whs-takeda:
-#    <<: *whs-def
-#    container_name: whs-takeda
-#    hostname: whs-takeda
-#    environment:
-#      ROLE: whs
-#      CREDENTIALS_FILE: whs-takeda.json
-#      SWAGGER_SERVER: ${PROTOCOL}://api-whs-takeda${SWAGGER}/traceability
-#    labels:
-#      - "traefik.enable=true"
-#
-#      - "traefik.http.routers.whs-takeda.rule=Host(`whs-takeda${DOMAIN}`)"
-#      - "traefik.http.middlewares.whs-takeda-headers.headers.accessControlAllowOriginListRegex=.*"
-#      - "traefik.http.middlewares.whs-takeda-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
-#      - "traefik.http.middlewares.whs-takeda-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
-#      - "traefik.http.middlewares.whs-takeda-headers.headers.accessControlMaxAge=100"
-#      - "traefik.http.middlewares.whs-takeda-headers.headers.addVaryHeader=true"
-#      - "traefik.http.routers.whs-takeda.middlewares=whs-takeda-headers"
-#      - "traefik.http.routers.whs-takeda.entrypoints=web"
-#      - "traefik.http.routers.whs-takeda.service=whs-takeda"
-#      - "traefik.http.services.whs-takeda.loadbalancer.server.port=8080"
-#
-#      - "traefik.http.routers.whs-takeda-swagger.rule=Host(`swagger-whs-takeda${DOMAIN}`)"
-#      - "traefik.http.routers.whs-takeda-swagger.entrypoints=web"
-#      - "traefik.http.routers.whs-takeda-swagger.service=whs-takeda-swagger"
-#      - "traefik.http.services.whs-takeda-swagger.loadbalancer.server.port=3009"
-#
-#      - "traefik.http.routers.whs-takeda-api.rule=Host(`api-whs-takeda${DOMAIN}`)"
-#      - "traefik.http.routers.whs-takeda-api.entrypoints=web"
-#      - "traefik.http.routers.whs-takeda-api.service=whs-takeda-api"
-#      - "traefik.http.services.whs-takeda-api.loadbalancer.server.port=3001"
-#    volumes:
-#      - whs-takeda_vol:/fgt-workspace/apihub-root/external-volume
-#    networks:
-#      traceability-net:
-#        ipv4_address: 172.16.63.103
-#
-#  pha-1:
-#    << : *pha-def
-#    container_name: pha1
-#    hostname: pha1
-#    environment:
-#      ROLE: pha
-#      CREDENTIALS_FILE: pha-1.json
-#      SWAGGER_SERVER: ${PROTOCOL}://api-pha1${SWAGGER}/traceability
-#    labels:
-#      - "traefik.enable=true"
-#
-#      - "traefik.http.routers.pha1.rule=Host(`pha1${DOMAIN}`)"
-#      - "traefik.http.middlewares.pha1-headers.headers.accessControlAllowOriginListRegex=.*"
-#      - "traefik.http.middlewares.pha1-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
-#      - "traefik.http.middlewares.pha1-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
-#      - "traefik.http.middlewares.pha1-headers.headers.accessControlMaxAge=100"
-#      - "traefik.http.middlewares.pha1-headers.headers.addVaryHeader=true"
-#      - "traefik.http.routers.pha1.middlewares=pha1-headers"
-#      - "traefik.http.routers.pha1.entrypoints=web"
-#      - "traefik.http.routers.pha1.service=pha1"
-#      - "traefik.http.services.pha1.loadbalancer.server.port=8080"
-#
-#      - "traefik.http.routers.pha1-swagger.rule=Host(`swagger-pha1${DOMAIN}`)"
-#      - "traefik.http.routers.pha1-swagger.entrypoints=web"
-#      - "traefik.http.routers.pha1-swagger.service=pha1-swagger"
-#      - "traefik.http.services.pha1-swagger.loadbalancer.server.port=3009"
-#
-#      - "traefik.http.routers.pha1-api.rule=Host(`api-pha1${DOMAIN}`)"
-#      - "traefik.http.routers.pha1-api.entrypoints=web"
-#      - "traefik.http.routers.pha1-api.service=pha1-api"
-#      - "traefik.http.services.pha1-api.loadbalancer.server.port=3002"
-#    volumes:
-#      - pha1_vol:/fgt-workspace/apihub-root/external-volume
-#    networks:
-#      traceability-net:
-#        ipv4_address: 172.16.63.151
-#  pha-2:
-#    <<: *pha-def
-#    container_name: pha2
-#    hostname: pha2
-#    environment:
-#      ROLE: pha
-#      CREDENTIALS_FILE: pha-2.json
-#      SWAGGER_SERVER: ${PROTOCOL}://api-pha2${SWAGGER}/traceability
-#    labels:
-#      - "traefik.enable=true"
-#
-#      - "traefik.http.routers.pha2.rule=Host(`pha2${DOMAIN}`)"
-#      - "traefik.http.middlewares.pha2-headers.headers.accessControlAllowOriginListRegex=.*"
-#      - "traefik.http.middlewares.pha2-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
-#      - "traefik.http.middlewares.pha2-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
-#      - "traefik.http.middlewares.pha2-headers.headers.accessControlMaxAge=100"
-#      - "traefik.http.middlewares.pha2-headers.headers.addVaryHeader=true"
-#      - "traefik.http.routers.pha2.middlewares=pha2-headers"
-#      - "traefik.http.routers.pha2.entrypoints=web"
-#      - "traefik.http.routers.pha2.service=pha2"
-#      - "traefik.http.services.pha2.loadbalancer.server.port=8080"
-#
-#      - "traefik.http.routers.pha2-swagger.rule=Host(`swagger-pha2${DOMAIN}`)"
-#      - "traefik.http.routers.pha2-swagger.entrypoints=web"
-#      - "traefik.http.routers.pha2-swagger.service=pha2-swagger"
-#      - "traefik.http.services.pha2-swagger.loadbalancer.server.port=3009"
-#
-#      - "traefik.http.routers.pha2-api.rule=Host(`api-pha2${DOMAIN}`)"
-#      - "traefik.http.routers.pha2-api.entrypoints=web"
-#      - "traefik.http.routers.pha2-api.service=pha2-api"
-#      - "traefik.http.services.pha2-api.loadbalancer.server.port=3002"
-#    volumes:
-#      - pha2_vol:/fgt-workspace/apihub-root/external-volume
-#    networks:
-#      traceability-net:
-#        ipv4_address: 172.16.63.152
+  mah-bayer:
+    <<: *mah-def
+    container_name: mah-bayer
+    hostname: mah-bayer
+    environment:
+      ROLE: mah
+      CREDENTIALS_FILE: mah-bayer.json
+      SWAGGER_SERVER: ${PROTOCOL}://api-mah-bayer${SWAGGER}/traceability
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mah-bayer.rule=Host(`mah-bayer${DOMAIN}`)"
+      - "traefik.http.middlewares.mah-bayer-headers.headers.accessControlAllowOriginListRegex=.*"
+      - "traefik.http.middlewares.mah-bayer-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
+      - "traefik.http.middlewares.mah-bayer-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
+      - "traefik.http.middlewares.mah-bayer-headers.headers.accessControlMaxAge=100"
+      - "traefik.http.middlewares.mah-bayer-headers.headers.addVaryHeader=true"
+      - "traefik.http.routers.mah-bayer.middlewares=mah-bayer-headers"
+      - "traefik.http.routers.mah-bayer.entrypoints=web"
+      - "traefik.http.routers.mah-bayer.service=mah-bayer"
+      - "traefik.http.services.mah-bayer.loadbalancer.server.port=8080"
+
+      - "traefik.http.routers.mah-bayer-swagger.rule=Host(`swagger-mah-bayer${DOMAIN}`)"
+      - "traefik.http.routers.mah-bayer-swagger.entrypoints=web"
+      - "traefik.http.routers.mah-bayer-swagger.service=mah-bayer-swagger"
+      - "traefik.http.services.mah-bayer-swagger.loadbalancer.server.port=3009"
+
+      - "traefik.http.routers.mah-bayer-api.rule=Host(`api-mah-bayer${DOMAIN}`)"
+      - "traefik.http.routers.mah-bayer-api.entrypoints=web"
+      - "traefik.http.routers.mah-bayer-api.service=mah-bayer-api"
+      - "traefik.http.services.mah-bayer-api.loadbalancer.server.port=8081"
+    volumes:
+      - mah-bayer_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      traceability-net:
+        ipv4_address: 172.16.63.62
+  mah-gsk:
+    <<: *mah-def
+    container_name: mah-gsk
+    hostname: mah-gsk
+    environment:
+      ROLE: mah
+      CREDENTIALS_FILE: mah-gsk.json
+      SWAGGER_SERVER: ${PROTOCOL}://api-mah-gsk${SWAGGER}/traceability
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mah-gsk.rule=Host(`mah-gsk${DOMAIN}`)"
+      - "traefik.http.middlewares.mah-gsk-headers.headers.accessControlAllowOriginListRegex=.*"
+      - "traefik.http.middlewares.mah-gsk-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
+      - "traefik.http.middlewares.mah-gsk-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
+      - "traefik.http.middlewares.mah-gsk-headers.headers.accessControlMaxAge=100"
+      - "traefik.http.middlewares.mah-gsk-headers.headers.addVaryHeader=true"
+      - "traefik.http.routers.mah-gsk.middlewares=mah-gsk-headers"
+      - "traefik.http.routers.mah-gsk.entrypoints=web"
+      - "traefik.http.routers.mah-gsk.service=mah-gsk"
+      - "traefik.http.services.mah-gsk.loadbalancer.server.port=8080"
+
+      - "traefik.http.routers.mah-gsk-swagger.rule=Host(`swagger-mah-gsk${DOMAIN}`)"
+      - "traefik.http.routers.mah-gsk-swagger.entrypoints=web"
+      - "traefik.http.routers.mah-gsk-swagger.service=mah-gsk-swagger"
+      - "traefik.http.services.mah-gsk-swagger.loadbalancer.server.port=3009"
+
+      - "traefik.http.routers.mah-gsk-api.rule=Host(`api-mah-gsk${DOMAIN}`)"
+      - "traefik.http.routers.mah-gsk-api.entrypoints=web"
+      - "traefik.http.routers.mah-gsk-api.service=mah-gsk-api"
+      - "traefik.http.services.mah-gsk-api.loadbalancer.server.port=8081"
+    volumes:
+      - mah-gsk_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      traceability-net:
+        ipv4_address: 172.16.63.63
+  mah-msd:
+    <<: *mah-def
+    container_name: mah-msd
+    hostname: mah-msd
+    environment:
+      ROLE: mah
+      CREDENTIALS_FILE: mah-msd.json
+      SWAGGER_SERVER: ${PROTOCOL}://api-mah-msd${SWAGGER}/traceability
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mah-msd.rule=Host(`mah-msd${DOMAIN}`)"
+      - "traefik.http.middlewares.mah-msd-headers.headers.accessControlAllowOriginListRegex=.*"
+      - "traefik.http.middlewares.mah-msd-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
+      - "traefik.http.middlewares.mah-msd-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
+      - "traefik.http.middlewares.mah-msd-headers.headers.accessControlMaxAge=100"
+      - "traefik.http.middlewares.mah-msd-headers.headers.addVaryHeader=true"
+      - "traefik.http.routers.mah-msd.middlewares=mah-msd-headers"
+      - "traefik.http.routers.mah-msd.entrypoints=web"
+      - "traefik.http.routers.mah-msd.service=mah-msd"
+      - "traefik.http.services.mah-msd.loadbalancer.server.port=8080"
+
+      - "traefik.http.routers.mah-msd-swagger.rule=Host(`swagger-mah-msd${DOMAIN}`)"
+      - "traefik.http.routers.mah-msd-swagger.entrypoints=web"
+      - "traefik.http.routers.mah-msd-swagger.service=mah-msd-swagger"
+      - "traefik.http.services.mah-msd-swagger.loadbalancer.server.port=3009"
+
+      - "traefik.http.routers.mah-msd-api.rule=Host(`api-mah-msd${DOMAIN}`)"
+      - "traefik.http.routers.mah-msd-api.entrypoints=web"
+      - "traefik.http.routers.mah-msd-api.service=mah-msd-api"
+      - "traefik.http.services.mah-msd-api.loadbalancer.server.port=8081"
+    volumes:
+      - mah-msd_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      traceability-net:
+        ipv4_address: 172.16.63.64
+  mah-novo-nordisk:
+    <<: *mah-def
+    container_name: mah-novo-nordisk
+    hostname: mah-novo-nordisk
+    environment:
+      ROLE: mah
+      CREDENTIALS_FILE: mah-novo-nordisk.json
+      SWAGGER_SERVER: ${PROTOCOL}://api-mah-novo-nordisk${SWAGGER}/traceability
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mah-novo-nordisk.rule=Host(`mah-novo-nordisk${DOMAIN}`)"
+      - "traefik.http.middlewares.mah-novo-nordisk-headers.headers.accessControlAllowOriginListRegex=.*"
+      - "traefik.http.middlewares.mah-novo-nordisk-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
+      - "traefik.http.middlewares.mah-novo-nordisk-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
+      - "traefik.http.middlewares.mah-novo-nordisk-headers.headers.accessControlMaxAge=100"
+      - "traefik.http.middlewares.mah-novo-nordisk-headers.headers.addVaryHeader=true"
+      - "traefik.http.routers.mah-novo-nordisk.middlewares=mah-novo-nordisk-headers"
+      - "traefik.http.routers.mah-novo-nordisk.entrypoints=web"
+      - "traefik.http.routers.mah-novo-nordisk.service=mah-novo-nordisk"
+      - "traefik.http.services.mah-novo-nordisk.loadbalancer.server.port=8080"
+
+      - "traefik.http.routers.mah-novo-nordisk-swagger.rule=Host(`swagger-mah-novo-nordisk${DOMAIN}`)"
+      - "traefik.http.routers.mah-novo-nordisk-swagger.entrypoints=web"
+      - "traefik.http.routers.mah-novo-nordisk-swagger.service=mah-novo-nordisk-swagger"
+      - "traefik.http.services.mah-novo-nordisk-swagger.loadbalancer.server.port=3009"
+
+      - "traefik.http.routers.mah-novo-nordisk-api.rule=Host(`api-mah-novo-nordisk${DOMAIN}`)"
+      - "traefik.http.routers.mah-novo-nordisk-api.entrypoints=web"
+      - "traefik.http.routers.mah-novo-nordisk-api.service=mah-novo-nordisk-api"
+      - "traefik.http.services.mah-novo-nordisk-api.loadbalancer.server.port=8081"
+    volumes:
+      - mah-novo-nordisk_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      traceability-net:
+        ipv4_address: 172.16.63.65
+  mah-pfizer:
+    <<: *mah-def
+    container_name: mah-pfizer
+    hostname: mah-pfizer
+    environment:
+      ROLE: mah
+      CREDENTIALS_FILE: mah-pfizer.json
+      SWAGGER_SERVER: ${PROTOCOL}://api-mah-pfizer${SWAGGER}/traceability
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mah-pfizer.rule=Host(`mah-pfizer${DOMAIN}`)"
+      - "traefik.http.middlewares.mah-pfizer-headers.headers.accessControlAllowOriginListRegex=.*"
+      - "traefik.http.middlewares.mah-pfizer-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
+      - "traefik.http.middlewares.mah-pfizer-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
+      - "traefik.http.middlewares.mah-pfizer-headers.headers.accessControlMaxAge=100"
+      - "traefik.http.middlewares.mah-pfizer-headers.headers.addVaryHeader=true"
+      - "traefik.http.routers.mah-pfizer.middlewares=mah-pfizer-headers"
+      - "traefik.http.routers.mah-pfizer.entrypoints=web"
+      - "traefik.http.routers.mah-pfizer.service=mah-pfizer"
+      - "traefik.http.services.mah-pfizer.loadbalancer.server.port=8080"
+
+      - "traefik.http.routers.mah-pfizer-swagger.rule=Host(`swagger-mah-pfizer${DOMAIN}`)"
+      - "traefik.http.routers.mah-pfizer-swagger.entrypoints=web"
+      - "traefik.http.routers.mah-pfizer-swagger.service=mah-pfizer-swagger"
+      - "traefik.http.services.mah-pfizer-swagger.loadbalancer.server.port=3009"
+
+      - "traefik.http.routers.mah-pfizer-api.rule=Host(`api-mah-pfizer${DOMAIN}`)"
+      - "traefik.http.routers.mah-pfizer-api.entrypoints=web"
+      - "traefik.http.routers.mah-pfizer-api.service=mah-pfizer-api"
+      - "traefik.http.services.mah-pfizer-api.loadbalancer.server.port=8081"
+    volumes:
+      - mah-pfizer_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      traceability-net:
+        ipv4_address: 172.16.63.66
+  mah-takeda:
+    <<: *mah-def
+    container_name: mah-takeda
+    hostname: mah-takeda
+    environment:
+      ROLE: mah
+      CREDENTIALS_FILE: mah-takeda.json
+      SWAGGER_SERVER: ${PROTOCOL}://api-mah-takeda${SWAGGER}/traceability
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mah-takeda.rule=Host(`mah-takeda${DOMAIN}`)"
+      - "traefik.http.middlewares.mah-takeda-headers.headers.accessControlAllowOriginListRegex=.*"
+      - "traefik.http.middlewares.mah-takeda-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
+      - "traefik.http.middlewares.mah-takeda-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
+      - "traefik.http.middlewares.mah-takeda-headers.headers.accessControlMaxAge=100"
+      - "traefik.http.middlewares.mah-takeda-headers.headers.addVaryHeader=true"
+      - "traefik.http.routers.mah-takeda.middlewares=mah-takeda-headers"
+      - "traefik.http.routers.mah-takeda.entrypoints=web"
+      - "traefik.http.routers.mah-takeda.service=mah-takeda"
+      - "traefik.http.services.mah-takeda.loadbalancer.server.port=8080"
+
+      - "traefik.http.routers.mah-takeda-swagger.rule=Host(`swagger-mah-takeda${DOMAIN}`)"
+      - "traefik.http.routers.mah-takeda-swagger.entrypoints=web"
+      - "traefik.http.routers.mah-takeda-swagger.service=mah-takeda-swagger"
+      - "traefik.http.services.mah-takeda-swagger.loadbalancer.server.port=3009"
+
+      - "traefik.http.routers.mah-takeda-api.rule=Host(`api-mah-takeda${DOMAIN}`)"
+      - "traefik.http.routers.mah-takeda-api.entrypoints=web"
+      - "traefik.http.routers.mah-takeda-api.service=mah-takeda-api"
+      - "traefik.http.services.mah-takeda-api.loadbalancer.server.port=8081"
+    volumes:
+      - mah-takeda_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      traceability-net:
+        ipv4_address: 172.16.63.67
+
+  whs-1:
+    << : *whs-def
+    container_name: whs1
+    hostname: whs1
+    environment:
+      ROLE: whs
+      CREDENTIALS_FILE: whs-1.json
+      SWAGGER_SERVER: ${PROTOCOL}://api-whs1${SWAGGER}/traceability
+    labels:
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.whs1.rule=Host(`whs1${DOMAIN}`)"
+      - "traefik.http.middlewares.whs1-headers.headers.accessControlAllowOriginListRegex=.*"
+      - "traefik.http.middlewares.whs1-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
+      - "traefik.http.middlewares.whs1-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
+      - "traefik.http.middlewares.whs1-headers.headers.accessControlMaxAge=100"
+      - "traefik.http.middlewares.whs1-headers.headers.addVaryHeader=true"
+      - "traefik.http.routers.whs1.middlewares=whs1-headers"
+      - "traefik.http.routers.whs1.entrypoints=web"
+      - "traefik.http.routers.whs1.service=whs1"
+      - "traefik.http.services.whs1.loadbalancer.server.port=8080"
+
+      - "traefik.http.routers.whs1-swagger.rule=Host(`swagger-whs1${DOMAIN}`)"
+      - "traefik.http.routers.whs1-swagger.entrypoints=web"
+      - "traefik.http.routers.whs1-swagger.service=whs1-swagger"
+      - "traefik.http.services.whs1-swagger.loadbalancer.server.port=3009"
+
+      - "traefik.http.routers.whs1-api.rule=Host(`api-whs1${DOMAIN}`)"
+      - "traefik.http.routers.whs1-api.entrypoints=web"
+      - "traefik.http.routers.whs1-api.service=whs1-api"
+      - "traefik.http.services.whs1-api.loadbalancer.server.port=3001"
+    volumes:
+      - whs1_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      traceability-net:
+        ipv4_address: 172.16.63.101
+
+  whs-2:
+    <<: *whs-def
+    container_name: whs2
+    hostname: whs2
+    environment:
+      ROLE: whs
+      CREDENTIALS_FILE: whs-2.json
+      SWAGGER_SERVER: ${PROTOCOL}://api-whs2${SWAGGER}/traceability
+    labels:
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.whs2.rule=Host(`whs2${DOMAIN}`)"
+      - "traefik.http.middlewares.whs2-headers.headers.accessControlAllowOriginListRegex=.*"
+      - "traefik.http.middlewares.whs2-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
+      - "traefik.http.middlewares.whs2-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
+      - "traefik.http.middlewares.whs2-headers.headers.accessControlMaxAge=100"
+      - "traefik.http.middlewares.whs2-headers.headers.addVaryHeader=true"
+      - "traefik.http.routers.whs2.middlewares=whs2-headers"
+      - "traefik.http.routers.whs2.entrypoints=web"
+      - "traefik.http.routers.whs2.service=whs2"
+      - "traefik.http.services.whs2.loadbalancer.server.port=8080"
+
+      - "traefik.http.routers.whs2-swagger.rule=Host(`swagger-whs2${DOMAIN}`)"
+      - "traefik.http.routers.whs2-swagger.entrypoints=web"
+      - "traefik.http.routers.whs2-swagger.service=whs2-swagger"
+      - "traefik.http.services.whs2-swagger.loadbalancer.server.port=3009"
+
+      - "traefik.http.routers.whs2-api.rule=Host(`api-whs2${DOMAIN}`)"
+      - "traefik.http.routers.whs2-api.entrypoints=web"
+      - "traefik.http.routers.whs2-api.service=whs2-api"
+      - "traefik.http.services.whs2-api.loadbalancer.server.port=3001"
+    volumes:
+      - whs2_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      traceability-net:
+        ipv4_address: 172.16.63.102
+  whs-takeda:
+    <<: *whs-def
+    container_name: whs-takeda
+    hostname: whs-takeda
+    environment:
+      ROLE: whs
+      CREDENTIALS_FILE: whs-takeda.json
+      SWAGGER_SERVER: ${PROTOCOL}://api-whs-takeda${SWAGGER}/traceability
+    labels:
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.whs-takeda.rule=Host(`whs-takeda${DOMAIN}`)"
+      - "traefik.http.middlewares.whs-takeda-headers.headers.accessControlAllowOriginListRegex=.*"
+      - "traefik.http.middlewares.whs-takeda-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
+      - "traefik.http.middlewares.whs-takeda-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
+      - "traefik.http.middlewares.whs-takeda-headers.headers.accessControlMaxAge=100"
+      - "traefik.http.middlewares.whs-takeda-headers.headers.addVaryHeader=true"
+      - "traefik.http.routers.whs-takeda.middlewares=whs-takeda-headers"
+      - "traefik.http.routers.whs-takeda.entrypoints=web"
+      - "traefik.http.routers.whs-takeda.service=whs-takeda"
+      - "traefik.http.services.whs-takeda.loadbalancer.server.port=8080"
+
+      - "traefik.http.routers.whs-takeda-swagger.rule=Host(`swagger-whs-takeda${DOMAIN}`)"
+      - "traefik.http.routers.whs-takeda-swagger.entrypoints=web"
+      - "traefik.http.routers.whs-takeda-swagger.service=whs-takeda-swagger"
+      - "traefik.http.services.whs-takeda-swagger.loadbalancer.server.port=3009"
+
+      - "traefik.http.routers.whs-takeda-api.rule=Host(`api-whs-takeda${DOMAIN}`)"
+      - "traefik.http.routers.whs-takeda-api.entrypoints=web"
+      - "traefik.http.routers.whs-takeda-api.service=whs-takeda-api"
+      - "traefik.http.services.whs-takeda-api.loadbalancer.server.port=3001"
+    volumes:
+      - whs-takeda_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      traceability-net:
+        ipv4_address: 172.16.63.103
+
+  pha-1:
+    << : *pha-def
+    container_name: pha1
+    hostname: pha1
+    environment:
+      ROLE: pha
+      CREDENTIALS_FILE: pha-1.json
+      SWAGGER_SERVER: ${PROTOCOL}://api-pha1${SWAGGER}/traceability
+    labels:
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.pha1.rule=Host(`pha1${DOMAIN}`)"
+      - "traefik.http.middlewares.pha1-headers.headers.accessControlAllowOriginListRegex=.*"
+      - "traefik.http.middlewares.pha1-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
+      - "traefik.http.middlewares.pha1-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
+      - "traefik.http.middlewares.pha1-headers.headers.accessControlMaxAge=100"
+      - "traefik.http.middlewares.pha1-headers.headers.addVaryHeader=true"
+      - "traefik.http.routers.pha1.middlewares=pha1-headers"
+      - "traefik.http.routers.pha1.entrypoints=web"
+      - "traefik.http.routers.pha1.service=pha1"
+      - "traefik.http.services.pha1.loadbalancer.server.port=8080"
+
+      - "traefik.http.routers.pha1-swagger.rule=Host(`swagger-pha1${DOMAIN}`)"
+      - "traefik.http.routers.pha1-swagger.entrypoints=web"
+      - "traefik.http.routers.pha1-swagger.service=pha1-swagger"
+      - "traefik.http.services.pha1-swagger.loadbalancer.server.port=3009"
+
+      - "traefik.http.routers.pha1-api.rule=Host(`api-pha1${DOMAIN}`)"
+      - "traefik.http.routers.pha1-api.entrypoints=web"
+      - "traefik.http.routers.pha1-api.service=pha1-api"
+      - "traefik.http.services.pha1-api.loadbalancer.server.port=3002"
+    volumes:
+      - pha1_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      traceability-net:
+        ipv4_address: 172.16.63.151
+  pha-2:
+    <<: *pha-def
+    container_name: pha2
+    hostname: pha2
+    environment:
+      ROLE: pha
+      CREDENTIALS_FILE: pha-2.json
+      SWAGGER_SERVER: ${PROTOCOL}://api-pha2${SWAGGER}/traceability
+    labels:
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.pha2.rule=Host(`pha2${DOMAIN}`)"
+      - "traefik.http.middlewares.pha2-headers.headers.accessControlAllowOriginListRegex=.*"
+      - "traefik.http.middlewares.pha2-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
+      - "traefik.http.middlewares.pha2-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
+      - "traefik.http.middlewares.pha2-headers.headers.accessControlMaxAge=100"
+      - "traefik.http.middlewares.pha2-headers.headers.addVaryHeader=true"
+      - "traefik.http.routers.pha2.middlewares=pha2-headers"
+      - "traefik.http.routers.pha2.entrypoints=web"
+      - "traefik.http.routers.pha2.service=pha2"
+      - "traefik.http.services.pha2.loadbalancer.server.port=8080"
+
+      - "traefik.http.routers.pha2-swagger.rule=Host(`swagger-pha2${DOMAIN}`)"
+      - "traefik.http.routers.pha2-swagger.entrypoints=web"
+      - "traefik.http.routers.pha2-swagger.service=pha2-swagger"
+      - "traefik.http.services.pha2-swagger.loadbalancer.server.port=3009"
+
+      - "traefik.http.routers.pha2-api.rule=Host(`api-pha2${DOMAIN}`)"
+      - "traefik.http.routers.pha2-api.entrypoints=web"
+      - "traefik.http.routers.pha2-api.service=pha2-api"
+      - "traefik.http.services.pha2-api.loadbalancer.server.port=3002"
+    volumes:
+      - pha2_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      traceability-net:
+        ipv4_address: 172.16.63.152
 
 networks:
   traceability-net:
