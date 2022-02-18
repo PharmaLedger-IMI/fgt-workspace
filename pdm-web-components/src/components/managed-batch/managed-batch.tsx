@@ -353,10 +353,10 @@ export class ManagedBatch implements CreateManageView{
                                    onGoBackEvent={(evt) => this.navigateBack(evt)}
                                    onCreateEvent={(evt) => this.create(evt)}>
           <div slot="create">
-            {...this.getCreate()}
+            {...(this.getCreate() || [])}
           </div>
           <div slot="postcreate">
-            {...this.getPostCreate()}
+            {...(this.getPostCreate() || [])}
           </div>
           <div slot="manage">
             {this.getManage()}

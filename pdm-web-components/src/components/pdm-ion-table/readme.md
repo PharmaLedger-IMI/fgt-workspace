@@ -12,17 +12,18 @@
 | `autoLoad`             | `auto-load`              | the querying attribute name so the items can query their own value                                | `boolean` | `false`                   |
 | `canQuery`             | `can-query`              | Shows the search bar or not.                                                                      | `boolean` | `true`                    |
 | `currentPage`          | `current-page`           |                                                                                                   | `number`  | `0`                       |
+| `dsuQuery`             | `dsu-query`              |                                                                                                   | `string`  | `'[]'`                    |
 | `iconName`             | `icon-name`              |                                                                                                   | `string`  | `undefined`               |
 | `itemProps`            | `item-props`             | Option props to be passed to child elements in from a JSON object in value key format only format | `any`     | `undefined`               |
 | `itemReference`        | `item-reference`         | the querying attribute name so the items can query their own value                                | `string`  | `undefined`               |
 | `itemType`             | `item-type`              | The tag for the item type that the table should use eg: 'li' would create list items              | `string`  | `undefined`               |
 | `itemsPerPage`         | `items-per-page`         |                                                                                                   | `number`  | `10`                      |
+| `keywordQuery`         | `keyword-query`          | Querying/paginating Params - only available when mode is set by ref                               | `string`  | `undefined`               |
 | `loadingMessage`       | `loading-message`        |                                                                                                   | `string`  | `"Loading..."`            |
 | `manager`              | `manager`                | sets the name of the manager to use                                                               | `string`  | `undefined`               |
 | `noContentMessage`     | `no-content-message`     |                                                                                                   | `string`  | `"No Content"`            |
 | `pageCount`            | `page-count`             |                                                                                                   | `number`  | `0`                       |
 | `paginated`            | `paginated`              |                                                                                                   | `boolean` | `true`                    |
-| `query`                | `query`                  | Querying/paginating Params - only available when mode is set by ref                               | `string`  | `undefined`               |
 | `searchBarPlaceholder` | `search-bar-placeholder` |                                                                                                   | `string`  | `"enter search terms..."` |
 | `sort`                 | `sort`                   |                                                                                                   | `string`  | `undefined`               |
 | `tableTitle`           | `table-title`            | Graphical Params                                                                                  | `string`  | `'PDM Ionic Table'`       |

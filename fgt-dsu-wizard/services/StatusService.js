@@ -25,7 +25,7 @@ function StatusService(domain, strategy){
     let createLog = function(id, prevStatus, status, timestamp){
         const ts = timestamp ? timestamp : Date.now();
         return prevStatus
-                ? `${id} ${ts} updated status from ${prevStatus.status || prevStatus} to ${status.status || status}.`
+                ? `${id} ${ts} updated status from ${prevStatus.status || prevStatus} to ${status.status || status}`
                 : `${id} ${ts} set status to ${status.status || status}`;
     }
 
@@ -184,7 +184,7 @@ function StatusService(domain, strategy){
                     if (err)
                         return callback(err);
                     try{
-                        prevStatus = JSON.parse(prevStatus).status;
+                        prevStatus = JSON.parse(prevStatus);
                     } catch (e){
                         return callback(e);
                     }

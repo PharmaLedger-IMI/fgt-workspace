@@ -129,7 +129,7 @@ class Wholesaler extends Participant{
         super(wholesaler);
         if (typeof wholesaler !== undefined)
             for (let prop in wholesaler)
-                if (wholesaler.hasOwnProperty(prop))
+                if (wholesaler.hasOwnProperty(prop) &amp;&amp; this.hasOwnProperty(prop))
                     this[prop] = wholesaler[prop];
     }
 }
@@ -152,6 +152,7 @@ module.exports = Wholesaler;</code></pre>
 <script src="scripts/linenumber.js"> </script>
 
 <script src="scripts/search.js"> </script>
+
 
 </body>
 </html>

@@ -1,5 +1,11 @@
 ### Architecture
 
+#### REST API Architecture
+
+As of release 0.8, Finished Goods Traceability moved from a UI based Wallet system, to an ERP integrated one, with all the Architectural considerations than came with that change.
+
+Please go to the REST API Module for details
+
 #### Concrete SSApp Architecture
 
 SSApps built under the PDM Architecture present the following structure:

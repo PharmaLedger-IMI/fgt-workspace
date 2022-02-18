@@ -12,7 +12,7 @@ const submitEvent = require('./eventHandler');
 
 const shipmentStatusUpdater = function(issuedShipmentManager, shipment, timeout){
     const identity = issuedShipmentManager.getIdentity();
-    const possibleStatus = Shipment.getAllowedStatusUpdates(shipment.status.status).filter(os => [ShipmentStatus.REJECTED, ShipmentStatus.ON_HOLD].indexOf(os) === -1);
+    const possibleStatus = Shipment.getAllowedStatusUpdates(shipment.status.status).filter(os => [ShipmentStatus.REJECTED, ShipmentStatus.ON_HOLD, ShipmentStatus.RECEIVED, ShipmentStatus.CONFIRMED].indexOf(os) === -1);
     if (!possibleStatus || !possibleStatus.length)
         return console.log(`${identity.id} - Shipment ${shipment.shipmentId} has no possible status updates`);
         // return callback();

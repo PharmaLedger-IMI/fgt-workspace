@@ -1,0 +1,24 @@
+{
+  "name": {
+    "secret": "Takeda",
+    "public": true
+  },
+  "id": {
+    "secret": "WHS999999",
+    "public": true
+  },
+  "email": {
+    "secret": "takeda@whs.pharmaledger.com",
+    "public": true
+  },
+  "address": {
+    "public": true,
+    "secret": "Illinois, USA"
+  },
+  "pass": {
+    "secret": "This1sSuchAS3curePassw0rd"
+  },
+  "passrepeat": {
+    "secret": "This1sSuchAS3curePassw0rd"
+  }
+}

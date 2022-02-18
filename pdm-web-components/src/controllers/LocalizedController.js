@@ -257,12 +257,13 @@ export default class LocalizedController extends BaseController {
   /**
   *
   * @returns {Promise<HTMLElement>}
-  * @param popupOptions: {
+  * @param {{}} popupOptions: {
   *   message: string; generic message
   *   confirmText: string; cancel button label
   *   cancelText: string; cancel button label
   *   options: alert ionic options
   * }
+  * @param {function(err)} [callback]
   */
 async  showPopup(popupOptions, callback = undefined) {
   let { message, confirmButtonLabel, cancelButtonLabel, options } = popupOptions;

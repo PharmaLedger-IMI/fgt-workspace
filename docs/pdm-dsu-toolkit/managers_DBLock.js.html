@@ -143,7 +143,7 @@ class DBLock {
 
     /**
      * Schedules a method call for after the current db operation has benn finished
-     * @param {() => void} method
+     * @param {function(): void} method
      */
     schedule(method){
         console.log(`Scheduling db method call...`)
@@ -217,7 +217,7 @@ class DBLock {
      * Commits or continues a db batch operation depending if the operation counter has run out
      * @param {string} tableName
      * @param {boolean} [force] when true forces the commit regardless of the counter. defaults to false
-     * @param {(err) => void} callback
+     * @param {function(err): void} callback
      */
     commitBatch(tableName, force, callback){
         if (!callback){
@@ -257,7 +257,7 @@ class DBLock {
     /**
      * Cancels the batch operation in progress
      * @param {string} tableName
-     * @param {(err) => void} callback
+     * @param {function(err): void} callback
      */
     cancelBatch(tableName, callback){
         if (this._cache[tableName] > 0){
@@ -286,6 +286,7 @@ module.exports = DBLock;</code></pre>
 <script src="scripts/linenumber.js"> </script>
 
 <script src="scripts/search.js"> </script>
+
 
 </body>
 </html>

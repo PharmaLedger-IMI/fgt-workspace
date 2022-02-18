@@ -203,7 +203,7 @@ class BatchManager extends Manager{
      * updates a Batch from the list
      * @param {string|number} gtin
      * @param {Batch} newBatch
-     * @param {function(err, Batch, Archive)} callback
+     * @param {function(err, Batch?, Archive?)} callback
      * @override
      */
     update(gtin, newBatch, callback){
@@ -237,7 +237,7 @@ class BatchManager extends Manager{
                     self.updateRecord(key, self._indexItem(gtin, updatedBatch, record.value), (err) => {
                         if (err)
                             return cb(err);
-                        callback(undefined, updatedBatch, batchDsu);
+                        // callback(undefined, updatedBatch, batchDsu);
 
                         self.stockManager.getOne(gtin, true, (err, stock) => {
                             if (err)
@@ -262,13 +262,13 @@ class BatchManager extends Manager{
                                     self.stockManager.getStockTraceability(gtin, {manufName: self.getIdentity().id, batch: batch.batchNumber}, (err, results) => {
                                         if (err || !results){
                                             console.log(`Could not calculate partners with batch to send`, err, results);
-                                            return callback(undefined, newBatch);
+                                            return callback(undefined, newBatch, batchDsu);
                                         }
 
                                         const {partnersStock} = results;
                                         if (!partnersStock){
                                             console.log(`No Notification required. No stock found outside the producer for gtin ${gtin}, batch ${batch.batchNumber}`);
-                                            return callback(undefined, newBatch);
+                                            return callback(undefined, newBatch, batchDsu);
                                         }
 
 
@@ -289,7 +289,7 @@ class BatchManager extends Manager{
                                         self.notificationManager.pushToAll(toBeNotified, batchNotification, (err) => {
                                             if (err)
                                                 console.log(`Could not send notifications to partners`, err);
-                                            callback(undefined, newBatch);
+                                            callback(undefined, updatedBatch);
                                         });
                                     });
                                 });

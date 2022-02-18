@@ -26,7 +26,7 @@ class WithCommand extends Command {
     /**
      * @param {string[]|string} command the command split into words
      * @param {string[]} next the following Commands
-     * @param {function(err, string|object)} [callback] for async versatility
+     * @param {function(err, any)} [callback] for async versatility
      * @return {string|object} the command argument
      * @protected
      */

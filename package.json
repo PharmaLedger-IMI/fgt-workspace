@@ -1,6 +1,6 @@
 {
   "name": "fgt-workspace",
-  "version": "0.7.3",
+  "version": "0.8.0",
   "description": "",
   "scripts": {
     "dev-install": "node ./bin/mkDevEnv.js && npm install",
@@ -21,6 +21,8 @@
     "apihub": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"cd privatesky && npm run start\"",
     "switch-to-release": "npm run remove privatesky && npm run add privatesky http://github.com/privatesky/psk-release.git 0",
     "switch-to-dev": "npm run remove privatesky && npm run add privatesky http://github.com/privatesky/privatesky.git 0",
+    "switch-to-test-chain": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run switch-to-test-chain\"",
+    "switch-to-simul-chain": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run switch-to-simul-chain\"",
     "build-use-case": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-use-case\" && node ./bin/seedsBackupTool.js",
     "watch": "node ./bin/watcher/watcher.js",
     "test": "cd ./tests/unit-tests && node ../../privatesky/scripts/testrunner.js --directory=./tests",

@@ -40,7 +40,7 @@ class Command {
      * @param {Archive|KeySSI} [bar] the destinationDSU or the keySSI
      * @param {string[]} [next] the remaining commands
      * @param {object} [options]
-     * @param {function(err, Archive|KeySSI|string|boolean)} callback
+     * @param {function(err, any)} callback
      */
     execute(args,bar, next, options, callback){
         if (typeof options === 'function'){
@@ -86,7 +86,7 @@ class Command {
      *
      * @param {string[]|string|boolean} command the command split into words
      * @param {string[]} next the following Commands
-     * @param {function(err, string|string[]|object)} callback
+     * @param {function(err, any)} callback
      * @protected
      */
     _parseCommand(command, next, callback){
@@ -101,7 +101,7 @@ class Command {
      * @param {string|object} arg the command argument
      * @param {Archive} [bar]
      * @param {object} options
-     * @param {function(err, Archive|KeySSI|string)} callback
+     * @param {function(err, any)} callback
      * @protected
      */
     _runCommand(arg, bar, options, callback){

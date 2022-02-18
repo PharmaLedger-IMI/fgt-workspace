@@ -18,7 +18,7 @@ class Notification {
     constructor(notification) {
         if (typeof notification !== undefined)
             for (let prop in notification)
-                if (notification.hasOwnProperty(prop))
+                if (notification.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = notification[prop];
     }
 

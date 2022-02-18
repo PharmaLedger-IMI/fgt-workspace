@@ -20,7 +20,7 @@ class Stock extends Product{
         super(stock)
         if (typeof stock !== undefined)
             for (let prop in stock)
-                if (stock.hasOwnProperty(prop))
+                if (stock.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = stock[prop];
         this.status = this.status || StockStatus.AVAILABLE;
         this.batches = this.batches.map(b => new Batch(b));

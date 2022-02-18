@@ -1,0 +1,41 @@
+{
+  "default": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ],
+      "notifications": [
+        "$ORIGIN"
+      ]
+  },
+  "traceability": {
+    "replicas": [],
+    "brickStorages": [
+      "http://172.16.63.51:8080"
+    ],
+    "mqEndpoints": [
+       "http://172.16.63.51:8080"
+    ],
+    "anchoringServices": [
+      "http://172.16.63.51:8080"
+    ],
+    "notifications": [
+      "http://172.16.63.51:8080"
+    ]
+  },
+  "vault": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ],
+     "notifications": [
+       "$ORIGIN"
+     ]
+  }
+}

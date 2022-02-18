@@ -26,7 +26,7 @@ class Batch {
     constructor(batch) {
         if (typeof batch !== undefined)
             for (let prop in batch)
-                if (batch.hasOwnProperty(prop))
+                if(batch.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = batch[prop];
 
         if (this.expiry && typeof this.expiry === 'string')
@@ -36,7 +36,7 @@ class Batch {
             this.batchNumber = Utils.generateSerialNumber(6);
 
         if (this.serialNumbers && this.serialNumbers.length)
-            if (this.quantity !== this.serialNumbers.length)
+            if (Math.abs(this.quantity) !== this.serialNumbers.length)
                 this.quantity = this.serialNumbers.length;
 
         this.batchStatus = this.batchStatus || BatchStatus.COMMISSIONED;

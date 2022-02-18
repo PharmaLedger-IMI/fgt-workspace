@@ -17,20 +17,35 @@ class Sale {
     constructor(sale) {
         if (typeof sale !== undefined)
             for (let prop in sale)
-                if (sale.hasOwnProperty(prop))
+                if (sale.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = sale[prop];
+
+        if (!this.id)
+            this.id = `${Date.now()}`;
 
         if (this.productList)
             this.productList = this.productList.map(p => new IndividualProduct(p));
     }
 
     validate(isSingle = false) {
+        const errors = [];
         if (!this.id)
-            return "missing id";
-        if (!this.productList || !this.productList.length)
-            return 'No products';
+            errors.push("Missing id.");
+
+        if (!this.productList || !this.productList.length) {
+            errors.push('No products on productList.');
+        } else {
+            this.productList.forEach((individualProduct, index) => {
+                let err = individualProduct.validate();
+                if (err) {
+                    errors.push(`Product ${index + 1} errors: [${err.join(' ')}].`);
+                }
+            });
+        }
+
         if (isSingle && !this.getSingleManufName())
-            return "All product must belong to the same manufacturer";
+            errors.push("All product must belong to the same manufacturer.");
+        return errors.join(' ');
     }
 
     getSingleManufName(){

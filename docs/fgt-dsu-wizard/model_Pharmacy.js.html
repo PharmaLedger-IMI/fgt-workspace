@@ -128,7 +128,7 @@ class Pharmacy extends Participant{
         super(pharmacy);
         if (typeof pharmacy !== undefined)
             for (let prop in pharmacy)
-                if (pharmacy.hasOwnProperty(prop))
+                if (pharmacy.hasOwnProperty(prop) &amp;&amp; this.hasOwnProperty(prop))
                     this[prop] = pharmacy[prop];
     }
 
@@ -152,6 +152,7 @@ module.exports = Pharmacy;</code></pre>
 <script src="scripts/linenumber.js"> </script>
 
 <script src="scripts/search.js"> </script>
+
 
 </body>
 </html>

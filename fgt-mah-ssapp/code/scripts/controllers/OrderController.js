@@ -79,11 +79,11 @@ export default class OrderController extends LocalizedController {
     }
 
     _updateStatuses(clazz){
-        if (!clazz.getAllowedStatusUpdates)
+        if (!clazz.getAllowedStatusUpdateFromShipment)
             throw new Error("Invalid Class provided")
         const obj = this.model.toObject().statuses;
         this.model.statuses = Object.keys(obj).reduce((accum, state) => {
-            accum[state].paths = clazz.getAllowedStatusUpdates(state);
+            accum[state].paths = clazz.getAllowedStatusUpdateFromShipment(state);
             return accum;
         }, obj);
     }

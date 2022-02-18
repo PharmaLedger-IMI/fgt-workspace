@@ -27,7 +27,7 @@ class Participant extends Validatable{
     _copyProps(participant){
         if (typeof participant !== undefined)
             for (let prop in participant)
-                if (participant.hasOwnProperty(prop))
+                if (participant.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = participant[prop];
     }
 

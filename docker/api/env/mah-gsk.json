@@ -1,0 +1,24 @@
+{
+  "name": {
+    "secret": "GSK",
+    "public": true
+  },
+  "id": {
+    "secret": "MAH239820839",
+    "public": true
+  },
+  "email": {
+    "secret": "gsk@mah.pharmaledger.com",
+    "public": true
+  },
+  "address": {
+    "public": true,
+    "secret": "Great Britain"
+  },
+  "pass": {
+    "secret": "This1sSuchAS3curePassw0rd"
+  },
+  "passrepeat": {
+    "secret": "This1sSuchAS3curePassw0rd"
+  }
+}

@@ -30,7 +30,7 @@ class DirectoryEntry {
     constructor(entry) {
         if (typeof entry !== undefined)
             for (let prop in entry)
-                if (entry.hasOwnProperty(prop))
+                if (entry.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = entry[prop];
     }
 }

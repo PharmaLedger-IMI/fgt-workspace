@@ -1,50 +1,34 @@
-{
-    "managers": [
-        "ParticipantManager",
-        "MessageManager",
-        "DBManager"
-    ]
-}
+### API
 
+#### Deployment Diagram
 
-walletBuilder.managers.forEAch(m => m.initialize(DSU))
+##### Real World Scenario
 
+The proposed REST Api deployment diagram is as follows
 
-APIs:
+![Proposed Intrastructure](resources/drawings/finishedGoodsTraceabilityDSUTypes-fgt-api-deployment.png)
 
-MessageManager.send({
-    "destination": tradingPartnerId,
-    "api": "order"
-    "keyssi": keySSI
-})
+where each participant has its own environment, running it's own:
+ - ERP System;
+ - OpenDSU API (ApiHub);
+ - FGT REST API;
+ - (optional, typically for MAHs) blockchain node;
 
+##### Testing Scenario
 
-Receiver.MessageManager.received: [
-    {
-        "api": "order",
-        "keyssi": "(...)"
-    },
-    {
-        "api": "shipment",
-        "keyssi": "(...)"
-    },
-]
+Because the above infrastructure is not testable at this moment, we propose to deploy the following on our servers:
 
-/
-/scripts/controllers
-/pages
-/db
+![Proposed Intrastructure](resources/drawings/finishedGoodsTraceabilityDSUTypes-fgt-api-test-deployment.png)
 
-import db from '../../db/db.js'
-db.js
-db.budled.js
-require(''bundle')
+where each participant has its own environment, running it's own:
+- Swagger Instance (mocks the ERP System);
+- OpenDSU API (ApiHub);
+- FGT REST API;
 
+**How to deploy**
 
-db.bundle.js => require('db')
+ssh into the machine;
+clone the workspace;
+go to ```fgt-workspace/docker/api```
+run ```./bootCompose.sh ${env}``` where env can be nothing (localhost), dev (fgt-dev.pharmaledger.pdmfc.com) or anything else (fgt.pharmaledger.pdmfc.com)
 
-Manager(DSU(Storage)) => Manager(db)
-
-require(db)
-
-node require(db)

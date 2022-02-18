@@ -17,7 +17,7 @@ class Pharmacy extends Participant{
         super(pharmacy);
         if (typeof pharmacy !== undefined)
             for (let prop in pharmacy)
-                if (pharmacy.hasOwnProperty(prop))
+                if (pharmacy.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = pharmacy[prop];
     }
 

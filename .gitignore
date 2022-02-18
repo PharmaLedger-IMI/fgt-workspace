@@ -62,6 +62,11 @@ fgt-wholesaler-ssapp/code/assets/skin.css
 fgt-wholesaler-ssapp/docs
 fgt-wholesaler-ssapp/seed
 
+fgt-api/config/seed
+fgt-api/config/fgt-pharmacy-wallet/seed
+fgt-api/config/fgt-wholesaler-wallet/seed
+fgt-api/config/fgt-mah-wallet/seed
+
 latest-change-set.txt
 
 node_modules

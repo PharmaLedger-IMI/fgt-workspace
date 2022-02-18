@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmaledger's Finished Goods Traceability REST API Home</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Pharmaledger's Finished Goods Traceability REST API</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                <div class="dropdown is-hoverable is-right">
+                    <a class="dropdown-trigger link">
+                        Tutorials
+                        <i class="fas fa-chevron-down fa-xs"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-content">
+                        
+                            <a class="dropdown-item" href="tutorial-Swagger.html">
+                                Swagger
+                            </a>
+                        
+                        </div>
+                    </div>
+                </div>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/PharmaLedger-IMI/fgt-workspace.git"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://fgt.pharmaledger.pdmfc.com/"
+                        >
+                            Workspace
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p></p>
+                    <h1>Home</h1>
+                </header>
+                
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>UC3 Finished Goods Traceability REST API</h1>
+<h4>Architecture</h4>
+<p>The desired environment (one that would perfectly replicate a real world scenario) is described below:</p>
+<p><img src="../resources/drawings/finishedGoodsTraceabilityDSUTypes-fgt-api-deployment.png" alt="Real World Deployment Diagram"></p>
+<p>Where apart from the Traceability workspace running the OpenDSU API (Api-hub) and brickstorage for the 'traceability'
+domain and the initial nodes for the domain blockchain, each other participant would run, in its own environment, the
+Finished Goods Traceability REST API, connected to its ERP system. Running blockchain nodes for the 'traceability' domain
+would be optional, but recommended at least for MAHs.</p>
+<p>Since this is very hard to put in place at this stage, to simulate this environment and for testing purposes, PDM intends to
+deploy a test environment, containing all the participants, while providing access to a testing tool (swagger),
+a viewing tool (initially swagger, but a GUI at a later stage) and exterior access to the REST API for integration testing:</p>
+<p><img src="../resources/drawings/finishedGoodsTraceabilityDSUTypes-fgt-api-test-deployment.png" alt="Test Environment Deployment Diagram"></p>
+<h4>Installation</h4>
+<p>Each workspace is configured to run, along its Api-hub, one instance of each wallet type's REST API.</p>
+<p>To do so run (after the initial setup in the traceability workspace):</p>
+<ul>
+<li>For MAH: <code>npm run run-mah</code></li>
+<li>For WHS: <code>npm run run-whs</code></li>
+<li>For PHA: <code>npm run run-pha</code></li>
+</ul>
+<p>for each of these wallets, the credentials must be stored, in json format, under:
+<code>./fgt-api/config/fgt-[mah|whs|pha]-wallet/credentials.json</code></p>
+<p>the provided format should match (the id is mandatory, all others are optional):</p>
+<pre class="prettyprint source lang-json"><code>{
+  &quot;name&quot;: {
+    &quot;secret&quot;: &quot;PDM the MAH&quot;,
+    &quot;public&quot;: true
+  },
+  &quot;id&quot;: {
+    &quot;secret&quot;: &quot;MAH324353426&quot;,
+    &quot;public&quot;: true
+  },
+  &quot;email&quot;: {
+    &quot;secret&quot;: &quot;mah@mah.pharmaledger.com&quot;,
+    &quot;public&quot;: true
+  },
+  &quot;address&quot;: {
+    &quot;public&quot;: true,
+    &quot;secret&quot;: &quot;New York, USA&quot;
+  },
+  &quot;pass&quot;: {
+    &quot;secret&quot;: &quot;This1sSuchAS3curePassw0rd&quot;
+  },
+  &quot;passrepeat&quot;: {
+    &quot;secret&quot;: &quot;This1sSuchAS3curePassw0rd&quot;
+  }
+}
+</code></pre>
+<h1>Swagger API DOC</h1>
+<h2>Running server</h2>
+<p>On <code>fgt-api</code> folder, run <code>npm run run-swagger</code>. Navigate to http://localhost:3009.</p>
+<h3>Command Line Arguments</h3>
+<h4>port</h4>
+<pre><code>swagger server listening port
+- argument: port
+- env variable name: SWAGGER_PORT
+- default: 3009
+</code></pre>
+<h4>participant</h4>
+<pre><code>.yml file name
+- argument: participant
+- env variable name: SWAGGER_PARTICIPANT
+- default: MAH
+</code></pre>
+<h4>path</h4>
+<pre><code>folder path to .yml file to load swagger UI
+- argument: path
+- env variable name: SWAGGER_PATH
+- default: ./docs
+</code></pre>
+<h4>server</h4>
+<pre><code>API url that swagger requests will be done
+- argument: server
+- env variable name: SWAGGER_SERVER
+- default: http://localhost:8081/traceability
+</code></pre>
+<h2>Example</h2>
+<pre><code>npm run run-swagger -- --port=3030 --participant=PHA
+</code></pre>
+<h4>Deployment</h4>
+<h5>Test Environment</h5>
+<p>Go to <code>./docker/api</code> and run</p>
+<pre class="prettyprint source lang-shell"><code>docker-compose build --no-cache 
+</code></pre>
+<p>This will build all the necessary images (and will take some time)</p>
+<p>Followed by</p>
+<pre class="prettyprint source lang-shell"><code>docker-compose up
+</code></pre>
+<p>After this command executes you can go to your browser and:</p>
+<ul>
+<li>localhost:8080/dashboard/ - Here you can see all the routing rules necessary to simulate the environment</li>
+<li>localhost:8080/ - Here you'll find Pharmaledger's Traceability Use Case Entry Page with access to the dossier Explorer (and the possibility to create new instances of the (deprecated) UI based wallets)</li>
+<li>For each participant, under ${ParticipantId}.fgt.pharmaledger.pdmfc.com:
+<ul>
+<li>.../ - The participants Entry Page (Should be the same as the Use Case's);</li>
+<li>.../api/** - The route to the Participant's REST API;</li>
+<li>.../swagger - The Participant's Swagger Dashboard, to replace the ERP's and allow partners to interact with the REST API;</li>
+<li>.../dashboard - A Graphical interface to consume the api and display relevant information/metrics</li>
+</ul>
+</li>
+</ul></article>
+    </section>
+
+
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+
+</body>
+</html>

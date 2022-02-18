@@ -1,7 +1,6 @@
 const {INFO_PATH, ANCHORING_DOMAIN, DB, DEFAULT_QUERY_OPTIONS} = require('../constants');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Product = require('../model/Product');
-const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 
 
 /**
@@ -26,7 +25,7 @@ const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
  */
 class ProductManager extends Manager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.products, ['gtin', 'name'], callback);
+        super(participantManager, DB.products, ['gtin', 'name', 'manufName'], callback);
         this.productService = new (require('../services/ProductService'))(ANCHORING_DOMAIN);
     }
 
@@ -86,7 +85,7 @@ class ProductManager extends Manager {
      * Creates a {@link Product} dsu
      * @param {string|number} [gtin] the table key
      * @param {Product} product
-     * @param {function(err, keySSI, string)} callback where the string is the mount path relative to the main DSU
+     * @param {function(err, keySSI?, string?)} callback where the string is the mount path relative to the main DSU
      * @override
      */
     create(gtin, product, callback) {
@@ -101,7 +100,8 @@ class ProductManager extends Manager {
                 return self._err(`Could not bind mah to product`, err, callback);
             self.productService.create(product, (err, keySSI) => {
                 if (err)
-                    return self._err(`Could not create product DSU for ${JSON.stringify(product, undefined, 2)}`, err, callback);
+                    // return self._err(`Could not create product DSU for ${product.gtin} GTIN because already exists.`, err, callback);
+                    return callback(`Could not create product DSU of GTIN ${product.gtin} because it already exists.`);
                 const record = keySSI.getIdentifier();
                 self.insertRecord(gtin, self._indexItem(gtin, product, record), (err) => {
                     if (err)

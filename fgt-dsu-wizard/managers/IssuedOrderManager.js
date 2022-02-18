@@ -84,7 +84,7 @@ class IssuedOrderManager extends OrderManager {
                 // TODO derive sReadSSI from keySSI
                 this.sendMessage(order.senderId, DB.receivedOrders, sReadSSIStr, (err) => {
                     if (err)
-                        return self._err(`Could not sent message to ${order.orderId} with ${DB.receivedOrders}`, err, callback);
+                        return self._err(`Could not sent message to ${order.senderId} ${order.orderId} with ${DB.receivedOrders}`, err, callback);
                     console.log("Message sent to "+order.senderId+", "+DB.receivedOrders+", "+sReadSSIStr);
                     callback(undefined, keySSI, path);
                 });
@@ -157,7 +157,7 @@ class IssuedOrderManager extends OrderManager {
          * so need to be sanitized to remove {SENDER_ID} and {TIMESTAMP}, because {REQUESTER_ID}
          * just needs the message
          * @param {Status} status
-         * @param {{[key: string]: string[]} }extraInfo
+         * @param {{}} extraInfo
          * @returns {string}
          */
         const getExtraInfoMsg = function (status, extraInfo) {
@@ -182,7 +182,7 @@ class IssuedOrderManager extends OrderManager {
 
         const update = super.update.bind(this);
 
-        console.log(`Updating order ${orderId} witj shipment ${shipment.shipmentId}`);
+        console.log(`Updating order ${orderId} with shipment ${shipment.shipmentId}`);
 
         const self = this;
         const key = this._genCompostKey(shipment.senderId, orderId);
