@@ -10,6 +10,7 @@
 | Property          | Attribute           | Description | Type      | Default     |
 | ----------------- | ------------------- | ----------- | --------- | ----------- |
 | `gtinBatchSerial` | `gtin-batch-serial` |             | `string`  | `undefined` |
+| `isHeader`        | `is-header`         |             | `boolean` | `undefined` |
 | `showCloseButton` | `show-close-button` |             | `boolean` | `true`      |
 | `showTrackButton` | `show-track-button` |             | `boolean` | `true`      |
 

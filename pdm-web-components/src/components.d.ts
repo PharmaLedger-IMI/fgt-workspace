@@ -111,6 +111,7 @@ export namespace Components {
     }
     interface ManagedBatchListItem {
         "gtinBatch": string;
+        "isHeader": boolean;
         "refresh": () => Promise<void>;
     }
     interface ManagedIndividualProduct {
@@ -137,11 +138,13 @@ export namespace Components {
     }
     interface ManagedIndividualProductListItem {
         "gtinBatchSerial": string;
+        "isHeader": boolean;
         "refresh": (newValue?: any) => Promise<void>;
         "showCloseButton": boolean;
         "showTrackButton": boolean;
     }
     interface ManagedNotificationsListItem {
+        "isHeader": boolean;
         "notificationid": string;
         "refresh": () => Promise<void>;
     }
@@ -186,6 +189,7 @@ export namespace Components {
         "updateDirectory": () => Promise<void>;
     }
     interface ManagedOrderListItem {
+        "isHeader": boolean;
         "orderId": string;
         "refresh": (newOrder?: any, oldOrder?: any) => Promise<void>;
         "type"?: string;
@@ -220,6 +224,7 @@ export namespace Components {
     interface ManagedProductListItem {
         "batchDisplayCount": number;
         "gtin": string;
+        "isHeader": boolean;
         "refresh": () => Promise<void>;
     }
     interface ManagedSale {
@@ -239,6 +244,7 @@ export namespace Components {
         "updateDirectory": () => Promise<void>;
     }
     interface ManagedSaleListItem {
+        "isHeader": boolean;
         "refresh": () => Promise<void>;
         "saleRef": string;
     }
@@ -279,6 +285,7 @@ export namespace Components {
         "updateDirectory": () => Promise<void>;
     }
     interface ManagedShipmentListItem {
+        "isHeader": boolean;
         "refresh": () => Promise<void>;
         "shipmentId": string;
         "shipmentLineCount"?: number;
@@ -288,6 +295,7 @@ export namespace Components {
         "batchLabel"?: string;
         "createdOnLabel"?: string;
         "gtinLabel"?: string;
+        "isHeader": boolean;
         "nameLabel"?: string;
         "quantityLabel"?: string;
         "refresh": () => Promise<void>;
@@ -298,6 +306,7 @@ export namespace Components {
     }
     interface ManagedStockListItem {
         "gtin": string;
+        "isHeader": boolean;
         "refresh": () => Promise<void>;
     }
     interface ManagedStockProductInput {
@@ -937,6 +946,7 @@ declare namespace LocalJSX {
     }
     interface ManagedBatchListItem {
         "gtinBatch"?: string;
+        "isHeader"?: boolean;
         "onFgt-request-stock-trace"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event navigation requests to tabs are made
@@ -982,6 +992,7 @@ declare namespace LocalJSX {
     }
     interface ManagedIndividualProductListItem {
         "gtinBatchSerial"?: string;
+        "isHeader"?: boolean;
         /**
           * Through this event tracking requests are made
          */
@@ -998,6 +1009,7 @@ declare namespace LocalJSX {
         "showTrackButton"?: boolean;
     }
     interface ManagedNotificationsListItem {
+        "isHeader"?: boolean;
         "notificationid"?: string;
         "onFgt-track-request"?: (event: CustomEvent<any>) => void;
         /**
@@ -1059,6 +1071,7 @@ declare namespace LocalJSX {
         "unavailableString"?: string;
     }
     interface ManagedOrderListItem {
+        "isHeader"?: boolean;
         /**
           * Through this event navigation requests to tabs are made
          */
@@ -1118,6 +1131,7 @@ declare namespace LocalJSX {
     interface ManagedProductListItem {
         "batchDisplayCount"?: number;
         "gtin"?: string;
+        "isHeader"?: boolean;
         /**
           * Through this event navigation requests to tabs are made
          */
@@ -1150,6 +1164,7 @@ declare namespace LocalJSX {
         "titleString"?: string;
     }
     interface ManagedSaleListItem {
+        "isHeader"?: boolean;
         /**
           * Through this event navigation requests to tabs are made
          */
@@ -1206,6 +1221,7 @@ declare namespace LocalJSX {
         "unavailableString"?: string;
     }
     interface ManagedShipmentListItem {
+        "isHeader"?: boolean;
         /**
           * Through this event navigation requests to tabs are made
          */
@@ -1222,6 +1238,7 @@ declare namespace LocalJSX {
         "batchLabel"?: string;
         "createdOnLabel"?: string;
         "gtinLabel"?: string;
+        "isHeader"?: boolean;
         "nameLabel"?: string;
         /**
           * Through this event navigation requests to tabs are made
@@ -1239,6 +1256,7 @@ declare namespace LocalJSX {
     }
     interface ManagedStockListItem {
         "gtin"?: string;
+        "isHeader"?: boolean;
         "onFgt-track-request"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event navigation requests to tabs are made

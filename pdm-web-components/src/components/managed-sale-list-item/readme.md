@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property  | Attribute  | Description | Type     | Default     |
-| --------- | ---------- | ----------- | -------- | ----------- |
-| `saleRef` | `sale-ref` |             | `string` | `undefined` |
+| Property   | Attribute   | Description | Type      | Default     |
+| ---------- | ----------- | ----------- | --------- | ----------- |
+| `isHeader` | `is-header` |             | `boolean` | `undefined` |
+| `saleRef`  | `sale-ref`  |             | `string`  | `undefined` |
 
 
 ## Events

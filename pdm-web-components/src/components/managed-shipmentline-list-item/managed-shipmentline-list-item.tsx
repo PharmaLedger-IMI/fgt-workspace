@@ -75,6 +75,8 @@ export class ManagedOrderlineListItem {
 
   @Prop({attribute: 'quantity-label', mutable: true}) quantityLabel?: string = "Quantity:";
 
+  @Prop() isHeader: boolean;
+
   private shipmentLineManager: WebResolver = undefined;
 
   private productManager: WebResolver = undefined;
@@ -100,29 +102,31 @@ export class ManagedOrderlineListItem {
     let self = this;
     if (!self.shipmentLineManager || !self.shipmentLine)
       return;
-    self.shipmentLineManager.getOne(self.shipmentLine, true, (err, line) => {
-      if (err){
-        self.sendError(`Could not get ShipmentLine with reference ${self.shipmentLine}`, err);
-        return;
-      }
-      self.line = line;
 
-      self.productManager.getOne(self.line.gtin, true, (err, product: typeof Product) => {
+    if(!this.isHeader)
+      self.shipmentLineManager.getOne(self.shipmentLine, true, (err, line) => {
         if (err){
-          self.sendError(`Could not get Product data from ${self.line.gtin}`, err);
+          self.sendError(`Could not get ShipmentLine with reference ${self.shipmentLine}`, err);
           return;
         }
-        self.product = product;
+        self.line = line;
 
-        self.batchManager.getOne(`${self.line.gtin}-${self.line.batch}`, true, (err, batch) => {
+        self.productManager.getOne(self.line.gtin, true, (err, product: typeof Product) => {
           if (err){
-            self.sendError(`Could not get batch data from ${self.line.gtin}'s ${self.line.batch}`, err);
+            self.sendError(`Could not get Product data from ${self.line.gtin}`, err);
             return;
           }
-          self.batch = batch;
+          self.product = product;
+
+          self.batchManager.getOne(`${self.line.gtin}-${self.line.batch}`, true, (err, batch) => {
+            if (err){
+              self.sendError(`Could not get batch data from ${self.line.gtin}'s ${self.line.batch}`, err);
+              return;
+            }
+            self.batch = batch;
+          });
         });
       });
-    });
   }
 
   @Watch('shipmentLine')
@@ -156,6 +160,21 @@ export class ManagedOrderlineListItem {
   }
 
   addSerials(){
+    const self = this;
+    if(self.isHeader){
+      return (
+        <ion-label slot="content" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg="auto">
+                <span class="ion-padding-end">
+                  {"Serials"}
+                </span>       
+            </ion-col>
+          </ion-row>
+        </ion-label>
+      )
+    }
+    
     if (!this.batch)
       return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
     return(
@@ -173,6 +192,22 @@ export class ManagedOrderlineListItem {
   }
 
   addDetails(){
+    const self = this;
+
+    if(self.isHeader){
+      return (
+        <ion-label slot="content" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg="auto">
+                <span class="ion-padding-end">
+                  {"Details"}
+                </span>       
+            </ion-col>
+          </ion-row>
+        </ion-label>
+      )
+    }
+
     const props = this.getPropsFromKey();
     const buildLabelElement = (props) => {
       return (
@@ -198,19 +233,32 @@ export class ManagedOrderlineListItem {
     const props = this.getPropsFromKey();
     const self = this;
 
+    const getGtinLabel = function (){
+      return 'Gtin';
+    }
+
     const getBatchLabel = function(){
+      if(self.isHeader)
+        return 'Batch Number';
+
       if (!self.batch)
         return (<ion-skeleton-text animated className="label-batch"></ion-skeleton-text>)
       return self.batch.batchNumber;
     }
 
     const getQuantityLabel = function(){
+      if(self.isHeader)
+        return 'Quantity';
+
       if (!self.line)
         return (<ion-skeleton-text animated className="label-quantity"></ion-skeleton-text>)
       return self.line.getQuantity();
     }
 
     const getStatusLabel = function(){
+      if(self.isHeader)
+        return 'Status';
+
       if (!self.line)
         return;
       return (
@@ -229,6 +277,34 @@ export class ManagedOrderlineListItem {
         </ion-col>
       )
     }
+
+    if(this.isHeader)
+      return(
+        <ion-label slot="label" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg="auto">
+              <span class="ion-padding-start">
+              {getGtinLabel()}
+              </span>       
+            </ion-col>
+            <ion-col col-12 col-sm align-self-end size-lg="auto">
+              <span class="ion-padding-start">
+                {getBatchLabel()}
+              </span>    
+            </ion-col>
+            <ion-col col-12 col-sm align-self-end size-lg="auto">
+              <span class="ion-padding-start">
+                {getQuantityLabel()}
+              </span>    
+            </ion-col>
+            <ion-col col-12 col-sm align-self-end size-lg="auto">
+              <span class="ion-padding-start">
+                {getStatusLabel()}
+              </span>    
+            </ion-col>
+          </ion-row>
+        </ion-label>
+      )
 
     return(
       <ion-col  slot="label" size="3">
@@ -249,6 +325,17 @@ export class ManagedOrderlineListItem {
 
   addButtons(){
     let self = this;
+
+    if(self.isHeader){
+      return (
+          <div slot = "buttons">
+            <ion-label color="secondary">
+              {"Actions"}
+            </ion-label>
+          </div>
+      )
+    }
+    
     if (!self.shipmentLine)
       return (<ion-skeleton-text animated></ion-skeleton-text>);
 

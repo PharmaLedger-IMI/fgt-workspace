@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type     | Default     |
-| -------- | --------- | ----------- | -------- | ----------- |
-| `gtin`   | `gtin`    |             | `string` | `undefined` |
+| Property   | Attribute   | Description | Type      | Default     |
+| ---------- | ----------- | ----------- | --------- | ----------- |
+| `gtin`     | `gtin`      |             | `string`  | `undefined` |
+| `isHeader` | `is-header` |             | `boolean` | `undefined` |
 
 
 ## Events

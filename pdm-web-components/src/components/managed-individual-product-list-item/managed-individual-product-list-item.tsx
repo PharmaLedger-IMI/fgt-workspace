@@ -84,6 +84,8 @@ export class ManagedBatchListItem {
 
   @Prop({attribute: 'show-track-button'}) showTrackButton: boolean = true
 
+  @Prop() isHeader: boolean;
+
   private batchManager: WebManager = undefined;
   private productManager: WebManager = undefined;
 
@@ -107,20 +109,21 @@ export class ManagedBatchListItem {
       return;
     const gtinBatch = `${self.individualProduct.gtin}-${self.individualProduct.batchNumber}`;
 
-    self.productManager.getOne(self.individualProduct.gtin, true, (err, product) => {
-      if (err)
-        return self.sendError(`Could not get Product with gtin ${self.individualProduct.gtin}`, err);
-      self.batchManager.getOne(gtinBatch, true, (err, batch: typeof Batch) => {
+    if(!this.isHeader)
+      self.productManager.getOne(self.individualProduct.gtin, true, (err, product) => {
         if (err)
-          return self.sendError(`Could not get Batch with code ${gtinBatch}`, err);
+          return self.sendError(`Could not get Product with gtin ${self.individualProduct.gtin}`, err);
+        self.batchManager.getOne(gtinBatch, true, (err, batch: typeof Batch) => {
+          if (err)
+            return self.sendError(`Could not get Batch with code ${gtinBatch}`, err);
 
-        self.individualProduct = new IndividualProduct(Object.assign(self.individualProduct, {
-          name: product.name,
-          expiry: batch.expiry,
-          status: batch.batchStatus
-        }));
+          self.individualProduct = new IndividualProduct(Object.assign(self.individualProduct, {
+            name: product.name,
+            expiry: batch.expiry,
+            status: batch.batchStatus
+          }));
+        });
       });
-    });
   }
 
   @Watch('gtinBatchSerial')
@@ -148,16 +151,46 @@ export class ManagedBatchListItem {
       return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>)
 
     const getNameLabel = function(){
+      if(self.isHeader)
+        return 'Name';
       return self.individualProduct.name;
     }
 
     const getGtinLabel = function(){
+      if(self.isHeader)
+        return 'Gtin';
       return self.individualProduct.gtin;
     }
 
     const getBatchNumberLabel = function(){
+      if(self.isHeader)
+        return 'Batch Number';
       return self.individualProduct.batchNumber;
     }
+
+
+    if(this.isHeader)
+      return(
+        <ion-label slot="label" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg={2}>
+              <span class="ion-padding-start">
+              {getGtinLabel()}
+              </span>
+            </ion-col>
+            <ion-col col-12 col-sm align-self-end size-lg={1}>
+              <span class="ion-padding-start">
+                {getNameLabel()}
+              </span>
+            </ion-col>
+            <ion-col col-12 col-sm align-self-end size-lg={3}>
+              <span class="ion-padding-start">
+                {getBatchNumberLabel()}
+              </span>
+            </ion-col>
+          </ion-row>
+      </ion-label>
+      )
 
     return(
       <ion-label slot="label" color="secondary">
@@ -177,6 +210,20 @@ export class ManagedBatchListItem {
   }
 
   addSerialsNumber(){
+    const self = this;
+    if(self.isHeader){
+      return (
+        <ion-label slot="content" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg={6}>
+                <span class="ion-padding-end">
+                  {"Serial Numbers"}
+                </span>
+            </ion-col>
+          </ion-row>
+        </ion-label>
+      )
+    }
     if (!this.individualProduct || !this.individualProduct.serialNumber)
       return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
     return (
@@ -186,6 +233,17 @@ export class ManagedBatchListItem {
 
   addButtons(){
     let self = this;
+
+    if(self.isHeader){
+      return [(
+          <div slot = "buttons">
+            <ion-label color="secondary">
+              {"Actions"}
+            </ion-label>
+          </div>
+      )]
+    }
+
     if (!self.individualProduct)
       return;
     const getButton = function(slot, color, icon, handler){

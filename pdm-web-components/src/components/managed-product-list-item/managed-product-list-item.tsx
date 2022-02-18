@@ -58,7 +58,7 @@ export class ManagedProductListItem {
 
   @Prop({attribute: "gtin", mutable: true}) gtin: string;
   @Prop({attribute: "batch-display-count", mutable: true}) batchDisplayCount: number = 3;
-
+  @Prop() isHeader: boolean;
   private productManager: WebManager = undefined;
   private batchManager: WebManager = undefined;
 
@@ -77,20 +77,22 @@ export class ManagedProductListItem {
     let self = this;
     if (!self.productManager)
       return;
-    self.productManager.getOne(self.gtin, true, (err, product) => {
-      if (err){
-        self.sendError(`Could not get Product with gtin ${self.gtin}`, err);
-        return;
-      }
-      this.product = product;
-      self.batchManager.getAll(false, {query: `gtin == ${self.gtin}`}, (err, batches) => {
+    
+    if(!self.isHeader)
+      self.productManager.getOne(self.gtin, true, (err, product) => {
         if (err){
-          self.sendError(`Could not load batches for product ${self.gtin}`);
+          self.sendError(`Could not get Product with gtin ${self.gtin}`, err);
           return;
         }
-        self.batches = batches;
+        this.product = product;
+        self.batchManager.getAll(false, {query: `gtin == ${self.gtin}`}, (err, batches) => {
+          if (err){
+            self.sendError(`Could not load batches for product ${self.gtin}`);
+            return;
+          }
+          self.batches = batches;
+        });
       });
-    });
   }
 
   private triggerSelect(evt){
@@ -114,16 +116,39 @@ export class ManagedProductListItem {
     const self = this;
 
     const getGtinLabel = function(){
+      if(self.isHeader)
+        return 'Gtin';
+
       if (!self.product || !self.product.gtin)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
       return self.product.gtin;
     }
 
     const getNameLabel = function(){
+      if(self.isHeader)
+        return 'Name';
       if (!self.product || !self.product.name)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
       return self.product.name;
     }
+
+    if(this.isHeader)
+      return(
+        <ion-label slot="label" color="secondary">
+          <ion-row class="ion-align-items-center">
+            <ion-col col-12 col-sm align-self-end size-lg={3}>
+              <span class="ion-padding-start">
+              {getGtinLabel()}
+              </span>       
+            </ion-col>
+            <ion-col col-12 col-sm align-self-end size-lg={3}>
+              <span class="ion-padding-start">
+                {getNameLabel()}
+              </span>    
+            </ion-col>
+          </ion-row>
+      </ion-label>
+      )
 
     return(
       <ion-row slot="label" class="ion-align-items-center">
@@ -143,6 +168,22 @@ export class ManagedProductListItem {
   }
 
   addBatches(){
+    const self = this;
+
+    if(self.isHeader){
+      return (
+        <ion-label slot="content" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg={6}>
+                <span class="ion-padding-end">
+                  {"Batches"}
+                </span>       
+            </ion-col>
+          </ion-row>
+        </ion-label>
+      )
+    }
+
     if (!this.product || !this.batches)
       return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
     const dummyProp = Date.now(); // to ensure the item organizer updates even with the same data
@@ -171,6 +212,17 @@ export class ManagedProductListItem {
 
   addButtons(){
     let self = this;
+
+    if(self.isHeader){
+      return (
+          <div slot = "buttons">
+            <ion-label color="secondary">
+              {"Actions"}
+            </ion-label>
+          </div>
+      )
+    }
+    
     if (!self.product)
       return (<ion-skeleton-text animated></ion-skeleton-text>);
 

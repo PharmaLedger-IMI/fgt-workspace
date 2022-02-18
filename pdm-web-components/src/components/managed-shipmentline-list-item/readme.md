@@ -7,17 +7,18 @@
 
 ## Properties
 
-| Property         | Attribute          | Description | Type     | Default         |
-| ---------------- | ------------------ | ----------- | -------- | --------------- |
-| `batchLabel`     | `bach-label`       |             | `string` | `"Batch:"`      |
-| `createdOnLabel` | `created-on-label` |             | `string` | `"Created on:"` |
-| `gtinLabel`      | `gtin-label`       |             | `string` | `"Gtin:"`       |
-| `nameLabel`      | `name-label`       |             | `string` | `"Name:"`       |
-| `quantityLabel`  | `quantity-label`   |             | `string` | `"Quantity:"`   |
-| `requesterLabel` | `requester-label`  |             | `string` | `"Requester:"`  |
-| `senderLabel`    | `sender-label`     |             | `string` | `"Sender:"`     |
-| `shipmentLine`   | `shipment-line`    |             | `string` | `undefined`     |
-| `statusLabel`    | `status-label`     |             | `string` | `"Status:"`     |
+| Property         | Attribute          | Description | Type      | Default         |
+| ---------------- | ------------------ | ----------- | --------- | --------------- |
+| `batchLabel`     | `bach-label`       |             | `string`  | `"Batch:"`      |
+| `createdOnLabel` | `created-on-label` |             | `string`  | `"Created on:"` |
+| `gtinLabel`      | `gtin-label`       |             | `string`  | `"Gtin:"`       |
+| `isHeader`       | `is-header`        |             | `boolean` | `undefined`     |
+| `nameLabel`      | `name-label`       |             | `string`  | `"Name:"`       |
+| `quantityLabel`  | `quantity-label`   |             | `string`  | `"Quantity:"`   |
+| `requesterLabel` | `requester-label`  |             | `string`  | `"Requester:"`  |
+| `senderLabel`    | `sender-label`     |             | `string`  | `"Sender:"`     |
+| `shipmentLine`   | `shipment-line`    |             | `string`  | `undefined`     |
+| `statusLabel`    | `status-label`     |             | `string`  | `"Status:"`     |
 
 
 ## Events

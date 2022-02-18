@@ -58,6 +58,8 @@ export class ManagedSaleListItem {
 
   @Prop({attribute: 'sale-ref', mutable: true}) saleRef: string;
 
+  @Prop() isHeader: boolean;
+
   private saleManager: WebManager = undefined;
 
   @State() sale: typeof Sale = undefined;
@@ -78,11 +80,12 @@ export class ManagedSaleListItem {
     }
 
     const self = this;
-    self.saleManager.getOne(this.saleRef, true, (err, sale) => {
-      if (err)
-        return self.sendError(`Could not get sale ${self.saleRef}`, err);
-      self.sale = sale;
-    });
+    if(!self.isHeader)
+      self.saleManager.getOne(this.saleRef, true, (err, sale) => {
+        if (err)
+          return self.sendError(`Could not get sale ${self.saleRef}`, err);
+        self.sale = sale;
+      });
   }
 
   @Watch('saleRef')
@@ -95,16 +98,40 @@ export class ManagedSaleListItem {
     const self = this;
 
     const getIdLabel = function(){
+      if(self.isHeader)
+        return 'Sale ID';
+
       if (!self.sale || !self.sale.id)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
       return self.sale.id;
     }
 
     const getNameLabel = function(){
+      if(self.isHeader)
+        return 'Name';
+
       if (!self.sale || !self.sale.sellerId)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
       return self.sale.name;
     }
+
+    if(this.isHeader)
+      return(
+        <ion-label slot="label" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg={3}>
+              <span class="ion-padding-start">
+              {getIdLabel()}
+              </span>       
+            </ion-col>
+            <ion-col col-12 col-sm align-self-end size-lg={3}>
+              <span class="ion-padding-start">
+                {getNameLabel()}
+              </span>    
+            </ion-col>
+          </ion-row>
+      </ion-label>
+      )
 
     return(
       <ion-label slot="label" color="secondary">
@@ -114,6 +141,21 @@ export class ManagedSaleListItem {
   }
 
   addBatches(){
+    const self = this;
+
+    if(self.isHeader){
+      return (
+        <ion-label slot="content" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg={6}>
+                <span class="ion-padding-end">
+                  {"Batches"}
+                </span>       
+            </ion-col>
+          </ion-row>
+        </ion-label>
+      )
+    }
     if (!this.sale)
       return (<ion-skeleton-text slot="content" animated></ion-skeleton-text>);
 
@@ -157,6 +199,17 @@ export class ManagedSaleListItem {
 
   addButtons(){
     let self = this;
+
+    if(self.isHeader){
+      return (
+          <div slot = "buttons">
+            <ion-label color="secondary">
+              {"Actions"}
+            </ion-label>
+          </div>
+      )
+    }
+    
     if (!self.sale)
       return (<ion-skeleton-text animated></ion-skeleton-text>);
 

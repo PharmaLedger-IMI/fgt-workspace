@@ -7,11 +7,12 @@
 
 ## Properties
 
-| Property            | Attribute             | Description | Type     | Default                |
-| ------------------- | --------------------- | ----------- | -------- | ---------------------- |
-| `shipmentId`        | `shipment-id`         |             | `string` | `undefined`            |
-| `shipmentLineCount` | `shipment-line-count` |             | `number` | `4`                    |
-| `type`              | `type`                |             | `string` | `SHIPMENT_TYPE.ISSUED` |
+| Property            | Attribute             | Description | Type      | Default                |
+| ------------------- | --------------------- | ----------- | --------- | ---------------------- |
+| `isHeader`          | `is-header`           |             | `boolean` | `undefined`            |
+| `shipmentId`        | `shipment-id`         |             | `string`  | `undefined`            |
+| `shipmentLineCount` | `shipment-line-count` |             | `number`  | `4`                    |
+| `type`              | `type`                |             | `string`  | `SHIPMENT_TYPE.ISSUED` |
 
 
 ## Events

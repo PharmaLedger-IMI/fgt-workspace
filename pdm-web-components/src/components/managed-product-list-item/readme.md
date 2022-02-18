@@ -7,10 +7,11 @@
 
 ## Properties
 
-| Property            | Attribute             | Description | Type     | Default     |
-| ------------------- | --------------------- | ----------- | -------- | ----------- |
-| `batchDisplayCount` | `batch-display-count` |             | `number` | `3`         |
-| `gtin`              | `gtin`                |             | `string` | `undefined` |
+| Property            | Attribute             | Description | Type      | Default     |
+| ------------------- | --------------------- | ----------- | --------- | ----------- |
+| `batchDisplayCount` | `batch-display-count` |             | `number`  | `3`         |
+| `gtin`              | `gtin`                |             | `string`  | `undefined` |
+| `isHeader`          | `is-header`           |             | `boolean` | `undefined` |
 
 
 ## Events

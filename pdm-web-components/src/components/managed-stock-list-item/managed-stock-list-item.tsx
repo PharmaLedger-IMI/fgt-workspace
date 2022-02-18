@@ -66,6 +66,7 @@ export class ManagedProductListItem {
   }
 
   @Prop() gtin: string;
+  @Prop() isHeader: boolean;
 
   private stockManager: WebManager = undefined;
 
@@ -84,15 +85,17 @@ export class ManagedProductListItem {
     let self = this;
     if (!self.stockManager)
       return;
-    self.stockManager.getOne(self.gtin, true, (err, stock) => {
-      if (err){
-        self.sendError(`Could not get Product with gtin ${self.gtin}`, err);
-        return;
-      }
-      self.stock = new Stock(stock);
-      self.batches = [...stock.batches];
-      self.quantity = this.stock.getQuantity();
-    });
+
+    if(!self.isHeader)
+      self.stockManager.getOne(self.gtin, true, (err, stock) => {
+        if (err){
+          self.sendError(`Could not get Product with gtin ${self.gtin}`, err);
+          return;
+        }
+        self.stock = new Stock(stock);
+        self.batches = [...stock.batches];
+        self.quantity = this.stock.getQuantity();
+      });
   }
 
   @Watch('gtin')
@@ -105,30 +108,65 @@ export class ManagedProductListItem {
     const self = this;
 
     const getQuantityLabel = function(){
+      if(self.isHeader)
+        return 'Quantity';
+
       if (!self.stock || !self.stock.batches)
-        return (<ion-skeleton-text animated></ion-skeleton-text>)
-      return self.stock.getQuantity();
+        return (<ion-skeleton-text animated></ion-skeleton-text>);
+      return (
+        <ion-badge>
+          {self.stock.getQuantity()}
+        </ion-badge>
+      )
     }
 
     const getGtinLabel = function(){
+      if(self.isHeader)
+        return 'Gtin';
+
       if (!self.stock || !self.stock.gtin)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
       return self.stock.gtin;
     }
 
     const getNameLabel = function(){
+      if(self.isHeader)
+        return 'Product Name';
+
       if (!self.stock || !self.stock.name)
         return (<ion-skeleton-text animated></ion-skeleton-text>);
       return self.stock.name;
     }
 
+    if(this.isHeader)
+      return(
+        <ion-label slot="label" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg="auto">
+              <span class="ion-padding-start">
+              {getGtinLabel()}
+              </span>       
+            </ion-col>
+            <ion-col col-12 col-sm align-self-end size-lg="auto">
+              <span class="ion-padding-start">
+                {getQuantityLabel()}
+              </span>    
+            </ion-col>
+            <ion-col col-12 col-sm align-self-end size-lg="auto">
+              <span class="ion-padding-start">
+                {getNameLabel()}
+              </span>    
+            </ion-col>
+          </ion-row>
+        </ion-label>
+      )
+      
+
     return(
       <ion-label slot="label" color="secondary">
         {getGtinLabel()}
         <span class="ion-padding-start">
-          <ion-badge>
             {getQuantityLabel()}
-          </ion-badge>
         </span>
         <span class="ion-padding-start">{getNameLabel()}</span>
       </ion-label>)
@@ -136,6 +174,20 @@ export class ManagedProductListItem {
 
   addBatches(){
     const self = this;
+    if(self.isHeader){
+      return (
+        <ion-label slot="content" color="secondary">
+          <ion-row>
+            <ion-col col-12 col-sm align-self-end size-lg = "auto">
+                <span class="ion-padding-end">
+                  {"Batches"}
+                </span>       
+            </ion-col>
+          </ion-row>
+        </ion-label>
+      )
+    }
+
     if (!this.stock || !this.batches)
       return (<ion-skeleton-text slot="content" animated></ion-skeleton-text>);
       
@@ -179,6 +231,16 @@ export class ManagedProductListItem {
 
   addButtons(){
     let self = this;
+    if(self.isHeader){
+      return (
+          <div slot = "buttons">
+            <ion-label color="secondary">
+              {"Actions"}
+            </ion-label>
+          </div>
+      )
+    }
+
     if (!self.stock)
       return (<ion-skeleton-text animated></ion-skeleton-text>);
 
