@@ -41,7 +41,7 @@ module.exports = class BatchApi extends Api {
 
             self.manager.create(product, _batch, (err, keySSI) => {
                 if (err)
-                    return callback(new InternalServerError(err));
+                    return callback(new BadRequest(err));
                 self.manager.getOne(product.gtin, _batch.batchNumber, true, (err, _batch) => {
                     if (err)
                         return callback(new InternalServerError(err));

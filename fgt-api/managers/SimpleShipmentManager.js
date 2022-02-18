@@ -1,7 +1,6 @@
 const {log} = require('../utils');
 const Batch = require('../../fgt-dsu-wizard/model/Batch');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
-const {BadRequest, InternalServerError} = require("../utils/errorHandler");
 const {DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../constants');
 const {ShipmentStatus} = require('../../fgt-dsu-wizard/model');
 
@@ -114,7 +113,7 @@ class SimpleShipmentManager extends Manager {
                 log("Shipment SSI=" + shipmentSSI);
                 self.insertRecord(simpleShipment.shipmentId, self._indexItem(simpleShipment, shipmentSSI), (err) => {
                     if (err)
-                        return callbackCancelBatch(new BadRequest(`Could not insert record with shipmentId ${simpleShipment.shipmentId} on table ${self.tableName}. Trying to insert a existing record.`));
+                        return callbackCancelBatch(`Could not insert record with shipmentId ${simpleShipment.shipmentId} on table ${self.tableName}. Trying to insert a existing record.`);
 
                     const path = `${self.tableName}/${simpleShipment.shipmentId}`;
                     log(`Shipment ${simpleShipment.shipmentId} created stored at DB '${path}'`);
@@ -240,7 +239,7 @@ class SimpleShipmentManager extends Manager {
 
         super.getAll(readDSU, options, (err, result) => {
             if (err)
-                return callback(new InternalServerError(`Could not parse SimpleShipments`));
+                return callback(`Could not parse SimpleShipments`);
             log(`Parsed ${result.length} simpleShipments`);
 
             const statusPopulateIterator = (accum, records, _callback) => {
@@ -273,15 +272,15 @@ class SimpleShipmentManager extends Manager {
         const self = this;
         self.getRecord(shipmentId, (err, record) => {
             if (err)
-                return callback(new BadRequest(err));
+                return callback(err);
             const shipmentSSI = record.value;
             self.simpleShipmentService.update(shipmentSSI, statusUpdate, self.getIdentity().id, (err, updatedSimpleShipment, keySSI, linesSSIs) => {
                 if (err)
-                    return callback(new BadRequest(err));
+                    return callback(err);
 
                 self.updateRecord(shipmentId, self._indexItem(shipmentId, updatedSimpleShipment, shipmentSSI), (err) => {
                     if (err)
-                        return callback(new BadRequest(`Could not update Shipment from shipmentId ${shipmentId}. ${err}`));
+                        return callback(`Could not update Shipment from shipmentId ${shipmentId}. ${err}`);
                     try {
                         self.sendMessagesAsync(updatedSimpleShipment, linesSSIs, shipmentSSI);
                     } catch (e) {
@@ -295,7 +294,7 @@ class SimpleShipmentManager extends Manager {
                     // if requester and shipmentStatus confirmed, need to add to stock
                     const callbackCancelBatch = (err, ...results) => {
                         if (err)
-                            return self.cancelBatch((_) => callback(new InternalServerError(err)));
+                            return self.cancelBatch((_) => callback(err));
                         callback(undefined, ...results);
                     }
 

@@ -262,13 +262,13 @@ class BatchManager extends Manager{
                                     self.stockManager.getStockTraceability(gtin, {manufName: self.getIdentity().id, batch: batch.batchNumber}, (err, results) => {
                                         if (err || !results){
                                             console.log(`Could not calculate partners with batch to send`, err, results);
-                                            return callback(undefined, newBatch, batchDsu);
+                                            return callback(undefined, updatedBatch, batchDsu);
                                         }
 
                                         const {partnersStock} = results;
                                         if (!partnersStock){
                                             console.log(`No Notification required. No stock found outside the producer for gtin ${gtin}, batch ${batch.batchNumber}`);
-                                            return callback(undefined, newBatch, batchDsu);
+                                            return callback(undefined, updatedBatch, batchDsu);
                                         }
 
 

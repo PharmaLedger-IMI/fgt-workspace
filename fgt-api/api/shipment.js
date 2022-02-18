@@ -32,7 +32,7 @@ class ShipmentApi extends Api {
 
         self.manager.create(_simpleShipment, (err, keySSI) => {
             if (err)
-                return callback(new InternalServerError(err))
+                return callback(new BadRequest(err))
             self.manager.getOne(_simpleShipment.shipmentId, true, (err, record) => {
                 if (err)
                     return callback(new InternalServerError(err))
@@ -84,7 +84,7 @@ class ShipmentApi extends Api {
     update(shipmentId, statusUpdate, callback) {
         this.manager.update(shipmentId, statusUpdate, (err, updatedSimpleShipment) => {
             if (err)
-                return callback(err);
+                return callback(new BadRequest(err));
             callback(undefined, updatedSimpleShipment);
         })
     }
