@@ -5,6 +5,70 @@ const opendsu = require("opendsu");
 const scAPI = opendsu.loadAPI("sc");
 
 /**
+ * Util class to handle manager listeners registration
+ * @class TrackManagerListeners
+ * @memberOf MessageManager
+ */
+
+class TrackManagerListeners {
+
+    _timeOfLastRegisteredListener = Date.now();
+    _loaded = false;
+    _listeners = {};
+    _listenersStartRegistrationCount = 0;
+    _listenersFinishedRegistrationCount = 0;
+    _startedReceivingMessages = false;
+
+    constructor(){
+        console.log('Track Manager Listeners Initiated')
+    }
+
+    listenersRegistration(callback){
+        const listenersRegistrationCheck = setInterval(() => {
+            if(this._listenersStartRegistrationCount !== 0 && this._listenersFinishedRegistrationCount !== 0) {
+                if((Date.now() - this._timeOfLastRegisteredListener) > 2000 && this._listenersStartRegistrationCount === this._listenersFinishedRegistrationCount) {
+                    if(!this._loaded){
+                        this._loaded = true;
+                        return callback(undefined, !this._loaded, this._startedReceivingMessages, this._listeners)
+                    }
+
+                    clearInterval(listenersRegistrationCheck);
+                    callback(undefined, this._loaded , this._startedReceivingMessages, this._listeners);
+                }
+            }
+        },500)
+    }
+
+    _listenerRegistrationTimer(time){
+        this._timeOfLastRegisteredListener = time;
+        this._listenersStartRegistrationCount++;
+    }
+
+    finishedRegistration(){
+        this._listenersFinishedRegistrationCount++;
+    }
+
+    startedReceivingMessages(isReceiving){
+        this._startedReceivingMessages = isReceiving;
+    }
+
+    registerListener(api, onNewApiMsgListener, callback){
+        this._listenerRegistrationTimer(Date.now());
+
+        if(!(api in this._listeners));
+            this._listeners[api] = [];
+
+        this._listeners[api].push(onNewApiMsgListener);
+        console.log(`registering a new listener on ${api}`);
+
+        callback(undefined);    
+    }
+
+
+
+}
+
+/**
  * @typedef W3cDID
  */
 
@@ -55,15 +119,27 @@ class MessageManager extends Manager{
             manager._listeners = {};
             manager.timer = undefined;
             manager.sc = baseManager.sc;
+            manager.track = new TrackManagerListeners();
 
-            manager.getOwnDID((err, didDoc) => {
-                if (err)
-                    throw new Error(`Could not get Own DID: ${err}`);
-                manager._startMessageListener(didDoc);
-                if (callback)
+            manager.track.listenersRegistration((err, asLoaded, didStartedReceivingMessages, listeners) => { 
+                if (err) return;
+
+                if(!asLoaded) return;
+
+                if(didStartedReceivingMessages) return;
+
+                manager._listeners = listeners;
+            
+                manager.getOwnDID((err, didDoc) => {
+                    if (err)
+                        throw new Error(`Could not get Own DID: ${err}`);
+                    manager.track.startedReceivingMessages(true);
+                    manager._startMessageListener(didDoc);
+                });
+            })
+
+            if (callback)
                     callback(undefined, manager);
-            });
-
         });
         this.w3cDID = this.w3cDID || require('opendsu').loadApi('w3cdid');
         this.didString = this.didString || didString;
@@ -122,23 +198,13 @@ class MessageManager extends Manager{
      *
      */
     registerListeners(api, onNewApiMsgListener){
-        if (!(api in this._listeners))
-            this._listeners[api] = [];
-        this._listeners[api].push(onNewApiMsgListener);
         const self = this;
-        console.log(`registering a new listener on ${api}`);
-        self.getAll(true, {
-            query: [
-                `api like /${api}/g`
-            ]
-        }, (err, messages) => {
-            if (err)
-                return console.log(`Could not list messages from Inbox, api: ${api}`);
-            if (!messages || !messages.length)
-                return console.log(`No Stashed Messages Stored for ${api}...`);
-            console.log(`${messages.length} Stashed Messages found for manager ${api}`);
-            messages.forEach(m => onNewApiMsgListener(m));
-        });
+
+        self.track.registerListener(api, onNewApiMsgListener, (err) => {
+            if(err) return;
+
+            self.track.finishedRegistration();
+        })    
     }
 
     /**
