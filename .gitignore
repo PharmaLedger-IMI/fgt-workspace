@@ -18,6 +18,7 @@ apihub-root/dossier-explorer/**
 apihub-root/messaging
 apihub-root/seedsBackup
 apihub-root/credentials.json
+apihub-root/mqs/*
 cardinal
 
 yarn.lock
