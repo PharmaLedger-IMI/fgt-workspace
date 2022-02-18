@@ -135,8 +135,16 @@
         </div>
 
         <div id="participant" style="display:none;">
-            <h3>Participant Workspace</h3>
-
+            <h3><a id="participant-name">Participant</a> Workspace</h3>
+            <script>
+                const participantName = document.body.querySelector(`a[id="participant-name"]`);
+                const url = window.location.hostname;
+                if (url.match(/[-\.]?(?:mah|whs|pha)[\-\d]/g)){
+                    const regexp = /[-\.]?(mah|whs|pha)[\-\.]?(\d+|\w+)[\-\.]/g;
+                    const match = regexp.exec(url);
+                    participantName.innerHTML = `${match[1].toUpperCase()} - ${(match[2] || '').toUpperCase()}${(match[3] || '').toUpperCase()}`;
+                }
+            </script>
             <ul>
                 <li>
                    Click the Swagger button to access your swagger dashboard. There you can find:
