@@ -162,17 +162,17 @@ export class ManagedBatchListItem {
             <ion-col col-12 col-sm align-self-end size-lg={3}>
               <span class="ion-padding-start">
               {getBatchNumberLabel()}
-              </span>       
+              </span>
             </ion-col>
             <ion-col col-12 col-sm align-self-end size-lg={2}>
               <span class="ion-padding-start">
                 {getStatusBadge()}
-              </span>    
+              </span>
             </ion-col>
             <ion-col col-12 col-sm align-self-end size-lg={1}>
               <span class="ion-padding-start">
                 {getExpiryLabel()}
-              </span>    
+              </span>
             </ion-col>
           </ion-row>
       </ion-label>
@@ -187,7 +187,7 @@ export class ManagedBatchListItem {
   }
 
   addSerialsNumbers(){
-    
+
     if(this.isHeader){
       return (
         <ion-label slot="content" color="secondary">
@@ -195,7 +195,7 @@ export class ManagedBatchListItem {
             <ion-col col-12 col-sm align-self-end size-lg={6}>
                 <span class="ion-padding-end">
                   {"Serial Numbers"}
-                </span>       
+                </span>
             </ion-col>
           </ion-row>
         </ion-label>
@@ -226,13 +226,13 @@ export class ManagedBatchListItem {
     let self = this;
 
     if(self.isHeader){
-      return (
+      return [(
           <div slot = "buttons">
             <ion-label color="secondary">
               {"Actions"}
             </ion-label>
           </div>
-      )
+      )]
     }
 
     const getButton = function(slot, color, icon, handler){

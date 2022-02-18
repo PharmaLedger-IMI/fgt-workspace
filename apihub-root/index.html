@@ -15,6 +15,33 @@
 <body>
     <div class="center-aligned-controls vertical-align">
 
+        <a class="wallet-login dsu-fabric_button scale-up" href="fgt-mah-wallet/loader/" target="_blank" style="display: none;">
+            <div class="left-side">
+                <img src="assets/images/factory.png" alt="MAH-app">
+            </div>
+            <div class="right-side">
+                <p>MAH wallet</p>
+            </div>
+        </a>
+
+        <a class="wallet-login leaflet-wallet_button scale-up" href="fgt-wholesaler-wallet/loader/" target="_blank" style="display: none;">
+            <div class="left-side">
+                <img src="assets/images/wholesaler.png" alt="Wholesaler-App">
+            </div>
+            <div class="right-side">
+                <p>Wholesaler Wallet</p>
+            </div>
+        </a>
+
+        <a class="wallet-login web-wallet_button scale-up" href="fgt-pharmacy-wallet/loader" target="_blank" style="display: none;">
+            <div class="left-side">
+                <img src="assets/images/pharmacy.png" alt="Pharmacy-App">
+            </div>
+            <div class="right-side">
+                <p>Pharmacy Wallet</p>
+            </div>
+        </a>
+
         <a id="swagger" class="dsu-fabric_button scale-up" href="swagger.localhost:8080" target="_blank" style="display:none">
             <div class="left-side">
                 <img src="assets/images/factory.png" alt="swagger">
@@ -414,6 +441,8 @@
                 ${Object.keys(credentials).map(key => getCategory(key, credentials[key])).join('\n')}
                 `
                 document.getElementById('credentials').style.display = "block";
+
+                document.body.querySelectorAll('.wallet-login').forEach(e => e.setAttribute('style', "display: block;"))
 
             }
         }
