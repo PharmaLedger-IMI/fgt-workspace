@@ -32,7 +32,7 @@ class ProductApi extends Api {
 
         self.manager.create(_product, (err, keySSI) => {
             if (err)
-                return callback(new InternalServerError(err));
+                return callback(new BadRequest(err));
             self.manager.getOne(_product.gtin, true, (err, insertedProduct) => {
                 if (err)
                     return callback(new InternalServerError(err));

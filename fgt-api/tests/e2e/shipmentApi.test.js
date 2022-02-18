@@ -83,9 +83,9 @@ describe('shipmentApi', function () {
                 .send({status: "delivered"})
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
-                    res.should.have.status(501);
-                    res.body.should.have.property('status').equal(501);
-                    res.body.should.have.property('error').equal('Not implemented');
+                    res.should.have.status(400);
+                    res.body.should.have.property('status').equal(400);
+                    res.body.should.have.property('error').equal('Bad Request');
                     res.body.should.have.property('message').equal(`Status update from pickup to delivered is not allowed`);
                     done();
                 });
