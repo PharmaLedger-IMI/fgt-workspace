@@ -17,6 +17,7 @@
     "pdm-dsu-toolkit-app-commands",
     "fgt-dsu-wizard",
     "gtin-dsu-wizard",
+    "mq",
     "staticServer"
   ],
   "componentsConfig": {
@@ -30,6 +31,10 @@
     "fgt-dsu-wizard": {
       "module": "./../../fgt-dsu-wizard",
       "function": "Init"
+    },
+    "mq":{
+      "module": "./components/mqHub",
+      "function": "MQHub"
     },
     "bricking": {},
     "anchoring": {}
