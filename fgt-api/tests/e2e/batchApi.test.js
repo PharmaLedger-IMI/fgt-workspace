@@ -13,6 +13,63 @@ describe('batchApi', function () {
 
     describe('POST /batch/create', function () {
 
+        it ('should return a error when expiry date is invalid', (done) => {
+            const invalidDates = [
+                undefined,
+                `${new Date().toISOString()}`,
+                `${new Date().getFullYear()}`,
+                `${new Date().getFullYear()}-${new Date().getMonth()}`,
+                `${new Date().getFullYear()}/${new Date().getMonth()}/${new Date().getDate()}`,
+                `${new Date().getFullYear()}-13-${new Date().getDate()}`,
+                `${new Date().getFullYear()}-32-${new Date().getDate()}`,
+                `${new Date().getFullYear()}-${new Date().getMonth()}-32`,
+            ]
+            const batches = invalidDates.map((d) => {
+                return {...batch, expiry: d}
+            })
+            chai.request(MAH_API)
+                .post('/batch/createAll')
+                .send(batches)
+                .end((err, res) => {
+                    chai.assert.isNotEmpty(res.body);
+                    res.should.have.status(400);
+                    res.body.should.have.property('status').equal(400);
+                    res.body.should.have.property('error').equal('Bad Request');
+                    res.body.should.have.property("message").equal("Expiration date is null or a not valid format (yyyy-MM-dd)");
+                    done();
+                });
+        });
+
+        it ('should return a error when expiry date is older than today', (done) => {
+            const olderExpiryDate = `${new Date().getFullYear() - 1}-01-01`;
+            const today = new Date().toLocaleDateString("fr-CA");
+            chai.request(MAH_API)
+                .post('/batch/create')
+                .send({...batch, expiry: olderExpiryDate})
+                .end((err, res) => {
+                    chai.assert.isNotEmpty(res.body);
+                    res.should.have.status(400);
+                    res.body.should.have.property('status').equal(400);
+                    res.body.should.have.property('error').equal('Bad Request');
+                    res.body.should.have.property("message").equal(`Expiration date must be greater than ${today}`);
+                    done();
+                });
+        });
+
+        it ('should return a error when serialNumbers is duplicated', (done) => {
+            chai.request(MAH_API)
+                .post('/batch/create')
+                .send({...batch, serialNumbers: [...batch.serialNumbers, ...batch.serialNumbers]})
+                .end((err, res) => {
+                    chai.assert.isNotEmpty(res.body);
+                    res.should.have.status(400);
+                    res.body.should.have.property('status').equal(400);
+                    res.body.should.have.property('error').equal('Bad Request');
+                    res.body.should.have.property("message").equal("Serial numbers must be unique and without duplicates");
+                    done();
+                });
+        });
+
         it ('should create batches', (done) => {
             const batches = db.batches;
             chai.request(MAH_API)
