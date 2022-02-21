@@ -1,0 +1,14 @@
+components:
+  schemas:
+    ShipmentStatus:
+      type: string
+      enum:
+        - created
+        - acknowledged
+        - hold
+        - pickup
+        - transit
+        - delivered
+        - received
+        - confirmed
+        - reject

@@ -598,3 +598,17 @@ paths:
                 status: 0
                 error: string
                 message: string
+components:
+  schemas:
+    ShipmentStatus:
+      type: string
+      enum:
+        - created
+        - acknowledged
+        - hold
+        - pickup
+        - transit
+        - delivered
+        - received
+        - confirmed
+        - reject
