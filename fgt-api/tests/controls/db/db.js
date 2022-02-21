@@ -182,4 +182,4 @@ class DB {
 }
 
 const db = new DB();
-module.exports = db;
+module.exports = {db, genId};

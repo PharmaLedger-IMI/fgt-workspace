@@ -3,7 +3,7 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 chai.should();
 
-const db = require("../controls/db/db");
+const {db, genId} = require("../controls/db/db");
 const {MAH_API} = require("../controls/utils");
 
 
@@ -11,6 +11,20 @@ describe('productApi', function () {
     const product = db.products[0];
 
     describe('POST /product/create', function () {
+
+        it ('should return a error of invalid GTIN', (done) => {
+            chai.request(MAH_API)
+                .post('/product/create')
+                .send({...product, gtin: genId(14)})
+                .end((err, res) => {
+                    chai.assert.isNotEmpty(res.body);
+                    res.should.have.status(400);
+                    res.body.should.have.property('status').equal(400);
+                    res.body.should.have.property('error').equal('Bad Request');
+                    res.body.should.have.property('message').equal(`Gtin is invalid`);
+                    done();
+                });
+        });
 
         it ('should create a new product', (done) => {
             chai.request(MAH_API)

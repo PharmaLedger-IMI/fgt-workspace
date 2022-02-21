@@ -3,7 +3,7 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 chai.should();
 
-const db = require("../controls/db/db");
+const {db} = require("../controls/db/db");
 const {PHA_API} = require("../controls/utils");
 
 
