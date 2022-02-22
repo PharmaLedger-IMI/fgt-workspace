@@ -164,12 +164,10 @@ paths:
               example:
                 orderId: string
                 requesterId: string
-                senderId: string
                 shipmentLines:
                   - gtin: string
                     batch: string
                     quantity: 0
-                    status: string
       responses:
         '200':
           headers:
@@ -221,15 +219,10 @@ paths:
               example:
                 - orderId: string
                   requesterId: string
-                  senderId: string
-                  status: string
                   shipmentLines:
                     - gtin: string
                       batch: string
                       quantity: 0
-                      senderId: string
-                      requesterId: string
-                      status: string
       responses:
         '200':
           headers:

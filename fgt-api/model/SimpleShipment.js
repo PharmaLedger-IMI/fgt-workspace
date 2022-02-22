@@ -27,10 +27,14 @@ class SimpleShipment {
         else
             this.shipmentId = `${simpleShipment.requesterId}-` + (Date.now() + `${Math.random()}`.substring(2, 9));
 
+        if (!this.status)
+            this.status = ShipmentStatus.CREATED;
+
+        const self = this;
         this.shipmentLines = this.shipmentLines ? this.shipmentLines.map(sl => {
-            sl.requesterId = simpleShipment.requesterId;
-            sl.senderId = simpleShipment.senderId;
-            sl.status = simpleShipment.status.status || simpleShipment.status;
+            sl.requesterId = self.requesterId;
+            sl.senderId = self.senderId;
+            sl.status = self.status.status || self.status;
             return new ShipmentLine(sl)
         }) : undefined;
     }
