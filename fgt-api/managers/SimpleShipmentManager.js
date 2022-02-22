@@ -159,25 +159,34 @@ class SimpleShipmentManager extends Manager {
                 return self.batchSchedule(() => dbAction(gtins, batchesObj, _callback));
             }
 
-            gtinIterator(gtins, batchesObj, (err) => {
+            createInner((err, keySSI, path) => {
                 if (err)
-                    return callbackCancelBatch(`Could not retrieve info from stock`);
-                log(`Shipment updated after Stock confirmation`);
-                createInner((err, keySSI, path) => {
+                    return callbackCancelBatch(`Could not create Shipment`);
+
+                if (self.getIdentity().id === simpleShipment.requesterId)
+                    return self.commitBatch((err) => {
+                        if (err)
+                            return callbackCancelBatch(err);
+                        log(`Shipment created from orderId: ${simpleShipment.orderId}`);
+                        _callback(undefined, keySSI, path);
+                    });
+
+                gtinIterator(gtins, batchesObj, (err) => {
                     if (err)
-                        return callbackCancelBatch(`Could not create Shipment`);
+                        return callbackCancelBatch(`Could not retrieve info from stock`);
+                    log(`Shipment updated after Stock confirmation`);
                     self.commitBatch((err) => {
                         if (err)
                             return callbackCancelBatch(err);
                         log(`Shipment created from orderId: ${simpleShipment.orderId}`);
                         _callback(undefined, keySSI, path);
                     });
-                })
-            });
+                });
+            })
         }
 
         // multiplier factor to add or remove from stock
-        const factor = (self.getIdentity().id === simpleShipment.requesterId) ? 0 : (-1);
+        const factor = (self.getIdentity().id === simpleShipment.requesterId) ? 1 : (-1);
         const aggBatchesByGtin = simpleShipment.shipmentLines.reduce((accum, sl) => {
             if (!accum.hasOwnProperty(sl.gtin))
                 accum[sl.gtin] = [];
