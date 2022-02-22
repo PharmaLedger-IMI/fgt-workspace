@@ -12,10 +12,26 @@ describe('shipmentApi', function () {
     const shipment = db.shipments[0];
 
     describe('POST /shipment/create', function () {
-        it('should create a shipment', (done) => {
+        it('should return a error when requesterId is the senderId', (done) => {
             chai.request(MAH_API)
                 .post('/shipment/create')
-                .send(shipment)
+                .send({...shipment, requesterId: shipment.senderId})
+                .end((err, res) => {
+                    chai.assert.isNotEmpty(res.body);
+                    res.should.have.status(400);
+                    res.body.should.have.property("status").equal(400);
+                    res.body.should.have.property("error").equal("Bad Request");
+                    res.body.should.have.property("message").equal(`requesterId cannot be the same as senderId`);
+                    done();
+                });
+        });
+
+        it('should create a shipment', (done) => {
+            // the senderId must be defined internally by API
+            const {senderId, ..._shipment} = shipment;
+            chai.request(MAH_API)
+                .post('/shipment/create')
+                .send(_shipment)
                 .end((err, res) => {
                     res.should.have.status(200);
                     chai.assert.isNotEmpty(res.body);
