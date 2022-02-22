@@ -92,9 +92,7 @@ function SimpleShipmentService(domain, strategy) {
      * @param {function(err, keySSI?)} callback
      */
     this.create = function (simpleShipment, callback) {
-
-        if (!(simpleShipment instanceof SimpleShipment))
-            simpleShipment = new SimpleShipment(simpleShipment);
+        simpleShipment = new SimpleShipment({...simpleShipment, status: ShipmentStatus.CREATED});
         const err = simpleShipment.validate();
         if (err)
             return callback(err);
