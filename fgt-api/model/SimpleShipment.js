@@ -30,6 +30,7 @@ class SimpleShipment {
         this.shipmentLines = this.shipmentLines ? this.shipmentLines.map(sl => {
             sl.requesterId = simpleShipment.requesterId;
             sl.senderId = simpleShipment.senderId;
+            sl.status = simpleShipment.status.status || simpleShipment.status;
             return new ShipmentLine(sl)
         }) : undefined;
     }
