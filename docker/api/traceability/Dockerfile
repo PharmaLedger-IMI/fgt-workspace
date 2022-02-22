@@ -14,6 +14,10 @@ RUN cd $TARGET_FOLDER_NAME && \
     echo 'npm run server & \n sleep 5s \n npm run build-all \n tail -f /dev/null' >> startup-script.sh
 RUN cd $TARGET_FOLDER_NAME && cat startup-script.sh
 
+# #30 alternative startup script with ethAdapter
+RUN cd $TARGET_FOLDER_NAME && \
+    echo 'npm run switch-to-test-chain ; source startup-script.sh' >> startup-eth-script.sh
+
 EXPOSE 8080/tcp
 
 CMD cd $TARGET_FOLDER_NAME && \

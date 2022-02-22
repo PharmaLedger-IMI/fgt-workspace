@@ -93,6 +93,7 @@ services:
       timeout: 3s
       retries: 20
       start_period: 20s
+    command: ["/bin/bash", "-c", "cd /fgt-workspace && bash ${COMMAND}"]
 
   mah-roche:
     << : *mah-def
