@@ -29,8 +29,12 @@ class Batch {
                 if(batch.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = batch[prop];
 
-        if (this.expiry && typeof this.expiry === 'string')
-            this.expiry = new Date(this.expiry);
+        if (!(this.expiry instanceof Date)) {
+            if (!(/^([0-9]{4})-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1])/.test(this.expiry))) // check date format yyyy-MM-dd
+                this.expiry = '';
+            else
+                this.expiry = new Date(this.expiry);
+        }
 
         if (!this.batchNumber)
             this.batchNumber = Utils.generateSerialNumber(6);
@@ -90,8 +94,15 @@ class Batch {
         if (!this.batchNumber) {
             return 'Batch number is mandatory field';
         }
-        if (!this.expiry) {
-            return  'Expiration date is a mandatory field.';
+        if (!this.expiry || !(this.expiry instanceof Date)) {
+            return  'Expiration date is null or a not valid format (yyyy-MM-dd)';
+        }
+        if(new Date().getTime() > this.expiry.getTime()) // expiry date must be greater than today
+            return `Expiration date must be greater than ${(new Date()).toLocaleDateString("fr-CA")}`;
+        if(this.serialNumbers.length > 0) {
+            const serialNumbersQty = new Set(this.serialNumbers.map(n => `${n}`)).size;
+            if (serialNumbersQty !== this.serialNumbers.length)
+                return `Serial numbers must be unique and without duplicates`
         }
 
         if (oldStatus && Batch.getAllowedStatusUpdates(oldStatus).indexOf(this.batchStatus.status || this.batchStatus) === -1)

@@ -68,7 +68,7 @@ const batches = [
 
 const shipments = [
     {
-        shipmentId: `${phaParticipant}${genId()}`,
+        shipmentId: `${phaParticipant}-${genId()}`,
         orderId: `${genId()}`,
         requesterId: phaParticipant,
         senderId: mahParticipant,
@@ -93,7 +93,7 @@ const shipments = [
         ]
     },
     {
-        shipmentId: `${phaParticipant}${genId()}`,
+        shipmentId: `${phaParticipant}-${genId()}`,
         orderId: `${genId()}`,
         requesterId: phaParticipant,
         senderId: mahParticipant,
@@ -182,4 +182,4 @@ class DB {
 }
 
 const db = new DB();
-module.exports = db;
+module.exports = {db, genId};

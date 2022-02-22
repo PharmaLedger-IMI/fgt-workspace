@@ -21,11 +21,11 @@ class SimpleShipment {
                     this[prop] = simpleShipment[prop];
 
         if (simpleShipment.shipmentId) {
-            if (!`${simpleShipment.shipmentId}`.startsWith(simpleShipment.requesterId))
-                this.shipmentId = `${simpleShipment.requesterId}${simpleShipment.shipmentId}`
+            if (!`${simpleShipment.shipmentId}`.startsWith(`${simpleShipment.requesterId}-` ))
+                this.shipmentId = `${simpleShipment.requesterId}-${simpleShipment.shipmentId}`
         }
         else
-            this.shipmentId = `${simpleShipment.requesterId}` + (Date.now() + `${Math.random()}`.substring(2, 9));
+            this.shipmentId = `${simpleShipment.requesterId}-` + (Date.now() + `${Math.random()}`.substring(2, 9));
 
         this.shipmentLines = this.shipmentLines ? this.shipmentLines.map(sl => {
             sl.requesterId = simpleShipment.requesterId;
