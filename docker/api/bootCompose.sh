@@ -16,7 +16,7 @@ elif [[ "$1" = *"tst"* ]]; then
   protocol=https
 fi
 if [[ "$1" = *"eth"* ]]; then
-    command="startup-script-eth.sh"
+    command="startup-eth-script.sh"
 fi
 
 echo "Launching docker compose in $params"
