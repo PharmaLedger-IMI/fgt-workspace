@@ -7,5 +7,9 @@
     "commands": {
       "addAnchor": "anchor"
     }
-  }
+  },
+  "enable": ["mq"],
+  "skipOAuth": [
+    "/bricking/traceability/get-brick"
+  ]
 }
