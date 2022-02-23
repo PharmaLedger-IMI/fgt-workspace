@@ -1,0 +1,12 @@
+version: "2.3"
+services:
+  fgt-workspace:
+    container_name: fgt-workspace
+    networks:
+      - qbn-net
+    command: ["/bin/bash", "-c", "cd /fgt-workspace && bash startup-eth-script.sh"]
+
+networks:
+  qbn-net:
+    name: qbn-net
+    external: true

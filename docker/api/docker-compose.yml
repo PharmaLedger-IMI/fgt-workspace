@@ -93,7 +93,7 @@ services:
       timeout: 3s
       retries: 20
       start_period: 20s
-    command: ["/bin/bash", "-c", "cd /fgt-workspace && bash ${COMMAND}"]
+    command: ["/bin/bash", "-c", "cd /fgt-workspace && bash startup-noeth-script.sh"]
 
   mah-roche:
     << : *mah-def
