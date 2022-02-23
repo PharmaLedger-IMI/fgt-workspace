@@ -1,7 +1,7 @@
 
 const {Api, OPERATIONS} = require('../Api');
 const Sale = require("../../fgt-dsu-wizard/model/Sale");
-const {BadRequest, NotImplemented} = require("../utils/errorHandler");
+const {BadRequest, NotFound, NotImplemented} = require("../utils/errorHandler");
 
 const SALE_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['saleId']});
 
@@ -12,6 +12,7 @@ module.exports = class SaleApi extends Api {
         super(server, 'sale', participantManager, [OPERATIONS.CREATE, SALE_GET], Sale);
         try {
             this.manager = participantManager.getManager("SaleManager");
+            this.stockManager = participantManager.getManager("StockManager");
         } catch (e) {
             throw new Error(`Could not get ${this.endpoint}Manager: ${e}`);
         }
@@ -24,15 +25,41 @@ module.exports = class SaleApi extends Api {
     create(sale, callback){
         const self = this;
 
-        const [err, _sale] = self._validate(sale);
-        if (err)
-            return callback(new BadRequest(err));
+        if (!sale.productList || !Array.isArray(sale.productList))
+            return callback(new BadRequest(`productList is null or a not valid.`));
 
-        self.manager.create(_sale, (err, insertedSale, path, keySSIs) => {
-            if (err)
-                return callback(new NotImplemented(err));
-            callback(undefined, {...insertedSale, keySSIs: keySSIs});
-        });
+        const gtinsUnique = Array.from(new Set(sale.productList.map(p => p.gtin)));
+        self.stockManager.getAll({query: [`gtin like /${gtinsUnique.map(gtin => gtin).join('|')}/g`]}, (err, stock) => {
+            if (err || gtinsUnique.length !== stock.length)
+                return callback(new NotFound(`GTIN not found in stock.`));
+
+            const fillManufNameIterator = (_stock, callback) => {
+                const stockProduct = _stock.shift();
+                if (!stockProduct)
+                    return callback();
+
+                sale.productList.filter((p) => p.gtin === stockProduct.gtin).map((p) => {
+                    p.manufName = stockProduct.manufName;
+                    return p;
+                });
+                fillManufNameIterator(_stock, callback);
+            }
+
+            fillManufNameIterator(stock.slice(), () => {
+                const [err, _sale] = self._validate({
+                    ...sale,
+                    sellerId: this.manager.getIdentity().id
+                });
+                if (err)
+                    return callback(new BadRequest(err));
+
+                self.manager.create(_sale, (err, insertedSale, path, keySSIs) => {
+                    if (err)
+                        return callback(new NotImplemented(err));
+                    callback(undefined, {...insertedSale, keySSIs: keySSIs});
+                });
+            })
+        })
     }
 
     /**

@@ -165,12 +165,10 @@ paths:
               type: object
               example:
                 id: string
-                sellerId: string
                 productList:
                   - gtin: string
                     batchNumber: string
                     serialNumber: 0
-                    manufName: string
       responses:
         '200':
           headers:

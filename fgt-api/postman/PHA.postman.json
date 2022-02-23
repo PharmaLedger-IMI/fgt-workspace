@@ -260,7 +260,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"sellerId\": \"string\",\r\n  \"productList\": [\r\n    {\r\n      \"gtin\": \"string\",\r\n      \"batchNumber\": \"string\",\r\n      \"serialNumber\": 0, \r\n      \"manufName\": \"string\"\r\n    }\r\n  ]\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"productList\": [\r\n    {\r\n      \"gtin\": \"string\",\r\n      \"batchNumber\": \"string\",\r\n      \"serialNumber\": 0, \r\n    }\r\n  ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
