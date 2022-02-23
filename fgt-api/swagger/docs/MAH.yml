@@ -554,14 +554,10 @@ paths:
                 orderId: string
                 requesterId: string
                 senderId: string
-                status: string
                 shipmentLines:
                   - gtin: string
                     batch: string
-                    requesterId: string
-                    senderId: string
                     quantity: 0
-                    status: string
       responses:
         '200':
           headers:

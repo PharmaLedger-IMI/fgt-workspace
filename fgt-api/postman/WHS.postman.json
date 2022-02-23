@@ -260,7 +260,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"orderId\": \"string\",\r\n\t\"requesterId\": \"string\",\r\n\t\"senderId\": \"string\",\r\n\t\"status\": \"string\",\r\n\t\"shipmentLines\": [\r\n\t\t{\r\n\t\t\t\"gtin\": \"string\",\r\n\t\t\t\"batch\": \"string\",\r\n\t\t\t\"requesterId\": \"string\",\r\n\t\t\t\"senderId\": \"string\",\r\n\t\t\t\"quantity\": 0,\r\n\t\t\t\"status\": \"string\"\r\n\t\t}\r\n\t]\r\n}",
+							"raw": "{\r\n  \"orderId\": \"string\",\r\n  \"requesterId\": \"string\",\r\n  \"senderId\": \"string\",\r\n  \"shipmentLines\": [\r\n    {\r\n      \"gtin\": \"string\",\r\n      \"batch\": \"string\",\r\n      \"quantity\": 0\r\n    }\r\n  ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -378,7 +378,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\r\n\t{\r\n\t\t\"orderId\": \"string\",\r\n\t\t\"requesterId\": \"string\",\r\n\t\t\"senderId\": \"string\",\r\n\t\t\"status\": \"string\",\r\n\t\t\"shipmentLines\": [\r\n\t\t\t{\r\n\t\t\t\t\"gtin\": \"string\",\r\n\t\t\t\t\"batch\": \"string\",\r\n\t\t\t\t\"quantity\": 0,\r\n\t\t\t\t\"senderId\": \"string\",\r\n\t\t\t\t\"requesterId\": \"string\",\r\n\t\t\t\t\"status\": \"string\"\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n]",
+							"raw": "[\r\n\t{\r\n\t\t\"orderId\": \"string\",\r\n\t\t\"requesterId\": \"string\",\r\n\t\t\"senderId\": \"string\",\r\n\t\t\"shipmentLines\": [\r\n\t\t\t{\r\n\t\t\t\t\"gtin\": \"string\",\r\n\t\t\t\t\"batch\": \"string\",\r\n\t\t\t\t\"quantity\": 0\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n]",
 							"options": {
 								"raw": {
 									"language": "json"

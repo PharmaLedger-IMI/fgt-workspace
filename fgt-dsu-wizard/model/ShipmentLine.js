@@ -60,6 +60,9 @@ class ShipmentLine{
         if (!this.status)
             errors.push('status is required.');
 
+        if(this.quantity <= 0 || !Number.isInteger(this.quantity))
+            errors.push('quantity must be a integer positive number');
+
         return errors.length === 0 ? undefined : errors;
     }
 }

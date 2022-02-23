@@ -30,6 +30,7 @@ class SimpleShipment {
         this.shipmentLines = this.shipmentLines ? this.shipmentLines.map(sl => {
             sl.requesterId = simpleShipment.requesterId;
             sl.senderId = simpleShipment.senderId;
+            sl.status = simpleShipment.status.status || simpleShipment.status;
             return new ShipmentLine(sl)
         }) : undefined;
     }
@@ -52,6 +53,8 @@ class SimpleShipment {
             errors.push(`SenderId is mandatory`);
         if (!this.status)
             errors.push(`Status is mandatory`);
+        if (`${this.requesterId }` === `${this.senderId}`)
+            errors.push(`requesterId cannot be the same as senderId`);
 
         if (!this.shipmentLines || !this.shipmentLines.length) {
             errors.push(`shipmentLines is mandatory`);

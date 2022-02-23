@@ -26,7 +26,10 @@ class ShipmentApi extends Api {
     create(simpleShipment, callback) {
         const self = this;
 
-        const [err, _simpleShipment] = this._validate(simpleShipment);
+        const [err, _simpleShipment] = this._validate({
+            ...simpleShipment,
+            senderId: self.manager.getIdentity().id
+        });
         if (err)
             return callback(new BadRequest(err));
 

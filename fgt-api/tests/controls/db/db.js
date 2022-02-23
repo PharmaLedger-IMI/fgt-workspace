@@ -1,3 +1,5 @@
+const {getParticipantIdFromCredentials} = require('../utils');
+
 const genId = (n) => {
     const id = `${Math.random()}`.replace('.', '') + Date.now() + `${Math.random()}`.replace('.', '');
     return id.slice(0, n || 14);
@@ -34,9 +36,9 @@ const genGtin = () => {
     return digits + calculateGtinCheckSum(digits);
 }
 
-const mahParticipant = 'MAH324353426';
-const whsParticipant = 'WHS324353426';
-const phaParticipant = 'PHA324353426';
+const mahParticipant = getParticipantIdFromCredentials("fgt-mah-wallet");
+const whsParticipant = getParticipantIdFromCredentials("fgt-wholesaler-wallet");
+const phaParticipant = getParticipantIdFromCredentials("fgt-pharmacy-wallet");
 
 const products = [
     {
