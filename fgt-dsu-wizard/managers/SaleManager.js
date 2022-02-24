@@ -31,6 +31,7 @@ class SaleManager extends Manager{
     constructor(participantManager, callback) {
         super(participantManager, DB.sales, ['id', 'products', 'sellerId'], callback);
         this.stockManager = participantManager.stockManager;
+        this.receiptManager = participantManager.getManager("ReceiptManager");
         this.saleService = new (require('../services').SaleService)(ANCHORING_DOMAIN);
     }
 
@@ -68,6 +69,7 @@ class SaleManager extends Manager{
      * @param callback
      */
     _checkStockAvailability(aggStock, productList, callback) {
+        const self = this;
         const qtySoldByGtinBatch = {}; // qty sold by gtin and batch, cannot sale more than exists on stock
         const qtySoldBySn = {}; // qty sold by serial number, cannot sale same product more than once
         const aggBatchesByGtin = {}
@@ -78,57 +80,63 @@ class SaleManager extends Manager{
             if (!productSold)
                 return _callback(undefined, aggBatchesByGtin, aggIndividualProductsByMAH);
 
-            const gtinBatchNumber = `${productSold.gtin}-${productSold.batchNumber}`;
-            if(!(_aggStock.hasOwnProperty(gtinBatchNumber)))
-                return _callback(`Product gtin ${productSold.gtin}, batchNumber ${productSold.batchNumber} not found in stock.`);
+            const receiptId = self.receiptManager._genCompostKey(productSold);
+            self.receiptManager.getOne(receiptId, (err, receipt) => {
+                if (receipt)
+                    return _callback(`Product gtin: ${productSold.gtin}, batchNumber: ${productSold.batchNumber}, serialNumber: ${productSold.serialNumber} already sold.`);
 
-            // check if selling the same product more than once
-            const indProductId = `${productSold.gtin}-${productSold.batchNumber}-${productSold.serialNumber}`;
-            qtySoldBySn[indProductId] = 1 + (qtySoldBySn[indProductId]  || 0);
-            if (qtySoldBySn[indProductId] > 1)
-                return _callback(`Product ${productSold.gtin}: trying to sold a product more than once.`);
+                const gtinBatchNumber = `${productSold.gtin}-${productSold.batchNumber}`;
+                if(!(_aggStock.hasOwnProperty(gtinBatchNumber)))
+                    return _callback(`Product gtin ${productSold.gtin}, batchNumber ${productSold.batchNumber} not found in stock.`);
 
-            const stockProduct = _aggStock[gtinBatchNumber];
-            // check if sale qty is available in stock
-            qtySoldByGtinBatch[gtinBatchNumber] = 1 + (qtySoldByGtinBatch[gtinBatchNumber] || 0);
-            if (stockProduct.batch.quantity - qtySoldByGtinBatch[gtinBatchNumber] < 0)
-                return _callback(`Product ${productSold.gtin}: quantity not enough in stock.`);
+                // check if selling the same product more than once
+                const indProductId = `${productSold.gtin}-${productSold.batchNumber}-${productSold.serialNumber}`;
+                qtySoldBySn[indProductId] = 1 + (qtySoldBySn[indProductId]  || 0);
+                if (qtySoldBySn[indProductId] > 1)
+                    return _callback(`Product ${productSold.gtin}: trying to sold a product more than once.`);
 
-            if (stockProduct.batch.batchStatus.status !== BatchStatus.COMMISSIONED)
-                return _callback(`Product gtin ${productSold.gtin}, batch ${productSold.batchNumber}: is not available for sale, because batchStatus is ${stockProduct.batch.batchStatus.status}. `)
+                const stockProduct = _aggStock[gtinBatchNumber];
+                // check if sale qty is available in stock
+                qtySoldByGtinBatch[gtinBatchNumber] = 1 + (qtySoldByGtinBatch[gtinBatchNumber] || 0);
+                if (stockProduct.batch.quantity - qtySoldByGtinBatch[gtinBatchNumber] < 0)
+                    return _callback(`Product ${productSold.gtin}: quantity not enough in stock.`);
 
-            const individualProductSold = new IndividualProduct({
-                gtin: productSold.gtin,
-                batchNumber: productSold.batchNumber,
-                serialNumber: productSold.serialNumber,
-                name: stockProduct.name,
-                manufName: stockProduct.manufName,
-                expiry: stockProduct.batch.expiry,
-                status: stockProduct.batch.batchStatus.status
-            });
+                if (stockProduct.batch.batchStatus.status !== BatchStatus.COMMISSIONED)
+                    return _callback(`Product gtin ${productSold.gtin}, batch ${productSold.batchNumber}: is not available for sale, because batchStatus is ${stockProduct.batch.batchStatus.status}. `)
 
-            // add to aggIndividualProductsByMAH
-            const mah = stockProduct.manufName;
-            if (aggIndividualProductsByMAH.hasOwnProperty(mah))
-                aggIndividualProductsByMAH[mah].push(individualProductSold);
-            else
-                aggIndividualProductsByMAH[mah] = [individualProductSold];
-
-            // add to aggBatchesByGtin
-            if (aggBatchesByGtin.hasOwnProperty(productSold.gtin)) {
-                const batch = aggBatchesByGtin[productSold.gtin].find((batch) => batch.batchNumber === productSold.batchNumber);
-                batch.serialNumbers.push(productSold.serialNumber);
-                batch.quantity = batch.getQuantity() * -1; // update qty because when create a Batch, there is a qty validation
-            } else {
-                const batch = new Batch({
+                const individualProductSold = new IndividualProduct({
+                    gtin: productSold.gtin,
                     batchNumber: productSold.batchNumber,
-                    serialNumbers: [productSold.serialNumber],
+                    serialNumber: productSold.serialNumber,
+                    name: stockProduct.name,
+                    manufName: stockProduct.manufName,
+                    expiry: stockProduct.batch.expiry,
+                    status: stockProduct.batch.batchStatus.status
                 });
-                batch.quantity = batch.getQuantity() * -1; // update qty because when create a Batch, there is a qty validation
-                aggBatchesByGtin[productSold.gtin] = [batch]
-            }
 
-            iterator(_aggStock, _productList, _callback);
+                // add to aggIndividualProductsByMAH
+                const mah = stockProduct.manufName;
+                if (aggIndividualProductsByMAH.hasOwnProperty(mah))
+                    aggIndividualProductsByMAH[mah].push(individualProductSold);
+                else
+                    aggIndividualProductsByMAH[mah] = [individualProductSold];
+
+                // add to aggBatchesByGtin
+                if (aggBatchesByGtin.hasOwnProperty(productSold.gtin)) {
+                    const batch = aggBatchesByGtin[productSold.gtin].find((batch) => batch.batchNumber === productSold.batchNumber);
+                    batch.serialNumbers.push(productSold.serialNumber);
+                    batch.quantity = batch.getQuantity() * -1; // update qty because when create a Batch, there is a qty validation
+                } else {
+                    const batch = new Batch({
+                        batchNumber: productSold.batchNumber,
+                        serialNumbers: [productSold.serialNumber],
+                    });
+                    batch.quantity = batch.getQuantity() * -1; // update qty because when create a Batch, there is a qty validation
+                    aggBatchesByGtin[productSold.gtin] = [batch]
+                }
+
+                iterator(_aggStock, _productList, _callback);
+            })
         }
 
         iterator(aggStock, productList.slice(), callback);

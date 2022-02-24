@@ -115,7 +115,7 @@ class ReceiptManager extends Manager{
      * @returns {string}
      */
     _genCompostKey(individualReceipt){
-        return `${individualReceipt.gtin}-${individualReceipt.batchNumber}-${individualReceipt.serialNumber}}`;
+        return `${individualReceipt.gtin}-${individualReceipt.batchNumber}-${individualReceipt.serialNumber}`;
     }
 
     _convertKey(receiptId) {
@@ -233,7 +233,6 @@ class ReceiptManager extends Manager{
                     return callback(e);
                 }
                 cb(message.error, message.message);
-                callback();
                 return callback();
             default:
                 createReceipt();
