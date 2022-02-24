@@ -2,13 +2,14 @@ const ShipmentLineStatus = require('../model/ShipmentLineStatus');
 
 /**
  * @param {string} requesterId
+ * @param {string || string[]} partnersId
  * @param {StockManager} stockManager
  * @param {ShipmentLineManager} shipmentLineManager
  * @param {ReceiptManager} receiptManager
  * @function TraceabilityService
  * @memberOf Services
  */
-function StockManagementService(requesterId, stockManager, shipmentLineManager, receiptManager) {
+function StockManagementService(requesterId, partnersId, stockManager, shipmentLineManager, receiptManager) {
 
     const addToStock = (stock, addValue) => {
         stock = !!stock ? stock : {inStock: 0, dispatched: 0}
@@ -78,7 +79,13 @@ function StockManagementService(requesterId, stockManager, shipmentLineManager, 
                 if (err)
                     return callback(err)
 
-                console.log('#### partnersStock=', partnersStock)
+                partnersId = Array.isArray(partnersId) ? partnersId : (partnersId ? [partnersId] : [])
+                if (partnersId.length > 0)
+                    partnersStock = partnersId.reduce((accum, partnerId) => {
+                        accum[partnerId] = partnersStock[partnerId];
+                        return accum;
+                    }, {});
+
                 const addReceiptsToDispatched = (objAccum, objKeys, _callback) => {
                     const sellerId = objKeys.shift();
                     if (!sellerId)

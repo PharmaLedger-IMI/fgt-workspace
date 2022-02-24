@@ -346,7 +346,7 @@ class StockManager extends Manager{
     /**
      * Get partner stock products that were shipped by MAH/manufName
      * @param { string } gtin
-     * @param {{manufName: string, batch: number}} options
+     * @param {{manufName: string, batch: number, partnersId: string || string[]}} options
      * @param callback
      */
     getStockTraceability(gtin, options, callback) {
@@ -355,13 +355,13 @@ class StockManager extends Manager{
             callback = options;
             options = {}
         }
-        const {manufName, batch} = options;
+        const {manufName, batch, partnersId} = options;
 
         if (!manufName) {
             return self._getProduct(gtin, (err, product) => {
                 if (err)
                     return callback(err);
-                return self.getStockTraceability(gtin, {manufName: product.manufName,  batch}, callback);
+                return self.getStockTraceability(gtin, {batch, partnersId, manufName: product.manufName}, callback);
             });
         }
 
@@ -377,7 +377,7 @@ class StockManager extends Manager{
         } catch (e) {
             return callback(e);
         }
-        const stockManagementService = new StockManagementService(manufName, this.stockManager, this.shipmentLineManager, this.receiptManager);
+        const stockManagementService = new StockManagementService(manufName, partnersId, this.stockManager, this.shipmentLineManager, this.receiptManager);
         stockManagementService.traceStockManagement(gtin, batch, callback)
     }
 
