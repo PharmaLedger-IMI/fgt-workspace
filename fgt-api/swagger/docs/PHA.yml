@@ -439,6 +439,7 @@ paths:
           schema:
             type: string
           description: Marketing Authorization Holder identifier
+          required: true
         - name: status
           in: query
           schema:
@@ -480,18 +481,27 @@ paths:
                 status: 0
                 error: string
                 message: string
-  /receipt/get/{receiptId}:
+  /receipt/get/{gtin}/{batchNumber}/{serialNumber}:
     get:
       tags:
         - receipt
       summary: getOne
       parameters:
-        - name: receiptId
+        - name: gtin
           in: path
           schema:
             type: string
           required: true
-          description: receiptId format as follow gtin-batchNumber-serialNumber
+        - name: batchNumber
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: serialNumber
+          in: path
+          schema:
+            type: string
+          required: true
       responses:
         '200':
           headers:

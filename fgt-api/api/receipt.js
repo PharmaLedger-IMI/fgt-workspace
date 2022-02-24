@@ -3,7 +3,7 @@ const {Api, OPERATIONS} = require('../Api');
 const Receipt = require("../../fgt-dsu-wizard/model/Receipt");
 const {BadRequest, InternalServerError} = require("../utils/errorHandler");
 
-const RECEIPT_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['receiptId']});
+const RECEIPT_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['gtin', 'batchNumber', 'serialNumber']});
 
 module.exports = class ReceiptApi extends Api {
     manager;
@@ -18,10 +18,17 @@ module.exports = class ReceiptApi extends Api {
     }
 
     /**
-     * @param {string} receiptId
+     * @param gtin
+     * @param batchNumber
+     * @param serialNumber
      * @param {function(err?, Receipt?)} callback
      */
-    getOne(receiptId, callback) {
+    getOne(gtin, batchNumber, serialNumber, callback) {
+        const receiptId = this.manager._genCompostKey({
+            gtin,
+            batchNumber,
+            serialNumber
+        });
         this.manager.getOne(receiptId, true, (err, receipt) => {
             if (err)
                 return callback(new BadRequest(err));

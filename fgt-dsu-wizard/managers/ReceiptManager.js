@@ -4,6 +4,53 @@ const Receipt = require('../model/Receipt');
 const IndividualReceipt = require('../model/IndividualReceipt');
 const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 
+const ACTION = {
+    REQUEST: 'request',
+    RESPONSE: 'response',
+    CREATE: 'create'
+}
+
+class RequestCache {
+    cache = {};
+
+    submitRequest(id, callback){
+        if (id in this.cache)
+            return callback(`Id already Exists!`);
+        this.cache[id] = callback;
+        console.log(`Tracking request ${id} submitted`);
+    }
+
+    getRequest(id){
+        if (!(id in this.cache))
+            throw new Error(`Id does not exist in cache!`);
+        const cb = this.cache[id];
+        delete this.cache[id];
+        return cb;
+    }
+}
+
+class ReceiptMessage {
+    id;
+    action;
+    message;
+    requesterId;
+    error;
+
+    constructor(receiptMessage){
+        if (typeof receiptMessage !== undefined)
+            for (let prop in receiptMessage)
+                if (receiptMessage.hasOwnProperty(prop))
+                    this[prop] = receiptMessage[prop];
+
+        if (!this.action || (!this.error && !this.message))
+            throw new Error(`Needs id, action and a error or message`);
+        if (this.action === ACTION.REQUEST && !this.id)
+            this.id = (`${Date.now()}` + Math.random()).replace('.', '')
+        if (this.action === ACTION.REQUEST && !this.requesterId)
+            throw new Error("Needs a requester Id for that action");
+    }
+}
+
 /**
  * Stock Manager Class
  *
@@ -39,6 +86,8 @@ class ReceiptManager extends Manager{
                 callback(undefined, manager);
         });
 
+        this.requestCache = new RequestCache();
+        this.stockManager = participantManager.stockManager;
         this.saleService = new (require('../services').SaleService)(ANCHORING_DOMAIN);
     }
 
@@ -61,8 +110,17 @@ class ReceiptManager extends Manager{
            })
     }
 
+    /**
+     * @param {IndividualReceipt} individualReceipt
+     * @returns {string}
+     */
     _genCompostKey(individualReceipt){
-        return `${individualReceipt.gtin}-${individualReceipt.batchNumber}-${individualReceipt.serialNumber}-${Date.now()}`;
+        return `${individualReceipt.gtin}-${individualReceipt.batchNumber}-${individualReceipt.serialNumber}}`;
+    }
+
+    _convertKey(receiptId) {
+        const [gtin, batchNumber, serialNumber] = receiptId.split('-');
+        return {gtin, batchNumber, serialNumber};
     }
 
     _getDSUInfo(keySSI, callback){
@@ -76,83 +134,123 @@ class ReceiptManager extends Manager{
 
     _processMessageRecord(message, callback) {
         let self = this;
-        if (!message || !Array.isArray(message))
-            return callback(`Message ${message} does not have  non-empty string with keySSI. Skipping record.`);
-            
-        const cb = function(err, ...results){
-            if (err)
-                return self.cancelBatch(err2 => {
-                    callback(err);
-                });
-            callback(undefined, ...results);
-        }
 
-        const receipts = message;
+        const createReceipt = () => {
+            if (!message || !Array.isArray(message))
+                return callback(`Message ${message} does not have  non-empty string with keySSI. Skipping record.`);
 
-        const lines = [];
-
-        const receiptIterator = function(receiptsCopy, callback){
-            const receiptSSI = receiptsCopy.shift();
-            if (!receiptSSI)
-                return callback(undefined, lines);
-            self._getDSUInfo(receiptSSI, (err, receipt) => {
-                if (err) {
-                    console.log(`Could not read DSU from Receipt keySSI in record ${message}. Skipping record.`);
-                    return callback(err);
-                }
-
-                const individualReceiptIterator = function(indReceiptCopy, accumulator, callback){
-                    if (!callback){
-                        callback = accumulator;
-                        accumulator = [];
-                    }
-                    const indReceipt = indReceiptCopy.shift();
-                    if (!indReceipt)
-                        return callback(undefined, accumulator);
-
-                    const compostKey = self._genCompostKey(indReceipt);
-                    self.getRecord(compostKey, (err, rec) => {
-                        if (!err){
-                            console.log(rec);
-                            return callback(`There is already an entry for this individual product ${compostKey}, and all sales are final!`);
-                        }
-
-                        self.insertRecord(compostKey, self._indexItem(compostKey, indReceipt, receiptSSI), (err) => {
-                            if (err)
-                                return self._err(`Could not insert new Individual Receipt ${compostKey} in the db`, err, callback);
-                            accumulator.push(compostKey);
-                            console.log(`New Individual Receipt added: ${compostKey}`);
-                            individualReceiptIterator(indReceiptCopy, accumulator, callback);
-                        });
+            const cb = function(err, ...results){
+                if (err)
+                    return self.cancelBatch(err2 => {
+                        callback(err);
                     });
-                }
-
-                individualReceiptIterator(receipt.productList.slice(), callback);
-            });
-        }
-
-        const dbAction = function(receipts, callback){
-            try {
-                self.beginBatch();
-            } catch (e){
-                return self.batchSchedule(() => dbAction(receipts, callback));
-                //return callback(e);
+                callback(undefined, ...results);
             }
 
-            receiptIterator(receipts.slice(), (err, newIndividualReceipts) => {
-                if (err)
-                    return cb(`Could not register all receipts`);
-                self.commitBatch((err) => {
-                    if(err)
-                        return cb(err);
-                    console.log(`Receipts successfully registered: ${JSON.stringify(newIndividualReceipts)}`);
-                    callback(undefined, newIndividualReceipts);
-                });        
-            });
+            const receipts = message;
+
+            const lines = [];
+
+            const receiptIterator = function(receiptsCopy, callback){
+                const receiptSSI = receiptsCopy.shift();
+                if (!receiptSSI)
+                    return callback(undefined, lines);
+                self._getDSUInfo(receiptSSI, (err, receipt) => {
+                    if (err) {
+                        console.log(`Could not read DSU from Receipt keySSI in record ${message}. Skipping record.`);
+                        return callback(err);
+                    }
+
+                    const individualReceiptIterator = function(indReceiptCopy, accumulator, callback){
+                        if (!callback){
+                            callback = accumulator;
+                            accumulator = [];
+                        }
+                        const indReceipt = indReceiptCopy.shift();
+                        if (!indReceipt)
+                            return callback(undefined, accumulator);
+
+                        const compostKey = self._genCompostKey(indReceipt);
+                        self.getRecord(compostKey, (err, rec) => {
+                            if (!err){
+                                console.log(rec);
+                                return callback(`There is already an entry for this individual product ${compostKey}, and all sales are final!`);
+                            }
+
+                            self.insertRecord(compostKey, self._indexItem(compostKey, indReceipt, receiptSSI), (err) => {
+                                if (err)
+                                    return self._err(`Could not insert new Individual Receipt ${compostKey} in the db`, err, callback);
+                                accumulator.push(compostKey);
+                                console.log(`New Individual Receipt added: ${compostKey}`);
+                                individualReceiptIterator(indReceiptCopy, accumulator, callback);
+                            });
+                        });
+                    }
+
+                    individualReceiptIterator(receipt.productList.slice(), callback);
+                });
+            }
+
+            const dbAction = function(receipts, callback){
+                try {
+                    self.beginBatch();
+                } catch (e){
+                    return self.batchSchedule(() => dbAction(receipts, callback));
+                    //return callback(e);
+                }
+
+                receiptIterator(receipts.slice(), (err, newIndividualReceipts) => {
+                    if (err)
+                        return cb(`Could not register all receipts`);
+                    self.commitBatch((err) => {
+                        if(err)
+                            return cb(err);
+                        console.log(`Receipts successfully registered: ${JSON.stringify(newIndividualReceipts)}`);
+                        callback(undefined, newIndividualReceipts);
+                    });
+                });
+            }
+
+            dbAction(receipts, callback);
         }
 
-        dbAction(receipts, callback);
+        switch (message.action) {
+            case ACTION.REQUEST:
+                const receiptId = message.message;
+                return self.getOne(receiptId, true, (err, receipt) => {
+                    if ((!err && receipt) && receipt.sellerId !== message.requesterId) {
+                        err = new Error(`Receipt requester must be the seller.`);
+                        receipt = undefined;
+                    }
+                    self._replyToMessage(message.id, message.requesterId, err, receipt, self._messageCallback)
+                    callback();
+                });
+            case ACTION.RESPONSE:
+                let cb;
+                try {
+                    cb = self.requestCache.getRequest(message.id);
+                } catch (e) {
+                    return callback(e);
+                }
+                cb(message.error, message.message);
+                callback();
+                return callback();
+            default:
+                createReceipt();
+                callback();
+        }
     };
+
+    _replyToMessage(messageId, requesterId, error, receipt, callback){
+        const reply = new ReceiptMessage({
+            id: messageId,
+            action: ACTION.RESPONSE,
+            message: receipt,
+            requesterId: requesterId,
+            error: error ? error.message || error : undefined
+        });
+        this.sendMessage(requesterId, reply, callback);
+    }
 
     /**
      * Creates a {@link Sale} entry
@@ -187,13 +285,30 @@ class ReceiptManager extends Manager{
             readDSU = true;
         }
         let self = this;
-        self.getRecord(id, (err, receipt) => {
+        self.stockManager._getProduct(self._convertKey(id).gtin, (err, product) => {
             if (err)
-                return self._err(`Could not load record with key ${id} on table ${self._getTableName()}`, err, callback);
-            if (!readDSU)
-                return callback(undefined, receipt.pk);
-            callback(undefined, new IndividualReceipt(receipt));
-        });
+                return self._err(`Could not find product from receiptId on stock.`, err, callback);
+
+            const identity = self.getIdentity().id;
+            if (identity === product.manufName) {
+                return self.getRecord(id, (err, receipt) => {
+                    if (err)
+                        return self._err(`Could not load record with key ${id} on table ${self._getTableName()}`, err, callback);
+                    if (!readDSU)
+                        return callback(undefined, receipt.pk);
+                    callback(undefined, new IndividualReceipt(receipt));
+                });
+            }
+
+            const message = new ReceiptMessage({
+                id: identity + Date.now(),
+                action: ACTION.REQUEST,
+                message: id,
+                requesterId: identity
+            });
+            self.requestCache.submitRequest(message.id, callback);
+            self.sendMessage(product.manufName, message, self._messageCallback);
+        })
     }
 
     /**
