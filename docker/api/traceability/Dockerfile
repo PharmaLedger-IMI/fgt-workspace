@@ -18,6 +18,10 @@ RUN cd $TARGET_FOLDER_NAME && cat startup-script.sh
 RUN cd $TARGET_FOLDER_NAME && \
     echo 'npm run switch-to-test-chain ; source startup-script.sh' >> startup-eth-script.sh
 
+# #30 alternative startup script without ethAdapter
+RUN cd $TARGET_FOLDER_NAME && \
+    echo 'npm run switch-to-simul-chain ; source startup-script.sh' >> startup-noeth-script.sh
+
 EXPOSE 8080/tcp
 
 CMD cd $TARGET_FOLDER_NAME && \
