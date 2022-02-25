@@ -124,8 +124,8 @@ class Api {
                 }
                 self.getAll.call(self, query, (err, paginate) => {
                     if (err)
-                        callback(err)
-                    callback(undefined, parsePaginateResponse(paginate))
+                        return callback(err);
+                    callback(undefined, parsePaginateResponse(paginate));
                 })
             },
 

@@ -393,6 +393,12 @@ paths:
         - receipt
       summary: getAll
       parameters:
+        - name: manufName
+          in: query
+          schema:
+            type: string
+          description: Marketing Authorization Holder identifier
+          required: true
         - name: keyword
           in: query
           schema:
@@ -434,12 +440,6 @@ paths:
           schema:
             type: string
           description: product serial number
-        - name: manufName
-          in: query
-          schema:
-            type: string
-          description: Marketing Authorization Holder identifier
-          required: true
         - name: status
           in: query
           schema:

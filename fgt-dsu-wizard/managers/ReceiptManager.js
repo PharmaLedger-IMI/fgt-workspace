@@ -6,17 +6,33 @@ const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 
 const ACTION = {
     REQUEST: 'request',
+    REQUEST_ALL: 'requestAll',
     RESPONSE: 'response',
     CREATE: 'create'
 }
 
 class RequestCache {
     cache = {};
+    timeout;
+
+    constructor(timeout) {
+        this.timeout = timeout;
+    }
+
+    checkPendingRequest(id) {
+        return id in this.cache;
+    }
 
     submitRequest(id, callback){
         if (id in this.cache)
             return callback(`Id already Exists!`);
         this.cache[id] = callback;
+
+        const self = this;
+        setTimeout(() => {
+            if (self.timeout && self.checkPendingRequest(id))
+                callback(new Error(`Unable to contact manufName, message canceled by timeout after ${self.timeout / 1000}s.`))
+        }, 10000)
         console.log(`Tracking request ${id} submitted`);
     }
 
@@ -86,7 +102,7 @@ class ReceiptManager extends Manager{
                 callback(undefined, manager);
         });
 
-        this.requestCache = new RequestCache();
+        this.requestCache = new RequestCache(10000);
         this.stockManager = participantManager.stockManager;
         this.saleService = new (require('../services').SaleService)(ANCHORING_DOMAIN);
     }
@@ -225,6 +241,41 @@ class ReceiptManager extends Manager{
                     self._replyToMessage(message.id, message.requesterId, err, receipt, self._messageCallback)
                     callback();
                 });
+            case ACTION.REQUEST_ALL:
+                const transformOptionsToQuery = (_options) => {
+                    let {sort, keyword, page, itemPerPage, ...query} = _options;
+
+                    query = Object.entries(query).reduce((accum, curr, ) => {
+                        const [key, value] = curr;
+                        if (this.indexes.indexOf(key) >= 0)
+                            accum.push(`${key} == ${value}`);
+                        return accum;
+                    }, [])
+
+                    return  {
+                        sort,
+                        keyword,
+                        page: page || 1,
+                        itemPerPage: itemPerPage || 10,
+                        dsuQuery: query,
+                    }
+                }
+
+                const {readDSU, options} = message.message;
+                const query = transformOptionsToQuery({...options, sellerId: message.requesterId});
+
+                return self.getPage(
+                    query.itemPerPage,  // items per page
+                    query.page, // page number
+                    query.dsuQuery, // dsuQuery
+                    query.keyword, // keyword
+                    query.sort, // sort
+                    readDSU || true,  // readDSU
+                    (err, result) => {
+                        self._replyToMessage(message.id, message.requesterId, err, result, self._messageCallback);
+                        callback();
+                    }
+                );
             case ACTION.RESPONSE:
                 let cb;
                 try {
@@ -240,11 +291,11 @@ class ReceiptManager extends Manager{
         }
     };
 
-    _replyToMessage(messageId, requesterId, error, receipt, callback){
+    _replyToMessage(messageId, requesterId, error, message, callback){
         const reply = new ReceiptMessage({
             id: messageId,
             action: ACTION.RESPONSE,
-            message: receipt,
+            message: message,
             requesterId: requesterId,
             error: error ? error.message || error : undefined
         });
@@ -353,6 +404,60 @@ class ReceiptManager extends Manager{
                 return callback(undefined, records.map(r => r.pk));
             callback(undefined, records.map( r => new IndividualReceipt(r)));
         });
+    }
+
+    /**
+     * Request to manufName all registered receipts according to query options provided
+     * @param readDSU
+     * @param options
+     * @param callback
+     */
+    requestAll(readDSU, options, manufName, callback) {
+        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
+            query: [
+                "__timestamp > 0",
+                'id like /.*/g'
+            ],
+            sort: "dsc"
+        });
+
+        if (!callback) {
+            if (typeof readDSU === "function") {
+                callback = readDSU;
+                options = defaultOptions();
+                readDSU = true;
+            } else if (typeof options === "function") {
+                // if options == function, the first param (readDS) can be type of "options" or "readDsu"
+                callback = options;
+                options = typeof readDSU === "boolean" ? defaultOptions() : readDSU;
+                readDSU = typeof readDSU === "boolean" ? readDSU : true;
+            } else if (typeof manufName === "function") {
+                // if manufName == function, the params can be:
+                // (readDsu, options, callback) or (readDsu, manufName, callback) or (options, manufName, callback)
+                callback = manufName;
+                manufName = typeof options === "string" ? options : undefined;
+                options = typeof readDSU === "object" ? readDSU : options; // if options is a string, will be set to defaultOptions below
+                readDSU = typeof readDSU === "boolean" ? readDSU : true;
+            }
+        }
+
+        options = typeof options !== "object" || !options ? defaultOptions() : options;
+        readDSU = typeof readDSU !== "boolean" || !readDSU ? true : readDSU;
+
+        const identity = this.getIdentity().id;
+        if (!manufName || !`${manufName}`.startsWith("MAH"))
+            return callback(new Error(`Not provided a valid manufName.`));
+        if (manufName === identity)
+            return callback(new Error(`Is not allowed to request receipts for yourself.`));
+
+        const message = new ReceiptMessage({
+            id: identity + Date.now(),
+            action: ACTION.REQUEST_ALL,
+            message: {readDSU, options},
+            requesterId: identity
+        });
+        this.requestCache.submitRequest(message.id, callback);
+        this.sendMessage(manufName, message, this._messageCallback);
     }
 }
 

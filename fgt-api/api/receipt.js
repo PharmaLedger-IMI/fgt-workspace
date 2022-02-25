@@ -41,6 +41,12 @@ module.exports = class ReceiptApi extends Api {
      * @param callback
      */
     getAll(queryParams, callback) {
-        super.getAll(queryParams, callback);
+        if (this.manager.getIdentity().id.startsWith("MAH"))
+            return super.getAll(queryParams, callback);
+
+        const {manufName, ..._queryParams} = queryParams;
+        if (!manufName || !`${manufName}`.startsWith("MAH"))
+            return callback(new BadRequest(`Not provided a valid manufName.`));
+        this.manager.requestAll(true, _queryParams, manufName, callback);
     }
 }
