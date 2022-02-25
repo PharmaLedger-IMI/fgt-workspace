@@ -206,7 +206,21 @@
 
         <p><span style="font-weight: bold;">WARNING:</span> Unstable software and environments. Use at your own risk! Data persistence at risk of unexpected reset!</p>
 
-        <h2>v0.8.0 Release Notes 2021-02-17</h2>
+        <h2>v0.8.1 Release Notes 2022-XX-XX</h2>
+        <h4>Rest API:</h4>
+        <ul>
+            <li>Improved data validation on insertion;</li>
+            <li>Improved error response with more accurate HTTP codes and description;</li>
+            <li>Added more tests;</li>
+            <li>Allow the sellers to query receipts (for now, the functionality is only available if the MAH is available to receive messages);</li>
+            <li>Improved API/Swagger to request less fields on requests/routes:</li>
+            <ul>
+                <li>/shipment: removed status and senderId as required field to insert data (and shipmentLine updated to inherit it);</li>
+                <li>/sale: removed sellerId and manufName as required field to insert data;</li>
+            </ul>
+        </ul>
+
+        <h2>v0.8.0 Release Notes 2022-02-17</h2>
         <p>Migration to a REST API implementation, meant to integrate with any ERP (There should be no more concurrency conflicts from having multiple wallets with the same id opened);</p>
         <p>Creation and deployment of a fully configured Swagger instance for each environment. This allows for both testing the functionality in real time, but also as a guide for ERP integration;</p>
         <p>DID communication upgrade to using the latest DID method provided by OpenDSU.</p>
