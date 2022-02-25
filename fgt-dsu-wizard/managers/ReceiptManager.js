@@ -32,7 +32,7 @@ class RequestCache {
         setTimeout(() => {
             if (self.timeout && self.checkPendingRequest(id))
                 callback(new Error(`Unable to contact manufName, message canceled by timeout after ${self.timeout / 1000}s.`))
-        }, 10000)
+        }, self.timeout || 0)
         console.log(`Tracking request ${id} submitted`);
     }
 
