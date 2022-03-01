@@ -50,6 +50,7 @@ services:
     container_name: "traefik"
     command:
       - "--log.level=DEBUG"
+      - "--log.filePath=/logs/traefik.log"
       - "--api.insecure=false"
       - "--api.dashboard=true"
       - "--providers.docker=true"
@@ -57,6 +58,7 @@ services:
       - "--entrypoints.web.address=:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik_log_vol:/logs/
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dashboard.rule=Host(`${SIMPLE}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
@@ -533,6 +535,7 @@ networks:
       config:
         - subnet: 172.16.63.0/24
 volumes:
+  "traefik_log_vol":
   "traceability_vol":
   "mah-roche_vol":
   "mah-bayer_vol":
