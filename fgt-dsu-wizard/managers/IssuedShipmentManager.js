@@ -27,7 +27,7 @@ const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
  */
 class IssuedShipmentManager extends ShipmentManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.issuedShipments, ['shipmentId', 'senderId', 'requesterId', 'status'], callback);
+        super(participantManager, DB.issuedShipments, ['senderId', 'requesterId'], callback);
         this.participantManager = participantManager;
         this.stockManager = participantManager.stockManager;
     }

@@ -282,6 +282,8 @@ const getMessageManager = function(baseManager, didString, callback) {
     let manager;
     try {
         manager = baseManager.getManager(MessageManager);
+        if (callback)
+            return callback(undefined, manager);
     } catch (e){
         manager = new MessageManager(baseManager, didString, callback);
     }

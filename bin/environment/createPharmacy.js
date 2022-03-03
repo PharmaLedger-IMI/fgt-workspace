@@ -14,8 +14,7 @@ try{
 }
 
 const dt = require('../../pdm-dsu-toolkit/services/dt');
-const getReceivedOrderManager = require("../../fgt-dsu-wizard/managers/ReceivedOrderManager");
-const { getParticipantManager, getIssuedOrderManager, getStockManager, getReceivedShipmentManager, getSaleManager } = require('../../fgt-dsu-wizard/managers');
+const { getParticipantManager, getIssuedOrderManager, getStockManager, getReceivedShipmentManager, getSaleManager, getReceiptManager, getReceivedOrderManager } = require('../../fgt-dsu-wizard/managers');
 const { Order, OrderLine } = require('../../fgt-dsu-wizard/model');
 const { generateRandomInt, impersonateDSUStorage, argParser, instantiateSSApp } = require('./utils');
 const submitEvent = require('./listeners/eventHandler');
@@ -76,7 +75,7 @@ const setupManager = function(participantManager, callback){
             getIssuedOrderManager(participantManager, (err, issuedOrderManager) => {
                 if (err)
                     return callback(err);
-                getReceivedOrderManager(participantManager, (err, receivedOrderManager) => {
+                getReceiptManager(participantManager, (err, receiptManager) => {
                     if (err)
                         return callback(err);
                     getSaleManager(participantManager, (err) => {

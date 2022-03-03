@@ -6,6 +6,8 @@ const BatchStatus = require('../model/BatchStatus');
 const IndividualProduct = require('../model/IndividualProduct');
 const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
 const utils = require('../services').utils;
+const getReceiptManager = require('./ReceiptManager');
+
 
 /**
  * Stock Manager Class
@@ -29,9 +31,21 @@ const utils = require('../services').utils;
  */
 class SaleManager extends Manager{
     constructor(participantManager, callback) {
-        super(participantManager, DB.sales, ['id', 'products', 'sellerId'], callback);
+        super(participantManager, DB.sales, ['id', 'products', 'sellerId'], (err, manager) => {
+            if (err)
+                return callback ? callback(err) : console.log(err);
+            getReceiptManager(participantManager, (err, receiptManager) => {
+                if (err)
+                    console.log(`Could not get IssuedOrderManager:`, err);
+                else
+                    manager.receiptManager = receiptManager;
+
+                if (callback)
+                    callback(undefined, manager);
+            })
+        });
         this.stockManager = participantManager.stockManager;
-        this.receiptManager = participantManager.getManager("ReceiptManager");
+        this.receiptManager = this.receiptManager || undefined;
         this.saleService = new (require('../services').SaleService)(ANCHORING_DOMAIN);
     }
 
