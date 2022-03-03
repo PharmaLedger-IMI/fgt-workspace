@@ -30,7 +30,9 @@ class Batch {
                     this[prop] = batch[prop];
 
         if (!(this.expiry instanceof Date)) {
-            if (!(/^([0-9]{4})-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1])/.test(this.expiry))) // check date format yyyy-MM-dd
+            if ((/^([0-9]{4})\/(0[1-9]|1[0-2])\/(0[1-9]|1[0-9]|2[0-9]|3[0-1])/.test(this.expiry))) { // check date format yyyy/MM/dd
+                this.expiry = new Date(this.expiry.replace("/","-"));
+            } else if (!(/^([0-9]{4})-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1])/.test(this.expiry))) // check date format yyyy-MM-dd
                 this.expiry = '';
             else
                 this.expiry = new Date(this.expiry);

@@ -103,13 +103,18 @@ const jsonPost = function (conf, actor, { body, ...options }) {
 const getHostnameForActor = function (conf, actor) {
     // test MAH
     let emailMatch = actor.email.secret.match(/^(.*)@mah.*$/);
-    if (emailMatch)
-        return `api-mah-${emailMatch[1].replace(".","-")}${conf.wsDomainSuffix}`;
+    if (emailMatch) {
+        let mahName = emailMatch[1].replace(".","-");
+        // special case merck->msd
+        if (mahName==="merck")
+            mahName="msd";
+        return `api-mah-${mahName}${conf.wsDomainSuffix}`;
+    }
     return undefined;
 }
 
 const productCreate = async function (conf, actor, product) {
-    const res = jsonPost(conf, actor, {
+    const res = await jsonPost(conf, actor, {
         path: `/traceability/product/create`,
         body: { // see body example in follows http://swagger-mah-*.localhost:8080/#/product/post_product_create
             "name": product.name,
@@ -124,7 +129,29 @@ const productsCreate = async function (conf, actor) {
     let products = [...actor.products];
     while (products.length > 0) {
         const product = products.shift();
-        let res = await productCreate(conf, actor, product);
+        await productCreate(conf, actor, product);
+    }
+};
+
+const batchCreate = async function (conf, actor, gtin, batch) {
+    const res = await jsonPost(conf, actor, {
+        path: `/traceability/batch/create`,
+        body: { // see body example in follows http://swagger-mah-*.localhost:8080/#/product/post_product_create
+            "gtin": gtin,
+            "batchNumber": batch.batchNumber,
+            "expiry": batch.expiry,
+            "serialNumbers": batch.serialNumbers
+        }   
+    });
+    return res;
+};
+
+const batchesCreate = async function (conf, actor) {
+    for (const [gtin, batchArray] of Object.entries(actor.batches)) {
+        //console.log("Creating batch", gtin, batchArray);
+        for (const batch of batchArray) {
+            await batchCreate(conf, actor, gtin, batch);
+        }
     }
 };
 
@@ -137,9 +164,8 @@ const productsCreate = async function (conf, actor) {
     const MAHS = [credentials.PFIZER, credentials.MSD, credentials.ROCHE, credentials.BAYER, credentials.NOVO_NORDISK, credentials.GSK, credentials.TAKEDA];
     console.log("Credentials", MAHS);
     //console.log("Products", products.getPfizerProducts());
-    let mahArray = [...MAHS];
-    while (mahArray.length > 0) {
-        const mah = mahArray.shift();
+    for (const mah of MAHS) {
         await productsCreate(conf, mah);
+        await batchesCreate(conf, mah);
     };
 })();
