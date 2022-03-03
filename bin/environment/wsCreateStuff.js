@@ -173,7 +173,7 @@ const productsCreate = async function (conf, actor) {
 const batchCreate = async function (conf, actor, gtin, batch) {
     const res = await jsonPost(conf, actor, {
         path: `/traceability/batch/create`,
-        body: { // see body example in follows http://swagger-mah-*.localhost:8080/#/product/post_product_create
+        body: { // see body example in https://swagger-mah-*-fgt-dev.pharmaledger.pdmfc.com/#/batch/post_batch_create
             "gtin": gtin,
             "batchNumber": batch.batchNumber,
             "expiry": batch.expiry,
