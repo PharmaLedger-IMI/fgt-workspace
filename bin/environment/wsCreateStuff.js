@@ -135,15 +135,16 @@ const jsonPost = function (conf, actor, { body, ...options }) {
 
 const getHostnameForActor = function (conf, actor) {
     // test MAH
-    let emailMatch = actor.email.secret.match(/^(.*)@mah.*$/);
-    if (emailMatch) {
-        let mahName = emailMatch[1].replace(".","-");
+    let mahMatch = actor.email.secret.match(/^(.*)@mah.*$/);
+    if (mahMatch) {
+        let mahName = mahMatch[1].replace(".","-");
         // special case merck->msd
         if (mahName==="merck")
             mahName="msd";
         return `api-mah-${mahName}${conf.wsDomainSuffix}`;
     }
-    return undefined;
+    throw Error("Cannot determine hostname for actor.email="+actor.email.secret);
+    //return undefined;
 }
 
 const productCreate = async function (conf, actor, product) {
