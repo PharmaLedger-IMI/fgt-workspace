@@ -204,6 +204,7 @@ class MessageManager extends Manager{
         console.log("_startMessageListener", did.getIdentifier());
         did.readMessage((err, message) => {
             if (err){
+                console.log("error in message: ", message);
                 if (err.message !== 'socket hang up')
                     console.log(createOpenDSUErrorWrapper(`Could not read message`, err));
                 return self._startMessageListener(did);
