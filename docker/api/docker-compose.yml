@@ -552,7 +552,6 @@ networks:
       config:
         - subnet: 172.16.63.0/24
 volumes:
-  "traefik_log_vol":
   "traceability_vol":
   "mah-roche_vol":
   "mah-bayer_vol":
