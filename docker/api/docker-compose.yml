@@ -50,6 +50,7 @@ services:
     container_name: "traefik"
     command:
       - "--log.level=DEBUG"
+      - "--log.filePath=/var/log/traefik/traefik.log"
       - "--api.insecure=false"
       - "--api.dashboard=true"
       - "--providers.docker=true"
@@ -69,19 +70,20 @@ services:
 
   logrotate:
     image: vegardit/traefik-logrotate:latest
+    container_name: "traefik-logrotate"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw # required to send USR1 signal to Traefik after log rotation
       - /var/log/traefik:/var/log/traefik:rw # folder containing access.log file
     environment:
       TZ: "Europe/Lisbon"
       # all environment variables are optional and show the default values:
-      LOGROTATE_LOGS: "/var/log/traefik/*.log" # log files to rotate, directory must match volume mount
-      LOGROTATE_TRIGGER_INTERVAL: daily  # rotate daily, must be one of: daily, weekly, monthly, yearly
-      LOGROTATE_TRIGGER_SIZE: 50M        # rotate if log file size reaches 50MB
-      LOGROTATE_MAX_BACKUPS: 14          # keep 14 backup copies per rotated log file
-      LOGROTATE_START_INDEX: 1           # first rotated file is called access.1.log
+      LOGROTATE_LOGS: "/var/log/traefik/*.log"    # log files to rotate, directory must match volume mount
+      LOGROTATE_TRIGGER_INTERVAL: daily           # rotate daily, must be one of: daily, weekly, monthly, yearly
+      LOGROTATE_TRIGGER_SIZE: 50M                 # rotate if log file size reaches 50MB
+      LOGROTATE_MAX_BACKUPS: 14                   # keep 14 backup copies per rotated log file
+      LOGROTATE_START_INDEX: 1                    # first rotated file is called access.1.log
       CRON_SCHEDULE: "* * * * *"
-      CRON_LOG_LEVEL: 8                  # see https://unix.stackexchange.com/a/414010/378036
+      CRON_LOG_LEVEL: 8                           # see https://unix.stackexchange.com/a/414010/378036
       # command to determine the id of the container running Traefik:
       TRAEFIK_CONTAINER_ID_COMMAND: docker ps --quiet --filter ancestor=traefik
 
