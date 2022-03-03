@@ -148,14 +148,17 @@ class MessageManager extends Manager{
      * @param {function(err)}callback
      */
     sendMessage(did, message, callback){
-        if (typeof did !== 'object')
+        if (typeof did !== 'object') {
+            console.log("(error msg) sendMessage.message=", message);
             return this._getDID(did + '', (err, didDoc) => err
                 ? _err(`Could not get DID Document for string ${did}`, err, callback)
                 : this.sendMessage(didDoc, message, callback));
+        }
 
         if (!(message instanceof Message))
             return callback(`Message ${message} must be instance of class Message`);
 
+        console.log("(error msg) sendMessage.message=", message);
         this.getOwnDID((err, selfDID) => {
             console.log("Sending message", message, "to did", did.getIdentifier());
             selfDID.sendMessage(JSON.stringify(message), did, err => err
