@@ -48,6 +48,7 @@ services:
   traefik:
     image: "traefik:v2.6"
     container_name: "traefik"
+    restart: "unless-stopped"
     command:
       - "--log.level=DEBUG"
       - "--log.filePath=/var/log/traefik/traefik.log"
@@ -71,6 +72,7 @@ services:
   logrotate:
     image: vegardit/traefik-logrotate:latest
     container_name: "traefik-logrotate"
+    restart: "unless-stopped"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw # required to send USR1 signal to Traefik after log rotation
       - /var/log/traefik:/var/log/traefik:rw # folder containing access.log file
@@ -92,6 +94,7 @@ services:
     build:
       context: ../api/traceability
     hostname: fgt-workspace
+    restart: "unless-stopped"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traceability.rule=Host(`traceability${DOMAIN}`) || Host(`${SIMPLE}`)"

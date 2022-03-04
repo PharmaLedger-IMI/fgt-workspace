@@ -18,21 +18,54 @@ const { argParser } = require('./utils');
 
 const credentials = require('./credentials/credentialsTests');
 //const products = require('./products/productsTests');
+const getBatches = require('./batches/batchesRandom');
+
+
+class ProductsEnum {
+    static none = "none";
+    static test = "test";
+};
+
+class BatchesEnum {
+    static none = "none";
+    static test = "test";
+    static random = "random";
+};
 
 const defaultOps = {
     wsProtocol: "http",
     wsDomainSuffix: ".localhost",
     wsPortNumber: "8080",
-    wsEnv: "localhost"
+    env: "localhost",
+    products: "test",
+    batches: "test"
+}
+
+if (process.argv.includes("--help")
+    || process.argv.includes("-h")
+    || process.argv.includes("-?")
+) {
+    console.log("Usage:");
+    console.log();
+    console.log("\tnode --unhandled-rejections=strict wsCreateStuff.js [options]");
+    console.log();
+    console.log("Where options can be any of:");
+    console.log();
+    console.log("\t--batches=none|test*|random");
+    console.log("\t--env=localhost*|dev|tst");
+    console.log("\t--products=none|test*");
+    console.log();
+    console.log("* - is the default setting");
+    process.exit(0);
 }
 
 const conf = argParser(defaultOps, process.argv);
 
-if (conf.wsEnv === "dev") {
+if (conf.env === "dev") {
     conf.wsDomainSuffix = "-fgt-dev.pharmaledger.pdmfc.com";
     conf.wsPortNumber = "443";
     conf.wsProtocol = "https";
-} else if (conf.wsEnv === "tst") {
+} else if (conf.env === "tst") {
     conf.wsDomainSuffix = "-fgt.pharmaledger.pdmfc.com";
     conf.wsPortNumber = "443";
     conf.wsProtocol = "https";
@@ -102,15 +135,16 @@ const jsonPost = function (conf, actor, { body, ...options }) {
 
 const getHostnameForActor = function (conf, actor) {
     // test MAH
-    let emailMatch = actor.email.secret.match(/^(.*)@mah.*$/);
-    if (emailMatch) {
-        let mahName = emailMatch[1].replace(".","-");
+    let mahMatch = actor.email.secret.match(/^(.*)@mah.*$/);
+    if (mahMatch) {
+        let mahName = mahMatch[1].replace(".","-");
         // special case merck->msd
         if (mahName==="merck")
             mahName="msd";
         return `api-mah-${mahName}${conf.wsDomainSuffix}`;
     }
-    return undefined;
+    throw Error("Cannot determine hostname for actor.email="+actor.email.secret);
+    //return undefined;
 }
 
 const productCreate = async function (conf, actor, product) {
@@ -126,9 +160,13 @@ const productCreate = async function (conf, actor, product) {
 };
 
 const productsCreate = async function (conf, actor) {
-    let products = [...actor.products];
-    while (products.length > 0) {
-        const product = products.shift();
+    if (conf.products===ProductsEnum.none) {
+        return; // don't create products
+    }
+    if (conf.products!=ProductsEnum.test) {
+        throw Error("Unsupported setting products="+conf.products);
+    }
+    for (const product of actor.products) {
         await productCreate(conf, actor, product);
     }
 };
@@ -136,7 +174,7 @@ const productsCreate = async function (conf, actor) {
 const batchCreate = async function (conf, actor, gtin, batch) {
     const res = await jsonPost(conf, actor, {
         path: `/traceability/batch/create`,
-        body: { // see body example in follows http://swagger-mah-*.localhost:8080/#/product/post_product_create
+        body: { // see body example in https://swagger-mah-*-fgt-dev.pharmaledger.pdmfc.com/#/batch/post_batch_create
             "gtin": gtin,
             "batchNumber": batch.batchNumber,
             "expiry": batch.expiry,
@@ -146,12 +184,34 @@ const batchCreate = async function (conf, actor, gtin, batch) {
     return res;
 };
 
-const batchesCreate = async function (conf, actor) {
+const batchesCreateTest = async function (conf, actor) {
     for (const [gtin, batchArray] of Object.entries(actor.batches)) {
         //console.log("Creating batch", gtin, batchArray);
         for (const batch of batchArray) {
             await batchCreate(conf, actor, gtin, batch);
         }
+    }
+}
+
+const batchesCreateRandom = async function (conf, actor) {
+    for(const product of actor.products) {
+        const gtin = product.gtin;
+        const batches = getBatches();
+        for(const batch of batches) {
+            await batchCreate(conf, actor, gtin, batch);
+        }
+    }
+}
+
+const batchesCreate = async function (conf, actor) {
+    if (conf.batches === BatchesEnum.none) {
+        return; // don't create batches
+    } else if (conf.batches === BatchesEnum.test) {
+        await batchesCreateTest(conf, actor);
+    } else if (conf.batches === BatchesEnum.random) {
+        await batchesCreateRandom(conf, actor);
+    } else {
+        throw Error("Unsupported setting batches=" + conf.batches);
     }
 };
 
@@ -162,7 +222,7 @@ const batchesCreate = async function (conf, actor) {
 
 (async () => {
     const MAHS = [credentials.PFIZER, credentials.MSD, credentials.ROCHE, credentials.BAYER, credentials.NOVO_NORDISK, credentials.GSK, credentials.TAKEDA];
-    console.log("Credentials", MAHS);
+    //console.log("Credentials", MAHS);
     //console.log("Products", products.getPfizerProducts());
     for (const mah of MAHS) {
         await productsCreate(conf, mah);
