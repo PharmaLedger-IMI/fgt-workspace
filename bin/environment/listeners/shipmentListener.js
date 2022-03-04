@@ -62,7 +62,7 @@ const issueSale = function(participantManager, order, batches, timeout, callback
                 const dsuBatch = batches[stock.gtin].find(b => b.batchNumber === batch.batchNumber);
                 if (!dsuBatch)
                     return callback("can not find serial for batch");
-                const serialNumber = dsuBatch.serialNumbers[0];
+                const serialNumber = dsuBatch.serialNumbers.shift();
                 return new IndividualProduct({
                     name: stock.name,
                     gtin: stock.gtin,

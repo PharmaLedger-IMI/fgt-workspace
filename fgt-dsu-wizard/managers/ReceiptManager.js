@@ -102,7 +102,7 @@ class ReceiptManager extends Manager{
                 callback(undefined, manager);
         });
 
-        this.requestCache = new RequestCache(10000);
+        this.requestCache = new RequestCache(25000);
         this.stockManager = participantManager.stockManager;
         this.saleService = new (require('../services').SaleService)(ANCHORING_DOMAIN);
     }
