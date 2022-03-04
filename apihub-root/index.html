@@ -11,6 +11,7 @@
         : '';
         document.title = document.title + plEnvironment;
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 </head>
 <body>
     <div class="center-aligned-controls vertical-align">
@@ -138,30 +139,90 @@
             <h3><a id="participant-name">Participant</a> Workspace</h3>
             <script>
                 const participantName = document.body.querySelector(`a[id="participant-name"]`);
-                const url = window.location.hostname;
-                if (url.match(/[-\.]?(?:mah|whs|pha)[\-\d]/g)){
+                const url2 = window.location.hostname;
+                if (url2.match(/[-\.]?(?:mah|whs|pha)[\-\d]/g)){
                     const regexp = /[-\.]?(mah|whs|pha)[\-\.]?(\d+|\w+)[\-\.]/g;
-                    const match = regexp.exec(url);
+                    const match = regexp.exec(url2);
                     participantName.innerHTML = `${match[1].toUpperCase()} - ${(match[2] || '').toUpperCase()}${(match[3] || '').toUpperCase()}`;
                 }
             </script>
-            <ul>
-                <li>
-                   Click the Swagger button to access your swagger dashboard. There you can find:
-                    <ul>
-                        <li>The address the Finished Goods Traceability REST API is running under (this address can be used to test your own ERP integrations);</li>
-                        <li>A complete description of all the operations available to your ERP and the JSOn objects they receive/produce;</li>
-                        <li>A way to manually interact with the REST API via the 'try' button in each endpoint;</li>
-                    </ul>
-                </li>
-                <li>For most operations (create, update, etc) the successful return outputs a KeySSI. You can use DSU Explorer to inspect these DSUs;</li>
-            </ul>
+            <p>
+                <ul>
+                    <li>
+                       Click the Swagger button to access your swagger dashboard. There you can find:
+                        <ul>
+                            <li>The address the Finished Goods Traceability REST API is running under (this address can be used to test your own ERP integrations);</li>
+                            <li>A complete description of all the operations available to your ERP and the JSOn objects they receive/produce;</li>
+                            <li>A way to manually interact with the REST API via the 'try' button in each endpoint;</li>
+                        </ul>
+                    </li>
+                    <li>For most operations (create, update, etc) the successful return outputs a KeySSI. You can use DSU Explorer to inspect these DSUs;</li>
+                    <li>
+                        <p>The sequence diagram for the shipping operation is as follows:</p>
+                        <p>
+                            <div class="mermaid">
+                            sequenceDiagram
+                            participant s as Sender
+                            participant r as Receiver
+                            activate s
+                            s->>s: Create Shipment
+                            note left of s: OrderId can be anything
+                            note left of s: Sender can see shipment with status 'created'.<br>Sender stock has been reduced
+                            s-->>r: Sends Message to Receiver<br>with Shipment Info
+                            note right of r: Receiver can now see shipment in incoming shipments
+                            alt sad path
+                            note over s , r: Shipment Held
+                            s->>s: Update status to 'hold'
+                            s-->>r: Sends Message to Receiver<br>with status update notice
+                            note right of r: Receiver can see shipment has been held (and the reason for it)
+                            alt Shipment Released
+                            s->>s: Update status to previous status
+                            s-->>r: Sends Message to Receiver<br>with status update notice
+                            note right of r: Receiver can now see updated status incoming shipments
+                            end
+                            alt Shipment Rejected
+                            note over s , r: Shipment Rejected
+                            s->>s: Update status to 'reject'
+                            s-->>r: Sends Message to Receiver<br>with status update notice
+                            note right of r: Receiver can now see rejected shipment (and why)
+                            end
+                            end
+                            alt happy path
+                            note over s , r: Shipment is sent
+                            s->>s: Update status to 'pickup'
+                            s-->>r: Sends Message to Receiver<br>with status update notice
+                            note right of r: Receiver can now see updated status incoming shipments
+                            s->>s: Update status to 'transit'
+                            s-->>r: Sends Message to Receiver<br>with status update notice
+                            note right of r: Receiver can now see shipment is in transit
+                            loop while in transit
+                            s->>s: Update status to 'transit' with added information
+                            s-->>r: Sends Message to Receiver<br>with status update notice
+                            note right of r: Receiver can now see shipment the additional information that has been added
+                            end
+                            s->>s: Update status to 'delivered'
+                            s-->>r: Sends Message to Receiver<br>with status update notice
+                            note right of r: Receiver can now see shipment has been delivered
+                            deactivate s
+                            activate r
+                            r->>r: Update status to 'received'
+                            r-->>s: Sends Message to Sender<br>with status update notice
+                            note left of s: Receiver can now see shipment has been delivered
+                            r->>r: Update status to 'confirmed'
+                            r-->>s: Sends Message to Sender<br>with status update notice
+                            note left of s: Receiver can now see shipment has been confirmed
+                            note right of r: Receiver can now see his updated stock
+                            deactivate r
+                            end
+                        </div>
+                        </p>
+                    </li>
+                </ul>
             </p>
             <script>
                 const participantDiv = document.body.querySelector(`div[id="participant"]`);
                 if (window.location.hostname.match(/[-\.]?(?:mah|whs|pha)[\-\d]/g))
                     participantDiv.setAttribute("style", "display: block;");
-
             </script>
         </div>
 
@@ -205,6 +266,12 @@
 <!--        <p>For using other than the provided credentials, you are free to register/login as any on the Participants, but all the data will have to filled out manually</p>-->
 
         <p><span style="font-weight: bold;">WARNING:</span> Unstable software and environments. Use at your own risk! Data persistence at risk of unexpected reset!</p>
+
+        <h2>v0.8.2 Release Notes XXXX</h2>
+        <h4>Rest API:</h4>
+        <ul>
+            <li>Added Sequence diagram exposing the status update steps for a shipment on the participants workspaces;</li>
+        </ul>
 
         <h2>v0.8.1 Release Notes 2022-03-03</h2>
         <h4>Rest API:</h4>
@@ -480,6 +547,7 @@
             }
 
         getCredentials();
+        mermaid.initialize({ startOnLoad: true });
     </script>
 </body>
 
