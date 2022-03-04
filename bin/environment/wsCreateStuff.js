@@ -102,6 +102,7 @@ const jsonHttpRequest = function (conf, actor, { body, ...options }) {
     } else if (!options.headers['content-type']) {
         options.headers['content-type'] = 'application/json';
     }
+    options.headers['content-length'] = Buffer.byteLength(bodyToSend);
     if (!options['hostname'])
         options.hostname = getHostnameForActor(conf, actor);
     if (!options['port'])
