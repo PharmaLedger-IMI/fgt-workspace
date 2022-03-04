@@ -92,7 +92,7 @@ if (conf.env === "dev") {
 
 // Based on
 // https://stackoverflow.com/questions/6158933/how-is-an-http-post-request-made-in-node-js
-const jsonPost = function (conf, actor, { body, ...options }) {
+const jsonHttpRequest = function (conf, actor, { body, ...options }) {
     const bodyToSend = (body && typeof body != "string") ? JSON.stringify(body) : body;
 
     if (!options.headers) {
@@ -109,11 +109,10 @@ const jsonPost = function (conf, actor, { body, ...options }) {
 
     let p = new Promise((resolve, reject) => {
         // debug request
-        console.log("http post", JSON.stringify(options), bodyToSend);
+        console.log("http "+options.method, JSON.stringify(options), bodyToSend);
 
         const req = (conf.wsProtocol === "http" ? http : https).request(
             {
-                method: 'POST',
                 ...options,
             },
             res => {
@@ -148,60 +147,14 @@ const jsonPost = function (conf, actor, { body, ...options }) {
     return p;
 }
 
+const jsonPost = function (conf, actor, { body, ...options }) {
+    options.method = "POST";
+    return jsonHttpRequest(conf, actor, { body, ...options });
+}
+
 const jsonPut = function (conf, actor, { body, ...options }) {
-    const bodyToSend = (body && typeof body != "string") ? JSON.stringify(body) : body;
-
-    if (!options.headers) {
-        options.headers = {
-            'content-type': 'application/json',
-        };
-    } else if (!options.headers['content-type']) {
-        options.headers['content-type'] = 'application/json';
-    }
-    if (!options['hostname'])
-        options.hostname = getHostnameForActor(conf, actor);
-    if (!options['port'])
-        options.port = conf.wsPortNumber;
-
-    let p = new Promise((resolve, reject) => {
-        // debug request
-        console.log("http post", JSON.stringify(options), bodyToSend);
-
-        const req = (conf.wsProtocol === "http" ? http : https).request(
-            {
-                method: 'PUT',
-                ...options,
-            },
-            res => {
-                const chunks = [];
-                res.on('data', data => chunks.push(data));
-                res.on('end', () => {
-                    let resBody = Buffer.concat(chunks);
-                    //console.log("res.headers=", res.headers);
-                    if (res.headers['content-type'].startsWith('application/json')) {
-                        resBody = JSON.parse(resBody);
-                    }
-                    resolve(resBody)
-                });
-            }
-        );
-        req.on('error', reject);
-        if (bodyToSend) {
-            req.write(bodyToSend);
-        }
-        req.end();
-    });
-
-    // debug reply
-    p.then((r) => {
-        if (Buffer.isBuffer(r)) {
-            console.log("resB", r.toString());
-        } else {
-            console.log("res", r);
-        }
-    });
-
-    return p;
+    options.method = "PUT";
+    return jsonHttpRequest(conf, actor, { body, ...options });
 }
 
 const getHostnameForActor = function (conf, actor) {
