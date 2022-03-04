@@ -226,19 +226,19 @@
                                 B --> D((reject))
                                 B --> E(hold)
                                 E --> D
-                                E --> B
+                                E -.-> B
                                 B --> F(pickup)
                                 F --> D
                                 F --> E
-                                E --> F
+                                E -.-> F
                                 F --> G(transit)
                                 G --> D
                                 G --> E
-                                E --> G
+                                E -.-> G
                                 G --> H(delivered)
                                 H --> D
                                 H --> E
-                                E --> H
+                                E -.-> H
 
                                 classDef green fill:#9f6,stroke:#333,stroke-width:2px;
                                 classDef yellow fill:#FEDE00,stroke:#333,stroke-width:2px;
@@ -256,11 +256,11 @@
                                 J --> K((reject))
                                 J --> L(hold)
                                 L --> K
-                                L --> J
+                                L -.-> J
                                 J --> M(received)
                                 M --> K
                                 M --> L
-                                L --> M
+                                L -.-> M
                                 M --> N((confirmed))
 
                                 classDef green fill:#9f6,stroke:#333,stroke-width:2px;
