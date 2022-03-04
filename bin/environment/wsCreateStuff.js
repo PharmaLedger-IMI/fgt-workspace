@@ -10,13 +10,18 @@
  * fgt-workspace/bin/environment$ node --unhandled-rejections=strict wsCreateStuff.js 
  */
 
- const http = require('http');
- const https = require('https');
+const http = require('http');
+const https = require('https');
 
-const { argParser } = require('./utils');
+const { argParser, genDate } = require('./utils');
 
+const ShipmentStatus = require('../../fgt-dsu-wizard/model/ShipmentStatus')
 
-const credentials = require('./credentials/credentialsTests');
+const credentials = require('./credentials/credentialsTests'); // TODO require ../../docker/api/env/mah-*.json ?
+const MAHS = [credentials.PFIZER, credentials.MSD, credentials.ROCHE, credentials.BAYER, credentials.NOVO_NORDISK, credentials.GSK, credentials.TAKEDA];
+const WSH1 = require("../../docker/api/env/whs-1.json");
+const WSH2 = require("../../docker/api/env/whs-2.json");
+
 //const products = require('./products/productsTests');
 const getBatches = require('./batches/batchesRandom');
 
@@ -32,13 +37,20 @@ class BatchesEnum {
     static random = "random";
 };
 
+class ShipmentsEnum {
+    static none = "none";
+    static test = "test";
+};
+
+
 const defaultOps = {
     wsProtocol: "http",
     wsDomainSuffix: ".localhost",
     wsPortNumber: "8080",
     env: "localhost",
-    products: "test",
-    batches: "test"
+    products: ProductsEnum.test,
+    batches: BatchesEnum.test,
+    shipments: ShipmentsEnum.test
 }
 
 if (process.argv.includes("--help")
@@ -54,6 +66,7 @@ if (process.argv.includes("--help")
     console.log("\t--batches=none|test*|random");
     console.log("\t--env=localhost*|dev|tst");
     console.log("\t--products=none|test*");
+    console.log("\t--shipments=none|test*");
     console.log();
     console.log("* - is the default setting");
     process.exit(0);
@@ -87,7 +100,7 @@ const jsonPost = function (conf, actor, { body, ...options }) {
             'content-type': 'application/json',
         };
     } else if (!options.headers['content-type']) {
-        options.headers['content-type']='application/json';
+        options.headers['content-type'] = 'application/json';
     }
     if (!options['hostname'])
         options.hostname = getHostnameForActor(conf, actor);
@@ -96,24 +109,26 @@ const jsonPost = function (conf, actor, { body, ...options }) {
 
     let p = new Promise((resolve, reject) => {
         // debug request
-        console.log("http post", JSON.stringify(options));
+        console.log("http post", JSON.stringify(options), bodyToSend);
 
-        const req = (conf.wsProtocol==="http"?http:https).request({
-            method: 'POST',
-            ...options,
-        }, res => {
-            const chunks = [];
-            res.on('data', data => chunks.push(data));
-            res.on('end', () => {
-                let resBody = Buffer.concat(chunks);
-                switch (res.headers['content-type']) {
-                    case 'application/json':
+        const req = (conf.wsProtocol === "http" ? http : https).request(
+            {
+                method: 'POST',
+                ...options,
+            },
+            res => {
+                const chunks = [];
+                res.on('data', data => chunks.push(data));
+                res.on('end', () => {
+                    let resBody = Buffer.concat(chunks);
+                    //console.log("res.headers=", res.headers);
+                    if (res.headers['content-type'].startsWith('application/json')) {
                         resBody = JSON.parse(resBody);
-                        break;
-                }
-                resolve(resBody)
-            });
-        });
+                    }
+                    resolve(resBody)
+                });
+            }
+        );
         req.on('error', reject);
         if (bodyToSend) {
             req.write(bodyToSend);
@@ -122,7 +137,63 @@ const jsonPost = function (conf, actor, { body, ...options }) {
     });
 
     // debug reply
-    p.then( (r) => {
+    p.then((r) => {
+        if (Buffer.isBuffer(r)) {
+            console.log("resB", r.toString());
+        } else {
+            console.log("res", r);
+        }
+    });
+
+    return p;
+}
+
+const jsonPut = function (conf, actor, { body, ...options }) {
+    const bodyToSend = (body && typeof body != "string") ? JSON.stringify(body) : body;
+
+    if (!options.headers) {
+        options.headers = {
+            'content-type': 'application/json',
+        };
+    } else if (!options.headers['content-type']) {
+        options.headers['content-type'] = 'application/json';
+    }
+    if (!options['hostname'])
+        options.hostname = getHostnameForActor(conf, actor);
+    if (!options['port'])
+        options.port = conf.wsPortNumber;
+
+    let p = new Promise((resolve, reject) => {
+        // debug request
+        console.log("http post", JSON.stringify(options), bodyToSend);
+
+        const req = (conf.wsProtocol === "http" ? http : https).request(
+            {
+                method: 'PUT',
+                ...options,
+            },
+            res => {
+                const chunks = [];
+                res.on('data', data => chunks.push(data));
+                res.on('end', () => {
+                    let resBody = Buffer.concat(chunks);
+                    //console.log("res.headers=", res.headers);
+                    if (res.headers['content-type'].startsWith('application/json')) {
+                        resBody = JSON.parse(resBody);
+                    }
+                    resolve(resBody)
+                });
+            }
+        );
+        req.on('error', reject);
+        if (bodyToSend) {
+            req.write(bodyToSend);
+        }
+        req.end();
+    });
+
+    // debug reply
+    p.then((r) => {
         if (Buffer.isBuffer(r)) {
             console.log("resB", r.toString());
         } else {
@@ -137,13 +208,22 @@ const getHostnameForActor = function (conf, actor) {
     // test MAH
     let mahMatch = actor.email.secret.match(/^(.*)@mah.*$/);
     if (mahMatch) {
-        let mahName = mahMatch[1].replace(".","-");
+        let mahName = mahMatch[1].replace(".", "-");
         // special case merck->msd
-        if (mahName==="merck")
-            mahName="msd";
+        if (mahName === "merck")
+            mahName = "msd";
         return `api-mah-${mahName}${conf.wsDomainSuffix}`;
     }
-    throw Error("Cannot determine hostname for actor.email="+actor.email.secret);
+    // test WHS
+    let whsMatch = actor.id.secret.match(/^WHS([0-9]+)$/);
+    if (whsMatch) {
+        let whsNumber = parseInt(whsMatch[1])+"";
+        // taked is special
+        if (whsNumber==="999999") 
+            whsNumber = "takeda";
+        return `api-whs${whsNumber}${conf.wsDomainSuffix}`;
+    }
+    throw Error("Cannot determine hostname for actor.email=" + actor.email.secret);
     //return undefined;
 }
 
@@ -154,17 +234,17 @@ const productCreate = async function (conf, actor, product) {
             "name": product.name,
             "gtin": product.gtin,
             "description": product.description
-        }   
+        }
     });
     return res;
 };
 
 const productsCreate = async function (conf, actor) {
-    if (conf.products===ProductsEnum.none) {
+    if (conf.products === ProductsEnum.none) {
         return; // don't create products
     }
-    if (conf.products!=ProductsEnum.test) {
-        throw Error("Unsupported setting products="+conf.products);
+    if (conf.products != ProductsEnum.test) {
+        throw Error("Unsupported setting products=" + conf.products);
     }
     for (const product of actor.products) {
         await productCreate(conf, actor, product);
@@ -179,25 +259,46 @@ const batchCreate = async function (conf, actor, gtin, batch) {
             "batchNumber": batch.batchNumber,
             "expiry": batch.expiry,
             "serialNumbers": batch.serialNumbers
-        }   
+        }
     });
     return res;
 };
 
 const batchesCreateTest = async function (conf, actor) {
+    /*
+    if (actor.id.secret!="MAH136366355") {
+        console.log("Not MSD");
+        return;
+    }
+    */
     for (const [gtin, batchArray] of Object.entries(actor.batches)) {
         //console.log("Creating batch", gtin, batchArray);
         for (const batch of batchArray) {
+            // fix expiry date on given test data
+            let now = new Date();
+            //console.log("Batch expiry before=", batch.expiry, typeof batch.expiry);
+            if (!batch.expiry) {
+                batch.expiry = now;
+            }
+            if (batch.expiry - now < 0) {
+                batch.expiry.setDate(now.getDate()+365);
+            }
+            //console.log("Batch expiry=", batch.expiry);
+            // https://github.com/PharmaLedger-IMI/fgt-workspace/issues/69
+            if (batch.serialNumbers.length>3600) {
+                console.log("Batch "+batch.batchNumber+" serialNumber has "+batch.serialNumbers.length+" elements. Truncating to 3600.");
+                batch.serialNumbers = batch.serialNumbers.slice(0,3599);
+            }
             await batchCreate(conf, actor, gtin, batch);
         }
     }
 }
 
 const batchesCreateRandom = async function (conf, actor) {
-    for(const product of actor.products) {
+    for (const product of actor.products) {
         const gtin = product.gtin;
         const batches = getBatches();
-        for(const batch of batches) {
+        for (const batch of batches) {
             await batchCreate(conf, actor, gtin, batch);
         }
     }
@@ -215,17 +316,93 @@ const batchesCreate = async function (conf, actor) {
     }
 };
 
+const shipmentsCreateTest = async function (conf) {
+    const msd = credentials.MSD;
+    const wha1 = WSH1;
+    const msdBatches = msd.batches;
+    const shipment1MsdToWha1 = {
+        "orderId": wha1.id.secret + "-" + (new Date()).toISOString(),
+        "requesterId": WSH1.id.secret,
+        "shipmentLines": [
+            {
+                "gtin": "00366582505358",
+                "batch": "R034995",
+                "quantity": 100
+            },
+            {
+                "gtin": "00191778005295",
+                "batch": "U002114",
+                "quantity": 100
+            }
+        ]
+    };
+    const resC = await jsonPost(conf, msd, {
+        path: `/traceability/shipment/create`,
+        body: shipment1MsdToWha1
+    });
+    const shipmentId = resC.shipmentId;
+    if (!shipmentId) {
+        throw Error("create/shipment "+shipment1MsdToWha1+" reply has no shipmentId: "+JSON.stringify(resC));
+    }
+    const resUPickup = await jsonPut(conf, msd, {
+        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
+        body: {
+            "status": ShipmentStatus.PICKUP,
+            "extraInfo": "Ready to pick up by a test script"
+        }
+    });
+    const shipmentId2 = resUPickup.shipmentId;
+    if (!shipmentId2) {
+        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUPickup));
+    }
+    const resUTransit = await jsonPut(conf, msd, {
+        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
+        body: {
+            "status": ShipmentStatus.TRANSIT,
+            "extraInfo": "Picked up in good condition by a test script!"
+        }
+    });
+    const shipmentId3 = resUTransit.shipmentId;
+    if (!shipmentId3) {
+        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUTransit));
+    }
+    const resUDelivered = await jsonPut(conf, msd, {
+        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
+        body: {
+            "status": ShipmentStatus.DELIVERED,
+            "extraInfo": "Delivered in good condition by a test script!"
+        }
+    });
+    const shipmentId4 = resUDelivered.shipmentId;
+    if (!shipmentId4) {
+        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUDelivered));
+    }
+}
+
+const shipmentsCreate = async function (conf, actor) {
+    if (conf.shipments === ShipmentsEnum.none) {
+        return; // don't create batches
+    } else if (conf.shipments === ShipmentsEnum.test) {
+        await shipmentsCreateTest(conf, actor);
+    } else {
+        throw Error("Unsupported setting shipments=" + conf.shipments);
+    }
+};
+
 
 /**
  * Main
  */
 
 (async () => {
-    const MAHS = [credentials.PFIZER, credentials.MSD, credentials.ROCHE, credentials.BAYER, credentials.NOVO_NORDISK, credentials.GSK, credentials.TAKEDA];
+    const WHSS = []
     //console.log("Credentials", MAHS);
     //console.log("Products", products.getPfizerProducts());
     for (const mah of MAHS) {
         await productsCreate(conf, mah);
         await batchesCreate(conf, mah);
     };
+
+    const mah = credentials.BAYER;
+    await shipmentsCreate(conf, mah);
 })();
