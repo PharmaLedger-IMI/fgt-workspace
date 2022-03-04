@@ -161,60 +161,116 @@
                         <p>The sequence diagram for the shipping operation is as follows:</p>
                         <p>
                             <div class="mermaid">
-                            sequenceDiagram
-                            participant s as Sender
-                            participant r as Receiver
-                            activate s
-                            s->>s: Create Shipment
-                            note left of s: OrderId can be anything
-                            note left of s: Sender can see shipment with status 'created'.<br>Sender stock has been reduced
-                            s-->>r: Sends Message to Receiver<br>with Shipment Info
-                            note right of r: Receiver can now see shipment in incoming shipments
-                            alt sad path
-                            note over s , r: Shipment Held
-                            s->>s: Update status to 'hold'
-                            s-->>r: Sends Message to Receiver<br>with status update notice
-                            note right of r: Receiver can see shipment has been held (and the reason for it)
-                            alt Shipment Released
-                            s->>s: Update status to previous status
-                            s-->>r: Sends Message to Receiver<br>with status update notice
-                            note right of r: Receiver can now see updated status incoming shipments
-                            end
-                            alt Shipment Rejected
-                            note over s , r: Shipment Rejected
-                            s->>s: Update status to 'reject'
-                            s-->>r: Sends Message to Receiver<br>with status update notice
-                            note right of r: Receiver can now see rejected shipment (and why)
-                            end
-                            end
-                            alt happy path
-                            note over s , r: Shipment is sent
-                            s->>s: Update status to 'pickup'
-                            s-->>r: Sends Message to Receiver<br>with status update notice
-                            note right of r: Receiver can now see updated status incoming shipments
-                            s->>s: Update status to 'transit'
-                            s-->>r: Sends Message to Receiver<br>with status update notice
-                            note right of r: Receiver can now see shipment is in transit
-                            loop while in transit
-                            s->>s: Update status to 'transit' with added information
-                            s-->>r: Sends Message to Receiver<br>with status update notice
-                            note right of r: Receiver can now see shipment the additional information that has been added
-                            end
-                            s->>s: Update status to 'delivered'
-                            s-->>r: Sends Message to Receiver<br>with status update notice
-                            note right of r: Receiver can now see shipment has been delivered
-                            deactivate s
-                            activate r
-                            r->>r: Update status to 'received'
-                            r-->>s: Sends Message to Sender<br>with status update notice
-                            note left of s: Receiver can now see shipment has been delivered
-                            r->>r: Update status to 'confirmed'
-                            r-->>s: Sends Message to Sender<br>with status update notice
-                            note left of s: Receiver can now see shipment has been confirmed
-                            note right of r: Receiver can now see his updated stock
-                            deactivate r
-                            end
-                        </div>
+                                sequenceDiagram
+                                participant s as Sender
+                                participant r as Receiver
+                                activate s
+                                s->>s: Create Shipment
+                                note left of s: OrderId can be anything
+                                note left of s: Sender can see shipment with status 'created'.<br>Sender stock has been reduced
+                                s-->>r: Sends Message to Receiver<br>with Shipment Info
+                                note right of r: Receiver can now see shipment in incoming shipments
+                                alt sad path
+                                note over s , r: Shipment Held
+                                s->>s: Update status to 'hold'
+                                s-->>r: Sends Message to Receiver<br>with status update notice
+                                note right of r: Receiver can see shipment has been held (and the reason for it)
+                                alt Shipment Released
+                                s->>s: Update status to previous status
+                                s-->>r: Sends Message to Receiver<br>with status update notice
+                                note right of r: Receiver can now see updated status incoming shipments
+                                end
+                                alt Shipment Rejected
+                                note over s , r: Shipment Rejected
+                                s->>s: Update status to 'reject'
+                                s-->>r: Sends Message to Receiver<br>with status update notice
+                                note right of r: Receiver can now see rejected shipment (and why)
+                                end
+                                end
+                                alt happy path
+                                note over s , r: Shipment is sent
+                                s->>s: Update status to 'pickup'
+                                s-->>r: Sends Message to Receiver<br>with status update notice
+                                note right of r: Receiver can now see updated status incoming shipments
+                                s->>s: Update status to 'transit'
+                                s-->>r: Sends Message to Receiver<br>with status update notice
+                                note right of r: Receiver can now see shipment is in transit
+                                loop while in transit
+                                s->>s: Update status to 'transit' with added information
+                                s-->>r: Sends Message to Receiver<br>with status update notice
+                                note right of r: Receiver can now see shipment the additional information that has been added
+                                end
+                                s->>s: Update status to 'delivered'
+                                s-->>r: Sends Message to Receiver<br>with status update notice
+                                note right of r: Receiver can now see shipment has been delivered
+                                deactivate s
+                                activate r
+                                r->>r: Update status to 'received'
+                                r-->>s: Sends Message to Sender<br>with status update notice
+                                note left of s: Receiver can now see shipment has been delivered
+                                r->>r: Update status to 'confirmed'
+                                r-->>s: Sends Message to Sender<br>with status update notice
+                                note left of s: Receiver can now see shipment has been confirmed
+                                note right of r: Receiver can now see his updated stock
+                                deactivate r
+                                end
+                            </div>
+                        </p>
+                    </li>
+                    <li>
+                        <p>The state diagram for a shipment is as follows:</p>
+                        <p>Sender:
+                            <div class="mermaid">
+                                graph LR
+                                A[Sender] -->|creates Shipment| B(created)
+                                B --> D((reject))
+                                B --> E(hold)
+                                E --> D
+                                E --> B
+                                B --> F(pickup)
+                                F --> D
+                                F --> E
+                                E --> F
+                                F --> G(transit)
+                                G --> D
+                                G --> E
+                                E --> G
+                                G --> H(delivered)
+                                H --> D
+                                H --> E
+                                E --> H
+
+                                classDef green fill:#9f6,stroke:#333,stroke-width:2px;
+                                classDef yellow fill:#FEDE00,stroke:#333,stroke-width:2px;
+                                classDef red fill:#ff5349,stroke#333,stroke-width:2px;
+
+                                class B,F,G,H green
+                                class D,K red
+                                class E,L yellow
+                            </div>
+                        </p>
+                        <p>Receiver:
+                            <div class="mermaid">
+                                graph LR
+                                I[Receiver] --> |receives Shipment| J(delivered)
+                                J --> K((reject))
+                                J --> L(hold)
+                                L --> K
+                                L --> J
+                                J --> M(received)
+                                M --> K
+                                M --> L
+                                L --> M
+                                M --> N((confirmed))
+
+                                classDef green fill:#9f6,stroke:#333,stroke-width:2px;
+                                classDef yellow fill:#FEDE00,stroke:#333,stroke-width:2px;
+                                classDef red fill:#ff5349,stroke#333,stroke-width:2px;
+
+                                class J,M,N green
+                                class K red
+                                class L yellow
+                            </div>
                         </p>
                     </li>
                 </ul>
