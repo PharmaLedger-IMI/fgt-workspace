@@ -101,10 +101,13 @@ class Batch {
         }
         if(new Date().getTime() > this.expiry.getTime()) // expiry date must be greater than today
             return `Expiration date must be greater than ${(new Date()).toLocaleDateString("fr-CA")}`;
+
         if(this.serialNumbers.length > 0) {
             const serialNumbersQty = new Set(this.serialNumbers.map(n => `${n}`)).size;
             if (serialNumbersQty !== this.serialNumbers.length)
                 return `Serial numbers must be unique and without duplicates`
+        } else {
+            return `Serial numbers must be an array and cannot be empty`;
         }
 
         if (oldStatus && Batch.getAllowedStatusUpdates(oldStatus).indexOf(this.batchStatus.status || this.batchStatus) === -1)
