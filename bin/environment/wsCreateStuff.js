@@ -124,11 +124,12 @@ const jsonHttpRequest = function (conf, actor, { body, ...options }) {
     if (!options['port'])
         options.port = conf.wsPortNumber;
 
+    const protocol = conf.wsProtocol;
     let p = new Promise((resolve, reject) => {
         // debug request
-        console.log("http "+options.method, JSON.stringify(options), bodyToSend);
+        console.log(protocol+" "+options.method, JSON.stringify(options), bodyToSend);
 
-        const req = (conf.wsProtocol === "http" ? http : https).request(
+        const req = (protocol === "http" ? http : https).request(
             {
                 ...options,
             },
@@ -138,10 +139,14 @@ const jsonHttpRequest = function (conf, actor, { body, ...options }) {
                 res.on('end', () => {
                     let resBody = Buffer.concat(chunks);
                     //console.log("res.headers=", res.headers);
-                    if (res.headers['content-type'].startsWith('application/json')) {
-                        resBody = JSON.parse(resBody);
+                    const contentType = res.headers['content-type'];
+                    if (contentType && contentType.startsWith('application/json')) {
+                        resolve(JSON.parse(resBody)); // seems to be a JSON reply. Attempt to parse.
+                    } else if (contentType && contentType.startsWith('text/')) {
+                        resolve(resBody.toString()); // seems to be readable text.
+                    } else {
+                        resolve(resBody); // don't know what content-type is this. Return it as a Buffer.
                     }
-                    resolve(resBody)
                 });
             }
         );
@@ -154,11 +159,7 @@ const jsonHttpRequest = function (conf, actor, { body, ...options }) {
 
     // debug reply
     p.then((r) => {
-        if (Buffer.isBuffer(r)) {
-            console.log("resB", r.toString());
-        } else {
-            console.log("res", r);
-        }
+        console.log("res", r);
     });
 
     return p;
@@ -429,7 +430,7 @@ const salesCreateTest = async function (conf) {
     const msdBatches = credentials.MSD.batches;
     const gtin = "00366582505358";
     const batch = msdBatches[gtin][0];
-    console.log("batch", batch);
+    //console.log("batch", batch);
     const firstSerialNumber = batch.serialNumbers[0];
     const sale1Pha1 = {
         "id": pha1.id.secret + "-" + (new Date()).toISOString(),
@@ -446,7 +447,7 @@ const salesCreateTest = async function (conf) {
         path: `/traceability/sale/create`,
         body: sale1Pha1
     });
-    console.log("Sale", resSale);
+    //console.log("Sale", resSale);
 
     console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
