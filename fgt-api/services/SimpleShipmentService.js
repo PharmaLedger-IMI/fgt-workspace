@@ -78,7 +78,26 @@ function SimpleShipmentService(domain, strategy) {
                             } catch (e) {
                                 return callback(e);
                             }
-                            callback(undefined, simpleShipment, dsu, linesSSI);
+
+                            const populateShipmentLineStatus = (accum, shipmentLinesSSIs, _callback) => {
+                                const shipmentLineSSI = shipmentLinesSSIs.shift();
+                                if (!shipmentLineSSI)
+                                    return _callback(undefined, accum);
+                                shipmentLineService.get(shipmentLineSSI, (err, shipmentLine) => {
+                                    if (err)
+                                        return _callback(err);
+                                    accum.push(shipmentLine);
+                                    populateShipmentLineStatus(accum, shipmentLinesSSIs, _callback);
+                                })
+                            }
+
+                            populateShipmentLineStatus([], linesSSI.slice(), (err, shipmentLines) => {
+                                if (err)
+                                    return callback(err);
+                                simpleShipment.shipmentLines = shipmentLines;
+                                callback(undefined, simpleShipment, dsu, linesSSI);
+                            })
+
                         });
                     });
                 });
