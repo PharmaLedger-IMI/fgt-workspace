@@ -210,8 +210,11 @@ class Api {
             log(`Setting up ${op.method} on ${endpoint}`)
             method(endpoint, (req, res, next) => {
                 parseRequestBody(req, (err, body) => {
-                    if (err)
-                        return self._handleError(res, new BadRequest("Could not parse request Body"));
+                    if (err) {
+                        console.log('err=', err);
+                        return self._handleError(res, new BadRequest(err));
+                        // return self._handleError(res, new BadRequest("Could not parse request Body"));
+                    }
 
                     self._methodMiddleware(op.endpoint, req.params, req.query, body, (err, results) => {
                         if (err)
