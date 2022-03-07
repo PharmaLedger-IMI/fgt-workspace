@@ -91,6 +91,12 @@ if (conf.env === "dev") {
  */
 
 // Based on
+// https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
+function sleep(millis) {
+    return new Promise(resolve => setTimeout(resolve, millis));
+}
+
+// Based on
 // https://stackoverflow.com/questions/6158933/how-is-an-http-post-request-made-in-node-js
 const jsonHttpRequest = function (conf, actor, { body, ...options }) {
     const bodyToSend = (body && typeof body != "string") ? JSON.stringify(body) : body;
@@ -271,11 +277,12 @@ const batchesCreate = async function (conf, actor) {
 };
 
 const shipmentsCreateTest = async function (conf) {
+    const sleepMs = 5000;
     const msd = credentials.MSD;
-    const wha1 = WSH1;
+    const whs1 = WSH1;
     const msdBatches = msd.batches;
     const shipment1MsdToWha1 = {
-        "orderId": wha1.id.secret + "-" + (new Date()).toISOString(),
+        "orderId": whs1.id.secret + "-" + (new Date()).toISOString(),
         "requesterId": WSH1.id.secret,
         "shipmentLines": [
             {
@@ -309,6 +316,8 @@ const shipmentsCreateTest = async function (conf) {
     if (!shipmentId2) {
         throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUPickup));
     }
+    console.log("Sleep "+sleepMs+"ms");
+    await sleep(sleepMs);
     const resUTransit = await jsonPut(conf, msd, {
         path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
         body: {
@@ -320,6 +329,8 @@ const shipmentsCreateTest = async function (conf) {
     if (!shipmentId3) {
         throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUTransit));
     }
+    console.log("Sleep "+sleepMs+"ms");
+    await sleep(sleepMs);
     const resUDelivered = await jsonPut(conf, msd, {
         path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
         body: {
@@ -330,6 +341,32 @@ const shipmentsCreateTest = async function (conf) {
     const shipmentId4 = resUDelivered.shipmentId;
     if (!shipmentId4) {
         throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUDelivered));
+    }
+    console.log("Sleep "+sleepMs+"ms");
+    await sleep(sleepMs);
+    const resUReceived = await jsonPut(conf, whs1, {
+        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
+        body: {
+            "status": ShipmentStatus.RECEIVED,
+            "extraInfo": "Received in good condition by a test script!"
+        }
+    });
+    const shipmentId5 = resUReceived.shipmentId;
+    if (!shipmentId5) {
+        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUReceived));
+    }
+    console.log("Sleep "+sleepMs+"ms");
+    await sleep(sleepMs);
+    const resUConfirmed = await jsonPut(conf, whs1, {
+        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
+        body: {
+            "status": ShipmentStatus.CONFIRMED,
+            "extraInfo": "Confirmed into stock by a test script!"
+        }
+    });
+    const shipmentId6 = resUConfirmed.shipmentId;
+    if (!shipmentId6) {
+        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUConfirmed));
     }
 }
 
