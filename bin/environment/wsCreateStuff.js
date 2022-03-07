@@ -21,6 +21,9 @@ const credentials = require('./credentials/credentialsTests'); // TODO require .
 const MAHS = [credentials.PFIZER, credentials.MSD, credentials.ROCHE, credentials.BAYER, credentials.NOVO_NORDISK, credentials.GSK, credentials.TAKEDA];
 const WSH1 = require("../../docker/api/env/whs-1.json");
 const WSH2 = require("../../docker/api/env/whs-2.json");
+const PHA1 = require("../../docker/api/env/pha-1.json");
+const PHA2 = require("../../docker/api/env/pha-2.json");
+const SLEEP_MS = 5000;
 
 //const products = require('./products/productsTests');
 const getBatches = require('./batches/batchesRandom');
@@ -42,6 +45,11 @@ class ShipmentsEnum {
     static test = "test";
 };
 
+class SalesEnum {
+    static none = "none";
+    static test = "test";
+};
+
 
 const defaultOps = {
     wsProtocol: "http",
@@ -50,7 +58,8 @@ const defaultOps = {
     env: "localhost",
     products: ProductsEnum.test,
     batches: BatchesEnum.test,
-    shipments: ShipmentsEnum.test
+    shipments: ShipmentsEnum.test,
+    sales: SalesEnum.test
 }
 
 if (process.argv.includes("--help")
@@ -67,6 +76,7 @@ if (process.argv.includes("--help")
     console.log("\t--env=localhost*|dev|tst");
     console.log("\t--products=none|test*");
     console.log("\t--shipments=none|test*");
+    console.log("\t--sales=none|test*");
     console.log();
     console.log("* - is the default setting");
     process.exit(0);
@@ -177,11 +187,17 @@ const getHostnameForActor = function (conf, actor) {
     // test WHS
     let whsMatch = actor.id.secret.match(/^WHS([0-9]+)$/);
     if (whsMatch) {
-        let whsNumber = parseInt(whsMatch[1])+"";
+        let whsNumber = parseInt(whsMatch[1])+""; // eliminate leading zeros
         // taked is special
         if (whsNumber==="999999") 
             whsNumber = "takeda";
         return `api-whs${whsNumber}${conf.wsDomainSuffix}`;
+    }
+    // test PHA
+    let phaMatch = actor.id.secret.match(/^PHA([0-9]+)$/);
+    if (phaMatch) {
+        let phaNumber = parseInt(phaMatch[1])+""; // eliminate leading zeros
+        return `api-pha${phaNumber}${conf.wsDomainSuffix}`;
     }
     throw Error("Cannot determine hostname for actor.email=" + actor.email.secret);
     //return undefined;
@@ -276,12 +292,89 @@ const batchesCreate = async function (conf, actor) {
     }
 };
 
+const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment) {
+    const resC = await jsonPost(conf, sender, {
+        path: `/traceability/shipment/create`,
+        body: shipment
+    });
+    const shipmentId = resC.shipmentId;
+    if (!shipmentId) {
+        throw Error("create/shipment "+shipment+" reply has no shipmentId: "+JSON.stringify(resC));
+    }
+    const resUPickup = await jsonPut(conf, sender, {
+        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
+        body: {
+            "status": ShipmentStatus.PICKUP,
+            "extraInfo": "Ready to pick up by a test script"
+        }
+    });
+    const shipmentId2 = resUPickup.shipmentId;
+    if (!shipmentId2) {
+        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUPickup));
+    }
+    console.log("Sleep "+SLEEP_MS+"ms");
+    await sleep(SLEEP_MS);
+    const resUTransit = await jsonPut(conf, sender, {
+        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
+        body: {
+            "status": ShipmentStatus.TRANSIT,
+            "extraInfo": "Picked up in good condition by a test script!"
+        }
+    });
+    const shipmentId3 = resUTransit.shipmentId;
+    if (!shipmentId3) {
+        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUTransit));
+    }
+    console.log("Sleep "+SLEEP_MS+"ms");
+    await sleep(SLEEP_MS);
+    const resUDelivered = await jsonPut(conf, sender, {
+        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
+        body: {
+            "status": ShipmentStatus.DELIVERED,
+            "extraInfo": "Delivered in good condition by a test script!"
+        }
+    });
+    const shipmentId4 = resUDelivered.shipmentId;
+    if (!shipmentId4) {
+        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUDelivered));
+    }
+    console.log("Sleep "+SLEEP_MS+"ms");
+    await sleep(SLEEP_MS);
+    const resUReceived = await jsonPut(conf, receiver, {
+        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
+        body: {
+            "status": ShipmentStatus.RECEIVED,
+            "extraInfo": "Received in good condition by a test script!"
+        }
+    });
+    const shipmentId5 = resUReceived.shipmentId;
+    if (!shipmentId5) {
+        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUReceived));
+    }
+    console.log("Sleep "+SLEEP_MS+"ms");
+    await sleep(SLEEP_MS);
+    const resUConfirmed = await jsonPut(conf, receiver, {
+        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
+        body: {
+            "status": ShipmentStatus.CONFIRMED,
+            "extraInfo": "Confirmed into stock by a test script!"
+        }
+    });
+    const shipmentId6 = resUConfirmed.shipmentId;
+    if (!shipmentId6) {
+        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUConfirmed));
+    }
+
+    console.log("Sleep "+SLEEP_MS+"ms");
+    await sleep(SLEEP_MS);
+};
+
 const shipmentsCreateTest = async function (conf) {
-    const sleepMs = 5000;
     const msd = credentials.MSD;
     const whs1 = WSH1;
-    const msdBatches = msd.batches;
-    const shipment1MsdToWha1 = {
+    const pha1 = PHA1;
+
+    const shipment1MsdToWhs1 = {
         "orderId": whs1.id.secret + "-" + (new Date()).toISOString(),
         "requesterId": WSH1.id.secret,
         "shipmentLines": [
@@ -297,77 +390,27 @@ const shipmentsCreateTest = async function (conf) {
             }
         ]
     };
-    const resC = await jsonPost(conf, msd, {
-        path: `/traceability/shipment/create`,
-        body: shipment1MsdToWha1
-    });
-    const shipmentId = resC.shipmentId;
-    if (!shipmentId) {
-        throw Error("create/shipment "+shipment1MsdToWha1+" reply has no shipmentId: "+JSON.stringify(resC));
-    }
-    const resUPickup = await jsonPut(conf, msd, {
-        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
-        body: {
-            "status": ShipmentStatus.PICKUP,
-            "extraInfo": "Ready to pick up by a test script"
-        }
-    });
-    const shipmentId2 = resUPickup.shipmentId;
-    if (!shipmentId2) {
-        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUPickup));
-    }
-    console.log("Sleep "+sleepMs+"ms");
-    await sleep(sleepMs);
-    const resUTransit = await jsonPut(conf, msd, {
-        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
-        body: {
-            "status": ShipmentStatus.TRANSIT,
-            "extraInfo": "Picked up in good condition by a test script!"
-        }
-    });
-    const shipmentId3 = resUTransit.shipmentId;
-    if (!shipmentId3) {
-        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUTransit));
-    }
-    console.log("Sleep "+sleepMs+"ms");
-    await sleep(sleepMs);
-    const resUDelivered = await jsonPut(conf, msd, {
-        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
-        body: {
-            "status": ShipmentStatus.DELIVERED,
-            "extraInfo": "Delivered in good condition by a test script!"
-        }
-    });
-    const shipmentId4 = resUDelivered.shipmentId;
-    if (!shipmentId4) {
-        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUDelivered));
-    }
-    console.log("Sleep "+sleepMs+"ms");
-    await sleep(sleepMs);
-    const resUReceived = await jsonPut(conf, whs1, {
-        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
-        body: {
-            "status": ShipmentStatus.RECEIVED,
-            "extraInfo": "Received in good condition by a test script!"
-        }
-    });
-    const shipmentId5 = resUReceived.shipmentId;
-    if (!shipmentId5) {
-        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUReceived));
-    }
-    console.log("Sleep "+sleepMs+"ms");
-    await sleep(sleepMs);
-    const resUConfirmed = await jsonPut(conf, whs1, {
-        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
-        body: {
-            "status": ShipmentStatus.CONFIRMED,
-            "extraInfo": "Confirmed into stock by a test script!"
-        }
-    });
-    const shipmentId6 = resUConfirmed.shipmentId;
-    if (!shipmentId6) {
-        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUConfirmed));
-    }
+
+    await shipmentCreateAndDeliver(conf, msd, whs1, shipment1MsdToWhs1);
+
+    const shipment2Whs1ToPha1 = {
+        "orderId": pha1.id.secret + "-" + (new Date()).toISOString(),
+        "requesterId": PHA1.id.secret,
+        "shipmentLines": [
+            {
+                "gtin": "00366582505358",
+                "batch": "R034995",
+                "quantity": 50
+            },
+            {
+                "gtin": "00191778005295",
+                "batch": "U002114",
+                "quantity": 50
+            }
+        ]
+    };
+
+    await shipmentCreateAndDeliver(conf, whs1, pha1, shipment2Whs1ToPha1);
 }
 
 const shipmentsCreate = async function (conf, actor) {
@@ -380,13 +423,51 @@ const shipmentsCreate = async function (conf, actor) {
     }
 };
 
+const salesCreateTest = async function (conf) {
+    const pha1 = PHA1;
+
+    const msdBatches = credentials.MSD.batches;
+    const gtin = "00366582505358";
+    const batch = msdBatches[gtin][0];
+    console.log("batch", batch);
+    const firstSerialNumber = batch.serialNumbers[0];
+    const sale1Pha1 = {
+        "id": pha1.id.secret + "-" + (new Date()).toISOString(),
+        "productList": [
+            {
+                "gtin": gtin,
+                "batchNumber": batch.batchNumber,
+                "serialNumber": firstSerialNumber
+            }
+        ]
+    };
+
+    const resSale = await jsonPost(conf, pha1, {
+        path: `/traceability/sale/create`,
+        body: sale1Pha1
+    });
+    console.log("Sale", resSale);
+
+    console.log("Sleep "+SLEEP_MS+"ms");
+    await sleep(SLEEP_MS);
+}
+
+const salesCreate = async function (conf, actor) {
+    if (conf.sales === SalesEnum.none) {
+        return; // don't create sales
+    } else if (conf.sales === SalesEnum.test) {
+        await salesCreateTest(conf, actor);
+    } else {
+        throw Error("Unsupported setting sales=" + conf.sales);
+    }
+};
+
 
 /**
  * Main
  */
 
 (async () => {
-    const WHSS = []
     //console.log("Credentials", MAHS);
     //console.log("Products", products.getPfizerProducts());
     for (const mah of MAHS) {
@@ -394,6 +475,7 @@ const shipmentsCreate = async function (conf, actor) {
         await batchesCreate(conf, mah);
     };
 
-    const mah = credentials.BAYER;
+    const mah = credentials.MSD; // not actually used for now
     await shipmentsCreate(conf, mah);
+    await salesCreate(conf, mah);
 })();
