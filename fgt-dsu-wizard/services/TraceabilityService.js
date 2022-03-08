@@ -121,7 +121,7 @@ function TraceabilityService(shipmentLineManager, receiptManager, requesterId){
     this.fromProduct = function(product, callback){
         const {gtin, batchNumber, serialNumber} = product;
         const idTracker = new IdTracker(gtin, batchNumber);
-        const productKey = `${gtin}-${batchNumber}-${serialNumber}`;
+        const productKey = receiptManager._genCompostKey(product);
 
         receiptManager.getOne(productKey, true, (err, product) => {
             if (err)

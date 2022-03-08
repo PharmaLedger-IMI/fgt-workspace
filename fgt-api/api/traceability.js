@@ -19,10 +19,10 @@ module.exports = class TraceabilityApi extends Api {
      * @param {function(err, traceability?)} callback
      */
     create(individualProduct, callback) {
-        this.manager.getOne(individualProduct, (err, traceability) => {
+        this.manager.getOne(individualProduct, (err, startNode, endNode, nodeList) => {
             if (err)
                 return callback(new BadRequest(err))
-            callback(undefined, traceability);
+            callback(undefined, nodeList);
         });
     }
 
