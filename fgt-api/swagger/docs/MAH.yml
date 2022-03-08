@@ -18,6 +18,7 @@ tags:
   - name: shipment
   - name: stock
   - name: receipt
+  - name: shipmentLine
   - name: traceability
 paths:
   /product/create:
@@ -1167,6 +1168,120 @@ paths:
                 expiry: string
                 status: string
                 sellerId: string
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /shipmentLine/getAll:
+    get:
+      tags:
+        - shipmentLine
+      summary: getAll
+      parameters:
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          description: >-
+            Search for a keyword in all tables indexes. search by keyword
+            disable other queries.
+        - name: page
+          in: query
+          schema:
+            type: string
+        - name: itemPerPage
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+          description: dsc or asc
+          example: dsc
+        - name: senderId
+          in: query
+          schema:
+            type: string
+          description: partner identifier that shipped the products
+        - name: requesterId
+          in: query
+          schema:
+            type: string
+          description: partner identifier that received the products
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  page: 0
+                  itemsPerPage: 0
+                  totalPages: 0
+                  query: {}
+                results:
+                  - gtin: string
+                    batch: string
+                    quantity: 0
+                    serialNumbers: []
+                    senderId: string
+                    requesterId: string
+                    status: string
+                    createdOn: 0
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 0
+                error: string
+                message: string
+  /shipmentLine/get/{keySSI}:
+    get:
+      tags:
+        - shipmentLine
+      summary: getOne
+      parameters:
+        - name: keySSI
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                gtin: string
+                batch: string
+                quantity: 0
+                serialNumbers: []
+                senderId: string
+                requesterId: string
+                status: string
+                createdOn: 0
         '501':
           description: Not Implemented
           content:
