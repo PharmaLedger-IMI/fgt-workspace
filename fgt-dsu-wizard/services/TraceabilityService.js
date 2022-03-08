@@ -47,6 +47,7 @@ function TraceabilityService(shipmentLineManager, receiptManager, requesterId){
         }, (err, shipmentLines) => {
             if (err)
                 return callback(err);
+            console.log('$$ traceabilityService getShipmentLines=', shipmentLines);
             const senders = [... (new Set(shipmentLines.map(sl => sl.senderId)))];
             callback(undefined, senders.map(s => {
                 return new Node({
@@ -58,11 +59,14 @@ function TraceabilityService(shipmentLineManager, receiptManager, requesterId){
     }
 
     const trackFromNode = function(node, tracker, callback){
+        console.log('\n$$ traceabilityService tracker=', JSON.stringify(tracker));
+        console.log('\n$$ traceabilityService node=', JSON.stringify(node));
 
         const nodePool = {};
         let lastNode = undefined;
 
         const addToPool = function(node){
+            console.log('\n$$ traceabilityService node addToPool=', JSON.stringify(node), '\n');
             if (node.title in nodePool){
                 const n = nodePool[node];
                 n.children = n.children || [];

@@ -161,7 +161,7 @@ class TraceabilityManager extends Manager{
             method(obj, (err, startNode, endNode) => {
                 if (err)
                     return callback(err);
-                console.log(`Tracking for product ${obj.gtin}, batch ${obj.batchNumber} and Serial ${obj.serialNumber} complete. Start and end Nodes:`, startNode, endNode);
+                console.log(`Tracking for product ${obj.gtin}, batch ${obj.batchNumber} and Serial ${obj.serialNumber} complete. Start and end Nodes:`, JSON.stringify(startNode), JSON.stringify(endNode));
                 const message = convertForJson(startNode, endNode);
                 callback(undefined, message.startNode, message.endNode, message.nodeList);
             });
