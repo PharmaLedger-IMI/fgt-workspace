@@ -265,10 +265,13 @@ const batchesCreateTest = async function (conf, actor) {
             }
             //console.log("Batch expiry=", batch.expiry);
             // https://github.com/PharmaLedger-IMI/fgt-workspace/issues/69
+            // issue #69 seems fixed, so we no longer truncate batches
+            /*
             if (batch.serialNumbers.length>3600) {
                 console.log("Batch "+batch.batchNumber+" serialNumber has "+batch.serialNumbers.length+" elements. Truncating to 3600.");
                 batch.serialNumbers = batch.serialNumbers.slice(0,3599);
             }
+            */
             await batchCreate(conf, actor, gtin, batch);
         }
     }
