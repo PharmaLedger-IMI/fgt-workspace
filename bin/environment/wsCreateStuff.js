@@ -23,6 +23,10 @@ const WSH1 = require("../../docker/api/env/whs-1.json");
 const WSH2 = require("../../docker/api/env/whs-2.json");
 const PHA1 = require("../../docker/api/env/pha-1.json");
 const PHA2 = require("../../docker/api/env/pha-2.json");
+
+const NUM_SALES = 2; // number of sales to perform - for now consume serialNumbers from 1st MSD batch
+const MY_SALES = []; // array of data returned by /sale/create
+
 const SLEEP_MS = 5000;
 
 //const products = require('./products/productsTests');
@@ -49,7 +53,6 @@ class SalesEnum {
     static none = "none";
     static test = "test";
 };
-
 
 const defaultOps = {
     wsProtocol: "http",
@@ -431,26 +434,33 @@ const salesCreateTest = async function (conf) {
     const gtin = "00366582505358";
     const batch = msdBatches[gtin][0];
     //console.log("batch", batch);
-    const firstSerialNumber = batch.serialNumbers[0];
-    const sale1Pha1 = {
-        "id": pha1.id.secret + "-" + (new Date()).toISOString(),
-        "productList": [
-            {
-                "gtin": gtin,
-                "batchNumber": batch.batchNumber,
-                "serialNumber": firstSerialNumber
-            }
-        ]
-    };
 
-    const resSale = await jsonPost(conf, pha1, {
-        path: `/traceability/sale/create`,
-        body: sale1Pha1
-    });
-    //console.log("Sale", resSale);
+    let i=0;
+    while (i<NUM_SALES) {
+        const saleSerialNumber = batch.serialNumbers[i];
+        const saleData = { // see body of http://swagger-pha1.localhost:8080/#/sale/post_sale_create
+            "id": pha1.id.secret + "-" + (new Date()).toISOString(),
+            "productList": [
+                {
+                    "gtin": gtin,
+                    "batchNumber": batch.batchNumber,
+                    "serialNumber": saleSerialNumber
+                }
+            ]
+        };
 
-    console.log("Sleep "+SLEEP_MS+"ms");
-    await sleep(SLEEP_MS);
+        const resSale = await jsonPost(conf, pha1, {
+            path: `/traceability/sale/create`,
+            body: saleData
+        });
+        //console.log("Sale", resSale);
+        MY_SALES.push(resSale);
+
+        console.log("Sleep " + SLEEP_MS + "ms");
+        await sleep(SLEEP_MS);
+
+        i++;
+    }
 }
 
 const salesCreate = async function (conf, actor) {
