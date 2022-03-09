@@ -80,13 +80,15 @@ class SimpleShipmentManager extends Manager {
 
     /**
      * generates the db's key for the SimpleShipment
-     * @param {string|number} requesterId
-     * @param {string|number} orderId
+     * @param {SimpleShipment} simpleShipment
      * @return {string}
      * @protected
      */
-    _genCompostKey(requesterId, orderId) {
-        return `${requesterId}-${orderId}`;
+    _genCompostKey(simpleShipment) {
+        const prefix = this.getIdentity().id === simpleShipment.requesterId ? simpleShipment.senderId : simpleShipment.requesterId;
+        const splitShipmentId = `${simpleShipment.shipmentId}`.split('-');
+        const shipmentId = splitShipmentId[splitShipmentId.length - 1];
+        return `${prefix}-${simpleShipment.orderId}-${shipmentId}`;
     }
 
     /**
@@ -105,6 +107,7 @@ class SimpleShipmentManager extends Manager {
         }
 
         const createInner = function (_callback) {
+            simpleShipment.shipmentId = self._genCompostKey(simpleShipment);
             self.simpleShipmentService.create(simpleShipment, (err, keySSI, shipmentLinesSSIs) => {
                 if (err)
                     return callbackCancelBatch(`Could not create product DSU for ${simpleShipment.orderId}`);
@@ -397,6 +400,8 @@ class SimpleShipmentManager extends Manager {
         self.simpleShipmentService.get(message, (err, receiveSimpleShipment) => {
             if (err)
                 return callback(err);
+
+            receiveSimpleShipment.shipmentId = self._genCompostKey(receiveSimpleShipment);
             self.getOne(receiveSimpleShipment.shipmentId, true, (err, simpleShipment) => {
                 if (err)
                     return self.create(receiveSimpleShipment, (err, insertSimpleShipment) => callback(err));

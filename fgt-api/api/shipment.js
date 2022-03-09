@@ -28,6 +28,7 @@ class ShipmentApi extends Api {
 
         const [err, _simpleShipment] = this._validate({
             ...simpleShipment,
+            shipmentId: (Date.now() + `${Math.random()}`.substring(2, 9)), // force generate shipmentId to not use the shipmentId provided from user (such as whitelist)
             senderId: self.manager.getIdentity().id
         });
         if (err)

@@ -20,12 +20,8 @@ class SimpleShipment {
                 if (simpleShipment.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = simpleShipment[prop];
 
-        if (simpleShipment.shipmentId) {
-            if (!`${simpleShipment.shipmentId}`.startsWith(`${simpleShipment.requesterId}-` ))
-                this.shipmentId = `${simpleShipment.requesterId}-${simpleShipment.shipmentId}`
-        }
-        else
-            this.shipmentId = `${simpleShipment.requesterId}-` + (Date.now() + `${Math.random()}`.substring(2, 9));
+        if (!simpleShipment.shipmentId)
+            this.shipmentId = Date.now() + `${Math.random()}`.substring(2, 9);
 
         if (!this.status)
             this.status = ShipmentStatus.CREATED;
@@ -45,8 +41,6 @@ class SimpleShipment {
             errors.push(`shipmentId is mandatory`);
         if (this.shipmentId && typeof this.shipmentId !== 'string')
             errors.push(`shipmentId is not a string`);
-        if (this.shipmentId && !this.shipmentId.startsWith(this.requesterId))
-            errors.push(`shipmentId is invalid`);
         if (!this.orderId)
             errors.push(`orderId is mandatory`);
         if (typeof this.orderId !== 'string')
