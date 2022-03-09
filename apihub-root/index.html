@@ -329,11 +329,7 @@
             <li>Added Sequence diagram exposing the status update steps for a shipment on the participants workspaces;</li>
             <li>Fixed the traceability response and the product status after sale;</li>
             <li>Added shipmentLines endpoint to MAH;</li>
-            <li>Shipment id generator improved:</li>
-            <ul>
-                <li>for the shipment <b>sender side</b>, the shipmentId format is: <i>requesterId-orderId-shipmentId</i>;</li>
-                <li>for the shipment <b>requester side</b>, the shipmentId format is: <i>senderId-orderId-shipmentId</i>;</li>
-            </ul>
+            <li>Updated shipment id generator to format: <i>{senderId}-{requesterId}-{orderId}-{randomId};</i></li>
         </ul>
 
         <h2>v0.8.1 Release Notes 2022-03-03</h2>
