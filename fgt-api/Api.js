@@ -43,12 +43,16 @@ const ensureAllMethods = function(operations){
  */
 const parseRequestBody = function(req, callback){
     const data = [];
+    let count = 0;
 
     req.on('data', (chunk) => {
+        count++;
+        console.log(`\n(${count}) chunk=`, Buffer.from(chunk).toString());
         data.push(chunk);
     });
 
     req.on('end', () => {
+        console.log(`\n(end) data=`, Buffer.concat(data).toString(), '\n');
         try {
             req.body = data.length ? JSON.parse(data) : {};
         } catch (e) {
