@@ -4,7 +4,7 @@ const Sale = require('../model/Sale');
 const Batch = require('../model/Batch');
 const BatchStatus = require('../model/BatchStatus');
 const IndividualProduct = require('../model/IndividualProduct');
-const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
+const IndividualProductStatus = require('../model/IndividualProductStatus');
 const utils = require('../services').utils;
 const getReceiptManager = require('./ReceiptManager');
 
@@ -125,7 +125,7 @@ class SaleManager extends Manager{
                     name: stockProduct.name,
                     manufName: stockProduct.manufName,
                     expiry: stockProduct.batch.expiry,
-                    status: stockProduct.batch.batchStatus.status
+                    status: IndividualProductStatus.DISPENSED
                 });
 
                 // add to aggIndividualProductsByMAH
