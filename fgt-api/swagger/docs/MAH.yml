@@ -1239,7 +1239,9 @@ paths:
                     serialNumbers: []
                     senderId: string
                     requesterId: string
-                    status: string
+                    status:
+                      status: string
+                      log: string[]
                     createdOn: 0
         '501':
           description: Not Implemented
@@ -1280,7 +1282,9 @@ paths:
                 serialNumbers: []
                 senderId: string
                 requesterId: string
-                status: string
+                status:
+                  status: string
+                  log: string[]
                 createdOn: 0
         '501':
           description: Not Implemented
