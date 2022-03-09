@@ -323,10 +323,16 @@
 
         <p><span style="font-weight: bold;">WARNING:</span> Unstable software and environments. Use at your own risk! Data persistence at risk of unexpected reset!</p>
 
-        <h2>v0.8.2 Release Notes XXXX</h2>
+        <h2>v0.8.2 Release Notes 2022-03-09</h2>
         <h4>Rest API:</h4>
         <ul>
             <li>Added Sequence diagram exposing the status update steps for a shipment on the participants workspaces;</li>
+            <li>Fixed the traceability response and the product status after sale;</li>
+            <li>Shipment id generator improved:</li>
+            <ul>
+                <li>for the shipment <b>sender side</b>, the shipment format is: <i>requesterId-orderId-shipmentId</i>;</li>
+                <li>for the shipment <b>requester side</b>, the shipment format is: <i>senderId-orderId-shipmentId</i>;</li>
+            </ul>
         </ul>
 
         <h2>v0.8.1 Release Notes 2022-03-03</h2>
