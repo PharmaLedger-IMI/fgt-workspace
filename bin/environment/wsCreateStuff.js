@@ -13,7 +13,7 @@
 const http = require('http');
 const https = require('https');
 
-const { argParser, genDate } = require('./utils');
+const { argParser, validateGtin } = require('./utils');
 
 const ShipmentStatus = require('../../fgt-dsu-wizard/model/ShipmentStatus')
 
@@ -216,6 +216,11 @@ const getHostnameForActor = function (conf, actor) {
 }
 
 const productCreate = async function (conf, actor, product) {
+    if (!validateGtin(product.gtin)) {
+        const msg = "Creating product skipping invalid GTIN "+product.gtin;
+        console.log(msg);
+        return { "message": msg };
+    }
     const res = await jsonPost(conf, actor, {
         path: `/traceability/product/create`,
         body: { // see body example in follows http://swagger-mah-*.localhost:8080/#/product/post_product_create
@@ -247,6 +252,11 @@ const productsCreate = async function (conf, actor) {
 };
 
 const batchCreate = async function (conf, actor, gtin, batch) {
+    if (!validateGtin(gtin)) {
+        const msg = "Creating batch skipping invalid GTIN "+gtin+" for batchNumber "+batch.batchNumber;
+        console.log(msg);
+        return { "message": msg };
+    }
     const res = await jsonPost(conf, actor, {
         path: `/traceability/batch/create`,
         body: { // see body example in https://swagger-mah-*-fgt-dev.pharmaledger.pdmfc.com/#/batch/post_batch_create

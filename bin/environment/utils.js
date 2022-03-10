@@ -19,9 +19,9 @@ function generateGtin(){
 
 function validateGtin(gtin){
     gtin = gtin + '';
-    if (!gtin.match(/\d{14}/g))
+    if(!(/\b\d{14}\b/g.test(gtin)))
         return false
-    const digits = gtin.splice(0, 13);
+    const digits = gtin.slice(0, 13);
     const checksum = calculateGtinCheckSum(digits);
     return parseInt(checksum) === parseInt(gtin.charAt(13));
 }
