@@ -89,6 +89,7 @@ const initApis = function(express, apis, port, walletName, ...managerInitMethods
                         next();
                     });
                     server.use(cors());
+                    server.use(express.urlencoded({extended: true}));
                     server.set('query parser', 'simple');
 
                     Object.values(apis).forEach(api => {
