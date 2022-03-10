@@ -241,6 +241,9 @@ const batchCreate = async function (conf, actor, gtin, batch) {
             "serialNumbers": batch.serialNumbers
         }
     });
+    if (!res.keySSI) {
+        throw Error("batch/create "+batch.batchNumber+" reply has no keySSI: "+JSON.stringify(res));
+    }
     return res;
 };
 
