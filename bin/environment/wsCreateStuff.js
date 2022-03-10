@@ -309,7 +309,7 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     });
     const shipmentId = resC.shipmentId;
     if (!shipmentId) {
-        throw Error("create/shipment "+shipment+" reply has no shipmentId: "+JSON.stringify(resC));
+        throw Error("shipment/create "+shipment+" reply has no shipmentId: "+JSON.stringify(resC));
     }
     const resUPickup = await jsonPut(conf, sender, {
         path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
@@ -320,7 +320,7 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     });
     const shipmentId2 = resUPickup.shipmentId;
     if (!shipmentId2) {
-        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUPickup));
+        throw Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUPickup));
     }
     console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
@@ -333,7 +333,7 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     });
     const shipmentId3 = resUTransit.shipmentId;
     if (!shipmentId3) {
-        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUTransit));
+        throw Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUTransit));
     }
     console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
@@ -346,7 +346,7 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     });
     const shipmentId4 = resUDelivered.shipmentId;
     if (!shipmentId4) {
-        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUDelivered));
+        throw Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUDelivered));
     }
     console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
@@ -359,7 +359,7 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     });
     const shipmentId5 = resUReceived.shipmentId;
     if (!shipmentId5) {
-        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUReceived));
+        throw Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUReceived));
     }
     console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
@@ -372,7 +372,7 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     });
     const shipmentId6 = resUConfirmed.shipmentId;
     if (!shipmentId6) {
-        throw Error("update/shipment "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUConfirmed));
+        throw Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUConfirmed));
     }
 
     console.log("Sleep "+SLEEP_MS+"ms");
