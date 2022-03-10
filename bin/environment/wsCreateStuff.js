@@ -55,6 +55,7 @@ class SalesEnum {
 };
 
 const defaultOps = {
+    ignoreDups: "t", // falsy will 
     wsProtocol: "http",
     wsDomainSuffix: ".localhost",
     wsPortNumber: "8080",
@@ -75,8 +76,10 @@ if (process.argv.includes("--help")
     console.log();
     console.log("Where options can be any of:");
     console.log();
+    console.log("\t--env=single|localhost*|dev|tst  single is for a single MAH on port 8081");
+    console.log("\t--ignoreDups=t*|                 only for product and batch creation");
+    console.log();
     console.log("\t--batches=none|test*|random");
-    console.log("\t--env=localhost*|dev|tst");
     console.log("\t--products=none|test*");
     console.log("\t--shipments=none|test*");
     console.log("\t--sales=none|test*");
@@ -87,7 +90,9 @@ if (process.argv.includes("--help")
 
 const conf = argParser(defaultOps, process.argv);
 
-if (conf.env === "dev") {
+if (conf.env === "single") {
+    conf.wsPortNumber = "8081";
+} else if (conf.env === "dev") {
     conf.wsDomainSuffix = "-fgt-dev.pharmaledger.pdmfc.com";
     conf.wsPortNumber = "443";
     conf.wsProtocol = "https";
@@ -179,6 +184,9 @@ const jsonPut = function (conf, actor, { body, ...options }) {
 }
 
 const getHostnameForActor = function (conf, actor) {
+    if (conf.env=="single") {
+        return "localhost";
+    }
     // test MAH
     let mahMatch = actor.email.secret.match(/^(.*)@mah.*$/);
     if (mahMatch) {
@@ -217,7 +225,11 @@ const productCreate = async function (conf, actor, product) {
         }
     });
     if (!res.keySSI) {
-        throw Error("product/create "+product.gtin+" reply has no keySSI: "+JSON.stringify(res));
+        if (conf.ignoreDups && res.message && res.message.endsWith("because it already exists.")) {
+            return res;
+        } else {
+            throw Error("product/create "+product.gtin+" reply has no keySSI: "+JSON.stringify(res));
+        }
     }
     return res;
 };
@@ -245,7 +257,11 @@ const batchCreate = async function (conf, actor, gtin, batch) {
         }
     });
     if (!res.keySSI) {
-        throw Error("batch/create "+batch.batchNumber+" reply has no keySSI: "+JSON.stringify(res));
+        if (conf.ignoreDups && res.message && res.message.startsWith("ConstDSU already exists!")) {
+            return res;
+        } else {
+            throw Error("batch/create "+batch.batchNumber+" reply has no keySSI: "+JSON.stringify(res));
+        }
     }
     return res;
 };
