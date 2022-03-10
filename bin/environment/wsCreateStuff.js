@@ -216,6 +216,9 @@ const productCreate = async function (conf, actor, product) {
             "description": product.description
         }
     });
+    if (!res.keySSI) {
+        throw Error("product/create "+product.gtin+" reply has no keySSI: "+JSON.stringify(res));
+    }
     return res;
 };
 
