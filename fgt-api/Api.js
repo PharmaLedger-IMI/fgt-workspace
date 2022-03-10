@@ -54,7 +54,7 @@ const parseRequestBody = function(req, callback){
     req.on('end', () => {
         console.log(`\n(end) data=`, Buffer.concat(data).toString(), '\n');
         try {
-            req.body = data.length ? JSON.parse(Buffer.concat(data)) : {};
+            req.body = data.length ? JSON.parse(Buffer.concat(data).toString()) : {};
         } catch (e) {
             return callback(e);
         }
