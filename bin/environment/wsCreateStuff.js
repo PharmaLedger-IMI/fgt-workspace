@@ -19,6 +19,7 @@ const ShipmentStatus = require('../../fgt-dsu-wizard/model/ShipmentStatus')
 
 const credentials = require('./credentials/credentialsTests'); // TODO require ../../docker/api/env/mah-*.json ?
 const MAHS = [credentials.PFIZER, credentials.MSD, credentials.ROCHE, credentials.BAYER, credentials.NOVO_NORDISK, credentials.GSK, credentials.TAKEDA];
+const MAH_MSD = credentials.MSD;
 const WSH1 = require("../../docker/api/env/whs-1.json");
 const WSH2 = require("../../docker/api/env/whs-2.json");
 const PHA1 = require("../../docker/api/env/pha-1.json");
@@ -54,6 +55,16 @@ class SalesEnum {
     static test = "test";
 };
 
+class TraceabilityEnum {
+    static none = "none";
+    static test = "test";
+};
+
+class ReceiptsEnum {
+    static none = "none";
+    static test = "test";
+};
+
 const defaultOps = {
     ignoreDups: "t", // falsy will 
     wsProtocol: "http",
@@ -63,7 +74,9 @@ const defaultOps = {
     products: ProductsEnum.test,
     batches: BatchesEnum.test,
     shipments: ShipmentsEnum.test,
-    sales: SalesEnum.test
+    sales: SalesEnum.test,
+    traceability: TraceabilityEnum.test,
+    receipts: ReceiptsEnum.test
 }
 
 if (process.argv.includes("--help")
@@ -83,6 +96,8 @@ if (process.argv.includes("--help")
     console.log("\t--products=none|test*");
     console.log("\t--shipments=none|test*");
     console.log("\t--sales=none|test*");
+    console.log("\t--receipts=none|test*");
+    console.log("\t--traceability=none|test*");
     console.log();
     console.log("* - is the default setting");
     process.exit(0);
@@ -126,7 +141,8 @@ const jsonHttpRequest = function (conf, actor, { body, ...options }) {
     } else if (!options.headers['content-type']) {
         options.headers['content-type'] = 'application/json';
     }
-    options.headers['content-length'] = Buffer.byteLength(bodyToSend);
+    if (bodyToSend)
+        options.headers['content-length'] = Buffer.byteLength(bodyToSend);
     if (!options['hostname'])
         options.hostname = getHostnameForActor(conf, actor);
     if (!options['port'])
@@ -171,6 +187,11 @@ const jsonHttpRequest = function (conf, actor, { body, ...options }) {
     });
 
     return p;
+}
+
+const jsonGet = function (conf, actor, { body, ...options }) {
+    options.method = "GET";
+    return jsonHttpRequest(conf, actor, { body, ...options });
 }
 
 const jsonPost = function (conf, actor, { body, ...options }) {
@@ -462,19 +483,17 @@ const shipmentsCreate = async function (conf, actor) {
     }
 };
 
-const salesCreateTest = async function (conf) {
-    const pha1 = PHA1;
-
-    const msdBatches = credentials.MSD.batches;
+const salesCreateTest = async function (conf, manufActor, sellerActor, mySales) {
+    const manufBatches = manufActor.batches;
     const gtin = "00366582505358";
-    const batch = msdBatches[gtin][0];
+    const batch = manufBatches[gtin][0];
     //console.log("batch", batch);
 
-    let i=0;
-    while (i<NUM_SALES) {
+    let i=2;
+    while (i<2+NUM_SALES) {
         const saleSerialNumber = batch.serialNumbers[i];
         const saleData = { // see body of http://swagger-pha1.localhost:8080/#/sale/post_sale_create
-            "id": pha1.id.secret + "-" + (new Date()).toISOString(),
+            "id": sellerActor.id.secret + "-" + (new Date()).toISOString(),
             "productList": [
                 {
                     "gtin": gtin,
@@ -484,12 +503,12 @@ const salesCreateTest = async function (conf) {
             ]
         };
 
-        const resSale = await jsonPost(conf, pha1, {
+        const resSale = await jsonPost(conf, sellerActor, {
             path: `/traceability/sale/create`,
             body: saleData
         });
         //console.log("Sale", resSale);
-        MY_SALES.push(resSale);
+        mySales.push(resSale);
 
         console.log("Sleep " + SLEEP_MS + "ms");
         await sleep(SLEEP_MS);
@@ -498,13 +517,69 @@ const salesCreateTest = async function (conf) {
     }
 }
 
-const salesCreate = async function (conf, actor) {
+const salesCreate = async function (conf, manufActor, sellerActor, mySales) {
     if (conf.sales === SalesEnum.none) {
         return; // don't create sales
     } else if (conf.sales === SalesEnum.test) {
-        await salesCreateTest(conf, actor);
+        await salesCreateTest(conf, manufActor, sellerActor, mySales);
     } else {
         throw Error("Unsupported setting sales=" + conf.sales);
+    }
+};
+
+const traceabilityCreateTest = async function (conf, actor, mySales) {
+    for (const sale of mySales) {
+        for (const product of sale.productList) {
+            const res = await jsonPost(conf, actor, {
+                path: `/traceability/traceability/create`,
+                body: {
+                    "gtin": product.gtin,
+                    "batchNumber": product.batchNumber
+                }
+            });
+            //console.log("Trc", res);
+            if (!res["1"]) {
+                throw Error("traceability/create "+product.batchNumber+" at "+actor.id.secret+" reply has no data: "+JSON.stringify(res));
+            }
+            console.log("Sleep " + SLEEP_MS + "ms");
+            await sleep(SLEEP_MS);
+        }
+    }
+};
+
+const traceabilityCreate = async function (conf, actor, mySales) {
+    if (conf.traceability === TraceabilityEnum.none) {
+        return; // don't create tracebility requests
+    } else if (conf.traceability === TraceabilityEnum.test) {
+        await traceabilityCreateTest(conf, actor, mySales);
+    } else {
+        throw Error("Unsupported setting traceability=" + conf.sales);
+    }
+};
+
+const receiptsGetTest = async function (conf, actor, mySales) {
+    for (const sale of mySales) {
+        for (const product of sale.productList) {
+            const res = await jsonGet(conf, actor, {
+                path: `/traceability/receipt/get/${encodeURI(product.gtin)}/${encodeURI(product.batchNumber)}/${encodeURI(product.serialNumber)}`,
+            });
+            //console.log("Rec", res);
+            if (!res.sellerId) {
+                throw Error("receipt/get "+product.batchNumber+" at "+actor.id.secret+" reply has no data: "+JSON.stringify(res));
+            }
+            console.log("Sleep " + SLEEP_MS + "ms");
+            await sleep(SLEEP_MS);
+        }
+    }
+};
+
+const receiptsGet = async function (conf, actor, mySales) {
+    if (conf.receipts === ReceiptsEnum.none) {
+        return; // don't create tracebility requests
+    } else if (conf.receipts === ReceiptsEnum.test) {
+        await receiptsGetTest(conf, actor, mySales);
+    } else {
+        throw Error("Unsupported setting receipts=" + conf.sales);
     }
 };
 
@@ -521,7 +596,8 @@ const salesCreate = async function (conf, actor) {
         await batchesCreate(conf, mah);
     };
 
-    const mah = credentials.MSD; // not actually used for now
-    await shipmentsCreate(conf, mah);
-    await salesCreate(conf, mah);
+    await shipmentsCreate(conf, MAH_MSD);
+    await salesCreate(conf, MAH_MSD, PHA1, MY_SALES);
+    await traceabilityCreate(conf, PHA1, MY_SALES);
+    await receiptsGet(conf, PHA1, MY_SALES);
 })();
