@@ -287,7 +287,6 @@ class ReceiptManager extends Manager{
                 return callback();
             default:
                 createReceipt();
-                callback();
         }
     };
 
