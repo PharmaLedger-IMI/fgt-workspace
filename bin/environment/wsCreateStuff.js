@@ -13,9 +13,10 @@
 const http = require('http');
 const https = require('https');
 
-const { argParser, validateGtin } = require('./utils');
+const { argParser, validateGtin, generateRandomInt } = require('./utils');
 
-const ShipmentStatus = require('../../fgt-dsu-wizard/model/ShipmentStatus')
+const ShipmentStatus = require('../../fgt-dsu-wizard/model/ShipmentStatus');
+const BatchStatus = require('../../fgt-dsu-wizard/model/BatchStatus');
 
 const credentials = require('./credentials/credentialsTests'); // TODO require ../../docker/api/env/mah-*.json ?
 const MAHS = [credentials.PFIZER, credentials.MSD, credentials.ROCHE, credentials.BAYER, credentials.NOVO_NORDISK, credentials.GSK, credentials.TAKEDA];
@@ -24,11 +25,12 @@ const WSH1 = require("../../docker/api/env/whs-1.json");
 const WSH2 = require("../../docker/api/env/whs-2.json");
 const PHA1 = require("../../docker/api/env/pha-1.json");
 const PHA2 = require("../../docker/api/env/pha-2.json");
+const SHIPMENTS_ON_PHA = [];
 
 const NUM_SALES = 2; // number of sales to perform - for now consume serialNumbers from 1st MSD batch
 const MY_SALES = []; // array of data returned by /sale/create
 
-const SLEEP_MS = 5000;
+const SLEEP_MS = 2000;
 
 //const products = require('./products/productsTests');
 const getBatches = require('./batches/batchesRandom');
@@ -48,6 +50,7 @@ class BatchesEnum {
 class ShipmentsEnum {
     static none = "none";
     static test = "test";
+    static random = "random";
 };
 
 class SalesEnum {
@@ -61,7 +64,7 @@ class TraceabilityEnum {
 };
 
 class ReceiptsEnum {
-    static none = "none";
+    static none = "none";ShipmentStatus
     static test = "test";
 };
 
@@ -94,7 +97,7 @@ if (process.argv.includes("--help")
     console.log();
     console.log("\t--batches=none|test*|random");
     console.log("\t--products=none|test*");
-    console.log("\t--shipments=none|test*");
+    console.log("\t--shipments=none|test*|random");
     console.log("\t--sales=none|test*");
     console.log("\t--receipts=none|test*");
     console.log("\t--traceability=none|test*");
@@ -232,8 +235,25 @@ const getHostnameForActor = function (conf, actor) {
         let phaNumber = parseInt(phaMatch[1])+""; // eliminate leading zeros
         return `api-pha${phaNumber}${conf.wsDomainSuffix}`;
     }
-    throw Error("Cannot determine hostname for actor.email=" + actor.email.secret);
+    throw new Error("Cannot determine hostname for actor.email=" + actor.email.secret);
     //return undefined;
+}
+
+const findMahOriginalBatch = function (gtin, batchNumber) {
+    //for(const mah of [MAH_MSD]) { // only MSD has good prod+batches
+    for(const mah of MAHS) {
+        const batches = mah.batches;
+        //console.log("Lookging for "+gtin+" "+batchNumber+" in", batches);
+        if (!batches) continue;
+        if (gtin in batches) {
+            const aBatchArray = batches[gtin];
+            for (const batch of aBatchArray) {
+                if (batchNumber == batch.batchNumber)
+                    return batch;
+            }
+        }
+    }
+    throw new Error("Batch "+gtin+" "+batchNumber+" not found in MAHs");
 }
 
 const productCreate = async function (conf, actor, product) {
@@ -254,7 +274,7 @@ const productCreate = async function (conf, actor, product) {
         if (conf.ignoreDups && res.message && res.message.endsWith("because it already exists.")) {
             return res;
         } else {
-            throw Error("product/create "+product.gtin+" reply has no keySSI: "+JSON.stringify(res));
+            throw new Error("product/create "+product.gtin+" reply has no keySSI: "+JSON.stringify(res));
         }
     }
     return res;
@@ -265,7 +285,7 @@ const productsCreate = async function (conf, actor) {
         return; // don't create products
     }
     if (conf.products != ProductsEnum.test) {
-        throw Error("Unsupported setting products=" + conf.products);
+        throw new Error("Unsupported setting products=" + conf.products);
     }
     for (const product of actor.products) {
         await productCreate(conf, actor, product);
@@ -291,7 +311,7 @@ const batchCreate = async function (conf, actor, gtin, batch) {
         if (conf.ignoreDups && res.message && res.message.startsWith("ConstDSU already exists!")) {
             return res;
         } else {
-            throw Error("batch/create "+batch.batchNumber+" reply has no keySSI: "+JSON.stringify(res));
+            throw new Error("batch/create "+batch.batchNumber+" reply has no keySSI: "+JSON.stringify(res));
         }
     }
     return res;
@@ -333,9 +353,12 @@ const batchesCreateTest = async function (conf, actor) {
 const batchesCreateRandom = async function (conf, actor) {
     for (const product of actor.products) {
         const gtin = product.gtin;
-        const batches = getBatches();
+        const batches = getBatches(); // create a new array of batches with random batchNumber and random serial numbers
+        //console.log("new batches", batches);
         for (const batch of batches) {
             await batchCreate(conf, actor, gtin, batch);
+            // push new batches into the mah.batches
+            actor.batches[gtin].push(batch);
         }
     }
 }
@@ -348,7 +371,77 @@ const batchesCreate = async function (conf, actor) {
     } else if (conf.batches === BatchesEnum.random) {
         await batchesCreateRandom(conf, actor);
     } else {
-        throw Error("Unsupported setting batches=" + conf.batches);
+        throw new Error("Unsupported setting batches=" + conf.batches);
+    }
+};
+
+const batchesUpdateTest = async function (conf, mah, mySales) {
+    // recall batch of first sold item, from the given mah
+    let soldProduct = undefined;
+    for (const sale of mySales) {
+        for (const product of sale.productList) {
+            if (product.manufName == mah.id.secret) {
+                soldProduct = product;
+            }
+        }                
+        if (soldProduct) break;
+    } 
+    if (!soldProduct) {
+        throw new Error("No sale found for "+mah.id.secret);
+    }
+
+    const resQ = await jsonPut(conf, mah, {
+        path: `/traceability/batch/update/${encodeURI(soldProduct.gtin)}/${encodeURI(soldProduct.batchNumber)}`,
+        body: { // see body example in https://swagger-mah-*-fgt-dev.pharmaledger.pdmfc.com/#/batch/post_batch_create
+            "status": BatchStatus.QUARANTINED,
+            "extraInfo": "Quarantined by a test script!"
+        }
+    });
+    if (!resQ || !resQ.batchStatus) {
+        throw new Error("batch/update "+soldProduct.batchNumber+" reply has no batchStatus: "+JSON.stringify(resQ));
+    }
+
+    console.log("Sleep "+SLEEP_MS+"ms");
+    await sleep(SLEEP_MS);
+
+    const resC = await jsonPut(conf, mah, {
+        path: `/traceability/batch/update/${encodeURI(soldProduct.gtin)}/${encodeURI(soldProduct.batchNumber)}`,
+        body: { // see body example in https://swagger-mah-*-fgt-dev.pharmaledger.pdmfc.com/#/batch/post_batch_create
+            "status": BatchStatus.COMMISSIONED,
+            "extraInfo": "Re-comissioned by a test script!"
+        }
+    });
+    if (!resC || !resC.batchStatus) {
+        throw new Error("batch/update "+soldProduct.batchNumber+" reply has no batchStatus: "+JSON.stringify(resC));
+    }
+
+    console.log("Sleep "+SLEEP_MS+"ms");
+    await sleep(SLEEP_MS);
+
+    const resR = await jsonPut(conf, mah, {
+        path: `/traceability/batch/update/${encodeURI(soldProduct.gtin)}/${encodeURI(soldProduct.batchNumber)}`,
+        body: { // see body example in https://swagger-mah-*-fgt-dev.pharmaledger.pdmfc.com/#/batch/post_batch_create
+            "status": BatchStatus.RECALL,
+            "extraInfo": "Recalled by a test script!"
+        }
+    });
+    if (!resR || !resR.batchStatus) {
+        throw new Error("batch/update "+soldProduct.batchNumber+" reply has no batchStatus: "+JSON.stringify(resR));
+    }
+
+    console.log("Sleep "+SLEEP_MS+"ms");
+    await sleep(SLEEP_MS);
+
+    return resR;
+}
+
+const batchesUpdate = async function (conf, actor, mySales) {
+    if (conf.batches === BatchesEnum.none) {
+        return; // don't create batches
+    } else if (conf.batches === BatchesEnum.test) {
+        await batchesUpdateTest(conf, actor, mySales);
+    } else if (conf.batches === BatchesEnum.random) {
+        await batchesUpdateTest(conf, actor, mySales);
     }
 };
 
@@ -359,7 +452,7 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     });
     const shipmentId = resC.shipmentId;
     if (!shipmentId) {
-        throw Error("shipment/create "+shipment+" reply has no shipmentId: "+JSON.stringify(resC));
+        throw new Error("shipment/create "+shipment+" reply has no shipmentId: "+JSON.stringify(resC));
     }
     const resUPickup = await jsonPut(conf, sender, {
         path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
@@ -422,21 +515,26 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     });
     const shipmentId6 = resUConfirmed.shipmentId;
     if (!shipmentId6) {
-        throw Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUConfirmed));
+        throw new Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUConfirmed));
     }
 
     console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
+
+    return resUConfirmed;
 };
 
-const shipmentsCreateTest = async function (conf) {
-    const msd = credentials.MSD;
-    const whs1 = WSH1;
-    const pha1 = PHA1;
+const shipmentsCreateTest = async function (conf, sender) {
+    if (sender.id.secret != MAH_MSD.id.secret) {
+        throw new Error("shipmentsCreateTest can only sell for MSD for now");
+    }
 
-    const shipment1MsdToWhs1 = {
-        "orderId": whs1.id.secret + "-" + (new Date()).toISOString(),
-        "requesterId": WSH1.id.secret,
+    const whs = WSH1;
+    const pha = PHA1;
+
+    const shipment1MsdToWhs = {
+        "orderId": whs.id.secret + "-" + (new Date()).toISOString(),
+        "requesterId": whs.id.secret,
         "shipmentLines": [
             {
                 "gtin": "00366582505358",
@@ -451,11 +549,11 @@ const shipmentsCreateTest = async function (conf) {
         ]
     };
 
-    await shipmentCreateAndDeliver(conf, msd, whs1, shipment1MsdToWhs1);
+    await shipmentCreateAndDeliver(conf, sender, whs, shipment1MsdToWhs);
 
-    const shipment2Whs1ToPha1 = {
-        "orderId": pha1.id.secret + "-" + (new Date()).toISOString(),
-        "requesterId": PHA1.id.secret,
+    const shipment2WhsToPha = {
+        "orderId": pha.id.secret + "-" + (new Date()).toISOString(),
+        "requesterId": pha.id.secret,
         "shipmentLines": [
             {
                 "gtin": "00366582505358",
@@ -470,27 +568,72 @@ const shipmentsCreateTest = async function (conf) {
         ]
     };
 
-    await shipmentCreateAndDeliver(conf, whs1, pha1, shipment2Whs1ToPha1);
+    const resShipToPha = await shipmentCreateAndDeliver(conf, whs, pha, shipment2WhsToPha);
+    SHIPMENTS_ON_PHA.push(resShipToPha);
 }
 
-const shipmentsCreate = async function (conf, actor) {
+const shipmentsCreateRandom = async function (conf, sender) {
+    if (sender.id.secret != MAH_MSD.id.secret) {
+        throw new Error("shipmentsCreateTest can only sell for MSD for now");
+    }
+
+    const mahGtins = Object.keys(sender.batches);
+    const mahRandomGtin = mahGtins[generateRandomInt(0, mahGtins.length)];
+    const mahBatch0 = sender.batches[mahRandomGtin][0];
+    const whs = WSH1;
+    const pha = PHA1;
+    
+    const shipment1MahToWhs = {
+        "orderId": whs.id.secret + "-" + (new Date()).toISOString(),
+        "requesterId": whs.id.secret,
+        "shipmentLines": [
+            {
+                "gtin": mahRandomGtin,
+                "batch": mahBatch0.batchNumber,
+                "quantity": 100
+            }
+        ]
+    };
+
+    await shipmentCreateAndDeliver(conf, sender, whs, shipment1MahToWhs);
+
+    const shipment2WhsToPha = {
+        "orderId": pha.id.secret + "-" + (new Date()).toISOString(),
+        "requesterId": pha.id.secret,
+        "shipmentLines": [
+            {
+                "gtin": mahRandomGtin,
+                "batch": mahBatch0.batchNumber,
+                "quantity": 50
+            }
+        ]
+    };
+
+    const resShipToPha = await shipmentCreateAndDeliver(conf, whs, pha, shipment2WhsToPha);
+    SHIPMENTS_ON_PHA.push(resShipToPha);
+}
+
+const shipmentsCreate = async function (conf, sender) {
     if (conf.shipments === ShipmentsEnum.none) {
         return; // don't create batches
     } else if (conf.shipments === ShipmentsEnum.test) {
-        await shipmentsCreateTest(conf, actor);
+        await shipmentsCreateTest(conf, sender);
+    } else if (conf.shipments === ShipmentsEnum.random) {
+        await shipmentsCreateRandom(conf, sender);
     } else {
-        throw Error("Unsupported setting shipments=" + conf.shipments);
+        throw new Error("Unsupported setting shipments=" + conf.shipments);
     }
 };
 
+/*
 const salesCreateTest = async function (conf, manufActor, sellerActor, mySales) {
     const manufBatches = manufActor.batches;
     const gtin = "00366582505358";
     const batch = manufBatches[gtin][0];
     //console.log("batch", batch);
 
-    let i=2;
-    while (i<2+NUM_SALES) {
+    let i=0;
+    while (i<NUM_SALES) {
         const saleSerialNumber = batch.serialNumbers[i];
         const saleData = { // see body of http://swagger-pha1.localhost:8080/#/sale/post_sale_create
             "id": sellerActor.id.secret + "-" + (new Date()).toISOString(),
@@ -508,6 +651,55 @@ const salesCreateTest = async function (conf, manufActor, sellerActor, mySales) 
             body: saleData
         });
         //console.log("Sale", resSale);
+        if (!resSale || !resSale.productList) {
+            throw new Error("sale/create "+batch.batchNumber+" at "+sellerActor.id.secret+" reply has no productList: "+JSON.stringify(resSale));
+        }
+        mySales.push(resSale);
+
+        console.log("Sleep " + SLEEP_MS + "ms");
+        await sleep(SLEEP_MS);
+
+        i++;
+    }
+}
+*/
+
+
+const salesCreateTest = async function (conf, manufActor, sellerActor, mySales) {
+    if (!SHIPMENTS_ON_PHA.length) {
+        throw new Error("No shipments on pharmacies on this run!");
+    }
+    if (!SHIPMENTS_ON_PHA[0].shipmentLines.length) {
+        throw new Error("No shipmentLines on pharmacies on this run!");
+    }
+    const shipmentLine0 = SHIPMENTS_ON_PHA[0].shipmentLines[0];
+    const gtin = shipmentLine0.gtin;
+    const batchNumber = shipmentLine0.batch;
+    const batch = findMahOriginalBatch(gtin, batchNumber);
+    //console.log("batch", batch);
+
+    let i=0;
+    while (i<NUM_SALES) {
+        const saleSerialNumber = batch.serialNumbers[i];
+        const saleData = { // see body of http://swagger-pha1.localhost:8080/#/sale/post_sale_create
+            "id": sellerActor.id.secret + "-" + (new Date()).toISOString(),
+            "productList": [
+                {
+                    "gtin": gtin,
+                    "batchNumber": batch.batchNumber,
+                    "serialNumber": saleSerialNumber
+                }
+            ]
+        };
+
+        const resSale = await jsonPost(conf, sellerActor, {
+            path: `/traceability/sale/create`,
+            body: saleData
+        });
+        //console.log("Sale", resSale);
+        if (!resSale || !resSale.productList) {
+            throw new Error("sale/create "+batch.batchNumber+" at "+sellerActor.id.secret+" reply has no productList: "+JSON.stringify(resSale));
+        }
         mySales.push(resSale);
 
         console.log("Sleep " + SLEEP_MS + "ms");
@@ -523,7 +715,7 @@ const salesCreate = async function (conf, manufActor, sellerActor, mySales) {
     } else if (conf.sales === SalesEnum.test) {
         await salesCreateTest(conf, manufActor, sellerActor, mySales);
     } else {
-        throw Error("Unsupported setting sales=" + conf.sales);
+        throw new Error("Unsupported setting sales=" + conf.sales);
     }
 };
 
@@ -539,7 +731,7 @@ const traceabilityCreateTest = async function (conf, actor, mySales) {
             });
             //console.log("Trc", res);
             if (!res["1"]) {
-                throw Error("traceability/create "+product.batchNumber+" at "+actor.id.secret+" reply has no data: "+JSON.stringify(res));
+                throw new Error("traceability/create "+product.batchNumber+" at "+actor.id.secret+" reply has no data: "+JSON.stringify(res));
             }
             console.log("Sleep " + SLEEP_MS + "ms");
             await sleep(SLEEP_MS);
@@ -553,7 +745,7 @@ const traceabilityCreate = async function (conf, actor, mySales) {
     } else if (conf.traceability === TraceabilityEnum.test) {
         await traceabilityCreateTest(conf, actor, mySales);
     } else {
-        throw Error("Unsupported setting traceability=" + conf.sales);
+        throw new Error("Unsupported setting traceability=" + conf.sales);
     }
 };
 
@@ -565,7 +757,7 @@ const receiptsGetTest = async function (conf, actor, mySales) {
             });
             //console.log("Rec", res);
             if (!res.sellerId) {
-                throw Error("receipt/get "+product.batchNumber+" at "+actor.id.secret+" reply has no data: "+JSON.stringify(res));
+                throw new Error("receipt/get "+product.batchNumber+" at "+actor.id.secret+" reply has no data: "+JSON.stringify(res));
             }
             console.log("Sleep " + SLEEP_MS + "ms");
             await sleep(SLEEP_MS);
@@ -579,7 +771,7 @@ const receiptsGet = async function (conf, actor, mySales) {
     } else if (conf.receipts === ReceiptsEnum.test) {
         await receiptsGetTest(conf, actor, mySales);
     } else {
-        throw Error("Unsupported setting receipts=" + conf.sales);
+        throw new Error("Unsupported setting receipts=" + conf.sales);
     }
 };
 
@@ -587,17 +779,27 @@ const receiptsGet = async function (conf, actor, mySales) {
 /**
  * Main
  */
+// block on console.log - see https://github.com/nodejs/node/issues/11568
+process.stdout._handle.setBlocking(true);
 
 (async () => {
     //console.log("Credentials", MAHS);
     //console.log("Products", products.getPfizerProducts());
+    //console.log("Batches", MAH_MSD.batches);
     for (const mah of MAHS) {
         await productsCreate(conf, mah);
         await batchesCreate(conf, mah);
     };
 
+    // product and batch creation needs no sleep pauses.
+    // But we should pause a while before attempting to ship anything.
+    console.log("Sleep " + SLEEP_MS + "ms");
+    await sleep(SLEEP_MS);
+
     await shipmentsCreate(conf, MAH_MSD);
     await salesCreate(conf, MAH_MSD, PHA1, MY_SALES);
     await traceabilityCreate(conf, PHA1, MY_SALES);
     await receiptsGet(conf, PHA1, MY_SALES);
+
+    await batchesUpdate(conf, MAH_MSD, MY_SALES);
 })();
