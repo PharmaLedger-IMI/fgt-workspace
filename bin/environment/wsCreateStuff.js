@@ -149,7 +149,7 @@ const jsonHttpRequest = function (conf, actor, { body, ...options }) {
                     //console.log("res.headers=", res.headers);
                     const contentType = res.headers['content-type'];
                     if (contentType && contentType.startsWith('application/json')) {
-                        resolve(JSON.parse(resBody)); // seems to be a JSON reply. Attempt to parse.
+                        resolve(JSON.parse(resBody.toString())); // seems to be a JSON reply. Attempt to parse.
                     } else if (contentType && contentType.startsWith('text/')) {
                         resolve(resBody.toString()); // seems to be readable text.
                     } else {
