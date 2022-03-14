@@ -171,7 +171,7 @@
                             note over s , r: Shipment sequence described elsewhere.
                             end
                             s->>s: /batch/update
-                            s-->>r: Automatically broadcasts a message to<br> other actorswith a status update notice
+                            s-->>r: Automatically sends messages to other<br />actors involved with this specific batch.
                         </div>
                     </li>
                     <li>
@@ -201,50 +201,50 @@
                                 participant s as Sender
                                 participant r as Receiver
                                 activate s
-                                s->>s: Create Shipment
+                                s->>s: /shipment/create
                                 note left of s: OrderId can be anything
                                 note left of s: Sender can see shipment with status 'created'.<br>Sender stock has been reduced
                                 s-->>r: Sends Message to Receiver<br>with Shipment Info
                                 note right of r: Receiver can now see shipment in incoming shipments
                                 alt sad path
                                 note over s , r: Shipment Held
-                                s->>s: Update status to 'hold'
+                                s->>s: /shipment/update<br />Update status to 'hold'
                                 s-->>r: Sends Message to Receiver<br>with status update notice
                                 note right of r: Receiver can see shipment has been held (and the reason for it)
                                 alt Shipment Released
-                                s->>s: Update status to previous status
+                                s->>s: /shipment/update<br />Update status to previous status
                                 s-->>r: Sends Message to Receiver<br>with status update notice
                                 note right of r: Receiver can now see updated status incoming shipments
                                 end
                                 alt Shipment Rejected
                                 note over s , r: Shipment Rejected
-                                s->>s: Update status to 'reject'
+                                s->>s: /shipment/update<br />Update status to 'reject'
                                 s-->>r: Sends Message to Receiver<br>with status update notice
                                 note right of r: Receiver can now see rejected shipment (and why)
                                 end
                                 end
                                 alt happy path
                                 note over s , r: Shipment is sent
-                                s->>s: Update status to 'pickup'
+                                s->>s: /shipment/update<br />Update status to 'pickup'
                                 s-->>r: Sends Message to Receiver<br>with status update notice
                                 note right of r: Receiver can now see updated status incoming shipments
-                                s->>s: Update status to 'transit'
+                                s->>s: /shipment/update<br />Update status to 'transit'
                                 s-->>r: Sends Message to Receiver<br>with status update notice
                                 note right of r: Receiver can now see shipment is in transit
                                 loop while in transit
-                                s->>s: Update status to 'transit' with added information
+                                s->>s: /shipment/update<br />Update status to 'transit' with added information
                                 s-->>r: Sends Message to Receiver<br>with status update notice
                                 note right of r: Receiver can now see shipment the additional information that has been added
                                 end
-                                s->>s: Update status to 'delivered'
+                                s->>s: /shipment/update<br />Update status to 'delivered'
                                 s-->>r: Sends Message to Receiver<br>with status update notice
                                 note right of r: Receiver can now see shipment has been delivered
                                 deactivate s
                                 activate r
-                                r->>r: Update status to 'received'
+                                r->>r: /shipment/update<br />Update status to 'received'
                                 r-->>s: Sends Message to Sender<br>with status update notice
                                 note left of s: Receiver can now see shipment has been delivered
-                                r->>r: Update status to 'confirmed'
+                                r->>r: /shipment/update<br />Update status to 'confirmed'
                                 r-->>s: Sends Message to Sender<br>with status update notice
                                 note left of s: Receiver can now see shipment has been confirmed
                                 note right of r: Receiver can now see his updated stock
