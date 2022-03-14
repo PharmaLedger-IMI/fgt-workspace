@@ -309,6 +309,26 @@
                             </div>
                         </p>
                     </li>
+                    <li>
+                        <p>Sales can only be performed by Pharmacies:</p>
+                        <div class="mermaid">
+                            sequenceDiagram
+                            participant s as MAH
+                            participant r as Pharmacy
+                            activate s
+                            r->>r: /sale/create<br />with gtin, batch and serial number
+                            r-->>s: Sends message to MAH of product notifying the sale of an individual product.
+                        </div>
+                    </li>
+                    <li>
+                        <p>Traceability information requests can be created at any participant in the chain:</p>
+                        <div class="mermaid">
+                            sequenceDiagram
+                            participant s as Participant
+                            activate s
+                            s->>s: /traceability/create<br />with gtin and batch
+                        </div>
+                    </li>
                 </ul>
             </p>
             <script>
