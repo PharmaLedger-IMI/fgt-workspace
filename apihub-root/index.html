@@ -158,6 +158,42 @@
                     </li>
                     <li>For most operations (create, update, etc) the successful return outputs a KeySSI. You can use DSU Explorer to inspect these DSUs;</li>
                     <li>
+                        <p>The sequence diagram illustrating the provisioning products and batches (commissioning) is as follows:</p>
+                        <div class="mermaid">
+                            sequenceDiagram
+                            participant s as MAH
+                            participant r as Wholesalers and Pharmacies
+                            activate s
+                            s->>s: /product/create
+                            s->>s: /batch/create
+                            note left of s: Batches are created in <br /> the commissioned status<br /> and are ready to ship.
+                            alt Shipment sequence details
+                            note over s , r: Shipment sequence described elsewhere.
+                            end
+                            s->>s: /batch/update
+                            s-->>r: Automatically broadcasts a message to<br> other actorswith a status update notice
+                        </div>
+                    </li>
+                    <li>
+                        <p>The state diagram for batch status update is as follows:</p>
+                        <div class="mermaid">
+                            graph LR
+                            A(.) -->|/batch/create| B(commissioned)
+                            B -->|/batch/update| C(quarantined)
+                            C -.->|/batch/update| B
+                            C -->|/batch/update| D((recall))
+                            B -->|/batch/update| D
+
+                            classDef green fill:#9f6,stroke:#333,stroke-width:2px;
+                            classDef yellow fill:#FEDE00,stroke:#333,stroke-width:2px;
+                            classDef red fill:#ff5349,stroke#333,stroke-width:2px;
+
+                            class B green
+                            class C yellow
+                            class D red
+                        </div>
+                    </li>
+                    <li>
                         <p>The sequence diagram for the shipping operation is as follows:</p>
                         <p>
                             <div class="mermaid">
