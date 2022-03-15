@@ -12,3 +12,9 @@ components:
         - received
         - confirmed
         - reject
+    BatchStatus:
+      type: string
+      enum:
+        - commissioned
+        - quarantined
+        - recall
