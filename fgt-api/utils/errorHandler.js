@@ -18,7 +18,7 @@ class BaseError extends Error {
 
 class BadRequest extends BaseError {
     constructor (
-        err,
+        err = "The server could not understand your request",
         statusCode = HTTP_STATUS_CODE.BAD_REQUEST,
         description = 'Bad Request'
     ) {
@@ -28,7 +28,7 @@ class BadRequest extends BaseError {
 
 class Unauthorized extends BaseError {
     constructor (
-        err,
+        err = "You do not have permission to view the resource that you looking for",
         statusCode = HTTP_STATUS_CODE.UNAUTHORIZED,
         description = 'Unauthorized'
     ) {
@@ -38,7 +38,7 @@ class Unauthorized extends BaseError {
 
 class NotFound extends BaseError {
     constructor (
-        err,
+        err = "The resource that you looking for does not exist",
         statusCode = HTTP_STATUS_CODE.NOT_FOUND,
         description = 'Not found'
     ) {
@@ -48,7 +48,7 @@ class NotFound extends BaseError {
 
 class InternalServerError extends BaseError {
     constructor (
-        err,
+        err = "The server encountered an internal error and was unable to complete your request",
         statusCode = HTTP_STATUS_CODE.INTERNAL_SERVER,
         description = 'Internal Server Error'
     ) {
@@ -58,7 +58,7 @@ class InternalServerError extends BaseError {
 
 class NotImplemented extends BaseError {
     constructor (
-        err,
+        err = "The resource that you are attempting could not be understand by the server",
         statusCode = HTTP_STATUS_CODE.NOT_IMPLEMENTED,
         description = 'Not implemented'
     ) {

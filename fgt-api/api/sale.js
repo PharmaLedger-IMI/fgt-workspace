@@ -1,7 +1,7 @@
 
 const {Api, OPERATIONS} = require('../Api');
 const Sale = require("../../fgt-dsu-wizard/model/Sale");
-const {BadRequest, NotFound, NotImplemented} = require("../utils/errorHandler");
+const {BadRequest, NotFound, InternalServerError} = require("../utils/errorHandler");
 
 const SALE_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['saleId']});
 
@@ -54,8 +54,11 @@ module.exports = class SaleApi extends Api {
                     return callback(new BadRequest(err));
 
                 self.manager.create(_sale, (err, insertedSale, path, keySSIs) => {
-                    if (err)
-                        return callback(new NotImplemented(err));
+                    if (err) {
+                        if (err instanceof Error)
+                            return callback(new InternalServerError(err.message));
+                        return callback(new BadRequest(err));
+                    }
                     callback(undefined, {...insertedSale, keySSIs: keySSIs});
                 });
             })

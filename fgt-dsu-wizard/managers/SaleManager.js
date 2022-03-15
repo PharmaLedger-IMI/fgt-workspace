@@ -233,7 +233,7 @@ class SaleManager extends Manager{
                             console.log(`Creating sale entry for: ${sale.productList.map(p => `${p.gtin}-${p.batchNumber}-${p.serialNumber}`).join(', ')}`);
                             self._addSale(sale.id, aggIndividualProductsByMAH, (err, readSSis, insertedSale, ) => {
                                 if (err)
-                                    return cb(`Could not Crease Sales DSUs`);
+                                    return cb(`Could not Create Sales DSUs`);
                                 self.insertRecord(insertedSale.id, self._indexItem(insertedSale), (err) => {
                                     if (err)
                                         return cb(`Could not insert record with id ${insertedSale.id} on table ${self.tableName}`);
