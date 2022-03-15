@@ -829,7 +829,6 @@ paths:
                     requesterId: string
                     status: string
                     createdOn: 0
-                keySSI: string
         '501':
           description: Not Implemented
           content:
@@ -881,7 +880,6 @@ paths:
                       requesterId: string
                       status: string
                       createdOn: 0
-                  keySSI: string
         '501':
           description: Not Implemented
           content:
