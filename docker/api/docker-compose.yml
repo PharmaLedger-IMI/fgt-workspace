@@ -106,6 +106,8 @@ services:
       - "traefik.http.routers.traceability.middlewares=traceability-headers"
       - "traefik.http.services.traceability.loadbalancer.server.port=8080"
       - "traefik.http.routers.traceability.entrypoints=web"
+      - "traefik.docker.network=traceability-net"
+      # this docker can also have an IP address in qbn-net, so tell traefik to use the traceability-net
     volumes:
       - traceability_vol:/fgt-workspace/apihub-root/external-volume
     networks:
@@ -556,6 +558,7 @@ networks:
       driver: default
       config:
         - subnet: 172.16.63.0/24
+          gateway: 172.16.63.1
 volumes:
   "traceability_vol":
   "mah-roche_vol":

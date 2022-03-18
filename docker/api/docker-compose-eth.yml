@@ -3,7 +3,10 @@ services:
   fgt-workspace:
     container_name: fgt-workspace
     networks:
-      - qbn-net
+      traceability-net:
+        ipv4_address: 172.16.63.51
+      qbn-net:
+        ipv4_address: 172.16.16.51
     command: ["/bin/bash", "-c", "cd /fgt-workspace && bash startup-eth-script.sh"]
 
 networks:
