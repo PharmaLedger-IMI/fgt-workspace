@@ -30,7 +30,7 @@ const SHIPMENTS_ON_PHA = [];
 const NUM_SALES = 2; // number of sales to perform - for now consume serialNumbers from 1st MSD batch
 const MY_SALES = []; // array of data returned by /sale/create
 
-const SLEEP_MS = 2000;
+let SLEEP_MS = 2000;
 
 //const products = require('./products/productsTests');
 const getBatches = require('./batches/batchesRandom');
@@ -79,7 +79,8 @@ const defaultOps = {
     shipments: ShipmentsEnum.test,
     sales: SalesEnum.test,
     traceability: TraceabilityEnum.test,
-    receipts: ReceiptsEnum.test
+    receipts: ReceiptsEnum.test,
+    sleep: "2000"
 }
 
 if (process.argv.includes("--help")
@@ -94,6 +95,7 @@ if (process.argv.includes("--help")
     console.log();
     console.log("\t--env=single|localhost*|dev|tst  single is for a single MAH on port 8081");
     console.log("\t--ignoreDups=t*|                 only for product and batch creation");
+    console.log("\t--sleep=2000                     number of ms to sleep between API REST calls");
     console.log();
     console.log("\t--batches=none|test*|random");
     console.log("\t--products=none|test*");
@@ -120,6 +122,9 @@ if (conf.env === "single") {
     conf.wsProtocol = "https";
 }
 
+if (conf.sleep) {
+    SLEEP_MS = parseInt(conf.sleep);
+}
 
 /**
  * 
