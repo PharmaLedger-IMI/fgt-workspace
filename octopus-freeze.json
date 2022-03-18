@@ -694,7 +694,8 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false
+                    "collectLog": false,
+                    "commit": "cda1a9e498cc4fba10006d5f4c08c0554e8f4762"
                 },
                 {
                     "type": "execute",
