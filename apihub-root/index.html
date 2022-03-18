@@ -68,6 +68,36 @@
                 <p>DSU Explorer</p>
             </div>
         </a>
+
+        <a id="epirus" class="web-wallet_button scale-up" href="https://fgt-epirus-dev.pharmaledger.pdmfc.com/" target="_blank" style="display: none;">
+            <div class="left-side">
+                <img src="assets/images/cube.png" alt="Ethereum-Explorer">
+            </div>
+            <div class="right-side">
+                <p>Ethereum Explorer</p>
+            </div>
+        </a>
+        <script>
+            var activateEpirusButton = function () {
+                const epirusAnchor = document.body.querySelector('a[id="epirus"]');
+                const url = window.location.hostname;
+
+                if (url.match(/[-\.]?(?:mah|whs|pha)[\-\d]/g)){
+                    epirusAnchor.setAttribute("style", "display: none;");
+                } else {
+                    if (url.endsWith('localhost')) {
+                        epirusAnchor.setAttribute('href', `http://localhost:8700`);
+                    } else if (url.includes('fgt-dev.pharmaledger')) {
+                        epirusAnchor.setAttribute('href', `https://fgt-epirus-dev.pharmaledger.pdmfc.com`);
+                    } else if (url.includes('fgt.pharmaledger')) {
+                        epirusAnchor.setAttribute('href', `https://fgt-epirus-tst.pharmaledger.pdmfc.com`);
+                    }
+                    epirusAnchor.setAttribute("style", "display: block;");
+                };
+            };
+            activateEpirusButton();
+        </script>
+
     </div>
     <div>
         <h1><img src="assets/images/pharmaledgerLogo.png" alt="Pharmaledger" style="height: 2em; vertical-align: middle; margin-right: 1em;">Finished Goods Traceability
