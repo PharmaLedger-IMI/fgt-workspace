@@ -156,11 +156,12 @@ const jsonHttpRequest = function (conf, actor, { body, ...options }) {
     if (!options['port'])
         options.port = conf.wsPortNumber;
 
+    const beforeReq = new Date();
     const protocol = conf.wsProtocol;
     let p = new Promise((resolve, reject) => {
         // debug request
         console.log(protocol+" "+options.method, JSON.stringify(options), bodyToSend);
-
+        
         const req = (protocol === "http" ? http : https).request(
             {
                 ...options,
@@ -191,7 +192,9 @@ const jsonHttpRequest = function (conf, actor, { body, ...options }) {
 
     // debug reply
     p.then((r) => {
-        console.log("res", r);
+        const afterRes = new Date();
+        const ellapsed = afterRes.getTime()-beforeReq.getTime();
+        console.log(`res ${ellapsed}ms`, r);
     });
 
     return p;

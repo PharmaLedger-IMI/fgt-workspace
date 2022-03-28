@@ -1,6 +1,6 @@
 {
   "name": "fgt-workspace",
-  "version": "0.8.1",
+  "version": "0.8.4",
   "description": "",
   "scripts": {
     "dev-install": "node ./bin/mkDevEnv.js && npm install",
