@@ -6,7 +6,7 @@ x-participant-def:
     context: ../api
   healthcheck:
     test: [ "CMD", "curl", "--fail", "http://localhost:3009" ] # looks for the swagger instance, the last thing to boot
-    interval: 15s
+    interval: 20s
     timeout: 3s
     retries: 100
     start_period: 40s
@@ -115,9 +115,9 @@ services:
         ipv4_address: 172.16.63.51
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed"] # the last SSApp to be built
-      interval: 5s
+      interval: 15s
       timeout: 3s
-      retries: 20
+      retries: 100
       start_period: 20s
     command: ["/bin/bash", "-c", "cd /fgt-workspace && bash startup-noeth-script.sh"]
 
