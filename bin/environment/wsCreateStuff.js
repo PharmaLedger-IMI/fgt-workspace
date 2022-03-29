@@ -64,7 +64,7 @@ class TraceabilityEnum {
 };
 
 class ReceiptsEnum {
-    static none = "none";ShipmentStatus
+    static none = "none";
     static test = "test";
 };
 
