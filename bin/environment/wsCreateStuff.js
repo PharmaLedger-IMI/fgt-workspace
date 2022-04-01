@@ -797,12 +797,12 @@ process.stdout._handle.setBlocking(true);
     for (const mah of MAHS) {
         await productsCreate(conf, mah);
         await batchesCreate(conf, mah);
-    };
 
-    // product and batch creation needs no sleep pauses.
-    // But we should pause a while before attempting to ship anything.
-    console.log("Sleep " + SLEEP_MS + "ms");
-    await sleep(SLEEP_MS);
+        // product and batch creation needs no sleep pauses.
+        // But we should pause a while before attempting to ship anything.
+        console.log("Sleep " + SLEEP_MS + "ms");
+        await sleep(SLEEP_MS);
+    };
 
     await shipmentsCreate(conf, MAH_MSD);
     await salesCreate(conf, MAH_MSD, PHA1, MY_SALES);
