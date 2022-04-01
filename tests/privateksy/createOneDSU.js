@@ -13,7 +13,7 @@ const resolver = opendsu.loadApi("resolver");
 //Load keyssi library
 const keyssispace = opendsu.loadApi("keyssi");
 
-const pskcrypto = require("../../privatesky/modules/pskcrypto");
+const pskcrypto = require("pskcrypto");
 
 //Create a template keySSI (for default domain). See /conf/BDNS.hosts.json
 try {
