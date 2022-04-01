@@ -1,6 +1,11 @@
 // Ignore the test
 process.exit();
 
+const domain = "traceability";
+//const domain = "default";
+const hint = undefined;
+const templateSeedData = "WHS000001-WHS000001-2022-04-01T13:44:02.656Z";
+
 //Load openDSU enviroment
 require("../../privatesky/psknode/bundles/openDSU");
 
@@ -15,11 +20,12 @@ const keyssispace = opendsu.loadApi("keyssi");
 
 const pskcrypto = require("pskcrypto");
 
-//Create a template keySSI (for default domain). See /conf/BDNS.hosts.json
+//Create a template keySSI (for domain). See /apihub-root/external-volume/config/
 try {
-    keyssispace.createSeedSSI('default', function (err, aSeedSSI) {
+    const aSeedSSI = keyssispace.createTemplateSeedSSI(domain, templateSeedData, 'v0', hint ? JSON.stringify(hint) : undefined);
+    //keyssispace.createSeedSSI(domain, function (err, aSeedSSI) {
 
-        console.log("seedSSI object:     " , aSeedSSI );
+        //console.log("seedSSI object:     " , aSeedSSI );
         console.log("seedSSI identifier: " + aSeedSSI.getIdentifier(true));
 
         let aData = { "message": "Hello world!" };
@@ -43,17 +49,18 @@ try {
                 console.log("Data written succesfully! :) ");
 
 
-                dsuInstance.getKeySSIAsString((err, aKeySSIStr) => {
-                    console.log("KeySSI identifier: ", aKeySSIStr); // KeySSI identifier:  BBudGH6ySHG6GUHN8ogNrTWbSXyuv5XvYDpjVH3L973ioh5WqYv39pk5DJMhgCA2WTtoyCP54cZazSg8ozXawX9ZZ
+                dsuInstance.getKeySSIAsObject((err, aKeySSIObj) => {
+                    aKeySSIStr = aKeySSIObj.getIdentifier(true);
+                    console.log("KeySSI identifier: ", aKeySSIStr);
 
                     const anotherSeedSSI = keyssispace.parse(aKeySSIStr);
-                    console.log("secretSSIObject = " , anotherSeedSSI); // dsuSecretSSI
+                    //console.log("secretSSIObject = " , anotherSeedSSI); // dsuSecretSSI
                     const aReadSSI = anotherSeedSSI.derive();
-                    console.log("sReadSSI object = " , aReadSSI);
+                    //console.log("sReadSSI object = " , aReadSSI);
                     console.log("sReadSSI identifier = " + aReadSSI.getIdentifier(true));
 
                     const aZaSSI = aReadSSI.derive();
-                    console.log("sZaSSI object = " , aZaSSI);
+                    //console.log("sZaSSI object = " , aZaSSI);
                     console.log("sZaSSI identifier = " + aZaSSI.getIdentifier(true));
 
                     resolver.loadDSU(aKeySSIStr, (err, anotherDSUInstance) => {
@@ -81,7 +88,7 @@ try {
                 });
             });
         });
-    });
+    //});
 } catch (exc ) {
  
     console.log("Exception: ");
