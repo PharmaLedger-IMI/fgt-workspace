@@ -791,17 +791,13 @@ const receiptsGet = async function (conf, actor, mySales) {
 process.stdout._handle.setBlocking(true);
 
 (async () => {
+    console.log("Configuration:", conf);
     //console.log("Credentials", MAHS);
     //console.log("Products", products.getPfizerProducts());
     //console.log("Batches", MAH_MSD.batches);
     for (const mah of MAHS) {
         await productsCreate(conf, mah);
         await batchesCreate(conf, mah);
-
-        // product and batch creation needs no sleep pauses.
-        // But we should pause a while before attempting to ship anything.
-        console.log("Sleep " + SLEEP_MS + "ms");
-        await sleep(SLEEP_MS);
     };
 
     await shipmentsCreate(conf, MAH_MSD);
