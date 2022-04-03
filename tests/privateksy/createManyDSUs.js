@@ -27,35 +27,53 @@ function readableRandomStringMaker(length) {
 
 function createBatchStatusDSU(callback) {
     //Create a BatchStatus DSU
-    const aSeedSSI = keyssispace.createTemplateSeedSSI(domain, `STWHS000001-WHS000001-${(new Date()).toISOString()}`, 'v0', undefined);
+    const aSeedSSI = keyssispace.createTemplateSeedSSI(domain, `STWHS000001-WHS000001-${(new Date()).toISOString()}`, 'v0', hint);
     resolver.createDSU(aSeedSSI, (err, dsuInstance) => {
         if (err) throw err;
-        dsuInstance.writeFile('/data', JSON.stringify({"message": readableRandomStringMaker(10)}), (err) => {
+        dsuInstance.beginBatch();
+        dsuInstance.writeFile('/info', JSON.stringify({"message": readableRandomStringMaker(10)}), (err) => {
             //Reached when data written to BrickStorage
             if (err) throw err;
-            console.log("Data written succesfully! :) ");
-            callback();       
-        });
-    });
-}
-
-function createBatchDSU(counter) {
-    if (counter<=0) return;
-    //Create a Batch DSU
-    const aSeedSSI = keyssispace.createTemplateSeedSSI(domain, `WHS000001-WHS000001-${(new Date()).toISOString()}`, 'v0', undefined);
-    resolver.createDSU(aSeedSSI, (err, dsuInstance) => {
-        if (err) throw err;
-        dsuInstance.writeFile('/data', JSON.stringify({"message": readableRandomStringMaker(100000)}), (err) => {
-            //Reached when data written to BrickStorage
-            if (err) throw err;
-            console.log("Data written succesfully! :) ");
-            createBatchStatusDSU(() => {
-                createBatchDSU(counter-1);       
+            dsuInstance.writeFile('/log', JSON.stringify({"log": readableRandomStringMaker(10)}), (err) => {
+                dsuInstance.commitBatch((err) => {
+                    if (err) throw err;
+                    dsuInstance.getKeySSIAsObject(callback);
+                });
             });
         });
     });
 }
 
-createBatchDSU(10);
+function createBatchDSUs(counter) {
+    if (counter<=0) return;
+    //Create a Batch DSU
+    const aSeedSSI = keyssispace.createTemplateSeedSSI(domain, `GTIN${counter*10000}-${counter}`, 'v0', hint);
+    resolver.createDSU(aSeedSSI, (err, dsuInstance) => {
+        if (err) throw err;
+        dsuInstance.beginBatch();
+        dsuInstance.writeFile('/info', JSON.stringify({"serialNumbers": readableRandomStringMaker(100000)}), (err) => {
+            if (err) throw err;
+            console.log("Data written succesfully! :) ");
+            createBatchStatusDSU((err, statusSSI) => {
+                if (err) throw err;
+                console.log(`BatchStatus DSU created with SSI ${statusSSI.getIdentifier(true)}`);
+                dsuInstance.mount("/status", statusSSI.getIdentifier(true), (err) => {
+                    if (err) throw err;
+                    dsuInstance.commitBatch((err) => {
+                        if (err) throw err;
+                        dsuInstance.getKeySSIAsObject((err, batchSSI)=> {
+                            if (err) throw err;
+                            console.log(`Batch DSU created with SSI ${batchSSI.getIdentifier(true)}`);
+                            createBatchDSUs(counter-1);                       
+                        });            
+                    });
+                });
+            });
+        });
+    });
+}
+
+// main
+createBatchDSUs(100);
 
 
