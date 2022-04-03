@@ -47,7 +47,7 @@ function createBatchStatusDSU(callback) {
 function createBatchDSUs(counter) {
     if (counter<=0) return;
     //Create a Batch DSU
-    const aSeedSSI = keyssispace.createTemplateSeedSSI(domain, `GTIN${counter*10000}-${counter}`, 'v0', hint);
+    const aSeedSSI = keyssispace.createTemplateSeedSSI(domain, `GTIN${counter*10000}-BATCH${counter}`, 'v0', hint);
     resolver.createDSU(aSeedSSI, (err, dsuInstance) => {
         if (err) throw err;
         dsuInstance.beginBatch();
