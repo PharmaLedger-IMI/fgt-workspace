@@ -24,18 +24,12 @@ let WALLET_DB = undefined;
 const TABLE_BATCH = "batch";
 const TABLE_STOCK = "stock";
 
-let GTIN = 100000;
+let GTIN = 110000;
 
 // from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
 function readableRandomStringMaker(length) {
-  for (var s=''; s.length < length; s += 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.charAt(Math.random()*62|0));
-  return s;
-}
-
-function insertRecord(tableName, key, record, callback) {
-    WALLET_DB.insertRecord(tableName, key, record, (err) => {
-        callback(err);
-    });
+    for (var s = ''; s.length < length; s += 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.charAt(Math.random() * 62 | 0));
+    return s;
 }
 
 function createBatchStatusDSU(callback) {
@@ -44,10 +38,10 @@ function createBatchStatusDSU(callback) {
     resolver.createDSU(aSeedSSI, (err, dsuInstance) => {
         if (err) throw err;
         dsuInstance.beginBatch();
-        dsuInstance.writeFile('/info', JSON.stringify({"message": readableRandomStringMaker(10)}), (err) => {
+        dsuInstance.writeFile('/info', JSON.stringify({ "message": readableRandomStringMaker(10) }), (err) => {
             //Reached when data written to BrickStorage
             if (err) throw err;
-            dsuInstance.writeFile('/log', JSON.stringify({"log": readableRandomStringMaker(10)}), (err) => {
+            dsuInstance.writeFile('/log', JSON.stringify({ "log": readableRandomStringMaker(10) }), (err) => {
                 dsuInstance.commitBatch((err) => {
                     if (err) throw err;
                     dsuInstance.getKeySSIAsObject(callback);
@@ -66,18 +60,19 @@ function getBatch(gtin, batchNumber, callback) {
 }
 
 function createBatchDSUs(counter) {
-    if (counter<=0) return;
-    if (counter%2==0) GTIN++;
+    if (counter <= 0) return;
+    if (counter % 2 == 0) GTIN++;
 
     //Create a Batch DSU
     const gtin = GTIN;
     const batchNumber = `B${counter}`
     const dbKey = `${gtin}-${batchNumber}`;
-    const aSeedSSI = keyssispace.createArraySSI(domain, [gtin, batchNumber], 'v0', hint);
-    resolver.createDSU(aSeedSSI, (err, dsuInstance) => {
+    const aConstSSI = keyssispace.createArraySSI(domain, [gtin, batchNumber], 'v0', hint);
+    console.log(`Going to create a new Const DSU Batch ${dbKey}`)
+    resolver.createDSUForExistingSSI(aConstSSI, (err, dsuInstance) => {
         if (err) throw err;
         dsuInstance.beginBatch();
-        const batchRecord = {"serialNumbers": readableRandomStringMaker(100000)};
+        const batchRecord = { "serialNumbers": readableRandomStringMaker(100000) };
         dsuInstance.writeFile('/info', JSON.stringify(batchRecord), (err) => {
             if (err) throw err;
             //console.log("BatchData written succesfully! :) ");
@@ -86,23 +81,43 @@ function createBatchDSUs(counter) {
                 console.log(`BatchStatus DSU created with SSI ${statusSSI.getIdentifier(true)}`);
                 dsuInstance.mount("/status", statusSSI.getIdentifier(true), (err) => {
                     if (err) throw err;
-                    dsuInstance.commitBatch((err) => {
+                    dsuInstance.getKeySSIAsObject((err, batchSSI) => {
                         if (err) throw err;
-                        dsuInstance.getKeySSIAsObject((err, batchSSI)=> {
+                        console.log(`Batch DSU created with SSI ${batchSSI.getIdentifier(true)}`);
+                        WALLET_DB.beginBatch();
+                        WALLET_DB.insertRecord(TABLE_BATCH, dbKey, batchRecord, (err) => {
                             if (err) throw err;
-                            console.log(`Batch DSU created with SSI ${batchSSI.getIdentifier(true)}`);
-                            WALLET_DB.beginBatch();
-                            insertRecord(TABLE_BATCH, dbKey, batchRecord, (err) => {
-                                if (err) throw err;
-                                WALLET_DB.commitBatch((err) => {
-                                    if (err) throw err;
-                                    // get stock record for GTIN
-                                        console.log("stockRecord", stockRecord);
-                                        createBatchDSUs(counter-1);                       
+                            // get stock record for GTIN
+                            WALLET_DB.getRecord(TABLE_STOCK, gtin, (err, stockRecord) => {
+                                // does not exist for the first time
+                                if (err) {
+                                    console.log(err.message);
+                                    WALLET_DB.insertRecord(TABLE_STOCK, gtin, batchRecord, (err) => {
+                                        if (err) throw err;
+                                        WALLET_DB.commitBatch((err) => {
+                                            if (err) throw err;
+                                            //console.log("stockRecord", stockRecord);
+                                            dsuInstance.commitBatch((err) => {
+                                                if (err) throw err;
+                                                createBatchDSUs(counter - 1);
+                                            });
+                                        });
                                     });
-                                });
+                                } else {
+                                    //console.log("stockRecord", stockRecord);
+                                    WALLET_DB.updateRecord(TABLE_STOCK, gtin, { "prevStock": stockRecord, "newStock": batchRecord }, (err) => {
+                                        if (err) throw err;
+                                        WALLET_DB.commitBatch((err) => {
+                                            if (err) throw err;
+                                            dsuInstance.commitBatch((err) => {
+                                                if (err) throw err;
+                                                createBatchDSUs(counter - 1);
+                                            });
+                                        });
+                                    });
+                                };
                             });
-                        });            
+                        });
                     });
                 });
             });
@@ -114,7 +129,7 @@ function createBatchDSUs(counter) {
 function createWalletDb() {
     const aSeedSSI = keyssispace.createTemplateSeedSSI(domain, `WALLET`, 'v0', hint);
     resolver.createDSU(aSeedSSI, (err, dsuInstance) => {
-        dsuInstance.getKeySSIAsObject((err, walletSSI)=> {
+        dsuInstance.getKeySSIAsObject((err, walletSSI) => {
             if (err) throw err;
             console.log(`WalletDB keySSI`, walletSSI.getIdentifier(true));
             const dbSSI = walletSSI.derive();
