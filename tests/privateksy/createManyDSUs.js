@@ -5,6 +5,8 @@ const domain = "traceability";
 //const domain = "default";
 const hint = undefined;
 
+let GTIN = 140000; // due to creation of Const DSUs based on GTIN, you may have to edit GTIN between runs
+
 
 //Load openDSU enviroment
 require("../../privatesky/psknode/bundles/openDSU");
@@ -23,8 +25,6 @@ let WALLET_DB = undefined;
 
 const TABLE_BATCH = "batch";
 const TABLE_STOCK = "stock";
-
-let GTIN = 110000;
 
 // from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
 function readableRandomStringMaker(length) {
@@ -51,11 +51,10 @@ function createBatchStatusDSU(callback) {
     });
 }
 
-function getBatch(gtin, batchNumber, callback) {
+function readBatchDSU(gtin, batchNumber, callback) {
     const aKeySSI = keyssispace.createArraySSI(domain, [gtin, batchNumber], 'v0', hint);
     resolver.loadDSU(aKeySSI, (err, dsu) => {
-        if (err) throw err;
-        callback(undefined, dsu);
+        callback(err, dsu);
     });
 }
 
@@ -70,48 +69,56 @@ function createBatchDSUs(counter) {
     const aConstSSI = keyssispace.createArraySSI(domain, [gtin, batchNumber], 'v0', hint);
     console.log(`Going to create a new Const DSU Batch ${dbKey}`)
     resolver.createDSUForExistingSSI(aConstSSI, (err, dsuInstance) => {
-        if (err) throw err;
+        if (err) throw createOpenDSUErrorWrapper("createBatchDSUs.createDSUForExistingSSI", err);
         dsuInstance.beginBatch();
         const batchRecord = { "serialNumbers": readableRandomStringMaker(100000) };
         dsuInstance.writeFile('/info', JSON.stringify(batchRecord), (err) => {
-            if (err) throw err;
+            if (err) throw createOpenDSUErrorWrapper("write /info", err);
             //console.log("BatchData written succesfully! :) ");
             createBatchStatusDSU((err, statusSSI) => {
-                if (err) throw err;
+                if (err) throw createOpenDSUErrorWrapper("createBatchStatusDSU", err);
                 console.log(`BatchStatus DSU created with SSI ${statusSSI.getIdentifier(true)}`);
                 dsuInstance.mount("/status", statusSSI.getIdentifier(true), (err) => {
-                    if (err) throw err;
+                    if (err) throw createOpenDSUErrorWrapper("mount /status", err);
                     dsuInstance.getKeySSIAsObject((err, batchSSI) => {
-                        if (err) throw err;
+                        if (err) throw createOpenDSUErrorWrapper("dsuInstance.getKeySSIAsObject", err);
                         console.log(`Batch DSU created with SSI ${batchSSI.getIdentifier(true)}`);
                         WALLET_DB.beginBatch();
                         WALLET_DB.insertRecord(TABLE_BATCH, dbKey, batchRecord, (err) => {
-                            if (err) throw err;
+                            if (err) throw createOpenDSUErrorWrapper("WALLET_DB.insertRecord(TABLE_BATCH", err);
                             // get stock record for GTIN
                             WALLET_DB.getRecord(TABLE_STOCK, gtin, (err, stockRecord) => {
                                 // does not exist for the first time
                                 if (err) {
                                     console.log(err.message);
-                                    WALLET_DB.insertRecord(TABLE_STOCK, gtin, batchRecord, (err) => {
-                                        if (err) throw err;
-                                        WALLET_DB.commitBatch((err) => {
-                                            if (err) throw err;
-                                            //console.log("stockRecord", stockRecord);
-                                            dsuInstance.commitBatch((err) => {
-                                                if (err) throw err;
-                                                createBatchDSUs(counter - 1);
+                                    readBatchDSU(gtin, batchNumber, (err, dsuBatch) => {
+                                        if (err) throw createOpenDSUErrorWrapper("readBatchDSU", err);
+                                        console.log("dsuBatch", dsuBatch);
+                                        WALLET_DB.insertRecord(TABLE_STOCK, gtin, batchRecord, (err) => {
+                                            if (err) throw createOpenDSUErrorWrapper("WALLET_DB.insertRecord(TABLE_STOCK", err);
+                                            WALLET_DB.commitBatch((err) => {
+                                                if (err) throw createOpenDSUErrorWrapper("WALLET_DB.commitBatch", err);
+                                                //console.log("stockRecord", stockRecord);
+                                                dsuInstance.commitBatch((err) => {
+                                                    if (err) throw createOpenDSUErrorWrapper("dsuInstance.commitBatch", err);
+                                                    createBatchDSUs(counter - 1);
+                                                });
                                             });
-                                        });
+                                        });    
                                     });
                                 } else {
                                     //console.log("stockRecord", stockRecord);
-                                    WALLET_DB.updateRecord(TABLE_STOCK, gtin, { "prevStock": stockRecord, "newStock": batchRecord }, (err) => {
-                                        if (err) throw err;
-                                        WALLET_DB.commitBatch((err) => {
-                                            if (err) throw err;
-                                            dsuInstance.commitBatch((err) => {
-                                                if (err) throw err;
-                                                createBatchDSUs(counter - 1);
+                                    getBatch(gtin, batchNumber, (err, dsuBatch) => {
+                                        if (err) throw createOpenDSUErrorWrapper("getBatch", err);
+                                        console.log("dsuBatch", dsuBatch);
+                                        WALLET_DB.updateRecord(TABLE_STOCK, gtin, { "prevStock": stockRecord, "newStock": batchRecord }, (err) => {
+                                            if (err) throw createOpenDSUErrorWrapper("WALLET_DB.updateRecord(TABLE_STOCK", err);
+                                            WALLET_DB.commitBatch((err) => {
+                                                if (err) throw createOpenDSUErrorWrapper("WALLET_DB.commitBatch", err);
+                                                dsuInstance.commitBatch((err) => {
+                                                    if (err) throw createOpenDSUErrorWrapper("dsuInstance.commitBatch", err);
+                                                    createBatchDSUs(counter - 1);
+                                                });
                                             });
                                         });
                                     });
