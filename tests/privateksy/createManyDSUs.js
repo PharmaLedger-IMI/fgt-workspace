@@ -33,7 +33,7 @@ function readableRandomStringMaker(length) {
 
 const ARRAY_OF_SERIALNUMBERS = [];
 (function (){
-    for(var i=0 ; i< 10000; i++) {
+    for(var i=0 ; i< 50000; i++) {
         ARRAY_OF_SERIALNUMBERS.push(readableRandomStringMaker(10));
     }
 })();
@@ -76,6 +76,10 @@ function createBatchDSUs(counter) {
     if (counter <= 0) return; // recursive stop ? 
     if (counter % 2 == 0) GTIN++; // each GTIN has 2 batches
 
+    // some batchs are small, others are large
+    let arrayOfSn = ARRAY_OF_SERIALNUMBERS;
+    if (counter % 2 == 1) arrayOfSn = arrayOfSn.slice(0,20); 
+
     //Create one Batch DSU, and the update DB records
     const gtin = GTIN;
     const batchNumber = `B${counter}`
@@ -85,7 +89,7 @@ function createBatchDSUs(counter) {
     resolver.createDSUForExistingSSI(aConstSSI, (err, dsuInstance) => {
         if (err) throw createOpenDSUErrorWrapper("createBatchDSUs.createDSUForExistingSSI", err);
         dsuInstance.beginBatch();
-        const batchRecord = { "serialNumbers": ARRAY_OF_SERIALNUMBERS };
+        const batchRecord = { "serialNumbers": arrayOfSn };
         dsuInstance.writeFile('/info', JSON.stringify(batchRecord), (err) => {
             if (err) throw createOpenDSUErrorWrapper("write /info", err);
             //console.log("BatchData written succesfully! :) ");
