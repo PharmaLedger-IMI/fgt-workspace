@@ -1,10 +1,11 @@
 // Ignore the test
-process.exit();
+//process.exit();
 
 const domain = "traceability";
 //const domain = "default";
 const hint = undefined;
-const NUM_BATCHES = 100;
+const NUM_PRODUCTS = 4;
+const NUM_BATCHES = 4;
 
 //Load openDSU enviroment
 require("../../privatesky/psknode/bundles/openDSU");
@@ -22,6 +23,7 @@ let WALLET_DB = undefined; // wallet database DSU
 
 let GTIN = Date.now(); // due to creation of Const DSUs based on GTIN, you may have to edit GTIN between runs
 let GTIN_LAST = undefined; // last GTIN created as a const DSU
+let PRODUCT_GTINS = [];
 
 const TABLE_PRODUCT = "product";
 const TABLE_BATCH = "batch";
@@ -75,12 +77,15 @@ function readBatchDSU(gtin, batchNumber, callback) {
 }
 
 function createBatchDSUs(counter) {
+    if (PRODUCT_GTINS.lenth==0)
+        return;
+    
     // some batchs are small, others are large
     let arrayOfSn = ARRAY_OF_SERIALNUMBERS;
     if (counter % 3 == 0 ) arrayOfSn = arrayOfSn.slice(0, 20);
 
     //Create one Batch DSU, and the update DB records
-    const gtin = GTIN;
+    const gtin = PRODUCT_GTINS.shift();
     const batchNumber = `B${counter}`
     const dbKey = `${gtin}-${batchNumber}`;
     const aConstSSI = keyssispace.createArraySSI(domain, [gtin, batchNumber], 'v0', hint);
@@ -178,11 +183,10 @@ function _indexProduct(key, item, record) {
 }
 
 function createProductDSU(counter) {
-    if (counter <= 0) return; // recursive stop ? 
-    if (counter % 4 == 0) GTIN++; // each GTIN has 4 batches
+    if (counter <= 0)
+        return createBatchDSUs(NUM_BATCHES); // recursive stop ? 
 
-    if (GTIN === GTIN_LAST)
-        return createBatchDSUs(counter);
+    GTIN++;
 
     // create a const DSU for the product
     let gtin = GTIN;
@@ -204,7 +208,8 @@ function createProductDSU(counter) {
                     WALLET_DB.insertRecord(TABLE_PRODUCT, gtin, _indexProduct(gtin, product, record), (err) => {
                         if (err) throw createOpenDSUErrorWrapper("product.insertRecord", err);
                         GTIN_LAST = GTIN;
-                        createBatchDSUs(counter);
+                        PRODUCT_GTINS.push(GTIN);
+                        createProductDSU(counter - 1);
                     });
                 });
             });
@@ -223,7 +228,7 @@ function createWalletDb() {
             dbInstance.on('initialised', () => {
                 console.log(`Database Cached ${dbSSI.getIdentifier(true)}`);
                 WALLET_DB = dbInstance;
-                createProductDSU(NUM_BATCHES);
+                createProductDSU(NUM_PRODUCTS);
             });
         });
     });
