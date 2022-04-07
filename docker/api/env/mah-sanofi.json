@@ -1,0 +1,25 @@
+{
+  "name": {
+    "secret": "Sanofi",
+    "public": true
+  },
+  "id": {
+    "secret": "MAH196261986",
+    "public": true
+  },
+  "email": {
+    "secret": "sanofi@mah.pharmaledger.com",
+    "public": true,
+  },
+  "address": {
+    "required": true,
+    "public": true
+  },
+  "pass": {
+    "required": true
+  },
+  "passrepeat": {
+    "required": true,
+    "secret": "This1sSuchAS3curePassw0rd"
+  }
+}

@@ -8,17 +8,17 @@ const MSD_BATCHES = {
         {
             batchNumber: "R034995",
             quantity: 3542,
-            expiry: "2021/08/31"
+            expiry: "2028/08/31"
         },
         {
             batchNumber: "S002961",
             quantity: 2692,
-            expiry: "2021/10/31"
+            expiry: "2028/10/31"
         },
         {
             batchNumber: "S006749",
             quantity: 4042,
-            expiry: "2021/11/31"
+            expiry: "2025/11/31"
         }
     ],
     "00191778005295": [
@@ -162,7 +162,7 @@ const ROCHE_BATCHES = {
         {
             batchNumber: "N1575B01",
             quantity: 10,
-            expiry: "2022/10/31"
+            expiry: "2029/10/31"
         }
     ]
 }
@@ -173,7 +173,7 @@ const BAYER_BATCHES = {
         {
             batchNumber: "E03F8",
             quantity: 1200,
-            expiry: "2022/04/09"
+            expiry: "2029/04/09"
         },
         {
             batchNumber: "E04H7",
@@ -289,6 +289,33 @@ const TAKEDA_BATCHES = {
     ]
 }
 
+const SANOFI_BATCHES = {
+    '7896070607767': [
+        {
+            batchNumber: "LC90001",
+            quantity: 50,
+            expiry: "2023/05/31"
+        },
+        {
+            batchNumber: "LC90001",
+            quantity: 200,
+            expiry: "2024/08/01"
+        }
+    ],
+    '7891058005221': [
+        {
+            batchNumber: "COG41A01",
+            quantity: 1700,
+            expiry: "2024/03/01"
+        },
+        {
+            batchNumber: "COG99A99",
+            quantity: 1650,
+            expiry: "2024/08/31"
+        }
+    ]
+}
+
 const fillBatchDetails = function(batchesObj){
     return Object.keys(batchesObj).reduce((accum, gtin) => {
         accum[gtin] = batchesObj[gtin].map(b => new Batch(Object.assign({}, b, {
@@ -327,6 +354,10 @@ const getTakedaBatches = function(){
     return fillBatchDetails(TAKEDA_BATCHES);
 }
 
+const getSanofiBatches = function(){
+    return fillBatchDetails(SANOFI_BATCHES);
+}
+
 module.exports = {
     getMSDBatches,
     getPfizerBatches,
@@ -334,5 +365,6 @@ module.exports = {
     getBayerBatches,
     getNovoNordiskBatches,
     getGskBatches,
-    getTakedaBatches
+    getTakedaBatches,
+    getSanofiBatches
 }

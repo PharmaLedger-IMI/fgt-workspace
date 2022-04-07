@@ -19,7 +19,7 @@ const ShipmentStatus = require('../../fgt-dsu-wizard/model/ShipmentStatus');
 const BatchStatus = require('../../fgt-dsu-wizard/model/BatchStatus');
 
 const credentials = require('./credentials/credentialsTests'); // TODO require ../../docker/api/env/mah-*.json ?
-const MAHS = [credentials.PFIZER, credentials.MSD, credentials.ROCHE, credentials.BAYER, credentials.NOVO_NORDISK, credentials.GSK, credentials.TAKEDA];
+const MAHS = [credentials.PFIZER, credentials.MSD, credentials.ROCHE, credentials.BAYER, credentials.NOVO_NORDISK, credentials.GSK, credentials.TAKEDA, credentials.SANOFI];
 const MAH_MSD = credentials.MSD;
 const WSH1 = require("../../docker/api/env/whs-1.json");
 const WSH2 = require("../../docker/api/env/whs-2.json");

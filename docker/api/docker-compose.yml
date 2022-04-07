@@ -34,6 +34,8 @@ x-whs-def:
       condition: service_healthy
     mah-takeda:
       condition: service_healthy
+    mah-sanofi:
+      condition: service_healthy
 x-pha-def:
   &pha-def
   << : *participant-def
@@ -366,6 +368,41 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.67
+  mah-sanofi:
+    <<: *mah-def
+    container_name: mah-sanofi
+    hostname: mah-sanofi
+    environment:
+      ROLE: mah
+      CREDENTIALS_FILE: mah-sanofi.json
+      SWAGGER_SERVER: ${PROTOCOL}://api-mah-sanofi${SWAGGER}/traceability
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mah-sanofi.rule=Host(`mah-sanofi${DOMAIN}`)"
+      - "traefik.http.middlewares.mah-sanofi-headers.headers.accessControlAllowOriginListRegex=.*"
+      - "traefik.http.middlewares.mah-sanofi-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
+      - "traefik.http.middlewares.mah-sanofi-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
+      - "traefik.http.middlewares.mah-sanofi-headers.headers.accessControlMaxAge=100"
+      - "traefik.http.middlewares.mah-sanofi-headers.headers.addVaryHeader=true"
+      - "traefik.http.routers.mah-sanofi.middlewares=mah-sanofi-headers"
+      - "traefik.http.routers.mah-sanofi.entrypoints=web"
+      - "traefik.http.routers.mah-sanofi.service=mah-sanofi"
+      - "traefik.http.services.mah-sanofi.loadbalancer.server.port=8080"
+
+      - "traefik.http.routers.mah-sanofi-swagger.rule=Host(`swagger-mah-sanofi${DOMAIN}`)"
+      - "traefik.http.routers.mah-sanofi-swagger.entrypoints=web"
+      - "traefik.http.routers.mah-sanofi-swagger.service=mah-sanofi-swagger"
+      - "traefik.http.services.mah-sanofi-swagger.loadbalancer.server.port=3009"
+
+      - "traefik.http.routers.mah-sanofi-api.rule=Host(`api-mah-sanofi${DOMAIN}`)"
+      - "traefik.http.routers.mah-sanofi-api.entrypoints=web"
+      - "traefik.http.routers.mah-sanofi-api.service=mah-sanofi-api"
+      - "traefik.http.services.mah-sanofi-api.loadbalancer.server.port=8081"
+    volumes:
+      - mah-sanofi_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      traceability-net:
+        ipv4_address: 172.16.63.68
 
   whs-1:
     << : *whs-def
@@ -568,6 +605,7 @@ volumes:
   "mah-pfizer_vol":
   "mah-msd_vol":
   "mah-takeda_vol":
+  "mah-sanofi_vol":
   "whs1_vol":
   "whs2_vol":
   "whs-takeda_vol":

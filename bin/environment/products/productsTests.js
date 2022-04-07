@@ -160,6 +160,32 @@ const getTakedaProducts = function(manufName = "MAH134013710"){
     return mergeManufInfo(TakedaProducts, manufName);
 }
 
+const SanofiProducts = [
+    {
+        gtin: '7897595901668',
+        name: 'Fenosulin',
+        description: 'Injectable Solution 6mg/2ml'
+    },
+    {
+        gtin: '7896070607767',
+        name: 'Libracin 9',
+        description: 'Tablets 250MG'
+    },
+    {
+        gtin: '7891058005221',
+        name: 'Cogbalamin',
+        description: '4MG PILLS'
+    },
+    {
+        gtin: '7897595901668',
+        name: 'Tetacin 2',
+        description: '10ml vial'
+    },
+]
+
+const getSanofiProducts = function(manufName = "MAH196261986"){
+    return mergeManufInfo(SanofiProducts, manufName);
+}
 
 module.exports = {
     getPfizerProducts,
@@ -168,5 +194,6 @@ module.exports = {
     getBayerProducts,
     getNovoNordiskProducts,
     getGskProducts,
-    getTakedaProducts
+    getTakedaProducts,
+    getSanofiProducts
 }

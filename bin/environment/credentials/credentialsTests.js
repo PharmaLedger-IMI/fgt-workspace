@@ -1,6 +1,6 @@
 const {generateBatchNumber} = require('./../utils')
-const {getPfizerProducts, getMSDProducts, getRocheProducts, getNovoNordiskProducts, getBayerProducts, getGskProducts, getTakedaProducts} = require('../products/productsTests');
-const {getPfizerBatches, getMSDBatches, getRocheBatches, getBayerBatches, getNovoNordiskBatches, getGskBatches, getTakedaBatches} = require('../batches/batchesTests');
+const {getPfizerProducts, getMSDProducts, getRocheProducts, getNovoNordiskProducts, getBayerProducts, getGskProducts, getTakedaProducts, getSanofiProducts} = require('../products/productsTests');
+const {getPfizerBatches, getMSDBatches, getRocheBatches, getBayerBatches, getNovoNordiskBatches, getGskBatches, getTakedaBatches, getSanofiBatches} = require('../batches/batchesTests');
 
 
 const CITY_LIST = [
@@ -379,6 +379,42 @@ const generatePharmacyCredentials = function(id, name , email , address) {
     }
 };
 
+
+const SANOFI =  {
+    "name": {
+        "secret": "Sanofi",
+        "public": true,
+        "required": true
+    },
+    "id": {
+        "secret": "MAH196261986",
+        "public": true,
+        "required": true
+    },
+    "email": {
+        "secret": "sanofi@mah.pharmaledger.com",
+        "public": true,
+        "required": true
+    },
+    "address": {
+        "required": true,
+        "public": true,
+        "secret": "Paris, France"
+    },
+    "pass": {
+        "required": true,
+        "secret": "This1sSuchAS3curePassw0rd"
+    },
+    "passrepeat": {
+        "required": true,
+        "secret": "This1sSuchAS3curePassw0rd"
+    }
+}
+
+SANOFI.products = getSanofiProducts(SANOFI.id.secret);
+SANOFI.batches = getSanofiBatches();
+
+
 module.exports = {
     generateWholesalerCredentials,
     generatePharmacyCredentials,
@@ -388,5 +424,6 @@ module.exports = {
     BAYER,
     NOVO_NORDISK,
     GSK,
-    TAKEDA
+    TAKEDA,
+    SANOFI
 }
