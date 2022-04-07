@@ -9,7 +9,7 @@
   },
   "email": {
     "secret": "sanofi@mah.pharmaledger.com",
-    "public": true,
+    "public": true
   },
   "address": {
     "required": true,
