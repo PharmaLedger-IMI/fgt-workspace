@@ -290,7 +290,7 @@ const TAKEDA_BATCHES = {
 }
 
 const SANOFI_BATCHES = {
-    '7896070607767': [
+    '78960706077670': [
         {
             batchNumber: "LC90001",
             quantity: 50,
@@ -302,7 +302,7 @@ const SANOFI_BATCHES = {
             expiry: "2024/08/01"
         }
     ],
-    '7891058005221': [
+    '78910580052218': [
         {
             batchNumber: "COG41A01",
             quantity: 1700,

@@ -162,25 +162,20 @@ const getTakedaProducts = function(manufName = "MAH134013710"){
 
 const SanofiProducts = [
     {
-        gtin: '7897595901668',
+        gtin: '78975959016680',
         name: 'Fenosulin',
         description: 'Injectable Solution 6mg/2ml'
     },
     {
-        gtin: '7896070607767',
+        gtin: '78960706077670',
         name: 'Libracin 9',
         description: 'Tablets 250MG'
     },
     {
-        gtin: '7891058005221',
+        gtin: '78910580052218',
         name: 'Cogbalamin',
         description: '4MG PILLS'
-    },
-    {
-        gtin: '7897595901668',
-        name: 'Tetacin 2',
-        description: '10ml vial'
-    },
+    }
 ]
 
 const getSanofiProducts = function(manufName = "MAH196261986"){
