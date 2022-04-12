@@ -1,5 +1,7 @@
 const {log} = require('./utils');
+const {requireAuth} = require("./middleware");
 const {BadRequest, NotImplemented} = require("./utils/errorHandler");
+
 const BASE_PATH = '/traceability';
 const ALL_SUFFIX = "All";
 
@@ -212,7 +214,7 @@ class Api {
             const method = getMethod(op.method);
             const endpoint = this._getEndpoint(op.endpoint, op.pathParams || []);
             log(`Setting up ${op.method} on ${endpoint}`)
-            method(endpoint, (req, res, next) => {
+            method(endpoint, requireAuth, (req, res, next) => {
                 parseRequestBody(req, (err, body) => {
                     if (err) {
                         console.log('err=', err);

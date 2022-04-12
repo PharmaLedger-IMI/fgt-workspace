@@ -27,6 +27,8 @@ paths:
         - product
       summary: create
       description: '*   GTIN must be a valid GTIN-14.'
+      security:
+        - basicAuth: []
       requestBody:
         content:
           application/json:
@@ -1376,6 +1378,10 @@ paths:
                 error: string
                 message: string
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
   schemas:
     ShipmentStatus:
       type: string
@@ -1395,3 +1401,5 @@ components:
         - commissioned
         - quarantined
         - recall
+security:
+  - basicAuth: []

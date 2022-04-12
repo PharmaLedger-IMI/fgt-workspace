@@ -28,7 +28,7 @@ class BadRequest extends BaseError {
 
 class Unauthorized extends BaseError {
     constructor (
-        err = "You do not have permission to view the resource that you looking for",
+        err = "You do not have permission to access the resource that you looking for",
         statusCode = HTTP_STATUS_CODE.UNAUTHORIZED,
         description = 'Unauthorized'
     ) {
