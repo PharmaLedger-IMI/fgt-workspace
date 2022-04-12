@@ -85,9 +85,20 @@ class SimpleShipmentManager extends Manager {
      * @protected
      */
     _genCompostKey(simpleShipment) {
+        let shipmentId;
         const splitShipmentId = `${simpleShipment.shipmentId}`.split('-');
-        const shipmentId = splitShipmentId[splitShipmentId.length - 1];
-        return `${simpleShipment.senderId}-${simpleShipment.requesterId}-${simpleShipment.orderId}-${shipmentId}`;
+        if (this.getIdentity().id === simpleShipment.senderId) {
+            if (splitShipmentId.length >= 2)
+                shipmentId = splitShipmentId[splitShipmentId.length - 1];
+            else
+                shipmentId = simpleShipment.shipmentId;
+        } else {
+            if (splitShipmentId.length >= 2)
+                shipmentId = simpleShipment.shipmentId;
+            else
+                shipmentId = `${simpleShipment.senderId}-${simpleShipment.shipmentId}`;
+        }
+        return shipmentId;
     }
 
     /**
@@ -400,6 +411,7 @@ class SimpleShipmentManager extends Manager {
             if (err)
                 return callback(err);
 
+            receiveSimpleShipment.shipmentId = self._genCompostKey(receiveSimpleShipment);
             self.getOne(receiveSimpleShipment.shipmentId, true, (err, simpleShipment) => {
                 if (err)
                     return self.create(receiveSimpleShipment, (err, insertSimpleShipment) => callback(err));
