@@ -21,6 +21,32 @@ module.exports = class BatchApi extends Api {
     }
 
     /**
+     * Return an array with auto generated values
+     * @param {Number} qty
+     * @returns {string[]}
+     */
+    _genSerialNumbers(qty) {
+        // shuffle function, ref. https://bost.ocks.org/mike/shuffle/
+        const shuffleArray = function (array) {
+            let randomIndex = 0;
+            let currentIndex = array.length;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        const toShuffle = [...Array(13).keys()]; // Array that will be shuffle
+        const qtyArr = [...Array(qty).keys()]; // common array with size = qty > [1,2,3...qty]
+        const shuffled = qtyArr.map((n)=> {
+            return shuffleArray(toShuffle).join("");  // after first function call, the shuffle result will be the input to another shuffle
+        });
+        return shuffled;
+    }
+
+    /**
      * @param {Batch} batch
      * @param {function(err?, Batch?, KeySSI?)} callback
      */
@@ -34,6 +60,15 @@ module.exports = class BatchApi extends Api {
         self.productManager.getOne(gtin, (err, product) => {
             if (err)
                 return callback(new BadRequest(err));
+
+            if (batch.quantity && batch.serialNumbers)
+                return callback(new BadRequest(`To automatically fill serial numbers do not provide serialNumbers field`));
+
+            if (batch.quantity && batch.quantity > 10000 && (!batch.serialNumbers))
+                return callback(new BadRequest(`Auto generate serial numbers only supports quantity <= 10000`));
+
+            if (batch.quantity && batch.quantity > 0 && (!batch.serialNumbers))
+                batch.serialNumbers = self._genSerialNumbers(batch.quantity);
 
             const [validateErr, _batch] = self._validate(batch, batch.batchStatus);
             if (validateErr)
