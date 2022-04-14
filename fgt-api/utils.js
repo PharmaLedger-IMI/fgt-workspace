@@ -6,6 +6,7 @@ const {getResolver, getKeySSISpace} = require('../pdm-dsu-toolkit/services/utils
 const getParticipantManager = require('../fgt-dsu-wizard/managers/ParticipantManager');
 const {instantiateSSApp, loadWallet, impersonateDSUStorage} = require('../bin/environment/utils');
 const {APPS} = require('../bin/environment/credentials/credentials3');
+const {encodeBase64} = require('./utils/basicAuth');
 
 const AppBuilderService = require('../pdm-dsu-toolkit/services/dt/AppBuilderService');
 
@@ -45,7 +46,7 @@ const instantiate = function(basePath, walletName, callback){
                 console.log(`The wallet couldn't be created. Trying to load with credentials...` );
                 return loadWallet(walletName, "..", dt, credentials, callback);
             }
-            callback(undefined, walletSSI, walletDSU);
+            callback(undefined, walletSSI, walletDSU, credentials);
         });
     });
 }
@@ -83,6 +84,8 @@ const initApis = function(express, apis, port, walletName, ...managerInitMethods
                     if (err)
                         throw err;
 
+                    process.env.PARTICIPANT_ID = participantManager.getIdentity().id;
+                    process.env.TOKEN = process.env.TOKEN ? process.env.TOKEN : `${encodeBase64(participantManager.getIdentity().email)}`;
                     const server = express();
                     server.use(function (req, res, next) {
                         res.contentType('application/json');

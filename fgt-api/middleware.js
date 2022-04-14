@@ -1,4 +1,5 @@
 const {Unauthorized} = require("./utils/errorHandler");
+const {authenticate} = require("./utils/basicAuth");
 
 const requireAuth = (req, res, next) => {
     const unauthorized = function (msg) {
@@ -13,18 +14,12 @@ const requireAuth = (req, res, next) => {
     }
 
     const {authorization} = req.headers;
-    console.log("$$$ authorization=", authorization);
-    if (!authorization)
-        return unauthorized();
+    if (!authorization || authorization.indexOf('Basic ') === -1)
+        return unauthorized('Missing Authorization');
 
-    const split = authorization.split('Basic ');
-    if (split.length !== 2 || !split[1])
-        return unauthorized("Can not read authorization");
-
-    const buffer = new Buffer(split[1], 'base64');
-    const token = buffer.toString('ascii');
-    console.log("$$$ token=", token);
-    if (token !== "foo:bar")
+    const [user, base64Pass] =  authorization.split(' ')[1].split(":");
+    const password = Buffer.from(base64Pass, 'base64').toString('ascii');
+    if (!authenticate(user, password))
         return unauthorized();
 
     next();
