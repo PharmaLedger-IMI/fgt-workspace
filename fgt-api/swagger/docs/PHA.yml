@@ -9,7 +9,7 @@ info:
 
     *  
     [License](https://github.com/PharmaLedger-IMI/fgt-workspace/blob/master/LICENSE.md)
-  version: 1.0.0
+  version: 1.1.0
 servers:
   - url: http://{{api-pha}}
 tags:
@@ -23,7 +23,7 @@ paths:
     get:
       tags:
         - stock
-      summary: getAll
+      summary: 'return all products in FGT stock according to the filter'
       parameters:
         - name: keyword
           in: query
@@ -50,7 +50,7 @@ paths:
           in: query
           schema:
             type: string
-          description: product name
+          description: productName
         - name: gtin
           in: query
           schema:
@@ -66,17 +66,23 @@ paths:
           headers:
             Content-Type:
               schema:
-                type: string
-                example: application/json
+                type: application/json
           content:
             application/json:
               schema:
                 type: object
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Stock'
               example:
                 meta:
-                  page: 0
-                  itemsPerPage: 0
-                  totalPages: 0
+                  page: 1
+                  itemsPerPage: 10
+                  totalPages: 1
                   query: {}
                 results:
                   - name: string
@@ -85,30 +91,30 @@ paths:
                     manufName: string
                     batches:
                       - batchNumber: string
-                        expiry: string
+                        expiry: "2030-01-01"
                         serialNumbers:
-                          - 0
-                        quantity: 0
+                          - "0"
+                        quantity: 1
                         batchStatus:
-                          status: string
-                          log: string[]
-                          extraInfo: {}
-                    status: string
-        '501':
-          description: Not Implemented
+                          status: 'commissioned'
+                          log:
+                            - '$manufName $timestamp set status to commissioned'
+                    status: 'available'
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/HttpError'
               example:
-                status: 0
-                error: string
-                message: string
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
   /stock/get/{gtin}:
     get:
       tags:
         - stock
-      summary: getOne
+      summary: 'find a product in FGT stock by GTIN'
       parameters:
         - name: gtin
           in: path
@@ -121,12 +127,11 @@ paths:
           headers:
             Content-Type:
               schema:
-                type: string
-                example: application/json
+                type: application/json
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/Stock'
               example:
                 name: string
                 gtin: string
@@ -134,25 +139,25 @@ paths:
                 manufName: string
                 batches:
                   - batchNumber: string
-                    expiry: string
+                    expiry: "2030-01-01"
                     serialNumbers:
-                      - 0
-                    quantity: 0
+                      - "0"
+                    quantity: 1
                     batchStatus:
-                      status: string
-                      log: string[]
-                      extraInfo: {}
-                status: string
-        '501':
-          description: Not Implemented
+                      status: 'commissioned'
+                      log:
+                        - '$manufName $timestamp set status to commissioned'
+                status: 'available'
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/HttpError'
               example:
-                status: 0
-                error: string
-                message: string
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
   /sale/create:
     post:
       tags:
@@ -387,18 +392,384 @@ paths:
                 status: 0
                 error: string
                 message: string
+  /shipment/create:
+    post:
+      tags:
+        - shipment
+      summary: 'add a new shipment'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddShipment'
+            example:
+              orderId: string
+              requesterId: string
+              shipmentLines:
+                - gtin: string
+                  batch: string
+                  quantity: 1
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: application/json
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+              example:
+                shipmentId: string
+                orderId: string
+                requesterId: string
+                senderId: string
+                status:
+                  status: "created"
+                  log:
+                    - '$manufName $timestamp set status to created'
+                shipmentLines:
+                  - gtin: string
+                    batch: string
+                    quantity: 1
+                    senderId: string
+                    requesterId: string
+                    status: "created"
+                    createdOn: 0
+                keySSI: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+              example:
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
+  /shipment/createAll:
+    post:
+      tags:
+        - shipment
+      summary: 'add one or more new shipments'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/AddShipment'
+            example:
+              - orderId: string
+                requesterId: string
+                shipmentLines:
+                  - gtin: string
+                    batch: string
+                    quantity: 1
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: application/json
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Shipment'
+              example:
+                - shipmentId: string
+                  orderId: string
+                  requesterId: string
+                  senderId: string
+                  status:
+                    status: 'created'
+                    log:
+                      - '$manufName $timestamp set status to created'
+                  shipmentLines:
+                    - gtin: string
+                      batch: string
+                      quantity: 1
+                      senderId: string
+                      requesterId: string
+                      status: 'created'
+                      createdOn: 0
+                  keySSI: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+              example:
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
+  /shipment/getAll:
+    get:
+      tags:
+        - shipment
+      summary: 'returns all shipments according to the filter'
+      parameters:
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          description: >-
+            Search for a keyword in all tables indexes. search by keyword
+            disable other queries.
+        - name: page
+          in: query
+          schema:
+            type: string
+        - name: itemPerPage
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+          description: dsc or asc
+          example: dsc
+        - name: shipmentId
+          in: query
+          schema:
+            type: string
+        - name: orderId
+          in: query
+          schema:
+            type: string
+          description: only for requester reference.
+        - name: senderId
+          in: query
+          schema:
+            type: string
+          description: partner identifier that shipped the products
+        - name: requesterId
+          in: query
+          schema:
+            type: string
+          description: partner identifier that received the products
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: application/json
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Shipment'
+              example:
+                meta:
+                  page: 1
+                  itemsPerPage: 10
+                  totalPages: 1
+                  query: {}
+                results:
+                  - shipmentId: string
+                    orderId: string
+                    requesterId: string
+                    senderId: string
+                    status:
+                      status: 'created'
+                      log:
+                        - '$manufName $timestamp set status to created'
+                    shipmentLines:
+                      - gtin: string
+                        batch: string
+                        quantity: 1
+                        senderId: string
+                        requesterId: string
+                        status: 'created'
+                        createdOn: 0
+                    keySSI: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+              example:
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
+  /shipment/get/{shipmentId}:
+    get:
+      tags:
+        - shipment
+      summary: 'find a shipment by shipment id'
+      parameters:
+        - name: shipmentId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: application/json
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+              example:
+                shipmentId: string
+                orderId: string
+                requesterId: string
+                senderId: string
+                status:
+                  status: 'created'
+                  log:
+                    - '$manufName $timestamp set status to created'
+                shipmentLines:
+                  - gtin: string
+                    batch: string
+                    quantity: 1
+                    senderId: string
+                    requesterId: string
+                    status: 'created'
+                    createdOn: 0
+                keySSI: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+              example:
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
+  /shipment/update/{shipmentId}:
+    put:
+      tags:
+        - shipment
+      summary: 'update the shipment status'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateShipment'
+            example:
+              status: 'pickup'
+              extraInfo: 'waiting for courier'
+      parameters:
+        - name: shipmentId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: application/json
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+              example:
+                shipmentId: string
+                orderId: string
+                requesterId: string
+                senderId: string
+                status:
+                  status: 'pickup'
+                  log:
+                    - '$manufName $timestamp set status to created'
+                    - '$manufName $timestamp update status from created to pickup'
+                  extraInfo:
+                    pickup:
+                      - 'waiting for courier'
+                shipmentLines:
+                  - gtin: string
+                    batch: string
+                    quantity: 1
+                    senderId: string
+                    requesterId: string
+                    status: 'pickup'
+                    createdOn: 0
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+              example:
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
+  /shipment/updateAll:
+    put:
+      tags:
+        - shipment
+      summary: 'update the shipment status of one or more shipments'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/UpdateShipments'
+            example:
+              - shipmentId: string
+                status: string
+                extraInfo: string
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: application/json
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+              example:
+                - shipmentId: string
+                  orderId: string
+                  requesterId: string
+                  senderId: string
+                  status:
+                    status: 'pickup'
+                    log:
+                      - '$manufName $timestamp set status to created'
+                      - '$manufName $timestamp update status from created to pickup'
+                    extraInfo:
+                      pickup:
+                        - 'waiting for courier'
+                  shipmentLines:
+                    - gtin: string
+                      batch: string
+                      quantity: 1
+                      senderId: string
+                      requesterId: string
+                      status: 'pickup'
+                      createdOn: 0
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+              example:
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
   /receipt/getAll:
     get:
       tags:
         - receipt
-      summary: getAll
+      summary: 'return all receipts according to the filter'
       parameters:
-        - name: manufName
-          in: query
-          schema:
-            type: string
-          description: Marketing Authorization Holder identifier
-          required: true
         - name: keyword
           in: query
           schema:
@@ -440,6 +811,11 @@ paths:
           schema:
             type: string
           description: product serial number
+        - name: manufName
+          in: query
+          schema:
+            type: string
+          description: Marketing Authorization Holder identifier
         - name: status
           in: query
           schema:
@@ -450,17 +826,23 @@ paths:
           headers:
             Content-Type:
               schema:
-                type: string
-                example: application/json
+                type: application/json
           content:
             application/json:
               schema:
                 type: object
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Receipt'
               example:
                 meta:
-                  page: 0
-                  itemsPerPage: 0
-                  totalPages: 0
+                  page: 1
+                  itemsPerPage: 10
+                  totalPages: 1
                   query: {}
                 results:
                   - name: string
@@ -468,24 +850,24 @@ paths:
                     batchNumber: string
                     serialNumber: 0
                     manufName: string
-                    expiry: string
-                    status: string
+                    expiry: "2030-01-01"
+                    status: 'commissioned'
                     sellerId: string
-        '501':
-          description: Not Implemented
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/HttpError'
               example:
-                status: 0
-                error: string
-                message: string
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
   /receipt/get/{gtin}/{batchNumber}/{serialNumber}:
     get:
       tags:
         - receipt
-      summary: getOne
+      summary: 'find a receipt by individual product'
       parameters:
         - name: gtin
           in: path
@@ -507,394 +889,35 @@ paths:
           headers:
             Content-Type:
               schema:
-                type: string
-                example: application/json
+                type: application/json
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/Receipt'
               example:
                 name: string
                 gtin: string
                 batchNumber: string
                 serialNumber: 0
                 manufName: string
-                expiry: string
-                status: string
+                expiry: "2030-01-01"
+                status: "commissioned"
                 sellerId: string
-        '501':
-          description: Not Implemented
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/HttpError'
               example:
-                status: 0
-                error: string
-                message: string
-  /shipment/create:
-    post:
-      tags:
-        - shipment
-      summary: create
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                orderId: string
-                requesterId: string
-                senderId: string
-                shipmentLines:
-                  - gtin: string
-                    batch: string
-                    quantity: 0
-                    status: string
-      responses:
-        '200':
-          headers:
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                shipmentId: string
-                orderId: string
-                requesterId: string
-                senderId: string
-                status:
-                  status: string
-                  log: string[]
-                shipmentLines:
-                  - gtin: string
-                    batch: string
-                    quantity: 0
-                    senderId: string
-                    requesterId: string
-                    status: string
-                    createdOn: 0
-                keySSI: string
-        '501':
-          description: Not Implemented
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                status: 0
-                error: string
-                message: string
-  /shipment/createAll:
-    post:
-      tags:
-        - shipment
-      summary: createAll
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                - orderId: string
-                  requesterId: string
-                  shipmentLines:
-                    - gtin: string
-                      batch: string
-                      quantity: 0
-      responses:
-        '200':
-          headers:
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                - shipmentId: string
-                  orderId: string
-                  requesterId: string
-                  senderId: string
-                  status:
-                    status: string
-                    log: string[]
-                  shipmentLines:
-                    - gtin: string
-                      batch: string
-                      quantity: 0
-                      senderId: string
-                      requesterId: string
-                      status: string
-                      createdOn: 0
-                  keySSI: string
-        '501':
-          description: Not Implemented
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                status: 0
-                error: string
-                message: string
-  /shipment/getAll:
-    get:
-      tags:
-        - shipment
-      summary: getAll
-      parameters:
-        - name: keyword
-          in: query
-          schema:
-            type: string
-          description: >-
-            Search for a keyword in all tables indexes. search by keyword
-            disable other queries
-        - name: page
-          in: query
-          schema:
-            type: string
-        - name: itemPerPage
-          in: query
-          schema:
-            type: string
-        - name: sort
-          in: query
-          schema:
-            type: string
-          description: dsc or asc
-          example: dsc
-        - name: shipmentId
-          in: query
-          schema:
-            type: string
-        - name: orderId
-          in: query
-          schema:
-            type: string
-          description: only for requester reference.
-        - name: senderId
-          in: query
-          schema:
-            type: string
-          description: partner identifier that shipped the products
-        - name: requesterId
-          in: query
-          schema:
-            type: string
-          description: partner identifier that received the products
-      responses:
-        '200':
-          headers:
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                meta:
-                  page: 0
-                  itemsPerPage: 0
-                  totalPages: 0
-                  query: {}
-                results:
-                  - shipmentId: string
-                    orderId: string
-                    requesterId: string
-                    senderId: string
-                    status:
-                      status: string
-                      log: string[]
-                    shipmentLines:
-                      - gtin: string
-                        batch: string
-                        quantity: 0
-                        senderId: string
-                        requesterId: string
-                        status: string
-                        createdOn: 0
-                    keySSI: string
-        '501':
-          description: Not Implemented
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                status: 0
-                error: string
-                message: string
-  /shipment/get/{shipmentId}:
-    get:
-      tags:
-        - shipment
-      summary: getOne
-      parameters:
-        - name: shipmentId
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          headers:
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                shipmentId: string
-                orderId: string
-                requesterId: string
-                senderId: string
-                status:
-                  status: string
-                  log: string[]
-                shipmentLines:
-                  - gtin: string
-                    batch: string
-                    quantity: 0
-                    senderId: string
-                    requesterId: string
-                    status: string
-                    createdOn: 0
-                keySSI: string
-        '501':
-          description: Not Implemented
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                status: 0
-                error: string
-                message: string
-  /shipment/update/{shipmentId}:
-    put:
-      tags:
-        - shipment
-      summary: update
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                status: string
-                extraInfo: string
-      parameters:
-        - name: shipmentId
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          headers:
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                shipmentId: string
-                orderId: string
-                requesterId: string
-                senderId: string
-                status:
-                  status: string
-                  log: string[]
-                shipmentLines:
-                  - gtin: string
-                    batch: string
-                    quantity: 0
-                    senderId: string
-                    requesterId: string
-                    status: string
-                    createdOn: 0
-        '501':
-          description: Not Implemented
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                status: 0
-                error: string
-                message: string
-  /shipment/updateAll:
-    put:
-      tags:
-        - shipment
-      summary: updateAll
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                - shipmentId: string
-                  status: pickup
-                  extraInfo: '[api] updateAll extraInfo update to pickup'
-      responses:
-        '200':
-          headers:
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                - shipmentId: string
-                  orderId: string
-                  requesterId: string
-                  senderId: string
-                  status:
-                    status: string
-                    log: string[]
-                  shipmentLines:
-                    - gtin: string
-                      batch: string
-                      quantity: 0
-                      senderId: string
-                      requesterId: string
-                      status: string
-                      createdOn: 0
-        '501':
-          description: Not Implemented
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                status: 0
-                error: string
-                message: string
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
   /traceability/create:
     post:
       tags:
         - traceability
-      summary: create
+      summary: 'request product traceability'
       description: >-
         Traceability can be requested by gtin, batchNumber and serialNumber
         (optional).
@@ -902,78 +925,174 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              example:
-                gtin: string
-                batchNumber: string
+              $ref: '#/components/schemas/RequestTraceability'
+            example:
+              gtin: string
+              batchNumber: string
+              serialNumber: string
       responses:
         '200':
           headers:
             Content-Type:
               schema:
-                type: string
-                example: application/json
+                type: application/json
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/Traceability'
               example:
                 id: 0
                 title: string
-                parents: string[]
-                children: string[]
-        '501':
-          description: Not Implemented
+                parents: [{}]
+                children: [{}]
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/HttpError'
               example:
-                status: 0
-                error: string
-                message: string
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
   /traceability/createAll:
     post:
       tags:
         - traceability
-      summary: createAll
+      summary: 'request traceability of different products'
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              example:
-                - gtin: string
-                  batchNumber: string
-                  serialNumber: string
+              type: array
+              items:
+                $ref: '#/components/schemas/RequestTraceability'
+            example:
+              - gtin: string
+                batchNumber: string
+                serialNumber: string
       responses:
         '200':
           headers:
             Content-Type:
               schema:
-                type: string
-                example: application/json
+                type: application/json
           content:
             application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/Traceability'
               example:
                 - id: 0
                   title: string
-                  parents: string[]
-                  children: string[]
-        '501':
-          description: Not Implemented
+                  parents: [{}]
+                  children: [{}]
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/HttpError'
               example:
-                status: 0
-                error: string
-                message: string
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
   schemas:
+
+    UpdateShipment:
+      type: object
+      description: "Required fields to update a Shipment"
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - pickup
+            - hold
+            - transit
+            - delivered
+            - received
+            - confirmed
+            - reject
+        extraInfo:
+          type: string
+
+    UpdateShipments:
+      type: object
+      description: "Required fields to update a Shipment"
+      required:
+        - shipmentId
+        - status
+      properties:
+        shipmentId:
+          type: string
+        status:
+          type: string
+          enum:
+            - pickup
+            - hold
+            - transit
+            - delivered
+            - received
+            - confirmed
+            - reject
+        extraInfo:
+          type: string
+
+    AddShipmentLine:
+      type: object
+      description: "Required fields to create a ShipmentLine"
+      required:
+        - gtin
+        - batch
+        - quantity
+      properties:
+        gtin:
+          type: string
+        batch:
+          type: string
+        quantity:
+          type: integer
+
+    AddShipment:
+      type: object
+      description: "Required fields to add a new Shipment"
+      required:
+        - orderId
+        - requesterId
+        - shipmentLines
+      properties:
+        shipmentId:
+          type: string
+        orderId:
+          type: string
+        requesterId:
+          type: string
+        shipmentLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddShipmentLine'
+
+    RequestTraceability:
+      type: object
+      required:
+        - gtin
+        - batchNumber
+      properties:
+        gtin:
+          type: string
+        batchNumber:
+          type: string
+        serialNumber:
+          type: string
+
     ShipmentStatus:
       type: string
       enum:
@@ -986,3 +1105,287 @@ components:
         - received
         - confirmed
         - reject
+
+    BatchStatus:
+      type: object
+      required:
+        - status
+        - log
+      properties:
+        status:
+          type: string
+          description: "Current status of batch"
+          enum:
+            - commissioned
+            - quarantined
+            - recall
+        log:
+          type: array
+          description: "Status change log"
+          items:
+            type: string
+        extraInfo:
+          type: object
+          description: "Additional info about each status update"
+          properties:
+            commissioned:
+              type: array
+              items:
+                type: string
+            quarantined:
+              type: array
+              items:
+                type: string
+            recall:
+              type: array
+              items:
+                type: string
+
+    Product:
+      type: object
+      required:
+        - name
+        - gtin
+        - description
+        - manufName
+      properties:
+        name:
+          type: string
+          description: "Product identifier name"
+        gtin:
+          type: string
+          description: "Product GTIN"
+        description:
+          type: string
+          description: "Product description"
+        manufName:
+          type: string
+          description: "Product manufacturer identifier"
+        keySSI:
+          type: string
+          description: "readSSI to DSU instance"
+
+    Batch:
+      type: object
+      required:
+        - batchNumber
+        - expiry
+        - serialNumbers
+        - quantity
+        - batchStatus
+      properties:
+        batchNumber:
+          type: string
+          description: "Product batch number identifier"
+        expiry:
+          type: string
+          description: "Product expiration date"
+        serialNumbers:
+          type: array
+          description: "Serial number for each individual product that belongs to batch"
+          items:
+            type: string
+        quantity:
+          type: integer
+          description: "Batch size"
+        batchStatus:
+          $ref: '#/components/schemas/BatchStatus'
+        keySSI:
+          type: string
+          description: "readSSI to DSU instance"
+
+    ShipmentLine:
+      type: object
+      description: "Details of the products that belong  to the current shipment"
+      required:
+        - gtin
+        - batch
+        - quantity
+        - senderId
+        - requesterId
+        - status
+        - createdOn
+      properties:
+        gtin:
+          type: string
+          description: "Product GTIN"
+        batch:
+          type: string
+          description: "Product batch number"
+        quantity:
+          type: string
+          description: "Quantity of the individual product being sent in the shipment"
+        requesterId:
+          type: string
+          description: "shipment requester identifier (ordering partner ID)"
+        senderId:
+          type: string
+          description: "shipment sender identifier (supplying partner ID)"
+        status:
+          type: string
+          description: "shipment status"
+        createdOn:
+          type: string
+          description: "shipment creation date in timestamp format"
+
+    Shipment:
+      type: object
+      description: "Products ordered by a partner that will be delivered by a supplier"
+      required:
+        - shipmentId
+        - orderId
+        - requesterId
+        - senderId
+        - status
+        - shipmentLines
+      properties:
+        shipmentId:
+          type: string
+          description: "shipment identifier"
+        orderId:
+          type: string
+          description: "order identifier for sender/recipient utility reason"
+        requesterId:
+          type: string
+          description: "shipment requester identifier (ordering partner ID)"
+        senderId:
+          type: string
+          description: "shipment sender identifier (supplying partner ID)"
+        status:
+          $ref: '#/components/schemas/ShipmentStatus'
+        shipmentLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipmentLine'
+        keySSI:
+          type: string
+          description: "readSSI to DSU instance"
+
+    Stock:
+      type: object
+      description: "Informative stock in the FGT system that allows shipment creation and validation"
+      required:
+        - name
+        - gtin
+        - description
+        - batches
+        - status
+      properties:
+        name:
+          type: string
+          description: "Product name"
+        gtin:
+          type: string
+          description: "Product GTIN"
+        description:
+          type: string
+          description: "Product description"
+        batches:
+          $ref: '#/components/schemas/Batch'
+        status:
+          type: string
+          description: "Products status in stock"
+          enum:
+            - available
+            - reserved
+            - transit
+
+    Receipt:
+      type: object
+      description: "Final step of product traceability, when it is sold to a final consumer"
+      required:
+        - name
+        - gtin
+        - batchNumber
+        - serialNumber
+        - manufName
+        - expiry
+        - status
+        - sellerId
+      properties:
+        name:
+          type: string
+          description: "Product name"
+        gtin:
+          type: string
+          description: "Product GTIN"
+        batchNumber:
+          type: string
+          description: "Product batch number"
+        serialNumber:
+          type: string
+          description: "Product serial number"
+        manufName:
+          type: string
+          description: "Marketing Authorization Holder identifier"
+        expiry:
+          type: string
+          description: "Product expiration date"
+        status:
+          type: string
+          description: "Product status"
+          enum:
+            - commissioned
+            - recall
+            - dispensed
+            - administered
+            - destroyed
+        sellerId:
+          type: string
+          description: "Product seller identifier"
+
+    Traceability:
+      type: object
+      description: "Informative traceability node tree that displays the product trace"
+      properties:
+        id:
+          type: integer
+          description: "Traceability identifier"
+        title:
+          type: string
+          description: "Traceability root node identifier"
+        parents:
+          type: object
+          description: "Traceability tree nodes"
+        children:
+          type: object
+          description: "Traceability tree nodes"
+
+    HttpError:
+      type: object
+      required:
+        - status
+        - error
+        - message
+      properties:
+        status:
+          type:
+            - string
+        error:
+          type:
+            - string
+        message:
+          type:
+            - string
+
+    Query:
+      type: object
+      properties:
+        keyword:
+          type: string
+        sort:
+          type: dsc | asc
+
+    Meta:
+      type: object
+      properties:
+        page:
+          type: integer
+        itemsPerPage:
+          type: integer
+        totalPages:
+          type: integer
+        query:
+          $ref: '#/components/schemas/Query'
+security:
+  - basicAuth: []
