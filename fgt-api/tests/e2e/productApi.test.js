@@ -4,17 +4,18 @@ chai.use(chaiHttp);
 chai.should();
 
 const {db, genId} = require("../controls/db/db");
-const {MAH_API} = require("../controls/utils");
+const {MAH_API, getTokenFromCredentials} = require("../controls/utils");
 
 
 describe('productApi', function () {
     const product = db.products[0];
+    const auth = {Authorization: `Basic ${getTokenFromCredentials("fgt-mah-wallet")}`}
 
     describe('POST /product/create', function () {
-
         it ('should return a error of invalid GTIN', (done) => {
             chai.request(MAH_API)
                 .post('/product/create')
+                .set(auth)
                 .send({...product, gtin: genId(14)})
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -29,6 +30,7 @@ describe('productApi', function () {
         it ('should create a new product', (done) => {
             chai.request(MAH_API)
                 .post('/product/create')
+                .set(auth)
                 .send(product)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -45,6 +47,7 @@ describe('productApi', function () {
         it ('should return a error when product already exists', (done) => {
             chai.request(MAH_API)
                 .post('/product/create')
+                .set(auth)
                 .send(product)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -62,6 +65,7 @@ describe('productApi', function () {
         it ('should get product by GTIN', (done) => {
             chai.request(MAH_API)
                 .get(`/product/get/${product.gtin}`)
+                .set(auth)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
                     res.should.have.status(200);
@@ -76,6 +80,7 @@ describe('productApi', function () {
         it ('should get all products', (done) => {
             chai.request(MAH_API)
                 .get('/product/getAll')
+                .set(auth)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
                     res.should.have.status(200);

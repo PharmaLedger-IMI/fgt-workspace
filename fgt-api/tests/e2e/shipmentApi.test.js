@@ -4,17 +4,19 @@ chai.use(chaiHttp);
 chai.should();
 
 const {db} = require("../controls/db/db");
-const {MAH_API} = require("../controls/utils");
+const {MAH_API, getTokenFromCredentials} = require("../controls/utils");
 
 
 describe('shipmentApi', function () {
     require("./batchApi.test");
     const shipment = db.shipments[0];
+    const auth = {Authorization: `Basic ${getTokenFromCredentials("fgt-mah-wallet")}`}
 
     describe('POST /shipment/create', function () {
         it('should return a error when requesterId is the senderId', (done) => {
             chai.request(MAH_API)
                 .post('/shipment/create')
+                .set(auth)
                 .send({...shipment, requesterId: shipment.senderId})
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -31,6 +33,7 @@ describe('shipmentApi', function () {
             const {senderId, ..._shipment} = shipment;
             chai.request(MAH_API)
                 .post('/shipment/create')
+                .set(auth)
                 .send(_shipment)
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -51,6 +54,7 @@ describe('shipmentApi', function () {
         it('should return a error when shipmentId already exists', (done) => {
             chai.request(MAH_API)
                 .post('/shipment/create')
+                .set(auth)
                 .send(shipment)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -68,6 +72,7 @@ describe('shipmentApi', function () {
         it('should update shipment status to pickup', (done) => {
             chai.request(MAH_API)
                 .put(`/shipment/update/${shipment.shipmentId}`)
+                .set(auth)
                 .send({
                     status: "pickup",
                     extraInfo: "update status to pickup"
@@ -96,6 +101,7 @@ describe('shipmentApi', function () {
         it("shouldn't update shipment status when is not allowed", (done) => {
             chai.request(MAH_API)
                 .put(`/shipment/update/${shipment.shipmentId}`)
+                .set(auth)
                 .send({status: "delivered"})
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -114,6 +120,7 @@ describe('shipmentApi', function () {
         it('should get shipment by shipmentId', (done) => {
             chai.request(MAH_API)
                 .get(`/shipment/get/${shipment.shipmentId}`)
+                .set(auth)
                 .end((err, res) => {
                     res.should.have.status(200);
                     chai.assert.isNotEmpty(res.body);
@@ -138,6 +145,7 @@ describe('shipmentApi', function () {
         it('should get all shipments', (done) => {
             chai.request(MAH_API)
                 .get('/shipment/getAll')
+                .set(auth)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
                     res.should.have.status(200);

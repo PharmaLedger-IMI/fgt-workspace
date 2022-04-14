@@ -4,18 +4,20 @@ chai.use(chaiHttp);
 chai.should();
 
 const {db}= require("../controls/db/db");
-const {MAH_API} = require("../controls/utils");
+const {MAH_API, getTokenFromCredentials} = require("../controls/utils");
 
 
 describe('receiptApi', function () {
     require("./saleApi.test");
     const sale = db.sales[0];
+    const auth = {Authorization: `Basic ${getTokenFromCredentials("fgt-mah-wallet")}`}
 
     describe('GET /receipt/get', function () {
 
         it ('should get receipt by receiptId', (done) => {
             chai.request(MAH_API)
                 .get(`/receipt/get/${undefined}`)
+                .set(auth)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
                     res.should.have.status(200);
@@ -32,6 +34,7 @@ describe('receiptApi', function () {
         it ('should get all receipts', (done) => {
             chai.request(MAH_API)
                 .get('/receipt/getAll')
+                .set(auth)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
                     res.should.have.status(200);

@@ -4,11 +4,12 @@ chai.use(chaiHttp);
 chai.should();
 
 const {db} = require("../controls/db/db");
-const {MAH_API} = require("../controls/utils");
+const {MAH_API, getTokenFromCredentials} = require("../controls/utils");
 
 
 describe('traceabilityApi', function () {
     require('./saleApi.test');
+    const auth = {Authorization: `Basic ${getTokenFromCredentials("fgt-mah-wallet")}`}
 
     describe('POST /traceability/create', function () {
         const sale = db.sales[0].productList[0];
@@ -16,6 +17,7 @@ describe('traceabilityApi', function () {
         it ('should get traceability by GTIN and batchNumber', (done) => {
             chai.request(MAH_API)
                 .post(`/traceability/create`)
+                .set(auth)
                 .send({
                     gtin: sale.gtin,
                     batchNumber: sale.batchNumber
@@ -34,6 +36,7 @@ describe('traceabilityApi', function () {
         it ('should get traceability by GTIN, batchNumber and serialNumber', (done) => {
             chai.request(MAH_API)
                 .post(`/traceability/create`)
+                .set(auth)
                 .send({
                     gtin: sale.gtin,
                     batchNumber: sale.batchNumber,
@@ -53,6 +56,7 @@ describe('traceabilityApi', function () {
         it ('should get all traceability', (done) => {
             chai.request(MAH_API)
                 .post('/traceability/createAll')
+                .set(auth)
                 .send([{
                     gtin: sale.gtin,
                     batchNumber: sale.batchNumber

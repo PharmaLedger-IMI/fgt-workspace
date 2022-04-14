@@ -4,12 +4,13 @@ chai.use(chaiHttp);
 chai.should();
 
 const {db} = require("../controls/db/db");
-const {MAH_API} = require("../controls/utils");
+const {MAH_API, getTokenFromCredentials} = require("../controls/utils");
 
 
 describe('batchApi', function () {
     require("./productApi.test");
     const batch = db.batches[0];
+    const auth = {Authorization: `Basic ${getTokenFromCredentials("fgt-mah-wallet")}`}
 
     describe('POST /batch/create', function () {
 
@@ -29,6 +30,7 @@ describe('batchApi', function () {
             })
             chai.request(MAH_API)
                 .post('/batch/createAll')
+                .set(auth)
                 .send(batches)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -45,6 +47,7 @@ describe('batchApi', function () {
             const today = new Date().toLocaleDateString("fr-CA");
             chai.request(MAH_API)
                 .post('/batch/create')
+                .set(auth)
                 .send({...batch, expiry: olderExpiryDate})
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -59,6 +62,7 @@ describe('batchApi', function () {
         it ('should return a error when serialNumbers is duplicated', (done) => {
             chai.request(MAH_API)
                 .post('/batch/create')
+                .set(auth)
                 .send({...batch, serialNumbers: [...batch.serialNumbers, ...batch.serialNumbers]})
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -74,6 +78,7 @@ describe('batchApi', function () {
             const batches = db.batches;
             chai.request(MAH_API)
                 .post('/batch/createAll')
+                .set(auth)
                 .send(batches)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -106,6 +111,7 @@ describe('batchApi', function () {
         it ('should return a error when batch already exists', (done) => {
             chai.request(MAH_API)
                 .post('/batch/create')
+                .set(auth)
                 .send(batch)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -123,6 +129,7 @@ describe('batchApi', function () {
         it ('should update a batch status to recall', (done) => {
             chai.request(MAH_API)
                 .put(`/batch/update/${batch.gtin}/${batch.batchNumber}`)
+                .set(auth)
                 .send({
                     status: "recall",
                     extraInfo: "update status to recall"
@@ -150,6 +157,7 @@ describe('batchApi', function () {
         it ("shouldn't update a batch status when current status is recall", (done) => {
             chai.request(MAH_API)
                 .put(`/batch/update/${batch.gtin}/${batch.batchNumber}`)
+                .set(auth)
                 .send({status: "quarantined"})
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -168,6 +176,7 @@ describe('batchApi', function () {
         it ('should get batch by GTIN and batchNumber', (done) => {
             chai.request(MAH_API)
                 .get(`/batch/get/${batch.gtin}/${batch.batchNumber}`)
+                .set(auth)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
                     res.should.have.status(200);
@@ -190,6 +199,7 @@ describe('batchApi', function () {
         it ('should get all batches', (done) => {
             chai.request(MAH_API)
                 .get('/batch/getAll')
+                .set(auth)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
                     res.should.have.status(200);

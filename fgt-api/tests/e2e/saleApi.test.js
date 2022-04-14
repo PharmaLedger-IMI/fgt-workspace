@@ -4,11 +4,13 @@ chai.use(chaiHttp);
 chai.should();
 
 const {db} = require("../controls/db/db");
-const {PHA_API} = require("../controls/utils");
+const {PHA_API, getTokenFromCredentials} = require("../controls/utils");
 
 
 describe('saleApi', function () {
     require("./shipmentApi.test");
+    const auth = {Authorization: `Basic ${getTokenFromCredentials("fgt-pharmacy-wallet")}`}
+
     describe('POST /sale/create', function () {
 
         it('should return a error when try to sale the same product twice', (done) => {
@@ -17,6 +19,7 @@ describe('saleApi', function () {
             sale = Object.assign({}, sale, {productList});
             chai.request(PHA_API)
                 .post('/sale/create')
+                .set(auth)
                 .send(sale)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -32,6 +35,7 @@ describe('saleApi', function () {
             const sale = db.sales[2];
             chai.request(PHA_API)
                 .post('/sale/create')
+                .set(auth)
                 .send(sale)
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -51,6 +55,7 @@ describe('saleApi', function () {
             const sale = db.sales[2];
             chai.request(PHA_API)
                 .post('/sale/create')
+                .set(auth)
                 .send(sale)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -66,6 +71,7 @@ describe('saleApi', function () {
             const sale = db.sales[0];
             chai.request(PHA_API)
                 .post('/sale/create')
+                .set(auth)
                 .send(sale)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -81,6 +87,7 @@ describe('saleApi', function () {
             const sale = db.sales[3];
             chai.request(PHA_API)
                 .post('/sale/create')
+                .set(auth)
                 .send(sale)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
@@ -99,6 +106,7 @@ describe('saleApi', function () {
             const sale = db.sales[2];
             chai.request(PHA_API)
                 .get(`/sale/get/${sale.id}`)
+                .set(auth)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
                     res.should.have.status(200);
@@ -114,6 +122,7 @@ describe('saleApi', function () {
         it('should get all sales', (done) => {
             chai.request(PHA_API)
                 .get('/sale/getAll')
+                .set(auth)
                 .end((err, res) => {
                     chai.assert.isNotEmpty(res.body);
                     res.should.have.status(200);
