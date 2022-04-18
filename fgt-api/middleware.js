@@ -1,5 +1,5 @@
 const {Unauthorized} = require("./utils/errorHandler");
-const {authenticate} = require("./utils/basicAuth");
+const {authenticate, decodeBase64} = require("./utils/basicAuth");
 
 const requireAuth = (req, res, next) => {
     const unauthorized = function (msg) {
@@ -17,8 +17,7 @@ const requireAuth = (req, res, next) => {
     if (!authorization || authorization.indexOf('Basic ') === -1)
         return unauthorized('Missing Authorization');
 
-    const [user, base64Pass] =  authorization.split(' ')[1].split(":");
-    const password = Buffer.from(base64Pass, 'base64').toString('ascii');
+    const [user, password] =  decodeBase64(authorization.split(" ")[1]).split(":");
     if (!authenticate(user, password))
         return unauthorized();
 

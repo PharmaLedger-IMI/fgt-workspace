@@ -20,6 +20,7 @@ const http = require('http');
 const https = require('https');
 
 const { argParser, validateGtin, generateRandomInt } = require('./utils');
+const { encodeBase64 } = require('../../fgt-api/utils/basicAuth');
 
 const ShipmentStatus = require('../../fgt-dsu-wizard/model/ShipmentStatus');
 const BatchStatus = require('../../fgt-dsu-wizard/model/BatchStatus');
@@ -161,6 +162,11 @@ const jsonHttpRequest = function (conf, actor, { body, ...options }) {
         options.hostname = getHostnameForActor(conf, actor);
     if (!options['port'])
         options.port = conf.wsPortNumber;
+    if (!options.headers['Authorization']) {
+        const secret = `${actor.id.secret}:${(actor.email.secret)}`;
+        options.headers['Authorization'] = `Basic ${encodeBase64(secret)}`;
+    }
+
 
     const beforeReq = new Date();
     const protocol = conf.wsProtocol;
