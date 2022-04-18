@@ -939,13 +939,20 @@ components:
           type:
             - string
 
+    Order:
+      type: string
+      enum:
+        - dsc
+        - asc
+
     Query:
       type: object
       properties:
         keyword:
           type: string
         sort:
-          type: dsc | asc
+          $ref: '#/components/schemas/Order'
+
 
     Meta:
       type: object

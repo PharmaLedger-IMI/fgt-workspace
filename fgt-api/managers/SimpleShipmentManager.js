@@ -87,7 +87,7 @@ class SimpleShipmentManager extends Manager {
     _genCompostKey(simpleShipment) {
         let shipmentId;
         const splitShipmentId = `${simpleShipment.shipmentId}`.split('-');
-        if (this.getIdentity().id === simpleShipment.senderId) {
+        if (this.getIdentity().id === simpleShipment.requesterId) {
             if (splitShipmentId.length >= 2)
                 shipmentId = splitShipmentId[splitShipmentId.length - 1];
             else
@@ -96,7 +96,7 @@ class SimpleShipmentManager extends Manager {
             if (splitShipmentId.length >= 2)
                 shipmentId = simpleShipment.shipmentId;
             else
-                shipmentId = `${simpleShipment.senderId}-${simpleShipment.shipmentId}`;
+                shipmentId = `${simpleShipment.requesterId}-${simpleShipment.shipmentId}`;
         }
         return shipmentId;
     }
