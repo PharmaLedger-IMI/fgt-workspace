@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PSK App Core</title>
+    PLACEHOLDER_THAT_WILL_BE_REPLACED_BY_SW_OR_SERVER_WITH_BASE_TAG
+
+    <script src="scripts/bundles/iframeBoot.js"></script>
+    <script src="scripts/bundles/webshims.js"></script>
+    <script src="scripts/bundles/pskruntime.js"></script>
+    <script src="scripts/bundles/wizard.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <link href="webcardinal/webcardinal.css" rel="stylesheet" type="text/css">
+
+    <!-- Ionic dist -->
+    <link rel="stylesheet" href="assets/ionic-core/css/ionic.bundle.css">
+    <script type="module" src="assets/ionic-core/ionic.esm.js"></script>
+
+    <!-- Ionicons dist -->
+    <script type="module" src="assets/ionic-core/ionicons/ionicons.esm.js"></script>
+
+    <!-- Ion Web Cardinal dist -->
+    <script type="module" src="webcardinal/webcardinal.js"></script>
+
+    <!-- Pdm Custom Components dist -->
+    <script type="module" src="assets/pdm-web-components/pdm-web-components.esm.js"></script>
+
+    <script>
+        if (window.frameElement) {
+            const iframeIdentity = window.frameElement.getAttribute('identity');
+
+            if (iframeIdentity) {
+                window.parent.document.dispatchEvent(new CustomEvent(iframeIdentity, {
+                    detail: {
+                        status: 'completed'
+                    }
+                }));
+                console.log("Index page Event Dispatched...")
+            }
+        }
+    </script>
+</head>
+
+<body>
+<pdm-ssapp-loader loader="simple"></pdm-ssapp-loader>
+<webc-app-root>
+    <webc-app-container>
+        <webc-app-router></webc-app-router>
+    </webc-app-container>
+</webc-app-root>
+</body>
+</html>

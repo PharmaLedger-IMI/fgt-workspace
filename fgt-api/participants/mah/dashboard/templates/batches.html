@@ -1,0 +1,17 @@
+<webc-container controller="BatchesController">
+    <pdm-ion-table table-title="@title"
+                   item-reference="gtin-batch"
+                   paginated="true"
+                   manager="BatchManager"
+                   dsu-query="@query"
+                   icon-name="stats-chart-outline"
+                   item-type="managed-batch-list-item"
+                   items-per-page="10">
+        <ion-button slot="buttons" color="secondary" data-tag="add-batch" fill="solid">
+            {{ @buttons.add-batch.label }}
+            <ion-icon slot="end" name="add-circle"></ion-icon>
+        </ion-button>
+    </pdm-ion-table>
+</webc-container>
+
+

@@ -68,6 +68,10 @@ fgt-api/config/fgt-pharmacy-wallet/seed
 fgt-api/config/fgt-wholesaler-wallet/seed
 fgt-api/config/fgt-mah-wallet/seed
 
+
+fgt-api/participants/**/dashboard/scripts/bundles/*
+fgt-api/participants/**/dashboard/constitution/*
+
 latest-change-set.txt
 
 node_modules

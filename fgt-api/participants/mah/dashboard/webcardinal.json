@@ -1,0 +1,15 @@
+{
+  "theme": "pdm-theme",
+  "pagesFallback": {
+    "name": "Home"
+  },
+  "pages": [
+    {
+      "name": "Home",
+      "path": "./",
+      "src": "home.html",
+      "indexed": false,
+      "tag": "home"
+    }
+  ]
+}

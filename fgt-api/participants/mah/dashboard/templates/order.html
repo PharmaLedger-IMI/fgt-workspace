@@ -1,0 +1,27 @@
+<webc-container controller="OrderController">
+    <managed-order order-ref="@orderRef"
+                   order-lines-json="@orderLines"
+                   identity="@identity"
+
+                   order-type="@mode"
+
+
+                   statuses="@statuses"
+
+                   create-title-string="@create.title"
+                   manage-title-string="@manage.title"
+                   back-string="@back"
+                   scanner-title-string="@scan"
+
+                   create-string="@create.buttons.create"
+                   clear-string="@create.buttons.clear"
+
+                   status-string="@manage.status"
+                   from-string="@create.from"
+                   from-placeholder-string="@create.fromPlaceholder"
+                   from-at-string="@create.fromAt"
+                   to-at-string="@create.toAt"
+                   products-string="@create.products"
+                   quantity-string="@create.quantity"
+    ></managed-order>
+</webc-container>

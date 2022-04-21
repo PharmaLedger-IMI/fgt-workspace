@@ -1,0 +1,16 @@
+<webc-container controller="ProductsController">
+    <pdm-ion-table table-title="@title"
+                   item-reference="gtin"
+                   paginated="true"
+                   manager="ProductManager"
+                   icon-name="reader"
+                   item-type="managed-product-list-item"
+                   items-per-page="10">
+        <ion-button slot="buttons" color="secondary" data-tag="add-product" fill="solid">
+            {{ @buttons.add-product.label }}
+            <ion-icon slot="end" name="add-circle"></ion-icon>
+        </ion-button>
+    </pdm-ion-table>
+</webc-container>
+
+
