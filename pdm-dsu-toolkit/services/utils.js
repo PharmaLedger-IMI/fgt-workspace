@@ -12,7 +12,7 @@ let resolver, DSUService, keyssi;
  * @memberOf Utils
  */
 function getEnv(){
-	return $$.environmentType;
+	return globalThis['$$'] ? globalThis['$$'].environmentType : (typeof globalThis.window === 'undefined' ? "nodejs" : "browser");
 }
 
 /**
@@ -112,7 +112,7 @@ const system = require('opendsu').loadApi('system');
 function getPostHandlerFor(apiname){
 
 	function getBaseURL(){
-		switch ($$.environmentType) {
+		switch (getEnv()) {
 			case constants.ENVIRONMENT_TYPES.SERVICE_WORKER_ENVIRONMENT_TYPE:
 				let scope = self.registration.scope;
 

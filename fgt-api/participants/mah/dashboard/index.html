@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>PSK App Core</title>
-    PLACEHOLDER_THAT_WILL_BE_REPLACED_BY_SW_OR_SERVER_WITH_BASE_TAG
+<!--    PLACEHOLDER_THAT_WILL_BE_REPLACED_BY_SW_OR_SERVER_WITH_BASE_TAG-->
 
-    <script src="scripts/bundles/iframeBoot.js"></script>
-    <script src="scripts/bundles/webshims.js"></script>
-    <script src="scripts/bundles/pskruntime.js"></script>
+<!--    <script src="scripts/bundles/iframeBoot.js"></script>-->
+<!--    <script src="scripts/bundles/webshims.js"></script>-->
+<!--    <script src="scripts/bundles/pskruntime.js"></script>-->
     <script src="scripts/bundles/wizard.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
@@ -29,20 +29,20 @@
     <!-- Pdm Custom Components dist -->
     <script type="module" src="assets/pdm-web-components/pdm-web-components.esm.js"></script>
 
-    <script>
-        if (window.frameElement) {
-            const iframeIdentity = window.frameElement.getAttribute('identity');
+<!--    <script>-->
+<!--        if (window.frameElement) {-->
+<!--            const iframeIdentity = window.frameElement.getAttribute('identity');-->
 
-            if (iframeIdentity) {
-                window.parent.document.dispatchEvent(new CustomEvent(iframeIdentity, {
-                    detail: {
-                        status: 'completed'
-                    }
-                }));
-                console.log("Index page Event Dispatched...")
-            }
-        }
-    </script>
+<!--            if (iframeIdentity) {-->
+<!--                window.parent.document.dispatchEvent(new CustomEvent(iframeIdentity, {-->
+<!--                    detail: {-->
+<!--                        status: 'completed'-->
+<!--                    }-->
+<!--                }));-->
+<!--                console.log("Index page Event Dispatched...")-->
+<!--            }-->
+<!--        }-->
+<!--    </script>-->
 </head>
 
 <body>

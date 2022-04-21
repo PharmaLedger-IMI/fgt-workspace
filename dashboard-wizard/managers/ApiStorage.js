@@ -1,0 +1,99 @@
+
+const METHODS = {
+    CREATE: "create",
+    CREATE_ALL: "createAll",
+    GET: "get",
+    GET_ALL: "getAll",
+    UPDATE: "update",
+    UPDATE_ALL: "updateAll",
+    DELETE: "delete",
+    DELETE_ALL: "deleteAll"
+}
+
+/**
+ * @param {string} endpoint
+ */
+class ApiStorage {
+
+    constructor(endPoint, token) {
+        this.endPoint = endPoint;
+        this.securityToken = token;
+    }
+
+    __getUrl(tableName, method, pathParams, ...params){
+        let url = `${this.endPoint}/${tableName}/${method}`;
+        if (params && params.length)
+            url = `${url}/${params.join("/")}`
+        if (pathParams)
+            url = url + `?${Object.entries(pathParams).map(([key, value]) => `${key}=${value}`).join("&")}`
+        return encodeURI(url);
+    }
+
+    __createRequest(url, verb, body){
+        const headers = new Headers();
+        const options = {
+            method: verb.toUpperCase(),
+            headers: headers,
+            mode: "cors",
+            body: body ? JSON.stringify(body) : undefined
+        }
+
+        return fetch(url, options);
+    }
+
+    __executeRequest(requestPromise, callback){
+        requestPromise.then((response) => {
+            if (!response.ok)
+                return callback(response.status);
+            try {
+                response = response.json();
+            } catch (e) {
+                return callback(e)
+            }
+            callback(undefined, response);
+        });
+    }
+
+    getRecord(tableName, key, callback){
+        const url = this.__getUrl(tableName, METHODS.GET, undefined, ...(Array.isArray(key) ? key : [key]));
+        const request = this.__createRequest(url, "get")
+        this.__executeRequest(request, callback);
+    }
+
+    insertRecord(tableName, key, record, callback){
+        const url = this.__getUrl(tableName, METHODS.CREATE);
+        const request = this.__createRequest(url, "post", record);
+        this.__executeRequest(request, callback);
+    }
+
+    insertRecords(tableName, keys, records, callback){
+        const url = this.__getUrl(tableName, METHODS.CREATE_ALL);
+        const request = this.__createRequest(url, "post", records);
+        this.__executeRequest(request, callback);
+    }
+
+    updateRecord(tableName, key, newRecord, callback){
+        const url = this.__getUrl(tableName, METHODS.UPDATE, undefined, ...(Array.isArray(key) ? key : [key]));
+        const request = this.__createRequest(url, "put", newRecord);
+        this.__executeRequest(request, callback);
+    }
+
+    query(tableName, query, sort, limit, callback){
+        const url = this.__getUrl(tableName, METHODS.GET_ALL, {
+            query: JSON.stringify(query),
+            sort: sort,
+            limit: limit
+        });
+        const request = this.__createRequest(url, "get")
+        this.__executeRequest(request, callback);
+    }
+
+    deleteRecord(tableName, key, callback){
+        callback();
+    }
+}
+
+module.exports = {
+    METHODS,
+    ApiStorage
+}

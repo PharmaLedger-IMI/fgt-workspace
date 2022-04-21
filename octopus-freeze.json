@@ -742,45 +742,23 @@
     ],
     "build-api-dashboard": [
         {
-            "name": "PSK bundles MAH",
+            "name": "clear previous build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "rimraf apihub-root/dashboard"
+                }
+            ]
+        },
+        {
+            "name": "Copy fgt-mah-ssapp",
             "src": "",
             "actions": [
                 {
                     "type": "copy",
-                    "src": "privatesky/psknode/bundles/pskruntime.js",
-                    "target": "apihub-root/dashboard/constitution/pskruntime.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "privatesky/psknode/bundles/webshims.js",
-                    "target": "apihub-root/dashboard/constitution/webshims.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "privatesky/psknode/bundles/pskruntime.js",
-                    "target": "apihub-root/dashboard/scripts/bundles/pskruntime.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "privatesky/psknode/bundles/webshims.js",
-                    "target": "apihub-root/dashboard/scripts/bundles/webshims.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": ".privatesky/psknode/bundles/iframeBoot.js",
-                    "target": "apihub-root/dashboard/scripts/bundles/iframeBoot.js",
+                    "src": "fgt-mah-ssapp/code",
+                    "target": "apihub-root/dashboard",
                     "options": {
                         "overwrite": true
                     }
@@ -788,13 +766,13 @@
             ]
         },
         {
-            "name": "Copy fgt-dsu-wizard-bundle",
+            "name": "Patch fgt-mah-ssapp",
             "src": "",
             "actions": [
                 {
                     "type": "copy",
-                    "src": "./fgt-dsu-wizard/build/bundles/wizard.js",
-                    "target": "apihub-root/dashboard/scripts/bundles/wizard.js",
+                    "src": "fgt-api/participants/mah/dashboard",
+                    "target": "apihub-root/dashboard",
                     "options": {
                         "overwrite": true
                     }
@@ -802,53 +780,41 @@
             ]
         },
         {
-            "name": "Copy Ionic Dependencies",
+            "name": "Symlink Web cardinal",
             "src": "",
             "actions": [
                 {
+                    "type": "execute",
+                    "cmd": "mkdir apihub-root/dashboard/themes"
+                },
+                {
                     "type": "copy",
-                    "src": "fgt-mah-ssapp/node_modules/@ionic/core/dist/ionic",
-                    "target": "apihub-root/dashboard/assets/ionic-core",
+                    "src": "webcardinal/webcardinal",
+                    "target": "apihub-root/dashboard/webcardinal",
                     "options": {
                         "overwrite": true
                     }
                 },
                 {
                     "type": "copy",
-                    "src": "fgt-mah-ssapp/node_modules/@ionic/core/css",
-                    "target": "apihub-root/dashboard/assets/ionic-core/css",
+                    "src": "themes/clear-sky-theme/src",
+                    "target": "apihub-root/dashboard/themes/clear-sky-theme",
                     "options": {
                         "overwrite": true
                     }
                 },
                 {
                     "type": "copy",
-                    "src": "fgt-mah-ssapp/node_modules/ionicons/dist/ionicons",
-                    "target": "apihub-root/dashboard/assets/ionic-core/ionicons",
+                    "src": "themes/blue-fluorite-theme/src",
+                    "target": "apihub-root/dashboard/themes/blue-fluorite-theme",
                     "options": {
                         "overwrite": true
                     }
                 },
                 {
                     "type": "copy",
-                    "src": "fgt-mah-ssapp/node_modules/@ionic/pwa-elements/dist/ionicpwaelements",
-                    "target": "apihub-root//dashboard/assets/ionic-core/pwa-elements",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "pdm-web-components/dist/pdm-web-components",
-                    "target": "apihub-root/dashboard/assets/pdm-web-components",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "./pdm-web-components/css/globalStyles.css",
-                    "target": "apihub-root/dashboard/assets/skin.css",
+                    "src": "themes/pdm-theme/src",
+                    "target": "apihub-root/dashboard/themes/pdm-theme",
                     "options": {
                         "overwrite": true
                     }

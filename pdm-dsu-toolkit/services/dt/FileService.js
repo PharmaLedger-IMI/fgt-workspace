@@ -4,8 +4,10 @@
  * @memberOf dt
  * @function FileService
  */
+const {getEnv} = require("../utils");
+
 function FileService(options) {
-    const isBrowser = $$.environmentType === 'browser';
+    const isBrowser = getEnv() === 'browser';
 
     function constructUrlBase(prefix){
         let url, protocol, host;

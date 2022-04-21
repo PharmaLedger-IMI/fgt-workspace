@@ -65,7 +65,7 @@ const envToOptions = function(env, opts, name){
     options.basePath = env.basePath;
     options.walletPath = env.basePath ? env.basePath.split('/').reduce((sum, s) => sum === '' && s !== '/' ? s : sum, '') : name;
     const opendsu = require('opendsu');
-    options.hosts = $$.environmentType === 'browser'
+    options.hosts = getEnv() === 'browser'
         ? `${opendsu.loadApi('system').getEnvironmentVariable(opendsu.constants.BDNS_ROOT_HOSTS)}`
         : `localhost:8080`;
     return options;

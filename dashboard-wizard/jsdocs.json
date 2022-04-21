@@ -1,0 +1,52 @@
+{
+    "plugins": [
+        "plugins/markdown",
+        "plugins/summarize"
+    ],
+    "package": "package.json",
+    "recurseDepth": 10,
+    "source": {
+        "include": [
+            "."
+        ],
+        "exclude": [
+            "node_modules",
+            "build/bundles",
+            "docs"
+        ],
+        "includePattern": ".+\\.js(doc|x)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc","closure"]
+    },
+    "templates": {
+        "better-docs": {
+            "name": "Pharmaledger's Finished Goods Traceability DSU Wizard Documentation",
+            "title": "Pharmaledger's Finished Goods Traceability DSU Wizard Documentation",
+            "hideGenerator": true,
+            "navLinks": [
+                {
+                    "label": "Github",
+                    "href": "https://github.com/PharmaLedger-IMI/epi-workspace/fgt-dsu-wizard.git"
+                },
+                {
+                    "label": "Example Application - Finished Goods Traceability",
+                    "href": "https://fgt.pharmaledger.pdmfc.com"
+                }
+            ]
+        },
+        "cleverLinks": false,
+        "monospaceLinks": false,
+        "search": true
+    },
+    "opts": {
+        "encoding": "utf-8",
+        "template": "./node_modules/better-docs",
+        "destination": "./docs/",
+        "readme": "./README.md",
+        "recurse": true,
+        "verbose": true
+    }
+}
