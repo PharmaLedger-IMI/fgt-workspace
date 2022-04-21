@@ -15,6 +15,7 @@ apihub-root/fgt-wholesaler-wallet/apps-patch
 apihub-root/web-ion-wallet/**
 apihub-root/pdm-trust-loader/**
 apihub-root/dossier-explorer/**
+apihub-root/dashboard/**
 apihub-root/messaging
 apihub-root/seedsBackup
 apihub-root/credentials.json
@@ -68,9 +69,6 @@ fgt-api/config/fgt-pharmacy-wallet/seed
 fgt-api/config/fgt-wholesaler-wallet/seed
 fgt-api/config/fgt-mah-wallet/seed
 
-
-fgt-api/participants/**/dashboard/scripts/bundles/*
-fgt-api/participants/**/dashboard/constitution/*
 
 latest-change-set.txt
 

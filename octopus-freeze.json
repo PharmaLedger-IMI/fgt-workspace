@@ -748,7 +748,7 @@
                 {
                     "type": "copy",
                     "src": "privatesky/psknode/bundles/pskruntime.js",
-                    "target": "fgt-api/participants/mah/dashboard/constitution/pskruntime.js",
+                    "target": "apihub-root/dashboard/constitution/pskruntime.js",
                     "options": {
                         "overwrite": true
                     }
@@ -756,7 +756,7 @@
                 {
                     "type": "copy",
                     "src": "privatesky/psknode/bundles/webshims.js",
-                    "target": "fgt-api/participants/mah/dashboard/constitution/webshims.js",
+                    "target": "apihub-root/dashboard/constitution/webshims.js",
                     "options": {
                         "overwrite": true
                     }
@@ -764,7 +764,7 @@
                 {
                     "type": "copy",
                     "src": "privatesky/psknode/bundles/pskruntime.js",
-                    "target": "fgt-api/participants/mah/dashboard/scripts/bundles/pskruntime.js",
+                    "target": "apihub-root/dashboard/scripts/bundles/pskruntime.js",
                     "options": {
                         "overwrite": true
                     }
@@ -772,7 +772,7 @@
                 {
                     "type": "copy",
                     "src": "privatesky/psknode/bundles/webshims.js",
-                    "target": "fgt-api/participants/mah/dashboard/scripts/bundles/webshims.js",
+                    "target": "apihub-root/dashboard/scripts/bundles/webshims.js",
                     "options": {
                         "overwrite": true
                     }
@@ -780,7 +780,7 @@
                 {
                     "type": "copy",
                     "src": ".privatesky/psknode/bundles/iframeBoot.js",
-                    "target": "fgt-api/participants/mah/dashboard/scripts/bundles/iframeBoot.js",
+                    "target": "apihub-root/dashboard/scripts/bundles/iframeBoot.js",
                     "options": {
                         "overwrite": true
                     }
@@ -794,7 +794,7 @@
                 {
                     "type": "copy",
                     "src": "./fgt-dsu-wizard/build/bundles/wizard.js",
-                    "target": "fgt-api/participants/mah/dashboard/scripts/bundles/wizard.js",
+                    "target": "apihub-root/dashboard/scripts/bundles/wizard.js",
                     "options": {
                         "overwrite": true
                     }
@@ -808,7 +808,7 @@
                 {
                     "type": "copy",
                     "src": "fgt-mah-ssapp/node_modules/@ionic/core/dist/ionic",
-                    "target": "fgt-api/participants/mah/dashboard/assets/ionic-core",
+                    "target": "apihub-root/dashboard/assets/ionic-core",
                     "options": {
                         "overwrite": true
                     }
@@ -816,7 +816,7 @@
                 {
                     "type": "copy",
                     "src": "fgt-mah-ssapp/node_modules/@ionic/core/css",
-                    "target": "fgt-api/participants/mah/dashboard/assets/ionic-core/css",
+                    "target": "apihub-root/dashboard/assets/ionic-core/css",
                     "options": {
                         "overwrite": true
                     }
@@ -824,7 +824,7 @@
                 {
                     "type": "copy",
                     "src": "fgt-mah-ssapp/node_modules/ionicons/dist/ionicons",
-                    "target": "fgt-api/participants/mah/dashboard/assets/ionic-core/ionicons",
+                    "target": "apihub-root/dashboard/assets/ionic-core/ionicons",
                     "options": {
                         "overwrite": true
                     }
@@ -832,7 +832,7 @@
                 {
                     "type": "copy",
                     "src": "fgt-mah-ssapp/node_modules/@ionic/pwa-elements/dist/ionicpwaelements",
-                    "target": "fgt-api/participants/mah/dashboard/assets/ionic-core/pwa-elements",
+                    "target": "apihub-root//dashboard/assets/ionic-core/pwa-elements",
                     "options": {
                         "overwrite": true
                     }
@@ -840,7 +840,7 @@
                 {
                     "type": "copy",
                     "src": "pdm-web-components/dist/pdm-web-components",
-                    "target": "fgt-api/participants/mah/dashboard/assets/pdm-web-components",
+                    "target": "apihub-root/dashboard/assets/pdm-web-components",
                     "options": {
                         "overwrite": true
                     }
@@ -848,7 +848,7 @@
                 {
                     "type": "copy",
                     "src": "./pdm-web-components/css/globalStyles.css",
-                    "target": "fgt-api/participants/mah/dashboard/assets/skin.css",
+                    "target": "apihub-root/dashboard/assets/skin.css",
                     "options": {
                         "overwrite": true
                     }
