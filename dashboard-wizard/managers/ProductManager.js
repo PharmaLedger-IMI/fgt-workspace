@@ -25,7 +25,7 @@ const Product = require('../../fgt-dsu-wizard/model/Product');
  */
 class ProductManager extends ApiManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.products, ['gtin', 'name', 'manufName'], callback);
+        super(participantManager, "product", ['gtin', 'name', 'manufName'], callback);
     }
 
     /**
@@ -36,7 +36,12 @@ class ProductManager extends ApiManager {
      * @override
      */
     create(gtin, product, callback) {
-        super.create(undefined, product, callback)
+        if (!callback){
+            callback = product;
+            product = gtin;
+            gtin = undefined;
+        }
+        super.create(gtin, product, callback)
     }
 
     /**

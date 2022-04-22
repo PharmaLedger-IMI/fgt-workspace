@@ -188,7 +188,7 @@ class ApiManager{
      * @param {function(err, object, Archive)} callback
      */
     create(key, item, callback) {
-        this.getStorage().insertRecord(this.tableName, item, callback);
+        this.getStorage().insertRecord(this.tableName, key, item, callback);
     }
 
     /**

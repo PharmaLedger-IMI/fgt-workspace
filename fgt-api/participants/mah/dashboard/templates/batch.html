@@ -1,0 +1,14 @@
+<webc-container controller="BatchController">
+    <managed-batch-dashboard gtin-ref="@gtinBatch"
+                   statuses="@statuses"
+                     create-title-string="@create.title"
+                     manage-title-string="@manage.title"
+                     back-string="@back"
+                     batch-number-string="@create.batchNumber.label"
+                     expiry-string="@create.expiry.label"
+                     serials-string="@create.serialNumbers.label"
+                     serials-placeholder-string="@create.serialNumbers.placeholder"
+                     add-batch-string="@create.buttons.create-batch"
+                     cancel-string="@create.buttons.cancel"
+    ></managed-batch-dashboard>
+</webc-container>
