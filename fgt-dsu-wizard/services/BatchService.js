@@ -98,8 +98,8 @@ function BatchService(domain, strategy){
     this.create = function(gtin, batch, callback){
 
         let data = typeof batch === 'object' ? JSON.stringify(batch) : batch;
-        if(!(batch instanceof Batch))
-            batch = new Batch(batch);
+        batch = new Batch(batch);
+        batch.batchStatus = BatchStatus.COMMISSIONED;
         const _err = batch.validate();
         if(_err)
             return callback(_err);
