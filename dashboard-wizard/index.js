@@ -13,6 +13,10 @@ module.exports = {
      */
     Model: require("../fgt-dsu-wizard/model"),
     /**
+     * Exposes the Services Module
+     */
+    Services: require("./services"),
+    /**
      * Exposes the Managers module
      */
     Managers: require("./managers"),

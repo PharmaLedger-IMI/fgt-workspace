@@ -40,7 +40,8 @@
     "environment-trace": "cd ./bin/environment && node --trace-warnings ./setup.js --app=traceability --attachLogic=true --exportCredentials=true",
     "environment-test": "cd ./bin/environment && node --trace-warnings ./setup.js --app=test --attachLogic=true --exportCredentials=true",
     "build-api-dashboard": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-api-dashboard\"",
-    "deploy-test-chain": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run deploy-chain\""
+    "deploy-test-chain": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run deploy-chain\"",
+    "export-api-credentials": "node ./dashboard-wizard/credential-export.js --role=mah"
   },
   "repository": {
     "type": "git",
