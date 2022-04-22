@@ -42,16 +42,16 @@ class ApiStorage {
     }
 
     __executeRequest(requestPromise, callback){
-        requestPromise.then((response) => {
+        Promise.resolve(requestPromise).then(async (response) => {
             if (!response.ok)
                 return callback(response.status);
             try {
-                response = response.json();
+                response = await response.json();
             } catch (e) {
                 return callback(e)
             }
             callback(undefined, response);
-        });
+        }).catch(callback);
     }
 
     getRecord(tableName, key, callback){

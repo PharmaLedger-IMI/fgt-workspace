@@ -2,7 +2,7 @@ const { INFO_PATH , DEFAULT_QUERY_OPTIONS } = require('../../fgt-dsu-wizard/cons
 
 const {functionCallIterator} = require('../../fgt-dsu-wizard/services');
 
-const {Page} = require('../../fgt-dsu-wizard/model');
+const {Page} = require('../../pdm-dsu-toolkit/model');
 
 const SORT_OPTIONS = {ASC: "asc", DSC: 'dsc'}
 

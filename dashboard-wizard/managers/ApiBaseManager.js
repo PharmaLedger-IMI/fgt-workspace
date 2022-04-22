@@ -1,4 +1,4 @@
-const {_err} = require('../../fgt-dsu-wizard/services');
+const {_err} = require('../../pdm-dsu-toolkit/services/utils');
 const {ApiStorage} = require("./ApiStorage");
 
 /**
@@ -163,16 +163,14 @@ class ApiBaseManager {
         if (!self.controller)
             return getIdentity((err, identity) => err
                     ? self._err(`Could not get Identity`, err, callback)
-                    : self._cacheRelevant(callback, identity));
+                    : callback(undefined, identity));
 
         // For UI Responsiveness
         setTimeout(() => {
             setTimeout(() => {
                 getIdentity((err, identity) => err
                     ? self._err(`Could not get Identity`, err, callback)
-                    : setTimeout(() => {
-                        self._cacheRelevant(callback, identity);
-                    }), 250);
+                    :callback(undefined, identity));
             }, 100);
         }, 100);
     };
@@ -190,13 +188,14 @@ class ApiBaseManager {
             return this.identity;
         }
 
-        let self = this;
-        self.DSUStorage.getObject(`${PARTICIPANT_MOUNT_PATH}${IDENTITY_MOUNT_PATH}${INFO_PATH}`, (err, participant) => {
+        const self = this;
+        const request = this.storage.__createRequest("identity.json", "get");
+        this.storage.__executeRequest(request, (err, data) => {
             if (err)
-                return self._err(`Could not get identity`, err, callback);
-            self.identity = participant;
-            callback(undefined, participant)
-        });
+                return callback(err);
+            self.identity = data;
+            callback(undefined, self.identity);
+        })
     };
 
     /**

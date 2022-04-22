@@ -3,6 +3,7 @@ const FileService = require("./FileService");
 
 const DSU_SPECIFIC_FILES = ["dsu-metadata.log", "manifest"]
 const {_getResolver, _getKeySSISpace} = require('./commands/utils');
+const {getEnv} = require('../utils');
 
 /**
  * Default Options set for the {@link AppBuilderService}
