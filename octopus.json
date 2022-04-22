@@ -97,6 +97,16 @@
             ]
         },
         {
+            "name": "dashboard-wizard",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd dashboard-wizard && npm install && npm run prebuild"
+                }
+            ]
+        },
+        {
             "name": "pdm-web-components",
             "actions": [
                 {
@@ -143,7 +153,8 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false
+                    "collectLog": false,
+                    "commit": "f1be80a76e7a07f644c161c8095802344c4a62a2"
                 },
                 {
                     "type": "execute",
@@ -158,7 +169,8 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false
+                    "collectLog": false,
+                    "commit": "357b163b46d94c8ed06af83a61f8d2cf7da2368b"
                 },
                 {
                     "type": "execute",
@@ -173,7 +185,8 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false
+                    "collectLog": false,
+                    "commit": "dfacf252514588f7d89c1ed986850b0f4f8ea641"
                 },
                 {
                     "type": "execute",
@@ -188,7 +201,8 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false
+                    "collectLog": false,
+                    "commit": "7a2a9ad3f6e38b7a5bc34c07cccba5ac52c65da6"
                 },
                 {
                     "type": "execute",
@@ -203,7 +217,8 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false
+                    "collectLog": false,
+                    "commit": "8e8d13a44fadff7a2c31e2bc6fd2dd1db2b10bbe"
                 },
                 {
                     "type": "execute",
@@ -218,7 +233,8 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false
+                    "collectLog": false,
+                    "commit": "402bf949d3c623b96e2acef28fb2969998cbed2e"
                 },
                 {
                     "type": "execute",
@@ -233,7 +249,8 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false
+                    "collectLog": false,
+                    "commit": "a5e306c43a836a947687aa35a24ae2ebb946e45f"
                 },
                 {
                     "type": "execute",
@@ -256,7 +273,8 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false
+                    "collectLog": false,
+                    "commit": "7bfc82280ddc11449b1a4f302d2eb2bbc2cf6174"
                 },
                 {
                     "type": "execute",
@@ -432,6 +450,16 @@
                 {
                     "type": "execute",
                     "cmd": "cd fgt-dsu-wizard && npm run prebuild"
+                }
+            ]
+        },
+        {
+            "name": "Bundle_dashboard_wizard",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd dashboard-wizard && npm run prebuild"
                 }
             ]
         },
@@ -662,7 +690,7 @@
     ],
     "deploy-chain": [
         {
-            "name":"change anchoring to blockchain like in switch-to-test-chain. PLEASE RESTART apihub after!",
+            "name": "change anchoring to blockchain like in switch-to-test-chain. PLEASE RESTART apihub after!",
             "src": "",
             "actions": [
                 {
@@ -676,13 +704,14 @@
             ]
         },
         {
-            "name":"blockchain-node",
+            "name": "blockchain-node",
             "src": "https://github.com/PharmaLedger-IMI/blockchain-node-workspace.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false
+                    "collectLog": false,
+                    "commit": "cda1a9e498cc4fba10006d5f4c08c0554e8f4762"
                 },
                 {
                     "type": "execute",
@@ -697,7 +726,7 @@
     ],
     "switch-to-test-chain": [
         {
-            "name":"Switch apihub configs to a local test blockchain. Apihub needs restart.",
+            "name": "Switch apihub configs to a local test blockchain. Apihub needs restart.",
             "src": "",
             "actions": [
                 {
@@ -713,7 +742,7 @@
     ],
     "switch-to-simul-chain": [
         {
-            "name":"Switch apihub configs to a local test blockchain. Apihub needs restart.",
+            "name": "Switch apihub configs to a local test blockchain. Apihub needs restart.",
             "src": "",
             "actions": [
                 {
@@ -729,45 +758,33 @@
     ],
     "build-api-dashboard": [
         {
-            "name": "PSK bundles MAH",
+            "name": "clear previous build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "rimraf apihub-root/dashboard"
+                }
+            ]
+        },
+        {
+            "name": "build dashboard api",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd dashboard-wizard && npm run build"
+                }
+            ]
+        },
+        {
+            "name": "Copy fgt-mah-ssapp",
             "src": "",
             "actions": [
                 {
                     "type": "copy",
-                    "src": "privatesky/psknode/bundles/pskruntime.js",
-                    "target": "apihub-root/dashboard/constitution/pskruntime.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "privatesky/psknode/bundles/webshims.js",
-                    "target": "apihub-root/dashboard/constitution/webshims.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "privatesky/psknode/bundles/pskruntime.js",
-                    "target": "apihub-root/dashboard/scripts/bundles/pskruntime.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "privatesky/psknode/bundles/webshims.js",
-                    "target": "apihub-root/dashboard/scripts/bundles/webshims.js",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": ".privatesky/psknode/bundles/iframeBoot.js",
-                    "target": "apihub-root/dashboard/scripts/bundles/iframeBoot.js",
+                    "src": "fgt-mah-ssapp/code",
+                    "target": "apihub-root/dashboard",
                     "options": {
                         "overwrite": true
                     }
@@ -775,13 +792,13 @@
             ]
         },
         {
-            "name": "Copy fgt-dsu-wizard-bundle",
+            "name": "Patch fgt-mah-ssapp",
             "src": "",
             "actions": [
                 {
                     "type": "copy",
-                    "src": "./fgt-dsu-wizard/build/bundles/wizard.js",
-                    "target": "apihub-root/dashboard/scripts/bundles/wizard.js",
+                    "src": "fgt-api/participants/mah/dashboard",
+                    "target": "apihub-root/dashboard",
                     "options": {
                         "overwrite": true
                     }
@@ -789,53 +806,55 @@
             ]
         },
         {
-            "name": "Copy Ionic Dependencies",
+            "name": "Patch wizard",
             "src": "",
             "actions": [
                 {
                     "type": "copy",
-                    "src": "fgt-mah-ssapp/node_modules/@ionic/core/dist/ionic",
-                    "target": "apihub-root/dashboard/assets/ionic-core",
+                    "src": "dashboard-wizard/build/bundles/wizard.js",
+                    "target": "apihub-root/dashboard",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Copy webcardinal Web cardinal",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "mkdir apihub-root/dashboard/themes"
+                },
+                {
+                    "type": "copy",
+                    "src": "webcardinal/webcardinal",
+                    "target": "apihub-root/dashboard/webcardinal",
                     "options": {
                         "overwrite": true
                     }
                 },
                 {
                     "type": "copy",
-                    "src": "fgt-mah-ssapp/node_modules/@ionic/core/css",
-                    "target": "apihub-root/dashboard/assets/ionic-core/css",
+                    "src": "themes/clear-sky-theme/src",
+                    "target": "apihub-root/dashboard/themes/clear-sky-theme",
                     "options": {
                         "overwrite": true
                     }
                 },
                 {
                     "type": "copy",
-                    "src": "fgt-mah-ssapp/node_modules/ionicons/dist/ionicons",
-                    "target": "apihub-root/dashboard/assets/ionic-core/ionicons",
+                    "src": "themes/blue-fluorite-theme/src",
+                    "target": "apihub-root/dashboard/themes/blue-fluorite-theme",
                     "options": {
                         "overwrite": true
                     }
                 },
                 {
                     "type": "copy",
-                    "src": "fgt-mah-ssapp/node_modules/@ionic/pwa-elements/dist/ionicpwaelements",
-                    "target": "apihub-root//dashboard/assets/ionic-core/pwa-elements",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "pdm-web-components/dist/pdm-web-components",
-                    "target": "apihub-root/dashboard/assets/pdm-web-components",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "./pdm-web-components/css/globalStyles.css",
-                    "target": "apihub-root/dashboard/assets/skin.css",
+                    "src": "themes/pdm-theme/src",
+                    "target": "apihub-root/dashboard/themes/pdm-theme",
                     "options": {
                         "overwrite": true
                     }
@@ -845,7 +864,7 @@
     ],
     "install-mobile": [],
     "build-mobile": [],
-    "docs":  [
+    "docs": [
         {
             "name": "Documentation Theme Install (globally)",
             "src": "",
@@ -924,7 +943,6 @@
                     }
                 },
                 {
-
                     "type": "copy",
                     "src": "fgt-pharmacy-ssapp/docs",
                     "target": "docs/fgt-pharmacy-ssapp",
@@ -933,7 +951,6 @@
                     }
                 },
                 {
-
                     "type": "copy",
                     "src": "fgt-wholesaler-ssapp/docs/",
                     "target": "docs/fgt-wholesaler-ssapp",
@@ -942,7 +959,6 @@
                     }
                 },
                 {
-
                     "type": "copy",
                     "src": "pdm-dsu-toolkit/docs/",
                     "target": "docs/pdm-dsu-toolkit",
@@ -951,7 +967,6 @@
                     }
                 },
                 {
-
                     "type": "copy",
                     "src": "pdm-trust-loader/docs/",
                     "target": "docs/pdm-trust-loader",
@@ -960,7 +975,6 @@
                     }
                 },
                 {
-
                     "type": "copy",
                     "src": "pdm-web-components/docs/",
                     "target": "docs/pdm-web-components",
@@ -969,7 +983,6 @@
                     }
                 },
                 {
-
                     "type": "copy",
                     "src": "fgt-api/docs/",
                     "target": "docs/fgt-api",
@@ -988,7 +1001,6 @@
                     "cmd": "./workdocs/bin/drawio_convert.sh"
                 },
                 {
-
                     "type": "copy",
                     "src": "workdocs/resources",
                     "target": "docs/resources",
@@ -1008,3 +1020,6 @@
         }
     ]
 }
+
+
+

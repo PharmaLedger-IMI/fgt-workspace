@@ -51,38 +51,7 @@ class DirectoryManager extends Manager {
      * @override
      */
     create(key, entry, callback) {
-        let self = this;
-        if (!callback){
-            callback = entry;
-            entry = key;
-            key = self._genCompostKey(entry.role, entry.id);
-        }
-
-        const matchEntries = function(fromDb){
-            try{
-                return entry.role === fromDb.role && entry.id === fromDb.id;
-            } catch(e){
-                return false;
-            }
-        }
-
-        self.getOne(key, (err, existing) => {
-            if (!err && !!existing){
-                if (matchEntries(existing)) {
-                    console.log(`Entry already exists in directory. skipping`);
-                    return callback(undefined, existing);
-                } else
-                    return callback(`Provided directory entry does not match existing.`);
-            }
-
-            self.insertRecord(key, entry, (err) => {
-                if (err)
-                    return self._err(`Could not insert directory entry ${entry.id} on table ${self.tableName}`, err, callback);
-                const path = `${self.tableName}/${key}`;
-                console.log(`Directory entry for ${entry.id} as a ${entry.role} created stored at DB '${path}'`);
-                callback(undefined, entry, path);
-            });
-        });
+        super.create(key, entry, callback);
     }
 
     /**
@@ -93,16 +62,7 @@ class DirectoryManager extends Manager {
      * @override
      */
     getOne(key, readDSU,  callback) {
-        if (!callback){
-            callback = readDSU;
-            readDSU = true;
-        }
-        let self = this;
-        self.getRecord(key, (err, entry) => {
-            if (err)
-                return self._err(`Could not load record with key ${key} on table ${self._getTableName()}`, err, callback);
-            callback(undefined, entry);
-        });
+        super.getOne(key, readDSU, callback);
     }
 
     /**
@@ -145,15 +105,7 @@ class DirectoryManager extends Manager {
 
         options = options || defaultOptions();
 
-        let self = this;
-        console.log(`Db lock status for ${self.tableName}`, self.dbLock.isLocked())
-        self.query(options.query, options.sort, options.limit, (err, records) => {
-            if (err)
-                return self._err(`Could not perform query`, err, callback);
-            if (!readDSU)
-                return callback(undefined, records.map(r => r.id));
-            callback(undefined, records);
-        });
+        super.getAll(readDSU, options, callback);
     }
 
 }

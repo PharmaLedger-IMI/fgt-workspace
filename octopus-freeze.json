@@ -101,6 +101,16 @@
             ]
         },
         {
+            "name": "dashboard-wizard",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd dashboard-wizard && npm install && npm run prebuild"
+                }
+            ]
+        },
+        {
             "name": "pdm-web-components",
             "actions": [
                 {
@@ -448,6 +458,16 @@
             ]
         },
         {
+            "name": "Bundle_dashboard_wizard",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd dashboard-wizard && npm run prebuild"
+                }
+            ]
+        },
+        {
             "name": "Build Components",
             "src": ".",
             "actions": [
@@ -752,6 +772,16 @@
             ]
         },
         {
+            "name": "build dashboard api",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd dashboard-wizard && npm run build"
+                }
+            ]
+        },
+        {
             "name": "Copy fgt-mah-ssapp",
             "src": "",
             "actions": [
@@ -780,7 +810,21 @@
             ]
         },
         {
-            "name": "Symlink Web cardinal",
+            "name": "Patch wizard",
+            "src": "",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "dashboard-wizard/build/bundles/wizard.js",
+                    "target": "apihub-root/dashboard",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Copy webcardinal Web cardinal",
             "src": "",
             "actions": [
                 {

@@ -29,101 +29,13 @@ class IndividualProductManager extends ApiManager {
     }
 
     /**
-     * Processes the received messages, saves them to the the table and deletes the message
-     * @param {*} message
-     * @param {function(err)} callback
-     * @protected
-     * @override
-     */
-    _processMessageRecord(message, callback) {
-        let self = this;
-        if (!message || typeof message !== "string")
-            return callback(`Message ${message} does not have  non-empty string with keySSI. Skipping record.`);
-        self._getDSUInfo(message, (err, product) => {
-            if (err)
-                return self._err(`Could not read DSU from message keySSI in record ${message}. Skipping record.`, err, callback);
-            console.log(`Received IndividualProduct`, product);
-            const key = self._genCompostKey(product.gtin, product.batchNumber, product.serialNumber);
-            self.insertRecord(key, self._indexItem(key, product, message), callback);
-        });
-    };
-
-    /**
-     * generates the db's key for the batch
-     * @param {string|number} gtin
-     * @param {string|number} batchNumber
-     * @param {string|number} serialNumber
-     * @return {string}
-     * @private
-     */
-    _genCompostKey(gtin, batchNumber, serialNumber){
-        return `${gtin}-${batchNumber}-${serialNumber}`;
-    }
-
-    /**
-     * Must wrap the entry in an object like:
-     * <pre>
-     *     {
-     *         index1: ...
-     *         index2: ...
-     *         value: item
-     *     }
-     * </pre>
-     * so the DB can be queried by each of the indexes and still allow for lazy loading
-     * @param {string} key
-     * @param {IndividualProduct} item
-     * @param {string|object} record
-     * @return {object} the indexed object to be stored in the db
-     * @protected
-     * @override
-     */
-    _indexItem(key, item, record){
-        if (!record){
-            record = item;
-            item = key;
-            key = undefined;
-        }
-        return {
-            gtin: item.gtin,
-            batchNumber: item.batchNumber,
-            serialNumber: item.serialNumber,
-            status: item.status,
-            value: record
-        }
-    };
-
-    /**
-     * Util function that loads a ProductDSU and reads its information
-     * @param {string|KeySSI} keySSI
-     * @param {function(err, IndividualProduct, Archive)} callback
-     * @protected
-     * @override
-     */
-    _getDSUInfo(keySSI, callback){
-        return this.individualProductService.get(keySSI, callback);
-    }
-
-    /**
      * Creates a {@link Product} dsu
      * @param {IndividualProduct} product
      * @param {function(err, keySSI, string)} callback where the string is the mount path relative to the main DSU
      * @override
      */
     create(product, callback) {
-        let self = this;
-        self.individualProductService.create(product, (err, keySSI) => {
-            if (err)
-                return self._err(`Could not create individual product DSU for ${product}`, err, callback);
-            const record = keySSI.getIdentifier();
-            const key = self._genCompostKey(product.gtin, product.batchNumber, product.serialNumber);
-            self.insertRecord(key, self._indexItem(key, product, record), (err) => {
-                if (err)
-                    return self._err(`Could not insert record with gtin ${product.gtin} on table ${self.tableName}`, err, callback);
-                const path =`${self.tableName}/${product.gtin}`;
-                console.log(`IndividualProduct ${key} created & stored at '${path}'`);
-                callback(undefined, keySSI, path);
-            });
-        });
+        super.create(undefined, product, callback);
     }
 
     /**

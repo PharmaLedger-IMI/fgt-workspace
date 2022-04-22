@@ -28,7 +28,7 @@
                         <ion-list class="side-menu">
                             <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard"></menu-tab-button>
                             <menu-tab-button icon-name="reader" label="@menu.products" tab="tab-products"></menu-tab-button>
-                            <menu-tab-button icon-name="reader" label="@menu.receivedOrders" tab="tab-received-orders"></menu-tab-button>
+<!--                            <menu-tab-button icon-name="reader" label="@menu.receivedOrders" tab="tab-received-orders"></menu-tab-button>-->
                             <menu-tab-button icon-name="map" label="@menu.issuedShipments" tab="tab-issued-shipments"></menu-tab-button>
                             <menu-tab-button icon-name="podium" label="@menu.stock" tab="tab-stock"></menu-tab-button>
                             <menu-tab-button icon-name="reader" label="@menu.shipmentLines" tab="tab-shipmentLines"></menu-tab-button>
@@ -60,13 +60,13 @@
                                 </div>
                             </ion-content>
                         </ion-tab>
-                        <ion-tab tab="tab-received-orders">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="receivedOrders" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
+<!--                        <ion-tab tab="tab-received-orders">-->
+<!--                            <ion-content class="tab-content" overflow-scroll="true">-->
+<!--                                <div data-if="@identified">-->
+<!--                                    <webc-template template="receivedOrders" disable-container></webc-template>-->
+<!--                                </div>-->
+<!--                            </ion-content>-->
+<!--                        </ion-tab>-->
 
                         <ion-tab tab="tab-issued-shipments">
                             <ion-content class="tab-content" overflow-scroll="true">
@@ -100,14 +100,14 @@
                             </ion-content>
                         </ion-tab>
 
-                        <!-- Invisible tabs -->
-                        <ion-tab tab="tab-order">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="order" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
+<!--                        &lt;!&ndash; Invisible tabs &ndash;&gt;-->
+<!--                        <ion-tab tab="tab-order">-->
+<!--                            <ion-content class="tab-content" overflow-scroll="true">-->
+<!--                                <div data-if="@identified">-->
+<!--                                    <webc-template template="order" disable-container></webc-template>-->
+<!--                                </div>-->
+<!--                            </ion-content>-->
+<!--                        </ion-tab>-->
 
                         <ion-tab tab="tab-shipment">
                             <ion-content class="tab-content" overflow-scroll="true">
@@ -145,7 +145,7 @@
                             <ion-tab-bar class="ion-hide-lg-up mob-menu">
                                 <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>
                                 <menu-tab-button icon-name="reader" label="@menu.products" tab="tab-products" mode="bar"></menu-tab-button>
-                                <menu-tab-button icon-name="reader" label="@menu.receivedOrders" tab="tab-received-orders" mode="bar"></menu-tab-button>
+<!--                                <menu-tab-button icon-name="reader" label="@menu.receivedOrders" tab="tab-received-orders" mode="bar"></menu-tab-button>-->
                                 <menu-tab-button icon-name="map" label="@menu.issuedShipments" tab="tab-issued-shipments" mode="bar"></menu-tab-button>
                                 <menu-tab-button icon-name="podium" label="@menu.stock" tab="tab-stock" mode="bar"></menu-tab-button>
                                 <menu-tab-button icon-name="reader" label="@menu.shipmentLines" tab="tab-shipmentLines" mode="bar"></menu-tab-button>
