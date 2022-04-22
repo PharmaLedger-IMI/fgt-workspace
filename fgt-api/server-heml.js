@@ -9,24 +9,11 @@ if (!ROLE){
     process.exit(0);
 }
 
-console.log(`ENVIRONMENT VARIABLES: ROLE: ${ROLE}, CREDENTIALS_FILE: ${CREDENTIALS_FILE} and SWAGGER_SERVER: ${SWAGGER_SERVER}`)
+console.log(`ENVIRONMENT VARIABLES: ROLE: ${ROLE}, and SWAGGER_SERVER: ${SWAGGER_SERVER}`)
 
 function failServerBoot(reason){
     console.error("Server boot failed: " + reason);
     process.exit(1);
-}
-
-function getWallet(){
-    switch (ROLE){
-        case "mah":
-            return "mah";
-        case "whs":
-            return 'wholesaler';
-        case "pha":
-            return "pharmacy";
-        default:
-            return ROLE;
-    }
 }
 
 async function bootAPIServer(){
