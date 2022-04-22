@@ -41,6 +41,8 @@ const instantiate = function(basePath, walletName, callback){
     getCredentials(basePath, walletName, (err, credentials) => {
         if (err)
             return callback(err);
+        process.env.PARTICIPANT_ID = credentials.id.secret;
+        process.env.TOKEN = process.env.TOKEN ? process.env.TOKEN : `${encodeBase64(credentials.pass.secret)}`;
         instantiateSSApp(walletName, "..", dt, credentials, (err, walletSSI, walletDSU) => {
             if (err) {
                 console.log(`The wallet couldn't be created. Trying to load with credentials...` );
@@ -84,8 +86,6 @@ const initApis = function(express, apis, port, walletName, ...managerInitMethods
                     if (err)
                         throw err;
 
-                    process.env.PARTICIPANT_ID = participantManager.getIdentity().id;
-                    process.env.TOKEN = process.env.TOKEN ? process.env.TOKEN : `${encodeBase64(participantManager.getIdentity().email)}`;
                     const server = express();
                     server.use(function (req, res, next) {
                         res.contentType('application/json');
