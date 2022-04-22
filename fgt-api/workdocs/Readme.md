@@ -57,6 +57,8 @@ the provided format should match (the id is mandatory, all others are optional):
 }
 ```
 
+#include "workdocs/tutorials/Api.md"
+
 #include "workdocs/tutorials/Swagger.md"
 
 #include "workdocs/Deployment.md"

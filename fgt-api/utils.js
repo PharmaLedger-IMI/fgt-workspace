@@ -7,6 +7,7 @@ const getParticipantManager = require('../fgt-dsu-wizard/managers/ParticipantMan
 const {instantiateSSApp, loadWallet, impersonateDSUStorage} = require('../bin/environment/utils');
 const {APPS} = require('../bin/environment/credentials/credentials3');
 const {encodeBase64} = require('./utils/basicAuth');
+const {argParser} = require("./utils/argParser");
 
 const AppBuilderService = require('../pdm-dsu-toolkit/services/dt/AppBuilderService');
 
@@ -41,8 +42,9 @@ const instantiate = function(basePath, walletName, callback){
     getCredentials(basePath, walletName, (err, credentials) => {
         if (err)
             return callback(err);
+        const argConfig = argParser({token: `${encodeBase64(credentials.pass.secret)}`}, process.argv);
         process.env.PARTICIPANT_ID = credentials.id.secret;
-        process.env.TOKEN = process.env.TOKEN ? process.env.TOKEN : `${encodeBase64(credentials.pass.secret)}`;
+        process.env.TOKEN = argConfig.token;
         instantiateSSApp(walletName, "..", dt, credentials, (err, walletSSI, walletDSU) => {
             if (err) {
                 console.log(`The wallet couldn't be created. Trying to load with credentials...` );
