@@ -1,4 +1,4 @@
-const {DB} = require('../../fgt-dsu-wizard/constants');
+const {DB, DEFAULT_QUERY_OPTIONS} = require('../../fgt-dsu-wizard/constants');
 const {Batch} = require('../../fgt-dsu-wizard/model');
 const getStockManager = require('./StockManager');
 const getNotificationManager = require('./NotificationManager');
@@ -54,6 +54,37 @@ class BatchManager extends ApiManager{
      */
     getOne(gtin, batchNumber, readDSU, callback){
         super.getOne([gtin, batchNumber], readDSU, callback);
+    }
+
+    /**
+     * Lists all registered items according to query options provided
+     * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
+     * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
+     * @param {function(err, object[])} callback
+     * @override
+     */
+    getAll(readDSU, options, callback){
+        if (!callback){
+            if (!options){
+                callback = readDSU;
+                options = DEFAULT_QUERY_OPTIONS;
+                readDSU = true;
+            }
+            if (typeof readDSU === 'boolean'){
+                callback = options;
+                options = DEFAULT_QUERY_OPTIONS;
+            }
+            if (typeof readDSU === 'object'){
+                callback = options;
+                options = readDSU;
+                readDSU = true;
+            }
+        }
+
+        options = options || DEFAULT_QUERY_OPTIONS;
+
+        options = options || defaultOptions();
+        super.query(options.query, options.sort, options.limit, callback);
     }
 
     /**

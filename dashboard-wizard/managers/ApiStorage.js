@@ -78,12 +78,25 @@ class ApiStorage {
         this.__executeRequest(request, callback);
     }
 
-    query(tableName, query, sort, limit, callback){
-        const url = this.__getUrl(tableName, METHODS.GET_ALL, {
+    /**
+     *
+     * @param {string} tableName
+     * @param query
+     * @param sort
+     * @param limit
+     * @param [props]
+     * @param callback
+     */
+    query(tableName, query, sort, limit, props, callback){
+        if (!callback){
+            callback = props;
+            props = {};
+        }
+        const url = this.__getUrl(tableName, METHODS.GET_ALL, Object.assign({}, {
             query: JSON.stringify(query),
             sort: sort,
             limit: limit
-        });
+        }, props));
         const request = this.__createRequest(url, "get")
         this.__executeRequest(request, callback);
     }

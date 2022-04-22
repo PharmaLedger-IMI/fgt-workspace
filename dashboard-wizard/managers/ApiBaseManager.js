@@ -66,7 +66,7 @@ class ApiBaseManager {
      * @constructor
      */
     constructor(dsuStorage, callback) {
-        this.storage = new ApiStorage();
+        this.storage = new ApiStorage("http://localhost:8081/traceability");
         this.identity = undefined;
         this.managerCache = {};
         this.controller = undefined;

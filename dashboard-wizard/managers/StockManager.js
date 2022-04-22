@@ -96,7 +96,7 @@ class StockManager extends ApiManager{
         }
 
         options = options || defaultOptions();
-        super.getAll(options.query, options.sort, options.limit, callback);
+        super.query(options.query, options.sort, options.limit, callback);
     }
     //
     // /**
