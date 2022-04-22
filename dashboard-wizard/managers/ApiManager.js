@@ -1,8 +1,8 @@
-const { INFO_PATH , DEFAULT_QUERY_OPTIONS } = require('../constants');
+const { INFO_PATH , DEFAULT_QUERY_OPTIONS } = require('../../fgt-dsu-wizard/constants');
 
-const {functionCallIterator} = require('../services/utils');
+const {functionCallIterator} = require('../../fgt-dsu-wizard/services');
 
-const {Page} = require('./Page');
+const {Page} = require('../../fgt-dsu-wizard/model');
 
 const SORT_OPTIONS = {ASC: "asc", DSC: 'dsc'}
 

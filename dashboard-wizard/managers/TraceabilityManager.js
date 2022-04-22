@@ -1,7 +1,7 @@
 const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS} = require('../../fgt-dsu-wizard/constants');
 const ApiManager = require("./ApiManager");
 
-const IndividualProduct = require('../model/IndividualProduct');
+const IndividualProduct = require('../../fgt-dsu-wizard/model/IndividualProduct');
 
 const ACTION = {
     REQUEST: 'request',

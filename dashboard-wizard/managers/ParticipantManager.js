@@ -1,5 +1,5 @@
-const BaseManager = require('../../pdm-dsu-toolkit/managers/BaseManager');
-const {EVENTS} = require('../constants');
+const ApiBaseManager = require('./ApiBaseManager');
+const {EVENTS} = require('../../fgt-dsu-wizard/constants');
 
 /**
  * Participant Manager Class - Extension of Base Manager
@@ -22,7 +22,7 @@ const {EVENTS} = require('../constants');
  * @memberOf Managers
  * @see BaseManager
  */
-class ParticipantManager extends BaseManager{
+class ParticipantManager extends ApiBaseManager{
     constructor(dsuStorage, callback) {
         super(dsuStorage, (err, manager) => {
             if (err)

@@ -1,4 +1,4 @@
-const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../../fgt-dsu-wizard/constants');
+const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS} = require('../../fgt-dsu-wizard/constants');
 const ApiManager = require("./ApiManager");
 const Sale = require('../../fgt-dsu-wizard/model/Sale');
 
@@ -42,7 +42,6 @@ class SaleManager extends ApiManager{
         });
         this.stockManager = participantManager.stockManager;
         this.receiptManager = this.receiptManager || undefined;
-        this.saleService = new (require('../services').SaleService)(ANCHORING_DOMAIN);
     }
 
     /**

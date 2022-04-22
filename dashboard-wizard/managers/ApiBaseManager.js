@@ -1,4 +1,4 @@
-const {_err} = require('../services/utils');
+const {_err} = require('../../fgt-dsu-wizard/services');
 const {ApiStorage} = require("./ApiStorage");
 
 /**

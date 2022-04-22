@@ -772,16 +772,6 @@
             ]
         },
         {
-            "name": "build dashboard api",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd dashboard-wizard && npm run build"
-                }
-            ]
-        },
-        {
             "name": "Copy fgt-mah-ssapp",
             "src": "",
             "actions": [
@@ -813,6 +803,10 @@
             "name": "Patch wizard",
             "src": "",
             "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd dashboard-wizard && npm run prebuild"
+                },
                 {
                     "type": "copy",
                     "src": "dashboard-wizard/build/bundles/wizard.js",

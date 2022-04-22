@@ -1,6 +1,6 @@
 {
   "wizard": {
-    "deps": "../../../fgt-dsu-wizard:wizard",
+    "deps": "../../../dashboard-wizard:wizard",
     "autoLoad":  true
   }
 }

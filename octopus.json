@@ -773,7 +773,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd dashboard-wizard && npm run build"
+                    "cmd": "cd dashboard-wizard && npm run prebuild"
                 }
             ]
         },

@@ -1,6 +1,6 @@
-const { DB, DEFAULT_QUERY_OPTIONS } = require('../constants');
-const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
-const {DirectoryEntry, ROLE } = require('../model/DirectoryEntry');
+const { DB, DEFAULT_QUERY_OPTIONS } = require('../../fgt-dsu-wizard/constants');
+const ApiManager = require("./ApiManager");
+const {DirectoryEntry, ROLE } = require('../../fgt-dsu-wizard/model/DirectoryEntry');
 
 /**
  * Stores references to some entities for quicker lookup on the front end (eg, products, suppliers, etc)
@@ -12,7 +12,7 @@ const {DirectoryEntry, ROLE } = require('../model/DirectoryEntry');
  * @extends Manager
  * @memberOf Managers
  */
-class DirectoryManager extends Manager {
+class DirectoryManager extends ApiManager {
     constructor(participantManager, callback) {
         super(participantManager, DB.directory, ['role', 'id'], callback);
     }

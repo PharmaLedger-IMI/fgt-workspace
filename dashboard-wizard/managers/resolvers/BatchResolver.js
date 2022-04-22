@@ -1,5 +1,4 @@
-const {ANCHORING_DOMAIN} = require('../../constants');
-const Resolver  = require('../../../pdm-dsu-toolkit/managers').Resolver
+const DashboardResolver  = require('./DashboardResolver')
 
 /**
  * Resolver classes substitute Managers when they're not available to be resolve a
@@ -8,9 +7,9 @@ const Resolver  = require('../../../pdm-dsu-toolkit/managers').Resolver
  * @memberOf Resolvers
  * @extends Resolver
  */
-class BatchResolver extends Resolver{
+class BatchResolver extends DashboardResolver{
     constructor(participantManager){
-        super(participantManager, new (require('../../services/BatchService'))(ANCHORING_DOMAIN));
+        super(participantManager);
     }
 }
 
