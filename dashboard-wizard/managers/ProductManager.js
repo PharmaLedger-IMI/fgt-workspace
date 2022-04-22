@@ -76,6 +76,10 @@ class ProductManager extends ApiManager {
         return callback(`Product DSUs cannot be updated`);
     }
 
+    mapRecordToKey(record) {
+        return record.gtin;
+    }
+
     /**
      * Lists all registered items according to query options provided
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not

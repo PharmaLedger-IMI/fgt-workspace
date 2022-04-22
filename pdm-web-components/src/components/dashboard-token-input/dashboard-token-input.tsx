@@ -1,4 +1,4 @@
-import {Component, h, Event, EventEmitter} from '@stencil/core';
+import {Component, h, Event, EventEmitter, Prop} from '@stencil/core';
 
 @Component({
   tag: 'dashboard-token-input',
@@ -13,6 +13,9 @@ export class DashboardTokenInput {
     eventName: "fgt-api-password-submit"
   })
   passwordSubmit: EventEmitter;
+
+  @Prop()
+  value?: string = undefined;
 
   private handleClick(e){
     e.preventDefault();
@@ -29,7 +32,7 @@ export class DashboardTokenInput {
         <ion-label position="floating">
           Please insert your API access password
         </ion-label>
-        <ion-input required={true} type="password" minlength={5} ref={(el) => this.input = el}></ion-input>
+        <ion-input required={true} type="password" minlength={5} ref={(el) => this.input = el} value={this.value || ""}></ion-input>
       </ion-item>,
       <ion-buttons>
         <ion-button onClick={this.handleClick.bind(this)}>Submit</ion-button>

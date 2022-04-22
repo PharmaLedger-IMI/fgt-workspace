@@ -2,7 +2,7 @@ const { INFO_PATH , DEFAULT_QUERY_OPTIONS } = require('../../fgt-dsu-wizard/cons
 
 const {functionCallIterator} = require('../../fgt-dsu-wizard/services');
 
-const {Page} = require('../../pdm-dsu-toolkit/managers/Page');
+const {Page, paginate, toPage} = require('../../pdm-dsu-toolkit/managers/Page');
 
 const SORT_OPTIONS = {ASC: "asc", DSC: 'dsc'}
 
@@ -359,11 +359,15 @@ class ApiManager{
     getPage(itemsPerPage, page, dsuQuery, keyword, sort, readDSU, callback){
         let receivedPage = page || 1;
         sort = SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] ? SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] : SORT_OPTIONS.DSC;
-
+        const self = this;
         this.getStorage().query(this._getTableName(), dsuQuery && dsuQuery.length ? dsuQuery : DEFAULT_QUERY_OPTIONS.query, sort, DEFAULT_QUERY_OPTIONS.limit, {
             itemsPerPage: itemsPerPage,
             page: receivedPage
-        }, callback);
+        }, (err, records) => {
+            if (err)
+                return callback(err);
+            callback(undefined, toPage(records.meta.page, records.meta.totalPages, readDSU ? records.results: records.results.map(r => self.mapRecordToKey(r)), itemsPerPage));
+        });
     }
 
     /**

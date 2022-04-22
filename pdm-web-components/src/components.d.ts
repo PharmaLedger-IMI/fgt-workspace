@@ -44,6 +44,7 @@ export namespace Components {
         "manageTitleString": string;
     }
     interface DashboardTokenInput {
+        "value"?: string;
     }
     interface FormInput {
         "cssClassString": string | string[];
@@ -96,6 +97,22 @@ export namespace Components {
         "orientation": "start" | "end";
     }
     interface ManagedBatch {
+        "addBatchString": string;
+        "backString": string;
+        "batchNumberString": string;
+        "clearString": string;
+        "expiryPlaceholderString": string;
+        "expiryString": string;
+        "gtinRef"?: string;
+        "manageString": string;
+        "refresh": () => Promise<void>;
+        "reset": () => Promise<void>;
+        "serialsPlaceholderString": string;
+        "serialsString": string;
+        "statuses": any;
+        "titleString": string;
+    }
+    interface ManagedBatchDashboard {
         "addBatchString": string;
         "backString": string;
         "batchNumberString": string;
@@ -558,6 +575,12 @@ declare global {
         prototype: HTMLManagedBatchElement;
         new (): HTMLManagedBatchElement;
     };
+    interface HTMLManagedBatchDashboardElement extends Components.ManagedBatchDashboard, HTMLStencilElement {
+    }
+    var HTMLManagedBatchDashboardElement: {
+        prototype: HTMLManagedBatchDashboardElement;
+        new (): HTMLManagedBatchDashboardElement;
+    };
     interface HTMLManagedBatchListItemElement extends Components.ManagedBatchListItem, HTMLStencilElement {
     }
     var HTMLManagedBatchListItemElement: {
@@ -779,6 +802,7 @@ declare global {
         "line-stock-manager": HTMLLineStockManagerElement;
         "list-item-layout": HTMLListItemLayoutElement;
         "managed-batch": HTMLManagedBatchElement;
+        "managed-batch-dashboard": HTMLManagedBatchDashboardElement;
         "managed-batch-list-item": HTMLManagedBatchListItemElement;
         "managed-individual-product": HTMLManagedIndividualProductElement;
         "managed-individual-product-chip": HTMLManagedIndividualProductChipElement;
@@ -856,6 +880,7 @@ declare namespace LocalJSX {
     }
     interface DashboardTokenInput {
         "onFgt-api-password-submit"?: (event: CustomEvent<any>) => void;
+        "value"?: string;
     }
     interface FormInput {
         "cssClassString"?: string | string[];
@@ -927,6 +952,36 @@ declare namespace LocalJSX {
         "orientation"?: "start" | "end";
     }
     interface ManagedBatch {
+        "addBatchString"?: string;
+        "backString"?: string;
+        "batchNumberString"?: string;
+        "clearString"?: string;
+        "expiryPlaceholderString"?: string;
+        "expiryString"?: string;
+        "gtinRef"?: string;
+        "manageString"?: string;
+        /**
+          * Through this event action requests are made
+         */
+        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event back navigation requests are made
+         */
+        "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event navigation requests to tabs are made
+         */
+        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "serialsPlaceholderString"?: string;
+        "serialsString"?: string;
+        "statuses"?: any;
+        "titleString"?: string;
+    }
+    interface ManagedBatchDashboard {
         "addBatchString"?: string;
         "backString"?: string;
         "batchNumberString"?: string;
@@ -1506,6 +1561,7 @@ declare namespace LocalJSX {
         "line-stock-manager": LineStockManager;
         "list-item-layout": ListItemLayout;
         "managed-batch": ManagedBatch;
+        "managed-batch-dashboard": ManagedBatchDashboard;
         "managed-batch-list-item": ManagedBatchListItem;
         "managed-individual-product": ManagedIndividualProduct;
         "managed-individual-product-chip": ManagedIndividualProductChip;
@@ -1557,6 +1613,7 @@ declare module "@stencil/core" {
             "line-stock-manager": LocalJSX.LineStockManager & JSXBase.HTMLAttributes<HTMLLineStockManagerElement>;
             "list-item-layout": LocalJSX.ListItemLayout & JSXBase.HTMLAttributes<HTMLListItemLayoutElement>;
             "managed-batch": LocalJSX.ManagedBatch & JSXBase.HTMLAttributes<HTMLManagedBatchElement>;
+            "managed-batch-dashboard": LocalJSX.ManagedBatchDashboard & JSXBase.HTMLAttributes<HTMLManagedBatchDashboardElement>;
             "managed-batch-list-item": LocalJSX.ManagedBatchListItem & JSXBase.HTMLAttributes<HTMLManagedBatchListItemElement>;
             "managed-individual-product": LocalJSX.ManagedIndividualProduct & JSXBase.HTMLAttributes<HTMLManagedIndividualProductElement>;
             "managed-individual-product-chip": LocalJSX.ManagedIndividualProductChip & JSXBase.HTMLAttributes<HTMLManagedIndividualProductChipElement>;

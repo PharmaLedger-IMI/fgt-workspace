@@ -40,7 +40,17 @@ class BatchManager extends ApiManager{
      * @override
      */
     create(product, batch, callback) {
+        if (batch.status)
+            delete batch.status;
+        if (batch.quantity)
+            delete batch.quantity;
+
         super.create(undefined, Object.assign({gtin: product.gtin}, batch), callback);
+    }
+
+
+    mapRecordToKey(record) {
+        return record.gtin + '-' + record.batchNumber;
     }
 
     /**

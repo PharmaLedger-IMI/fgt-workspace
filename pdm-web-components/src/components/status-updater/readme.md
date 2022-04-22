@@ -29,6 +29,7 @@
 ### Used by
 
  - [managed-batch](../managed-batch)
+ - [managed-batch-dashboard](../managed-batch-dashboard)
  - [managed-individual-product](../managed-individual-product)
  - [managed-order](../managed-order)
  - [managed-shipment](../managed-shipment)
@@ -42,6 +43,7 @@
 graph TD;
   status-updater --> status-updater-button
   managed-batch --> status-updater
+  managed-batch-dashboard --> status-updater
   managed-individual-product --> status-updater
   managed-order --> status-updater
   managed-shipment --> status-updater

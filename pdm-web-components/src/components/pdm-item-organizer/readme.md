@@ -35,6 +35,7 @@
 
  - [line-stock-manager](../line-stock-manager)
  - [managed-batch](../managed-batch)
+ - [managed-batch-dashboard](../managed-batch-dashboard)
  - [managed-batch-list-item](../managed-batch-list-item)
  - [managed-individual-product-chip](../managed-individual-product-chip)
  - [managed-order-list-item](../managed-order-list-item)
@@ -54,6 +55,7 @@ graph TD;
   pdm-item-organizer --> more-chip
   line-stock-manager --> pdm-item-organizer
   managed-batch --> pdm-item-organizer
+  managed-batch-dashboard --> pdm-item-organizer
   managed-batch-list-item --> pdm-item-organizer
   managed-individual-product-chip --> pdm-item-organizer
   managed-order-list-item --> pdm-item-organizer
