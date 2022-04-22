@@ -15,9 +15,12 @@ const METHODS = {
  */
 class ApiStorage {
 
-    constructor(endPoint, token) {
+    constructor(endPoint) {
         this.endPoint = endPoint;
-        this.securityToken = token;
+    }
+
+    setToken(token){
+        this.securityToken = btoa(token);
     }
 
     __getUrl(tableName, method, pathParams, ...params){
@@ -31,6 +34,8 @@ class ApiStorage {
 
     __createRequest(url, verb, body){
         const headers = new Headers();
+        if (this.securityToken)
+            headers.append('Authorization', 'Basic ' + this.securityToken)
         const options = {
             method: verb.toUpperCase(),
             headers: headers,

@@ -326,7 +326,7 @@ class ApiManager{
         self.query(options.query, options.sort, options.limit, (err, records) => {
             if (err)
                 return self._err(`Could not perform query`, err, callback);
-            callback(undefined, records);
+            callback(undefined, records.results);
         });
     }
 
@@ -359,8 +359,6 @@ class ApiManager{
     getPage(itemsPerPage, page, dsuQuery, keyword, sort, readDSU, callback){
         let receivedPage = page || 1;
         sort = SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] ? SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] : SORT_OPTIONS.DSC;
-
-
 
         this.getStorage().query(this._getTableName(), dsuQuery && dsuQuery.length ? dsuQuery : DEFAULT_QUERY_OPTIONS.query, sort, DEFAULT_QUERY_OPTIONS.limit, {
             itemsPerPage: itemsPerPage,

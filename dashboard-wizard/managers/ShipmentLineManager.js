@@ -66,7 +66,7 @@ class ShipmentLineManager extends ApiManager {
 
         options = options || defaultOptions();
 
-        super.getAll(options.query, options.sort, options.limit, callback);
+        super.getAll(readDSU, options, callback)
     }
 
     /**

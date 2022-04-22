@@ -119,7 +119,7 @@ export class PdmIonTable implements ComponentInterface {
    * */
   private updateTable(newModel){
     if (!this._dataSource){
-      this._dataSource = [...newModel];
+      this._dataSource = [...(newModel || [])];
       return;
     }
     const model = this._dataSource;

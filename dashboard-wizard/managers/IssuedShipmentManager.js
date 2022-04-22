@@ -25,7 +25,7 @@ const {Shipment} = require('../../fgt-dsu-wizard/model');
  */
 class IssuedShipmentManager extends ShipmentManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.issuedShipments, ['senderId', 'requesterId'], callback);
+        super(participantManager, "shipment", ['senderId', 'requesterId'], callback);
         this.participantManager = participantManager;
         this.stockManager = participantManager.stockManager;
     }

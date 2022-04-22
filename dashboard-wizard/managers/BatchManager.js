@@ -26,7 +26,7 @@ const ApiManager = require("./ApiManager");
  */
 class BatchManager extends ApiManager{
     constructor(participantManager, callback) {
-        super(participantManager, DB.batches, ['gtin', 'batchNumber', 'expiry'], callback);
+        super(participantManager, "batch", ['gtin', 'batchNumber', 'expiry'], callback);
         this.stockManager = getStockManager(participantManager);
         this.notificationManager = getNotificationManager(participantManager);
         this.participantManager = participantManager;
@@ -84,7 +84,7 @@ class BatchManager extends ApiManager{
         options = options || DEFAULT_QUERY_OPTIONS;
 
         options = options || defaultOptions();
-        super.query(options.query, options.sort, options.limit, callback);
+        super.getAll(readDSU, options, callback)
     }
 
     /**

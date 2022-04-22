@@ -23,7 +23,7 @@ const ShipmentManager = require("./ShipmentManager");
  */
 class ReceivedShipmentManager extends ShipmentManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.receivedShipments, ['senderId', 'requesterId'], callback);
+        super(participantManager, "shipment", ['senderId', 'requesterId'], callback);
     }
 
     /**

@@ -43,6 +43,8 @@ export namespace Components {
         "isCreate": boolean;
         "manageTitleString": string;
     }
+    interface DashboardTokenInput {
+    }
     interface FormInput {
         "cssClassString": string | string[];
         "customValidation": boolean;
@@ -514,6 +516,12 @@ declare global {
         prototype: HTMLCreateManageViewLayoutElement;
         new (): HTMLCreateManageViewLayoutElement;
     };
+    interface HTMLDashboardTokenInputElement extends Components.DashboardTokenInput, HTMLStencilElement {
+    }
+    var HTMLDashboardTokenInputElement: {
+        prototype: HTMLDashboardTokenInputElement;
+        new (): HTMLDashboardTokenInputElement;
+    };
     interface HTMLFormInputElement extends Components.FormInput, HTMLStencilElement {
     }
     var HTMLFormInputElement: {
@@ -764,6 +772,7 @@ declare global {
         "barcode-generator": HTMLBarcodeGeneratorElement;
         "batch-chip": HTMLBatchChipElement;
         "create-manage-view-layout": HTMLCreateManageViewLayoutElement;
+        "dashboard-token-input": HTMLDashboardTokenInputElement;
         "form-input": HTMLFormInputElement;
         "form-validate-submit": HTMLFormValidateSubmitElement;
         "generic-chip": HTMLGenericChipElement;
@@ -844,6 +853,9 @@ declare namespace LocalJSX {
         "manageTitleString"?: string;
         "onCreateEvent"?: (event: CustomEvent<{}>) => void;
         "onGoBackEvent"?: (event: CustomEvent<any>) => void;
+    }
+    interface DashboardTokenInput {
+        "onFgt-api-password-submit"?: (event: CustomEvent<any>) => void;
     }
     interface FormInput {
         "cssClassString"?: string | string[];
@@ -1487,6 +1499,7 @@ declare namespace LocalJSX {
         "barcode-generator": BarcodeGenerator;
         "batch-chip": BatchChip;
         "create-manage-view-layout": CreateManageViewLayout;
+        "dashboard-token-input": DashboardTokenInput;
         "form-input": FormInput;
         "form-validate-submit": FormValidateSubmit;
         "generic-chip": GenericChip;
@@ -1537,6 +1550,7 @@ declare module "@stencil/core" {
             "barcode-generator": LocalJSX.BarcodeGenerator & JSXBase.HTMLAttributes<HTMLBarcodeGeneratorElement>;
             "batch-chip": LocalJSX.BatchChip & JSXBase.HTMLAttributes<HTMLBatchChipElement>;
             "create-manage-view-layout": LocalJSX.CreateManageViewLayout & JSXBase.HTMLAttributes<HTMLCreateManageViewLayoutElement>;
+            "dashboard-token-input": LocalJSX.DashboardTokenInput & JSXBase.HTMLAttributes<HTMLDashboardTokenInputElement>;
             "form-input": LocalJSX.FormInput & JSXBase.HTMLAttributes<HTMLFormInputElement>;
             "form-validate-submit": LocalJSX.FormValidateSubmit & JSXBase.HTMLAttributes<HTMLFormValidateSubmitElement>;
             "generic-chip": LocalJSX.GenericChip & JSXBase.HTMLAttributes<HTMLGenericChipElement>;

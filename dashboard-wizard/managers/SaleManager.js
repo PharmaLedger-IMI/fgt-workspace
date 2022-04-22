@@ -111,13 +111,7 @@ class SaleManager extends ApiManager{
         options = options || defaultOptions();
 
         let self = this;
-        super.getAll(options.query, options.sort, options.limit, (err, records) => {
-            if (err)
-                return self._err(`Could not perform query`, err, callback);
-            if (readDSU)
-                return callback(undefined, records);
-            callback(undefined, records.map(r => new Sale(r)));
-        });
+        super.getAll(readDSU, options, callback)
     }
 
 }
