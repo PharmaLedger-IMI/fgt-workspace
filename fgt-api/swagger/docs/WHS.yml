@@ -617,7 +617,7 @@ paths:
     post:
       tags:
         - directory
-      summary: 'add a DID as an authorized partner or product'
+      summary: 'add a partner as an authorized partner or product'
       requestBody:
         content:
           application/json:
@@ -653,7 +653,7 @@ paths:
     post:
       tags:
         - directory
-      summary: 'add one or more DID as an authorized partners or products'
+      summary: 'add one or more authorized partners or products'
       requestBody:
         content:
           application/json:
