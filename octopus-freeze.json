@@ -810,7 +810,7 @@
                 {
                     "type": "copy",
                     "src": "dashboard-wizard/build/bundles/wizard.js",
-                    "target": "apihub-root/dashboard",
+                    "target": "apihub-root/dashboard/scripts/bundles/wizard.js",
                     "options": {
                         "overwrite": true
                     }

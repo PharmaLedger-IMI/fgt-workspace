@@ -768,16 +768,6 @@
             ]
         },
         {
-            "name": "build dashboard api",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd dashboard-wizard && npm run prebuild"
-                }
-            ]
-        },
-        {
             "name": "Copy fgt-mah-ssapp",
             "src": "",
             "actions": [
@@ -810,9 +800,13 @@
             "src": "",
             "actions": [
                 {
+                    "type": "execute",
+                    "cmd": "cd dashboard-wizard && npm run prebuild"
+                },
+                {
                     "type": "copy",
                     "src": "dashboard-wizard/build/bundles/wizard.js",
-                    "target": "apihub-root/dashboard",
+                    "target": "apihub-root/dashboard/scripts/bundles/wizard.js",
                     "options": {
                         "overwrite": true
                     }
