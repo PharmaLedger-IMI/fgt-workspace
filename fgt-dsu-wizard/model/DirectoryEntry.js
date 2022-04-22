@@ -33,6 +33,18 @@ class DirectoryEntry {
                 if (entry.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = entry[prop];
     }
+
+    validate() {
+        if (!this.id) {
+            return 'Id is mandatory field';
+        }
+        if (!this.role) {
+            return 'Role is mandatory field';
+        }
+        if (Object.values(ROLE).indexOf(this.role) === -1) {
+            return `Invalid role provided. Available values are: ${Object.values(ROLE)}`;
+        }
+    }
 }
 
 module.exports = {
