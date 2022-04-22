@@ -64,6 +64,10 @@
                     <div class="dropdown-menu">
                         <div class="dropdown-content">
                         
+                            <a class="dropdown-item" href="tutorial-Api.html">
+                                Api
+                            </a>
+                        
                             <a class="dropdown-item" href="tutorial-Swagger.html">
                                 Swagger
                             </a>
@@ -187,6 +191,20 @@ a viewing tool (initially swagger, but a GUI at a later stage) and exterior acce
     &quot;secret&quot;: &quot;This1sSuchAS3curePassw0rd&quot;
   }
 }
+</code></pre>
+<h1>API Authorization</h1>
+<ul>
+<li><strong>type</strong>: Basic Auth</li>
+</ul>
+<h3>Command Line Arguments</h3>
+<h4>token</h4>
+<pre><code>API authorization password encode in base64
+- argument: token
+- env variable name: TOKEN
+- default: pass field of wallet credentials file
+</code></pre>
+<h2>Example</h2>
+<pre><code>npm run run-mah -- --token=VGhpczFzU3VjaEFTM2N1cmVQYXNzdzByZA==
 </code></pre>
 <h1>Swagger API DOC</h1>
 <h2>Running server</h2>

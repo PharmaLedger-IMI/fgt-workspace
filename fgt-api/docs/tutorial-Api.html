@@ -5,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pharmaledger's Finished Goods Traceability REST API Swagger</title>
+  <title>Pharmaledger's Finished Goods Traceability REST API Api</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -118,41 +118,24 @@
             <div class="content">
                 <header class="page-title">
                     <p>Tutorial</p>
-                    <h1>Swagger</h1>
+                    <h1>Api</h1>
                 </header>
                 <section>
 
 <article>
-    <h1>Swagger API DOC</h1>
-<h2>Running server</h2>
-<p>On <code>fgt-api</code> folder, run <code>npm run run-swagger</code>. Navigate to http://localhost:3009.</p>
+    <h1>API Authorization</h1>
+<ul>
+<li><strong>type</strong>: Basic Auth</li>
+</ul>
 <h3>Command Line Arguments</h3>
-<h4>port</h4>
-<pre><code>swagger server listening port
-- argument: port
-- env variable name: SWAGGER_PORT
-- default: 3009
-</code></pre>
-<h4>participant</h4>
-<pre><code>.yml file name
-- argument: participant
-- env variable name: SWAGGER_PARTICIPANT
-- default: MAH
-</code></pre>
-<h4>path</h4>
-<pre><code>folder path to .yml file to load swagger UI
-- argument: path
-- env variable name: SWAGGER_PATH
-- default: ./docs
-</code></pre>
-<h4>server</h4>
-<pre><code>API url that swagger requests will be done
-- argument: server
-- env variable name: SWAGGER_SERVER
-- default: http://localhost:8081/traceability
+<h4>token</h4>
+<pre><code>API authorization password encode in base64
+- argument: token
+- env variable name: TOKEN
+- default: pass field of wallet credentials file
 </code></pre>
 <h2>Example</h2>
-<pre><code>npm run run-swagger -- --port=3030 --participant=PHA
+<pre><code>npm run run-mah -- --token=VGhpczFzU3VjaEFTM2N1cmVQYXNzdzByZA==
 </code></pre>
 </article>
 
