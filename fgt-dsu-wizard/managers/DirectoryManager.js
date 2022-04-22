@@ -70,10 +70,15 @@ class DirectoryManager extends Manager {
             if (!err && !!existing){
                 if (matchEntries(existing)) {
                     console.log(`Entry already exists in directory. skipping`);
-                    return callback(undefined, existing);
+                    return callback(`Entry ${existing.id} already exists in directory.`, existing);
                 } else
                     return callback(`Provided directory entry does not match existing.`);
             }
+
+            entry = new DirectoryEntry(entry);
+            const _err = entry.validate();
+            if(_err)
+                return callback(_err);
 
             self.insertRecord(key, entry, (err) => {
                 if (err)
@@ -101,17 +106,8 @@ class DirectoryManager extends Manager {
         self.getRecord(key, (err, entry) => {
             if (err)
                 return self._err(`Could not load record with key ${key} on table ${self._getTableName()}`, err, callback);
-            callback(undefined, entry);
+            callback(undefined, new DirectoryEntry(entry));
         });
-    }
-
-    /**
-     * @protected
-     * @override
-     */
-    _keywordToQuery(keyword) {
-        keyword = keyword || '.*';
-        return [[`role like /${keyword}/g`]];
     }
 
     /**
@@ -152,7 +148,7 @@ class DirectoryManager extends Manager {
                 return self._err(`Could not perform query`, err, callback);
             if (!readDSU)
                 return callback(undefined, records.map(r => r.id));
-            callback(undefined, records);
+            callback(undefined, records.map(r => new DirectoryEntry(r)));
         });
     }
 
