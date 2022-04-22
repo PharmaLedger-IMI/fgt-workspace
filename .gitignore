@@ -49,6 +49,10 @@ fgt-dsu-wizard/version.js
 fgt-dsu-wizard/build/bundles
 fgt-dsu-wizard/docs
 
+dashboard-wizard/version.js
+dashboard-wizard/build/bundles
+dashboard-wizard/docs
+
 fgt-pharmacy-ssapp/code/constitution
 fgt-pharmacy-ssapp/code/scripts/bundles
 fgt-pharmacy-ssapp/code/assets/ionic-core
