@@ -9,6 +9,7 @@
     "run-pha": "node ./participants/pha/index.js",
     "run-swagger": "cd ./swagger && node server.js",
     "boot-api": "node ./server.js",
+    "boot-api-helm": "node ./server-helm.js",
     "boot-swagger": "node swagger.js",
     "test": "mocha ./tests/**",
     "docs": "npx rimraf ./docs/* && cp -r ./workdocs/assets ./docs/assets && npm install better-docs taffydb && npx markdown-include ./mdCompile.json && npx jsdoc -c jsdocs.json -t ./node_modules/better-docs  && npm remove better-docs taffydb"
