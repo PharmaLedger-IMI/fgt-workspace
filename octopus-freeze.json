@@ -818,6 +818,20 @@
             ]
         },
         {
+            "name": "Copy boot file",
+            "src": "",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "privatesky/psknode/bundles/loaderBoot.js",
+                    "target": "apihub-root/dashboard/scripts/bundles/loaderBoot.js",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
             "name": "Copy webcardinal Web cardinal",
             "src": "",
             "actions": [
