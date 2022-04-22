@@ -998,12 +998,212 @@ paths:
                 status: 400
                 error: Bad Request
                 message: The server could not understand your request
+  /directory/create:
+    post:
+      tags:
+        - directory
+      summary: 'add a DID as an authorized partner or product'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectoryEntry'
+            example:
+              id: string
+              role: "mah"
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: application/json
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectoryEntry'
+              example:
+                id: string
+                role: "MAH"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+              example:
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
+  /directory/createAll:
+    post:
+      tags:
+        - directory
+      summary: 'add one or more DID as an authorized partners or products'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/DirectoryEntry'
+            example:
+              - id: string
+                role: 'mah'
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: application/json
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DirectoryEntry'
+              example:
+                - id: 0
+                  title: string
+                  parents: [{}]
+                  children: [{}]
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+              example:
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
+  /directory/getAll:
+    get:
+      tags:
+        - directory
+      summary: 'return all authorized partners or products according to the filter'
+      parameters:
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          description: >-
+            Search for a keyword in all tables indexes. search by keyword
+            disable other queries.
+        - name: page
+          in: query
+          schema:
+            type: string
+        - name: itemPerPage
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+          description: dsc or asc
+          example: dsc
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum:
+              - mah
+              - whs
+              - pha
+              - product
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DirectoryEntry'
+              example:
+                meta:
+                  page: 1
+                  itemsPerPage: 10
+                  totalPages: 1
+                  query: {}
+                results:
+                  - id: string
+                    role: 'mah'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+              example:
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
+  /directory/get/{key}:
+    get:
+      tags:
+        - directory
+      summary: 'find a authorized partner or product by key (id-role)'
+      parameters:
+        - name: key
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: application/json
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectoryEntry'
+              example:
+                id: string
+                role: "mah"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+              example:
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
 components:
   securitySchemes:
     basicAuth:
       type: http
       scheme: basic
   schemas:
+    DirectoryEntry:
+      type: object
+      description: "Required fields to add an authorized partner or product"
+      required:
+        - id
+        - role
+      properties:
+        id:
+          type: string
+        role:
+          type: string
+          enum:
+            - mah
+            - whs
+            - pha
+            - product
 
     UpdateShipment:
       type: object

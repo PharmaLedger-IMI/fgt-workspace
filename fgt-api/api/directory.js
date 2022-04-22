@@ -27,7 +27,7 @@ module.exports = class DirectoryApi extends Api {
             if (err)
                 return callback(new BadRequest(err));
 
-            const key = self.manager._genCompostKey(record.id, record.role);
+            const key = self.manager._genCompostKey(record.role, record.id);
             self.manager.getOne(key, (err, record) => {
                 if (err)
                     return callback(new InternalServerError(err));
