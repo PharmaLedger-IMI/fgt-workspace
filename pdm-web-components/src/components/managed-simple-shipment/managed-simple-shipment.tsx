@@ -87,7 +87,7 @@ export class ManagedSimpleShipment implements CreateManageView{
   @Prop({attribute: "clear-string"}) clearString: string = "Clear"
 
   // Input Strings
-  @Prop({attribute: 'order-id-string', mutable: true}) orderIdString: string = 'Order Id:';
+  @Prop({attribute: 'order-id-string', mutable: true}) orderIdString: string = 'Shipment Id:';
   @Prop({attribute: 'from-string', mutable: true}) fromString: string = 'Shipment from:';
   @Prop({attribute: 'to-string', mutable: true}) to_String: string = 'Shipment to:';
   @Prop({attribute: 'to-placeholder-string', mutable: true}) toPlaceholderString: string = 'Select a requester...';
@@ -311,7 +311,14 @@ export class ManagedSimpleShipment implements CreateManageView{
     this.sendAction.emit({
       action: ShipmentStatus.CREATED,
       props:{
-        shipment: new SimpleShipment(undefined, evt.detail.requesterId, this.identity.id,  this.identity.address, undefined, this.lines.slice()),
+        shipment: new SimpleShipment({
+          gtin: undefined,
+          requesterId: evt.detail.requesterId,
+          senderId: this.identity.id,
+          shipFromAddress: this.identity.address,
+          shipToAddress: evt.detail["requester-address"],
+          shipmentLines: this.lines.slice()
+        }),
         stock: await this.getStockManagerEl().getResult()
       }
     });
@@ -324,7 +331,14 @@ export class ManagedSimpleShipment implements CreateManageView{
     this.sendAction.emit({
       action: evt.detail,
       props: {
-        shipment: new SimpleShipment(this.shipment.shipmentId, this.shipment.requesterId, this.shipment.senderId,  this.shipment.shipToAddress, this.shipment.status, this.shipment.shipmentLines.slice()),
+        shipment: new SimpleShipment({
+          shipmentId: this.shipment.shipmentId,
+          requesterId: this.shipment.requesterId,
+          senderId: this.shipment.senderId,
+          shipToAddress: this.shipment.shipToAddress,
+          status: this.shipment.status,
+          shipmentLines: this.shipment.shipmentLines.slice()
+        }),
         newStatus: status,
         extraInfo
       }
@@ -349,7 +363,12 @@ export class ManagedSimpleShipment implements CreateManageView{
   }
 
   private addShipmentLine(gtin, quantity){
-    this.lines = [...this.lines, new ShipmentLine(gtin, quantity, this.participantId , this.identity.id)]
+    this.lines = [...this.lines, new ShipmentLine({
+      gtin: gtin,
+      quantity: quantity,
+      requestedId: this.participantId,
+      senderId: this.identity.id
+    })]
     this.currentGtin = undefined;
     this.currentQuantity = 0;
   }
@@ -379,14 +398,10 @@ export class ManagedSimpleShipment implements CreateManageView{
 
     const getShipmentRef = function(){
       const getInput = function () {
-        if (self.shipment) {
           return (
-            <ion-input name="input-shipmentId" disabled={true}
+            <ion-input name="input-shipmentId" disabled={!!self.shipment}
                        value={self.shipment ? self.shipment.shipmentId : '-'}></ion-input>
           )
-        } else {
-          <ion-skeleton-text animated></ion-skeleton-text>;
-        }
       };
       return (
         <ion-item lines="none" disabled={false}>

@@ -20,7 +20,7 @@
 | `identity`            | `identity`              |             | `any`    | `undefined`                  |
 | `manageString`        | `manage-title-string`   |             | `string` | `"Manage String"`            |
 | `noStockString`       | `no-stock-string`       |             | `string` | `'Empty'`                    |
-| `orderIdString`       | `order-id-string`       |             | `string` | `'Order Id:'`                |
+| `orderIdString`       | `order-id-string`       |             | `string` | `'Shipment Id:'`             |
 | `orderMissingString`  | `order-missing-string`  |             | `string` | `'Order Missing'`            |
 | `productsCodeString`  | `products-code-string`  |             | `string` | `'Product Code:'`            |
 | `productsString`      | `products-string`       |             | `string` | `'Products:'`                |

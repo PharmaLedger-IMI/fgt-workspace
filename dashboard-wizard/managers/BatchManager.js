@@ -134,18 +134,22 @@ class BatchManager extends ApiManager{
         let receivedPage = page || 1;
         sort = SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] ? SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] : SORT_OPTIONS.DSC;
         const self = this;
+        let gtin
+        if (typeof dsuQuery === 'number')
+            gtin = dsuQuery
+        else {
+            gtin = typeof dsuQuery === 'string'
+                ? (dsuQuery.indexOf("gtin") !== -1 ? dsuQuery : undefined)
+                : dsuQuery.find(q => q.indexOf("gtin") !== -1);
 
-        let gtin = typeof dsuQuery === 'string'
-            ? (dsuQuery.indexOf("gtin") !== -1 ? dsuQuery : undefined)
-            : dsuQuery.find(q => q.indexOf("gtin") !== -1);
+            if (!gtin)
+                return callback(undefined, toPage(0,0, [], itemsPerPage));
 
-        if (!gtin)
-            return callback(undefined, toPage(0,0, [], itemsPerPage));
+            const m = /\d+$/g.exec(gtin);
 
-        const m = /\d+$/g.exec(gtin);
-
-        if (m)
-            gtin = m[0]
+            if (m)
+                gtin = m[0]
+        }
 
         this.getStorage().query(this._getTableName(), dsuQuery && dsuQuery.length ? dsuQuery : undefined, sort, DEFAULT_QUERY_OPTIONS.limit, {
             itemsPerPage: itemsPerPage,
