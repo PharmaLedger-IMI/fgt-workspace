@@ -3,6 +3,8 @@
  * @module dashboard-wizard
  */
 
+const fgtModel = require("../fgt-dsu-wizard/model");
+
 module.exports = {
     /**
      * Exposes constants.
@@ -11,7 +13,9 @@ module.exports = {
     /**
      * Exposes the Model module
      */
-    Model: require("../fgt-dsu-wizard/model"),
+    Model: Object.assign({}, fgtModel, {
+        SimpleShipment: require('../fgt-api/model/SimpleShipment')
+    }),
     /**
      * Exposes the Services Module
      */

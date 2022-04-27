@@ -323,6 +323,41 @@ export namespace Components {
         "shipmentLine": string;
         "statusLabel"?: string;
     }
+    interface ManagedSimpleShipment {
+        "availableString": string;
+        "backString": string;
+        "clearString": string;
+        "confirmAllString": string;
+        "confirmedString": string;
+        "createString": string;
+        "fromAtString": string;
+        "fromString": string;
+        "identity": any;
+        "manageString": string;
+        "noStockString": string;
+        "orderIdString": string;
+        "orderMissingString": string;
+        "productsCodeString": string;
+        "productsString": string;
+        "quantityString": string;
+        "refresh": () => Promise<void>;
+        "remainingString": string;
+        "reset": () => Promise<void>;
+        "resetAllString": string;
+        "scanString": string;
+        "selectString": string;
+        "shipmentRef"?: string;
+        "shipmentType": string;
+        "statusString": string;
+        "statuses": any;
+        "stockString": string;
+        "titleString": string;
+        "toAtString": string;
+        "toPlaceholderString": string;
+        "to_String": string;
+        "unavailableString": string;
+        "updateDirectory": () => Promise<unknown>;
+    }
     interface ManagedStockListItem {
         "gtin": string;
         "isHeader": boolean;
@@ -671,6 +706,12 @@ declare global {
         prototype: HTMLManagedShipmentlineListItemElement;
         new (): HTMLManagedShipmentlineListItemElement;
     };
+    interface HTMLManagedSimpleShipmentElement extends Components.ManagedSimpleShipment, HTMLStencilElement {
+    }
+    var HTMLManagedSimpleShipmentElement: {
+        prototype: HTMLManagedSimpleShipmentElement;
+        new (): HTMLManagedSimpleShipmentElement;
+    };
     interface HTMLManagedStockListItemElement extends Components.ManagedStockListItem, HTMLStencilElement {
     }
     var HTMLManagedStockListItemElement: {
@@ -818,6 +859,7 @@ declare global {
         "managed-shipment": HTMLManagedShipmentElement;
         "managed-shipment-list-item": HTMLManagedShipmentListItemElement;
         "managed-shipmentline-list-item": HTMLManagedShipmentlineListItemElement;
+        "managed-simple-shipment": HTMLManagedSimpleShipmentElement;
         "managed-stock-list-item": HTMLManagedStockListItemElement;
         "managed-stock-product-input": HTMLManagedStockProductInputElement;
         "menu-tab-button": HTMLMenuTabButtonElement;
@@ -1321,6 +1363,50 @@ declare namespace LocalJSX {
         "shipmentLine"?: string;
         "statusLabel"?: string;
     }
+    interface ManagedSimpleShipment {
+        "availableString"?: string;
+        "backString"?: string;
+        "clearString"?: string;
+        "confirmAllString"?: string;
+        "confirmedString"?: string;
+        "createString"?: string;
+        "fromAtString"?: string;
+        "fromString"?: string;
+        "identity"?: any;
+        "manageString"?: string;
+        "noStockString"?: string;
+        /**
+          * Through this event action requests are made
+         */
+        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event back navigation requests are made
+         */
+        "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "orderIdString"?: string;
+        "orderMissingString"?: string;
+        "productsCodeString"?: string;
+        "productsString"?: string;
+        "quantityString"?: string;
+        "remainingString"?: string;
+        "resetAllString"?: string;
+        "scanString"?: string;
+        "selectString"?: string;
+        "shipmentRef"?: string;
+        "shipmentType"?: string;
+        "statusString"?: string;
+        "statuses"?: any;
+        "stockString"?: string;
+        "titleString"?: string;
+        "toAtString"?: string;
+        "toPlaceholderString"?: string;
+        "to_String"?: string;
+        "unavailableString"?: string;
+    }
     interface ManagedStockListItem {
         "gtin"?: string;
         "isHeader"?: boolean;
@@ -1577,6 +1663,7 @@ declare namespace LocalJSX {
         "managed-shipment": ManagedShipment;
         "managed-shipment-list-item": ManagedShipmentListItem;
         "managed-shipmentline-list-item": ManagedShipmentlineListItem;
+        "managed-simple-shipment": ManagedSimpleShipment;
         "managed-stock-list-item": ManagedStockListItem;
         "managed-stock-product-input": ManagedStockProductInput;
         "menu-tab-button": MenuTabButton;
@@ -1629,6 +1716,7 @@ declare module "@stencil/core" {
             "managed-shipment": LocalJSX.ManagedShipment & JSXBase.HTMLAttributes<HTMLManagedShipmentElement>;
             "managed-shipment-list-item": LocalJSX.ManagedShipmentListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentListItemElement>;
             "managed-shipmentline-list-item": LocalJSX.ManagedShipmentlineListItem & JSXBase.HTMLAttributes<HTMLManagedShipmentlineListItemElement>;
+            "managed-simple-shipment": LocalJSX.ManagedSimpleShipment & JSXBase.HTMLAttributes<HTMLManagedSimpleShipmentElement>;
             "managed-stock-list-item": LocalJSX.ManagedStockListItem & JSXBase.HTMLAttributes<HTMLManagedStockListItemElement>;
             "managed-stock-product-input": LocalJSX.ManagedStockProductInput & JSXBase.HTMLAttributes<HTMLManagedStockProductInputElement>;
             "menu-tab-button": LocalJSX.MenuTabButton & JSXBase.HTMLAttributes<HTMLMenuTabButtonElement>;

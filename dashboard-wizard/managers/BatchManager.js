@@ -3,6 +3,10 @@ const {Batch} = require('../../fgt-dsu-wizard/model');
 const getStockManager = require('./StockManager');
 const getNotificationManager = require('./NotificationManager');
 const ApiManager = require("./ApiManager");
+const SORT_OPTIONS = {ASC: "asc", DSC: 'dsc'}
+
+const {toPage} = require('../../pdm-dsu-toolkit/managers/Page');
+
 
 /**
  * Batch Manager Class
@@ -40,8 +44,8 @@ class BatchManager extends ApiManager{
      * @override
      */
     create(product, batch, callback) {
-        if (batch.status)
-            delete batch.status;
+        if (batch.batchStatus)
+            delete batch.batchStatus;
         if (batch.quantity)
             delete batch.quantity;
 
@@ -49,8 +53,8 @@ class BatchManager extends ApiManager{
     }
 
 
-    mapRecordToKey(record) {
-        return record.gtin + '-' + record.batchNumber;
+    mapRecordToKey(gtin, record) {
+        return gtin + '-' + record.batchNumber;
     }
 
     /**
@@ -63,6 +67,15 @@ class BatchManager extends ApiManager{
      * @override
      */
     getOne(gtin, batchNumber, readDSU, callback){
+
+        if (!callback){
+            callback = readDSU;
+            readDSU = batchNumber;
+            const tmp = gtin.split("-");
+            gtin = tmp[0];
+            batchNumber = tmp[1]
+        }
+
         super.getOne([gtin, batchNumber], readDSU, callback);
     }
 
@@ -94,7 +107,54 @@ class BatchManager extends ApiManager{
         options = options || DEFAULT_QUERY_OPTIONS;
 
         options = options || defaultOptions();
-        super.getAll(readDSU, options, callback)
+
+        let gtin = typeof options.query === 'string'
+            ? (options.query.indexOf("gtin") !== -1 ? options.query : undefined)
+            : options.query.find(q => q.indexOf("gtin") !== -1);
+
+        if (!gtin)
+            return callback("missing gtin in query");
+
+        const m = /\d+$/g.exec(gtin);
+
+        if (m)
+            gtin = m[0]
+
+        this.getStorage().query(this._getTableName(), options.query, options.sort, options.limit, {gtin: gtin}, (err, records) => {
+            if (err)
+                return callback(err);
+            if (readDSU)
+                return callback(undefined, records.results);
+            callback(undefined, records.results.map(b => this.mapRecordToKey(gtin, b)));
+        })
+    }
+
+
+    getPage(itemsPerPage, page, dsuQuery, keyword, sort, readDSU, callback) {
+        let receivedPage = page || 1;
+        sort = SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] ? SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] : SORT_OPTIONS.DSC;
+        const self = this;
+
+        let gtin = typeof dsuQuery === 'string'
+            ? (dsuQuery.indexOf("gtin") !== -1 ? dsuQuery : undefined)
+            : dsuQuery.find(q => q.indexOf("gtin") !== -1);
+
+        if (!gtin)
+            return callback(undefined, toPage(0,0, [], itemsPerPage));
+
+        const m = /\d+$/g.exec(gtin);
+
+        if (m)
+            gtin = m[0]
+
+        this.getStorage().query(this._getTableName(), dsuQuery && dsuQuery.length ? dsuQuery : undefined, sort, DEFAULT_QUERY_OPTIONS.limit, {
+            itemsPerPage: itemsPerPage,
+            page: receivedPage
+        }, (err, records) => {
+            if (err)
+                return callback(err);
+            callback(undefined, toPage(records.meta.page, records.meta.totalPages, readDSU ? records.results: records.results.map(r => self.mapRecordToKey(gtin, r)), itemsPerPage));
+        });
     }
 
     /**
@@ -126,7 +186,13 @@ class BatchManager extends ApiManager{
      * @override
      */
     update(gtin, newBatch, callback){
-        return super.update(undefined, Object.assign({gtin: gtin}, newBatch), callback)
+        const status = newBatch.batchStatus.status
+        const request = {
+            status: status,
+            extraInfo: newBatch.batchStatus.extraInfo
+        }
+
+        return this.getStorage().updateRecord(this._getTableName(), [gtin, newBatch.batchNumber], request, callback)
     }
 
 }

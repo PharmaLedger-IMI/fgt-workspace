@@ -88,7 +88,7 @@ class ReceiptMessage {
  */
 class ReceiptManager extends ApiManager{
     constructor(participantManager, callback) {
-        super(participantManager, DB.receipts, ['batchNumber', 'gtin', 'sellerId', 'serialNumber', 'manufName', 'status'],  callback);
+        super(participantManager, "receipt", ['batchNumber', 'gtin', 'sellerId', 'serialNumber', 'manufName', 'status'],  callback);
         this.requestCache = new RequestCache(25000);
         this.stockManager = participantManager.stockManager;
     }

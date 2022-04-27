@@ -1,6 +1,9 @@
-const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS} = require('../../fgt-dsu-wizard/constants');
+const {INFO_PATH, DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../../fgt-dsu-wizard/constants');
 const ApiManager = require("./ApiManager");
 const Stock = require('../../fgt-dsu-wizard/model/Stock');
+const StockManagementService = require("../../fgt-dsu-wizard/services/StockManagementService");
+const ProductService = require('../../fgt-dsu-wizard/services/ProductService');
+const BatchService = require('../../fgt-dsu-wizard/services/BatchService');
 
 
 
@@ -66,6 +69,11 @@ class StockManager extends ApiManager{
        super.getOne(gtin, readDSU, callback);
     }
 
+
+    mapRecordToKey(record) {
+        return record.gtin;
+    }
+
     /**
      * Lists all registered items according to query options provided
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
@@ -98,44 +106,56 @@ class StockManager extends ApiManager{
         options = options || defaultOptions();
         super.getAll(readDSU, options, callback)
     }
-    //
-    // /**
-    //  * Get partner stock products that were shipped by MAH/manufName
-    //  * @param { string } gtin
-    //  * @param {{manufName: string, batch: number, partnersId: string || string[]}} options
-    //  * @param callback
-    //  */
-    // getStockTraceability(gtin, options, callback) {
-    //     let self = this;
-    //     if (!callback) {
-    //         callback = options;
-    //         options = {}
-    //     }
-    //     const {manufName, batch, partnersId} = options;
-    //
-    //     if (!manufName) {
-    //         return self._getProduct(gtin, (err, product) => {
-    //             if (err)
-    //                 return callback(err);
-    //             return self.getStockTraceability(gtin, {batch, partnersId, manufName: product.manufName}, callback);
-    //         });
-    //     }
-    //
-    //     const identity = self.getIdentity();
-    //     if (identity.id !== manufName) {
-    //         return callback('Stock Traceability is only available for Marketing Authorization Holder')
-    //     }
-    //
-    //     try {
-    //         this.stockManager = this.stockManager || this.participantManager.getManager("StockManager");
-    //         this.shipmentLineManager = this.shipmentLineManager || this.participantManager.getManager("ShipmentLineManager");
-    //         this.receiptManager = this.receiptManager || this.participantManager.getManager("ReceiptManager");
-    //     } catch (e) {
-    //         return callback(e);
-    //     }
-    //     const stockManagementService = new StockManagementService(manufName, partnersId, this.stockManager, this.shipmentLineManager, this.receiptManager);
-    //     stockManagementService.traceStockManagement(gtin, batch, callback)
-    // }
+
+    _getProduct(gtin, callback){
+        if (!this.productService)
+            this.productService = new ProductService(ANCHORING_DOMAIN);
+        this.productService.getDeterministic(gtin, callback);
+    }
+
+    _getBatch(gtin, batch, callback){
+        if (!this.batchService)
+            this.batchService = new BatchService(ANCHORING_DOMAIN);
+        this.batchService.getDeterministic(gtin, batch, callback)
+    }
+
+    /**
+     * Get partner stock products that were shipped by MAH/manufName
+     * @param { string } gtin
+     * @param {{manufName: string, batch: number, partnersId: string || string[]}} options
+     * @param callback
+     */
+    getStockTraceability(gtin, options, callback) {
+        let self = this;
+        if (!callback) {
+            callback = options;
+            options = {}
+        }
+        const {manufName, batch, partnersId} = options;
+
+        if (!manufName) {
+            return self._getProduct(gtin, (err, product) => {
+                if (err)
+                    return callback(err);
+                return self.getStockTraceability(gtin, {batch, partnersId, manufName: product.manufName}, callback);
+            });
+        }
+
+        const identity = self.getIdentity();
+        if (identity.id !== manufName) {
+            return callback('Stock Traceability is only available for Marketing Authorization Holder')
+        }
+
+        try {
+            this.stockManager = this.stockManager || this.participantManager.getManager("StockManager");
+            this.shipmentLineManager = this.shipmentLineManager || this.participantManager.getManager("ShipmentLineManager");
+            this.receiptManager = this.receiptManager || this.participantManager.getManager("ReceiptManager");
+        } catch (e) {
+            return callback(e);
+        }
+        const stockManagementService = new StockManagementService(manufName, partnersId, this.stockManager, this.shipmentLineManager, this.receiptManager);
+        stockManagementService.traceStockManagement(gtin, batch, callback)
+    }
 
     toModel(filteredStock, model){
         return Object.entries(filteredStock).map(([key, value]) => {

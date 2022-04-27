@@ -33,6 +33,7 @@
  - [managed-individual-product](../managed-individual-product)
  - [managed-order](../managed-order)
  - [managed-shipment](../managed-shipment)
+ - [managed-simple-shipment](../managed-simple-shipment)
 
 ### Depends on
 
@@ -47,6 +48,7 @@ graph TD;
   managed-individual-product --> status-updater
   managed-order --> status-updater
   managed-shipment --> status-updater
+  managed-simple-shipment --> status-updater
   style status-updater fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

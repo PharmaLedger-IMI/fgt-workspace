@@ -1,0 +1,15 @@
+<webc-container controller="ReceiptsController">
+    <pdm-ion-table
+            table-title="@title"
+            item-reference="gtin-batch-serial"
+            paginated="true"
+            manager="ReceiptManager"
+            icon-name="bag"
+            item-type="managed-individual-product-list-item"
+            item-props="show-close-button:false"
+            items-per-page="10">
+        <ion-button slot="buttons" data-tag="update-controller"  color="primary" size="small">
+            <ion-icon name="refresh-outline"></ion-icon>
+        </ion-button>
+    </pdm-ion-table>
+</webc-container>

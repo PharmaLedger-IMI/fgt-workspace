@@ -83,6 +83,7 @@ Type: `Promise<void>`
 
  - [managed-order](../managed-order)
  - [managed-shipment](../managed-shipment)
+ - [managed-simple-shipment](../managed-simple-shipment)
 
 ### Depends on
 
@@ -103,6 +104,7 @@ graph TD;
   pdm-item-organizer --> more-chip
   managed-order --> line-stock-manager
   managed-shipment --> line-stock-manager
+  managed-simple-shipment --> line-stock-manager
   style line-stock-manager fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

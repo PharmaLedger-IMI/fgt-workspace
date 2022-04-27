@@ -1,0 +1,566 @@
+{
+  "title": "Finished Goods Traceability",
+  "logout": "Logout",
+  "loading": {
+    "loading": {
+      "status": "Loading Application...",
+      "progress": 10
+    },
+    "loaded": {
+      "status": "Application Loaded!",
+      "progress": 70
+    },
+    "booting": {
+      "status": "Booting Application",
+      "progress": 90
+    },
+    "booted": {
+      "status": "Welcome",
+      "progress": 100
+    }
+  },
+  "tracking": {
+    "title": "Traceability for Product {0}, Batch {1}{2}",
+    "serial": ", serial {0}",
+    "loading": "Calculating Supply Chain for {0}",
+    "success": "Traceability Calculated",
+    "error": "Could not get Supply Chain:\n{0}"
+  },
+  "menu": {
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "batches": "Batches",
+    "shipmentLines": "Shipment Lines",
+    "issuedShipments": "Shipments",
+    "receivedOrders": "Orders",
+    "stock": "Stock",
+    "receipts" : "Receipts"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "allowedShipmentStatuses": {
+      "created": "Created",
+      "hold": "on Hold",
+      "pickup": "for Pickup",
+      "transit": "in Transit",
+      "delivered": "Delivered",
+      "received": "Pending Conf.",
+      "recall": "Recall"
+    }
+  },
+  "products": {
+    "title": "Manage Products",
+    "buttons": {
+      "add-product": {
+        "label": "Add Product",
+        "icon": "add-circle"
+      }
+    },
+    "errors": {
+      "list-error": "Could not list products"
+    }
+  },
+  "product": {
+    "title": "Product",
+    "create": {
+      "title": "Create a Product",
+      "name": {
+        "label": "Product Name:",
+        "placeholder": "Insert product name...",
+        "type": "text",
+        "required": true,
+        "input-mode": "text",
+        "minlength": 4
+      },
+      "gtin": {
+        "label": "Product Gtin:",
+        "placeholder": "Insert product gtin...",
+        "type": "number",
+        "required": true,
+        "input-mode": "number",
+        "minlength": 12,
+        "maxlength": 12,
+        "max": 999999999999
+      },
+      "manufName": {
+        "label": "Manufacturer Id:",
+        "type": "text",
+        "required": true,
+        "disabled": true,
+        "input-mode": "text",
+        "minlength": 4
+      },
+      "description": {
+        "label": "Product Description:",
+        "placeholder": "Insert product description...",
+        "type": "text",
+        "required": true,
+        "input-mode": "text",
+        "value": "This is a description...",
+        "minlength": 10
+      },
+      "loading": "Creating Product. Please wait...",
+      "success": "Product Successfully created",
+      "buttons": {
+        "create": "Create Product",
+        "clear": "Clear"
+      },
+      "confirm": {
+        "message": "Please confirm Product creation",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      }
+    },
+    "manage": {
+      "title": "Manage product",
+      "batches": {
+        "title": "Manage Batches",
+        "buttons": {
+          "add-batch": {
+            "label": "Add Batch",
+            "icon": "add-circle"
+          }
+        },
+        "errors": {
+          "list-error": "Could not list batches"
+        }
+      }
+    },
+    "back": "Back to {0}",
+    "scan": "Scan Product",
+    "error": {
+      "bind": "Could not bind participant to Product",
+      "invalid": "Invalid Product:\n",
+      "error": "Could not create new Product:\n"
+    }
+  },
+  "batches": {
+    "title": "Manage Batches",
+    "buttons": {
+      "add-batch": {
+        "label": "Add Batch",
+        "icon": "add-circle"
+      }
+    },
+    "errors": {
+      "list-error": "Could not list batches"
+    }
+  },
+  "batch": {
+    "title": "Batch",
+    "create": {
+      "title": "Create a Batch",
+      "batchNumber": {
+        "label": "BatchNumber:",
+        "placeholder": "Insert batch number...",
+        "type": "text",
+        "required": true,
+        "input-mode": "text",
+        "minlength": 4
+      },
+      "gtin": {
+        "label": "Product Gtin:",
+        "placeholder": "Insert product gtin...",
+        "type": "number",
+        "required": true,
+        "input-mode": "number",
+        "minlength": 12,
+        "maxlength": 12,
+        "max": 999999999999
+      },
+      "expiry": {
+        "label": "Expiration date:",
+        "type": "date",
+        "required": true,
+        "input-mode": "date"
+      },
+      "serialNumbers": {
+        "label": "Serial Numbers:",
+        "placeholder": "Insert serial numbers (comma separated)...",
+        "type": "text",
+        "required": true,
+        "input-mode": "text"
+      },
+      "loading": "Creating Batch. Please wait...",
+      "success": "Batch Successfully created",
+      "buttons": {
+        "create-batch": "Create",
+        "cancel": "Cancel"
+      },
+      "confirm": {
+        "message": "Please confirm Batch creation",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      }
+    },
+    "manage": {
+      "title": "Manage Batch",
+      "status": "Batch Status:",
+      "update": "Update Batch Status:",
+      "no-update": "The Batch Status Cannot be Updated.",
+      "confirm": {
+        "message": "Please confirm Batch status update from {0} to {1}",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Updating Batch. Please wait...",
+      "success": "Batch Successfully updated"
+    },
+    "back": "Back to {0}",
+    "statuses": {
+      "commissioned": {
+        "action": "Commission Batch",
+        "label": "Commissioned",
+        "color": "success",
+        "paths": []
+      },
+      "quarantined": {
+        "action": "Quarantine Batch",
+        "label": "Quarantined",
+        "color": "warning",
+        "paths": []
+      },
+      "recall": {
+        "action": "Recall Batch",
+        "label": "Recalled",
+        "color": "danger",
+        "paths": []
+      }
+    },
+    "error": {
+      "bind": "Could not bind Product to Batch",
+      "invalid": "Invalid Batch:\n",
+      "error": "Could not create new Batch:\n"
+    }
+  },
+  "receivedOrders": {
+    "title": "Received Orders",
+    "none": "No orders issued..."
+  },
+  "issuedShipments": {
+    "title": "Issued Shipments",
+    "buttons": {
+      "new-issued-shipment": "Create Shipment"
+    },
+    "none": "No shipments issued..."
+  },
+  "shipment": {
+    "title": "Shipments",
+    "create": {
+      "title": "Create Shipment",
+      "from": "Shipment from:",
+      "to": "Shipment to:",
+      "fromPlaceholder": "Select a supplier...",
+      "fromAt": "Ship to Address:",
+      "toAt": "Ship from Address:",
+      "productCode": "Product Code:",
+      "quantity": "Quantity:",
+      "confirm": {
+        "message": "Please confirm Shipment creation to {0}",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Creating Shipment. Please wait...",
+      "success": "Shipment Successfully created",
+      "buttons": {
+        "create": "Create",
+        "clear": "Clear"
+      },
+      "error": {
+        "stock": "Not enough stock:\n",
+        "bind": "Could not bind participant to shipment",
+        "invalid": "Invalid Shipment:\n",
+        "error": "Could not create new Shipment: "
+      }
+    },
+    "manage": {
+      "title": "Manage Shipment",
+      "status": "Shipment Status:",
+      "update": "Update Shipment Status:",
+      "no-update": "The Shipment Status Cannot be Updated.",
+      "confirm": {
+        "message": "Please confirm Shipment status update from {0} to {1}",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Updating Shipment. Please wait...",
+      "success": "Shipment Successfully updated",
+      "error": {
+        "bind": "Could not bind participant to shipment",
+        "invalid": "Invalid Shipment:\n{0}",
+        "error": "Could not update Shipment: "
+      }
+    },
+    "stock": {
+      "stock": "Stock:",
+      "no-stock": "No Stock for selected Product",
+      "reset-all": "Reset All",
+      "confirmed": "Confirmed:",
+      "confirm-all": "Confirm All Available",
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "select": "Please select a Product",
+      "remaining": "Remaining:",
+      "order-missing": "Order missing"
+    },
+    "back": "Back to {0}",
+    "status": "Shipment Status:",
+    "scan": "Scan Product",
+    "scan-code": "Scan Shipment Code",
+    "statuses": {
+      "created": {
+        "action": "Create Shipment",
+        "label": "Created",
+        "color": "success",
+        "paths": []
+      },
+      "rejected": {
+        "action": "Reject Shipment",
+        "label": "Rejected",
+        "color": "danger",
+        "paths": []
+      },
+      "hold": {
+        "action": "Mark as 'On Hold'",
+        "label": "On Hold",
+        "color": "warning",
+        "paths": []
+      },
+      "pickup": {
+        "action": "Mark as 'For Pickup'",
+        "label": "For Pickup",
+        "color": "secondary",
+        "paths": []
+      },
+      "transit": {
+        "action": "Mark as 'In Transit'",
+        "label": "In Transit",
+        "color": "primary",
+        "paths": []
+      },
+      "delivered": {
+        "action": "Deliver Shipment",
+        "label": "Delivered",
+        "color": "tertiary",
+        "paths": []
+      },
+      "received": {
+        "action": "Receive Shipment",
+        "label": "Received",
+        "color": "tertiary",
+        "paths": []
+      },
+      "confirmed": {
+        "action": "Confirm Shipment",
+        "label": "Confirmed",
+        "color": "success",
+        "paths": []
+      }
+    }
+  },
+  "order": {
+    "title": "Order",
+    "create": {
+      "title": "Create Order",
+      "from": "Order from:",
+      "fromPlaceholder": "Select a supplier...",
+      "fromAt": "Ship to Address:",
+      "toAt": "Ship from Address:",
+      "productCode": "Product Code:",
+      "quantity": "Quantity:",
+      "confirm": {
+        "message": "Please confirm Order creation",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Issuing Order. Please wait...",
+      "success": "Order successfully issued!",
+      "buttons": {
+        "create": "Issue Order",
+        "clear": "Clear"
+      },
+      "error": {
+        "bind": "Could not bind participant to Order",
+        "invalid": "Invalid Order: ",
+        "error": "Could not create new Order: "
+      }
+    },
+    "manage": {
+      "title": "Manage Order",
+      "status": "Order Status:",
+      "update": "Update Order Status:",
+      "no-update": "The Order Status Cannot be Updated.",
+      "confirm": {
+        "message": "Please confirm Order status update from {0} to {1}",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Updating Order. Please wait...",
+      "success": "Order Successfully updated",
+      "error": {
+        "bind": "Could not bind participant to order",
+        "invalid": "Invalid Order: ",
+        "error": "Could not update Order: "
+      }
+    },
+    "back": "Back to {0}",
+    "scan": "Scan Product",
+    "statuses": {
+      "created": {
+        "action": "Create Shipment",
+        "label": "Created",
+        "color": "secondary",
+        "paths": []
+      },
+      "acknowledged": {
+        "action": "Acknowledge Shipment",
+        "label": "Acknowledged",
+        "color": "success",
+        "paths": []
+      },
+      "rejected": {
+        "action": "Reject Shipment",
+        "label": "Rejected",
+        "color": "danger",
+        "paths": []
+      },
+      "hold": {
+        "action": "Mark as 'On Hold'",
+        "label": "On Hold",
+        "color": "warning",
+        "paths": []
+      },
+      "pickup": {
+        "action": "Mark as 'For Pickup'",
+        "label": "For Pickup",
+        "color": "secondary",
+        "paths": []
+      },
+      "transit": {
+        "action": "Mark as 'In Transit'",
+        "label": "In Transit",
+        "color": "primary",
+        "paths": []
+      },
+      "delivered": {
+        "action": "Deliver Shipment",
+        "label": "Delivered",
+        "color": "tertiary",
+        "paths": []
+      },
+      "received": {
+        "action": "Receive Shipment",
+        "label": "Received",
+        "color": "tertiary",
+        "paths": []
+      },
+      "confirmed": {
+        "action": "Confirm Shipment",
+        "label": "Confirmed",
+        "color": "success",
+        "paths": []
+      }
+    }
+  },
+  "shipmentLines": {
+    "title": "Shipments",
+    "gtinLabel": "Product Gtin:",
+    "batchLabel": "Product Batch",
+    "nameLabel": "Product Name:",
+    "requesterLabel": "Ordered by:",
+    "senderLabel": "Ordered from:",
+    "createdOnLabel": "Registered on:",
+    "statusLabel": "Order status:",
+    "quantityLabel": "Order quantity:",
+    "errors": {
+      "list-error": "Could not list orders"
+    }
+  },
+  "stock": {
+    "title": "Stocks",
+    "none": "No products in stock..."
+  },
+  "individualProduct": {
+    "title": "Product",
+    "manage": {
+      "title": "Manage Single Product",
+      "status": "Status:",
+      "name": "Product Name:",
+      "gtin": "Product GTIN:",
+      "batch": "Batch Number:",
+      "manufName": "Product Manufacturer:",
+      "expiry": "Product Expiry:",
+      "serial": "Product Serial Number:",
+      "confirm": {
+        "message": "Please confirm status update from {0} to {1}",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Updating Order. Please wait...",
+      "success": "Order Successfully updated",
+      "error": {
+        "bind": "Could not bind participant to product",
+        "invalid": "Invalid: ",
+        "error": "Could not update: "
+      }
+    },
+    "back": "Back to {0}",
+    "statuses": {
+      "commissioned": {
+        "action": "Commission Product",
+        "label": "Commissioned",
+        "color": "secondary",
+        "paths": []
+      },
+      "recall": {
+        "action": "Recall Product",
+        "label": "Recalled",
+        "color": "warning",
+        "paths": []
+      },
+      "dispensed": {
+        "action": "Dispense Product",
+        "label": "Dispensed",
+        "color": "success",
+        "paths": []
+      },
+      "administered": {
+        "action": "Administer Product",
+        "label": "Administered",
+        "color": "success",
+        "paths": []
+      },
+      "destroyed": {
+        "action": "Destroy Product",
+        "label": "Destroyed",
+        "color": "danger",
+        "paths": []
+      }
+    }
+  },
+  "receipts": {
+    "title": "Receipts",
+    "none": "No receipts issued..."
+  },
+  "scan": {
+    "title": "Please Scan your pack",
+    "changeCamera": "Change camera"
+  },
+  "none": "You are not identified as a Marketing Authorization holder. This application was not correctly built"
+}

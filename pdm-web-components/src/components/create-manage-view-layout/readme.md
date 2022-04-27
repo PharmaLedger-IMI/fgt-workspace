@@ -61,6 +61,7 @@ Type: `Promise<any>`
  - [managed-product](../managed-product)
  - [managed-sale](../managed-sale)
  - [managed-shipment](../managed-shipment)
+ - [managed-simple-shipment](../managed-simple-shipment)
 
 ### Graph
 ```mermaid
@@ -72,6 +73,7 @@ graph TD;
   managed-product --> create-manage-view-layout
   managed-sale --> create-manage-view-layout
   managed-shipment --> create-manage-view-layout
+  managed-simple-shipment --> create-manage-view-layout
   style create-manage-view-layout fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

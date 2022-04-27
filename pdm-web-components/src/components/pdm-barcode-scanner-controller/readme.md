@@ -63,6 +63,7 @@ Type: `Promise<any>`
  - [managed-order](../managed-order)
  - [managed-sale](../managed-sale)
  - [managed-shipment](../managed-shipment)
+ - [managed-simple-shipment](../managed-simple-shipment)
 
 ### Graph
 ```mermaid
@@ -70,6 +71,7 @@ graph TD;
   managed-order --> pdm-barcode-scanner-controller
   managed-sale --> pdm-barcode-scanner-controller
   managed-shipment --> pdm-barcode-scanner-controller
+  managed-simple-shipment --> pdm-barcode-scanner-controller
   style pdm-barcode-scanner-controller fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

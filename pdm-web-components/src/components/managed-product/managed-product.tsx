@@ -102,6 +102,7 @@ export class ManagedProduct implements CreateManageView{
   @State() product: typeof Product = undefined;
 
   private layoutComponent = undefined;
+  private table = undefined;
 
   async componentWillLoad(){
     if (!this.host.isConnected)
@@ -124,12 +125,14 @@ export class ManagedProduct implements CreateManageView{
       return;
     }
 
-    self.productManager.getOne(self.gtin, true, (err, product) => {
+    self.productManager.getOne(self.gtin, true, async (err, product) => {
       if (err){
         self.sendError(`Could not get Product with gtin ${self.gtin}`, err);
         return;
       }
       this.product = product;
+      if (this.table)
+        await this.table.refresh()
     });
   }
 
@@ -254,7 +257,7 @@ export class ManagedProduct implements CreateManageView{
                      manager="BatchManager"
                      icon-name="stats-chart"
                      item-type="managed-batch-list-item"
-                     items-per-page="5">
+                     items-per-page="5" ref={el => this.table = el}>
         <ion-button slot="buttons" color="secondary" fill="solid"
                     onClick={() => this.navigateToTab('tab-batch', {
                       gtin: this.gtin,

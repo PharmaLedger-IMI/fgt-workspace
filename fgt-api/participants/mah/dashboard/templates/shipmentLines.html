@@ -1,0 +1,17 @@
+<webc-container controller="ShipmentLinesController">
+    <pdm-ion-table table-title="@title"
+                   can-query="true"
+                   paginated="true"
+                   items-per-page="10"
+                   manager="ShipmentLineManager"
+                   icon-name="stats-chart"
+                   item-reference="shipment-line"
+                   item-type="managed-shipmentline-list-item"
+                   item-props="">
+        <ion-button slot="buttons" data-tag="update-controller"  color="primary" size="small">
+            <ion-icon name="refresh-outline"></ion-icon>
+        </ion-button>
+    </pdm-ion-table>
+</webc-container>
+
+

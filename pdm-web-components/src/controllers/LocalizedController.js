@@ -413,6 +413,12 @@ async  showPopup(popupOptions, callback = undefined) {
    */
   constructor(bindMessageHandlers, ...args) {
     super(...args);
+
+    const self = this;
+    self.onTagEvent('update-controller', 'click', () => {
+      self.refresh()
+    });
+
     if (typeof bindMessageHandlers === 'undefined'){
       this.useEvents = false;
     } else if(typeof bindMessageHandlers === 'boolean'){

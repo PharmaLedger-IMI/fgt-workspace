@@ -87,15 +87,20 @@ export class ManagedBatchListItem {
     if (!self.batchManager)
       return;
 
-    if(!this.isHeader)
-      self.batchManager.getOne(this.gtinBatch, true, (err, batch) => {
-        if (err){
-          self.sendError(`Could not get Batch with code ${self.gtinBatch}`, err);
-          return;
-        }
-        this.batch = new Batch(batch);
-        this.serialNumbers = batch.serialNumbers;
-      });
+    if(this.isHeader)
+      return
+
+    if (this.gtinBatch.indexOf("undefined") !== -1)
+      return;
+
+    self.batchManager.getOne(this.gtinBatch, true, (err, batch) => {
+      if (err){
+        self.sendError(`Could not get Batch with code ${self.gtinBatch}`, err);
+        return;
+      }
+      this.batch = new Batch(batch);
+      this.serialNumbers = batch.serialNumbers;
+    });
   }
 
   @Watch('gtinBatch')

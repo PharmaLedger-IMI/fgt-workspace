@@ -22,7 +22,7 @@ const ApiManager = require("./ApiManager");
  */
 class ShipmentLineManager extends ApiManager {
     constructor(participantManager, callback) {
-        super(participantManager, DB.shipmentLines, ['gtin', 'createdOn', 'batch', 'status', 'requesterId', 'senderId'], callback)
+        super(participantManager, "shipmentLine", ['gtin', 'createdOn', 'batch', 'status', 'requesterId', 'senderId'], callback)
     }
 
     /**
