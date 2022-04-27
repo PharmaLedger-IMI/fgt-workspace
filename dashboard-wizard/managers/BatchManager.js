@@ -149,7 +149,8 @@ class BatchManager extends ApiManager{
 
         this.getStorage().query(this._getTableName(), dsuQuery && dsuQuery.length ? dsuQuery : undefined, sort, DEFAULT_QUERY_OPTIONS.limit, {
             itemsPerPage: itemsPerPage,
-            page: receivedPage
+            page: receivedPage,
+            gtin: gtin
         }, (err, records) => {
             if (err)
                 return callback(err);
