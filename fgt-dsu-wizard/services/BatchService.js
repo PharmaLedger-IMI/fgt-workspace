@@ -1,6 +1,7 @@
 const utils = require('../../pdm-dsu-toolkit/services/utils');
 const ModelUtils = require('../model/utils');
 const {STATUS_MOUNT_PATH, INFO_PATH} = require('../constants');
+const BatchStatus = require('../model/BatchStatus');
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
