@@ -70,7 +70,7 @@ module.exports = class BatchApi extends Api {
             if (batch.quantity && batch.quantity > 0 && (!batch.serialNumbers))
                 batch.serialNumbers = self._genSerialNumbers(batch.quantity);
 
-            const [validateErr, _batch] = self._validate(batch, batch.batchStatus);
+            const [validateErr, _batch] = self._validate(batch);
             if (validateErr)
                 return callback(new BadRequest(validateErr));
 

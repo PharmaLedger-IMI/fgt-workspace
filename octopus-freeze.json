@@ -767,7 +767,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "rimraf apihub-root/dashboard"
+                    "cmd": "rm -rf apihub-root/dashboard"
                 }
             ]
         },
@@ -1032,6 +1032,7 @@
         }
     ]
 }
+
 
 
 
