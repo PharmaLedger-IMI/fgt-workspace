@@ -134,7 +134,7 @@ export class ManagedBatchListItem {
 
     const getBatchNumberLabel = function(){
       if(self.isHeader)
-        return 'Batch Number';
+        return 'Batch';
 
       const batchNumber = self.getGtinAndBatchNumber().batchNumber;
       if (!self.gtinBatch)
@@ -197,7 +197,7 @@ export class ManagedBatchListItem {
       return (
         <ion-label slot="content" color="secondary">
           <ion-row>
-            <ion-col col-12 col-sm align-self-end size-lg={6}>
+            <ion-col size={12} class="ion-align-self-end"  size-lg={6}>
                 <span class="ion-padding-end">
                   {"Serial Numbers"}
                 </span>

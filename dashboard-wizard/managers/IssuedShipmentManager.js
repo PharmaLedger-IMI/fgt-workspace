@@ -1,6 +1,8 @@
 const { DB, DEFAULT_QUERY_OPTIONS } = require('../../fgt-dsu-wizard/constants');
 const ShipmentManager = require("./ShipmentManager");
 const {Shipment} = require('../../fgt-dsu-wizard/model');
+const SORT_OPTIONS = {ASC: "asc", DSC: 'dsc'}
+const {toPage} = require('../../pdm-dsu-toolkit/managers/Page');
 
 
 /**
@@ -49,7 +51,9 @@ class IssuedShipmentManager extends ShipmentManager {
      * @param {function(err, Order[])} callback
      */
     getAll(readDSU, options, callback) {
-        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS);
+        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
+            query: ["__timestamp > 0", `senderId == ${this.getIdentity().id}`]
+        });
 
         if (!callback) {
             if (!options) {
@@ -70,7 +74,28 @@ class IssuedShipmentManager extends ShipmentManager {
 
         options = options || defaultOptions();
 
-        super.getAll(readDSU, options, callback);
+        let self = this;
+        self.getStorage().query(this._getTableName(), options.query, options.sort, options.limit, {senderId: this.getIdentity().id}, (err, records) => {
+            if (err)
+                return self._err(`Could not perform query`, err, callback);
+            if (!readDSU)
+                return callback(undefined, records.results.map(r => self.mapRecordToKey(r)))
+            callback(undefined, records.results);
+        });
+    }
+
+    getPage(itemsPerPage, page, dsuQuery, keyword, sort, readDSU, callback){
+        let receivedPage = page || 1;
+        sort = SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] ? SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] : SORT_OPTIONS.DSC;
+        const self = this;
+        this.getStorage().query(this._getTableName(), dsuQuery && dsuQuery.length ? dsuQuery : undefined, sort, DEFAULT_QUERY_OPTIONS.limit, Object.assign({
+            itemsPerPage: itemsPerPage,
+            page: receivedPage
+        }, {senderId: this.getIdentity().id}), (err, records) => {
+            if (err)
+                return callback(err);
+            callback(undefined, toPage(records.meta.page, records.meta.totalPages, readDSU ? records.results: records.results.map(r => self.mapRecordToKey(r)), itemsPerPage));
+        });
     }
 
     /**

@@ -16,6 +16,47 @@ function failServerBoot(reason){
     process.exit(1);
 }
 
+function runCommand(command, ...args){
+    const { spawn } = require("child_process");
+    const callback = args.pop()
+
+    const spawned = spawn(command, args);
+
+    const log = {
+        data: [],
+        error: []
+    }
+
+    function errorCallback(err, log, callback){
+        const error = new Error(`ERROR in child Process: ${err.message || err}\n
+                                 -- log: \n${log.data.join("\n")}\n
+                                 -- error: \n${log.error.join("\n")}`);
+        callback(error)
+    }
+
+    spawned.stdout.on("data", data => {
+        console.log(data.toString());
+        log.data.push(data.toString());
+    });
+
+    spawned.stderr.on("data", data => {
+        console.log(data.toString());
+        log.error.push(data.toString());
+    });
+
+    spawned.on('error', (error) => {
+        console.log(`error: ${error.message}`);
+        errorCallback(error, log, callback);
+    });
+
+    spawned.on("close", code => {
+        console.log(`child process exited with code ${code}`);
+        return code === 0 ? callback(undefined, log) : callback(new Error("exist code " + code), log);
+    });
+
+    return spawned;
+}
+
 function getWallet(){
     switch (ROLE){
         case "mah":

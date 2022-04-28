@@ -56,7 +56,7 @@ class ApiStorage {
                 return callback(e)
             }
             callback(undefined, response);
-        }).catch(e => callback(e));
+        });
     }
 
     getRecord(tableName, key, callback){

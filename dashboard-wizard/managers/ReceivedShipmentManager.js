@@ -1,5 +1,9 @@
-const { DB, DEFAULT_QUERY_OPTIONS } = require('../../fgt-dsu-wizard/constants');
+const {DEFAULT_QUERY_OPTIONS } = require('../../fgt-dsu-wizard/constants');
 const ShipmentManager = require("./ShipmentManager");
+
+const {toPage} = require('../../pdm-dsu-toolkit/managers/Page');
+
+const SORT_OPTIONS = {ASC: "asc", DSC: 'dsc'}
 
 /**
  * Received Shipment Manager Class - concrete ShipmentManager for received Shipments.
@@ -35,13 +39,15 @@ class ReceivedShipmentManager extends ShipmentManager {
     }
 
     /**
-     * Lists all received orders.
+     * Lists all issued orders.
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not
      * @param {object} [options] query options. defaults to {@link DEFAULT_QUERY_OPTIONS}
      * @param {function(err, Order[])} callback
      */
     getAll(readDSU, options, callback) {
-        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS);
+        const defaultOptions = () => Object.assign({}, DEFAULT_QUERY_OPTIONS, {
+            query: ["__timestamp > 0", `requesterId == ${this.getIdentity().id}`]
+        });
 
         if (!callback) {
             if (!options) {
@@ -62,7 +68,28 @@ class ReceivedShipmentManager extends ShipmentManager {
 
         options = options || defaultOptions();
 
-        super.getAll(readDSU, options, callback);
+        let self = this;
+        self.getStorage().query(this._getTableName(), options.query, options.sort, options.limit, {requesterId: this.getIdentity().id}, (err, records) => {
+            if (err)
+                return self._err(`Could not perform query`, err, callback);
+            if (!readDSU)
+                return callback(undefined, records.results.map(r => self.mapRecordToKey(r)))
+            callback(undefined, records.results);
+        });
+    }
+
+    getPage(itemsPerPage, page, dsuQuery, keyword, sort, readDSU, callback){
+        let receivedPage = page || 1;
+        sort = SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] ? SORT_OPTIONS[(sort || SORT_OPTIONS.DSC).toUpperCase()] : SORT_OPTIONS.DSC;
+        const self = this;
+        this.getStorage().query(this._getTableName(), dsuQuery && dsuQuery.length ? dsuQuery : undefined, sort, DEFAULT_QUERY_OPTIONS.limit, Object.assign({
+            itemsPerPage: itemsPerPage,
+            page: receivedPage
+        }, {requesterId: this.getIdentity().id}), (err, records) => {
+            if (err)
+                return callback(err);
+            callback(undefined, toPage(records.meta.page, records.meta.totalPages, readDSU ? records.results: records.results.map(r => self.mapRecordToKey(r)), itemsPerPage));
+        });
     }
 
     /**

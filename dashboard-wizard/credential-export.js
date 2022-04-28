@@ -27,10 +27,25 @@ const argParser = function(defaultOpts, args){
 }
 
 const defaultOptions = {
-    role: "mah"
+    role: "mah",
+    apiEndpoint: ""
+}
+
+const getEndpoint = function(role){
+    switch (role){
+        case "mah":
+            return "http://localhost:8081/traceability"
+        case "whs":
+            return "http://localhost:3001/traceability"
+        case "pha":
+            return "http://localhost:3002/traceability"
+    }
 }
 
 const options = argParser(defaultOptions, process.argv);
+
+if (!options.endPoint)
+    options.endPoint = getEndpoint(options.role);
 
 function readCredentialsFile(role){
     const getPath = () => {
@@ -87,13 +102,24 @@ function writeCredentialsFile(data){
             : resolve(data))
     })
 }
+
+function writeEndpointFile(){
+        const data = JSON.stringify(options.endPoint)
+        return new Promise((resolve, reject) => {
+        fs.writeFile(path.join(process.cwd(), "apihub-root/dashboard/endpoint.json"), data, err => err
+            ? reject(err)
+            : resolve(options.endPoint))
+    })
+}
 function outputResult(data){
-    console.log("Identity exported to Dashboard Api: " + JSON.stringify(data, undefined, 2))
+    console.log("Data exported to Dashboard Api: " + JSON.stringify(data, undefined, 2))
 }
 
 readCredentialsFile(options.role)
     .then(parseCredentialsFile)
     .then(transformCredentialsFile)
     .then(writeCredentialsFile)
+    .then(outputResult)
+    .then(writeEndpointFile)
     .then(outputResult)
     .catch(console.error)

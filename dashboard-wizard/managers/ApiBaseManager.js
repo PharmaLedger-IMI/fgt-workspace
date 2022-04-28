@@ -66,11 +66,12 @@ class ApiBaseManager {
      * @constructor
      */
     constructor(dsuStorage, callback) {
-        this.storage = new ApiStorage("http://localhost:8081/traceability");
+        this.storage = undefined;
         this.identity = undefined;
         this.managerCache = {};
         this.controller = undefined;
         this.environment = undefined;
+        this.endPoint;
         this._err = _err;
 
         const self = this;
@@ -160,19 +161,16 @@ class ApiBaseManager {
                 : callback(err, identity));
         }
 
-        if (!self.controller)
-            return getIdentity((err, identity) => err
-                    ? self._err(`Could not get Identity`, err, callback)
-                    : callback(undefined, identity));
-
-        // For UI Responsiveness
-        setTimeout(() => {
+        self.getEndpoint((err, endpoint) => {
+            if (err)
+                return self._err(`Could not get Endpoint`, err, callback)
+            self.storage = new ApiStorage(endpoint);
             setTimeout(() => {
                 getIdentity((err, identity) => err
                     ? self._err(`Could not get Identity`, err, callback)
                     :callback(undefined, identity));
             }, 100);
-        }, 100);
+        })
     };
 
 
@@ -197,6 +195,48 @@ class ApiBaseManager {
             callback(undefined, self.identity);
         })
     };
+
+    getEndpoint(callback){
+        if (this.endPoint){
+            if (callback)
+                return callback(undefined, this.endPoint);
+            return this.endPoint;
+        }
+
+        const self = this;
+
+        function __createRequest(url, verb){
+            const headers = new Headers();
+            const options = {
+                method: verb.toUpperCase(),
+                headers: headers,
+                mode: "cors"
+            }
+
+            return fetch(url, options);
+        }
+
+        function __executeRequest(requestPromise, callback){
+            Promise.resolve(requestPromise).then(async (response) => {
+                if (!response.ok)
+                    return callback(response.status);
+                try {
+                    response = await response.json();
+                } catch (e) {
+                    return callback(e)
+                }
+                callback(undefined, response);
+            }).catch(e => callback(e));
+        }
+
+        const request = __createRequest("endpoint.json", "get");
+        __executeRequest(request, (err, data) => {
+            if (err)
+                return callback(err);
+            self.endPoint = data;
+            callback(undefined, self.endPoint);
+        })
+    }
 
     /**
      * Must return the string to be used to generate the DID
