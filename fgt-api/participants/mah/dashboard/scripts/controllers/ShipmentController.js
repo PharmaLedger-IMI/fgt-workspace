@@ -6,7 +6,7 @@ import {
     BUTTON_ROLES,
     HistoryNavigator
 } from "../../assets/pdm-web-components/index.esm.js";
-const {ShipmentLine, utils, Shipment, ShipmentStatus} = require('wizard').Model;
+const {Order, utils, Shipment, ShipmentStatus} = require('wizard').Model;
 
 export default class ShipmentController extends LocalizedController{
 
@@ -45,12 +45,14 @@ export default class ShipmentController extends LocalizedController{
             const label = !!state.previousTab ? state.previousTab.label : HistoryNavigator.getPreviousTab().label;
             self.model.back = this.translate('back', label);
             if (state && state.mode) {
+                this._updateStatuses(state.mode === ShipmentStatus.ISSUED ? Shipment : Order);
                 const newRef = state.shipment.shipmentId;
                 self.mode = state.mode;
                 if (newRef === self.model.shipmentRef)
                     return self.shipmentEl.refresh();
                 self.model.shipmentRef = newRef;
             } else {
+                self._updateStatuses(Shipment);
                 self.mode = 'issued';
                 self.model.shipmentRef = '';
             }

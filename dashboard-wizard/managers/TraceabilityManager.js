@@ -59,7 +59,17 @@ class TraceabilityManager extends ApiManager{
      * @override
      */
     getOne(obj,  callback) {
-        super.create(undefined, obj, callback)
+        super.create(undefined, obj, (err, result) => {
+            if (err)
+                return callback(err);
+            let startNode = undefined, endNode = undefined;
+            const keys = Object.keys(result);
+            if (keys.length){
+                startNode = result[keys[0]];
+                endNode = result[keys[keys.length -1]]
+            }
+            callback(undefined, startNode, endNode, result);
+        })
     }
 
     /**

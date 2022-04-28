@@ -1,0 +1,359 @@
+{
+  "title": "Finished Goods Traceability - Pharmacy",
+  "logout": "Logout",
+  "loading": {
+    "loading": {
+      "status": "Loading Application...",
+      "progress": 10
+    },
+    "loaded": {
+      "status": "Application Loaded!",
+      "progress": 70
+    },
+    "booting": {
+      "status": "Booting Application",
+      "progress": 90
+    },
+    "booted": {
+      "status": "Welcome",
+      "progress": 100
+    }
+  },
+  "tracking": {
+    "title": "Traceability for Product {0}, Batch {1}{2}",
+    "serial": ", serial {0}",
+    "loading": "Calculating Supply Chain for {0}",
+    "success": "Traceability Calculated",
+    "error": "Could not get Supply Chain:\n{0}"
+  },
+  "welcome": "Welcome back",
+  "menu": {
+    "notifications": "Notifications",
+    "dashboard": "Dashboard",
+    "issuedOrders": "Issued Orders",
+    "receivedShipments": "Received Shipments",
+    "stock": "Stock",
+    "sale": "Sell",
+    "sales": "Sales"
+  },
+  "errors": {
+    "register": "Unable to register",
+    "try-again": "Try Again?"
+  },
+  "none": "You are not identified as a Pharmacy. Please register",
+  "receivedShipments": {
+    "title": "Incoming Shipments",
+    "none": "No shipments..."
+  },
+  "issuedOrders": {
+    "title": "Issued Orders",
+    "none": "No orders issued...",
+    "buttons": {
+      "new-issued-order": "New"
+    }
+  },
+  "shipment": {
+    "title": "Shipments",
+    "create": {
+      "title": "Create Shipment",
+      "from": "Shipment from:",
+      "to": "Shipment to:",
+      "fromPlaceholder": "Select a supplier...",
+      "fromAt": "Ship to Address:",
+      "toAt": "Ship from Address:",
+      "productCode": "Product Code:",
+      "quantity": "Quantity:",
+      "confirm": {
+        "message": "Please confirm Shipment creation to {0}",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Creating Shipment. Please wait...",
+      "success": "Shipment Successfully created",
+      "buttons": {
+        "create": "Create",
+        "clear": "Clear"
+      },
+      "error": {
+        "stock": "Not enough stock:\n",
+        "bind": "Could not bind participant to shipment",
+        "invalid": "Invalid Shipment:\n",
+        "error": "Could not create new Shipment: "
+      }
+    },
+    "manage": {
+      "title": "Manage Shipment",
+      "status": "Shipment Status:",
+      "update": "Update Shipment Status:",
+      "no-update": "The Shipment Status Cannot be Updated.",
+      "confirm": {
+        "message": "Please confirm Shipment status update from {0} to {1}",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Updating Shipment. Please wait...",
+      "success": "Shipment Successfully updated",
+      "error": {
+        "bind": "Could not bind participant to shipment",
+        "invalid": "Invalid Shipment:\n{0}",
+        "error": "Could not update Shipment: "
+      }
+    },
+    "stock": {
+      "title": "Stock",
+      "stock": "Stock:",
+      "no-stock": "No Stock for selected Product",
+      "reset-all": "Reset All",
+      "confirmed": "Confirmed:",
+      "confirm-all": "Confirm All Available",
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "select": "Please select a Product",
+      "remaining": "Remaining:",
+      "order-missing": "Order missing"
+    },
+    "back": "Back to {0}",
+    "status": "Shipment Status:",
+    "scan": "Scan Product",
+    "scan-code": "Scan Shipment Code",
+    "statuses": {
+      "created": {
+        "action": "Create Shipment",
+        "label": "Created",
+        "color": "success",
+        "paths": []
+      },
+      "rejected": {
+        "action": "Reject Shipment",
+        "label": "Rejected",
+        "color": "danger",
+        "paths": []
+      },
+      "hold": {
+        "action": "Mark as 'On Hold'",
+        "label": "On Hold",
+        "color": "warning",
+        "paths": []
+      },
+      "pickup": {
+        "action": "Mark as 'For Pickup'",
+        "label": "For Pickup",
+        "color": "secondary",
+        "paths": []
+      },
+      "transit": {
+        "action": "Mark as 'In Transit'",
+        "label": "In Transit",
+        "color": "primary",
+        "paths": []
+      },
+      "delivered": {
+        "action": "Deliver Shipment",
+        "label": "Delivered",
+        "color": "tertiary",
+        "paths": []
+      },
+      "received": {
+        "action": "Receive Shipment",
+        "label": "Received",
+        "color": "tertiary",
+        "paths": []
+      },
+      "confirmed": {
+        "action": "Confirm Shipment",
+        "label": "Confirmed",
+        "color": "success",
+        "paths": []
+      }
+    }
+  },
+  "order": {
+    "title": "Orders",
+    "create": {
+      "title": "Create Order",
+      "from": "Order from:",
+      "fromPlaceholder": "Select a supplier...",
+      "fromAt": "Ship to Address:",
+      "toAt": "Ship from Address:",
+      "productCode": "Product Code:",
+      "quantity": "Quantity:",
+      "confirm": {
+        "message": "Please confirm Order creation",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Issuing Order. Please wait...",
+      "success": "Order successfully issued!",
+      "buttons": {
+        "create": "Issue Order",
+        "clear": "Clear"
+      },
+      "error": {
+        "bind": "Could not bind participant to Order",
+        "invalid": "Invalid Order: ",
+        "error": "Could not create new Order: "
+      }
+    },
+    "manage": {
+      "title": "Manage Order",
+      "status": "Order Status:",
+      "update": "Update Order Status:",
+      "no-update": "The Order Status Cannot be Updated.",
+      "confirm": {
+        "message": "Please confirm Order status update from {0} to {1}",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Updating Order. Please wait...",
+      "success": "Order Successfully updated",
+      "error": {
+        "bind": "Could not bind participant to order",
+        "invalid": "Invalid Order: ",
+        "error": "Could not update Order: "
+      }
+    },
+    "back": "Back to {0}",
+    "scan": "Scan Product",
+    "statuses": {
+      "created": {
+        "action": "Create Shipment",
+        "label": "Created",
+        "color": "secondary",
+        "paths": []
+      },
+      "acknowledged": {
+        "action": "Acknowledge Shipment",
+        "label": "Acknowledged",
+        "color": "success",
+        "paths": []
+      },
+      "rejected": {
+        "action": "Reject Shipment",
+        "label": "Rejected",
+        "color": "danger",
+        "paths": []
+      },
+      "hold": {
+        "action": "Mark as 'On Hold'",
+        "label": "On Hold",
+        "color": "warning",
+        "paths": []
+      },
+      "pickup": {
+        "action": "Mark as 'For Pickup'",
+        "label": "For Pickup",
+        "color": "secondary",
+        "paths": []
+      },
+      "transit": {
+        "action": "Mark as 'In Transit'",
+        "label": "In Transit",
+        "color": "primary",
+        "paths": []
+      },
+      "delivered": {
+        "action": "Deliver Shipment",
+        "label": "Delivered",
+        "color": "tertiary",
+        "paths": []
+      },
+      "received": {
+        "action": "Receive Shipment",
+        "label": "Received",
+        "color": "tertiary",
+        "paths": []
+      },
+      "confirmed": {
+        "action": "Confirm Shipment",
+        "label": "Confirmed",
+        "color": "success",
+        "paths": []
+      }
+    }
+  },
+  "sale": {
+    "create": {
+      "title": "Sell products",
+      "product": "Please select or scan a product:",
+      "selectedProduct": "Selected Products:",
+      "quantity": "Quantity:",
+      "confirm": {
+        "message": "Please confirm Sale",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Issuing Sale. Please wait...",
+      "success": "Sale performed!",
+      "buttons": {
+        "create": "Issue Sale",
+        "clear": "Clear"
+      },
+      "error": {
+        "bind": "Could not bind participant to Order",
+        "invalid": "Invalid Order: ",
+        "error": "Could not create new Order: "
+      }
+    },
+    "manage": {
+      "title": "Manage Order",
+      "status": "Order Status:",
+      "update": "Update Order Status:",
+      "no-update": "The Order Status Cannot be Updated.",
+      "confirm": {
+        "message": "Please confirm Order status update from {0} to {1}",
+        "buttons": {
+          "ok": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "loading": "Updating Order. Please wait...",
+      "success": "Order Successfully updated",
+      "error": {
+        "bind": "Could not bind participant to order",
+        "invalid": "Invalid Order: ",
+        "error": "Could not update Order: "
+      }
+    },
+    "back": "Back to Sales",
+    "scan": "Scan Product"
+  },
+  "sales": {
+    "title": "Issued Sales",
+    "none": "No sales issued...",
+    "buttons": {
+      "new-sale": "New Sale"
+    }
+  },
+  "stock": {
+    "title": "Stocks",
+    "none": "No products in stock..."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "none": "There are no pending orders",
+    "allowedShipmentStatuses": {
+      "created": "Created",
+      "hold": "on Hold",
+      "pickup": "for Pickup",
+      "transit": "in Transit",
+      "delivered": "Delivered",
+      "received": "Pending Conf.",
+      "recall": "Recall"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "notification": "0",
+    "stockNotification": "0"  
+  }
+}
