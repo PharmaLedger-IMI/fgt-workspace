@@ -36,36 +36,23 @@ export default class ShipmentController extends LocalizedController{
 
         let self = this;
         self.model.identity = self.issuedShipmentManager.getIdentity();
-        self.shipmentEl.updateDirectory();
 
         self.on(EVENT_REFRESH, (evt) => {
             evt.preventDefault();
             evt.stopImmediatePropagation();
-
+            self.shipmentEl.updateDirectory();
             const state = evt.detail;
             const label = !!state.previousTab ? state.previousTab.label : HistoryNavigator.getPreviousTab().label;
             self.model.back = this.translate('back', label);
             if (state && state.mode) {
-                self.model.mode = state.mode;
-                if (state.order){
-                    const newOrder = JSON.stringify(state.order);
-                    if (self.model.order === newOrder)
-                        return self.shipmentEl.refresh();
-                    self.model.order = newOrder;
-                    self.model.shipmentRef = '';
-                    return;
-                }
-
                 const newRef = `${state.mode === 'issued' ? state.shipment.requesterId : state.shipment.senderId}-${state.shipment.shipmentId}`;
                 if (newRef === self.model.shipmentRef)
                     return self.shipmentEl.refresh();
                 self.model.shipmentRef = newRef;
-                self.model.order = '{}'
 
             } else {
                 self.model.shipmentRef = '';
                 self.mode = 'issued';
-                self.order = '{}';
             }
         }, {capture: true});
 
@@ -131,9 +118,9 @@ export default class ShipmentController extends LocalizedController{
     /**
      * Sends an event named create-issued-order to the IssuedOrders controller.
      */
-    async _handleCreateShipment(shipment, stockInfo, orderId) {
+    async _handleCreateShipment(shipment, stockInfo, shipmentId) {
         let self = this;
-        shipment.shipmentId = Date.now();
+        shipment.shipmentId = shipment.shipmentId || shipmentId || Date.now();
         shipment.shipFromAddress = self.model.identity.address;
 
         utils.confirmWithStock(self.stockManager, shipment, stockInfo, async (err, confirmedShipment) => {
@@ -158,7 +145,7 @@ export default class ShipmentController extends LocalizedController{
                 self.showErrorToast(msg);
             }
 
-            self.issuedShipmentManager.create(orderId, confirmedShipment,  async (err, keySSI, dbPath) => {
+            self.issuedShipmentManager.create(shipmentId, confirmedShipment,  async (err, keySSI, dbPath) => {
                 if (err)
                     return sendError(self.translate('create.error.error'));
                 self.showToast(self.translate('create.success'));

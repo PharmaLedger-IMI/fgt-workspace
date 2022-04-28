@@ -8,6 +8,9 @@ const ShipmentLine = require('../../fgt-dsu-wizard/model/ShipmentLine');
  */
 class SimpleShipment {
     shipmentId;
+    /**
+     * @deprecated
+     */
     orderId;
     requesterId;
     senderId;
@@ -20,7 +23,7 @@ class SimpleShipment {
                 if (simpleShipment.hasOwnProperty(prop) && this.hasOwnProperty(prop))
                     this[prop] = simpleShipment[prop];
 
-        if (!simpleShipment.shipmentId)
+        if (!this.shipmentId)
             this.shipmentId = Date.now() + `${Math.random()}`.substring(2, 9);
 
         if (!this.status)
@@ -41,10 +44,10 @@ class SimpleShipment {
             errors.push(`shipmentId is mandatory`);
         if (this.shipmentId && typeof this.shipmentId !== 'string')
             errors.push(`shipmentId is not a string`);
-        if (!this.orderId)
-            errors.push(`orderId is mandatory`);
-        if (typeof this.orderId !== 'string')
-            errors.push(`orderId is not a string`);
+        // if (!this.orderId)
+        //     errors.push(`orderId is mandatory`);
+        // if (typeof this.orderId !== 'string')
+        //     errors.push(`orderId is not a string`);
         if (!this.requesterId)
             errors.push(`RequesterId is mandatory`);
         if (!this.senderId)

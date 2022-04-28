@@ -20,6 +20,10 @@ class ShipmentManager extends ApiManager {
         super(participantManager, tableName, ['shipmentId', 'products', 'batches', 'status', ...indexes], callback);
     }
 
+    mapRecordToKey(record) {
+        return record.shipmentId;
+    }
+
     /**
      * reads ssi for that gtin in the db. loads is and reads the info at '/info'
      * @param {string} key
