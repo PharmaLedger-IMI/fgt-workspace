@@ -106,6 +106,10 @@ class Order {
                 return [];
         }
     }
+
+    static getAllowedStatusUpdateFromOrder(status){
+        return Order.getAllowedStatusUpdateFromShipment(status)
+    }
 }
 
 module.exports = Order;

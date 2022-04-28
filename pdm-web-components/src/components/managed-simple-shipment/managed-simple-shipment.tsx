@@ -147,7 +147,20 @@ export class ManagedSimpleShipment implements CreateManageView{
   }
 
   private getType(){
-    return this.shipmentType && !this.shipmentType.startsWith('@') ? this.shipmentType : SHIPMENT_TYPE.ISSUED;
+    const self = this;
+    const evalByShipmentType = () => {
+      return self.shipmentType && !self.shipmentType.startsWith('@') ? self.shipmentType : SHIPMENT_TYPE.ISSUED;
+
+    }
+    if (!this.shipment || !this.identity)
+      return evalByShipmentType();
+
+    const identity = this.identity.id;
+    if (this.shipment.senderId === identity)
+      return SHIPMENT_TYPE.ISSUED;
+    if (this.shipment.requesterId === identity)
+      return SHIPMENT_TYPE.RECEIVED;
+    throw new Error("should be impossible. identity not involved in shipment")
   }
 
   async load(){
@@ -671,13 +684,10 @@ export class ManagedSimpleShipment implements CreateManageView{
       )
     }
 
-    if ([ShipmentStatus.DELIVERED, ShipmentStatus.RECEIVED, ShipmentStatus.CONFIRMED].indexOf(self.shipment.status.status) !== -1){
-      if (self.shipmentType === SHIPMENT_TYPE.RECEIVED)
-        return getStatusUpdater();
-    } else {
-      if (self.shipmentType === SHIPMENT_TYPE.ISSUED)
-        return getStatusUpdater();
-    }
+    if (self.getType() === SHIPMENT_TYPE.RECEIVED)
+      return getStatusUpdater();
+    if (self.getType() === SHIPMENT_TYPE.ISSUED)
+      return getStatusUpdater();
 
     return getLines();
   }

@@ -46,13 +46,13 @@ export default class ShipmentController extends LocalizedController{
             self.model.back = this.translate('back', label);
             if (state && state.mode) {
                 const newRef = state.shipment.shipmentId;
+                self.mode = state.mode;
                 if (newRef === self.model.shipmentRef)
                     return self.shipmentEl.refresh();
                 self.model.shipmentRef = newRef;
-
             } else {
-                self.model.shipmentRef = '';
                 self.mode = 'issued';
+                self.model.shipmentRef = '';
             }
         }, {capture: true});
 
