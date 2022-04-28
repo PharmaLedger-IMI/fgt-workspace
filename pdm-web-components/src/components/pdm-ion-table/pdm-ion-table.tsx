@@ -307,9 +307,11 @@ export class PdmIonTable implements ComponentInterface {
     return (
       <Host>
         {this.getTableHeader()}
-        <div id="ion-table-content" class="ion-padding">
+        <div id="ion-table-wrapper" class="ion-padding">
           {this.getheaders()}
-          {this.getContent()}
+          <div id="ion-table-content">   
+            {this.getContent()}
+          </div>
         </div>
         {this.getPagination()}
       </Host>
