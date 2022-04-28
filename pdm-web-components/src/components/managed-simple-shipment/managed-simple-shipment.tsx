@@ -266,21 +266,6 @@ export class ManagedSimpleShipment implements CreateManageView{
       senderId: o.senderId
     }));
   }
-  //
-  // @Watch('orderJSON')
-  // async refreshOrder(newVal){
-  //   if (newVal.startsWith('@'))
-  //     return;
-  //   const order = JSON.parse(newVal);
-  //   if (!order.orderId)
-  //     this.order = undefined;
-  //   else {
-  //     this.order = new Order(order.orderId, order.requesterId,
-  //       order.senderId, order.shipToAddress, order.status.status,
-  //       order.orderLines.map(ol => new OrderLine(ol.gtin, ol.quantity, ol.requesterId, ol.senderId)));
-  //     this.lines = [...this.order.orderLines];
-  //   }
-  // }
 
   @Watch('statuses')
   async updateStatuses(newVal){

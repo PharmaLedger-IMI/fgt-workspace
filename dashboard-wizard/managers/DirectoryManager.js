@@ -74,6 +74,11 @@ class DirectoryManager extends ApiManager {
         return [[`role like /${keyword}/g`]];
     }
 
+
+    mapRecordToKey(record) {
+        return record.id;
+    }
+
     /**
      * Lists all registered items according to query options provided
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu's {@link INFO_PATH} or not

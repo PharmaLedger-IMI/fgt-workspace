@@ -2,7 +2,7 @@ const {log} = require('../utils');
 const Batch = require('../../fgt-dsu-wizard/model/Batch');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const {DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../constants');
-const {ShipmentStatus} = require('../../fgt-dsu-wizard/model');
+const {ShipmentStatus, DirectoryEntry, Direc} = require('../../fgt-dsu-wizard/model');
 
 
 /**
@@ -45,6 +45,7 @@ class SimpleShipmentManager extends Manager {
 
         this.participantManager = participantManager;
         this.stockManager = participantManager.getManager("StockManager");
+        this.directoryManager = participantManager.getManager("DirectoryManager");
         this.simpleShipmentService = new (require('../services/SimpleShipmentService'))(ANCHORING_DOMAIN);
     }
 
@@ -337,9 +338,25 @@ class SimpleShipmentManager extends Manager {
                                 self.batchDisallow(self.stockManager);
                                 if (err)
                                     return _callback(err);
-                                accum[gtin] = accum[gtin] || [];
-                                accum[gtin].push(newStocks);
-                                gtinIterator(accum, gtins, batchObj, _callback);
+
+                                const cb = function(){
+                                    accum[gtin] = accum[gtin] || [];
+                                    accum[gtin].push(newStocks);
+                                    gtinIterator(accum, gtins, batchObj, _callback);
+                                }
+
+                                self.batchAllow(self.directoryManager);
+                                const key = self.directoryManager._genCompostKey("product", gtin);
+                                self.directoryManager.getOne(key, (err, entry) => {
+                                    if (!err)
+                                        return cb();
+                                    self.directoryManager.saveEntry("product", gtin, (err) => {
+                                        self.batchDisallow(self.directoryManager);
+                                        if (err)
+                                            return callback(err);
+                                        cb()
+                                    })
+                                })
                             });
                         }
 
