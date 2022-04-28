@@ -312,7 +312,7 @@ export class ManagedSimpleShipment implements CreateManageView{
       action: ShipmentStatus.CREATED,
       props:{
         shipment: new SimpleShipment({
-          gtin: undefined,
+          shipmentId: evt.detail.shipmentId,
           requesterId: evt.detail.requesterId,
           senderId: this.identity.id,
           shipFromAddress: this.identity.address,

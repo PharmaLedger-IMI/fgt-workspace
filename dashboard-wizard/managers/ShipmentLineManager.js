@@ -1,5 +1,8 @@
 const { DB, DEFAULT_QUERY_OPTIONS} = require('../../fgt-dsu-wizard/constants');
 const ApiManager = require("./ApiManager");
+const ShipmentLine = require('./../../fgt-dsu-wizard/model/ShipmentLine');
+
+
 /**
  * ShipmentLine Manager Class
  *
@@ -25,6 +28,10 @@ class ShipmentLineManager extends ApiManager {
         super(participantManager, "shipmentLine", ['gtin', 'createdOn', 'batch', 'status', 'requesterId', 'senderId'], callback)
     }
 
+    mapRecordToKey(record) {
+        return record.keySSI;
+    }
+
     /**
      * reads ssi for that OrderLine in the db. loads is and reads the info at '/info' and the status at '/status/info
      * @param {string} key
@@ -32,7 +39,11 @@ class ShipmentLineManager extends ApiManager {
      * @param {function(err, object|KeySSI, Archive)} callback returns the Product if readDSU and the dsu, the keySSI otherwise
      */
     getOne(key, readDSU,  callback) {
-        super.getOne(key, readDSU, callback);
+        super.getOne(key, readDSU, (err, sl) => {
+            if (err)
+                return callback(err);
+            callback(undefined, new ShipmentLine(sl))
+        });
     }
 
     /**
@@ -46,27 +57,32 @@ class ShipmentLineManager extends ApiManager {
             query: ['date > 0'],
             sort: 'dsc'
         });
-
-        if (!callback) {
-            if (!options) {
+        if (!callback){
+            if (!options){
                 callback = readDSU;
-                options = defaultOptions();
+                options = defaultOptions;
                 readDSU = true;
             }
-            if (typeof readDSU === 'boolean') {
+            if (typeof readDSU === 'boolean'){
                 callback = options;
-                options = defaultOptions();
+                options = defaultOptions;
             }
-            if (typeof readDSU === 'object') {
+            if (typeof readDSU === 'object'){
                 callback = options;
                 options = readDSU;
                 readDSU = true;
             }
         }
 
-        options = options || defaultOptions();
+        options = options || defaultOptions;
 
-        super.getAll(readDSU, options, callback)
+        super.getAll(readDSU, options, (err, results) => {
+            if (err)
+                return callback(err);
+            if (readDSU)
+                return callback(undefined, results.map(r => new ShipmentLine(r)));
+            callback(undefined, results);
+        })
     }
 
     /**

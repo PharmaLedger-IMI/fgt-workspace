@@ -148,7 +148,7 @@ class ShipmentLineManager extends Manager {
             if (err)
                 return self._err(`Could not perform query`, err, callback);
             if (!readDSU)
-                return callback(undefined, records.map(r => r.pk));
+                return callback(undefined, records.map(r => r.value));
             self._iterator(records.map(r => r.value), self.shipmentLineService.get, (err, result) => {
                 if (err)
                     return self._err(`Could not parse ${self._getTableName()}s ${JSON.stringify(records)}`, err, callback);
