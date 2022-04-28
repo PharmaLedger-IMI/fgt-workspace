@@ -1,0 +1,37 @@
+<webc-container controller="ShipmentController">
+    <managed-simple-shipment shipment-ref="@shipmentRef"
+                      identity="@identity"
+                      shipment-type="@mode"
+                      order-json="@order"
+
+                      statuses="@statuses"
+
+                      create-title-string="@create.title"
+                      manage-title-string="@manage.title"
+                      back-string="@back"
+                      scanner-title-string="@scan"
+
+                      create-string="@create.buttons.create"
+                      clear-string="@create.buttons.clear"
+
+                      from-string="@create.from"
+                      to-string="@create.to"
+                      to-placeholder-string="@create.toPlaceholder"
+                      from-at-string="@create.fromAt"
+                      to-at-string="@create.toAt"
+                      products-string="@create.products"
+                      quantity-string="@create.quantity"
+
+                      status-string="@status"
+
+                      stock-string="@stock.stock"
+                      no-stock-string="@stock.no-stock"
+                      reset-all-string="@stock.reset-all"
+                      confirmed-string="@stock.confirmed"
+                      confirm-all-string="@stock.confirm-all"
+                      available-string="@stock.available"
+                      select-string="@stock.select"
+                      remaining-string="@stock.remaining"
+                      order-missing-string="@stock.order-missing"
+    ></managed-simple-shipment>
+</webc-container>

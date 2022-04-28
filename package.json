@@ -39,7 +39,9 @@
     "environment": "cd ./bin/environment && node --trace-warnings ./setup.js --app=traceability --exportCredentials=true",
     "environment-trace": "cd ./bin/environment && node --trace-warnings ./setup.js --app=traceability --attachLogic=true --exportCredentials=true",
     "environment-test": "cd ./bin/environment && node --trace-warnings ./setup.js --app=test --attachLogic=true --exportCredentials=true",
-    "build-api-dashboard": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-api-dashboard\"",
+    "build-api-mah-dashboard": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-api-mah-dashboard\"",
+    "build-api-whs-dashboard": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-api-whs-dashboard\"",
+    "build-api-pha-dashboard": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-api-pha-dashboard\"",
     "deploy-test-chain": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run deploy-chain\"",
     "export-api-credentials": "node ./dashboard-wizard/credential-export.js --role=mah"
   },

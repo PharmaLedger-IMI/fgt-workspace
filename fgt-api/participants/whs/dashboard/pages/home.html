@@ -1,10 +1,10 @@
-<webc-container controller="HomeController" translations="true">
+<webc-container controller="HomeController">
     <ion-app>
         <ion-header class="ion-no-border ion-padding-top ion-padding-bottom">
             <ion-grid>
                 <ion-row class="ion-align-items-center">
                     <ion-col size-md="1" size-xs="2" class="ion-text-center">
-                        <img src="./assets/images/logo.svg" alt="" width="50">
+                        <img src="./assets/images/logo.svg" alt="" width="100">
                     </ion-col>
                     <ion-col>
                         <ion-row class="ion-justify-content-between">
@@ -12,7 +12,7 @@
                                 {{ @participant.name }}
                                 <span>{{ @participant.id }}</span>
                             </div>
-                            <ion-button fill="clear" color="secondary" data-tag="logout">
+                            <ion-button fill="clear" color="secondary">
                                 {{ @logout }}
                                 <ion-icon slot="end" name="log-out" class="ion-margin-start"></ion-icon>
                             </ion-button>
@@ -21,18 +21,17 @@
                 </ion-row>
             </ion-grid>
         </ion-header>
+
         <ion-grid>
             <ion-row class="full-height">
                 <ion-col size="1" class="ion-hide-lg-down row-items">
                     <div data-if="@identified">
                         <ion-list class="side-menu">
                             <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard"></menu-tab-button>
-                            <menu-tab-button icon-name="reader" label="@menu.products" tab="tab-products"></menu-tab-button>
-<!--                            <menu-tab-button icon-name="reader" label="@menu.receivedOrders" tab="tab-received-orders"></menu-tab-button>-->
-                            <menu-tab-button icon-name="map" label="@menu.issuedShipments" tab="tab-issued-shipments"></menu-tab-button>
-                            <menu-tab-button icon-name="podium" label="@menu.stock" tab="tab-stock"></menu-tab-button>
-                            <menu-tab-button icon-name="reader" label="@menu.shipmentLines" tab="tab-shipmentLines"></menu-tab-button>
-                            <menu-tab-button icon-name="bag" label="@menu.receipts" tab="tab-receipts"></menu-tab-button>
+<!--                            <menu-tab-button icon-name="reader" label="@menu.orders.label" tab="@menu.orders.options"></menu-tab-button>-->
+                            <menu-tab-button icon-name="map" label="@menu.shipments.label" tab="@menu.shipments.options"></menu-tab-button>
+                            <menu-tab-button icon-name="podium" label="@menu.stock" badge="@notifications.stockNotification" tab="tab-stock"></menu-tab-button>
+                            <menu-tab-button icon-name="paper-plane" label="@menu.notifications" tab="tab-notifications"></menu-tab-button>
                         </ion-list>
                     </div>
                 </ion-col>
@@ -48,21 +47,6 @@
                                 </div>
                             </ion-content>
                         </ion-tab>
-                        <ion-tab tab="tab-products">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="products" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-
-                        <ion-tab tab="tab-batches">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="batches" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
 <!--                        <ion-tab tab="tab-received-orders">-->
 <!--                            <ion-content class="tab-content" overflow-scroll="true">-->
 <!--                                <div data-if="@identified">-->
@@ -70,7 +54,13 @@
 <!--                                </div>-->
 <!--                            </ion-content>-->
 <!--                        </ion-tab>-->
-
+<!--                        <ion-tab tab="tab-issued-orders">-->
+<!--                            <ion-content class="tab-content" overflow-scroll="true">-->
+<!--                                <div data-if="@identified">-->
+<!--                                    <webc-template template="issuedOrders" disable-container></webc-template>-->
+<!--                                </div>-->
+<!--                            </ion-content>-->
+<!--                        </ion-tab>-->
                         <ion-tab tab="tab-issued-shipments">
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <div data-if="@identified">
@@ -78,7 +68,13 @@
                                 </div>
                             </ion-content>
                         </ion-tab>
-
+                        <ion-tab tab="tab-received-shipments">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <div data-if="@identified">
+                                    <webc-template template="receivedShipments" disable-container></webc-template>
+                                </div>
+                            </ion-content>
+                        </ion-tab>
                         <ion-tab tab="tab-stock">
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <div data-if="@identified">
@@ -86,23 +82,13 @@
                                 </div>
                             </ion-content>
                         </ion-tab>
-
-                        <ion-tab tab="tab-shipmentLines">
+                        <ion-tab tab="tab-notifications">
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <div data-if="@identified">
-                                    <webc-template template="shipmentLines" disable-container></webc-template>
+                                    <webc-template template="notifications" disable-container></webc-template>
                                 </div>
                             </ion-content>
                         </ion-tab>
-
-                        <ion-tab tab="tab-receipts">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="receipts" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-
 <!--                        &lt;!&ndash; Invisible tabs &ndash;&gt;-->
 <!--                        <ion-tab tab="tab-order">-->
 <!--                            <ion-content class="tab-content" overflow-scroll="true">-->
@@ -111,7 +97,6 @@
 <!--                                </div>-->
 <!--                            </ion-content>-->
 <!--                        </ion-tab>-->
-
                         <ion-tab tab="tab-shipment">
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <div data-if="@identified">
@@ -120,39 +105,13 @@
                             </ion-content>
                         </ion-tab>
 
-                        <ion-tab tab="tab-product">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="product" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-
-                        <ion-tab tab="tab-batch">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="batch" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-
-                        <ion-tab tab="tab-individual-product">
-                            <ion-content class="tab-content" overflow-scroll="true">
-                                <div data-if="@identified">
-                                    <webc-template template="individualProduct" disable-container></webc-template>
-                                </div>
-                            </ion-content>
-                        </ion-tab>
-
                         <div slot="bottom" data-if="@identified">
                             <ion-tab-bar class="ion-hide-lg-up mob-menu">
                                 <menu-tab-button icon-name="grid" label="@menu.dashboard" tab="tab-dashboard" mode="bar"></menu-tab-button>
-                                <menu-tab-button icon-name="reader" label="@menu.products" tab="tab-products" mode="bar"></menu-tab-button>
-<!--                                <menu-tab-button icon-name="reader" label="@menu.receivedOrders" tab="tab-received-orders" mode="bar"></menu-tab-button>-->
-                                <menu-tab-button icon-name="map" label="@menu.issuedShipments" tab="tab-issued-shipments" mode="bar"></menu-tab-button>
-                                <menu-tab-button icon-name="podium" label="@menu.stock" tab="tab-stock" mode="bar"></menu-tab-button>
-                                <menu-tab-button icon-name="reader" label="@menu.shipmentLines" tab="tab-shipmentLines" mode="bar"></menu-tab-button>
-                                <menu-tab-button icon-name="bag" label="@menu.receipts" tab="tab-receipts" mode="bar"></menu-tab-button>
+<!--                                <menu-tab-button icon-name="reader" label="@menu.orders.label" tab="@menu.orders.options" mode="bar"></menu-tab-button>-->
+                                <menu-tab-button icon-name="map" label="@menu.shipments.label" tab="@menu.shipments.options" mode="bar"></menu-tab-button>
+                                <menu-tab-button icon-name="podium" label="@menu.stock" tab="tab-stock" badge="@notifications.stockNotification" mode="bar"></menu-tab-button>
+                                <menu-tab-button icon-name="paper-plane" label="@menu.notifications" tab="tab-notifications" mode ="bar"></menu-tab-button>
                             </ion-tab-bar>
                         </div>
                     </ion-tabs>
