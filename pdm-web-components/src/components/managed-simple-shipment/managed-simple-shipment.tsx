@@ -279,18 +279,11 @@ export class ManagedSimpleShipment implements CreateManageView{
   @Method()
   async reset() {
     this.shipmentRef = '';
-    // if (!this.orderJSON || this.orderJSON.startsWith('@') || this.orderJSON === "{}"){ // for webcardinal compatibility
-    //   this.participantId = '';
-    //   const stockEl = this.getStockManagerEl();
-    //   if (stockEl)
-    //     stockEl.reset();
-    //   this.lines = [];
-    //   this.order = undefined;
-    // } else {
-    //   this.order = JSON.parse(this.orderJSON);
-    //   this.participantId = this.order ? this.order.requesterId : '';
-    //   this.lines = this.order && this.order.orderLines? [...this.order.orderLines] : [];
-    // }
+    this.shipment = undefined;
+    const stockEl = this.getStockManagerEl();
+    if (stockEl)
+      stockEl.reset();
+    this.lines = [];
   }
 
   private getStockManagerEl(){
@@ -637,7 +630,7 @@ export class ManagedSimpleShipment implements CreateManageView{
   }
 
   getManage() {
-    if (this.isCreate())
+    if (this.isCreate() || !this.shipment)
       return;
     const self = this;
     const getLines = function(){
@@ -660,24 +653,33 @@ export class ManagedSimpleShipment implements CreateManageView{
       )
     }
 
-    if (self.shipmentType !== SHIPMENT_TYPE.ISSUED || !self.shipment)
-      return getLines();
+    const getStatusUpdater = function(){
+      return (
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12" size-lg="6">
+              {getLines()}
+            </ion-col>
+            <ion-col size="12" size-lg="6">
+              <status-updater state-json={JSON.stringify(self.statuses)}
+                              current-state={JSON.stringify(self.shipment.status)}
+                              onStatusUpdateEvent={self.update.bind(self)}>
+              </status-updater>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      )
+    }
 
-    return (
-      <ion-grid>
-        <ion-row>
-          <ion-col size="12" size-lg="6">
-            {getLines()}
-          </ion-col>
-          <ion-col size="12" size-lg="6">
-            <status-updater state-json={JSON.stringify(self.statuses)}
-                            current-state={JSON.stringify(self.shipment.status)}
-                            onStatusUpdateEvent={self.update.bind(self)}>
-            </status-updater>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    )
+    if ([ShipmentStatus.DELIVERED, ShipmentStatus.RECEIVED, ShipmentStatus.CONFIRMED].indexOf(self.shipment.status.status) !== -1){
+      if (self.shipmentType === SHIPMENT_TYPE.RECEIVED)
+        return getStatusUpdater();
+    } else {
+      if (self.shipmentType === SHIPMENT_TYPE.ISSUED)
+        return getStatusUpdater();
+    }
+
+    return getLines();
   }
 
   getView() {

@@ -43,7 +43,16 @@ class ShipmentManager extends ApiManager {
      * @param {function(err, Shipment?, Archive?)} callback
      */
     update(key, shipment, callback){
-        super.update(key, shipment, callback);
+        if (!callback){
+            callback = shipment;
+            shipment = key;
+        }
+        const status = shipment.status.status
+        const request = {
+            status: status,
+            extraInfo: shipment.status.extraInfo
+        }
+        this.getStorage().updateRecord(this._getTableName(), [shipment.shipmentId], request, callback)
     }
 }
 

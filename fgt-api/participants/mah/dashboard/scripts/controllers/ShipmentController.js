@@ -45,7 +45,7 @@ export default class ShipmentController extends LocalizedController{
             const label = !!state.previousTab ? state.previousTab.label : HistoryNavigator.getPreviousTab().label;
             self.model.back = this.translate('back', label);
             if (state && state.mode) {
-                const newRef = `${state.mode === 'issued' ? state.shipment.requesterId : state.shipment.senderId}-${state.shipment.shipmentId}`;
+                const newRef = state.shipment.shipmentId;
                 if (newRef === self.model.shipmentRef)
                     return self.shipmentEl.refresh();
                 self.model.shipmentRef = newRef;
@@ -150,7 +150,7 @@ export default class ShipmentController extends LocalizedController{
                     return sendError(self.translate('create.error.error'));
                 self.showToast(self.translate('create.success'));
                 self.model.mode = 'issued';
-                self.model.shipmentRef = `${confirmedShipment.requesterId}-${confirmedShipment.shipmentId}`;
+                self.model.shipmentRef = confirmedShipment.shipmentId;
                 await loader.dismiss();
             });
         });

@@ -168,13 +168,13 @@ export class ManagedOrderlineListItem {
             <ion-col col-12 col-sm align-self-end size-lg="auto">
                 <span class="ion-padding-end">
                   {"Serials"}
-                </span>       
+                </span>
             </ion-col>
           </ion-row>
         </ion-label>
       )
     }
-    
+
     if (!this.batch)
       return (<multi-spinner slot="content" type={SUPPORTED_LOADERS.bubblingSmall}></multi-spinner>);
     return(
@@ -201,7 +201,7 @@ export class ManagedOrderlineListItem {
             <ion-col col-12 col-sm align-self-end size-lg="auto">
                 <span class="ion-padding-end">
                   {"Details"}
-                </span>       
+                </span>
             </ion-col>
           </ion-row>
         </ion-label>
@@ -230,11 +230,14 @@ export class ManagedOrderlineListItem {
   }
 
   addLabel(){
-    const props = this.getPropsFromKey();
     const self = this;
 
     const getGtinLabel = function (){
-      return 'Gtin';
+      if(self.isHeader)
+        return 'Gtin';
+      if (!self.line)
+        return (<ion-skeleton-text animated className="label-gtin"></ion-skeleton-text>)
+      return self.line.gtin;
     }
 
     const getBatchLabel = function(){
@@ -285,22 +288,22 @@ export class ManagedOrderlineListItem {
             <ion-col col-12 col-sm align-self-end size-lg="auto">
               <span class="ion-padding-start">
               {getGtinLabel()}
-              </span>       
+              </span>
             </ion-col>
             <ion-col col-12 col-sm align-self-end size-lg="auto">
               <span class="ion-padding-start">
                 {getBatchLabel()}
-              </span>    
+              </span>
             </ion-col>
             <ion-col col-12 col-sm align-self-end size-lg="auto">
               <span class="ion-padding-start">
                 {getQuantityLabel()}
-              </span>    
+              </span>
             </ion-col>
             <ion-col col-12 col-sm align-self-end size-lg="auto">
               <span class="ion-padding-start">
                 {getStatusLabel()}
-              </span>    
+              </span>
             </ion-col>
           </ion-row>
         </ion-label>
@@ -309,7 +312,7 @@ export class ManagedOrderlineListItem {
     return(
       <ion-col  slot="label" size="3">
         <ion-row class="ion-align-items-center">
-          {buildLabelElement(props.gtin)}
+          {buildLabelElement(getGtinLabel())}
           {buildLabelElement(getBatchLabel())}
           {buildLabelElement(getQuantityLabel())}
           {getStatusLabel()}
@@ -335,7 +338,7 @@ export class ManagedOrderlineListItem {
           </div>
       )
     }
-    
+
     if (!self.shipmentLine)
       return (<ion-skeleton-text animated></ion-skeleton-text>);
 
