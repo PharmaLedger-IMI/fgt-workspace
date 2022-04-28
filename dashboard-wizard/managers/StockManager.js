@@ -66,7 +66,17 @@ class StockManager extends ApiManager{
      * @override
      */
     getOne(gtin, readDSU,  callback) {
-       super.getOne(gtin, readDSU, callback);
+        if (!callback){
+            callback = readDSU;
+            readDSU = true;
+        }
+       super.getOne(gtin, readDSU, (err, result) => {
+           if (err)
+               return callback(err);
+           if (readDSU)
+               return callback(undefined, new Stock(result))
+           callback(undefined, result)
+       });
     }
 
 

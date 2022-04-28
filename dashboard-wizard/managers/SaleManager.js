@@ -27,7 +27,7 @@ const getReceiptManager = require('./ReceiptManager');
  */
 class SaleManager extends ApiManager{
     constructor(participantManager, callback) {
-        super(participantManager, DB.sales, ['id', 'products', 'sellerId'], (err, manager) => {
+        super(participantManager, "sale", ['id', 'products', 'sellerId'], (err, manager) => {
             if (err)
                 return callback ? callback(err) : console.log(err);
             getReceiptManager(participantManager, (err, receiptManager) => {
