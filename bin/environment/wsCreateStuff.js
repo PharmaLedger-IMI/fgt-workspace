@@ -163,7 +163,7 @@ const jsonHttpRequest = function (conf, actor, { body, ...options }) {
     if (!options['port'])
         options.port = conf.wsPortNumber;
     if (!options.headers['Authorization']) {
-        const secret = `${actor.id.secret}:${(actor.email.secret)}`;
+        const secret = `${actor.id.secret}:${(actor.pass.secret)}`;
         options.headers['Authorization'] = `Basic ${encodeBase64(secret)}`;
     }
 
