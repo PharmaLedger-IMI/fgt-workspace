@@ -425,12 +425,31 @@
 
         <p><span style="font-weight: bold;">WARNING:</span> Unstable software and environments. Use at your own risk! Data persistence at risk of unexpected reset!</p>
 
-        <h2>v0.8.7 Release Notes 2022-04-XX</h2>
+
+        <h2>v0.9.0 Release Notes 2022-04-XX</h2>
+        <h4>API Dasboard:</h4>
+        <ul>
+            <li>Added a Graphical interface (Dashboard) to interact with the API;
+                <ul>
+                    <li>The user ID will be your wallet's id. You'll need to input the password your wallet was created with. ('password' field in the credentials file). defaults to 'This1sSuchAS3curePassw0rd'). An incorrect password will result in errors further along the application. Please refresh you browser and try again;</li>
+                    <li>For each role (MAH WHS or PHA), specific operations can be executed:
+                        <ul>
+                            <li>MAH:
+                            </li>
+                        </ul>
+                    </li>
+                    <li>You can create new products and batches in the products screen (if you're an mah);</li>
+                    <li>You update batch status in the batch screen (if your're an mah);</li>
+                    <li>You can create new shipments;</li>
+                </ul>
+            </li>
+        </ul>
         <h4>Rest API:</h4>
         <ul>
             <li>Added shipmentId as optional field  to create a shipment;</li>
+            <li>Deprecated orderId;</li>
             <li>Added auto generated serial numbers when not provided to create a batch (limited to 10,000);</li>
-            <li>Added authentication;</li>
+            <li>Added authentication (the default password is the one in your credentials file);</li>
             <li>Updated and improved the Swagger docs.</li>
         </ul>
 
