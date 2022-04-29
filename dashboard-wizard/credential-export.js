@@ -28,7 +28,7 @@ const argParser = function(defaultOpts, args){
 
 const defaultOptions = {
     role: "mah",
-    apiEndpoint: ""
+    endPoint: ""
 }
 
 const getEndpoint = function(role){

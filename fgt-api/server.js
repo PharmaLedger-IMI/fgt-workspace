@@ -125,7 +125,7 @@ const setDashboard = async function(){
             if (err)
                 return reject(err);
 
-            cmd = ['npm', 'run', `export-api-credentials`, "--", `--role=${ROLE}`, `--apiEndpoint=${SWAGGER_SERVER}`];
+            cmd = ['npm', 'run', `export-api-credentials`, "--", `--role=${ROLE}`, `--endPoint=${SWAGGER_SERVER}`];
 
             runCommand(...cmd, (err, log2) => {
                 if (err)
