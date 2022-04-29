@@ -140,7 +140,7 @@ const setDashboard = async function(){
 
 try {
     overWriteCredentialsByRole();
-    await Promise.all([bootAPIServer(), bootSwagger(), setDashboard()])
+    Promise.all([bootAPIServer(), bootSwagger(), setDashboard()])
         .then(_ => console.log(`Completed Boot`))
         .catch(e => failServerBoot(e.message));
 } catch (e){
