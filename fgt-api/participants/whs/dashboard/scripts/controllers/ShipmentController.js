@@ -105,12 +105,23 @@ export default class ShipmentController extends LocalizedController{
             self.showErrorToast(msg);
         }
 
+        const getShipmentType = function(shipment){
+            const id = self.model.identity.id;
+            if (shipment.senderId === id)
+                return "issued"
+            if (shipment.requesterId === id)
+                return "received"
+
+            throw new Error("Invalid shipment. found no match in sender and receiver for identity")
+        }
+
         self.issuedShipmentManager.update(shipment, async (err, updatedShipment) => {
             if (err)
                 return sendError(self.translate('manage.error.error'));
             self.showToast(self.translate('manage.success'));
+
             self.refresh({
-                mode: 'issued',
+                mode: getShipmentType(updatedShipment),
                 shipment: updatedShipment
             });
             await loader.dismiss();

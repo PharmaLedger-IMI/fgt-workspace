@@ -61,6 +61,8 @@
         }
       ]
     },
+    "issuedShipments": "Issued Shipments",
+    "receivedShipments": "Received Shipments",
     "stock": "Stock"
   },
   "errors": {

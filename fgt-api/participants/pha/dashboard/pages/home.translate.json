@@ -52,6 +52,13 @@
       "new-issued-order": "New"
     }
   },
+  "issuedShipments": {
+    "title": "Issued Shipments",
+    "buttons": {
+      "new-issued-shipment": "Create Shipment"
+    },
+    "none": "No shipments issued..."
+  },
   "shipment": {
     "title": "Shipments",
     "create": {
