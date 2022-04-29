@@ -53,6 +53,11 @@ class SaleManager extends ApiManager{
         super.create(undefined, sale, callback)
     }
 
+
+    mapRecordToKey(record) {
+        return record.id;
+    }
+
     /**
      * updates a product from the list
      * @param {string|number} [id] the table key

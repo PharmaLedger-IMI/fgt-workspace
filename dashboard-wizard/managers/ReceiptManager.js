@@ -114,6 +114,18 @@ class ReceiptManager extends ApiManager{
     }
 
     /**
+     * @param {IndividualReceipt} individualReceipt
+     * @returns {string}
+     */
+    _genCompostKey(individualReceipt){
+        return `${individualReceipt.gtin}-${individualReceipt.batchNumber}-${individualReceipt.serialNumber}`;
+    }
+
+    mapRecordToKey(record) {
+        return this._genCompostKey(record)
+    }
+
+    /**
      * reads ssi for that gtin in the db. loads is and reads the info at '/info'
      * @param {string} id
      * @param {boolean} [readDSU] defaults to true. decides if the manager loads and reads from the dsu or not

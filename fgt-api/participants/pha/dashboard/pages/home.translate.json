@@ -28,6 +28,7 @@
   },
   "welcome": "Welcome back",
   "menu": {
+    "issuedShipments": "Issued Shipments",
     "notifications": "Notifications",
     "dashboard": "Dashboard",
     "issuedOrders": "Issued Orders",
