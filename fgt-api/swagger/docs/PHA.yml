@@ -220,8 +220,7 @@ paths:
             schema:
               type: object
               example:
-                - orderId: string
-                  requesterId: string
+                - requesterId: string
                   senderId: string
                   status: string
                   shipmentLines:
@@ -403,7 +402,6 @@ paths:
             schema:
               $ref: '#/components/schemas/AddShipment'
             example:
-              orderId: string
               requesterId: string
               shipmentLines:
                 - gtin: string
@@ -421,7 +419,6 @@ paths:
                 $ref: '#/components/schemas/Shipment'
               example:
                 shipmentId: string
-                orderId: string
                 requesterId: string
                 senderId: string
                 status:
@@ -460,8 +457,7 @@ paths:
               items:
                 $ref: '#/components/schemas/AddShipment'
             example:
-              - orderId: string
-                requesterId: string
+              - requesterId: string
                 shipmentLines:
                   - gtin: string
                     batch: string
@@ -480,7 +476,6 @@ paths:
                   $ref: '#/components/schemas/Shipment'
               example:
                 - shipmentId: string
-                  orderId: string
                   requesterId: string
                   senderId: string
                   status:
@@ -537,11 +532,6 @@ paths:
           in: query
           schema:
             type: string
-        - name: orderId
-          in: query
-          schema:
-            type: string
-          description: only for requester reference.
         - name: senderId
           in: query
           schema:
@@ -572,7 +562,6 @@ paths:
                   query: {}
                 results:
                   - shipmentId: string
-                    orderId: string
                     requesterId: string
                     senderId: string
                     status:
@@ -621,7 +610,6 @@ paths:
                 $ref: '#/components/schemas/Shipment'
               example:
                 shipmentId: string
-                orderId: string
                 requesterId: string
                 senderId: string
                 status:
@@ -678,7 +666,6 @@ paths:
                 $ref: '#/components/schemas/Shipment'
               example:
                 shipmentId: string
-                orderId: string
                 requesterId: string
                 senderId: string
                 status:
@@ -735,7 +722,6 @@ paths:
                 $ref: '#/components/schemas/Shipment'
               example:
                 - shipmentId: string
-                  orderId: string
                   requesterId: string
                   senderId: string
                   status:
@@ -1265,13 +1251,10 @@ components:
       type: object
       description: "Required fields to add a new Shipment"
       required:
-        - orderId
         - requesterId
         - shipmentLines
       properties:
         shipmentId:
-          type: string
-        orderId:
           type: string
         requesterId:
           type: string
@@ -1433,7 +1416,6 @@ components:
       description: "Products ordered by a partner that will be delivered by a supplier"
       required:
         - shipmentId
-        - orderId
         - requesterId
         - senderId
         - status
@@ -1442,9 +1424,6 @@ components:
         shipmentId:
           type: string
           description: "shipment identifier"
-        orderId:
-          type: string
-          description: "order identifier for sender/recipient utility reason"
         requesterId:
           type: string
           description: "shipment requester identifier (ordering partner ID)"
