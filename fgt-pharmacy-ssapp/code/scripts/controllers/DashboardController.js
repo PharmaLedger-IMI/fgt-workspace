@@ -89,11 +89,10 @@ export default class DashboardController extends LocalizedController {
                     if (!cacheProductName.hasOwnProperty(gtin)) {
                         self.stockManager.getOne(gtin, (err, product) => {
                             if (err) // product not yet added to stock -> skip it
-                                saleAccountant(accum, shipmentLines, _callback);
+                                return saleAccountant(accum, shipmentLines, _callback);
 
                             registerProductName(gtin, product.name);
-                            accum[product.name] = saleCalculator(accum, product.name, shipmentLine.quantity)
-                            saleAccountant(accum, shipmentLines, _callback)
+                            accum[product.name] = saleCalculator(accum, product.name, shipmentLine.quantity);
                         })
                     } else {
                         const productName = cacheProductName[gtin]
