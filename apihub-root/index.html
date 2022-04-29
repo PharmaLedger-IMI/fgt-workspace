@@ -426,7 +426,7 @@
         <p><span style="font-weight: bold;">WARNING:</span> Unstable software and environments. Use at your own risk! Data persistence at risk of unexpected reset!</p>
 
 
-        <h2>v0.9.0 Release Notes 2022-04-XX</h2>
+        <h2>v0.9.0 Release Notes 2022-04-29</h2>
         <h4>API Dasboard:</h4>
         <ul>
             <li>Added a Graphical interface (Dashboard) to interact with the API;
@@ -435,12 +435,34 @@
                     <li>For each role (MAH WHS or PHA), specific operations can be executed:
                         <ul>
                             <li>MAH:
+                                <ul>
+                                    <li>You can create new products and batches in the products screen;</li>
+                                    <li>You update batch status in the batch screen;</li>
+                                    <li>View the shipment lines for all shipments pertaining to you products;</li>
+                                    <li>You can view all receipts for individual products sold, and request traceability on each serial number;</li>
+                                </ul>
+                            </li>
+                            <li>Wholesaler:
+                                <ul>
+                                    <li>You can confirm received shipments and add their products to your stock;</li>
+                                </ul>
+                            </li>
+                            <li>Pharmacy:
+                                <ul>
+                                    <li>You can confirm received shipments and add their products to your stock;</li>
+                                    <li>You can sell individual Products in the Sale Screen;</li>
+                                    <li>You can view all sales performed and request traceability on each serial number;</li>
+                                </ul>
                             </li>
                         </ul>
                     </li>
-                    <li>You can create new products and batches in the products screen (if you're an mah);</li>
-                    <li>You update batch status in the batch screen (if your're an mah);</li>
-                    <li>You can create new shipments;</li>
+                    <li>All participants can:
+                        <ul>
+                            <li>View Stock (and traceability on their stock)</li>
+                            <li>View Dashboard (example metrics that can be gathered);</li>
+                            <li>Create, and update shipments, of products they have in stock;</li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
         </ul>
