@@ -60,21 +60,19 @@
             </script>
         </a>
 
-        <a id="dashboard" class="dsu-fabric_button scale-up" href="./dashboard" target="_blank">
+        <a id="dashboard" class="dsu-fabric_button scale-up" href="./dashboard" target="_blank" style="display:none">
             <div class="left-side">
                 <img src="assets/images/factory.png" alt="swagger">
             </div>
             <div class="right-side">
                 <p>Dashboard</p>
             </div>
-<!--            <script>-->
-<!--                const dashboardButton = document.body.querySelector(`#dashboard`);-->
-<!--                if (window.location.hostname.match(/[-\.]?(?:mah|whs|pha)[\-\d]/g)){-->
-<!--                    const isLocalhost = window.location.hostname.endsWith('localhost');-->
-<!--                    dashboardButton.setAttribute("style", "display: block;");-->
-<!--                    dashboardButton.setAttribute("href", `${isLocalhost ? 'http://' : 'https://'}swagger-${window.location.host}`);-->
-<!--                }-->
-<!--            </script>-->
+            <script>
+                const dashboardButton = document.body.querySelector(`#dashboard`);
+                if (window.location.hostname.match(/[-\.]?(?:mah|whs|pha)[\-\d]/g)){
+                    dashboardButton.setAttribute("style", "display: block;");
+                }
+            </script>
         </a>
 
         <a class="web-wallet_button scale-up" href="dsu-explorer/loader/" target="_blank">

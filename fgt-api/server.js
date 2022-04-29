@@ -117,9 +117,32 @@ async function bootSwagger(){
     app.listen(PORT, console.log(`[FGT-API] Swagger API DOC listening on :${PORT} and able to make requests to API: ${API_SERVER}`));
 }
 
+const setDashboard = async function(){
+    return new Promise((resolve, reject) => {
+        let cmd = ['npm', 'run', `build-api-${ROLE}-dashboard`]
+
+        runCommand(...cmd, (err, log1) => {
+            if (err)
+                return reject(err);
+
+            cmd = ['npm', 'run', `export-api-credentials`, "--", `--role=${ROLE}`, `--apiEndpoint=${SWAGGER_SERVER}`];
+
+            runCommand(...cmd, (err, log2) => {
+                if (err)
+                    return reject(err)
+                resolve(log2)
+            })
+        })
+    })
+}
+
+
+
 try {
     overWriteCredentialsByRole();
-    Promise.all([bootAPIServer(), bootSwagger()]).then(_ => console.log(`Completed Boot`)).catch(e => failServerBoot(e.message));
+    await Promise.all([bootAPIServer(), bootSwagger()]).then(_ => console.log(`Completed Boot`)).then(async _ => {
+        await setDashboard()
+    }).catch(e => failServerBoot(e.message));
 } catch (e){
     failServerBoot(e.message);
 }
