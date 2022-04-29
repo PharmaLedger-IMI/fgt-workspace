@@ -83,11 +83,14 @@ export default class DashboardController extends LocalizedController {
             const saleAccountant = (accum, shipmentLines, _callback) => {
                 const shipmentLine = shipmentLines.shift();
                 if (!shipmentLine)
-                    return _callback(undefined, accum)
+                    return _callback(undefined, accum);
                 if (shipmentLine.status !== 'confirmed') {
                     const { gtin } = shipmentLine;
                     if (!cacheProductName.hasOwnProperty(gtin)) {
                         self.stockManager.getOne(gtin, (err, product) => {
+                            if (err) // product not yet added to stock -> skip it
+                                saleAccountant(accum, shipmentLines, _callback);
+
                             registerProductName(gtin, product.name);
                             accum[product.name] = saleCalculator(accum, product.name, shipmentLine.quantity)
                             saleAccountant(accum, shipmentLines, _callback)
