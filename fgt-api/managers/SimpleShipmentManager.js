@@ -504,14 +504,17 @@ class SimpleShipmentManager extends Manager {
 
         const self = this;
         const participantId = (shipment.requesterId === self.getIdentity().id) ? shipment.senderId : shipment.requesterId;
-        self.sendMessage(participantId, DB.simpleShipments, aKey, (err) =>
-            self._messageCallback(err ? `Could not sent message to ${shipment.shipmentId} with ${DB.receivedShipments}: ${err}` : err,
-                `Message sent to ${shipment.requesterId}, ${DB.receivedShipments}, ${aKey}`)
-        );
 
-        if (shipmentLinesSSIs)
-            self.sendShipmentLinesToMAH([...shipment.shipmentLines], [...shipmentLinesSSIs], (err) =>
-                self._messageCallback(err ? `Could not transmit shipmentLines to The manufacturers` : 'Lines Notice sent to Manufacturers'));
+
+        self.sendMessage(participantId, DB.simpleShipments, aKey, (err) => {
+            if (err)
+                return self._messageCallback(err ? `Could not sent message to ${participantId} with ${DB.receivedShipments}: ${err}` : err);
+            self._messageCallback(err, `Message sent to ${participantId}, ${DB.receivedShipments}, ${aKey}`);
+
+            if (shipmentLinesSSIs)
+                self.sendShipmentLinesToMAH([...shipment.shipmentLines], [...shipmentLinesSSIs], (err) =>
+                    self._messageCallback(err ? `Could not transmit shipmentLines to The manufacturers` : 'Lines Notice sent to Manufacturers'));
+        });
     }
 
     /**
