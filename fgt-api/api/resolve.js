@@ -11,8 +11,8 @@ class ResolverApi extends Api {
     constructor(server, participantManager) {
         super(server, 'resolve', participantManager, [RESOLVER_GET]);
         try {
-            this.productManager = new (require('../../fgt-dsu-wizard/services/ProductService'))(ANCHORING_DOMAIN);
-            this.batchManager = new (require('../../fgt-dsu-wizard/services/BatchService'))(ANCHORING_DOMAIN);
+            this.productService = new (require('../../fgt-dsu-wizard/services/ProductService'))(ANCHORING_DOMAIN);
+            this.batchService = new (require('../../fgt-dsu-wizard/services/BatchService'))(ANCHORING_DOMAIN);
         } catch (e) {
             throw new Error(`Could not get ${this.endpoint}Manager: ${e}`);
         }

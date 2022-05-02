@@ -4,6 +4,8 @@ const ShipmentApi = require('../../../api/shipment');
 const ReceiptApi = require('../../../api/receipt');
 const TraceabilityApi = require('../../../api/traceability');
 const DirectoryApi = require("../../../api/directory");
+const ResolverApi = require("../../../api/resolve");
+
 
 module.exports = {
     StockApi,
@@ -11,5 +13,6 @@ module.exports = {
     ShipmentApi,
     ReceiptApi,
     TraceabilityApi,
-    DirectoryApi
+    DirectoryApi,
+    ResolverApi
 }
