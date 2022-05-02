@@ -4,7 +4,7 @@ const Stock = require('../../fgt-dsu-wizard/model/Stock');
 const StockManagementService = require("../../fgt-dsu-wizard/services/StockManagementService");
 const ProductService = require('../../fgt-dsu-wizard/services/ProductService');
 const BatchService = require('../../fgt-dsu-wizard/services/BatchService');
-
+const {getProductResolver, getBatchResolver} = require('./resolvers');
 
 
 /**
@@ -32,9 +32,21 @@ class StockManager extends ApiManager{
         super(participantManager, DB.stock, ['name', 'gtin', 'manufName', 'quantity'], callback || aggregation);
         this.serialization = serialization;
         this.aggregation = callback ? aggregation : false;
-        this.productService = undefined;
-        this.batchService = undefined;
+        this.productResolver = undefined;
+        this.batchResolver = undefined;
         this.participantManager = participantManager;
+    }
+
+    _getProduct(gtin, callback){
+        if (!this.productResolver)
+            this.productResolver = getProductResolver(this.participantManager);
+        this.productResolver.getOne(gtin, callback);
+    }
+
+    _getBatch(gtin, batch, callback){
+        if (!this.batchResolver)
+            this.batchResolver = getBatchResolver(this.participantManager)
+        this.batchResolver.getOne(gtin, batch, callback)
     }
 
     /**
@@ -115,18 +127,6 @@ class StockManager extends ApiManager{
 
         options = options || defaultOptions();
         super.getAll(readDSU, options, callback)
-    }
-
-    _getProduct(gtin, callback){
-        if (!this.productService)
-            this.productService = new ProductService(ANCHORING_DOMAIN);
-        this.productService.getDeterministic(gtin, callback);
-    }
-
-    _getBatch(gtin, batch, callback){
-        if (!this.batchService)
-            this.batchService = new BatchService(ANCHORING_DOMAIN);
-        this.batchService.getDeterministic(gtin, batch, callback)
     }
 
     /**
