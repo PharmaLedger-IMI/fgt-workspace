@@ -13,7 +13,7 @@ const { getIssuedShipmentManager } = require('./IssuedShipmentManager');
  * @namespace Managers
  */
 module.exports = {
-    Resolvers: require('../../fgt-dsu-wizard/managers/resolvers'),
+    Resolvers: require('./resolvers'),
     Manager: require('../../pdm-dsu-toolkit/managers/Manager'),
     getBatchManager: require('./BatchManager'),
     getParticipantManager: require('./ParticipantManager'),

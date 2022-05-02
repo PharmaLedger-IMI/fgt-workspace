@@ -83,6 +83,7 @@ let webManagerRepository = undefined;
 const registerManagerRepository = function(repo){
   webManagerRepository = {
     getManager: repo.getManager.bind(repo),
+    getStorage: repo.getStorage.bind(repo),
     cacheManager: repo.cacheManager.bind(repo)
   };
 }
