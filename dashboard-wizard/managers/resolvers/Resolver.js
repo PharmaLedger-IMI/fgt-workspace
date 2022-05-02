@@ -35,6 +35,10 @@ class ApiResolver {
      * @param {function(err, {})} callback
      */
     getOne(key, readDSU, callback){
+        if (!callback){
+            callback = readDSU;
+            readDSU = true
+        }
         const params = key.split('-');
 
         this.storage.getRecord(this.tableName, params, callback)
