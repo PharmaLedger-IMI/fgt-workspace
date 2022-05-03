@@ -129,7 +129,8 @@ class StockManager extends ApiManager{
         super.getAll(readDSU, options, (err, stocks) => {
             if (err)
                 return callback(err);
-            stocks = stocks.map(s => new Stock(s))
+            if (readDSU)
+                stocks = stocks.map(s => new Stock(s))
             return callback(undefined, stocks)
         })
     }
