@@ -13,6 +13,10 @@ class ProductResolver extends ApiResolver{
     }
 
     getOne(gtin, readDSU, callback){
+        if (!callback){
+            callback = readDSU;
+            readDSU = true
+        }
         super.getOne(gtin, readDSU, (err, product) => {
             if (err)
                 return callback(err);

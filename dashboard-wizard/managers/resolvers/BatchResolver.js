@@ -15,6 +15,10 @@ class BatchResolver extends ApiResolver{
     }
 
     getOne(gtinBatch, readDSU, callback){
+        if (!callback){
+            callback = readDSU;
+            readDSU = true
+        }
         super.getOne(gtinBatch, readDSU, (err, batch) => {
             if (err)
                 return callback(err);
