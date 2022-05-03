@@ -55,9 +55,9 @@ export default class DashboardController extends LocalizedController {
         self.stockManager.getAll(true, (err, stock) => {
             if(err)
                 return console.error(err)
-            const stockManagement = stock.reduce((accum, product) => {
-                registerProductName(product.gtin, product.name)
-                accum[product.name] = product.quantity
+            const stockManagement = stock.reduce((accum, stock) => {
+                registerProductName(stock.gtin, stock.name)
+                accum[stock.name] = stock.getQuantity();
                 return accum;
             }, {})
             // TODO -> refactor sort / reduce
