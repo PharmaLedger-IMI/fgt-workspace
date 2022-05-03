@@ -75,6 +75,23 @@ class ReceiptsEnum {
     static test = "test";
 };
 
+function genShipmentId(simpleShipment, identityId) {
+    let shipmentId;
+    const splitShipmentId = `${simpleShipment.shipmentId}`.split('-');
+    if (identityId === simpleShipment.senderId) {
+        if (splitShipmentId.length >= 2)
+            shipmentId = splitShipmentId[splitShipmentId.length - 1];
+        else
+            shipmentId = simpleShipment.shipmentId;
+    } else {
+        if (splitShipmentId.length >= 2)
+            shipmentId = simpleShipment.shipmentId;
+        else
+            shipmentId = `${simpleShipment.senderId}-${simpleShipment.shipmentId}`;
+    }
+    return shipmentId;
+}
+
 const defaultOps = {
     ignoreDups: "t", // falsy will 
     wsProtocol: "http",
@@ -470,9 +487,13 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
         path: `/traceability/shipment/create`,
         body: shipment
     });
-    const shipmentId = resC.shipmentId;
+    const shipmentId = genShipmentId(resC, sender.id.secret);
+    const receiverShipmentId = genShipmentId(resC, receiver.id.secret);
     if (!shipmentId) {
         throw new Error("shipment/create "+shipment+" reply has no shipmentId: "+JSON.stringify(resC));
+    }
+    if (shipmentId !== resC.shipmentId) {
+        throw new Error("shipment/create "+shipment+" reply has an inconsistency in the shipmentId. Received: "+ resC.shipmentId + "Expected: "+ shipmentId);
     }
     const resUPickup = await jsonPut(conf, sender, {
         path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
@@ -514,7 +535,7 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
     const resUReceived = await jsonPut(conf, receiver, {
-        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
+        path: `/traceability/shipment/update/${encodeURI(receiverShipmentId)}`,
         body: {
             "status": ShipmentStatus.RECEIVED,
             "extraInfo": "Received in good condition by a test script!"
@@ -527,7 +548,7 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
     const resUConfirmed = await jsonPut(conf, receiver, {
-        path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
+        path: `/traceability/shipment/update/${encodeURI(receiverShipmentId)}`,
         body: {
             "status": ShipmentStatus.CONFIRMED,
             "extraInfo": "Confirmed into stock by a test script!"
