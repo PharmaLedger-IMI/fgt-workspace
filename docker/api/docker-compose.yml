@@ -586,6 +586,42 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.152
+  pha-zuellig:
+    <<: *pha-def
+    container_name: pha-zuellig
+    hostname: pha-zuellig
+    environment:
+      ROLE: pha
+      CREDENTIALS_FILE: pha-zuellig.json
+      SWAGGER_SERVER: ${PROTOCOL}://api-pha-zuellig${SWAGGER}/traceability
+    labels:
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.pha-zuellig.rule=Host(`pha-zuellig${DOMAIN}`)"
+      - "traefik.http.middlewares.pha-zuellig-headers.headers.accessControlAllowOriginListRegex=.*"
+      - "traefik.http.middlewares.pha-zuellig-headers.headers.accessControlAllowMethods=GET,OPTIONS,POST,PUT"
+      - "traefik.http.middlewares.pha-zuellig-headers.headers.accessControlAllowHeaders=content-type,x-content-length"
+      - "traefik.http.middlewares.pha-zuellig-headers.headers.accessControlMaxAge=100"
+      - "traefik.http.middlewares.pha-zuellig-headers.headers.addVaryHeader=true"
+      - "traefik.http.routers.pha-zuellig.middlewares=pha-zuellig-headers"
+      - "traefik.http.routers.pha-zuellig.entrypoints=web"
+      - "traefik.http.routers.pha-zuellig.service=pha-zuellig"
+      - "traefik.http.services.pha-zuellig.loadbalancer.server.port=8080"
+
+      - "traefik.http.routers.pha-zuellig-swagger.rule=Host(`swagger-pha-zuellig${DOMAIN}`)"
+      - "traefik.http.routers.pha-zuellig-swagger.entrypoints=web"
+      - "traefik.http.routers.pha-zuellig-swagger.service=pha-zuellig-swagger"
+      - "traefik.http.services.pha-zuellig-swagger.loadbalancer.server.port=3009"
+
+      - "traefik.http.routers.pha-zuellig-api.rule=Host(`api-pha-zuellig${DOMAIN}`)"
+      - "traefik.http.routers.pha-zuellig-api.entrypoints=web"
+      - "traefik.http.routers.pha-zuellig-api.service=pha-zuellig-api"
+      - "traefik.http.services.pha-zuellig-api.loadbalancer.server.port=3002"
+    volumes:
+      - pha-zuellig_vol:/fgt-workspace/apihub-root/external-volume
+    networks:
+      traceability-net:
+        ipv4_address: 172.16.63.153
 
 networks:
   traceability-net:
@@ -611,3 +647,4 @@ volumes:
   "whs-takeda_vol":
   "pha1_vol":
   "pha2_vol":
+  "pha-zuellig_vol":
