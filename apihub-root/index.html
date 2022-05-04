@@ -240,7 +240,7 @@
                         </div>
                     </li>
                     <li>
-                        <p>The sequence diagram for the shipping operation is as follows:</p>
+                        <p id="seqdiagramShipment">The sequence diagram for the shipping operation is as follows:</p>
                         <p>
                             <div class="mermaid">
                                 sequenceDiagram
@@ -252,6 +252,7 @@
                                 note left of s: Sender can see shipment with status 'created'.<br>Sender stock has been reduced
                                 s-->>r: Sends Message to Receiver<br>with Shipment Info
                                 note right of r: Receiver can now see shipment in incoming shipments
+                                note right of r: The receiver shipmentId is prefixed by the senderId + "-". <br>Example: For a sender MAH136366355 with shipmentId of 123, the receiver shipmentId is MAH136366355-123
                                 alt sad path
                                 note over s , r: Shipment Held
                                 s->>s: /shipment/update<br />Update status to 'hold'
@@ -287,7 +288,7 @@
                                 note right of r: Receiver can now see shipment has been delivered
                                 deactivate s
                                 activate r
-                                r->>r: /shipment/update<br />Update status to 'received'
+                                r->>r: /shipment/update<br />Update status to 'received'.
                                 r-->>s: Sends Message to Sender<br>with status update notice
                                 note left of s: Receiver can now see shipment has been delivered
                                 r->>r: /shipment/update<br />Update status to 'confirmed'
@@ -425,10 +426,11 @@
 
         <p><span style="font-weight: bold;">WARNING:</span> Unstable software and environments. Use at your own risk! Data persistence at risk of unexpected reset!</p>
 
-        <h2>v0.9.3 Release Notes 2022-05-02</h2>
+        <h2>v0.9.4 Release Notes 2022-05-03</h2>
         <h4>API Dashboard:</h4>
         <ul>
             <li>Stability bug fixes. Now exposes the full functionality of the FGT API;</li>
+            <li>The shipment sequence diagram (on an MAH page only) explains that the receiver shipmentId is prefixed with the senderId.</li>
         </ul>
 
         <h2>v0.9.0 Release Notes 2022-04-29</h2>
