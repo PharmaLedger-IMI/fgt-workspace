@@ -1,10 +1,10 @@
 {
   "name": {
-    "secret": "Zuellig Pharma Holdings Pte. Ltd.",
+    "secret": "Zuellig Pharma Ltd.",
     "public": true
   },
   "id": {
-    "secret": "PHA228233",
+    "secret": "PHA228233000",
     "public": true
   },
   "email": {
@@ -12,7 +12,7 @@
     "public": true
   },
   "address": {
-    "secret": "Singapore, Singapore",
+    "secret": "47 Scotts Road, Goldbell Towers, Singapore",
     "public": true
   },
   "pass": {
