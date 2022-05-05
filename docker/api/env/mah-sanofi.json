@@ -4,7 +4,7 @@
     "public": true
   },
   "id": {
-    "secret": "MAH196261989",
+    "secret": "MAH08163586",
     "public": true
   },
   "email": {
@@ -13,7 +13,8 @@
   },
   "address": {
     "required": true,
-    "public": true
+    "public": true,
+    "secret": "Paris, France"
   },
   "pass": {
     "required": true,

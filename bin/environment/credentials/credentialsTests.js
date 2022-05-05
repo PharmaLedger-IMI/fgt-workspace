@@ -387,7 +387,7 @@ const SANOFI =  {
         "required": true
     },
     "id": {
-        "secret": "MAH196261989",
+        "secret": "MAH08163586",
         "public": true,
         "required": true
     },
