@@ -121,7 +121,7 @@ class SimpleShipmentManager extends Manager {
             simpleShipment.shipmentId = self._genCompostKey(simpleShipment);
             self.simpleShipmentService.create(simpleShipment, (err, keySSI, shipmentLinesSSIs) => {
                 if (err)
-                    return callbackCancelBatch(`Could not create product DSU for ${simpleShipment.orderId}`);
+                    return callbackCancelBatch(err);
                 const shipmentSSI = keySSI.getIdentifier();
                 const readSSI = keySSI.derive().getIdentifier();
                 log("Shipment SSI=" + shipmentSSI);
