@@ -8,12 +8,18 @@
  * 
  * Example: 
  * fgt-workspace/bin/environment$ node --unhandled-rejections=strict wsCreateStuff.js 
- *
- * Please add a -sleep=NNNNN (default is 2000 miliseconds = 2 seconds)
+ * 
+ * See --help for options.
+ * 
+ * Please add a --sleep=NNNNN (default is 2000 miliseconds = 2 seconds)
  * between shipment operations to allow for messages betweem participants to be processed.
  * At least 10 seconds seems to be required.
  * For BC --istanbul.blockperiod 1 (1 second per new block) this timing needs to
  * be 80 seconds (80000 ms) or more.
+ * 
+ * Example for fgt-dev: 
+ * fgt-workspace/bin/environment$ node --unhandled-rejections=strict wsCreateStuff.js --env=dev --sleep=80000 2>&1 | tee -a wsCreateStuffDev.log
+ *
  */
 
 const http = require('http');
