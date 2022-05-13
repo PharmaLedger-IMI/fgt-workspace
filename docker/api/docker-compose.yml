@@ -193,6 +193,9 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.62
+    depends_on:
+      mah-roche:
+        condition: service_healthy
   mah-gsk:
     <<: *mah-def
     container_name: mah-gsk
@@ -228,6 +231,9 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.63
+    depends_on:
+      mah-bayer:
+        condition: service_healthy
   mah-msd:
     <<: *mah-def
     container_name: mah-msd
@@ -263,6 +269,9 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.64
+    depends_on:
+      mah-gsk:
+        condition: service_healthy
   mah-novo-nordisk:
     <<: *mah-def
     container_name: mah-novo-nordisk
@@ -298,6 +307,9 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.65
+    depends_on:
+      mah-msd:
+        condition: service_healthy
   mah-pfizer:
     <<: *mah-def
     container_name: mah-pfizer
@@ -333,6 +345,9 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.66
+    depends_on:
+      mah-novo-nordisk:
+        condition: service_healthy
   mah-takeda:
     <<: *mah-def
     container_name: mah-takeda
@@ -368,6 +383,9 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.67
+    depends_on:
+      mah-pfizer:
+        condition: service_healthy
   mah-sanofi:
     <<: *mah-def
     container_name: mah-sanofi
@@ -403,6 +421,9 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.68
+    depends_on:
+      mah-takeda:
+        condition: service_healthy
 
   whs-1:
     << : *whs-def
@@ -477,6 +498,9 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.102
+    depends_on:
+      whs-1:
+        condition: service_healthy
   whs-takeda:
     <<: *whs-def
     container_name: whs-takeda
@@ -513,6 +537,9 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.103
+    depends_on:
+      whs-2:
+        condition: service_healthy
 
   pha-1:
     << : *pha-def
@@ -586,6 +613,10 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.152
+    depends_on:
+      pha-1:
+        condition: service_healthy
+
   pha-zuellig:
     <<: *pha-def
     container_name: pha-zuellig
@@ -622,6 +653,9 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.153
+    depends_on:
+      pha-2:
+        condition: service_healthy
 
 networks:
   traceability-net:
