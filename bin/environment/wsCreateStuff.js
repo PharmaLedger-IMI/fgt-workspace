@@ -501,6 +501,7 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     if (shipmentId !== resC.shipmentId) {
         throw new Error("shipment/create "+shipment+" reply has an inconsistency in the shipmentId. Received: "+ resC.shipmentId + "Expected: "+ shipmentId);
     }
+    await sleep(SLEEP_MS);
     const resUPickup = await jsonPut(conf, sender, {
         path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
         body: {
