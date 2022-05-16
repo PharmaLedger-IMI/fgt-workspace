@@ -164,6 +164,7 @@ if (conf.sleep) {
 // Based on
 // https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
 function sleep(millis) {
+    console.log("Sleep "+millis+"ms");
     return new Promise(resolve => setTimeout(resolve, millis));
 }
 
@@ -444,7 +445,6 @@ const batchesUpdateTest = async function (conf, mah, mySales) {
         throw new Error("batch/update "+soldProduct.batchNumber+" reply has no batchStatus: "+JSON.stringify(resQ));
     }
 
-    console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
 
     const resC = await jsonPut(conf, mah, {
@@ -458,7 +458,6 @@ const batchesUpdateTest = async function (conf, mah, mySales) {
         throw new Error("batch/update "+soldProduct.batchNumber+" reply has no batchStatus: "+JSON.stringify(resC));
     }
 
-    console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
 
     const resR = await jsonPut(conf, mah, {
@@ -472,7 +471,6 @@ const batchesUpdateTest = async function (conf, mah, mySales) {
         throw new Error("batch/update "+soldProduct.batchNumber+" reply has no batchStatus: "+JSON.stringify(resR));
     }
 
-    console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
 
     return resR;
@@ -513,7 +511,6 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     if (!shipmentId2) {
         throw Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUPickup));
     }
-    console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
     const resUTransit = await jsonPut(conf, sender, {
         path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
@@ -526,7 +523,6 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     if (!shipmentId3) {
         throw Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUTransit));
     }
-    console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
     const resUDelivered = await jsonPut(conf, sender, {
         path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
@@ -539,7 +535,6 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     if (!shipmentId4) {
         throw Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUDelivered));
     }
-    console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
     const resUReceived = await jsonPut(conf, receiver, {
         path: `/traceability/shipment/update/${encodeURI(receiverShipmentId)}`,
@@ -552,7 +547,6 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     if (!shipmentId5) {
         throw Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUReceived));
     }
-    console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
     const resUConfirmed = await jsonPut(conf, receiver, {
         path: `/traceability/shipment/update/${encodeURI(receiverShipmentId)}`,
@@ -566,7 +560,6 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
         throw new Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUConfirmed));
     }
 
-    console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
 
     return resUConfirmed;
@@ -704,7 +697,6 @@ const salesCreateTest = async function (conf, manufActor, sellerActor, mySales) 
         }
         mySales.push(resSale);
 
-        console.log("Sleep " + SLEEP_MS + "ms");
         await sleep(SLEEP_MS);
 
         i++;
@@ -750,7 +742,6 @@ const salesCreateTest = async function (conf, manufActor, sellerActor, mySales) 
         }
         mySales.push(resSale);
 
-        console.log("Sleep " + SLEEP_MS + "ms");
         await sleep(SLEEP_MS);
 
         i++;
@@ -781,7 +772,6 @@ const traceabilityCreateTest = async function (conf, actor, mySales) {
             if (!res["1"]) {
                 throw new Error("traceability/create "+product.batchNumber+" at "+actor.id.secret+" reply has no data: "+JSON.stringify(res));
             }
-            console.log("Sleep " + SLEEP_MS + "ms");
             await sleep(SLEEP_MS);
         }
     }
@@ -807,7 +797,6 @@ const receiptsGetTest = async function (conf, actor, mySales) {
             if (!res.sellerId) {
                 throw new Error("receipt/get "+product.batchNumber+" at "+actor.id.secret+" reply has no data: "+JSON.stringify(res));
             }
-            console.log("Sleep " + SLEEP_MS + "ms");
             await sleep(SLEEP_MS);
         }
     }
