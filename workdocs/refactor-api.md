@@ -16,7 +16,7 @@
 - Add `GLN` FGT REST API (CRUD operations);
 
 
-##### UI:
+##### UI (includes REST API, OpenAPI/Swagger UI + examples and schemas, plush Dashboard UI):
  - Update `Shipment`, `ShipmentLine`, `Batch`, `Sale`, `Receipts`, `Stock` and `Traceability` swagger APIs for all `CRUD` operations
  - Add `GLN` swagger APIs (all `CRUD` operations)
  - All `Batch` management screens: (`Batch` List item, `Batch` Chip, and `Batch` WebComponents)
