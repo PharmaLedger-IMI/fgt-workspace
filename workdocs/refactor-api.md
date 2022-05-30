@@ -12,21 +12,22 @@
    - Stock will have to be managed for n GLNs per wallet. that means, for performance and OpenDSU's concurrency's sake, to split one 'database table' into n tables;
      - This specifically means a lot of concurrency and stress testing... OpenDSU Wallet databases are not REAL databases... this single change alone might make it worthwhile to integrate with an actual database
    - All current stock calculations and traceability math will have to be changed;
-- Update `Shipment`, `ShipmentLine`, `Batch`, `Sale`, `Receipts`, `Stock` and `Traceability` FGT REST APIs;
-- Add `GLN` FGT REST API;
+- Update `Shipment`, `ShipmentLine`, `Batch`, `Sale`, `Receipts`, `Stock` and `Traceability` FGT REST APIs (for all `CRUD` operations);
+- Add `GLN` FGT REST API (CRUD operations);
 
 
 ##### UI:
- - Update `Shipment`, `ShipmentLine`, `Batch`, `Sale`, `Receipts`, `Stock` and `Traceability` swagger APIs
- - Ad `GLN` swagger APIs
+ - Update `Shipment`, `ShipmentLine`, `Batch`, `Sale`, `Receipts`, `Stock` and `Traceability` swagger APIs for all `CRUD` operations
+ - Add `GLN` swagger APIs (all `CRUD` operations)
  - All `Batch` management screens: (`Batch` List item, `Batch` Chip, and `Batch` WebComponents)
  - All `Shipment` management screens: (`Shipment` List item, new `Shipment` and manage `Shipment` WebComponents)
  - All `ShipmentLine` management screens: (`ShipmentLine` List item WebComponent)
  - All `Sale` management screens: (`Sale` List item, new `Sale`, `Sale` Chip and manage `Sale` WebComponents)
  - All `Receipt` management screens: (`Receipt` List item, manage `Receipt` WebComponents)
- - All `Stock` management screens: (`Stock` List item)
+ - All `Stock` management screens: (`Stock` List item, `Stock Table` and manage `Stock`)
  - All controllers for all the above models: `Shipment`, `ShipmentLine`, `Batch`, `Sale`, `Receipt`, `Stock` and `Traceability`
 
+- This obviously also means integration retesting every change...
 
 ##### Questions:
 - How to we ensure the GLNs match each participant. How can we ensure the data is and valid? Without a validation mechanism, any participant can claim he sends from GLN X and remove trust in the traceability;
