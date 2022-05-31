@@ -226,11 +226,74 @@ Open a new console inside *fgt-workspace* folder and run:
 $ npm run build-all
 ```
 
-#### Step 4: Build Environment (optional).
+#### Step 4a: Run one participant REST services.
 
-Open a new console inside *fgt-workspace* folder and run:
-- For a test environment setup (random data/credentials): ```npm run environment-trace```;
-- For *THE* test setup (with predefined credentials/data): ```npm run environment-test```;
+Choose if you want to run a MAH, WHS, ou PHA.
+
+For MAH:
+```sh
+cd fgt-api
+npm run run-mah
+```
+
+Change the command to "npm run run-whs" or "npm run run-pha" for other participant category.
+
+Credentials for the API are defined in files 
+```sh
+fgt-api/config/
+├── fgt-mah-wallet
+│   └── credentials.json
+├── fgt-pharmacy-wallet
+│   └── credentials.json
+├── fgt-wholesaler-wallet
+│   └── credentials.json
+└── readme.md
+```
+
+API calls need HTTP BASIC Auth using the credentials defined above. Username is the "id" secret property value (in the credentials.json file). The password is the "pass" secret property value.
+
+Example to list all products:
+
+```sh
+curl -X 'GET' \
+  'http://localhost:8081/traceability/product/getAll?page=1&itemPerPage=10&sort=dsc' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Basic TUFIMTE2MjY3OTg2OlRoaXMxc1N1Y2hBUzNjdXJlUGFzc3cwcmQ='
+```
+
+#### Step 4b: Run one participant OpenAPI/Swagger.
+
+On another terminal, 
+
+```sh
+cd fgt-api
+npm run run-swagger
+```
+
+You can open the URL http://localhost:3009 and use the Swagger UI to invoke the REST services.
+
+
+#### Step 4b: Build and install one participant's Dashboard
+
+On another terminal, 
+
+```sh
+cd fgt-api
+npm run build-api-mah-dashboard
+npm run export-api-credentials -- --role=mah
+```
+
+(Replace "mah" with "whs" or "pha" as appropriate).
+
+Open the browser at http://localhost:8080/dashboard/
+
+(The password should be pre-filled).
+
+
+#### Run all participants
+
+You need several instances to test that.
+See docker/api/bootCompose.sh that starts several dockers for the DEV/TST environments.
 
 
 ### Documentation
