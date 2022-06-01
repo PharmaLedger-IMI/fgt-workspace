@@ -7,7 +7,7 @@ services:
         ipv4_address: 172.16.63.51
       qbn-net:
         ipv4_address: 172.16.16.51
-    command: ["/bin/bash", "-c", "cd /fgt-workspace ; npm run switch-to-test-chain ; npm run server & ( sleep 5s ; npm run build-all ; tail -f /dev/null )"]
+    command: ["/bin/sh", "-c", "/fgt-workspace/docker/api/traceability/startup-script-bc.sh"]
 
 networks:
   qbn-net:
