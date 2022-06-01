@@ -3,7 +3,7 @@
 #
 # docker build --build-arg GIT_BRANCH=v0.9.6 -t fgt:v0.9.6 --rm=false --pull --network host -f=Dockerfile .
 #
-FROM node:14.17.4-alpine
+FROM node:16.14.2-alpine
 
 # The tag, branch or commit hash to clone.
 ARG GIT_BRANCH

@@ -10,10 +10,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "node ./node_modules/octopus/scripts/run docs devmode"
   },
-  "engines": {
-    "node": "~12",
-    "npm": "~6"
-  },
   "dependencies": {
     "octopus": "git+https://github.com/PrivateSky/octopus.git"
   },

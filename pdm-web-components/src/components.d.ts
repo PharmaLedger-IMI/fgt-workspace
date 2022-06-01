@@ -549,6 +549,150 @@ export namespace Components {
         "objectTree": object;
     }
 }
+export interface BatchChipCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBatchChipElement;
+}
+export interface CreateManageViewLayoutCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLCreateManageViewLayoutElement;
+}
+export interface DashboardTokenInputCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLDashboardTokenInputElement;
+}
+export interface FormValidateSubmitCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLFormValidateSubmitElement;
+}
+export interface GenericChipCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLGenericChipElement;
+}
+export interface LineStockManagerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLLineStockManagerElement;
+}
+export interface ManagedBatchCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedBatchElement;
+}
+export interface ManagedBatchDashboardCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedBatchDashboardElement;
+}
+export interface ManagedBatchListItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedBatchListItemElement;
+}
+export interface ManagedIndividualProductCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedIndividualProductElement;
+}
+export interface ManagedIndividualProductChipCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedIndividualProductChipElement;
+}
+export interface ManagedIndividualProductListItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedIndividualProductListItemElement;
+}
+export interface ManagedNotificationsListItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedNotificationsListItemElement;
+}
+export interface ManagedOrderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedOrderElement;
+}
+export interface ManagedOrderListItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedOrderListItemElement;
+}
+export interface ManagedOrderlineStockChipCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedOrderlineStockChipElement;
+}
+export interface ManagedProductCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedProductElement;
+}
+export interface ManagedProductListItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedProductListItemElement;
+}
+export interface ManagedSaleCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedSaleElement;
+}
+export interface ManagedSaleListItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedSaleListItemElement;
+}
+export interface ManagedShipmentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedShipmentElement;
+}
+export interface ManagedShipmentListItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedShipmentListItemElement;
+}
+export interface ManagedShipmentlineListItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedShipmentlineListItemElement;
+}
+export interface ManagedSimpleShipmentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedSimpleShipmentElement;
+}
+export interface ManagedStockListItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedStockListItemElement;
+}
+export interface ManagedStockProductInputCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedStockProductInputElement;
+}
+export interface MenuTabButtonCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLMenuTabButtonElement;
+}
+export interface MoreChipCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLMoreChipElement;
+}
+export interface PdmBarcodeScannerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPdmBarcodeScannerElement;
+}
+export interface PdmIonTableCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPdmIonTableElement;
+}
+export interface PdmItemOrganizerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPdmItemOrganizerElement;
+}
+export interface PdmSearchBarCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPdmSearchBarElement;
+}
+export interface SimpleManagedProductItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSimpleManagedProductItemElement;
+}
+export interface StatusUpdaterCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLStatusUpdaterElement;
+}
+export interface StatusUpdaterButtonCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLStatusUpdaterButtonElement;
+}
+export interface TrackedSerialChipCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLTrackedSerialChipElement;
+}
 declare global {
     interface HTMLBarcodeGeneratorElement extends Components.BarcodeGenerator, HTMLStencilElement {
     }
@@ -905,7 +1049,7 @@ declare namespace LocalJSX {
         "gtinBatch"?: string;
         "loaderType"?: string;
         "mode"?: string;
-        "onSelectEvent"?: (event: CustomEvent<string>) => void;
+        "onSelectEvent"?: (event: BatchChipCustomEvent<string>) => void;
         "quantity"?: number;
     }
     interface CreateManageViewLayout {
@@ -917,11 +1061,11 @@ declare namespace LocalJSX {
         "iconName"?: string;
         "isCreate"?: boolean;
         "manageTitleString"?: string;
-        "onCreateEvent"?: (event: CustomEvent<{}>) => void;
-        "onGoBackEvent"?: (event: CustomEvent<any>) => void;
+        "onCreateEvent"?: (event: CreateManageViewLayoutCustomEvent<{}>) => void;
+        "onGoBackEvent"?: (event: CreateManageViewLayoutCustomEvent<any>) => void;
     }
     interface DashboardTokenInput {
-        "onFgt-api-password-submit"?: (event: CustomEvent<any>) => void;
+        "onFgt-api-password-submit"?: (event: DashboardTokenInputCustomEvent<any>) => void;
         "value"?: string;
     }
     interface FormInput {
@@ -941,21 +1085,21 @@ declare namespace LocalJSX {
         /**
           * Through this event action requests are made
          */
-        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        "onSsapp-action"?: (event: FormValidateSubmitCustomEvent<any>) => void;
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-navigate-tab"?: (event: FormValidateSubmitCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: FormValidateSubmitCustomEvent<any>) => void;
     }
     interface GenericChip {
         "chipLabel"?: string;
         "color"?: string;
         "hideButtons"?: boolean;
-        "onSelectEvent"?: (event: CustomEvent<string>) => void;
+        "onSelectEvent"?: (event: GenericChipCustomEvent<string>) => void;
         "outline"?: boolean;
     }
     interface LineStockManager {
@@ -969,15 +1113,15 @@ declare namespace LocalJSX {
         /**
           * Through this select events are sent
          */
-        "onSelectEvent"?: (event: CustomEvent<string>) => void;
+        "onSelectEvent"?: (event: LineStockManagerCustomEvent<string>) => void;
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-navigate-tab"?: (event: LineStockManagerCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: LineStockManagerCustomEvent<any>) => void;
         "orderMissingString"?: string;
         "remainingString"?: string;
         "resetAllString"?: string;
@@ -1005,19 +1149,19 @@ declare namespace LocalJSX {
         /**
           * Through this event action requests are made
          */
-        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        "onSsapp-action"?: (event: ManagedBatchCustomEvent<any>) => void;
         /**
           * Through this event back navigation requests are made
          */
-        "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
+        "onSsapp-back-navigate"?: (event: ManagedBatchCustomEvent<any>) => void;
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-navigate-tab"?: (event: ManagedBatchCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedBatchCustomEvent<any>) => void;
         "serialsPlaceholderString"?: string;
         "serialsString"?: string;
         "statuses"?: any;
@@ -1035,19 +1179,19 @@ declare namespace LocalJSX {
         /**
           * Through this event action requests are made
          */
-        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        "onSsapp-action"?: (event: ManagedBatchDashboardCustomEvent<any>) => void;
         /**
           * Through this event back navigation requests are made
          */
-        "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
+        "onSsapp-back-navigate"?: (event: ManagedBatchDashboardCustomEvent<any>) => void;
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-navigate-tab"?: (event: ManagedBatchDashboardCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedBatchDashboardCustomEvent<any>) => void;
         "serialsPlaceholderString"?: string;
         "serialsString"?: string;
         "statuses"?: any;
@@ -1056,15 +1200,15 @@ declare namespace LocalJSX {
     interface ManagedBatchListItem {
         "gtinBatch"?: string;
         "isHeader"?: boolean;
-        "onFgt-request-stock-trace"?: (event: CustomEvent<any>) => void;
+        "onFgt-request-stock-trace"?: (event: ManagedBatchListItemCustomEvent<any>) => void;
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-navigate-tab"?: (event: ManagedBatchListItemCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedBatchListItemCustomEvent<any>) => void;
     }
     interface ManagedIndividualProduct {
         "backString"?: string;
@@ -1078,15 +1222,15 @@ declare namespace LocalJSX {
         /**
           * Through this event action requests are made
          */
-        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        "onSsapp-action"?: (event: ManagedIndividualProductCustomEvent<any>) => void;
         /**
           * Through this event back navigation requests are made
          */
-        "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
+        "onSsapp-back-navigate"?: (event: ManagedIndividualProductCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedIndividualProductCustomEvent<any>) => void;
         "serialString"?: string;
         "statusString"?: string;
         "statuses"?: any;
@@ -1096,7 +1240,7 @@ declare namespace LocalJSX {
         "expiry"?: string;
         "expiryThreshold"?: number;
         "gtin"?: string;
-        "onSelectEvent"?: (event: CustomEvent<string>) => void;
+        "onSelectEvent"?: (event: ManagedIndividualProductChipCustomEvent<string>) => void;
         "serials"?: string;
     }
     interface ManagedIndividualProductListItem {
@@ -1105,30 +1249,30 @@ declare namespace LocalJSX {
         /**
           * Through this event tracking requests are made
          */
-        "onFgt-track-request"?: (event: CustomEvent<any>) => void;
+        "onFgt-track-request"?: (event: ManagedIndividualProductListItemCustomEvent<any>) => void;
         /**
           * Through this event action requests are made
          */
-        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        "onSsapp-action"?: (event: ManagedIndividualProductListItemCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedIndividualProductListItemCustomEvent<any>) => void;
         "showCloseButton"?: boolean;
         "showTrackButton"?: boolean;
     }
     interface ManagedNotificationsListItem {
         "isHeader"?: boolean;
         "notificationid"?: string;
-        "onFgt-track-request"?: (event: CustomEvent<any>) => void;
+        "onFgt-track-request"?: (event: ManagedNotificationsListItemCustomEvent<any>) => void;
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-navigate-tab"?: (event: ManagedNotificationsListItemCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedNotificationsListItemCustomEvent<any>) => void;
     }
     interface ManagedOrder {
         "availableString"?: string;
@@ -1149,15 +1293,15 @@ declare namespace LocalJSX {
         /**
           * Through this event action requests are made
          */
-        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        "onSsapp-action"?: (event: ManagedOrderCustomEvent<any>) => void;
         /**
           * Through this event back navigation requests are made
          */
-        "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
+        "onSsapp-back-navigate"?: (event: ManagedOrderCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedOrderCustomEvent<any>) => void;
         "orderLines"?: string;
         "orderLinesString"?: string;
         "orderMissingString"?: string;
@@ -1184,11 +1328,11 @@ declare namespace LocalJSX {
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-navigate-tab"?: (event: ManagedOrderListItemCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedOrderListItemCustomEvent<any>) => void;
         "orderId"?: string;
         "type"?: string;
     }
@@ -1201,7 +1345,7 @@ declare namespace LocalJSX {
         /**
           * Through this event actions are passed
          */
-        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        "onSsapp-action"?: (event: ManagedOrderlineStockChipCustomEvent<any>) => void;
         "quantity"?: number;
         "threshold"?: number;
     }
@@ -1222,19 +1366,19 @@ declare namespace LocalJSX {
         /**
           * Through this event action requests are made
          */
-        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        "onSsapp-action"?: (event: ManagedProductCustomEvent<any>) => void;
         /**
           * Through this event back navigation requests are made
          */
-        "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
+        "onSsapp-back-navigate"?: (event: ManagedProductCustomEvent<any>) => void;
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-navigate-tab"?: (event: ManagedProductCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedProductCustomEvent<any>) => void;
         "titleString"?: string;
     }
     interface ManagedProductListItem {
@@ -1244,11 +1388,11 @@ declare namespace LocalJSX {
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-navigate-tab"?: (event: ManagedProductListItemCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedProductListItemCustomEvent<any>) => void;
     }
     interface ManagedSale {
         "backString"?: string;
@@ -1259,12 +1403,12 @@ declare namespace LocalJSX {
         /**
           * Through this event action requests are made
          */
-        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        "onSsapp-action"?: (event: ManagedSaleCustomEvent<any>) => void;
         /**
           * Through this event back navigation requests are made
          */
-        "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-back-navigate"?: (event: ManagedSaleCustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedSaleCustomEvent<any>) => void;
         "productString"?: string;
         "quantityString"?: string;
         "saleRef"?: string;
@@ -1277,11 +1421,11 @@ declare namespace LocalJSX {
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-navigate-tab"?: (event: ManagedSaleListItemCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedSaleListItemCustomEvent<any>) => void;
         "saleRef"?: string;
     }
     interface ManagedShipment {
@@ -1299,15 +1443,15 @@ declare namespace LocalJSX {
         /**
           * Through this event action requests are made
          */
-        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        "onSsapp-action"?: (event: ManagedShipmentCustomEvent<any>) => void;
         /**
           * Through this event back navigation requests are made
          */
-        "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
+        "onSsapp-back-navigate"?: (event: ManagedShipmentCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedShipmentCustomEvent<any>) => void;
         "orderIdString"?: string;
         "orderJSON"?: string;
         "orderMissingString"?: string;
@@ -1334,11 +1478,11 @@ declare namespace LocalJSX {
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-navigate-tab"?: (event: ManagedShipmentListItemCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedShipmentListItemCustomEvent<any>) => void;
         "shipmentId"?: string;
         "shipmentLineCount"?: number;
         "type"?: string;
@@ -1352,11 +1496,11 @@ declare namespace LocalJSX {
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-navigate-tab"?: (event: ManagedShipmentlineListItemCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedShipmentlineListItemCustomEvent<any>) => void;
         "quantityLabel"?: string;
         "requesterLabel"?: string;
         "senderLabel"?: string;
@@ -1378,15 +1522,15 @@ declare namespace LocalJSX {
         /**
           * Through this event action requests are made
          */
-        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        "onSsapp-action"?: (event: ManagedSimpleShipmentCustomEvent<any>) => void;
         /**
           * Through this event back navigation requests are made
          */
-        "onSsapp-back-navigate"?: (event: CustomEvent<any>) => void;
+        "onSsapp-back-navigate"?: (event: ManagedSimpleShipmentCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedSimpleShipmentCustomEvent<any>) => void;
         "orderIdString"?: string;
         "orderMissingString"?: string;
         "productsCodeString"?: string;
@@ -1410,15 +1554,15 @@ declare namespace LocalJSX {
     interface ManagedStockListItem {
         "gtin"?: string;
         "isHeader"?: boolean;
-        "onFgt-track-request"?: (event: CustomEvent<any>) => void;
+        "onFgt-track-request"?: (event: ManagedStockListItemCustomEvent<any>) => void;
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-navigate-tab"?: (event: ManagedStockListItemCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedStockListItemCustomEvent<any>) => void;
     }
     interface ManagedStockProductInput {
         "directoryString"?: string;
@@ -1429,7 +1573,7 @@ declare namespace LocalJSX {
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: ManagedStockProductInputCustomEvent<any>) => void;
         "productsCodeString"?: string;
         "productsString"?: string;
         "quantityString"?: string;
@@ -1444,7 +1588,7 @@ declare namespace LocalJSX {
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-navigate-tab"?: (event: CustomEvent<any>) => void;
+        "onSsapp-navigate-tab"?: (event: MenuTabButtonCustomEvent<any>) => void;
         /**
           * the tab name or a list of options like: [  {    label: '...',    tab: 'tab name'  } ]
          */
@@ -1458,7 +1602,7 @@ declare namespace LocalJSX {
         /**
           * Through this event the clickEvent is passed
          */
-        "onSsapp-show-more"?: (event: CustomEvent<any>) => void;
+        "onSsapp-show-more"?: (event: MoreChipCustomEvent<any>) => void;
     }
     interface MultiSpinner {
         "type"?: string;
@@ -1470,11 +1614,11 @@ declare namespace LocalJSX {
         /**
           * Through this event data is passed
          */
-        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        "onSsapp-action"?: (event: PdmBarcodeScannerCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: PdmBarcodeScannerCustomEvent<any>) => void;
         "timeout"?: number;
     }
     interface PdmBarcodeScannerController {
@@ -1530,7 +1674,7 @@ declare namespace LocalJSX {
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: PdmIonTableCustomEvent<any>) => void;
         "pageCount"?: number;
         "paginated"?: boolean;
         "searchBarPlaceholder"?: string;
@@ -1565,13 +1709,13 @@ declare namespace LocalJSX {
         "moreChipsPosition"?: "start" | "end";
         "moreIcon"?: string;
         "moreLabel"?: string;
-        "onSelectEvent"?: (event: CustomEvent<string>) => void;
+        "onSelectEvent"?: (event: PdmItemOrganizerCustomEvent<string>) => void;
         "orientation"?: "between" | "end" | "evenly" | "around" | "center" | "start";
         "singleLine"?: boolean;
     }
     interface PdmSearchBar {
         "btnLabel"?: string;
-        "onSearchEvt"?: (event: CustomEvent<any>) => void;
+        "onSearchEvt"?: (event: PdmSearchBarCustomEvent<any>) => void;
         "placeholder"?: string;
     }
     interface PdmSsappLoader {
@@ -1583,11 +1727,11 @@ declare namespace LocalJSX {
         /**
           * Through this event navigation requests to tabs are made
          */
-        "onSsapp-action"?: (event: CustomEvent<any>) => void;
+        "onSsapp-action"?: (event: SimpleManagedProductItemCustomEvent<any>) => void;
         /**
           * Through this event errors are passed
          */
-        "onSsapp-send-error"?: (event: CustomEvent<any>) => void;
+        "onSsapp-send-error"?: (event: SimpleManagedProductItemCustomEvent<any>) => void;
     }
     interface SlideInBoard {
     }
@@ -1601,7 +1745,7 @@ declare namespace LocalJSX {
         /**
           * Through this event action requests are made
          */
-        "onStatusUpdateEvent"?: (event: CustomEvent<any>) => void;
+        "onStatusUpdateEvent"?: (event: StatusUpdaterCustomEvent<any>) => void;
         "pastString"?: string;
         "statesJSON"?: any;
         "updateString"?: string;
@@ -1614,7 +1758,7 @@ declare namespace LocalJSX {
         "expand"?: string;
         "fill"?: string;
         "individualProperties"?: string;
-        "onClickUpdaterButton"?: (event: CustomEvent<any>) => void;
+        "onClickUpdaterButton"?: (event: StatusUpdaterButtonCustomEvent<any>) => void;
         "popupOptions"?: string;
         "shape"?: string;
         "showAddDetail"?: boolean;
@@ -1626,7 +1770,7 @@ declare namespace LocalJSX {
         /**
           * Through this event tracking requests are made
          */
-        "onFgt-track-request"?: (event: CustomEvent<any>) => void;
+        "onFgt-track-request"?: (event: TrackedSerialChipCustomEvent<any>) => void;
         "outline"?: boolean;
         "reference"?: string;
     }

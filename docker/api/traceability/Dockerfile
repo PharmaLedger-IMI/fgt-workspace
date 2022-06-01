@@ -5,7 +5,7 @@
 # This Dockerfile should be identical to ../Dockerfile, with the exception of
 # exposed ports.
 #
-FROM node:14.17.4-alpine
+FROM node:16.14.2-alpine
 
 # The tag, branch or commit hash to clone.
 ARG GIT_BRANCH
