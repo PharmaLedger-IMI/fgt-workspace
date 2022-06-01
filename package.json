@@ -56,8 +56,8 @@
   },
   "homepage": "https://github.com/PharmaLedger-IMI/fgt-workspace#readme",
   "engines": {
-    "node": "~14",
-    "npm": "~6"
+    "node": ">=14",
+    "npm": ">=6"
   },
   "dependencies": {
     "octopus": "git+https://github.com/PrivateSky/octopus.git"
