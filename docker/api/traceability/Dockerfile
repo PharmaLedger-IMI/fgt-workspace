@@ -1,3 +1,4 @@
+#
 # Docker image build for Finished Goods Traceability (FGT)
 #
 FROM node:14.17.4-alpine
@@ -19,9 +20,6 @@ WORKDIR /fgt-workspace
 # Build the software - Note: Clone by specific tag or branch
 RUN git clone -b ${GIT_BRANCH} --single-branch --depth 1 https://github.com/PharmaLedger-IMI/fgt-workspace.git . && \
     npm install --unsafe-perm
-
-# copy bdns+domain configuration files from local context
-COPY config/ apihub-root/external-volume/config/
 
 # Remove all Git related files and directories - see https://gist.github.com/facelordgists/80e868ff5e315878ecd6
 RUN find . \( -name ".git" -o -name ".gitignore" -o -name ".gitmodules" -o -name ".gitattributes" \) -exec rm -rf -- {} +
