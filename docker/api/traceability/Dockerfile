@@ -1,28 +1,52 @@
-FROM node:14.16-buster
+# Docker image build for Finished Goods Traceability (FGT)
+#
+FROM node:14.17.4-alpine
+
+# The tag, branch or commit hash to clone.
+ARG GIT_BRANCH
+ENV GIT_BRANCH=${GIT_BRANCH:-master}
+
+RUN apk --no-cache add git curl && apk add --no-cache --upgrade bash
 
 RUN npm install -g node-gyp
 
-ENV TARGET_FOLDER_NAME="fgt-workspace"
-RUN git clone https://github.com/PharmaLedger-IMI/fgt-workspace.git $TARGET_FOLDER_NAME
+# create folder fgt-workspace and change its owner to pre-existing user 'node'
+RUN mkdir -p /fgt-workspace
 
-RUN cd $TARGET_FOLDER_NAME && \
+#checkov:skip=CKV_DOCKER_3: "Ensure that a user for the container has been created"
+WORKDIR /fgt-workspace
+
+# Build the software - Note: Clone by specific tag or branch
+RUN git clone -b ${GIT_BRANCH} --single-branch --depth 1 https://github.com/PharmaLedger-IMI/fgt-workspace.git . && \
     npm install --unsafe-perm
 
-COPY config/ $TARGET_FOLDER_NAME/apihub-root/external-volume/config/
+# copy bdns+domain configuration files from local context
+COPY config/ apihub-root/external-volume/config/
 
-RUN cd $TARGET_FOLDER_NAME && \
-    echo 'npm run server & \n sleep 5s \n npm run build-all \n tail -f /dev/null' >> startup-script.sh
-RUN cd $TARGET_FOLDER_NAME && cat startup-script.sh
+# Remove all Git related files and directories - see https://gist.github.com/facelordgists/80e868ff5e315878ecd6
+RUN find . \( -name ".git" -o -name ".gitignore" -o -name ".gitmodules" -o -name ".gitattributes" \) -exec rm -rf -- {} +
 
-# #30 alternative startup script with ethAdapter
-RUN cd $TARGET_FOLDER_NAME && \
-    echo 'npm run switch-to-test-chain ; source startup-script.sh' >> startup-eth-script.sh
+# Save some space by removing directories not needed in production
+RUN rm -rf docs workdocs
 
-# #30 alternative startup script without ethAdapter
-RUN cd $TARGET_FOLDER_NAME && \
-    echo 'npm run switch-to-simul-chain ; source startup-script.sh' >> startup-noeth-script.sh
+# git no longer needed for runtime
+RUN apk del git
 
+# this is very slow, specially on the node_modules folder
+RUN chown -R node /fgt-workspace
+
+USER node
+
+CMD ["npm", "run", "server"]
+# The command above starts the apihub server, and never returns.
+# tracebility must additionally execute "npm run build-all".
+# participants must additionally execute "npm run build-all ; cd fgt-api && npm run boot-api " (or npm run boot-api-helm).
+# That needs to be perfomed by external tool.
+
+# APIHub & Dashboard - traceability only has apihub.
 EXPOSE 8080/tcp
+# FGT API - different for Wholesaler & Pharmacy
+# EXPOSE 8081/tcp
+# Swagger
+# EXPOSE 3009/tcp
 
-CMD cd $TARGET_FOLDER_NAME && \
-    bash startup-script.sh
