@@ -1,7 +1,9 @@
 #
-# Docker image build for Finished Goods Traceability (FGT)
+# Docker image build for Finished Goods Traceability (FGT) traceability domain.
 #
-# docker build --build-arg GIT_BRANCH=v0.9.6 -t fgt:v0.9.6 --rm=false --pull --network host -f=Dockerfile .
+# To publish an image, please use the Dockerfile at the parent folder.
+# This Dockerfile should be identical to ../Dockerfile, with the exception of
+# exposed ports.
 #
 FROM node:14.17.4-alpine
 
