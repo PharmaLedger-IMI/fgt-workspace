@@ -348,8 +348,10 @@ class SimpleShipmentManager extends Manager {
                                 self.batchAllow(self.directoryManager);
                                 const key = self.directoryManager._genCompostKey("product", gtin);
                                 self.directoryManager.getOne(key, (err, entry) => {
-                                    if (!err)
+                                    if (!err) {
+                                        self.batchDisallow(self.directoryManager);
                                         return cb();
+                                    }
                                     self.directoryManager.saveEntry("product", gtin, (err) => {
                                         self.batchDisallow(self.directoryManager);
                                         if (err)
