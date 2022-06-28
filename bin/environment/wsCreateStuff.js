@@ -34,6 +34,7 @@ const BatchStatus = require('../../fgt-dsu-wizard/model/BatchStatus');
 const credentials = require('./credentials/credentialsTests'); // TODO require ../../docker/api/env/mah-*.json ?
 const MAHS = [credentials.PFIZER, credentials.MSD, credentials.ROCHE, credentials.BAYER, credentials.NOVO_NORDISK, credentials.GSK, credentials.TAKEDA, credentials.SANOFI];
 const MAH_MSD = credentials.MSD;
+const MAH_ROCHE = credentials.ROCHE;
 const WSH1 = require("../../docker/api/env/whs-1.json");
 const WSH2 = require("../../docker/api/env/whs-2.json");
 const PHA1 = require("../../docker/api/env/pha-1.json");
@@ -119,7 +120,7 @@ if (process.argv.includes("--help")
 ) {
     console.log("Usage:");
     console.log();
-    console.log("\tnode --unhandled-rejections=strict wsCreateStuff.js [options]");
+    console.log("\tnode --unhandled-rejections=strict    wsCreateStuff.js [options]");
     console.log();
     console.log("Where options can be any of:");
     console.log();
@@ -824,15 +825,21 @@ process.stdout._handle.setBlocking(true);
     //console.log("Credentials", MAHS);
     //console.log("Products", products.getPfizerProducts());
     //console.log("Batches", MAH_MSD.batches);
-    for (const mah of MAHS) {
-        await productsCreate(conf, mah);
-        await batchesCreate(conf, mah);
-    };
+    if (conf.env == "single") {
+        // single only creates products and batches so far
+        await productsCreate(conf, MAH_ROCHE);
+        await batchesCreate(conf, MAH_ROCHE);
+    } else {
+        for (const mah of MAHS) {
+            await productsCreate(conf, mah);
+            await batchesCreate(conf, mah);
+        };
 
-    await shipmentsCreate(conf, MAH_MSD);
-    await salesCreate(conf, MAH_MSD, PHA1, MY_SALES);
-    await traceabilityCreate(conf, PHA1, MY_SALES);
-    await receiptsGet(conf, PHA1, MY_SALES);
+        await shipmentsCreate(conf, MAH_MSD);
+        await salesCreate(conf, MAH_MSD, PHA1, MY_SALES);
+        await traceabilityCreate(conf, PHA1, MY_SALES);
+        await receiptsGet(conf, PHA1, MY_SALES);
 
-    await batchesUpdate(conf, MAH_MSD, MY_SALES);
+        await batchesUpdate(conf, MAH_MSD, MY_SALES);
+    }
 })();
