@@ -73,11 +73,11 @@ class SimpleShipment {
         if (oldStatus && Shipment.getAllowedStatusUpdates(oldStatus).indexOf(this.status.status || this.status) === -1)
             errors.push(`Status update from ${oldStatus} to ${this.status.status || this.status} is not allowed`);
         
-        return errors.length === 0 ? undefined : errors;
+        return errors.length === 0 ? undefined : errors.join(", ");
     }
 
     allowedRequesterStatusUpdate() {
-        return [ShipmentStatus.RECEIVED, ShipmentStatus.CONFIRMED].includes(this.status.status);
+        return [ShipmentStatus.RECEIVED, ShipmentStatus.CONFIRMED, ShipmentStatus.REJECTED].includes(this.status.status);
     }
 }
 
