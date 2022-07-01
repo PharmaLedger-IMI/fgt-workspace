@@ -17,6 +17,7 @@ tags:
   - name: batch
   - name: shipment
   - name: stock
+  - name: stockTraceability
   - name: receipt
   - name: shipmentLine
   - name: traceability
@@ -1000,6 +1001,108 @@ paths:
             type: string
           required: true
           description: valid GTIN-14
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: application/json
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stock'
+              example:
+                name: string
+                gtin: string
+                description: string
+                manufName: string
+                batches:
+                  - batchNumber: string
+                    expiry: "2030-01-01"
+                    serialNumbers:
+                      - "0"
+                    quantity: 1
+                    batchStatus:
+                      status: 'commissioned'
+                      log:
+                        - '$manufName $timestamp set status to commissioned'
+                status: 'available'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+              example:
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
+  /stockTraceability/get/{gtin}:
+    get:
+      tags:
+        - stockTraceability
+      summary: 'find a product in partner stock through traceability by GTIN'
+      parameters:
+        - name: gtin
+          in: path
+          schema:
+            type: string
+          required: true
+          description: valid GTIN-14
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: application/json
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stock'
+              example:
+                name: string
+                gtin: string
+                description: string
+                manufName: string
+                batches:
+                  - batchNumber: string
+                    expiry: "2030-01-01"
+                    serialNumbers:
+                      - "0"
+                    quantity: 1
+                    batchStatus:
+                      status: 'commissioned'
+                      log:
+                        - '$manufName $timestamp set status to commissioned'
+                status: 'available'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+              example:
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
+  /stockTraceability/get/{gtin}/{batch}:
+    get:
+      tags:
+        - stockTraceability
+      summary: 'find a product in partner stock through traceability by GTIN'
+      parameters:
+        - name: gtin
+          in: path
+          schema:
+            type: string
+          required: true
+          description: valid GTIN-14
+        - name: batch
+          in: path
+          schema:
+            type: string
+          required: true
+          description: batch number
       responses:
         '200':
           headers:

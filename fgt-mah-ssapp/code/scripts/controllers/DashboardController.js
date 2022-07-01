@@ -15,6 +15,8 @@ export default class DashboardController extends LocalizedController {
             {id: 'status', label: 'Status', props: {size: '3'}},
             {id: 'days', label: 'Last Update', props: {size: '2'}},
         ]),
+        stockCalculationsChartData: '',
+        stockCalculationsChartOptions: '',
         lastUpdate: new Date().toLocaleString()
     });
 
@@ -44,19 +46,19 @@ export default class DashboardController extends LocalizedController {
 
     updateAllCharts() {
         const self = this;
-        self.model.lastUpdate = new Date().toLocaleString()
+        self.model.lastUpdate = new Date().toLocaleString();
 
         // update sale and stock chart
         self.stockManager.getAll(true, (err, stock) => {
-            if(err)
+            if (err)
                 return console.error(err)
             const stockManagement = stock.reduce((accum, stock) => {
-                accum[stock.name] = stock.getQuantity()
+                accum[stock.name] = stock.getQuantity();
                 return accum;
             }, {})
             const sortStockManagement = Object.entries(stockManagement)
-                .sort(([,a],[,b]) => a-b)
-                .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+                .sort(([, a], [, b]) => a - b)
+                .reduce((r, [k, v]) => ({...r, [k]: v}), {});
 
             self.updateStockChart({
                 labels: Object.keys(sortStockManagement),
@@ -64,36 +66,64 @@ export default class DashboardController extends LocalizedController {
                 productsInStock: Object.values(sortStockManagement)
             })
 
-            // # sale chart
-            const stockIterator = (accum, products, _callback) => {
+            // # sale chart & stock partners chart
+            const stockIterator = (accum, partnerStockCalc, products, _callback) => {
                 const product = products.shift();
                 if (!product)
-                    return _callback(undefined, {...accum});
+                    return _callback(undefined, {sales: accum, partnerStockCalc: partnerStockCalc});
 
                 const {gtin, name} = product;
                 accum[name] = {x: name, gtin: gtin, mah: 0, whs: 0, pha: 0, total: 0};
+                if (!partnerStockCalc.hasOwnProperty(name)) {
+                    partnerStockCalc[name] = {
+                        x: name,
+                        gtin: gtin,
+                        "whs-inStock": 0,
+                        "whs-dispatched": 0,
+                        "pha-inStock": 0,
+                        "pha-dispatched": 0,
+                        total: 0
+                    }
+                }
+
                 self.stockManager.getStockTraceability(gtin, (err, stockTrace) => {
                     if (err)
                         return console.error(err);
                     const {partnersStock} = stockTrace;
+                    const accumStockCalc = {"whs-inStock": 0, "whs-dispatched": 0, "pha-inStock": 0, "pha-dispatched": 0}
                     Object.keys(partnersStock).map(key => {
                         const value = partnersStock[key];
                         if (key.startsWith('PHA')) {
                             accum[name].pha += value.dispatched
+                            accumStockCalc['pha-inStock'] += value.inStock;
+                            accumStockCalc['pha-dispatched'] += value.dispatched;
                         } else if (key.startsWith('WHS')) {
                             accum[name].mah += (value.inStock + value.dispatched)
                             accum[name].whs += value.dispatched
+                            accumStockCalc['whs-inStock'] += value.inStock;
+                            accumStockCalc['whs-dispatched'] += value.dispatched;
                         }
                     })
+
+                    const currPartStock = partnerStockCalc[name];
+                    currPartStock["whs-inStock"] += accumStockCalc["whs-inStock"];
+                    currPartStock["whs-dispatched"] += accumStockCalc["whs-dispatched"];
+                    currPartStock["pha-inStock"] += accumStockCalc["pha-inStock"];
+                    currPartStock["pha-dispatched"] += accumStockCalc["pha-dispatched"];
+                    currPartStock["total"] = currPartStock["whs-inStock"] + currPartStock["whs-dispatched"] + currPartStock["pha-inStock"] + currPartStock["pha-dispatched"];
+
                     accum[name].total = accum[name].mah + accum[name].whs + accum[name].pha;
-                    stockIterator(accum, products, _callback)
+                    stockIterator(accum, partnerStockCalc, products, _callback);
                 })
             }
 
-            stockIterator({}, stock.slice(), (err, res) => {
+            stockIterator({}, {}, stock.slice(), (err, res) => {
                 if (err)
                     return console.error(err);
-                this.updateSaleChart({data: Object.values(res)})
+
+                this.updateSaleChart({data: Object.values(res.sales)});
+                this.updateStockCalculationsChart(Object.values(res.partnerStockCalc));
+
                 // update shipment chart
                 self.issuedShipmentManager.getAll(true, (err, issuedShipments) => {
                     if (err)
@@ -142,6 +172,78 @@ export default class DashboardController extends LocalizedController {
         })
     }
 
+    updateStockCalculationsChart(stockCalculation, options) {
+        const labels = [];
+        const sortedAndFiltered = stockCalculation.sort((a, b) => {
+            if (a.total < b.total) return -1;
+            if (a.total > b.total) return 1;
+            return 0;
+        }).filter((v) => {
+            if (v.total > 0) {
+                labels.push(v.x)
+                return v.total > 0;
+            }
+        });
+
+        const gData = {
+            labels: labels,
+            datasets: [
+                {
+                    data: sortedAndFiltered,
+                    label: "Total",
+                    borderColor: "#001219",
+                    backgroundColor: "#001219",
+                    borderWidth: 2,
+                    type: 'line',
+                    fill: false,
+                    parsing: {
+                        yAxisKey: 'total'
+                    }
+                },
+                {
+                    label: 'WHS - inStock',
+                    data: sortedAndFiltered,
+                    backgroundColor: "#06787a",
+                    parsing: {
+                        yAxisKey: 'whs-inStock'
+                    }
+                },
+                {
+                    label: 'WHS - dispatched',
+                    data: sortedAndFiltered,
+                    backgroundColor: "#0a9396",
+                    parsing: {
+                        yAxisKey: 'whs-dispatched'
+                    }
+                },
+                {
+                    label: 'PHA - inStock',
+                    data: sortedAndFiltered,
+                    backgroundColor: "#94d2bd",
+                    parsing: {
+                        yAxisKey: 'pha-inStock'
+                    },
+                },
+                {
+                    label: 'PHA - dispatched',
+                    data: sortedAndFiltered,
+                    backgroundColor: "#c3e3d8",
+                    parsing: {
+                        yAxisKey: 'pha-dispatched'
+                    },
+                }
+            ]
+        }
+        options = {
+            plugins: {legend: {position: 'bottom'}},
+            elements: {bar: {borderWidth: 2}},
+            responsive: true,
+            ...options
+        }
+        this.buildChart('stockCalculationsChart', gData, options);
+
+    }
+
     updateSaleChart(metadata, options) {
         const labels = []
         const sortedAndFiltered = metadata.data.sort((a, b) => {
@@ -181,7 +283,7 @@ export default class DashboardController extends LocalizedController {
                 {
                     label: 'WHS',
                     data: sortedAndFiltered,
-                    backgroundColor:"#0a9396",
+                    backgroundColor: "#0a9396",
                     parsing: {
                         yAxisKey: 'whs'
                     }
@@ -189,7 +291,7 @@ export default class DashboardController extends LocalizedController {
                 {
                     label: 'PHA',
                     data: sortedAndFiltered,
-                    backgroundColor:"#94d2bd",
+                    backgroundColor: "#94d2bd",
                     parsing: {
                         yAxisKey: 'pha'
                     },
@@ -197,14 +299,14 @@ export default class DashboardController extends LocalizedController {
             ]
         }
         options = {
-            plugins: {legend: { position: 'bottom'}},
+            plugins: {legend: {position: 'bottom'}},
             ...options
         }
         this.buildChart('saleChart', gData, options)
     }
 
     updateStockChart(metadata, options) {
-        const gData =  {
+        const gData = {
             labels: metadata.labels,
             datasets: [
                 {
@@ -212,20 +314,20 @@ export default class DashboardController extends LocalizedController {
                     data: metadata.monthlyAvg,
                     borderColor: "#001219",
                     backgroundColor: "#001219",
-                    borderWidth:2,
+                    borderWidth: 2,
                     type: 'line',
-                    fill:false
+                    fill: false
                 },
                 {
                     label: "Products in Stock",
-                    backgroundColor: ["#76c893", "#52b69a","#34a0a4","#168aad","#1a759f", "#1e6091", "#184e77"],
+                    backgroundColor: ["#76c893", "#52b69a", "#34a0a4", "#168aad", "#1a759f", "#1e6091", "#184e77"],
                     data: metadata.productsInStock
                 }
             ]
         }
         options = {
             plugins: {
-                title: { display: false },
+                title: {display: false},
                 legend: false
             },
             ...options
@@ -234,19 +336,19 @@ export default class DashboardController extends LocalizedController {
     }
 
     updateShipmentsChart(metadata, options) {
-        const gData =  {
+        const gData = {
             labels: metadata.labels,
             datasets: [
                 {
                     label: "Total Shipments",
-                    backgroundColor: ["#02C39A", "#F6AE2D","#2F4858","#219EBC","#8ECAE6", "#E4959E", "#FA003F"],
+                    backgroundColor: ["#02C39A", "#F6AE2D", "#2F4858", "#219EBC", "#8ECAE6", "#E4959E", "#FA003F"],
                     data: metadata.shipmentsQtyByStatus
                 }
             ]
         }
         options = {
-            title: { display: true },
-            plugins: { legend: false },
+            title: {display: true},
+            plugins: {legend: false},
             indexAxis: 'y',
             ...options
         }
