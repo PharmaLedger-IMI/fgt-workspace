@@ -108,6 +108,19 @@ function getDirectoryProducts(directoryManager, callback){
 }
 
 /**
+ * Retrieves all the products GTIN from the provided stock manager
+ * @param {StockManager} stockManager
+ * @param {function(err?, string[]?)} callback
+ * @memberOf PopOver
+ */
+function getGtinsInStock(stockManager, callback){
+    const options = {};
+    stockManager.getAll(false, options, (err, products) => {
+        err ? callback(err) : callback(undefined, products);
+    });
+}
+
+/**
  * Retrieves all the suppliers from the provided directory manager
  * @param {DirectoryManager} directoryManager
  * @param {function(err, string[])} callback
@@ -189,6 +202,7 @@ module.exports ={
     getDirectorySuppliers,
     getDirectoryRequesters,
     getDirectoryProducts,
+    getGtinsInStock,
     sortBatchesByExpiration,
     splitStockByQuantity,
     isEqual
