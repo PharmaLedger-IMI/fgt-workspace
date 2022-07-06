@@ -38,6 +38,7 @@ paths:
           in: query
           schema:
             type: string
+          example: 10
         - name: sort
           in: query
           schema:
@@ -287,6 +288,7 @@ paths:
           in: query
           schema:
             type: string
+          example: 10
         - name: sort
           in: query
           schema:
@@ -699,6 +701,7 @@ paths:
           in: query
           schema:
             type: string
+          example: 10
         - name: sort
           in: query
           schema:

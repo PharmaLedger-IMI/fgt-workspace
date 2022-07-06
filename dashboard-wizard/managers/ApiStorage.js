@@ -98,7 +98,7 @@ class ApiStorage {
             props = {};
         }
         const url = this.__getUrl(tableName, METHODS.GET_ALL, Object.assign({}, {
-            query: JSON.stringify(query),
+            dsuQuery: JSON.stringify(query),
             sort: sort,
             limit: limit
         }, props));

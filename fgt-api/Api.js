@@ -242,7 +242,17 @@ class Api {
      * @private
      */
     _queryParamsTransform(queryParams, allowedParams ) {
-        let {keyword, sort, page, itemPerPage, ...query} = queryParams;
+        let {keyword, dsuQuery, sort, page, itemPerPage, ...query} = queryParams;
+
+        if (dsuQuery && !Array.isArray(dsuQuery)) {
+            try {
+                dsuQuery = JSON.parse(dsuQuery);
+                dsuQuery = Array.isArray(dsuQuery) ? dsuQuery : [];
+            } catch (e) {
+                dsuQuery = [];
+            }
+        }
+        dsuQuery = dsuQuery ? dsuQuery : [];
 
         query = Object.entries(query).reduce((accum, curr, ) => {
             const [key, value] = curr;
@@ -255,10 +265,10 @@ class Api {
             return accum;
         }, [])
 
-        return  {
-            keyword,
-            dsuQuery: ['__timestamp > 0', ...query]
-        }
+        dsuQuery = ['__timestamp > 0', ...query, ...dsuQuery];
+        // filter duplicates
+        dsuQuery = dsuQuery.filter((value, index) => dsuQuery.indexOf(value) === index);
+        return  {keyword, dsuQuery}
     }
 
     /**
@@ -391,7 +401,7 @@ class Api {
     getAll(queryParams, callback){
         const {dsuQuery, keyword} = this._queryParamsTransform(queryParams, this.manager.indexes);
         this.manager.getPage(
-            queryParams.itemPerPage || 10,  // items per page
+            queryParams.itemPerPage,  // items per page
             queryParams.page || 1, // page number
             dsuQuery, // dsuQuery
             keyword, // keyword

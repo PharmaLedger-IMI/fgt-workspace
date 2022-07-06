@@ -28,6 +28,9 @@ function toPage(currentPage, totalPages, items, itemsPerPage){
 }
 
 function paginate(items, itemsPerPage, page){
+     if (itemsPerPage === undefined)
+         return toPage(page, 1, items, items.length);
+
     const totalPages = Math.floor(items.length / itemsPerPage) + (items.length % itemsPerPage === 0 ? 0 : 1);
         let startIndex = (page - 1) * itemsPerPage;
         startIndex = startIndex === 0 ? startIndex : startIndex - 1;
