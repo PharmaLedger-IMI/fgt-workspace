@@ -2,26 +2,6 @@
     "workDir": ".",
     "dependencies": [
         {
-            "name": "cardinal",
-            "src": "http://github.com/privatesky/cardinal.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "517a141d5b84fd87f69b2e51d838cd410652febd"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd cardinal && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd cardinal && npm run build"
-                }
-            ]
-        },
-        {
             "name": "privatesky",
             "src": "http://github.com/privatesky/psk-release.git",
             "actions": [
@@ -151,38 +131,6 @@
             ]
         },
         {
-            "name": "gtin-resolver",
-            "src": "https://github.com/PharmaLedger-IMI/gtin-resolver.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "f1be80a76e7a07f644c161c8095802344c4a62a2"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd gtin-resolver && npm install"
-                }
-            ]
-        },
-        {
-            "name": "gtin-dsu-wizard",
-            "src": "https://github.com/PharmaLedger-IMI/gtin-dsu-wizard.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "357b163b46d94c8ed06af83a61f8d2cf7da2368b"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd gtin-dsu-wizard && npm install"
-                }
-            ]
-        },
-        {
             "name": "themes/pdm-theme",
             "src": "http://github.com/PharmaLedger-IMI/pdm-theme.git",
             "actions": [
@@ -227,6 +175,73 @@
                 {
                     "type": "execute",
                     "cmd": "cd themes/clear-sky-theme && npm install"
+                }
+            ]
+        },
+        {
+            "name": "fgt-mah-ssapp",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-mah-ssapp && npm install"
+                }
+            ]
+        },
+        {
+            "name": "fgt-pharmacy-ssapp",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-pharmacy-ssapp && npm install"
+                }
+            ]
+        },
+        {
+            "name": "fgt-wholesaler-ssapp",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-wholesaler-ssapp && npm install"
+                }
+            ]
+        },
+        {
+            "name": "fgt-api",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-api && npm install"
+                }
+            ]
+        },
+        {
+            "name": "Install workbox cli globally",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "npm install -g workbox-cli@6.1.5"
+                }
+            ]
+        }
+    ],
+    "dsu-explorer-dependencies": [
+        {
+            "name": "cardinal",
+            "src": "http://github.com/privatesky/cardinal.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "517a141d5b84fd87f69b2e51d838cd410652febd"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd cardinal && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd cardinal && npm run build"
                 }
             ]
         },
@@ -283,51 +298,6 @@
                 {
                     "type": "execute",
                     "cmd": "cd dossier-explorer-ssapp && npm install"
-                }
-            ]
-        },
-        {
-            "name": "fgt-mah-ssapp",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd fgt-mah-ssapp && npm install"
-                }
-            ]
-        },
-        {
-            "name": "fgt-pharmacy-ssapp",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd fgt-pharmacy-ssapp && npm install"
-                }
-            ]
-        },
-        {
-            "name": "fgt-wholesaler-ssapp",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd fgt-wholesaler-ssapp && npm install"
-                }
-            ]
-        },
-        {
-            "name": "fgt-api",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd fgt-api && npm install"
-                }
-            ]
-        },
-        {
-            "name": "Install workbox cli globally",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "npm install -g workbox-cli@6.1.5"
                 }
             ]
         }
@@ -594,7 +564,7 @@
             ]
         }
     ],
-    "build": [
+    "build-dsu-explorer": [
         {
             "name": "cardinal-wallet-build",
             "src": "",
@@ -602,46 +572,6 @@
                 {
                     "type": "execute",
                     "cmd": "cd cardinal && npm run build-dossier"
-                }
-            ]
-        },
-        {
-            "name": "web-cardinal-wallet-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd webcardinal && npm run build-dossier"
-                }
-            ]
-        },
-        {
-            "name": "blue-fluorite-theme-wallet-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
-                }
-            ]
-        },
-        {
-            "name": "clear-sky-theme-wallet-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd themes/clear-sky-theme && npm run build-dossier"
-                }
-            ]
-        },
-        {
-            "name": "build Use Case",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "npm run build-use-case"
                 }
             ]
         },
@@ -680,14 +610,46 @@
                     }
                 }
             ]
-        },
+        }
+    ],
+    "build": [
         {
-            "name": "gtin-resolver-build",
+            "name": "web-cardinal-wallet-build",
             "src": "",
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd gtin-resolver && npm run build"
+                    "cmd": "cd webcardinal && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "blue-fluorite-theme-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "clear-sky-theme-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/clear-sky-theme && npm run build-dossier"
+                }
+            ]
+        },
+        {
+            "name": "build Use Case",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "npm run build-use-case"
                 }
             ]
         }
