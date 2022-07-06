@@ -121,16 +121,6 @@
             ]
         },
         {
-            "name": "Build and deploy PDM Trust Loader to Wholesaler and Pharmacy & mah",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "npm run build-deploy-loader"
-                }
-            ]
-        },
-        {
             "name": "themes/pdm-theme",
             "src": "http://github.com/PharmaLedger-IMI/pdm-theme.git",
             "actions": [
@@ -302,100 +292,6 @@
             ]
         }
     ],
-    "build-deploy-loader": [
-        {
-            "name": "Build and deploy PDM Trust Loader to Wholesaler and Pharmacy & mah",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-trust-loader && npm run build"
-                },
-                {
-                    "type": "remove",
-                    "target": "./apihub-root/fgt-wholesaler-wallet/loader"
-                },
-                {
-                    "type": "copy",
-                    "src": "./pdm-trust-loader/src",
-                    "target": "./apihub-root/fgt-wholesaler-wallet/loader",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "remove",
-                    "target": "./apihub-root/fgt-pharmacy-wallet/loader"
-                },
-                {
-                    "type": "copy",
-                    "src": "./pdm-trust-loader/src",
-                    "target": "./apihub-root/fgt-pharmacy-wallet/loader",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "remove",
-                    "target": "./apihub-root/fgt-mah-wallet/loader"
-                },
-                {
-                    "type": "copy",
-                    "src": "./pdm-trust-loader/src",
-                    "target": "./apihub-root/fgt-mah-wallet/loader",
-                    "options": {
-                        "overwrite": true
-                    }
-                }
-            ]
-        },
-        {
-            "name": "trust-loader-config",
-            "actions": [
-                {
-                    "type": "copy",
-                    "src": "./trust-loader-config/fgt-mah-wallet",
-                    "target": "./apihub-root/fgt-mah-wallet",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "./trust-loader-config/fgt-wholesaler-wallet",
-                    "target": "./apihub-root/fgt-wholesaler-wallet",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "./trust-loader-config/fgt-pharmacy-wallet",
-                    "target": "./apihub-root/fgt-pharmacy-wallet",
-                    "options": {
-                        "overwrite": true
-                    }
-                }
-            ]
-        },
-        {
-            "name": "generate-service-workers",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npx workbox generateSW"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-pharmacy-wallet/loader && npx workbox generateSW"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && npx workbox generateSW"
-                }
-            ]
-        }
-    ],
     "build-use-case": [
         {
             "name": "pdm-theme-wallet-build",
@@ -516,16 +412,6 @@
                     "options": {
                         "overwrite": true
                     }
-                }
-            ]
-        },
-        {
-            "name": "Build and deploy loader",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "npm run build-deploy-loader"
                 }
             ]
         },
