@@ -1044,7 +1044,7 @@ paths:
     get:
       tags:
         - stockTraceability
-      summary: 'find a product in partner stock through traceability by GTIN'
+      summary: 'calculates partner stock through traceability querying by GTIN'
       parameters:
         - name: gtin
           in: path
@@ -1061,23 +1061,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Stock'
+                $ref: '#/components/schemas/StockCalculation'
               example:
-                name: string
-                gtin: string
-                description: string
-                manufName: string
-                batches:
-                  - batchNumber: string
-                    expiry: "2030-01-01"
-                    serialNumbers:
-                      - "0"
-                    quantity: 1
-                    batchStatus:
-                      status: 'commissioned'
-                      log:
-                        - '$manufName $timestamp set status to commissioned'
-                status: 'available'
+                stock:
+                  name: string
+                  gtin: string
+                  description: string
+                  manufName: string
+                  status: string
+                batch: {}
+                partnersStock:
+                  "$partnerId":
+                    inStock: 0
+                    dispatched: 0
         '400':
           description: Bad Request
           content:
@@ -1092,7 +1088,7 @@ paths:
     get:
       tags:
         - stockTraceability
-      summary: 'find a product in partner stock through traceability by GTIN'
+      summary: 'calculates partner stock through traceability querying by GTIN and BATCH'
       parameters:
         - name: gtin
           in: path
@@ -1115,23 +1111,28 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Stock'
+                $ref: '#/components/schemas/StockCalculation'
               example:
-                name: string
-                gtin: string
-                description: string
-                manufName: string
-                batches:
-                  - batchNumber: string
-                    expiry: "2030-01-01"
-                    serialNumbers:
-                      - "0"
-                    quantity: 1
-                    batchStatus:
-                      status: 'commissioned'
-                      log:
-                        - '$manufName $timestamp set status to commissioned'
-                status: 'available'
+                stock:
+                  name: string
+                  gtin: string
+                  description: string
+                  manufName: string
+                  status: string
+                batch:
+                  batchNumber: string
+                  expiry: "2030-01-01"
+                  serialNumbers:
+                    - "0"
+                  quantity: 1
+                  batchStatus:
+                    status: 'commissioned'
+                    log:
+                      - '$manufName $timestamp set status to commissioned'
+                partnersStock:
+                  "$partnerId":
+                    inStock: 0
+                    dispatched: 0
         '400':
           description: Bad Request
           content:
@@ -2078,6 +2079,33 @@ components:
             - available
             - reserved
             - transit
+
+    PartnerStock:
+      type: object
+      description: "Partner's stock calculation thought shipments traceability"
+      required:
+        - inStock
+        - dispatched
+      properties:
+        inStock:
+          type: string
+          description: "Products in stock"
+        dispatched:
+          type: string
+          description: "Products send to a partner that confirmed the shipment"
+
+    StockCalculation:
+      type: object
+      description: "Partner's stock calculation thought shipments traceability"
+      required:
+        - name
+      properties:
+        stock:
+          $ref: '#/components/schemas/Stock'
+        batch:
+          $ref: '#/components/schemas/Batch'
+        partnersStock:
+          $ref: '#/components/schemas/PartnerStock'
 
     Receipt:
       type: object
