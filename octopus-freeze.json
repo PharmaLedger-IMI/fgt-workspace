@@ -43,22 +43,6 @@
             ]
         },
         {
-            "name": "pharmaledger-wallet",
-            "src": "http://github.com/privatesky/menu-wallet-prototype.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "f1b399830c426eca33c3ee5af57a918441f808e7"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd pharmaledger-wallet && npm install"
-                }
-            ]
-        },
-        {
             "name": "pdm-dsu-toolkit",
             "actions": [
                 {
@@ -355,27 +339,6 @@
                     }
                 }
             ]
-        },
-        {
-            "name": "generate-service-workers",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npx workbox generateSW"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-pharmacy-wallet/loader && npx workbox generateSW"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && npx workbox generateSW"
-                }
-            ]
         }
     ],
     "build-dsu-explorer": [
@@ -422,6 +385,15 @@
                     "options": {
                         "overwrite": true
                     }
+                }
+            ]
+        },
+        {
+            "name": "generate-service-workers",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
                 }
             ]
         }
