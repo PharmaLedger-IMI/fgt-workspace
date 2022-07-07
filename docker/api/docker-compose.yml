@@ -127,7 +127,7 @@ services:
       traceability-net:
         ipv4_address: 172.16.63.51
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8080/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed"] # the last SSApp to be built
+      test: ["CMD", "curl", "--fail", "http://localhost:8080"]
       interval: 15s
       timeout: 3s
       retries: 100
