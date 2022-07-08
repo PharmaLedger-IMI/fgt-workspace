@@ -328,6 +328,36 @@
             ]
         },
         {
+            "name": "Build fgt-mah-ssapp to create seed",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-mah-ssapp && npm run build"
+                }
+            ]
+        },
+        {
+            "name": "Build fgt-wholesaler-ssapp to create seed",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-wholesaler-ssapp && npm run build"
+                }
+            ]
+        },
+        {
+            "name": "Build fgt-pharmacy-ssapp to create seed",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-pharmacy-ssapp && npm run build"
+                }
+            ]
+        },
+        {
             "name": "trust-loader-config",
             "actions": [
                 {
@@ -534,6 +564,20 @@
             ]
         },
         {
+            "name": "Bind fgt-mah-ssapp seed to create wallet",
+            "src": "",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./fgt-mah-ssapp/seed",
+                    "target": "./apihub-root/dashboard/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
             "name": "Patch fgt-mah-ssapp",
             "src": "",
             "actions": [
@@ -648,6 +692,20 @@
             ]
         },
         {
+            "name": "Bind fgt-whs-ssapp seed to create wallet",
+            "src": "",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./fgt-wholesaler-ssapp/seed",
+                    "target": "./apihub-root/dashboard/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
             "name": "Patch fgt-wholesaler-ssapp",
             "src": "",
             "actions": [
@@ -755,6 +813,20 @@
                     "type": "copy",
                     "src": "fgt-pharmacy-ssapp/code",
                     "target": "apihub-root/dashboard",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Bind fgt-pha-ssapp seed to create wallet",
+            "src": "",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./fgt-pharmacy-ssapp/seed",
+                    "target": "./apihub-root/dashboard/wallet-patch/seed",
                     "options": {
                         "overwrite": true
                     }
