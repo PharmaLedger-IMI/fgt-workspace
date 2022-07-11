@@ -356,22 +356,22 @@
                     "cmd": "cd fgt-pharmacy-ssapp && npm run build"
                 }
             ]
-        },
+        }
+    ],
+    "build-dsu-explorer": [
         {
             "name": "trust-loader-config",
             "actions": [
                 {
                     "type": "copy",
-                    "src": "./trust-loader-config",
-                    "target": "./apihub-root",
+                    "src": "./trust-loader-config/dsu-explorer",
+                    "target": "./apihub-root/dsu-explorer",
                     "options": {
                         "overwrite": true
                     }
                 }
             ]
-        }
-    ],
-    "build-dsu-explorer": [
+        },
         {
             "name": "cardinal-wallet-build",
             "src": "",
