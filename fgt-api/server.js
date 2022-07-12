@@ -4,10 +4,6 @@ const path = require('path');
 
 const currentPath = process.cwd();
 
-
-ROLE='mah'
-CREDENTIALS_FILE='mah-bayer.json'
-SWAGGER_SERVER='http://localhost:8080/traceability'
 if (!ROLE){
     console.log("No ROLE Definition found. Assuming simple APIHUB")
     process.exit(0);
