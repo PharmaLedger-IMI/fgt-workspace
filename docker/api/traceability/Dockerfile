@@ -25,6 +25,8 @@ WORKDIR /fgt-workspace
 RUN git clone -b ${GIT_BRANCH} --single-branch --depth 1 https://github.com/PharmaLedger-IMI/fgt-workspace.git . && \
     npm install --unsafe-perm
 
+RUN npm run install-dsu-explorer
+
 # Remove all Git related files and directories - see https://gist.github.com/facelordgists/80e868ff5e315878ecd6
 RUN find . \( -name ".git" -o -name ".gitignore" -o -name ".gitmodules" -o -name ".gitattributes" \) -exec rm -rf -- {} +
 
