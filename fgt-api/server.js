@@ -1,9 +1,13 @@
-const {ROLE, CREDENTIALS_FILE, SWAGGER_SERVER} = process.env;
+let {ROLE, CREDENTIALS_FILE, SWAGGER_SERVER} = process.env;
 const fs = require('fs');
 const path = require('path');
 
 const currentPath = process.cwd();
 
+
+ROLE='mah'
+CREDENTIALS_FILE='mah-bayer.json'
+SWAGGER_SERVER='http://localhost:8080/traceability'
 if (!ROLE){
     console.log("No ROLE Definition found. Assuming simple APIHUB")
     process.exit(0);
@@ -140,9 +144,11 @@ const setDashboard = async function(){
 
 try {
     overWriteCredentialsByRole();
-    Promise.all([bootAPIServer(), bootSwagger(), setDashboard()])
-        .then(_ => console.log(`Completed Boot`))
-        .catch(e => failServerBoot(e.message));
+    setDashboard().then(_ => {
+        Promise.all([bootAPIServer(), bootSwagger()])
+            .then(_ => console.log(`Completed Boot`))
+            .catch(e => failServerBoot(e.message));
+    }).catch(e => failServerBoot(e.message));
 } catch (e){
     failServerBoot(e.message);
 }
