@@ -3,14 +3,14 @@ const {Api, OPERATIONS} = require('../Api');
 const Stock = require("../../fgt-dsu-wizard/model/Stock");
 const {BadRequest} = require("../utils/errorHandler");
 
-const STOCK_GET = Object.assign({}, OPERATIONS.GET, {pathParams: ['gtin']});
-const STOCK_GET_2 = Object.assign({}, OPERATIONS.GET, {pathParams: ['gtin', ["batch"]]});
+const GET_BY_GTIN = Object.assign({}, OPERATIONS.GET, {pathParams: ['gtin']});
+const GET_BY_BATCH = Object.assign({}, OPERATIONS.GET, {pathParams: ['gtin', 'batch']});
 
-module.exports = class StockTraceabilityApi extends Api {
+module.exports = class PartnerStockApi extends Api {
     manager;
 
     constructor(server, participantManager) {
-        super(server, 'stockTraceability', participantManager, [STOCK_GET, STOCK_GET_2], Stock);
+        super(server, 'partnerStock', participantManager, [GET_BY_GTIN, GET_BY_BATCH], Stock);
         try {
             this.manager = participantManager.getManager("StockManager");
         } catch (e) {
@@ -27,7 +27,7 @@ module.exports = class StockTraceabilityApi extends Api {
             callback = batch;
             batch = undefined;
         }
-        const query = batch ? {batch} : {}; // batch, partnersId (array)
+        const query = batch ? {batch} : {};
         this.manager.getStockTraceability(gtin, query, (err, stock) => {
             if (err)
                 return callback(new BadRequest(err));

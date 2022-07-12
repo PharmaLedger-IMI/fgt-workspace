@@ -17,7 +17,7 @@ tags:
   - name: batch
   - name: shipment
   - name: stock
-  - name: stockTraceability
+  - name: partnerStock
   - name: receipt
   - name: shipmentLine
   - name: traceability
@@ -1040,10 +1040,10 @@ paths:
                 status: 400
                 error: Bad Request
                 message: The server could not understand your request
-  /stockTraceability/get/{gtin}:
+  /partnerStock/get/{gtin}:
     get:
       tags:
-        - stockTraceability
+        - partnerStock
       summary: 'calculates partner stock through traceability querying by GTIN'
       parameters:
         - name: gtin
@@ -1084,10 +1084,10 @@ paths:
                 status: 400
                 error: Bad Request
                 message: The server could not understand your request
-  /stockTraceability/get/{gtin}/{batch}:
+  /partnerStock/get/{gtin}/{batch}:
     get:
       tags:
-        - stockTraceability
+        - partnerStock
       summary: 'calculates partner stock through traceability querying by GTIN and BATCH'
       parameters:
         - name: gtin

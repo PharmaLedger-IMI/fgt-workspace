@@ -1,7 +1,7 @@
 const ProductApi = require('../../../api/product');
 const BatchApi = require('../../../api/batch');
 const StockApi = require('../../../api/stock');
-const StockTraceabilityApi = require('../../../api/stockTraceability');
+const PartnerStockApi = require('../../../api/partnerStock');
 const SaleApi = require('../../../api/sale');
 const ReceiptApi = require('../../../api/receipt');
 const ShipmentApi = require('../../../api/shipment');
@@ -15,7 +15,7 @@ module.exports = {
     ProductApi,
     BatchApi,
     StockApi,
-    StockTraceabilityApi,
+    PartnerStockApi,
     SaleApi,
     ReceiptApi,
     ShipmentApi,
