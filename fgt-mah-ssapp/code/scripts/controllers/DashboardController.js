@@ -53,7 +53,8 @@ export default class DashboardController extends LocalizedController {
             if (err)
                 return console.error(err)
             const stockManagement = stock.reduce((accum, stock) => {
-                accum[stock.name] = stock.getQuantity();
+                const key = `${stock.name} (${stock.gtin})`;
+                accum[key] = stock.getQuantity();
                 return accum;
             }, {})
             const sortStockManagement = Object.entries(stockManagement)
@@ -72,7 +73,8 @@ export default class DashboardController extends LocalizedController {
                 if (!product)
                     return _callback(undefined, {sales: accum, partnerStockCalc: partnerStockCalc});
 
-                const {gtin, name} = product;
+                let {gtin, name} = product;
+                name = `${name} (${gtin})`;
                 accum[name] = {x: name, gtin: gtin, mah: 0, whs: 0, pha: 0, total: 0};
                 if (!partnerStockCalc.hasOwnProperty(name)) {
                     partnerStockCalc[name] = {
