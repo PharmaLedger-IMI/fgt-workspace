@@ -550,13 +550,13 @@
             ]
         },
         {
-            "name": "Copy fgt-mah-ssapp",
-            "src": "",
+            "name": "Bind fgt-mah-ssapp seed to create wallet",
+            "src": ".",
             "actions": [
                 {
                     "type": "copy",
-                    "src": "fgt-mah-ssapp/code",
-                    "target": "apihub-root/dashboard",
+                    "src": "./fgt-mah-ssapp/seed",
+                    "target": "./apihub-root/dashboard/wallet-patch/seed",
                     "options": {
                         "overwrite": true
                     }
@@ -564,13 +564,13 @@
             ]
         },
         {
-            "name": "Bind fgt-mah-ssapp seed to create wallet",
+            "name": "Copy fgt-mah-ssapp",
             "src": "",
             "actions": [
                 {
                     "type": "copy",
-                    "src": "./fgt-mah-ssapp/seed",
-                    "target": "./apihub-root/dashboard/wallet-patch/seed",
+                    "src": "fgt-mah-ssapp/code",
+                    "target": "apihub-root/dashboard",
                     "options": {
                         "overwrite": true
                     }
@@ -678,20 +678,6 @@
             ]
         },
         {
-            "name": "Copy fgt-wholesaler-ssapp",
-            "src": "",
-            "actions": [
-                {
-                    "type": "copy",
-                    "src": "fgt-wholesaler-ssapp/code",
-                    "target": "apihub-root/dashboard",
-                    "options": {
-                        "overwrite": true
-                    }
-                }
-            ]
-        },
-        {
             "name": "Bind fgt-whs-ssapp seed to create wallet",
             "src": "",
             "actions": [
@@ -699,6 +685,20 @@
                     "type": "copy",
                     "src": "./fgt-wholesaler-ssapp/seed",
                     "target": "./apihub-root/dashboard/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Copy fgt-wholesaler-ssapp",
+            "src": "",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "fgt-wholesaler-ssapp/code",
+                    "target": "apihub-root/dashboard",
                     "options": {
                         "overwrite": true
                     }
@@ -806,20 +806,6 @@
             ]
         },
         {
-            "name": "Copy fgt-pharmacy-ssapp",
-            "src": "",
-            "actions": [
-                {
-                    "type": "copy",
-                    "src": "fgt-pharmacy-ssapp/code",
-                    "target": "apihub-root/dashboard",
-                    "options": {
-                        "overwrite": true
-                    }
-                }
-            ]
-        },
-        {
             "name": "Bind fgt-pha-ssapp seed to create wallet",
             "src": "",
             "actions": [
@@ -827,6 +813,20 @@
                     "type": "copy",
                     "src": "./fgt-pharmacy-ssapp/seed",
                     "target": "./apihub-root/dashboard/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Copy fgt-pharmacy-ssapp",
+            "src": "",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "fgt-pharmacy-ssapp/code",
+                    "target": "apihub-root/dashboard",
                     "options": {
                         "overwrite": true
                     }
