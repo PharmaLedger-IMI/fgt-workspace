@@ -1,5 +1,5 @@
 export default {
-  "appName": "fgt-wholesaler-ssapp",
+  "appName": "dashboard",
   "appVersion": "0.1.1",
   "vault": "server",
   "agent": "browser",
@@ -12,7 +12,7 @@ export default {
   "domain": "traceability",
   "sw": true,
   "pwa": true,
-  "basePath": "/fgt-wholesaler-wallet/loader/",
+  "basePath": "/dashboard",
   "stripBasePathOnInstall": true,
   "theme": "pdm-theme",
   "legenda for properties": " vault:(server, browser) agent:(mobile,  browser)  system:(iOS, Android, any) browser:(Chrome, Firefox, any) mode:(autologin,dev-autologin, secure, dev-secure) sw:(true, false) pwa:(true, false)"

@@ -8,12 +8,18 @@
  * 
  * Example: 
  * fgt-workspace/bin/environment$ node --unhandled-rejections=strict wsCreateStuff.js 
- *
- * Please add a -sleep=NNNNN (default is 2000 miliseconds = 2 seconds)
+ * 
+ * See --help for options.
+ * 
+ * Please add a --sleep=NNNNN (default is 2000 miliseconds = 2 seconds)
  * between shipment operations to allow for messages betweem participants to be processed.
  * At least 10 seconds seems to be required.
  * For BC --istanbul.blockperiod 1 (1 second per new block) this timing needs to
  * be 80 seconds (80000 ms) or more.
+ * 
+ * Example for fgt-dev: 
+ * fgt-workspace/bin/environment$ node --unhandled-rejections=strict wsCreateStuff.js --env=dev --sleep=80000 2>&1 | tee -a wsCreateStuffDev.log
+ *
  */
 
 const http = require('http');
@@ -28,6 +34,7 @@ const BatchStatus = require('../../fgt-dsu-wizard/model/BatchStatus');
 const credentials = require('./credentials/credentialsTests'); // TODO require ../../docker/api/env/mah-*.json ?
 const MAHS = [credentials.PFIZER, credentials.MSD, credentials.ROCHE, credentials.BAYER, credentials.NOVO_NORDISK, credentials.GSK, credentials.TAKEDA, credentials.SANOFI];
 const MAH_MSD = credentials.MSD;
+const MAH_ROCHE = credentials.ROCHE;
 const WSH1 = require("../../docker/api/env/whs-1.json");
 const WSH2 = require("../../docker/api/env/whs-2.json");
 const PHA1 = require("../../docker/api/env/pha-1.json");
@@ -113,7 +120,7 @@ if (process.argv.includes("--help")
 ) {
     console.log("Usage:");
     console.log();
-    console.log("\tnode --unhandled-rejections=strict wsCreateStuff.js [options]");
+    console.log("\tnode --unhandled-rejections=strict    wsCreateStuff.js [options]");
     console.log();
     console.log("Where options can be any of:");
     console.log();
@@ -158,6 +165,7 @@ if (conf.sleep) {
 // Based on
 // https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
 function sleep(millis) {
+    console.log("Sleep "+millis+"ms");
     return new Promise(resolve => setTimeout(resolve, millis));
 }
 
@@ -438,7 +446,6 @@ const batchesUpdateTest = async function (conf, mah, mySales) {
         throw new Error("batch/update "+soldProduct.batchNumber+" reply has no batchStatus: "+JSON.stringify(resQ));
     }
 
-    console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
 
     const resC = await jsonPut(conf, mah, {
@@ -452,7 +459,6 @@ const batchesUpdateTest = async function (conf, mah, mySales) {
         throw new Error("batch/update "+soldProduct.batchNumber+" reply has no batchStatus: "+JSON.stringify(resC));
     }
 
-    console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
 
     const resR = await jsonPut(conf, mah, {
@@ -466,7 +472,6 @@ const batchesUpdateTest = async function (conf, mah, mySales) {
         throw new Error("batch/update "+soldProduct.batchNumber+" reply has no batchStatus: "+JSON.stringify(resR));
     }
 
-    console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
 
     return resR;
@@ -495,6 +500,7 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     if (shipmentId !== resC.shipmentId) {
         throw new Error("shipment/create "+shipment+" reply has an inconsistency in the shipmentId. Received: "+ resC.shipmentId + "Expected: "+ shipmentId);
     }
+    await sleep(SLEEP_MS);
     const resUPickup = await jsonPut(conf, sender, {
         path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
         body: {
@@ -506,7 +512,6 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     if (!shipmentId2) {
         throw Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUPickup));
     }
-    console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
     const resUTransit = await jsonPut(conf, sender, {
         path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
@@ -519,7 +524,6 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     if (!shipmentId3) {
         throw Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUTransit));
     }
-    console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
     const resUDelivered = await jsonPut(conf, sender, {
         path: `/traceability/shipment/update/${encodeURI(shipmentId)}`,
@@ -532,7 +536,6 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     if (!shipmentId4) {
         throw Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUDelivered));
     }
-    console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
     const resUReceived = await jsonPut(conf, receiver, {
         path: `/traceability/shipment/update/${encodeURI(receiverShipmentId)}`,
@@ -545,7 +548,6 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     if (!shipmentId5) {
         throw Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUReceived));
     }
-    console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
     const resUConfirmed = await jsonPut(conf, receiver, {
         path: `/traceability/shipment/update/${encodeURI(receiverShipmentId)}`,
@@ -559,7 +561,6 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
         throw new Error("shipment/update "+shipmentId+" reply has no shipmentId: "+JSON.stringify(resUConfirmed));
     }
 
-    console.log("Sleep "+SLEEP_MS+"ms");
     await sleep(SLEEP_MS);
 
     return resUConfirmed;
@@ -697,7 +698,6 @@ const salesCreateTest = async function (conf, manufActor, sellerActor, mySales) 
         }
         mySales.push(resSale);
 
-        console.log("Sleep " + SLEEP_MS + "ms");
         await sleep(SLEEP_MS);
 
         i++;
@@ -743,7 +743,6 @@ const salesCreateTest = async function (conf, manufActor, sellerActor, mySales) 
         }
         mySales.push(resSale);
 
-        console.log("Sleep " + SLEEP_MS + "ms");
         await sleep(SLEEP_MS);
 
         i++;
@@ -774,7 +773,6 @@ const traceabilityCreateTest = async function (conf, actor, mySales) {
             if (!res["1"]) {
                 throw new Error("traceability/create "+product.batchNumber+" at "+actor.id.secret+" reply has no data: "+JSON.stringify(res));
             }
-            console.log("Sleep " + SLEEP_MS + "ms");
             await sleep(SLEEP_MS);
         }
     }
@@ -800,7 +798,6 @@ const receiptsGetTest = async function (conf, actor, mySales) {
             if (!res.sellerId) {
                 throw new Error("receipt/get "+product.batchNumber+" at "+actor.id.secret+" reply has no data: "+JSON.stringify(res));
             }
-            console.log("Sleep " + SLEEP_MS + "ms");
             await sleep(SLEEP_MS);
         }
     }
@@ -828,15 +825,21 @@ process.stdout._handle.setBlocking(true);
     //console.log("Credentials", MAHS);
     //console.log("Products", products.getPfizerProducts());
     //console.log("Batches", MAH_MSD.batches);
-    for (const mah of MAHS) {
-        await productsCreate(conf, mah);
-        await batchesCreate(conf, mah);
-    };
+    if (conf.env == "single") {
+        // single only creates products and batches so far
+        await productsCreate(conf, MAH_ROCHE);
+        await batchesCreate(conf, MAH_ROCHE);
+    } else {
+        for (const mah of MAHS) {
+            await productsCreate(conf, mah);
+            await batchesCreate(conf, mah);
+        };
 
-    await shipmentsCreate(conf, MAH_MSD);
-    await salesCreate(conf, MAH_MSD, PHA1, MY_SALES);
-    await traceabilityCreate(conf, PHA1, MY_SALES);
-    await receiptsGet(conf, PHA1, MY_SALES);
+        await shipmentsCreate(conf, MAH_MSD);
+        await salesCreate(conf, MAH_MSD, PHA1, MY_SALES);
+        await traceabilityCreate(conf, PHA1, MY_SALES);
+        await receiptsGet(conf, PHA1, MY_SALES);
 
-    await batchesUpdate(conf, MAH_MSD, MY_SALES);
+        await batchesUpdate(conf, MAH_MSD, MY_SALES);
+    }
 })();

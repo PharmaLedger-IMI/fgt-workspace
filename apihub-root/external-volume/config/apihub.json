@@ -16,14 +16,10 @@
     "pdm-dsu-toolkit-app-store",
     "pdm-dsu-toolkit-app-commands",
     "fgt-dsu-wizard",
-    "gtin-dsu-wizard",
     "mq",
     "staticServer"
   ],
   "componentsConfig": {
-    "gtin-dsu-wizard": {
-      "module": "./../../gtin-dsu-wizard"
-    },
     "pdm-dsu-toolkit-app-commands": {
       "module": "./../../pdm-dsu-toolkit",
       "function": "Init"

@@ -17,6 +17,7 @@ tags:
   - name: batch
   - name: shipment
   - name: stock
+  - name: partnerStock
   - name: receipt
   - name: shipmentLine
   - name: traceability
@@ -112,7 +113,7 @@ paths:
           in: query
           schema:
             type: integer
-          example: '10'
+          example: 10
         - name: sort
           in: query
           schema:
@@ -315,6 +316,7 @@ paths:
           in: query
           schema:
             type: string
+          example: 10
         - name: sort
           in: query
           schema:
@@ -669,6 +671,7 @@ paths:
           in: query
           schema:
             type: string
+          example: 10
         - name: sort
           in: query
           schema:
@@ -918,6 +921,7 @@ paths:
           in: query
           schema:
             type: string
+          example: 10
         - name: sort
           in: query
           schema:
@@ -1036,6 +1040,109 @@ paths:
                 status: 400
                 error: Bad Request
                 message: The server could not understand your request
+  /partnerStock/get/{gtin}:
+    get:
+      tags:
+        - partnerStock
+      summary: 'calculates partner stock through traceability querying by GTIN'
+      parameters:
+        - name: gtin
+          in: path
+          schema:
+            type: string
+          required: true
+          description: valid GTIN-14
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: application/json
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockCalculation'
+              example:
+                stock:
+                  name: string
+                  gtin: string
+                  description: string
+                  manufName: string
+                  status: string
+                batch: {}
+                partnersStock:
+                  "$partnerId":
+                    inStock: 0
+                    dispatched: 0
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+              example:
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
+  /partnerStock/get/{gtin}/{batch}:
+    get:
+      tags:
+        - partnerStock
+      summary: 'calculates partner stock through traceability querying by GTIN and BATCH'
+      parameters:
+        - name: gtin
+          in: path
+          schema:
+            type: string
+          required: true
+          description: valid GTIN-14
+        - name: batch
+          in: path
+          schema:
+            type: string
+          required: true
+          description: batch number
+      responses:
+        '200':
+          headers:
+            Content-Type:
+              schema:
+                type: application/json
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockCalculation'
+              example:
+                stock:
+                  name: string
+                  gtin: string
+                  description: string
+                  manufName: string
+                  status: string
+                batch:
+                  batchNumber: string
+                  expiry: "2030-01-01"
+                  serialNumbers:
+                    - "0"
+                  quantity: 1
+                  batchStatus:
+                    status: 'commissioned'
+                    log:
+                      - '$manufName $timestamp set status to commissioned'
+                partnersStock:
+                  "$partnerId":
+                    inStock: 0
+                    dispatched: 0
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+              example:
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
   /receipt/getAll:
     get:
       tags:
@@ -1057,6 +1164,7 @@ paths:
           in: query
           schema:
             type: string
+          example: 10
         - name: sort
           in: query
           schema:
@@ -1206,6 +1314,7 @@ paths:
           in: query
           schema:
             type: string
+          example: 10
         - name: sort
           in: query
           schema:
@@ -1494,6 +1603,7 @@ paths:
           in: query
           schema:
             type: string
+          example: 10
         - name: sort
           in: query
           schema:
@@ -1969,6 +2079,33 @@ components:
             - available
             - reserved
             - transit
+
+    PartnerStock:
+      type: object
+      description: "Partner's stock calculation thought shipments traceability"
+      required:
+        - inStock
+        - dispatched
+      properties:
+        inStock:
+          type: string
+          description: "Products in stock"
+        dispatched:
+          type: string
+          description: "Products send to a partner that confirmed the shipment"
+
+    StockCalculation:
+      type: object
+      description: "Partner's stock calculation thought shipments traceability"
+      required:
+        - name
+      properties:
+        stock:
+          $ref: '#/components/schemas/Stock'
+        batch:
+          $ref: '#/components/schemas/Batch'
+        partnersStock:
+          $ref: '#/components/schemas/PartnerStock'
 
     Receipt:
       type: object

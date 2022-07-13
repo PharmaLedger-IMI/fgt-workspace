@@ -3,6 +3,7 @@ const Batch = require('../../fgt-dsu-wizard/model/Batch');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const {DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../constants');
 const {ShipmentStatus, DirectoryEntry, Direc} = require('../../fgt-dsu-wizard/model');
+const {ROLE} = require("../../fgt-dsu-wizard/model/DirectoryEntry");
 
 
 /**
@@ -38,6 +39,7 @@ class SimpleShipmentManager extends Manager {
             });
 
             manager.stockManager = manager.stockManager || participantManager.getManager("StockManager");
+            manager.directoryManager = manager.directoryManager || participantManager.getManager("DirectoryManager");
 
             if (callback)
                 callback(undefined, manager);
@@ -117,6 +119,30 @@ class SimpleShipmentManager extends Manager {
             callback(undefined, ...results);
         }
 
+        const addPartnerToDirectory = (simpleShipment, callback) => {
+            const {requesterId, senderId} = simpleShipment;
+            const partnerId = self.getIdentity().id === requesterId ? senderId : requesterId;
+            const partnerPrefix = partnerId.slice(0, 3);
+            const partner = {id: partnerId, role: ROLE[partnerPrefix]}
+            if (!partner.role)
+                return callback(`Not found a valid role to partner ${partnerId}`);
+            const directoryKey = self.directoryManager._genCompostKey(partner);
+            self.directoryManager.getOne(directoryKey, false, (err, _partner) => {
+                if (!err && _partner) // early return, partner already exists in directory
+                    return callback(undefined, _partner);
+
+                self.batchAllow(self.directoryManager);
+                self.directoryManager.create(partner, (err, partnerDbRecord) => {
+                    if (err) {
+                        log(`Partner ${partnerDbRecord.id} as ${partnerDbRecord.role} cannot be added to directory. Skipping...`);
+                        return callback(undefined, undefined);
+                    }
+                    log(`Added partner ${partnerDbRecord.id} as ${partnerDbRecord.role} to directory from shipment ${simpleShipment.shipmentId}`);
+                    return callback(undefined, partnerDbRecord);
+                })
+            })
+        }
+
         const createInner = function (_callback) {
             simpleShipment.shipmentId = self._genCompostKey(simpleShipment);
             self.simpleShipmentService.create(simpleShipment, (err, keySSI, shipmentLinesSSIs) => {
@@ -132,10 +158,13 @@ class SimpleShipmentManager extends Manager {
                     const path = `${self.tableName}/${simpleShipment.shipmentId}`;
                     log(`Shipment ${simpleShipment.shipmentId} created stored at DB '${path}'`);
 
-                    if (self.getIdentity().id === simpleShipment.senderId)
-                        self.sendMessagesAsync(simpleShipment, shipmentLinesSSIs, readSSI);
-
-                    _callback(undefined, keySSI, path);
+                    addPartnerToDirectory(simpleShipment, (err, _) => {
+                        if (err)
+                            return callbackCancelBatch(err);
+                        if (self.getIdentity().id === simpleShipment.senderId)
+                            self.sendMessagesAsync(simpleShipment, shipmentLinesSSIs, readSSI);
+                        _callback(undefined, keySSI, path);
+                    });
                 });
             });
         }
@@ -348,8 +377,10 @@ class SimpleShipmentManager extends Manager {
                                 self.batchAllow(self.directoryManager);
                                 const key = self.directoryManager._genCompostKey("product", gtin);
                                 self.directoryManager.getOne(key, (err, entry) => {
-                                    if (!err)
+                                    if (!err) {
+                                        self.batchDisallow(self.directoryManager);
                                         return cb();
+                                    }
                                     self.directoryManager.saveEntry("product", gtin, (err) => {
                                         self.batchDisallow(self.directoryManager);
                                         if (err)

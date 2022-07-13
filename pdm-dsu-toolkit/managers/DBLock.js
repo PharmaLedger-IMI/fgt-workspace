@@ -47,7 +47,7 @@ class DBLock {
     allow(tableName, manager){
         const allowedTable = manager.tableName;
         if (this._allows[allowedTable])
-            throw new Error(`Only one manager allowed`);
+            throw new Error(`Only one manager allowed. _allows['${tableName}']='${this._allows[allowedTable]}'`);
 
         this._allows[allowedTable] = tableName;
     }

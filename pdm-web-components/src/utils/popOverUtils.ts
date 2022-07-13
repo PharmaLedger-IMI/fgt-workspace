@@ -4,7 +4,7 @@
  */
 
 import wizard from '../services/WizardService';
-const {getDirectorySuppliers, getDirectoryRequesters, getDirectoryProducts} = wizard.Model.utils;
+const {getDirectorySuppliers, getDirectoryRequesters, getDirectoryProducts, getGtinsInStock} = wizard.Model.utils;
 
 /**
  *
@@ -344,4 +344,4 @@ interface ParentNode {
 }
  */
 
-export {getDirectoryProducts, getDirectorySuppliers, getDirectoryRequesters};
+export {getDirectoryProducts, getDirectorySuppliers, getDirectoryRequesters, getGtinsInStock};

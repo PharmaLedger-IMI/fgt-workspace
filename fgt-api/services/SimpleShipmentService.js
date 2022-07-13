@@ -246,7 +246,8 @@ function SimpleShipmentService(domain, strategy) {
             const allowedRequesterStatusUpdate = simpleShipment.allowedRequesterStatusUpdate();
             if (participantId === simpleShipment.requesterId && !allowedRequesterStatusUpdate)
                 return callback(`Requester is not able to update to status: ${simpleShipment.status.status}.`);
-            if (participantId === simpleShipment.senderId && allowedRequesterStatusUpdate)
+            // shipmentStatus updated to REJECTED is allowed for sender and requester
+            if (participantId === simpleShipment.senderId && simpleShipment.status.status !== ShipmentStatus.REJECTED && allowedRequesterStatusUpdate)
                 return callback(`Shipment sender is not able to update to status: ${simpleShipment.status.status}.`);
 
             keySSI = utils.getKeySSISpace().parse(keySSI);

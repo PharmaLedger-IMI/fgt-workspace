@@ -91,7 +91,7 @@ class Shipment {
             case ShipmentStatus.DELIVERED:
                 return [ShipmentStatus.REJECTED, ShipmentStatus.RECEIVED]
             case ShipmentStatus.RECEIVED:
-                return [ShipmentStatus.CONFIRMED]
+                return [ShipmentStatus.REJECTED, ShipmentStatus.CONFIRMED]
             default:
                 return [];
         }

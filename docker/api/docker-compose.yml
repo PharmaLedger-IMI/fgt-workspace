@@ -2,14 +2,19 @@ version: "2.3"
 x-participant-def:
   &participant-def
   restart: "unless-stopped"
+  # Uncomment build+context to build from git master. 
+  # Uncomment image to use pre-built image. See also fgt-workspace below (which may share the same image).
   build:
     context: ../api
+  #image: joaoluispdm/pharmaledger-imi-fgt:v0.9.6
   healthcheck:
     test: [ "CMD", "curl", "--fail", "http://localhost:3009" ] # looks for the swagger instance, the last thing to boot
     interval: 20s
     timeout: 3s
     retries: 100
     start_period: 40s
+  command: ["/bin/sh", "-c", "/fgt-workspace/docker/api/startup-script.sh"]
+  # the command above is not for the tracebility apihub, so it must be overridden on fgt-workspace.
 x-mah-def:
   &mah-def
   << : *participant-def
@@ -93,8 +98,14 @@ services:
 
   fgt-workspace:
     container_name: fgt-workspace
+    # Uncomment build+context to build from git master.
+    # Uncomment image to use pre-built image. Should be kept consistent with x-participant-def above.
     build:
       context: ../api/traceability
+      # The file at ../api/traceability/Dockerfile should be identical to the one at ../api/Dockerfile
+      # except to the traceability domain does not expose ports for the REST api, and neither Swagger.
+      # The config files are handled by distincat startup-script.sh.
+    #image: joaoluispdm/pharmaledger-imi-fgt:v0.9.6
     hostname: fgt-workspace
     restart: "unless-stopped"
     labels:
@@ -116,12 +127,12 @@ services:
       traceability-net:
         ipv4_address: 172.16.63.51
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8080/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed"] # the last SSApp to be built
+      test: ["CMD", "curl", "--fail", "http://localhost:8080"]
       interval: 15s
       timeout: 3s
       retries: 100
       start_period: 20s
-    command: ["/bin/bash", "-c", "cd /fgt-workspace && bash startup-noeth-script.sh"]
+    command: ["/bin/sh", "-c", "/fgt-workspace/docker/api/traceability/startup-script.sh"]
 
   mah-roche:
     << : *mah-def

@@ -5,7 +5,7 @@ import {WebManager, WebManagerService} from "../../services/WebManagerService";
 import CreateManageView from "../create-manage-view-layout/CreateManageView";
 import {
   getProductPopOver,
-  getDirectoryProducts,
+  getGtinsInStock,
   getDirectoryRequesters,
   getSingleInputPopOver
 } from "../../utils/popOverUtils";
@@ -121,6 +121,7 @@ export class ManagedSimpleShipment implements CreateManageView{
   private issuedShipmentManager: WebManager = undefined;
   private receivedShipmentManager: WebManager = undefined;
   private productManager: WebManager = undefined;
+  private stockManager: WebManager = undefined;
 
   private layoutComponent = undefined;
 
@@ -137,6 +138,7 @@ export class ManagedSimpleShipment implements CreateManageView{
       return;
     this.directoryManager = await WebManagerService.getWebManager('DirectoryManager');
     this.productManager = await WebManagerService.getWebManager('ProductManager');
+    this.stockManager = await WebManagerService.getWebManager('StockManager');
     this.issuedShipmentManager = await WebManagerService.getWebManager(`IssuedShipmentManager`);
     this.receivedShipmentManager = await WebManagerService.getWebManager(`ReceivedShipmentManager`);
     return await this.load();
@@ -194,7 +196,7 @@ export class ManagedSimpleShipment implements CreateManageView{
           callback()
         })
 
-      getDirectoryProducts(self.directoryManager, (err, gtins) => {
+      getGtinsInStock(self.stockManager, (err, gtins) => {
         if (err)
           return callback(err);
         self.products = gtins;
