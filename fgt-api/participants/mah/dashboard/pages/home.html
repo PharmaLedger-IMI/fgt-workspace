@@ -31,6 +31,7 @@
 <!--                            <menu-tab-button icon-name="reader" label="@menu.receivedOrders" tab="tab-received-orders"></menu-tab-button>-->
                             <menu-tab-button icon-name="map" label="@menu.issuedShipments" tab="tab-issued-shipments"></menu-tab-button>
                             <menu-tab-button icon-name="podium" label="@menu.stock" tab="tab-stock"></menu-tab-button>
+                            <menu-tab-button icon-name="git-branch" label="@menu.partnerStock" tab="tab-partner-stock"></menu-tab-button>
                             <menu-tab-button icon-name="reader" label="@menu.shipmentLines" tab="tab-shipmentLines"></menu-tab-button>
                             <menu-tab-button icon-name="bag" label="@menu.receipts" tab="tab-receipts"></menu-tab-button>
                         </ion-list>
@@ -83,6 +84,14 @@
                             <ion-content class="tab-content" overflow-scroll="true">
                                 <div data-if="@identified">
                                     <webc-template template="stock" disable-container></webc-template>
+                                </div>
+                            </ion-content>
+                        </ion-tab>
+
+                        <ion-tab tab="tab-partner-stock">
+                            <ion-content class="tab-content" overflow-scroll="true">
+                                <div data-if="@identified">
+                                    <webc-template template="partnerStock" disable-container></webc-template>
                                 </div>
                             </ion-content>
                         </ion-tab>
@@ -151,6 +160,7 @@
 <!--                                <menu-tab-button icon-name="reader" label="@menu.receivedOrders" tab="tab-received-orders" mode="bar"></menu-tab-button>-->
                                 <menu-tab-button icon-name="map" label="@menu.issuedShipments" tab="tab-issued-shipments" mode="bar"></menu-tab-button>
                                 <menu-tab-button icon-name="podium" label="@menu.stock" tab="tab-stock" mode="bar"></menu-tab-button>
+                                <menu-tab-button icon-name="git-branch" label="@menu.partnerStock" tab="tab-partner-stock" mode="bar"></menu-tab-button>
                                 <menu-tab-button icon-name="reader" label="@menu.shipmentLines" tab="tab-shipmentLines" mode="bar"></menu-tab-button>
                                 <menu-tab-button icon-name="bag" label="@menu.receipts" tab="tab-receipts" mode="bar"></menu-tab-button>
                             </ion-tab-bar>

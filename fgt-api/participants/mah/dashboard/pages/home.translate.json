@@ -34,6 +34,7 @@
     "issuedShipments": "Shipments",
     "receivedOrders": "Orders",
     "stock": "Stock",
+    "partnerStock": "Partner Stock",
     "receipts" : "Receipts"
   },
   "dashboard": {
@@ -493,6 +494,9 @@
   "stock": {
     "title": "Stocks",
     "none": "No products in stock..."
+  },
+  "partnerStock": {
+    "title": "Partners Stock"
   },
   "individualProduct": {
     "title": "Product",
