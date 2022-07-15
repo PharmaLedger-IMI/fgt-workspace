@@ -146,8 +146,9 @@ export class ManagedPartnerStock {
   }
 
   private getInputs() { // render lifecycle
+    const self = this;
 
-    const getInputLabel = (label: string, input: any | undefined, options: any = {}): JSX.Element => {
+    const getInputLabel = (label: string, input: any | undefined, options: any = {}) => {
       const {required, disabled} = Object.assign(
         {required: false, disabled: false},
         options
@@ -157,10 +158,17 @@ export class ManagedPartnerStock {
       if (!input)
         input = (<ion-skeleton-text animated></ion-skeleton-text>);
       return (
-        <ion-item lines="none" disabled={disabled} class="ion-margin-top">
-          <ion-label position="stacked">{label}{reqEl}</ion-label>
-          {input}
-        </ion-item>
+        <ion-row class="ion-align-items-end">
+          <ion-col>
+            <ion-item lines="none" disabled={disabled} class="ion-margin-top">
+              <ion-label position="stacked">{label}{reqEl}</ion-label>
+              {input}
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-button size="small" color="medium" fill="clear" onClick={() => self.reset(label)}>X</ion-button>
+          </ion-col>
+        </ion-row>
       )
     }
 
@@ -250,10 +258,22 @@ export class ManagedPartnerStock {
     )
   }
 
-  private reset() {
-    this.currentProduct = undefined;
-    this.currentBatch = undefined;
-    this.currentPartner = undefined;
+  private reset(inputLabel: string) {
+    switch (inputLabel) {
+      case this.partnerInputLabel: {
+        this.currentPartner = undefined;
+        break
+      }
+      case this.batchInputLabel: {
+        this.currentBatch = undefined;
+        break;
+      }
+      default: {
+        this.currentProduct = undefined;
+        this.currentBatch = undefined;
+        this.currentPartner = undefined;
+      }
+    }
   }
 
   private getHeader(){
@@ -324,7 +344,7 @@ export class ManagedPartnerStock {
                 {...self.getInputs()}
               </ion-col>
               <ion-col>
-                <ion-button class="ion-float-end" color="primary" fill="clear" onClick={() => self.reset()}>Reset</ion-button>
+
               </ion-col>
             </ion-row>
           </ion-grid>
