@@ -319,7 +319,7 @@ export class ManagedPartnerStock {
         <ion-row class="ion-margin">
           <ion-grid>
             <ion-row>
-              <ion-col size="9" size-lg="6">
+              <ion-col size="12" size-lg="8">
                 {...self.getInputs()}
               </ion-col>
               <ion-col>
