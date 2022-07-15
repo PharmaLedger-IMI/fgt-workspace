@@ -289,14 +289,15 @@ export class ManagedPartnerStock {
       await Promise.all([...batchesToSearch].map(async (batchNumber) => {
         const partnerStock = (await self.getPartnersStock(self.currentProduct.gtin, batchNumber, self.currentPartner))["partnersStock"];
         let qty;
-        if (self.currentPartner && partnerStock.hasOwnProperty(self.currentPartner))
-          qty = partnerStock[self.currentPartner]["inStock"] || 0;
-        else {
+        if (self.currentPartner) {
+         if (partnerStock.hasOwnProperty(self.currentPartner))
+           qty = partnerStock[self.currentPartner]["inStock"] || 0;
+        } else {
            qty = Object.values(partnerStock).reduce((total: number, value: {inStock: number, dispatched: number}) => {
             return total + (value.inStock || 0);
           }, 0);
         }
-        if (qty > 0)
+        if (qty && qty > 0)
           accum[batchNumber] = qty;
       }));
 
