@@ -1,7 +1,7 @@
 #
 # Docker image build for Finished Goods Traceability (FGT)
 #
-# docker build --build-arg GIT_BRANCH=v0.9.7 -t fgt:v0.9.7 --rm=false --pull --network host -f=Dockerfile .
+# docker build --build-arg GIT_BRANCH=v0.9.8 -t fgt:v0.9.8 --rm=false --pull --network host -f=Dockerfile .
 #
 FROM node:16.14.2-alpine
 
