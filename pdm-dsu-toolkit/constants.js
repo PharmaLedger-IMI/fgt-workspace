@@ -21,7 +21,7 @@ const PARTICIPANT_MOUNT_PATH = "/participant";
  */
 const IDENTITY_MOUNT_PATH = '/id'
 
-const DATABASE_MOUNT_PATH = '/db'
+const DATABASE_MOUNT_PATH = '/db/walletdb'
 
 const DID_METHOD = 'ssi:name';
 const DID_DOMAIN = 'traceability';
