@@ -434,6 +434,14 @@
 
 
 
+        <h2>v0.10.0 Release Notes 2022-07-15</h2>
+        <ul>
+            <li>OpenDSU technology stack upgraded to <a href="https://github.com/PrivateSky/psk-release/tree/50cb17de2511cc822ea23a2ad8fb63abfd061136">psk-release 2022-July-12</a>.
+                This should fix a message-queue connection broken issue across load-balancers (Heart beating for long polling <a href="https://github.com/PharmaLedger-IMI/fgt-workspace/issues/90">#90</a>).
+                <p>Unfortunately, this new psk-release seems to bring an internal database change that <span style="font-weight: bold;">breaks compatibility</span> with existing DB data within wallets.</p> 
+            </li>
+        </ul>
+
         <h2>v0.9.8 Release Notes 2022-07-15</h2>
         <ul>
             <li>Fixed a bug related to rejection of shipment by an Wholesaler (<a href="https://github.com/PharmaLedger-IMI/fgt-workspace/issues/83">#83</a>);</li>
