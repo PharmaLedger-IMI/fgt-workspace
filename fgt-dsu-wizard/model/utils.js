@@ -128,7 +128,7 @@ function getGtinsInStock(stockManager, callback){
  */
 function getDirectorySuppliers(directoryManager, callback){
     const options = {
-        query: [`role like /${ROLE.MAH}|${ROLE.WHS}/g`]
+        query: [`role like /${ROLE.MAH}|${ROLE.WHS}|${ROLE.PHA}/g`]
     }
 
     directoryManager.getAll(false, options, (err, suppliers) => err
@@ -144,7 +144,7 @@ function getDirectorySuppliers(directoryManager, callback){
  */
 function getDirectoryRequesters(directoryManager, callback){
     const options = {
-        query: [`role like /${ROLE.PHA}|${ROLE.WHS}/g`]
+        query: [`role like /${ROLE.MAH}|${ROLE.WHS}|${ROLE.PHA}/g`]
     }
 
     directoryManager.getAll(false, options, (err, requesters) => err
