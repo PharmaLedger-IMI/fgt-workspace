@@ -1,4 +1,4 @@
-import {Component, Element, h, Host, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Host, Prop, State, Watch} from '@stencil/core';
 import {HostElement} from "../../decorators";
 import {Chart, registerables} from 'chart.js';
 
@@ -70,6 +70,14 @@ export class PdmChartjs {
     this._filteredTableRows = [...this._tableDataSrc];
   }
 
+  @Event({
+    eventName: 'chart-action',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  sendChartAction: EventEmitter;
+
   clickHandler(evt: any) {
     const points = this.chart.getElementsAtEventForMode(evt, 'nearest', {intersect: false}, true);
     if (points.length) {
@@ -77,6 +85,14 @@ export class PdmChartjs {
       const label = this.chart.data.labels[id.index];
       const value = this.chart.data.datasets[id.datasetIndex].data[id.index];
       console.log('# chartClick $valid=', id.element.active, ' $chart=', this.containerId, ' $label=', label, ' $value=', value, ' $evt=', id)
+      if (id.element.active) {
+        this.sendChartAction.emit({
+          chart: this.containerId,
+          label: label,
+          element: id
+        })
+      }
+
       if (this.showDataTable && id.element.active) {
         this._filteredTableRows = this._tableDataSrc.filter((v) => {
           return v.status === label;

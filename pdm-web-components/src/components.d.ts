@@ -222,6 +222,11 @@ export namespace Components {
         "quantity"?: number;
         "threshold"?: number;
     }
+    interface ManagedPartnerStock {
+        "batchInputLabel": string;
+        "partnerInputLabel": string;
+        "productInputLabel": string;
+    }
     interface ManagedProduct {
         "addProductString": string;
         "backString": string;
@@ -613,6 +618,10 @@ export interface ManagedOrderlineStockChipCustomEvent<T> extends CustomEvent<T> 
     detail: T;
     target: HTMLManagedOrderlineStockChipElement;
 }
+export interface ManagedPartnerStockCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLManagedPartnerStockElement;
+}
 export interface ManagedProductCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLManagedProductElement;
@@ -664,6 +673,10 @@ export interface MoreChipCustomEvent<T> extends CustomEvent<T> {
 export interface PdmBarcodeScannerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLPdmBarcodeScannerElement;
+}
+export interface PdmChartjsCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPdmChartjsElement;
 }
 export interface PdmIonTableCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -807,6 +820,12 @@ declare global {
     var HTMLManagedOrderlineStockChipElement: {
         prototype: HTMLManagedOrderlineStockChipElement;
         new (): HTMLManagedOrderlineStockChipElement;
+    };
+    interface HTMLManagedPartnerStockElement extends Components.ManagedPartnerStock, HTMLStencilElement {
+    }
+    var HTMLManagedPartnerStockElement: {
+        prototype: HTMLManagedPartnerStockElement;
+        new (): HTMLManagedPartnerStockElement;
     };
     interface HTMLManagedProductElement extends Components.ManagedProduct, HTMLStencilElement {
     }
@@ -996,6 +1015,7 @@ declare global {
         "managed-order": HTMLManagedOrderElement;
         "managed-order-list-item": HTMLManagedOrderListItemElement;
         "managed-orderline-stock-chip": HTMLManagedOrderlineStockChipElement;
+        "managed-partner-stock": HTMLManagedPartnerStockElement;
         "managed-product": HTMLManagedProductElement;
         "managed-product-list-item": HTMLManagedProductListItemElement;
         "managed-sale": HTMLManagedSaleElement;
@@ -1349,6 +1369,15 @@ declare namespace LocalJSX {
         "quantity"?: number;
         "threshold"?: number;
     }
+    interface ManagedPartnerStock {
+        "batchInputLabel"?: string;
+        /**
+          * Through this event errors are passed
+         */
+        "onSsapp-send-error"?: (event: ManagedPartnerStockCustomEvent<any>) => void;
+        "partnerInputLabel"?: string;
+        "productInputLabel"?: string;
+    }
     interface ManagedProduct {
         "addProductString"?: string;
         "backString"?: string;
@@ -1630,6 +1659,7 @@ declare namespace LocalJSX {
         "cardTitle"?: string;
         "containerId"?: string;
         "data"?: string;
+        "onChart-action"?: (event: PdmChartjsCustomEvent<any>) => void;
         "options"?: string;
         "showDataTable"?: boolean;
         "tableDataSrc"?: string;
@@ -1800,6 +1830,7 @@ declare namespace LocalJSX {
         "managed-order": ManagedOrder;
         "managed-order-list-item": ManagedOrderListItem;
         "managed-orderline-stock-chip": ManagedOrderlineStockChip;
+        "managed-partner-stock": ManagedPartnerStock;
         "managed-product": ManagedProduct;
         "managed-product-list-item": ManagedProductListItem;
         "managed-sale": ManagedSale;
@@ -1853,6 +1884,7 @@ declare module "@stencil/core" {
             "managed-order": LocalJSX.ManagedOrder & JSXBase.HTMLAttributes<HTMLManagedOrderElement>;
             "managed-order-list-item": LocalJSX.ManagedOrderListItem & JSXBase.HTMLAttributes<HTMLManagedOrderListItemElement>;
             "managed-orderline-stock-chip": LocalJSX.ManagedOrderlineStockChip & JSXBase.HTMLAttributes<HTMLManagedOrderlineStockChipElement>;
+            "managed-partner-stock": LocalJSX.ManagedPartnerStock & JSXBase.HTMLAttributes<HTMLManagedPartnerStockElement>;
             "managed-product": LocalJSX.ManagedProduct & JSXBase.HTMLAttributes<HTMLManagedProductElement>;
             "managed-product-list-item": LocalJSX.ManagedProductListItem & JSXBase.HTMLAttributes<HTMLManagedProductListItemElement>;
             "managed-sale": LocalJSX.ManagedSale & JSXBase.HTMLAttributes<HTMLManagedSaleElement>;

@@ -1,9 +1,3 @@
-<webc-container controller="StockController">
-    <pdm-ion-table table-title="@title"
-                   item-reference="gtin"
-                   paginated="true"
-                   manager="StockManager"
-                   icon-name="stats-chart"
-                   item-type="managed-stock-list-item"
-                   items-per-page="10"></pdm-ion-table>
+<webc-container controller="PartnerStockController">
+    <managed-partner-stock></managed-partner-stock>
 </webc-container>

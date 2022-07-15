@@ -20,6 +20,26 @@
 | `type`            | `type`                 |             | `string`  | `'bar'`       |
 
 
+## Events
+
+| Event          | Description | Type               |
+| -------------- | ----------- | ------------------ |
+| `chart-action` |             | `CustomEvent<any>` |
+
+
+## Dependencies
+
+### Used by
+
+ - [managed-partner-stock](../managed-partner-stock)
+
+### Graph
+```mermaid
+graph TD;
+  managed-partner-stock --> pdm-chartjs
+  style pdm-chartjs fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

@@ -34,6 +34,7 @@ export interface WebResolver{
 export interface WebManager extends WebResolver{
   getAll(readDSU, options, callback): void;
   getPage(itemsPerPage, page, customQueryConditions, keyword, sort, readDSU, callback): void;
+  getStockTraceability?(gtin, options, callback): void;
 }
 
 /**
@@ -44,6 +45,7 @@ const bindAsControllerManager = function(manager): WebManager{
     getOne = manager.getOne.bind(manager);
     getAll = manager.getAll.bind(manager);
     getPage = manager.getPage.bind(manager);
+    getStockTraceability = manager.getStockTraceability?.bind(manager);
   }
 }
 
