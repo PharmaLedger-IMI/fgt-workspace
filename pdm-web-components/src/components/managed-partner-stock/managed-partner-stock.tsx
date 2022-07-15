@@ -37,6 +37,9 @@ export class ManagedPartnerStock {
   private stockManager: WebManager = undefined;
   private batchManager: WebManager = undefined;
 
+  @Prop({attribute: 'header-title', mutable: true}) headerTitle: string = 'Partner Stock Traceability';
+  @Prop({attribute: 'header-icon', mutable: true}) headerIcon: string = 'git-branch';
+
   @Prop({attribute: 'gtin-input-label', mutable: true}) productInputLabel: string = 'Product:';
   @Prop({attribute: 'batch-input-label', mutable: true}) batchInputLabel: string = 'Batch:';
   @Prop({attribute: 'partner-input-label', mutable: true}) partnerInputLabel: string = 'Partner:';
@@ -154,7 +157,7 @@ export class ManagedPartnerStock {
       if (!input)
         input = (<ion-skeleton-text animated></ion-skeleton-text>);
       return (
-        <ion-item lines="none" disabled={disabled} className="m-2">
+        <ion-item lines="none" disabled={disabled} class="ion-margin-top">
           <ion-label position="stacked">{label}{reqEl}</ion-label>
           {input}
         </ion-item>
@@ -253,6 +256,17 @@ export class ManagedPartnerStock {
     this.currentPartner = undefined;
   }
 
+  private getHeader(){
+    return (
+      <div class="flex ion-align-items-center">
+        <ion-icon name={this.headerIcon} size="large" color="secondary"></ion-icon>
+        <ion-label class="ion-text-uppercase ion-padding-start" color="secondary">
+          {this.headerTitle}
+        </ion-label>
+      </div>
+    )
+  }
+
   async componentWillLoad() {
     this.stockManager = await WebManagerService.getWebManager("StockManager");
     this.batchManager = await WebManagerService.getWebManager("BatchManager");
@@ -297,7 +311,12 @@ export class ManagedPartnerStock {
       return;
     return (
       <Host>
-        <ion-row className="ion-margin">
+        <div class="ion-margin-bottom ion-padding-horizontal">
+          <ion-row class="ion-align-items-center ion-justify-content-between">
+            {this.getHeader()}
+          </ion-row>
+        </div>
+        <ion-row class="ion-margin">
           <ion-grid>
             <ion-row>
               <ion-col size="9" size-lg="6">
@@ -307,13 +326,17 @@ export class ManagedPartnerStock {
                 <ion-button class="ion-float-end" color="primary" fill="clear" onClick={() => self.reset()}>Reset</ion-button>
               </ion-col>
             </ion-row>
-            <ion-row>
-              <ion-col class="mt-5" size="12">
-                {self.getChart()}
-              </ion-col>
-            </ion-row>
           </ion-grid>
         </ion-row>
+
+        <div class="l-chart">
+          <ion-row class="ion-margin">
+            <ion-col size="12" size-lg="8">
+              {self.getChart()}
+            </ion-col>
+          </ion-row>
+        </div>
+
       </Host>
     );
   }

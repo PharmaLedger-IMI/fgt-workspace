@@ -224,6 +224,8 @@ export namespace Components {
     }
     interface ManagedPartnerStock {
         "batchInputLabel": string;
+        "headerIcon": string;
+        "headerTitle": string;
         "partnerInputLabel": string;
         "productInputLabel": string;
     }
@@ -1371,6 +1373,8 @@ declare namespace LocalJSX {
     }
     interface ManagedPartnerStock {
         "batchInputLabel"?: string;
+        "headerIcon"?: string;
+        "headerTitle"?: string;
         /**
           * Through this event errors are passed
          */

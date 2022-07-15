@@ -7,11 +7,13 @@
 
 ## Properties
 
-| Property            | Attribute             | Description | Type     | Default      |
-| ------------------- | --------------------- | ----------- | -------- | ------------ |
-| `batchInputLabel`   | `batch-input-label`   |             | `string` | `'Batch:'`   |
-| `partnerInputLabel` | `partner-input-label` |             | `string` | `'Partner:'` |
-| `productInputLabel` | `gtin-input-label`    |             | `string` | `'Product:'` |
+| Property            | Attribute             | Description | Type     | Default                        |
+| ------------------- | --------------------- | ----------- | -------- | ------------------------------ |
+| `batchInputLabel`   | `batch-input-label`   |             | `string` | `'Batch:'`                     |
+| `headerIcon`        | `header-icon`         |             | `string` | `'git-branch'`                 |
+| `headerTitle`       | `header-title`        |             | `string` | `'Partner Stock Traceability'` |
+| `partnerInputLabel` | `partner-input-label` |             | `string` | `'Partner:'`                   |
+| `productInputLabel` | `gtin-input-label`    |             | `string` | `'Product:'`                   |
 
 
 ## Events
