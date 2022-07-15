@@ -51,15 +51,13 @@ class ShipmentLineManager extends Manager {
 
     /**
      * generates the db's key for the ShipmentLine
-     * @param {string|number} requesterId
-     * @param {string|number} senderId
-     * @param {string|number} gtin
-     * @param {string|number} createdOn
+     * @param {ShipmentLine} shipmentLine
      * @return {string}
      * @protected
      */
-    _genCompostKey(requesterId, senderId, gtin, createdOn){
-        return `${requesterId}-${senderId}-${gtin}-${createdOn}`;
+    _genCompostKey(shipmentLine){
+        const s = shipmentLine;
+        return `${s.requesterId}-${s.senderId}-${s.gtin}-${s.batch}-${s.createdOn}`;
     }
 
     /**
@@ -181,7 +179,7 @@ class ShipmentLineManager extends Manager {
                     console.log(`Could not read DSU from message keySSI in record ${message}. Skipping record.`);
                     return callback();
                 }
-                const compostKey = self._genCompostKey(shipmentLine.requesterId, shipmentLine.senderId, shipmentLine.gtin, shipmentLine.createdOn);
+                const compostKey = self._genCompostKey(shipmentLine);
 
                 const cb = function(err){
                     if (err)
@@ -243,7 +241,7 @@ class ShipmentLineManager extends Manager {
         if (!callback){
             callback = shipmentLine;
             shipmentLine = key;
-            key = this._genCompostKey(shipmentLine.requesterId, shipmentLine.senderId, shipmentLine.gtin, shipmentLine.createdOn);
+            key = this._genCompostKey(shipmentLine);
         }
 
         let self = this;
