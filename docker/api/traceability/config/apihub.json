@@ -30,7 +30,8 @@
     },
     "mq":{
       "module": "./components/mqHub",
-      "function": "MQHub"
+      "function": "MQHub",
+      "connectionTimeout": 10000
     },
     "bricking": {},
     "anchoring": {}
