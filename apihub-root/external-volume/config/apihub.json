@@ -31,7 +31,7 @@
     "mq":{
       "module": "./components/mqHub",
       "function": "MQHub",
-      "connectionTimeout": 10000
+      "connectionTimeout": 1740000
     },
     "bricking": {},
     "anchoring": {}
