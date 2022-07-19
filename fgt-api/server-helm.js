@@ -121,9 +121,11 @@ const setDashboard = async function(){
 }
 
 try {
-    Promise.all([bootAPIServer(), bootSwagger(), setDashboard()])
-        .then(_ => console.log(`Completed Boot`))
-        .catch(e => failServerBoot(e.message));
+    setDashboard().then(_ => {
+        Promise.all([bootAPIServer(), bootSwagger()])
+            .then(_ => console.log(`Completed Boot`))
+            .catch(e => failServerBoot(e.message));
+    }).catch(e => failServerBoot(e.message));
 } catch (e){
     failServerBoot(e.message);
 }
