@@ -48,6 +48,8 @@ You will be present with a menu from where you can choose the SSApp you with to 
 
 #include "workdocs/Installation.md"
 
+#include "workdocs/install-dsu-explorer.md"
+
 #include "workdocs/api.md"
 
 #include "workdocs/testblockchain.md"

@@ -78,15 +78,15 @@ const initApis = function(express, apis, port, walletName, ...managerInitMethods
     const credentialPath = path.join(process.cwd(), "config");
     instantiate(credentialPath, walletName, (err, walletSSI, walletDSU) => {
         if (err)
-            throw err;
+            throw new Error(err);
 
         const init = function(wallet){
             getParticipantManager(impersonateDSUStorage(wallet.getWritableDSU()), (err, participantManager) => {
                 if (err)
-                    throw err;
+                    throw new Error(err);
                 initManagers(participantManager, ...managerInitMethods, (err) => {
                     if (err)
-                        throw err;
+                        throw new Error(err);
 
                     const server = express();
                     server.use(function (req, res, next) {
