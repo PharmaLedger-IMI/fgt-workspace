@@ -38,14 +38,14 @@ const getCredentials = function(basePath, walletName, callback){
     });
 }
 
-const instantiate = function(basePath, walletName, callback){
+const instantiate = function(basePath, walletName, callback, pathToApps){
     getCredentials(basePath, walletName, (err, credentials) => {
         if (err)
             return callback(err);
         const argConfig = argParser({token: `${encodeBase64(credentials.pass.secret)}`}, process.argv);
         process.env.PARTICIPANT_ID = credentials.id.secret;
         process.env.TOKEN = argConfig.token;
-        instantiateSSApp(walletName, "..", dt, credentials, (err, walletSSI, walletDSU) => {
+        instantiateSSApp(walletName, pathToApps || "..", dt, credentials, (err, walletSSI, walletDSU) => {
             if (err) {
                 console.log(`The wallet couldn't be created. Trying to load with credentials...` );
                 return loadWallet(walletName, "..", dt, credentials, callback);
@@ -148,5 +148,9 @@ const initManagers = function(participantManager, ...managerInitMethods){
 module.exports = {
     initApis,
     APPS,
-    log
+    log,
+    instantiate,
+    getCredentials,
+    getParticipantManager,
+    load
 }
