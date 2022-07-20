@@ -226,6 +226,25 @@ Open a new console inside *fgt-workspace* folder and run:
 $ npm run build-all
 ```
 
+
+
+#### Step 4: (Pre-Requisite) Build and install one participant's Dashboard
+
+On another terminal, 
+
+```sh
+cd fgt-api
+npm run build-api-mah-dashboard
+npm run export-api-credentials -- --role=mah
+```
+
+(Replace "mah" with "whs" or "pha" as appropriate).
+
+Open the browser at http://localhost:8080/dashboard/
+
+(The password should be pre-filled. Do not login yet, as you need to start REST services... next.)
+
+
 #### Step 4a: Run one participant REST services.
 
 Choose if you want to run a MAH, WHS, ou PHA.
@@ -235,6 +254,8 @@ For MAH:
 cd fgt-api
 npm run run-mah
 ```
+
+(You can now login to the dashboard started in step 4.)
 
 Change the command to "npm run run-whs" or "npm run run-pha" for other participant category.
 
@@ -261,6 +282,8 @@ curl -X 'GET' \
   -H 'Authorization: Basic TUFIMTE2MjY3OTg2OlRoaXMxc1N1Y2hBUzNjdXJlUGFzc3cwcmQ='
 ```
 
+
+
 #### Step 4b: Run one participant OpenAPI/Swagger.
 
 On another terminal, 
@@ -271,23 +294,6 @@ npm run run-swagger
 ```
 
 You can open the URL http://localhost:3009 and use the Swagger UI to invoke the REST services.
-
-
-#### Step 4b: Build and install one participant's Dashboard
-
-On another terminal, 
-
-```sh
-cd fgt-api
-npm run build-api-mah-dashboard
-npm run export-api-credentials -- --role=mah
-```
-
-(Replace "mah" with "whs" or "pha" as appropriate).
-
-Open the browser at http://localhost:8080/dashboard/
-
-(The password should be pre-filled).
 
 
 #### Run all participants
