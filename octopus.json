@@ -41,21 +41,6 @@
             ]
         },
         {
-            "name": "pharmaledger-wallet",
-            "src": "http://github.com/privatesky/menu-wallet-prototype.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd pharmaledger-wallet && npm install"
-                }
-            ]
-        },
-        {
             "name": "pdm-dsu-toolkit",
             "actions": [
                 {
@@ -340,20 +325,50 @@
             ]
         },
         {
-            "name": "trust-loader-config",
+            "name": "Build fgt-mah-ssapp to create seed",
+            "src": "",
             "actions": [
                 {
-                    "type": "copy",
-                    "src": "./trust-loader-config",
-                    "target": "./apihub-root",
-                    "options": {
-                        "overwrite": true
-                    }
+                    "type": "execute",
+                    "cmd": "cd fgt-mah-ssapp && npm run build"
+                }
+            ]
+        },
+        {
+            "name": "Build fgt-wholesaler-ssapp to create seed",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-wholesaler-ssapp && npm run build"
+                }
+            ]
+        },
+        {
+            "name": "Build fgt-pharmacy-ssapp to create seed",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd fgt-pharmacy-ssapp && npm run build"
                 }
             ]
         }
     ],
     "build-dsu-explorer": [
+        {
+            "name": "trust-loader-config",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./trust-loader-config/dsu-explorer",
+                    "target": "./apihub-root/dsu-explorer",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
         {
             "name": "cardinal-wallet-build",
             "src": "",
@@ -532,6 +547,20 @@
             ]
         },
         {
+            "name": "Bind fgt-mah-ssapp seed to create wallet",
+            "src": ".",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./fgt-mah-ssapp/seed",
+                    "target": "./apihub-root/dashboard/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
             "name": "Copy fgt-mah-ssapp",
             "src": "",
             "actions": [
@@ -646,6 +675,20 @@
             ]
         },
         {
+            "name": "Bind fgt-whs-ssapp seed to create wallet",
+            "src": "",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./fgt-wholesaler-ssapp/seed",
+                    "target": "./apihub-root/dashboard/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
             "name": "Copy fgt-wholesaler-ssapp",
             "src": "",
             "actions": [
@@ -756,6 +799,20 @@
                 {
                     "type": "execute",
                     "cmd": "rm -rf apihub-root/dashboard"
+                }
+            ]
+        },
+        {
+            "name": "Bind fgt-pha-ssapp seed to create wallet",
+            "src": "",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./fgt-pharmacy-ssapp/seed",
+                    "target": "./apihub-root/dashboard/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
                 }
             ]
         },
