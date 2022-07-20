@@ -2,7 +2,7 @@ const {log} = require('../utils');
 const Batch = require('../../fgt-dsu-wizard/model/Batch');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const {DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../constants');
-const {ShipmentStatus, DirectoryEntry, Direc} = require('../../fgt-dsu-wizard/model');
+const {ShipmentStatus} = require('../../fgt-dsu-wizard/model');
 const {ROLE} = require("../../fgt-dsu-wizard/model/DirectoryEntry");
 
 
@@ -127,12 +127,15 @@ class SimpleShipmentManager extends Manager {
             if (!partner.role)
                 return callback(`Not found a valid role to partner ${partnerId}`);
             const directoryKey = self.directoryManager._genCompostKey(partner);
+            self.batchAllow(self.directoryManager);
             self.directoryManager.getOne(directoryKey, false, (err, _partner) => {
-                if (!err && _partner) // early return, partner already exists in directory
+                if (!err && _partner) { // early return, partner already exists in directory
+                    self.batchDisallow(self.directoryManager);
                     return callback(undefined, _partner);
+                }
 
-                self.batchAllow(self.directoryManager);
                 self.directoryManager.create(partner, (err, partnerDbRecord) => {
+                    self.batchDisallow(self.directoryManager);
                     if (err) {
                         log(`Partner ${partnerDbRecord.id} as ${partnerDbRecord.role} cannot be added to directory. Skipping...`);
                         return callback(undefined, undefined);
