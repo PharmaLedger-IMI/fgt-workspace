@@ -473,8 +473,6 @@ Currently not supported
     * fgt-mah-ssapp: The application for the Mah;
     * fgt-pharmacy-ssapp: The application for the pharmacy;
     * fgt-wholesaler-ssapp: The application for the wholesaler;
-    * gtin-dsu-wizard: the ssapp the creates GTIN based DSUs. *Cloned from epi*;
-    * gtin-resolver: the 'library' to resolve gtin+batchs to dsus. *Cloned from epi*;
 
 
 
