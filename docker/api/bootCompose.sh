@@ -4,13 +4,13 @@ if [ "$1" = "help" -o "$1" = "--help" -o "$1" = "-h" -o "$1" = "-?" ]; then
   echo
   echo "\t $0 [options]"
   echo
-  echo "In options use keyword eth to turn on BC integration. Use keywork dev for DEV environment. Use keyword tst for TST environment."
+  echo "In options use keyword bc to turn on BC integration. Use keywork dev for DEV environment. Use keyword tst for TST environment."
   echo
   echo "Examples:"
   echo
   echo "\t $0"
   echo
-  echo "\t $0 eth-dev"
+  echo "\t $0 bc-dev"
   echo
   echo "\t $0 tst"
   exit 0
@@ -30,9 +30,9 @@ elif [[ "$1" = *"tst"* ]]; then
   swagger="$params"
   protocol=https
 fi
-if [[ "$1" = *"eth"* ]]; then
+if [[ "$1" = *"eth"* || "$1" = *"bc"* ]]; then
     echo "Launching docker compose in $params with ETH"
-    SIMPLE=$simple DOMAIN=$params SWAGGER=$swagger PROTOCOL=$protocol COMMAND=$command docker-compose -f docker-compose.yml -f docker-compose-eth.yml up -d
+    SIMPLE=$simple DOMAIN=$params SWAGGER=$swagger PROTOCOL=$protocol COMMAND=$command docker-compose -f docker-compose.yml -f docker-compose-bc.yml up -d
 else
     echo "Launching docker compose in $params without ETH"
     SIMPLE=$simple DOMAIN=$params SWAGGER=$swagger PROTOCOL=$protocol COMMAND=$command docker-compose up -d

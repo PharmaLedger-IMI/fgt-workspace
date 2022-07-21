@@ -120,7 +120,7 @@ services:
       - "traefik.http.services.traceability.loadbalancer.server.port=8080"
       - "traefik.http.routers.traceability.entrypoints=web"
       - "traefik.docker.network=traceability-net"
-      # this docker can also have an IP address in qbn-net, so tell traefik to use the traceability-net
+      # this docker can also have an IP address in dsu-bc-net, so tell traefik to use the traceability-net
     volumes:
       - traceability_vol:/fgt-workspace/apihub-root/external-volume
     networks:
