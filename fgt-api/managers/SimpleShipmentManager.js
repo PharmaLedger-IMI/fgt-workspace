@@ -3,6 +3,7 @@ const Batch = require('../../fgt-dsu-wizard/model/Batch');
 const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const {DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../constants');
 const {ShipmentStatus} = require('../../fgt-dsu-wizard/model');
+const {SimpleShipment} = require('../model');
 const {ROLE} = require("../../fgt-dsu-wizard/model/DirectoryEntry");
 
 
@@ -459,7 +460,7 @@ class SimpleShipmentManager extends Manager {
         }
 
         if (typeof message === "string") {
-            // #91 process an string message with a keySSI.
+            // #91 process an string mespsage with a keySSI.
             // These are not sent anymore, but it could be an old unprocessed message.
             self.simpleShipmentService.get(message, (err, receiveSimpleShipment) => {
                 if (err)
@@ -475,7 +476,7 @@ class SimpleShipmentManager extends Manager {
             });
         } else if (typeof message === "object") {
             // #91 process an object message with a simpleShipment
-            const receiveSimpleShipment = JSON.parse(JSON.stringify(message)); // Clone object. Should not be needed!
+            const receiveSimpleShipment = new SimpleShipment(message); // A shallow clone object.
             if (!receiveSimpleShipment["shipmentId"])
                 return callback(`Message ${message} object misses property shipmentId. Skipping record.`);
             receiveSimpleShipment.shipmentId = self._genCompostKey(receiveSimpleShipment);
