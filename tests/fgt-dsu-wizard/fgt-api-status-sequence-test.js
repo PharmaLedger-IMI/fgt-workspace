@@ -122,15 +122,15 @@ const sendShipment = function(sManager, product, batch, callback){
         sManager.update(s.shipmentId, new Status({status:  ShipmentStatus.PICKUP}), (err) => {
             if (err)
                 return callback(err);
-            // sManager.update(s.shipmentId, new Status({status:  ShipmentStatus.TRANSIT}), (err) => {
-            //     if (err)
-            //         return callback(err);
-            //     sManager.update(s.shipmentId, new Status({status:  ShipmentStatus.DELIVERED}), (err) => {
-            //         if (err)
-            //             return callback(err);
+            sManager.update(s.shipmentId, new Status({status:  ShipmentStatus.TRANSIT}), (err) => {
+                 if (err)
+                     return callback(err);
+                 sManager.update(s.shipmentId, new Status({status:  ShipmentStatus.DELIVERED}), (err) => {
+                     if (err)
+                         return callback(err);
                     callback(undefined, s, keySSI);
-                // })
-            // })
+                })
+            })
         })
     })
 }
