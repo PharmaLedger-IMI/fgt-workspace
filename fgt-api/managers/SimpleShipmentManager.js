@@ -434,8 +434,8 @@ class SimpleShipmentManager extends Manager {
 
     _processMessageRecord(message, callback) {
         const self = this;
-        if (!message || typeof message !== "string")
-            return callback(`Message ${message} does not have non-empty string with keySSI. Skipping record.`);
+        if (!message)
+            return callback(`Message ${message} empty. Skipping record.`);
 
         const _updateReceiveShipment = (simpleShipment, statusUpdate, callback) => {
             self.getRecord(simpleShipment.shipmentId, (err, record) => {
@@ -458,18 +458,36 @@ class SimpleShipmentManager extends Manager {
             });
         }
 
-        self.simpleShipmentService.get(message, (err, receiveSimpleShipment) => {
-            if (err)
-                return callback(err);
-
+        if (typeof message === "string") {
+            // #91 process an string message with a keySSI.
+            // These are not sent anymore, but it could be an old unprocessed message.
+            self.simpleShipmentService.get(message, (err, receiveSimpleShipment) => {
+                if (err)
+                    return callback(err);
+    
+                receiveSimpleShipment.shipmentId = self._genCompostKey(receiveSimpleShipment);
+                self.getOne(receiveSimpleShipment.shipmentId, true, (err, simpleShipment) => {
+                    if (err)
+                        return self.create(receiveSimpleShipment, (err, insertSimpleShipment) => callback(err));
+    
+                    _updateReceiveShipment(simpleShipment, receiveSimpleShipment.status, (err, updatedSimpleShipment) => callback(err))
+                });
+            });
+        } else if (typeof message === "object") {
+            // #91 process an object message with a simpleShipment
+            const receiveSimpleShipment = JSON.parse(JSON.stringify(message)); // Clone object. Should not be needed!
+            if (!receiveSimpleShipment["shipmentId"])
+                return callback(`Message ${message} object misses property shipmentId. Skipping record.`);
             receiveSimpleShipment.shipmentId = self._genCompostKey(receiveSimpleShipment);
             self.getOne(receiveSimpleShipment.shipmentId, true, (err, simpleShipment) => {
                 if (err)
                     return self.create(receiveSimpleShipment, (err, insertSimpleShipment) => callback(err));
-
+    
                 _updateReceiveShipment(simpleShipment, receiveSimpleShipment.status, (err, updatedSimpleShipment) => callback(err))
-            })
-        })
+            });
+        } else {
+            return callback(`Message ${message} is not an object, and neither a string, but a ${typeof message}. Skipping record.`);
+        }
     };
 
 
@@ -539,8 +557,10 @@ class SimpleShipmentManager extends Manager {
         const self = this;
         const participantId = (shipment.requesterId === self.getIdentity().id) ? shipment.senderId : shipment.requesterId;
 
-
-        self.sendMessage(participantId, DB.simpleShipments, aKey, (err) => {
+        // #91 send shipment as JSON object instead of the keySSI
+        // Should object be cloned and stripped of the shipmentLines ?
+        // self.sendMessage(participantId, DB.simpleShipments, aKey, (err) => { 
+        self.sendMessage(participantId, DB.simpleShipments, shipment, (err) => {
             if (err)
                 return self._messageCallback(err ? `Could not sent message to ${participantId} with ${DB.receivedShipments}: ${err}` : err);
             self._messageCallback(err, `Message sent to ${participantId}, ${DB.receivedShipments}, ${aKey}`);

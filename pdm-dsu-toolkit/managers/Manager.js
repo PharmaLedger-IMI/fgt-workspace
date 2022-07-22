@@ -252,7 +252,7 @@ class Manager{
      * Send a message to the specified DID
      * @param {string|W3cDID} did
      * @param {string} [api] defaults to the tableName
-     * @param {string} message
+     * @param {*} message - cna be an string or an object
      * @param {function(err)} callback
      */
     sendMessage(did, api, message, callback){

@@ -5,11 +5,11 @@ services:
     networks:
       traceability-net:
         ipv4_address: 172.16.63.51
-      qbn-net:
+      dsu-bc-net:
         ipv4_address: 172.16.16.51
     command: ["/bin/sh", "-c", "/fgt-workspace/docker/api/traceability/startup-script-bc.sh"]
 
 networks:
-  qbn-net:
-    name: qbn-net
+  dsu-bc-net:
+    name: dsu-bc-net
     external: true
