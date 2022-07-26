@@ -231,15 +231,27 @@ class SaleManager extends Manager{
                             if (err)
                                 return cb(err);
                             console.log(`Creating sale entry for: ${sale.productList.map(p => `${p.gtin}-${p.batchNumber}-${p.serialNumber}`).join(', ')}`);
-                            self._addSale(sale.id, aggIndividualProductsByMAH, (err, readSSis, insertedSale, ) => {
+                            self._createSaleDSUs(sale.id, aggIndividualProductsByMAH, (err, readSSis, insertedSale, salesReadSSIByMAH ) => {
                                 if (err)
                                     return cb(`Could not Create Sales DSUs`);
                                 self.insertRecord(insertedSale.id, self._indexItem(insertedSale), (err) => {
                                     if (err)
-                                        return cb(`Could not insert record with id ${insertedSale.id} on table ${self.tableName}`);
+                                        return cb(err.message ? err.message : `Could not insert record with id ${insertedSale.id} on table ${self.tableName}`);
                                     self.commitBatch((err) => {
                                         if(err)
                                             return cb(err);
+
+                                        const notifySalesToPartners = (saleId, mahIds, salesByMah) => {
+                                            mahIds.forEach((mah) => {
+                                                self.sendMessage(mah, DB.receipts, salesByMah[mah], (err) => {
+                                                    const errMsg = `Could not send message to MAH ${mah} sale id=${saleId}}`;
+                                                    const defMsg = `Message sent. MAH ${mah} notified of sale id=${saleId}}`;
+                                                    self._messageCallback(err ? errMsg : defMsg);
+                                                });
+                                            });
+                                        }
+
+                                        notifySalesToPartners(insertedSale.id, Object.keys(salesReadSSIByMAH), salesReadSSIByMAH);
                                         const path =`${self.tableName}/${insertedSale.id}`;
                                         console.log(`Sale stored at '${path}'`);
                                         _callback(undefined, insertedSale, path, readSSis);
@@ -256,7 +268,14 @@ class SaleManager extends Manager{
         }); // stockManager.getAll end
     }
 
-    _addSale(saleId, aggIndividualProductsByMAH, callback){
+    /**
+     * Creates a sale DSU for each product list sold aggregated by MAH
+     * @param {string} saleId
+     * @param {object} aggIndividualProductsByMAH
+     * @param {function(error, string[], Sale, object)} callback
+     * @private
+     */
+    _createSaleDSUs(saleId, aggIndividualProductsByMAH, callback){
         const self = this;
         const sellerId = self.getIdentity().id;
         const insertedSale = new Sale({
@@ -266,7 +285,7 @@ class SaleManager extends Manager{
         });
         const saleReadSSIs = [];
 
-        const createIterator = function(products, accumulator, _callback){
+        const createSaleDsuByMAH = function(products, accumulator, _callback){
             const saleByMAH = new Sale({
                 id: saleId,
                 sellerId: sellerId,
@@ -286,33 +305,31 @@ class SaleManager extends Manager{
             });
         }
 
-        const createAndNotifyIterator = function(mahs, accumulator, _callback){
+        const createIterator = function(mahs, accumulator, _callback){
             const mah = mahs.shift();
             if (!mah)
-                return _callback(undefined, saleReadSSIs, insertedSale);
+                return _callback(undefined, saleReadSSIs, insertedSale, accumulator);
 
-            createIterator(aggIndividualProductsByMAH[mah].slice(), [], (err, keySSIs) => {
+            createSaleDsuByMAH(aggIndividualProductsByMAH[mah].slice(), [], (err, keySSIs) => {
                 if (err)
                     return _callback(err);
-                accumulator[mah] = keySSIs;
                 const keySSISpace = utils.getKeySSISpace();
 
                 let readSSIs;
 
                 try {
-                    readSSIs = keySSIs.map(k => keySSISpace.parse(k).derive().getIdentifier())
+                    readSSIs = keySSIs.map(k => keySSISpace.parse(k).derive().getIdentifier());
+                    accumulator[mah] = [...readSSIs];
                     saleReadSSIs.push(...readSSIs);
                 } catch(e) {
-                    return _callback(`Invalid keys found`);
+                    return _callback(`Sale DSU cannot be created, because invalid keys were found`);
                 }
 
-                self.sendMessage(mah, DB.receipts, readSSIs, err =>
-                    self._messageCallback(err ? `Could not send message` : `Message to Mah ${mah} sent with sales`));
-                createAndNotifyIterator(mahs, accumulator, _callback);
+                createIterator(mahs, accumulator, _callback);
             });
         }
 
-        createAndNotifyIterator(Object.keys(aggIndividualProductsByMAH), {}, callback);
+        createIterator(Object.keys(aggIndividualProductsByMAH), {}, callback);
     }
 
     /**
