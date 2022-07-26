@@ -150,7 +150,7 @@ class BaseManager {
      * Sends a message to a DID via the {@link MessageManager}
      * @param {string | Wc3DID} did
      * @param {string} api
-     * @param {{}} message
+     * @param {*} message
      * @param {function(err)} callback
      */
     sendMessage(did, api, message, callback){
