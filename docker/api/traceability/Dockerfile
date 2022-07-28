@@ -34,7 +34,7 @@ RUN find . \( -name ".git" -o -name ".gitignore" -o -name ".gitmodules" -o -name
 RUN rm -rf docs workdocs
 
 # git no longer needed for runtime
-RUN apk del git
+RUN apk del git procps
 
 # this is very slow, specially on the node_modules folder
 RUN chown -R node /fgt-workspace
