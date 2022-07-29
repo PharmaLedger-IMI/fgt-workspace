@@ -6,6 +6,15 @@ import wizard from "../../services/WizardService";
 
 const {Stock, IndividualProduct, Batch} = wizard.Model;
 
+interface Batch {
+  batchNumber: string;
+  expiry: string;
+  serialNumbers: string[];
+  quantity: number;
+  batchStatus: string;
+  getQuantity: () => number;
+}
+
 @Component({
   tag: 'managed-stock-product-input',
   styleUrl: 'managed-stock-product-input.css',
@@ -86,20 +95,21 @@ export class ManagedStockProductInput {
     ];
   }
 
+  private addProductToBasket(p: (typeof IndividualProduct)) {
+    const product = new IndividualProduct(p);
+    if (!product.serialNumber) {
+      return this.sendError(`Product ${product.gtin}-${product.name} out of stock.`);
+    }
+    const previousProducts: (typeof IndividualProduct)[] = this.products || [];
+    this.products = [...previousProducts, product];
+  }
+
+
   private addProduct(gtin: string | {}){
     const self = this;
 
-    const _addProduct = function(p){
-      const product = new IndividualProduct(p);
-      if (!product.serialNumber) {
-        return self.sendError(`Product ${product.gtin}-${product.name} out of stock.`);
-      }
-      const previousProducts: (typeof IndividualProduct)[] = self.products || [];
-      self.products = [...previousProducts, product];
-    }
-
     if (typeof gtin !== 'string')
-      return _addProduct(gtin);
+      return self.addProductToBasket(gtin);
 
     self.stockManager.getOne(gtin, true, (err, stock: typeof Stock) => {
       if (err)
@@ -110,53 +120,49 @@ export class ManagedStockProductInput {
         return a.expiry.getTime() - b.expiry.getTime();
       });
 
-      let batch = sortedBatches[0];
-      let serial;
+      const selectProduct = (_gtin: string, batches: Batch[], callback) => {
+        const batch = batches.shift();
+        if (!batch)
+          return callback(`no more batches`);
 
-      const __addProduct = function(){
-        return _addProduct({
+        self.batchManager.getOne(`${_gtin}-${batch.batchNumber}`, true, (err, batch: Batch) => {
+          if (err)
+            return callback(`Could not retrieve batch information for ${_gtin}'s ${batch.batchNumber}`, err);
+
+          const serialsInBasket: string[] = self.products.reduce((accum, p) => {
+            if (p.gtin === gtin && p.batchNumber === batch.batchNumber)
+              accum.push(p.serialNumber);
+            return accum;
+          }, []);
+
+          // not available products in this batch, select the next batch
+          if (serialsInBasket.length >= batch.serialNumbers.length)
+            return selectProduct(_gtin, batches, callback);
+
+          // if still have products available on this batch
+          const availableSerials = batch.serialNumbers.slice(serialsInBasket.length);
+          const serialNumber = availableSerials.find((serial) => availableSerials.indexOf(serial) >= 0);
+          if (!serialNumber)
+            return selectProduct(_gtin, batches, callback);
+          callback(undefined, {batch: batch, serialNumber: serialNumber});
+        })
+      }
+
+      selectProduct(gtin, sortedBatches, (err, selectedProduct) => {
+        if (err)
+          return self.sendError(err);
+
+        const {batch, serialNumber} = selectedProduct;
+        self.addProductToBasket({
           gtin: gtin,
           name: stock.name,
           manufName: stock.manufName,
           batchNumber: batch.batchNumber,
-          serialNumber: serial,
           expiry: batch.expiry,
-          status: batch.batchStatus
+          status: batch.batchStatus,
+          serialNumber: serialNumber
         });
-      }
-
-      // @ts-ignore
-      if (self.stockManager.serialization){
-        if (!batch.serialNumbers || !batch.serialNumbers.length)
-          return self.sendError(`No serialization found...`);
-        serial = batch.serialNumbers[0];
-        return __addProduct();
-      }
-
-      // @ts-ignore
-      self.batchManager.getOne(`${gtin}-${batch.batchNumber}`, true, (err, batch: typeof Batch) => {
-        if (err)
-          return self.sendError(`Could not retrieve batch information for ${gtin}'s ${batch.batchNumber}`, err);
-        if (!self.products || !self.products.length){
-          serial = batch.serialNumbers[0];
-        } else {
-          const previousSerials = self.products.filter(p => p.gtin === gtin && p.batchNumber === batch.batchNumber)
-            .reduce((accum, p) => {
-              accum.push(p.serialNumber);
-              return accum;
-            }, []);
-
-          for (let i = 0; i < batch.serialNumbers.length; i++){
-            const tempSerial = batch.serialNumbers[0];
-            if (previousSerials.indexOf(tempSerial) !== -1)
-              continue;
-            serial = tempSerial;
-            break;
-          }
-        }
-
-        __addProduct();
-      });
+      })
     });
   }
 
