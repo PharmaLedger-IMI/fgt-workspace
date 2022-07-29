@@ -89,10 +89,10 @@ export class ManagedStockProductInput {
 
   private removeProduct(product){
     const {gtin, batchNumber, serialNumber} = product;
-    this.products = [
-      ...this.products
-        .filter(p => p.gtin !== gtin && p.batchNumber !== batchNumber && p.serialNumber !== serialNumber)
-    ];
+    const filter = this.products.filter((p) => {
+      return `${p.gtin}-${p.batchNumber}-${p.serialNumber}` !== `${gtin}-${batchNumber}-${serialNumber}`
+    })
+    this.products = [...filter];
   }
 
   private addProductToBasket(p: (typeof IndividualProduct)) {
