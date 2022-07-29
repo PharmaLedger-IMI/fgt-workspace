@@ -9,7 +9,7 @@ info:
 
     *  
     [License](https://github.com/PharmaLedger-IMI/fgt-workspace/blob/master/LICENSE.md)
-  version: 1.1.0
+  version: 1.1.1
 servers:
   - url: http://{{api-pha}}
 tags:
@@ -84,7 +84,7 @@ paths:
                   page: 1
                   itemsPerPage: 10
                   totalPages: 1
-                  query: {}
+                  query: { }
                 results:
                   - name: string
                     gtin: string
@@ -163,12 +163,12 @@ paths:
     post:
       tags:
         - sale
-      summary: create
+      summary: 'create a sale and notify MAH'
       requestBody:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/AddSale'
               example:
                 id: string
                 productList:
@@ -185,7 +185,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/Sale'
               example:
                 id: string
                 sellerId: string
@@ -200,16 +200,16 @@ paths:
                 products: string
                 keySSIs:
                   - string
-        '501':
-          description: Not Implemented
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/HttpError'
               example:
-                status: 0
-                error: string
-                message: string
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
   /sale/createAll:
     post:
       tags:
@@ -219,18 +219,15 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              example:
-                - requesterId: string
-                  senderId: string
-                  status: string
-                  shipmentLines:
-                    - gtin: string
-                      batch: string
-                      quantity: 0
-                      senderId: string
-                      requesterId: string
-                      status: string
+              type: array
+              items:
+                $ref: '#/components/schemas/AddSale'
+            example:
+              - id: string
+                productList:
+                  - gtin: string
+                    batchNumber: string
+                    serialNumber: 0
       responses:
         '200':
           headers:
@@ -241,13 +238,15 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sale'
               example:
                 meta:
                   page: 0
                   itemsPerPage: 0
                   totalPages: 0
-                  query: {}
+                  query: { }
                 results:
                   - id: string
                     sellerId: string
@@ -259,19 +258,16 @@ paths:
                         manufName: string
                         expiry: string
                         status: string
-                    products: string
-                    keySSIs:
-                      - string
-        '501':
-          description: Not Implemented
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/HttpError'
               example:
-                status: 0
-                error: string
-                message: string
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
   /sale/getAll:
     get:
       tags:
@@ -316,12 +312,19 @@ paths:
             application/json:
               schema:
                 type: object
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Sale'
               example:
                 meta:
                   page: 0
                   itemsPerPage: 0
                   totalPages: 0
-                  query: {}
+                  query: { }
                 results:
                   - id: string
                     sellerId: string
@@ -336,16 +339,16 @@ paths:
                     products: string
                     keySSIs:
                       - string
-        '501':
-          description: Not Implemented
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/HttpError'
               example:
-                status: 0
-                error: string
-                message: string
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
   /sale/get/{saleId}:
     get:
       tags:
@@ -368,7 +371,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/Sale'
               example:
                 id: string
                 sellerId: string
@@ -383,16 +386,16 @@ paths:
                 products: string
                 keySSIs:
                   - string
-        '501':
-          description: Not Implemented
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/HttpError'
               example:
-                status: 0
-                error: string
-                message: string
+                status: 400
+                error: Bad Request
+                message: The server could not understand your request
   /shipment/create:
     post:
       tags:
@@ -554,15 +557,20 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Shipment'
+                type: object
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Shipment'
               example:
                 meta:
                   page: 1
                   itemsPerPage: 10
                   totalPages: 1
-                  query: {}
+                  query: { }
                 results:
                   - shipmentId: string
                     requesterId: string
@@ -833,7 +841,7 @@ paths:
                   page: 1
                   itemsPerPage: 10
                   totalPages: 1
-                  query: {}
+                  query: { }
                 results:
                   - name: string
                     gtin: string
@@ -933,8 +941,8 @@ paths:
               example:
                 id: 0
                 title: string
-                parents: [{}]
-                children: [{}]
+                parents: [ { } ]
+                children: [ { } ]
         '400':
           description: Bad Request
           content:
@@ -976,8 +984,8 @@ paths:
               example:
                 - id: 0
                   title: string
-                  parents: [{}]
-                  children: [{}]
+                  parents: [ { } ]
+                  children: [ { } ]
         '400':
           description: Bad Request
           content:
@@ -1054,8 +1062,8 @@ paths:
               example:
                 - id: 0
                   title: string
-                  parents: [{}]
-                  children: [{}]
+                  parents: [ { } ]
+                  children: [ { } ]
         '400':
           description: Bad Request
           content:
@@ -1125,7 +1133,7 @@ paths:
                   page: 1
                   itemsPerPage: 10
                   totalPages: 1
-                  query: {}
+                  query: { }
                 results:
                   - id: string
                     role: 'mah'
@@ -1267,6 +1275,57 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AddShipmentLine'
+
+    AddSale:
+      type: object
+      required:
+        - productList
+      properties:
+        id:
+          type: string
+        productList:
+          type: array
+          items:
+            type: object
+            properties:
+              gtin:
+                type: string
+              batchNumber:
+                type: string
+              serialNumber:
+                type: string
+
+    Sale:
+      type: object
+      required:
+        - id
+        - sellerId
+        - productList
+      properties:
+        id:
+          type: string
+        sellerId:
+          type: string
+        productList:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              gtin:
+                type: string
+              batchNumber:
+                type: string
+              serialNumber:
+                type: string
+              manufName:
+                type: string
+              expiry:
+                type: string
+              status:
+                type: string
+
 
     RequestTraceability:
       type: object
@@ -1579,4 +1638,4 @@ components:
         query:
           $ref: '#/components/schemas/Query'
 security:
-  - basicAuth: []
+  - basicAuth: [ ]
