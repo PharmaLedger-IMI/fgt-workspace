@@ -1,3 +1,1 @@
-THE FILES IN THIS FOLDER ARE OUT OF DATE (it is for old/unsupported graphical applications).
-
-PLEASE USE THE api SUBFOLDER!
+PLEASE USE THE api SUBFOLDER! (Too inspect previous Dockerfile of minikube test files, see versions v0.9.5 or earlier).
