@@ -147,7 +147,7 @@ export class ManagedStockProductInput {
             if (err)
               return callback(`Could not retrieve sale information for ${_gtin}'s ${batch.batchNumber}`, err);
 
-            self.batchManager.getOne(`${_gtin}-${batch.batchNumber}`, true, (err, batch: Batch) => {
+            self.batchManager.getOne(`${_gtin}-${batch.batchNumber}`, true, (err, constBatch: Batch) => {
               if (err)
                 return callback(`Could not retrieve batch information for ${_gtin}'s ${batch.batchNumber}`, err);
 
@@ -158,16 +158,16 @@ export class ManagedStockProductInput {
               }, []);
 
               // not available products in this batch, select the next batch
-              if (serialsInBasket.length >= batch.serialNumbers.length)
+              if (serialsInBasket.length >= batch.getQuantity())
                 return selectProduct(_gtin, batches, callback);
 
               // if still have products available on this batch
-              const availableSerials = batch.serialNumbers.slice(serialsInBasket.length);
+              const availableSerials = constBatch.serialNumbers.slice(serialsInBasket.length);
               const serialNumber = availableSerials.find((serial) => {
                 // not to add products that are already in the basket and not to add products already sold
                 return serialsInBasket.indexOf(serial) < 0 && productsAlreadySold.indexOf(serial) < 0;
               });
-              if (!serialNumber)
+              if (serialNumber === undefined)
                 return selectProduct(_gtin, batches, callback);
               callback(undefined, {batch: batch, serialNumber: serialNumber});
             })
