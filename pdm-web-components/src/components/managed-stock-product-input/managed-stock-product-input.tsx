@@ -62,6 +62,7 @@ export class ManagedStockProductInput {
   // Directory Variables
   private stockManager: WebManager = undefined;
   private batchManager: WebManager = undefined;
+  private saleManager: WebManager = undefined;
   @State() products?: (typeof IndividualProduct)[] = [];
 
   @State() stock?: string[] = undefined;
@@ -73,6 +74,7 @@ export class ManagedStockProductInput {
       return;
     this.stockManager = await WebManagerService.getWebManager('StockManager');
     this.batchManager = await WebManagerService.getWebManager('BatchManager');
+    this.saleManager = await WebManagerService.getWebManager('SaleManager');
   }
 
   @Listen('ssapp-action')
@@ -123,28 +125,53 @@ export class ManagedStockProductInput {
       const selectProduct = (_gtin: string, batches: Batch[], callback) => {
         const batch = batches.shift();
         if (!batch)
-          return callback(`no more batches`);
+          return callback(`No more stock available for the selected product ${gtin}`);
 
-        self.batchManager.getOne(`${_gtin}-${batch.batchNumber}`, true, (err, batch: Batch) => {
+        self.saleManager.getAll(true, [`gtin == ${_gtin}`, `batchNumber == ${batch.batchNumber}`], (err, sales) => {
           if (err)
-            return callback(`Could not retrieve batch information for ${_gtin}'s ${batch.batchNumber}`, err);
+            return callback(`Could not retrieve sale information for ${_gtin}'s ${batch.batchNumber}`, err);
 
-          const serialsInBasket: string[] = self.products.reduce((accum, p) => {
-            if (p.gtin === gtin && p.batchNumber === batch.batchNumber)
-              accum.push(p.serialNumber);
-            return accum;
-          }, []);
+          const saleIterator = (sales, result, callback) => {
+            const sale = sales.shift();
+            if (!sale)
+              return callback(undefined, result);
+            const serials = sale.productList.reduce((accum, product) => {
+              if (product.gtin === _gtin && product.batchNumber === batch.batchNumber)
+                accum.push(product.serialNumber);
+              return accum;
+            }, []);
+            saleIterator(sales, [...result, ...serials], callback);
+          }
 
-          // not available products in this batch, select the next batch
-          if (serialsInBasket.length >= batch.serialNumbers.length)
-            return selectProduct(_gtin, batches, callback);
+          saleIterator(sales, [], (err, productsAlreadySold) => {
+            if (err)
+              return callback(`Could not retrieve sale information for ${_gtin}'s ${batch.batchNumber}`, err);
 
-          // if still have products available on this batch
-          const availableSerials = batch.serialNumbers.slice(serialsInBasket.length);
-          const serialNumber = availableSerials.find((serial) => availableSerials.indexOf(serial) >= 0);
-          if (!serialNumber)
-            return selectProduct(_gtin, batches, callback);
-          callback(undefined, {batch: batch, serialNumber: serialNumber});
+            self.batchManager.getOne(`${_gtin}-${batch.batchNumber}`, true, (err, batch: Batch) => {
+              if (err)
+                return callback(`Could not retrieve batch information for ${_gtin}'s ${batch.batchNumber}`, err);
+
+              const serialsInBasket: string[] = self.products.reduce((accum, p) => {
+                if (p.gtin === gtin && p.batchNumber === batch.batchNumber)
+                  accum.push(p.serialNumber);
+                return accum;
+              }, []);
+
+              // not available products in this batch, select the next batch
+              if (serialsInBasket.length >= batch.serialNumbers.length)
+                return selectProduct(_gtin, batches, callback);
+
+              // if still have products available on this batch
+              const availableSerials = batch.serialNumbers.slice(serialsInBasket.length);
+              const serialNumber = availableSerials.find((serial) => {
+                // not to add products that are already in the basket and not to add products already sold
+                return serialsInBasket.indexOf(serial) < 0 && productsAlreadySold.indexOf(serial) < 0;
+              });
+              if (!serialNumber)
+                return selectProduct(_gtin, batches, callback);
+              callback(undefined, {batch: batch, serialNumber: serialNumber});
+            })
+          })
         })
       }
 
