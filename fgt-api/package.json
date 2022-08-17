@@ -14,7 +14,7 @@
     "build-api-mah-dashboard": "cd .. && node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-api-mah-dashboard\"",
     "build-api-whs-dashboard": "cd .. && node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-api-whs-dashboard\"",
     "build-api-pha-dashboard": "cd .. && node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-api-pha-dashboard\"",
-    "export-api-credentials": "cd .. && node ./dashboard-wizard/credential-export.js --role=mah",
+    "export-api-credentials": "cd .. && node ./dashboard-wizard/identity-export.js --role=mah",
     "test": "mocha ./tests/**",
     "docs": "npx rimraf ./docs/* && cp -r ./workdocs/assets ./docs/assets && npm install better-docs taffydb && npx markdown-include ./mdCompile.json && npx jsdoc -c jsdocs.json -t ./node_modules/better-docs  && npm remove better-docs taffydb"
   },

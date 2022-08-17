@@ -114,7 +114,7 @@ function readCredentialsFile(role){
     return new Promise((resolve, reject) => {
         fs.readFile(path.join(process.cwd(), "fgt-api/config", getPath(), "credentials.json"), (err, data) => err
             ? reject(err)
-            : resolve(data))
+            : resolve(data.toString()))
     })
 }
 
