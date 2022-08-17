@@ -140,6 +140,7 @@ services:
     hostname: mah-roche
     environment:
       ROLE: mah
+      FGT_API_CREDENTIALS: "{\"name\":{\"secret\":\"Roche AG\",\"public\":true},\"id\":{\"secret\":\"MAH0000000\",\"public\":true},\"email\":{\"secret\":\"roche@mah.pharmaledger.com\",\"public\":true},\"address\":{\"public\":true,\"secret\":\" k Switzerland\"},\"pass\":{\"secret\":\"This1sSuchAS3curePassw0rd\"},\"passrepeat\":{\"secret\":\"This1sSuchAS3curePassw0rd\"}}"
       CREDENTIALS_FILE: mah-roche.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-roche${SWAGGER}/traceability
     labels:
