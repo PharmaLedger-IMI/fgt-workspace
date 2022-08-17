@@ -1,6 +1,7 @@
 const {log} = require('./utils');
 const {requireAuth} = require("./middleware");
 const {BadRequest, NotImplemented} = require("./utils/errorHandler");
+const {CSP_HEADER, CSP_DEFAULT_POLICY} = require("./utils/csp");
 
 const BASE_PATH = '/traceability';
 const ALL_SUFFIX = "All";
@@ -176,6 +177,7 @@ class Api {
     }
 
     _sendResponse(res, code, response){
+        res.setHeader(CSP_HEADER, CSP_DEFAULT_POLICY); // #110
         res.statusCode = code;
         if (response)
             res.write(JSON.stringify(response));
