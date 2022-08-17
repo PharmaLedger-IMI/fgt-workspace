@@ -1,9 +1,11 @@
 const {Unauthorized} = require("./utils/errorHandler");
 const {authenticate, decodeBase64} = require("./utils/basicAuth");
+const {CSP_HEADER, CSP_DEFAULT_POLICY} = require("./utils/csp");
 
 const requireAuth = (req, res, next) => {
     const unauthorized = function (msg) {
         const err = new Unauthorized();
+        res.setHeader(CSP_HEADER, CSP_DEFAULT_POLICY); // #110
         res.statusCode = err.statusCode;
         res.write(JSON.stringify({
             status: err.statusCode,
