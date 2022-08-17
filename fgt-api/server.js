@@ -1,4 +1,4 @@
-let {ROLE, CREDENTIALS_FILE, SWAGGER_SERVER} = process.env;
+let {ROLE, CREDENTIALS_FILE, SWAGGER_SERVER, FGT_API_CREDENTIALS} = process.env;
 const fs = require('fs');
 const path = require('path');
 
@@ -9,7 +9,7 @@ if (!ROLE){
     process.exit(0);
 }
 
-console.log(`ENVIRONMENT VARIABLES: ROLE: ${ROLE}, CREDENTIALS_FILE: ${CREDENTIALS_FILE} and SWAGGER_SERVER: ${SWAGGER_SERVER}`)
+console.log(`ENVIRONMENT VARIABLES: ROLE: ${ROLE}, ${FGT_API_CREDENTIALS ? `FGT API CREDENTIALS: ${FGT_API_CREDENTIALS}` : `CREDENTIALS_FILE: ${CREDENTIALS_FILE}`} and SWAGGER_SERVER: ${SWAGGER_SERVER}`)
 
 function failServerBoot(reason){
     console.error("Server boot failed: " + reason);
