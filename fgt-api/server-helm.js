@@ -63,7 +63,11 @@ function runCommand(command, ...args){
     const { spawn } = require("child_process");
     const callback = args.pop()
 
-    const spawned = spawn(command, args);
+    const spawned = spawn(command, args, {shell: true, cwd: process.cwd(), env: {
+            ...process.env,
+            NODE_ENV: process.env.NODE_ENV,
+            PATH: process.env.PATH
+        }});
 
     const log = {
         data: [],
