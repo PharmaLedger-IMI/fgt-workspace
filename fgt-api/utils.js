@@ -21,7 +21,55 @@ const log = function(message, ...args){
     console.log(`[FGT-API - ${Date.now()}] - ${message}`, ...args);
 }
 
+
+const ENV_CRED_KEY = "FGT_API_CREDENTIALS";
+
+const getEnvCredentials = function(){
+
+    let envCreds = process.env[ENV_CRED_KEY];
+
+    if (!envCreds)
+        return undefined;
+
+    if (typeof envCreds === 'string')
+        try {
+            envCreds = JSON.parse(envCreds);
+        } catch (e) {
+            throw new Error("Failed to parse credentials from env: " + e.message);
+        }
+
+    if (typeof envCreds !== 'object')
+        throw new Error("Environment credentials are not an object");
+
+    function hasErrors(creds){
+        const requiredAttrs = ["name", "id", "email", "address"];
+        const keys = Object.keys(creds);
+        const satisfiesPublic = requiredAttrs.every(k => keys.includes(k) && creds[k].public);
+        if (!satisfiesPublic)
+            return "Credentials need the public properties: " + requiredAttrs.join(', ');
+        const satisfiesPrivate = keys.filter(k => !creds[k].public).length >= 1;
+        if (!satisfiesPrivate)
+            return "Credentials need at least one non public field";
+    }
+    const errs = hasErrors(envCreds);
+    if (errs)
+        throw new Error(errs);
+
+    return envCreds;
+}
+
 const getCredentials = function(basePath, walletName, callback){
+    let creds;
+
+    try {
+        creds = getEnvCredentials();
+    } catch (e) {
+        return callback(e);
+    }
+
+    if (creds)
+        return callback(undefined, creds);
+
     const credentialsFilePath = path.join(basePath, walletName, "credentials.json");
     if (!fs.existsSync(credentialsFilePath))
         return callback(`No credentials file found`);
@@ -71,10 +119,6 @@ const load = function(keySSI, callback){
 
 const initApis = function(express, apis, port, walletName, ...managerInitMethods){
     log(`InitApi: ${walletName} on :${port}`);
-    //
-    // if (Object.keys(apis).length !== managerInitMethods.length)
-    //     throw new Error("Must be exists a initialized manager for each API.");
-
     const credentialPath = path.join(process.cwd(), "config");
     instantiate(credentialPath, walletName, (err, walletSSI, walletDSU) => {
         if (err)

@@ -47,7 +47,56 @@ const options = argParser(defaultOptions, process.argv);
 if (!options.endPoint)
     options.endPoint = getEndpoint(options.role);
 
+
+const ENV_CRED_KEY = "FGT_API_CREDENTIALS";
+
+const getEnvCredentials = function(){
+
+    let envCreds = process.env[ENV_CRED_KEY];
+
+    if (!envCreds)
+        return undefined;
+
+    if (typeof envCreds === 'string')
+        try {
+            envCreds = JSON.parse(envCreds);
+        } catch (e) {
+            throw new Error("Failed to parse credentials from env: " + e.message);
+        }
+
+    if (typeof envCreds !== 'object')
+        throw new Error("Environment credentials are not an object");
+
+    function hasErrors(creds){
+        const requiredAttrs = ["name", "id", "email", "address"];
+        const keys = Object.keys(creds);
+        const satisfiesPublic = requiredAttrs.every(k => keys.includes(k) && creds[k].public);
+        if (!satisfiesPublic)
+            return "Credentials need the public properties: " + requiredAttrs.join(', ');
+        const satisfiesPrivate = keys.filter(k => !creds[k].public).length >= 1;
+        if (!satisfiesPrivate)
+            return "Credentials need at least one non public field";
+    }
+    const errs = hasErrors(envCreds);
+    if (errs)
+        throw new Error(errs);
+
+    return envCreds;
+}
+
 function readCredentialsFile(role){
+
+    let creds;
+
+    try {
+        creds = getEnvCredentials();
+    } catch (e){
+        return Promise.reject(new Error("Failed to get Credentials from environment: " + e.message));
+    }
+
+    if (creds)
+        return Promise.resolve(creds);
+
     const getPath = () => {
         const buildPath = (name) => `fgt-${name}-wallet`;
         switch (role){
@@ -71,6 +120,8 @@ function readCredentialsFile(role){
 
 function parseCredentialsFile(data){
     return new Promise((resolve, reject) => {
+        if (typeof data !== 'string')
+            return resolve(data);
         try {
             data = JSON.parse(data);
         } catch(e) {
