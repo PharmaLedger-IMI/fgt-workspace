@@ -27,26 +27,6 @@
             ]
         },
         {
-            "name": "cardinal",
-            "src": "http://github.com/privatesky/cardinal.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "517a141d5b84fd87f69b2e51d838cd410652febd"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd cardinal && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd cardinal && npm run build"
-                }
-            ]
-        },
-        {
             "name": "webcardinal",
             "src": "https://github.com/webcardinal/webcardinal-bundler",
             "actions": [
@@ -219,6 +199,26 @@
         }
     ],
     "dsu-explorer-dependencies": [
+        {
+            "name": "cardinal",
+            "src": "http://github.com/privatesky/cardinal.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "517a141d5b84fd87f69b2e51d838cd410652febd"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd cardinal && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd cardinal && npm run build"
+                }
+            ]
+        },
         {
             "name": "dossier-explorer-wallet-prototype",
             "src": "https://github.com/PrivateSky/dossier-explorer-wallet-prototype.git",
