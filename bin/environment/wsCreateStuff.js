@@ -34,7 +34,11 @@ const BatchStatus = require('../../fgt-dsu-wizard/model/BatchStatus');
 const credentials = require('./credentials/credentialsTests'); // TODO require ../../docker/api/env/mah-*.json ?
 const MAHS = [credentials.PFIZER, credentials.MSD, credentials.ROCHE, credentials.BAYER, credentials.NOVO_NORDISK, credentials.GSK, credentials.TAKEDA, credentials.SANOFI];
 const MAH_MSD = credentials.MSD;
+// #106 test one participant with credentials overridden by environment on docker-compose.yml
+// MAH_MSD.id.secret="MAH0000000";
 const MAH_ROCHE = credentials.ROCHE;
+// #106 test one participant with credentials overridden by environment on docker-compose.yml
+// MAH_ROCHE.id.secret="MAH0000000";
 const WSH1 = require("../../docker/api/env/whs-1.json");
 const WSH2 = require("../../docker/api/env/whs-2.json");
 const PHA1 = require("../../docker/api/env/pha-1.json");

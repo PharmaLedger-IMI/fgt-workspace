@@ -140,7 +140,8 @@ services:
     hostname: mah-roche
     environment:
       ROLE: mah
-      FGT_API_CREDENTIALS: "{\"name\":{\"secret\":\"Roche AG\",\"public\":true},\"id\":{\"secret\":\"MAH0000000\",\"public\":true},\"email\":{\"secret\":\"roche@mah.pharmaledger.com\",\"public\":true},\"address\":{\"public\":true,\"secret\":\" k Switzerland\"},\"pass\":{\"secret\":\"This1sSuchAS3curePassw0rd\"},\"passrepeat\":{\"secret\":\"This1sSuchAS3curePassw0rd\"}}"
+      # #106 credentials can be overriden by environment. Using the same as in file mah-roche.json to keep the tests running.
+      FGT_API_CREDENTIALS: "{\"name\":{\"secret\":\"Roche AG\",\"public\":true},\"id\":{\"secret\":\"MAH116267986\",\"public\":true},\"email\":{\"secret\":\"roche@mah.pharmaledger.com\",\"public\":true},\"address\":{\"public\":true,\"secret\":\" k Switzerland\"},\"pass\":{\"secret\":\"This1sSuchAS3curePassw0rd\"},\"passrepeat\":{\"secret\":\"This1sSuchAS3curePassw0rd\"}}"
       CREDENTIALS_FILE: mah-roche.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-roche${SWAGGER}/traceability
     labels:
@@ -246,6 +247,8 @@ services:
     hostname: mah-msd
     environment:
       ROLE: mah
+      # #106 test override of credentials files by environment
+      # FGT_API_CREDENTIALS: "{\"name\":{\"secret\":\"Merck & Co., Inc.\",\"public\":true},\"id\":{\"secret\":\"MAH0000000\",\"public\":true},\"email\":{\"secret\":\"merck@mah.pharmaledger.com\",\"public\":true},\"address\":{\"public\":true,\"secret\":\"Kenilworth, New Jersey, USA\"},\"pass\":{\"secret\":\"This1sSuchAS3curePassw0rd\"},\"passrepeat\":{\"secret\":\"This1sSuchAS3curePassw0rd\"}}"
       CREDENTIALS_FILE: mah-msd.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-msd${SWAGGER}/traceability
     labels:
