@@ -48,6 +48,7 @@ class SimpleShipmentManager extends Manager {
 
         this.participantManager = participantManager;
         this.stockManager = participantManager.getManager("StockManager");
+        this.batchManager = participantManager.getManager("BatchManager");
         this.directoryManager = participantManager.getManager("DirectoryManager");
         this.simpleShipmentService = new (require('../services/SimpleShipmentService'))(ANCHORING_DOMAIN);
     }
@@ -234,17 +235,29 @@ class SimpleShipmentManager extends Manager {
 
         // multiplier factor to add or remove from stock
         const factor = (self.getIdentity().id === simpleShipment.requesterId) ? 1 : (-1);
-        const aggBatchesByGtin = simpleShipment.shipmentLines.reduce((accum, sl) => {
-            if (!accum.hasOwnProperty(sl.gtin))
-                accum[sl.gtin] = [];
-            accum[sl.gtin].push(new Batch({
-                batchNumber: sl.batch,
-                quantity: factor * sl.quantity
-            }))
-            return accum;
-        }, {});
 
-        dbAction(Object.keys(aggBatchesByGtin), aggBatchesByGtin, callback);
+        const validateAndAggBatchesByGtin = (shipmentLines, accum, _callback) => {
+            const sl = shipmentLines.shift();
+            if (!sl)
+                return _callback(undefined, accum);
+
+            self.batchManager.getOne(sl.gtin, sl.batch, (err, _) => {
+                if (err)
+                    return _callback(err);
+
+                accum[sl.gtin].push(new Batch({
+                    batchNumber: sl.batch,
+                    quantity: factor * sl.quantity
+                }))
+                validateAndAggBatchesByGtin(shipmentLines, accum, _callback);
+            });
+        }
+
+        validateAndAggBatchesByGtin(simpleShipment.shipmentLines, {}, (err, aggBatchesByGtin) => {
+            if (err)
+                return callback(err);
+            dbAction(Object.keys(aggBatchesByGtin), aggBatchesByGtin, callback);
+        });
     }
 
     /**
