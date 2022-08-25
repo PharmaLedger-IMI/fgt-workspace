@@ -3,6 +3,7 @@ const Manager = require("../../pdm-dsu-toolkit/managers/Manager");
 const Receipt = require('../model/Receipt');
 const IndividualReceipt = require('../model/IndividualReceipt');
 const {toPage, paginate} = require("../../pdm-dsu-toolkit/managers/Page");
+const getBatchManager = require('./BatchManager');
 
 const ACTION = {
     REQUEST: 'request',
@@ -104,6 +105,7 @@ class ReceiptManager extends Manager{
 
         this.requestCache = new RequestCache(25000);
         this.stockManager = participantManager.stockManager;
+        this.batchManager = getBatchManager(participantManager);
         this.saleService = new (require('../services').SaleService)(ANCHORING_DOMAIN);
     }
 
@@ -193,13 +195,20 @@ class ReceiptManager extends Manager{
                                 return callback(`There is already an entry for this individual product ${compostKey}, and all sales are final!`);
                             }
 
-                            self.insertRecord(compostKey, self._indexItem(compostKey, indReceipt, receiptSSI), (err) => {
+                            self.batchManager.getOne(indReceipt.gtin, indReceipt.batchNumber, true, (err, batch) => {
                                 if (err)
-                                    return self._err(`Could not insert new Individual Receipt ${compostKey} in the db`, err, callback);
-                                accumulator.push(compostKey);
-                                console.log(`New Individual Receipt added: ${compostKey}`);
-                                individualReceiptIterator(indReceiptCopy, accumulator, callback);
-                            });
+                                    return callback(`Product ${indReceipt.gtin}-${indReceipt.batchNumber} cannot be found on batchManager`);
+                                if (batch.serialNumbers.indexOf(indReceipt.serialNumber) < 0)
+                                    return callback(`Product ${compostKey}, serialNumber doesn't exist`);
+
+                                self.insertRecord(compostKey, self._indexItem(compostKey, indReceipt, receiptSSI), (err) => {
+                                    if (err)
+                                        return self._err(`Could not insert new Individual Receipt ${compostKey} in the db`, err, callback);
+                                    accumulator.push(compostKey);
+                                    console.log(`New Individual Receipt added: ${compostKey}`);
+                                    individualReceiptIterator(indReceiptCopy, accumulator, callback);
+                                });
+                            })
                         });
                     }
 
