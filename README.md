@@ -392,51 +392,47 @@ run ```./bootCompose.sh ${env}``` where env can be nothing (localhost), dev (fgt
 - run ```npm run build-all``` to build the environment in the 'real' blockchain;
 - follow up with whatever environment build required
 
+### REST API Client Example
+
+There is an internal REST test client (written in JavaScript, to run on the command line with nodejs) on
+https://github.com/PharmaLedger-IMI/fgt-workspace/blob/master/bin/environment/wsCreateStuff.js
+
+This is more of a test tool (that relies on pre-configured participant, product and batch data), that performs a test scenario: create products ; create batches ; create shipments ; update shipments ; perform sales ; checks receipts ; traceability requests ; quarantine and recall batch.
+
+The complex pre-configured test data for the scenario might make this tool a bit too hard to read and fork for a simple test, but, feel free to read the comments at the start, and attempt to run it over a local instance, and compare the requests/responses logged to the console.
+
+Remember also that the Swagger UI provides JSON examples and schemas, so that it should be easy to create a REST client on any technology that supports HTTPS JSON REST services.
+
+
 ### Build Mobile
 
 Currently there are no mobile apps in this B2B solution.
 
 
 ### Workspace Description
-#### pre-install (before running npm install)
 
 * apihub-root: Folder containing the root of what is served by the server
     * external-volume: configs directory;
     * internal-volume: volume folder (brick storage). contains the several configured domains
-    * wallet patch folders: the folders contain, in the wallet-patch folder and for each case, the custom 'behaviour' that is added to the template folder:
-        * fgt-mah-wallet/wallet-patch;
-        * fgt-pharmacy-wallet/wallet-patch;
-        * fgt-wholesaler-wallet/wallet-patch;
-* fgt-dsu-wizard: based on gtin-dsu-wizard
-* fgt-mah-wallet
-* fgt-pharmacy-wallet
-* fgt-wholesaler-wallet
-    * Wallets for each one of the actors
-* trust-loader-config: custom config to override the wallet loader default ones for each case:
-    * fgt-mah-fabric-wallet/loader;
-    * fgt-pharmacy-fabric-wallet/loader;
-    * fgt-wholesaler-fabric-wallet/loader;
-
-#### post install (after running npm install)
-
-* General use:
-    * cardinal: the web framework used for frontend;
-    * pharmaledger-wallet: the default wallet implementation to be used by all ssapps - comes from http://github.com/privatesky/menu-wallet-prototype.git
-    * node_modules: node modules folder (includes the octopus custom builder)
-    * privatesky: the openDSU code. notable folders are:
-        * privatesky/modules: all the code for the several modules (openDSU is one of them);
-        * privatesky/psknode/bundles: all the code from the previous path, with each module bundled into a single file;
-    * themes: the folder with all the installed themes:
-        * pharmaledger-theme: custom theme for the pharmaledger implementation comes from https://github.com/PrivateSky/blue-fluorite-theme;
-* Use case related:
-    * Apihub-root: Folder changes:
-        * wallet loaders: clones the loader into each of the wallets:
-            * fgt-mah-wallet/loader;
-            * fgt-pharmacy-wallet/loader;
-            * fgt-wholesaler wallet/loader;
-    * fgt-mah-ssapp: The application for the Mah;
-    * fgt-pharmacy-ssapp: The application for the pharmacy;
-    * fgt-wholesaler-ssapp: The application for the wholesaler;
+* bin - development and build tools
+* docker/api - folders and files for building and configuring docker images and running a docker-compose environment.
+* blockchain-patch - configuration files used to override other files when switching between simulated anchoring services, and an external blockchain service.
+* dashboard-wizard - code library used by the dashboard web application.
+* fgt-api - main REST server, Swagger UI web application server, and dashboard web application server. Only one instance for one role MAH/WHS/PHA can run on the same environment at a time. See README.md above for details on starting each server.
+* fgt-dsu-wizard: business logic code. (Based on gtin-dsu-wizard.)
+* fgt-mah-ssapp
+* fgt-whs-ssapp
+* fgt-pha-ssapp
+    * Part of graphical dashboard code for each one of the roles
+* pdm-dsu-toolkit
+* pdm-trust-loader
+* pdm-web-toolkit
+    * code libraries
+* tests
+    * test tools and data
+* trust-loader-config
+    * deprecated
+* workdocs - self-generated documentation.
 
 
 
