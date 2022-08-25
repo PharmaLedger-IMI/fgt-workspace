@@ -392,6 +392,18 @@ run ```./bootCompose.sh ${env}``` where env can be nothing (localhost), dev (fgt
 - run ```npm run build-all``` to build the environment in the 'real' blockchain;
 - follow up with whatever environment build required
 
+### REST API Client Example
+
+There is an internal REST test client (written in JavaScript, to run on the command line with nodejs) on
+https://github.com/PharmaLedger-IMI/fgt-workspace/blob/master/bin/environment/wsCreateStuff.js
+
+This is more of a test tool (that relies on pre-configured participant, product and batch data), that performs a test scenario: create products ; create batches ; create shipments ; update shipments ; perform sales ; checks receipts ; traceability requests ; quarantine and recall batch.
+
+The complex pre-configured test data for the scenario might make this tool a bit too hard to read and fork for a simple test, but, feel free to read the comments at the start, and attempt to run it over a local instance, and compare the requests/responses logged to the console.
+
+Remember also that the Swagger UI provides JSON examples and schemas, so that it should be easy to create a REST client on any technology that supports HTTPS JSON REST services.
+
+
 ### Build Mobile
 
 Currently there are no mobile apps in this B2B solution.
