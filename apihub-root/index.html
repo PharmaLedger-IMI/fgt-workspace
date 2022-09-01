@@ -134,7 +134,7 @@
         <div id="traceability" style="display:block;">
             <h3>Traceability workspace</h3>
             <p>This is the 'traceability' domain workspace. All DSU anchoring under the traceability domain happens here. You can use the DSu Explorer to inspect any DSUs</p>
-            <p>Below are the links to each participant's workspace:
+            <p>Below are the links to each pre-provisioned participant's workspace:
                 <ul>
                     <li>
                         MAH:
@@ -167,6 +167,7 @@
                     </li>
                 </ul>
             </p>
+            <p><span style="font-weight: bold;">Important for self-provisioned participants</span> DID / ID notice - the identifier string of each participant should start with MAH, WHS or PHA accordingly to the desired role. For example, an MAH should have a DID name like "MAH8946130" or "MAH-Bayer".</p>
             <script>
                 const traceabilityDiv = document.body.querySelector('div[id="traceability"]');
                 const url = window.location.hostname;
