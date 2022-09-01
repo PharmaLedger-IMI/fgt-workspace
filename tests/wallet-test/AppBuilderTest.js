@@ -113,6 +113,18 @@ const getEnvJs = function(app, callback){
     });
 }
 
+const safeLog = function(credentials) {
+    if (!credentials) return credentials;
+    const credClone = JSON.parse(JSON.stringify(credentials));
+    if (credClone.pass && credClone.pass.secret) {
+        credClone.pass.secret="********";
+    }
+    if (credClone.passrepeat && credClone.passrepeat.secret) {
+        credClone.passrepeat.secret="********";
+    }
+    return credClone;
+}
+
 const runTest = function(testFinished){
     getEnvJs(conf.app, (err, env) => {
         if (err)
@@ -126,7 +138,7 @@ const runTest = function(testFinished){
         appService.buildWallet(credentials, (err, keySII, dsu) => {
             if (err)
                 throw err;
-            console.log(`App ${env.appName} created with credentials ${JSON.stringify(credentials, undefined, 2)}.\nSSI: ${{keySII}}`);
+            console.log(`App ${env.appName} created with credentials ${JSON.stringify(safeLog(credentials), undefined, 2)}.\nSSI: ${{keySII}}`);
             testFinished();
         });
     });
