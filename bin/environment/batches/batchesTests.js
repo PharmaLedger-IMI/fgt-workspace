@@ -358,6 +358,31 @@ const getSanofiBatches = function(){
     return fillBatchDetails(SANOFI_BATCHES);
 }
 
+const DFM_BATCHES1 = {
+    '02113100000028': [ // Alpidrin
+        {
+            batchNumber: "ALPV1",
+            quantity: 20,
+            expiry: "2025/12/31",
+            serialNumbers: [
+                '93342708522623', '57142948840311', '84658726199147',
+                '37492904539888', '96562748897283', '54264257431848',
+                '03030164326594', '34366933576258', '26539110197947',
+                '95038364859689', '03690127622893', '75101018014992',
+                '01940652032034', '33116805950363', '32559689814488',
+                '62282353911016', '78477001947639', '48457736116806',
+                '94752993902481', '77150980360804'
+            ]
+        }
+    ]
+}
+
+const getDfmBatches1ForGtin = function(gtin){
+    const dfmBatches1 = DFM_BATCHES1[gtin];
+    //console.log(dfmBatches1);
+    return dfmBatches1;
+}
+
 module.exports = {
     getMSDBatches,
     getPfizerBatches,
@@ -366,5 +391,6 @@ module.exports = {
     getNovoNordiskBatches,
     getGskBatches,
     getTakedaBatches,
-    getSanofiBatches
+    getSanofiBatches,
+    getDfmBatches1ForGtin
 }

@@ -39,6 +39,7 @@ const MAH_MSD = credentials.MSD;
 const MAH_ROCHE = credentials.ROCHE;
 // #106 test one participant with credentials overridden by environment on docker-compose.yml
 // MAH_ROCHE.id.secret="MAH0000000";
+const MAH_BAYER = credentials.BAYER;
 const WSH1 = require("../../docker/api/env/whs-1.json");
 const WSH2 = require("../../docker/api/env/whs-2.json");
 const PHA1 = require("../../docker/api/env/pha-1.json");
@@ -50,8 +51,10 @@ const MY_SALES = []; // array of data returned by /sale/create
 
 let SLEEP_MS = 2000;
 
-//const products = require('./products/productsTests');
-const getBatches = require('./batches/batchesRandom');
+const PRODUCTS_TEST = require('./products/productsTests');
+const BATCHES_TEST = require('./batches/batchesTests');
+const BATCHES_RANDOM = require('./batches/batchesRandom');
+
 
 
 class ProductsEnum {
@@ -86,6 +89,12 @@ class ReceiptsEnum {
     static test = "test";
 };
 
+class ScenarioEnum {
+    static single = "single";
+    static default = "default";
+    static dfm = "dfm"; // dfm is acdc
+};
+
 function genShipmentId(simpleShipment, identityId) {
     let shipmentId;
     const splitShipmentId = `${simpleShipment.shipmentId}`.split('-');
@@ -115,6 +124,7 @@ const defaultOps = {
     sales: SalesEnum.test,
     traceability: TraceabilityEnum.test,
     receipts: ReceiptsEnum.test,
+    scenario: ScenarioEnum.default,
     sleep: "2000"
 }
 
@@ -138,6 +148,12 @@ if (process.argv.includes("--help")
     console.log("\t--sales=none|test*");
     console.log("\t--receipts=none|test*");
     console.log("\t--traceability=none|test*");
+    console.log();
+    console.log("\t--scenario=single|default*|dfm  The single scenario only creates products and batches");
+    console.log("\t\tfor a single specifc MAH. The default scenario will create products, batches,");
+    console.log("\t\tshipments, sales, receipts, more shipments, more sales, more receipts,");
+    console.log("\t\tthen quarantine one batch, and then recall one batch. The dfm scenario");
+    console.log("\t\tcreates some specific producs, batches, shipments and sales for a DFM demo.");
     console.log();
     console.log("* - is the default setting");
     process.exit(0);
@@ -330,6 +346,7 @@ const productCreate = async function (conf, actor, product) {
 };
 
 const productsCreate = async function (conf, actor) {
+    // scenario default
     if (conf.products === ProductsEnum.none) {
         return; // don't create products
     }
@@ -402,7 +419,7 @@ const batchesCreateTest = async function (conf, actor) {
 const batchesCreateRandom = async function (conf, actor) {
     for (const product of actor.products) {
         const gtin = product.gtin;
-        const batches = getBatches(); // create a new array of batches with random batchNumber and random serial numbers
+        const batches = BATCHES_RANDOM.getBatches(); // create a new array of batches with random batchNumber and random serial numbers
         //console.log("new batches", batches);
         for (const batch of batches) {
             await batchCreate(conf, actor, gtin, batch);
@@ -570,14 +587,65 @@ const shipmentCreateAndDeliver = async function(conf, sender, receiver, shipment
     return resUConfirmed;
 };
 
+
 const shipmentsCreateTest = async function (conf, sender) {
+    if (conf.scenario==ScenarioEnum.dfm) {
+        return shipmentsCreateTestDfm(conf, sender);
+    }
+    return shipmentsCreateTestDefault(conf, sender);
+}
+
+const shipmentsCreateTestDfm = async function (conf, sender) {
+    if (!sender.id.secret.startsWith("MAH")) {
+        throw new Error("shipmentsCreateTestDfm can only send for an MAH");
+    }
+
+    const whs = WSH1;
+    const pha = PHA1;
+    
+    const gtin1 = sender.products[0].gtin;
+    const batch1 = sender.batches[gtin1][0];
+    const batchNumber1 = batch1.batchNumber;
+    const quantity1 = batch1.quantity;
+
+    const shipment1MahToWhs = {
+        "orderId": whs.id.secret + "-" + (new Date()).toISOString(),
+        "requesterId": whs.id.secret,
+        "shipmentLines": [
+            {
+                "gtin": gtin1,
+                "batch": batchNumber1,
+                "quantity": quantity1
+            }        
+        ]
+    };
+
+    await shipmentCreateAndDeliver(conf, sender, whs, shipment1MahToWhs);
+
+    const shipment2WhsToPha = {
+        "orderId": pha.id.secret + "-" + (new Date()).toISOString(),
+        "requesterId": pha.id.secret,
+        "shipmentLines": [
+            {
+                "gtin": gtin1,
+                "batch": batchNumber1,
+                "quantity": quantity1
+            }
+        ]
+    };
+
+    const resShipToPha = await shipmentCreateAndDeliver(conf, whs, pha, shipment2WhsToPha);
+    SHIPMENTS_ON_PHA.push(resShipToPha);
+}
+
+const shipmentsCreateTestDefault = async function (conf, sender) {
     if (sender.id.secret != MAH_MSD.id.secret) {
         throw new Error("shipmentsCreateTest can only sell for MSD for now");
     }
 
     const whs = WSH1;
     const pha = PHA1;
-
+    
     const shipment1MsdToWhs = {
         "orderId": whs.id.secret + "-" + (new Date()).toISOString(),
         "requesterId": whs.id.secret,
@@ -711,6 +779,56 @@ const salesCreateTest = async function (conf, manufActor, sellerActor, mySales) 
 
 
 const salesCreateTest = async function (conf, manufActor, sellerActor, mySales) {
+    if (conf.scenario==ScenarioEnum.dfm) {
+        return salesCreateTestDfm(conf, manufActor, sellerActor, mySales);
+    }
+    return salesCreateTestDefault(conf, manufActor, sellerActor, mySales);
+}
+
+const salesCreateTestDfm = async function (conf, manufActor, sellerActor, mySales) {
+    if (!SHIPMENTS_ON_PHA.length) {
+        throw new Error("No shipments on pharmacies on this run!");
+    }
+    if (!SHIPMENTS_ON_PHA[0].shipmentLines.length) {
+        throw new Error("No shipmentLines on pharmacies on this run!");
+    }
+    const shipmentLine0 = SHIPMENTS_ON_PHA[0].shipmentLines[0];
+    const gtin = shipmentLine0.gtin;
+    const batchNumber = shipmentLine0.batch;
+    const batch = findMahOriginalBatch(gtin, batchNumber);
+    //console.log("batch", batch);
+
+    let i=0;
+    while (i<batch.quantity) { // sell all the batch
+        const saleSerialNumber = batch.serialNumbers[i];
+        const saleData = { // see body of http://swagger-pha1.localhost:8080/#/sale/post_sale_create
+            "id": sellerActor.id.secret + "-" + (new Date()).toISOString(),
+            "productList": [
+                {
+                    "gtin": gtin,
+                    "batchNumber": batch.batchNumber,
+                    "serialNumber": saleSerialNumber
+                }
+            ]
+        };
+
+        const resSale = await jsonPost(conf, sellerActor, {
+            path: `/traceability/sale/create`,
+            body: saleData
+        });
+        //console.log("Sale", resSale);
+        if (!resSale || !resSale.productList) {
+            throw new Error("sale/create "+batch.batchNumber+" at "+sellerActor.id.secret+" reply has no productList: "+JSON.stringify(resSale));
+        }
+        mySales.push(resSale);
+
+        await sleep(SLEEP_MS);
+
+        i++;
+    }
+}
+
+const salesCreateTestDefault = async function (conf, manufActor, sellerActor, mySales) {
     if (!SHIPMENTS_ON_PHA.length) {
         throw new Error("No shipments on pharmacies on this run!");
     }
@@ -829,11 +947,23 @@ process.stdout._handle.setBlocking(true);
     //console.log("Credentials", MAHS);
     //console.log("Products", products.getPfizerProducts());
     //console.log("Batches", MAH_MSD.batches);
-    if (conf.env == "single") {
+    if (conf.scenario == ScenarioEnum.single) {
         // single only creates products and batches so far
         await productsCreate(conf, MAH_ROCHE);
         await batchesCreate(conf, MAH_ROCHE);
-    } else {
+    } else if (conf.scenario == ScenarioEnum.dfm) {
+        // replace Bayer's products and batches with DFM products
+        const mahActor = MAH_BAYER;
+        mahActor.products = PRODUCTS_TEST.getDfmProducts1(MAH_BAYER.id.secret);
+        mahActor.batches={};
+        for(const product of mahActor.products) {
+            mahActor.batches[product.gtin] = BATCHES_TEST.getDfmBatches1ForGtin(product.gtin);
+        }
+        await productsCreate(conf, mahActor);
+        await batchesCreate(conf, mahActor);
+        await shipmentsCreate(conf, mahActor);
+        await salesCreate(conf, mahActor, PHA1, MY_SALES);
+    } else { // default scenarios
         for (const mah of MAHS) {
             await productsCreate(conf, mah);
             await batchesCreate(conf, mah);
