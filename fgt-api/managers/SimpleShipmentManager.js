@@ -245,6 +245,9 @@ class SimpleShipmentManager extends Manager {
                 if (err)
                     return _callback(err);
 
+                if (!accum.hasOwnProperty(sl.gtin))
+                    accum[sl.gtin] = [];
+
                 accum[sl.gtin].push(new Batch({
                     batchNumber: sl.batch,
                     quantity: factor * sl.quantity
