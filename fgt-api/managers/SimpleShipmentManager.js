@@ -167,9 +167,9 @@ class SimpleShipmentManager extends Manager {
                     addPartnerToDirectory(simpleShipment, (err, _) => {
                         if (err)
                             return callbackCancelBatch(err);
-                        if (self.getIdentity().id === simpleShipment.senderId)
-                            self.sendMessagesAsync(simpleShipment, shipmentLinesSSIs, readSSI);
-                        _callback(undefined, keySSI, path);
+                        //if (self.getIdentity().id === simpleShipment.senderId)
+                        //    self.sendMessagesAsync(simpleShipment, shipmentLinesSSIs, readSSI);
+                        _callback(undefined, keySSI, path, shipmentLinesSSIs, readSSI);
                     });
                 });
             });
@@ -208,7 +208,7 @@ class SimpleShipmentManager extends Manager {
                 return self.batchSchedule(() => dbAction(gtins, batchesObj, _callback));
             }
 
-            createInner((err, keySSI, path) => {
+            createInner((err, keySSI, path, shipmentLinesSSIs, shipmentReadSSI) => {
                 if (err)
                     return callbackCancelBatch(`Could not create Shipment`);
 
@@ -227,7 +227,11 @@ class SimpleShipmentManager extends Manager {
                     self.commitBatch((err) => {
                         if (err)
                             return callbackCancelBatch(err);
-                        log(`Shipment created from orderId: ${simpleShipment.orderId}`);
+                        log(`Shipment created: ${simpleShipment.shipmentId}`);
+
+                        if (self.getIdentity().id === simpleShipment.senderId)
+                            self.sendMessagesAsync(simpleShipment, shipmentLinesSSIs, shipmentReadSSI);
+
                         _callback(undefined, keySSI, path);
                     });
                 });
