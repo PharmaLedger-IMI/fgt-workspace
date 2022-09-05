@@ -78,6 +78,8 @@ latest-change-set.txt
 
 node_modules
 
+package-lock.json
+
 pharmaledger-wallet
 
 pdm-dsu-toolkit/build/bundles
