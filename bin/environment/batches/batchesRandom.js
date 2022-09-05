@@ -19,6 +19,10 @@ const getBatches = (batchCount = 11, quantity = 100, expiryOffset = 100, randomi
         .map(n => genBatch(quantity, expiryOffset, randomize, 50));
 }
 
+const getBatchesForDfmDemo2 = (batchCount = 11, quantity = 100, expiryOffset = 100, randomize = true) => {
+    return Array.from(new Array(Math.floor((randomize ? Math.random() : 1) * batchCount) + (randomize? 1 : 0)).keys())
+        .map(n => genBatch(quantity, expiryOffset, randomize, 50));
+}
 
 
 module.exports = getBatches;

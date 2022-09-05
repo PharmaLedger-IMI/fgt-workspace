@@ -152,6 +152,18 @@ const getEnvJs = function(app, pathToApps,callback){
     });
 }
 
+const safeLog = function(credentials) {
+    if (!credentials) return credentials;
+    const credClone = JSON.parse(JSON.stringify(credentials));
+    if (credClone.pass && credClone.pass.secret) {
+        credClone.pass.secret="********";
+    }
+    if (credClone.passrepeat && credClone.passrepeat.secret) {
+        credClone.passrepeat.secret="********";
+    }
+    return credClone;
+}
+
 const instantiateSSApp = function(app, pathToApps, dt, credentials, callback){
     getEnvJs(app, pathToApps,(err, env) => {
         if (err)
@@ -164,7 +176,7 @@ const instantiateSSApp = function(app, pathToApps, dt, credentials, callback){
         appService.buildWallet(credentials, (err, keySII, dsu) => {
             if (err)
                 return callback(err);
-            console.log(`App ${env.appName} created with credentials ${JSON.stringify(credentials, undefined, 2)}.\nSSI: ${{keySII}}`);
+            console.log(`App ${env.appName} created with credentials ${JSON.stringify(safeLog(credentials), undefined, 2)}.\nSSI: ${{keySII}}`);
             callback(undefined, keySII, dsu, credentials);
         });
     });
@@ -181,7 +193,7 @@ const loadWallet = function(app, pathToApps, dt, credentials, callback){
         appService.loadWallet(credentials, (err, keySSI, dsu) => {
             if (err)
                 throw err;
-            console.log(`App ${env.appName} load with credentials ${JSON.stringify(credentials, undefined, 2)}.\nSSI: ${{keySSI}}`);
+            console.log(`App ${env.appName} load with credentials ${JSON.stringify(safeLog(credentials), undefined, 2)}.\nSSI: ${{keySSI}}`);
             callback(undefined, keySSI, dsu);
         });
     })

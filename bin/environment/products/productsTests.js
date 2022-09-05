@@ -182,6 +182,21 @@ const getSanofiProducts = function(manufName = "MAH196261986"){
     return mergeManufInfo(SanofiProducts, manufName);
 }
 
+
+const DfmProducts = [
+    {
+        gtin: '02113100000028',
+        name: 'Alpidrin',
+        description: 'DFM 59k3 demo product'
+    }
+]
+
+const getDfmProducts1 = function(manufName = "MAH251339219"){ // manufName is Bayer
+    const dfmProducts1 = mergeManufInfo(DfmProducts, manufName);
+    //console.log(dfmProducts1);
+    return dfmProducts1;
+}
+
 module.exports = {
     getPfizerProducts,
     getMSDProducts,
@@ -190,5 +205,6 @@ module.exports = {
     getNovoNordiskProducts,
     getGskProducts,
     getTakedaProducts,
-    getSanofiProducts
+    getSanofiProducts,
+    getDfmProducts1
 }
