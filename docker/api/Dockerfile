@@ -21,7 +21,7 @@ WORKDIR /fgt-workspace
 
 # Build the software - Note: Clone by specific tag or branch
 RUN git clone -b ${GIT_BRANCH} --single-branch --depth 1 https://github.com/PharmaLedger-IMI/fgt-workspace.git . && \
-    npm install --unsafe-perm
+    npm ci && npm cache clean --force
 
 RUN npm run install-dsu-explorer
 
