@@ -5,6 +5,7 @@ const {DB, DEFAULT_QUERY_OPTIONS, ANCHORING_DOMAIN} = require('../constants');
 const {ShipmentStatus} = require('../../fgt-dsu-wizard/model');
 const {SimpleShipment} = require('../model');
 const {ROLE} = require("../../fgt-dsu-wizard/model/DirectoryEntry");
+const {getBatchResolver} = require("../../fgt-dsu-wizard/managers/resolvers");
 
 
 /**
@@ -48,7 +49,7 @@ class SimpleShipmentManager extends Manager {
 
         this.participantManager = participantManager;
         this.stockManager = participantManager.getManager("StockManager");
-        this.batchManager = participantManager.getManager("BatchManager");
+        this.batchManager = getBatchResolver(participantManager);
         this.directoryManager = participantManager.getManager("DirectoryManager");
         this.simpleShipmentService = new (require('../services/SimpleShipmentService'))(ANCHORING_DOMAIN);
     }
@@ -241,7 +242,7 @@ class SimpleShipmentManager extends Manager {
             if (!sl)
                 return _callback(undefined, accum);
 
-            self.batchManager.getOne(sl.gtin, sl.batch, (err, _) => {
+            self.batchManager.getOne(`${sl.gtin}-${sl.batch}`, false, (err, _) => {
                 if (err)
                     return _callback(err);
 
