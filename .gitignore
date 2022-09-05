@@ -78,7 +78,8 @@ latest-change-set.txt
 
 node_modules
 
-package-lock.json
+/*/package-lock.json
+!/package-lock.json
 
 pharmaledger-wallet
 
