@@ -192,14 +192,14 @@ After the repository was cloned, you must install all the dependencies.
 For the latest versions do:
 ```sh
 $ cd fgt-workspace
-#Important: If you plan to contribute to the project and/or dependecies please set DEV:true
+#Important: If you plan to contribute to the project and/or dependencies please set DEV:true
 #in the file env.json before you run the installation!
 $ npm run dev-install
 ```
 
 For latest 'stable' version do:
 ```sh
-$ npm run install
+$ npm ci
 ```
 instead.
 

@@ -9,7 +9,7 @@ x-participant-def:
   #image: joaoluispdm/pharmaledger-imi-fgt:v0.9.6
   healthcheck:
     test: [ "CMD", "curl", "--fail", "http://localhost:3009" ] # looks for the swagger instance, the last thing to boot
-    interval: 20s
+    interval: 25s
     timeout: 3s
     retries: 100
     start_period: 40s
