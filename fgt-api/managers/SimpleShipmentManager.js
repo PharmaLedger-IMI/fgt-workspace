@@ -256,7 +256,7 @@ class SimpleShipmentManager extends Manager {
             });
         }
 
-        validateAndAggBatchesByGtin(simpleShipment.shipmentLines, {}, (err, aggBatchesByGtin) => {
+        validateAndAggBatchesByGtin(simpleShipment.shipmentLines.slice(), {}, (err, aggBatchesByGtin) => {
             if (err)
                 return callback(err);
             dbAction(Object.keys(aggBatchesByGtin), aggBatchesByGtin, callback);
