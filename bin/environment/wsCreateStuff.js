@@ -217,7 +217,7 @@ const jsonHttpRequest = function (conf, actor, { body, ...options }) {
     const protocol = conf.wsProtocol;
     let p = new Promise((resolve, reject) => {
         // debug request
-        console.log(protocol+" "+options.method, JSON.stringify(options), bodyToSend);
+        console.log((new Date()).toISOString()+": "+protocol+" "+options.method, JSON.stringify(options), bodyToSend);
         
         const req = (protocol === "http" ? http : https).request(
             {
