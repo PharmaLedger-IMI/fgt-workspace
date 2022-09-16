@@ -5,6 +5,6 @@ RUNNING_DOCKERS=`docker ps --format "{{.Names}}" | grep '^fgt-\|^mah-\|^whs-\|^p
 mkdir -p $LOG_FOLDER_NAME
 for CONTAINER_NAME in $RUNNING_DOCKERS
 do
-    docker log --timestamps $CONTAINER_NAME >> $LOG_FOLDER_NAME/$CONTAINER_NAME.log 2>&1
+    docker logs --timestamps $CONTAINER_NAME >> $LOG_FOLDER_NAME/$CONTAINER_NAME.log 2>&1
 done
 
