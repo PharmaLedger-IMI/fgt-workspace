@@ -1,6 +1,6 @@
 {
   "name": "fgt-api",
-  "version": "0.10.6",
+  "version": "0.10.7",
   "description": "REST Api for traceability operations",
   "main": "index.js",
   "scripts": {

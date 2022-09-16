@@ -40,7 +40,7 @@ export class PdmItemOrganizer {
    */
   @Prop({attribute: "component-props", mutable: true}) componentProps: string = undefined;
   /**
-   * The identifying prop to be return upon click (must exist in the supplied {@link componentProps}
+   * The identifying prop to be return upon click (must exist in the supplied ...)
    */
   @Prop({attribute: "id-prop"}) idProp: string = undefined;
 
