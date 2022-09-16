@@ -80,6 +80,14 @@ node_modules
 
 /*/package-lock.json
 !/package-lock.json
+!/fgt-api/package-lock.json
+!/fgt-dsu-wizard/package-lock.json
+!/fgt-mah-ssapp/package-lock.json
+!/fgt-pharmacy-ssapp/package-lock.json
+!/fgt-wholesaler-ssapp/package-lock.json
+!/pdm-dsu-toolkit/package-lock.json
+!/pdm-trust-loader/package-lock.json
+!/pdm-web-components/package-lock.json
 
 pharmaledger-wallet
 

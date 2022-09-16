@@ -479,7 +479,7 @@ export namespace Components {
          */
         "componentName": string;
         /**
-          * the list of props that will be passed to the HTML Element {@link componentName}
+          * the list of props that will be passed to the HTML Element
          */
         "componentProps": string;
         /**
@@ -1724,7 +1724,7 @@ declare namespace LocalJSX {
          */
         "componentName"?: string;
         /**
-          * the list of props that will be passed to the HTML Element {@link componentName}
+          * the list of props that will be passed to the HTML Element
          */
         "componentProps"?: string;
         /**
