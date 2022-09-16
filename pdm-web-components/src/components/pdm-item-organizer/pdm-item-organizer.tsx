@@ -36,7 +36,7 @@ export class PdmItemOrganizer {
    */
   @Prop({attribute: "component-name", mutable: true}) componentName: string = undefined;
   /**
-   * the list of props that will be passed to the HTML Element {@link componentName}
+   * the list of props that will be passed to the HTML Element
    */
   @Prop({attribute: "component-props", mutable: true}) componentProps: string = undefined;
   /**
