@@ -1,5 +1,5 @@
 // Ignore the test
-//process.exit();
+process.exit();
 
 //Load openDSU enviroment
 require("../../privatesky/psknode/bundles/openDSU");
