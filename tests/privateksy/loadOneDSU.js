@@ -1,5 +1,5 @@
 // Ignore the test
-process.exit();
+//process.exit();
 
 //Load openDSU enviroment
 require("../../privatesky/psknode/bundles/openDSU");
@@ -13,9 +13,16 @@ const resolver = opendsu.loadApi("resolver");
 //Load keyssi library
 const keyssispace = opendsu.loadApi("keyssi");
 
+if (!process.argv || process.argv.length<3) {
+    console.log("Usage:\n\tnode loadOneDSU.js KEYSSI");
+    process.exit(1);
+}
+
 //Create a template keySSI (for default domain). See /conf/BDNS.hosts.json
 //const aKeySSI = "ssi:sread:default:GfQ33HRQywE5nD1AuonozFNgjj7yXpK9bGwVR1xapuT4:255nSKKXmg3B4DhQ4BoU2S53odRAuPHxAgSYjGv1sLCR:v0";
-const aKeySSI = "BBudGH6ySHG6GUHN8ogNrTWbvGyG1VRGoheZpyY8Zv3WfY5LBSdPN6hkJwveRNnce1PQEGNpWvTKi7NkLeug9qeTy";
+//const aKeySSI = "BBudGH6ySHG6GUHN8ogNrTWbvGyG1VRGoheZpyY8Zv3WfY5LBSdPN6hkJwveRNnce1PQEGNpWvTKi7NkLeug9qeTy";
+const aKeySSI = process.argv[2];
+console.log("KEYSSI=",aKeySSI);
 
 //Load a DSU
 try {
@@ -27,13 +34,43 @@ try {
         }
         console.log("DSU loaded OK");
 
-        aDsuInstance.listFiles("/", function (err,files) {
-            console.log("Files "+files);
-        });
+        // list Top Level files
+        aDsuInstance.listFiles(
+            "/",
+            {
+                ignoreMounts: true,
+                recursive: false
+            },
+            function (err, files) {
+                if (err) {
+                    console.log("TopLevel listFiles / failed with ", err);
+                }
+                console.log("TopLevel Files " + files);
+            }
+        );
+
+        // Recursive list all files
+        aDsuInstance.listFiles(
+            "/",
+            {
+                ignoreMounts: false,
+                recursive: true
+            },
+            function (err, files) {
+                if (err) {
+                    console.log("listFiles / failed with ", err);
+                }
+                console.log("Files " + files);
+            }
+        );
         aDsuInstance.listFolders("/", function (err,folders) {
+            if (err) {
+                console.log("listFolders / failed with ", err);
+            }
             console.log("Folders "+folders);
         });
         
+        /*
         aDsuInstance.readFile('/dsu-metadata-log', (err, data)=>{
             //Reached when data loaded
             if(err){
@@ -43,7 +80,9 @@ try {
             
             console.log("dsu-metadata-log load succesfully! :", data.toString());
         });
+        */
 
+        /*
         aDsuInstance.readFile('/data', (err, data)=>{
             //Reached when data loaded
             if(err){
@@ -64,7 +103,7 @@ try {
                 console.log("Data written succesfully! :)");
             });
         });
-
+        */
     });
 } catch (ex ) {
     
