@@ -44,8 +44,9 @@ try {
             function (err, files) {
                 if (err) {
                     console.log("TopLevel listFiles / failed with ", err);
+                } else {
+                    console.log("TopLevel Files " + files);
                 }
-                console.log("TopLevel Files " + files);
             }
         );
 
@@ -59,26 +60,28 @@ try {
             function (err, files) {
                 if (err) {
                     console.log("listFiles / failed with ", err);
+                } else {
+                    console.log("Files " + files);
                 }
-                console.log("Files " + files);
             }
         );
         aDsuInstance.listFolders("/", function (err,folders) {
             if (err) {
                 console.log("listFolders / failed with ", err);
+            } else {
+                console.log("Folders "+folders);
             }
-            console.log("Folders "+folders);
         });
         
         /*
+        
         aDsuInstance.readFile('/dsu-metadata-log', (err, data)=>{
             //Reached when data loaded
             if(err){
-                console.log("DSU dsu-metadata-log readfile error: ");
-                throw err;
+                console.log("DSU dsu-metadata-log readfile error: ", err);
+            } else {
+                console.log("dsu-metadata-log load succesfully! :", data.toString());
             }
-            
-            console.log("dsu-metadata-log load succesfully! :", data.toString());
         });
         */
 
