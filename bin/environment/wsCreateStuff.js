@@ -20,6 +20,8 @@
  * Example for fgt-dev: 
  * fgt-workspace/bin/environment$ node --unhandled-rejections=strict wsCreateStuff.js --env=dev --sleep=80000 2>&1 | tee -a wsCreateStuffDev.log
  *
+ * Example on how to provision DFM products and batches om fgt-dev:
+ * fgt-workspace/bin/environment$ node --unhandled-rejections=strict wsCreateStuff.js --env=dev --scenario=dfm --sleep=80000 2>&1 | tee -a wsCreateStuffDevDfm.log
  */
 
 const http = require('http');

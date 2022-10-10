@@ -188,6 +188,16 @@ const DfmProducts = [
         gtin: '02113100000028',
         name: 'Alpidrin',
         description: 'DFM 59k3 demo product'
+    },
+    {
+        gtin: '07613421039424',
+        name: 'TrueMedin',
+        description: 'DFM TrueMed demo product'
+    },
+    {
+        gtin: '37482919347386',
+        name: 'INCMedin',
+        description: 'DFM INCM demo product'
     }
 ]
 

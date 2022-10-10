@@ -363,7 +363,7 @@ const DFM_BATCHES1 = {
         {
             batchNumber: "ALPV1",
             quantity: 20,
-            expiry: "2025/12/31",
+            expiry: "2030/12/31",
             serialNumbers: [
                 '93342708522623', '57142948840311', '84658726199147',
                 '37492904539888', '96562748897283', '54264257431848',
@@ -372,6 +372,106 @@ const DFM_BATCHES1 = {
                 '01940652032034', '33116805950363', '32559689814488',
                 '62282353911016', '78477001947639', '48457736116806',
                 '94752993902481', '77150980360804'
+            ]
+        }
+    ],
+    '07613421039424': [ // TrueMedin
+        {
+            batchNumber: "LC4062",
+            quantity: 1,
+            expiry: "2030/12/31",
+            serialNumbers: [
+                '93342708522623'
+            ]
+        }
+    ],
+    '37482919347386': [ // INCMedin
+        {
+            batchNumber: "WB5208",
+            quantity: 1,
+            expiry: "2030/12/31",
+            serialNumbers: [
+                'VQ8911LQ7'
+            ]
+        },
+        {
+            batchNumber: "DN9968",
+            quantity: 1,
+            expiry: "2030/12/31",
+            serialNumbers: [
+                'XF5849GM0'
+            ]
+        },
+        {
+            batchNumber: "EF5673",
+            quantity: 1,
+            expiry: "2030/12/31",
+            serialNumbers: [
+                'YP4881JB3'
+            ]
+        },
+        {
+            batchNumber: "VU0173",
+            quantity: 1,
+            expiry: "2030/12/31",
+            serialNumbers: [
+                'ZJ1459SC1'
+            ]
+        },
+        {
+            batchNumber: "WB5208",
+            quantity: 1,
+            expiry: "2030/12/31",
+            serialNumbers: [
+                'VQ8911LQ7'
+            ]
+        },
+        {
+            batchNumber: "WO6983",
+            quantity: 1,
+            expiry: "2030/12/31",
+            serialNumbers: [
+                'ZZ2579CI6'
+            ]
+        },
+        {
+            batchNumber: "LM8225",
+            quantity: 1,
+            expiry: "2030/12/31",
+            serialNumbers: [
+                'VL3768BL1'
+            ]
+        },
+        {
+            batchNumber: "DY3250",
+            quantity: 1,
+            expiry: "2030/12/31",
+            serialNumbers: [
+                'WI5073RN7'
+            ]
+        },
+        {
+            batchNumber: "AD4707",
+            quantity: 1,
+            expiry: "2030/12/31",
+            serialNumbers: [
+                'XU0212RQ3'
+            ]
+        },
+        {
+            batchNumber: "SU9047",
+            quantity: 1,
+            expiry: "2030/12/31",
+            serialNumbers: [
+                'ZH5397LK8'
+            ]
+        },
+        {
+            batchNumber: "YF9028",
+            quantity: 1,
+            expiry: "2030/12/31",
+            serialNumbers: [
+                'ZT7301DW7'
             ]
         }
     ]
