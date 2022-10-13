@@ -488,7 +488,7 @@ export namespace Components {
         "displayCount": number;
         "displayCountDivider": number;
         /**
-          * The identifying prop to be return upon click (must exist in the supplied {@link componentProps}
+          * The identifying prop to be return upon click (must exist in the supplied ...)
          */
         "idProp": string;
         /**
@@ -1733,7 +1733,7 @@ declare namespace LocalJSX {
         "displayCount"?: number;
         "displayCountDivider"?: number;
         /**
-          * The identifying prop to be return upon click (must exist in the supplied {@link componentProps}
+          * The identifying prop to be return upon click (must exist in the supplied ...)
          */
         "idProp"?: string;
         /**
