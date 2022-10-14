@@ -12,29 +12,11 @@ function ShipmentLineService(domain, strategy){
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");
     const {ShipmentLine} = require('../model');
     const endpoint = 'shipmentline';
-    const BRICKS_DOMAIN_KEY = require("opendsu").constants.BRICKS_DOMAIN_KEY
-    let keyGenFunction = require('../commands/setShipmentLineSSI').createShipmentLineSSI;
-
 
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
 
     const statusService = new (require('./StatusService'))(domain, strategy);
-
-    const getBricksDomainFromProcess = function(){
-        if (!globalThis.process || !globalThis.process["BRICKS_DOMAIN"])
-            return undefined;
-        return globalThis.process["BRICKS_DOMAIN"];
-    }
-
-    this.generateKey = function(shipmentId, shipmentLine, bricksDomain){
-        let keyGenData = {
-            data: shipmentId + shipmentLine.senderId + shipmentLine.gtin + shipmentLine.batch
-        }
-        if (bricksDomain)
-            keyGenData[BRICKS_DOMAIN_KEY] = bricksDomain
-        return keyGenFunction(keyGenData, domain);
-    }
 
     /**
      * Resolves the DSU and loads the OrderLine object with all its properties, mutable or not
@@ -82,8 +64,13 @@ function ShipmentLineService(domain, strategy){
 
         let data = typeof shipmentLine == 'object' ? JSON.stringify(shipmentLine) : shipmentLine;
 
+        let keyGenData = {
+            data: shipmentId + shipmentLine.senderId + shipmentLine.gtin + shipmentLine.batch
+        }
+
         if (isSimple){
-            let keySSI = this.generateKey(shipmentId, shipmentLine, getBricksDomainFromProcess())
+            let keyGenFunction = require('../commands/setShipmentLineSSI').createShipmentLineSSI;
+            let keySSI = keyGenFunction(keyGenData, domain);
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);

@@ -1,7 +1,6 @@
 const Utils = require('../../pdm-dsu-toolkit/services/utils');
 const {STATUS_MOUNT_PATH, INFO_PATH, SHIPMENT_PATH, ORDER_MOUNT_PATH} = require('../constants');
 const {OrderStatus, Batch} = require("../model");
-const {createBatchSSI: keyGenFunction} = require("../commands/setBatchSSI");
 
 
 /**
@@ -14,18 +13,12 @@ function OrderService(domain, strategy) {
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");
     const {Order, OrderStatus, utils} = require('../model');
     const endpoint = 'order';
-    const BRICKS_DOMAIN_KEY = require("opendsu").constants.BRICKS_DOMAIN_KEY
 
     domain = domain || "default";
     const statusService = new (require('./StatusService'))(domain, strategy);
 
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
 
-    const getBricksDomainFromProcess = function(){
-        if (!globalThis.process || !globalThis.process["BRICKS_DOMAIN"])
-            return undefined;
-        return globalThis.process["BRICKS_DOMAIN"];
-    }
 
     this.resolveMAH = function(orderLine, callback){
         const keyGen = require('../commands/setProductSSI').createProductSSI;
@@ -204,19 +197,9 @@ function OrderService(domain, strategy) {
         });
     }
 
-    this.generateKey = function(orderId, requesterId, bricksDomain){
-        let keyGenFunction = require('../commands/setOrderSSI').createOrderSSI;
-        let keyGenData = {
-            data: orderId + requesterId
-        }
-        if (bricksDomain)
-            keyGenData[BRICKS_DOMAIN_KEY] = bricksDomain
-        return keyGenFunction(keyGenData, domain);
-    }
-
     let createSimple = function (order, callback) {
         let keyGenFunction = require('../commands/setOrderSSI').createOrderSSI;
-        let templateKeySSI = this.generateKey(order.orderId, order.requesterId, getBricksDomainFromProcess());
+        let templateKeySSI = keyGenFunction({data: order.orderId + order.requesterId}, domain);
         Utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);

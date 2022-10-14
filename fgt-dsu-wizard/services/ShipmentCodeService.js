@@ -12,20 +12,11 @@ const {Shipment, ShipmentLine, ShipmentCode, TrackingCode} = require('../model')
  */
 function ShipmentCodeService(domain, strategy){
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");
-    let keyGenFunction = require('../commands/setShipmentCodeSSI').createShipmentCodeSSI;
 
     const endpoint = 'shipmentcode';
 
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
-
-    const BRICKS_DOMAIN_KEY = require("opendsu").constants.BRICKS_DOMAIN_KEY
-
-    const getBricksDomainFromProcess = function(){
-        if (!globalThis.process || !globalThis.process["BRICKS_DOMAIN"])
-            return undefined;
-        return globalThis.process["BRICKS_DOMAIN"];
-    }
 
     this.getContainerGranularity = () => GRANULARITY.slice();
 
@@ -60,12 +51,6 @@ function ShipmentCodeService(domain, strategy){
         });
     }
 
-    this.generateKey = function(keyGenData, bricksDomain){
-        if (bricksDomain)
-            keyGenData[BRICKS_DOMAIN_KEY] = bricksDomain
-        return keyGenFunction(keyGenData, domain);
-    }
-
     /**
      * Creates an orderLine DSU
      * @param {ShipmentCode} shipmentCode
@@ -78,7 +63,8 @@ function ShipmentCodeService(domain, strategy){
         let data = typeof shipmentCode == 'object' ? JSON.stringify(shipmentCode) : shipmentCode;
         
         if (isSimple){
-            let keySSI = this.generateKey('shipmentcode', getBricksDomainFromProcess());
+            let keyGenFunction = require('../commands/setShipmentCodeSSI').createShipmentCodeSSI;
+            let keySSI = keyGenFunction('shipmentcode', domain);
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);

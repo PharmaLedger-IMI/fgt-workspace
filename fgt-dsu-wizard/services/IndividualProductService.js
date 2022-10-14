@@ -12,26 +12,16 @@ function IndividualProductService(domain, strategy){
     const IndividualProduct = require('../model/IndividualProduct');
     const endpoint = 'individualproduct';
     const keyGenFunction = require('../commands/setIndividualProductSSI').createIndividualProductSSI;
-    const BRICKS_DOMAIN_KEY = require("opendsu").constants.BRICKS_DOMAIN_KEY
-
 
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
 
-    const getBricksDomainFromProcess = function(){
-        if (!globalThis.process || !globalThis.process["BRICKS_DOMAIN"])
-            return undefined;
-        return globalThis.process["BRICKS_DOMAIN"];
-    }
-
-    this.generateKey = function(gtin, batchNumber, serialNumber, bricksDomain){
+    this.generateKey = function(gtin, batchNumber, serialNumber){
         let keyGenData = {
             gtin: gtin,
             batchNumber: batchNumber,
             serialNumber: serialNumber
         }
-        if (bricksDomain)
-            keyGenData[BRICKS_DOMAIN_KEY] = bricksDomain
         return keyGenFunction(keyGenData, domain);
     }
 
@@ -72,7 +62,7 @@ function IndividualProductService(domain, strategy){
             return callback(err);
 
         if (isSimple){
-            let keySSI = this.generateKey(product.gtin, product.batchNumber, product.serialNumber, getBricksDomainFromProcess());
+            let keySSI = this.generateKey(product.gtin, product.batchNumber, product.serialNumber);
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);

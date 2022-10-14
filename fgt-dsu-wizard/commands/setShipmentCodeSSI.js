@@ -1,3 +1,5 @@
+const {getBricksDomain, BRICKS_DOMAIN_KEY, getDomain} = require("./environment");
+
 /**
  * Defines how to create the keyssi for a {@link ShipmentLine} dsu
  * @param {object} data necessary properties:
@@ -9,13 +11,15 @@
  * @memberOf Commands
  */
 function createShipmentCodeSSI(data, domain) {
+    domain = getDomain(domain);
     console.log("New SHIPMENTCODE_SSI in domain", domain);
     const openDSU = require('opendsu');
     const keyssiSpace = openDSU.loadApi("keyssi");
     let hint;
-    if (data[openDSU.constants.BRICKS_DOMAIN_KEY]) {
-        hint = {};
-        hint[openDSU.constants.BRICKS_DOMAIN_KEY] = [domain, data[openDSU.constants.BRICKS_DOMAIN_KEY]].join('.');
+    const bricksDomain = getBricksDomain();
+    if (bricksDomain){
+        hint = {}
+        hint[BRICKS_DOMAIN_KEY] = bricksDomain
     }
     return keyssiSpace.createTemplateSeedSSI(domain, data.data, 'v0', hint ? JSON.stringify(hint) : undefined);
 }
@@ -26,7 +30,7 @@ function createShipmentCodeSSI(data, domain) {
  */
 function command(server){
     const setSSI = require('../../pdm-dsu-toolkit/commands/setSSI');
-    setSSI(server, "shipmentcode", createShipmentCodeSSI, "setShipmentCodeSSI", "traceability");
+    setSSI(server, "shipmentcode", createShipmentCodeSSI, "setShipmentCodeSSI", getDomain("traceability"));
 }
 
 module.exports = {

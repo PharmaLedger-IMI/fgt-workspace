@@ -1,3 +1,4 @@
+const {getDomain, getBricksDomain, BRICKS_DOMAIN_KEY} = require("./environment");
 /**
  * Defines how to create the keyssi for a orderLine dsu
  * @param {OrderStatus|ShipmentStatus} status. if status has the properties:
@@ -8,13 +9,15 @@
  * @memberOf Commands
  */
 function createStatusSSI(status, domain) {
+    domain = getDomain(domain)
     console.log("New Status_SSI in domain", domain);
     const openDSU = require('opendsu');
     const keyssiSpace = openDSU.loadApi("keyssi");
     let hint;
-    if (status[openDSU.constants.BRICKS_DOMAIN_KEY]) {
-        hint = {};
-        hint[openDSU.constants.BRICKS_DOMAIN_KEY] = [domain, status[openDSU.constants.BRICKS_DOMAIN_KEY]].join('.');
+    const bricksDomain = getBricksDomain();
+    if (bricksDomain){
+        hint = {}
+        hint[BRICKS_DOMAIN_KEY] = bricksDomain
     }
     return keyssiSpace.createTemplateSeedSSI(domain, status, undefined, 'v0', hint ? JSON.stringify(hint) : undefined);
 }
@@ -25,7 +28,7 @@ function createStatusSSI(status, domain) {
  */
 function command(server){
     const setSSI = require('../../pdm-dsu-toolkit/commands/setSSI');
-    setSSI(server, "status", createStatusSSI, "setStatusSSI", "traceability");
+    setSSI(server, "status", createStatusSSI, "setStatusSSI", getDomain("traceability"));
 }
 
 module.exports = {

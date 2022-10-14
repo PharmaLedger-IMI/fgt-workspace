@@ -1,7 +1,6 @@
 const utils = require('../../pdm-dsu-toolkit/services/utils');
 const {INFO_PATH, LOG_PATH, EXTRA_INFO_PATH} = require('../constants');
 const Status = require('../model/Status');
-const {createBatchSSI: keyGenFunction} = require("../commands/setBatchSSI");
 
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
@@ -13,7 +12,6 @@ function StatusService(domain, strategy){
     const strategies = require("../../pdm-dsu-toolkit/services/strategy");
     const OrderStatus = require('../model').OrderStatus;
     const endpoint = 'status';
-    let keyGenFunction = require('../commands/setStatusSSI').createStatusSSI;
 
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
@@ -22,20 +20,6 @@ function StatusService(domain, strategy){
         if (templateKeySSI.getTypeName() === 'array')
             return utils.getResolver().createDSUForExistingSSI;
         return utils.getResolver().createDSU;
-    }
-
-    const BRICKS_DOMAIN_KEY = require("opendsu").constants.BRICKS_DOMAIN_KEY
-
-    const getBricksDomainFromProcess = function(){
-        if (!globalThis.process || !globalThis.process["BRICKS_DOMAIN"])
-            return undefined;
-        return globalThis.process["BRICKS_DOMAIN"];
-    }
-
-    this.generateKey = function(status, bricksDomain){
-        if (bricksDomain)
-            status[BRICKS_DOMAIN_KEY] = bricksDomain
-        return keyGenFunction(status, domain);
     }
 
     let createLog = function(id, prevStatus, status, timestamp){
@@ -139,7 +123,8 @@ function StatusService(domain, strategy){
         }
 
         if (isSimple){
-            let keySSI = this.generateKey(status)
+            let keyGenFunction = require('../commands/setStatusSSI').createStatusSSI;
+            let keySSI = keyGenFunction(status, domain);
             selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);
