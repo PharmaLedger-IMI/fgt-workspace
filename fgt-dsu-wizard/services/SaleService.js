@@ -16,6 +16,15 @@ function SaleService(domain, strategy){
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
 
+    const BRICKS_DOMAIN_KEY = require("opendsu").constants.BRICKS_DOMAIN_KEY
+    let keyGenFunction = require('../commands/setSaleSSI').createSaleSSI;
+
+    const getBricksDomainFromProcess = function(){
+        if (!globalThis.process || !globalThis.process["BRICKS_DOMAIN"])
+            return undefined;
+        return globalThis.process["BRICKS_DOMAIN"];
+    }
+
     /**
      * Resolves the DSU and loads the OrderLine object with all its properties, mutable or not
      * @param {KeySSI} keySSI
@@ -40,6 +49,19 @@ function SaleService(domain, strategy){
         });
     }
 
+    this.generateKey = function(sale, bricksDomain){
+        let keyGenFunction = require('../commands/setSaleSSI').createSaleSSI;
+        let keyGenData = {
+            data: [
+                sale.id,
+                sale.sellerId
+            ]
+        }
+        if (bricksDomain)
+            keyGenData[BRICKS_DOMAIN_KEY] = bricksDomain
+        return keyGenFunction(keyGenData, domain);
+    }
+
     /**
      * Creates an orderLine DSU
      * @param {string | Sale} sale
@@ -55,16 +77,8 @@ function SaleService(domain, strategy){
 
         let data = typeof sale == 'object' ? JSON.stringify(sale) : sale;
 
-        let keyGenData = {
-            data: [
-                sale.id,
-                sale.sellerId
-            ]
-        }
-
         if (isSimple){
-            let keyGenFunction = require('../commands/setSaleSSI').createSaleSSI;
-            let keySSI = keyGenFunction(keyGenData, domain);
+            let keySSI = this.generateKey(sale, getBricksDomainFromProcess())
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);

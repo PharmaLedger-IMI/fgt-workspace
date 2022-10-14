@@ -1,0 +1,173 @@
+{
+    "dev.traceability" : {
+    "anchoringServices": [
+      "$ORIGIN"
+    ],
+    "notifications": [
+      "$ORIGIN"
+    ]
+  },
+  "dev.traceability.bayer" : {
+      "brickStorages": [
+        "http://172.16.63.62:8080"
+      ],
+      "anchoringServices": [
+        "http://172.16.63.62:8080"
+      ],
+      "notifications": [
+        "http://172.16.63.62:8080"
+      ]
+  },  "dev.traceability.whs-takeda" : {
+      "brickStorages": [
+        "http://172.16.63.103:8080"
+      ],
+      "anchoringServices": [
+        "http://172.16.63.103:8080"
+      ],
+      "notifications": [
+        "http://172.16.63.103:8080"
+      ]
+  },  "dev.traceability.pfizer" : {
+      "brickStorages": [
+        "http://172.16.63.66:8080"
+      ],
+      "anchoringServices": [
+        "http://172.16.63.66:8080"
+      ],
+      "notifications": [
+        "http://172.16.63.66:8080"
+      ]
+  },  "dev.traceability.pha-2" : {
+      "brickStorages": [
+        "http:/172.16.63.152:8080"
+      ],
+      "anchoringServices": [
+        "http:/172.16.63.152:8080"
+      ],
+      "notifications": [
+        "http:/172.16.63.152:8080"
+      ]
+  },  "dev.traceability.whs1" : {
+      "brickStorages": [
+        "http://172.16.63.101:8080"
+      ],
+      "anchoringServices": [
+        "http://172.16.63.101:8080"
+      ],
+      "notifications": [
+        "http://172.16.63.101:8080"
+      ]
+  },  "dev.traceability.msd" : {
+      "brickStorages": [
+        "http://172.16.63.64:8080"
+      ],
+      "anchoringServices": [
+        "http://172.16.63.64:8080"
+      ],
+      "notifications": [
+        "http://172.16.63.64:8080"
+      ]
+  },  "dev.traceability.whs-zuellig" : {
+      "brickStorages": [
+        "$ORIGIN"
+      ],
+      "anchoringServices": [
+        "$ORIGIN"
+      ],
+      "notifications": [
+        "$ORIGIN"
+      ]
+  },  "dev.traceability.sanofi" : {
+      "brickStorages": [
+        "http://172.16.63.68:8080"
+      ],
+      "anchoringServices": [
+        "http://172.16.63.68:8080"
+      ],
+      "notifications": [
+        "http://172.16.63.68:8080"
+      ]
+  },  "dev.traceability.novo-nordisk" : {
+      "brickStorages": [
+        "http://172.16.63.65:8080"
+      ],
+      "anchoringServices": [
+        "http://172.16.63.65:8080"
+      ],
+      "notifications": [
+        "http://172.16.63.65:8080"
+      ]
+  },  "dev.traceability.pha-1" : {
+      "brickStorages": [
+        "http://172.16.63.151:8080"
+      ],
+      "anchoringServices": [
+        "http://172.16.63.151:8080"
+      ],
+      "notifications": [
+        "http://172.16.63.151:8080"
+      ]
+  },  "dev.traceability.whs2" : {
+      "brickStorages": [
+        "http://172.16.63.102:8080"
+      ],
+      "anchoringServices": [
+        "http://172.16.63.102:8080"
+      ],
+      "notifications": [
+        "http://172.16.63.102:8080"
+      ]
+  },  "dev.traceability.takeda" : {
+      "brickStorages": [
+        "http://172.16.63.67:8080"
+      ],
+      "anchoringServices": [
+        "http://172.16.63.67:8080"
+      ],
+      "notifications": [
+        "http://172.16.63.67:8080"
+      ]
+  },  "dev.traceability.roche" : {
+      "brickStorages": [
+        "http://172.16.63.61:8080"
+      ],
+      "anchoringServices": [
+        "http://172.16.63.61:8080"
+      ],
+      "notifications": [
+        "http://172.16.63.61:8080"
+      ]
+  },  "dev.traceability.traceability" : {
+      "brickStorages": [
+        "http://172.16.51.62:8080"
+      ],
+      "anchoringServices": [
+        "http://172.16.51.62:8080"
+      ],
+      "notifications": [
+        "http://172.16.51.62:8080"
+      ]
+  },  "dev.traceability.gsk" : {
+      "brickStorages": [
+        "http://172.16.63.63:8080"
+      ],
+      "anchoringServices": [
+        "http://172.16.63.63:8080"
+      ],
+      "notifications": [
+        "http://172.16.63.63:8080"
+      ]
+  },
+  "dev.vault.whs-zuellig" : {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ],
+    "notifications": [
+      "$ORIGIN"
+    ]
+  }
+}

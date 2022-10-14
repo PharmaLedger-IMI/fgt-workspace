@@ -1,0 +1,9 @@
+{
+    "$$ENV$$.traceability" : {
+    "anchoringServices": [
+      "$ORIGIN"
+    ],
+    "notifications": [
+      "$ORIGIN"
+    ]
+  },

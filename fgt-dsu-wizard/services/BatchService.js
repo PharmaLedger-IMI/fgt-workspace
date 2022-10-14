@@ -18,12 +18,21 @@ function BatchService(domain, strategy){
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
     const statusService = new (require('./StatusService'))(domain, strategy);
     const productService = new ( require('./ProductService'))(domain, strategy);
+    const BRICKS_DOMAIN_KEY = require("opendsu").constants.BRICKS_DOMAIN_KEY
 
-    this.generateKey = function(gtin, batchNumber){
+    const getBricksDomainFromProcess = function(){
+        if (!globalThis.process || !globalThis.process["BRICKS_DOMAIN"])
+            return undefined;
+        return globalThis.process["BRICKS_DOMAIN"];
+    }
+
+    this.generateKey = function(gtin, batchNumber, bricksDomain){
         let keyGenData = {
             gtin: gtin,
             batch: batchNumber
         }
+        if (bricksDomain)
+            keyGenData[BRICKS_DOMAIN_KEY] = bricksDomain
         return keyGenFunction(keyGenData, domain);
     }
 
@@ -106,7 +115,7 @@ function BatchService(domain, strategy){
             return callback(_err);
 
         if (isSimple){
-            let keySSI = this.generateKey(gtin, batch.batchNumber);
+            let keySSI = this.generateKey(gtin, batch.batchNumber, getBricksDomainFromProcess());
             utils.selectMethod(keySSI)(keySSI, (err, dsu) => {
                 if (err)
                     return callback(err);

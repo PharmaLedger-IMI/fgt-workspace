@@ -1,0 +1,115 @@
+# This is a basic workflow to help you get started with Actions
+
+name: File Generation
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+   branches: [ master ]
+   paths:
+     - 'fgt-bdns/*'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'fgt-bdns/*'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  generate-files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Run the python script - Pull request
+        id: pr_preview
+        if: |
+            github.event_name == 'pull_request'
+        run: |
+          scriptOutput=$(cd fgt-bdns && python3 ./scripts/generate-files.py)
+          cd fgt-bdns && python3 ./fgt-bdns/scripts/generate-files.py
+          newFile=$(cat ./networks/dev/plugin_data_common.json)
+          echo $newFile
+
+          echo "MY_OUTPUT<<EOF" >> $GITHUB_ENV
+
+          echo "Script logs:" >> $GITHUB_ENV
+          echo " " >> $GITHUB_ENV
+          echo "$scriptOutput" >> $GITHUB_ENV
+          echo " " >> $GITHUB_ENV
+
+          echo "New plugin_data_common.json file:" >> $GITHUB_ENV
+          echo " " >> $GITHUB_ENV
+          echo "$newFile" >> $GITHUB_ENV
+          
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Auto Comment
+        uses: wow-actions/auto-comment@v1
+        if: |
+            github.event_name == 'pull_request'
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          pullRequestOpened: |
+            👋 @{{ author }}
+            
+            Thank you for raising your pull request.
+            
+            This is Python script output:
+            
+            ```
+            
+            ${{ env.MY_OUTPUT }}
+            
+            ```
+
+          pullRequestSynchronize: |
+            👋 @{{ author }}
+            
+            Thank you updating your pull request.
+            
+            This is the new Python script output:
+            
+            ```
+            
+            ${{ env.MY_OUTPUT }}
+            
+            ```
+          
+          pullRequestEdited: |
+            👋 @{{ author }}
+            
+            The base branch has been updated.
+            
+            This is the new Python script output:
+            
+            ```
+            
+            ${{ env.MY_OUTPUT }}
+            
+            ```
+
+      - name: Run the python script - Push
+        if: |
+            github.event_name == 'push'
+        run: |
+          cd fgt-bdns && python3 ./scripts/generate-files.py
+
+      - name: Commit files # transfer the new html files back into the repository
+        if: |
+          github.event_name == 'push'
+        run: |
+          git config --local user.name "github-action"
+          git add .
+          git commit -m "GitHub Action Commit: Updating the repository with generated files"
+          
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        if: |
+          github.event_name == 'push'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          force: true

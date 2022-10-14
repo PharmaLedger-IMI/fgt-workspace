@@ -1,0 +1,13 @@
+  "vault": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ],
+    "notifications": [
+      "$ORIGIN"
+    ]
+  }
+}

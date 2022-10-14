@@ -1,6 +1,6 @@
 const utils = require('../../pdm-dsu-toolkit/services/utils');
 const {STATUS_MOUNT_PATH, INFO_PATH, LINES_PATH, ORDER_MOUNT_PATH} = require('../constants');
-const {Shipment, ShipmentStatus, Status, Order} = require('../model');
+const {Shipment, ShipmentStatus} = require('../model');
 /**
  * @param {string} domain: anchoring domain. defaults to 'default'
  * @param {strategy} strategy
@@ -14,9 +14,16 @@ function ShipmentService(domain, strategy) {
     domain = domain || "default";
     const shipmentLineService = new (require('./ShipmentLineService'))(domain, strategy);
     const statusService = new (require('./StatusService'))(domain, strategy);
-    const shipmentCodeService = new (require('./ShipmentCodeService'))(domain, strategy);
+    const BRICKS_DOMAIN_KEY = require("opendsu").constants.BRICKS_DOMAIN_KEY
+    let keyGenFunction = require('../commands/setShipmentSSI').createShipmentSSI;
 
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
+
+    const getBricksDomainFromProcess = function(){
+        if (!globalThis.process || !globalThis.process["BRICKS_DOMAIN"])
+            return undefined;
+        return globalThis.process["BRICKS_DOMAIN"];
+    }
 
     let getDSUMountByPath = function(dsu, path, basePath, callback){
         if (!callback && typeof basePath === 'function'){
@@ -51,6 +58,16 @@ function ShipmentService(domain, strategy) {
                 callback(undefined, product.manufName);
             });
         });
+    }
+
+
+    this.generateKey = function(shipment, bricksDomain){
+        let keyGenData = {
+            gtin: shipment.senderId + shipment.shipmentId
+        }
+        if (bricksDomain)
+            keyGenData[BRICKS_DOMAIN_KEY] = bricksDomain
+        return keyGenFunction(keyGenData, domain);
     }
 
     /**
@@ -158,9 +175,8 @@ function ShipmentService(domain, strategy) {
         });
     }
 
-    let createSimple = function (shipment, orderSSI, callback) {
-        let keyGenFunction = require('../commands/setShipmentSSI').createShipmentSSI;
-        let templateKeySSI = keyGenFunction({data: shipment.senderId + shipment.shipmentId}, domain);
+   this.createSimple = function (shipment, orderSSI, callback) {
+        let templateKeySSI = this.generateKey(shipment, getBricksDomainFromProcess());
         utils.selectMethod(templateKeySSI)(templateKeySSI, (err, dsu) => {
             if (err)
                 return callback(err);

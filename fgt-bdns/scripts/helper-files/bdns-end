@@ -1,0 +1,13 @@
+  "$$ENV$$.vault.$$COMPANY$$" : {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ],
+    "notifications": [
+      "$ORIGIN"
+    ]
+  }
+}

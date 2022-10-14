@@ -15,11 +15,20 @@ function ProductService(domain, strategy){
 
     domain = domain || "default";
     let isSimple = strategies.SIMPLE === (strategy || strategies.SIMPLE);
+    const BRICKS_DOMAIN_KEY = require("opendsu").constants.BRICKS_DOMAIN_KEY
 
-    this.generateKey = function(gtin){
+    const getBricksDomainFromProcess = function(){
+        if (!globalThis.process || !globalThis.process["BRICKS_DOMAIN"])
+            return undefined;
+        return globalThis.process["BRICKS_DOMAIN"];
+    }
+
+    this.generateKey = function(gtin, bricksDomain){
         let keyGenData = {
             gtin: gtin
         }
+        if (bricksDomain)
+            keyGenData[BRICKS_DOMAIN_KEY] = bricksDomain
         return keyGenFunction(keyGenData, domain);
     }
 
