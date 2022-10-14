@@ -17,6 +17,9 @@
  * For BC --istanbul.blockperiod 1 (1 second per new block) this timing needs to
  * be 80 seconds (80000 ms) or more.
  * 
+ * Example for the top README.md scenario - running single MAH (defaults to ROCHE credentials) API on localhost:8081 : 
+ * fgt-workspace/bin/environment$ node --unhandled-rejections=strict wsCreateStuff.js --env=single --scenario=single --sleep=80000 2>&1 | tee -a wsCreateStuffSingle.log
+ * 
  * Example for fgt-dev: 
  * fgt-workspace/bin/environment$ node --unhandled-rejections=strict wsCreateStuff.js --env=dev --sleep=80000 2>&1 | tee -a wsCreateStuffDev.log
  *
