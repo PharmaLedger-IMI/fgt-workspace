@@ -623,8 +623,6 @@ const shipmentsCreateTestDfm = async function (conf, sender) {
                         "batch": batchNumber,
                         "quantity": quantity
                     }
-            }        
-                    }
                 ]
             };
 
