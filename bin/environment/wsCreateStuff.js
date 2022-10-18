@@ -12,10 +12,10 @@
  * See --help for options.
  * 
  * Please add a --sleep=NNNNN (default is 2000 miliseconds = 2 seconds)
- * between shipment operations to allow for messages betweem participants to be processed.
- * At least 10 seconds seems to be required.
+ * between shipment operations to allow for messages between participants to be processed.
+ * At least 10 seconds seems to be required for simulated blockchain.
  * For BC --istanbul.blockperiod 1 (1 second per new block) this timing needs to
- * be 80 seconds (80000 ms) or more.
+ * be 120 seconds (120000 ms) or more.
  * 
  * Example for the top README.md scenario - running single MAH (defaults to ROCHE credentials) API on localhost:8081 : 
  * fgt-workspace/bin/environment$ node --unhandled-rejections=strict wsCreateStuff.js --env=single --scenario=single --sleep=80000 2>&1 | tee -a wsCreateStuffSingle.log
