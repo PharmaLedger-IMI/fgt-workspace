@@ -798,7 +798,7 @@ const salesCreateTestDfm = async function (conf, manufActor, sellerActor, mySale
         throw new Error("No shipments on pharmacies on this run!");
     }
     for (const shipment of SHIPMENTS_ON_PHA) {
-        if (shipment.shipmentLines.length) {
+        if (!shipment.shipmentLines.length) {
             throw new Error("No shipmentLines on pharmacies on this run!");
         }
         if (shipment.shipmentLines.length != 1) {
