@@ -11,13 +11,13 @@
     "traceability": {
       "replicas": [],
       "brickStorages": [
-        "$ORIGIN"
+        "http://localhost:8808"
       ],
       "mqEndpoints": [
-        "$ORIGIN"
+        "http://localhost:8808"
       ],
       "anchoringServices": [
-        "$ORIGIN"
+        "http://localhost:8808"
       ]
     },
   "epi": {
