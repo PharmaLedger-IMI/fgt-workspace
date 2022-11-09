@@ -1,7 +1,7 @@
 /**
  * Experimental tool to create some products and batches using api services.
  * Uses some files common to the setup.js utility,
- * #66
+ * #66, #119
  * 
  * Onde node <= v14 we recommend that you run this script with option
  * --unhandled-rejections=strict
@@ -12,10 +12,10 @@
  * See --help for options.
  * 
  * Please add a --sleep=NNNNN (default is 2000 miliseconds = 2 seconds)
- * between shipment operations to allow for messages betweem participants to be processed.
- * At least 10 seconds seems to be required.
+ * between shipment operations to allow for messages between participants to be processed.
+ * At least 10 seconds seems to be required for simulated blockchain.
  * For BC --istanbul.blockperiod 1 (1 second per new block) this timing needs to
- * be 80 seconds (80000 ms) or more.
+ * be 120 seconds (120000 ms) or more.
  * 
  * Example for the top README.md scenario - running single MAH (defaults to ROCHE credentials) API on localhost:8081 : 
  * fgt-workspace/bin/environment$ node --unhandled-rejections=strict wsCreateStuff.js --env=single --scenario=single --sleep=80000 2>&1 | tee -a wsCreateStuffSingle.log
@@ -49,7 +49,7 @@ const WSH1 = require("../../docker/api/env/whs-1.json");
 const WSH2 = require("../../docker/api/env/whs-2.json");
 const PHA1 = require("../../docker/api/env/pha-1.json");
 const PHA2 = require("../../docker/api/env/pha-2.json");
-const SHIPMENTS_ON_PHA = [];
+const SHIPMENTS_ON_PHA = []; // records all shipments sent to a PHA, so that they can be sold.
 
 const NUM_SALES = 2; // number of sales to perform - for now consume serialNumbers from 1st MSD batch
 const MY_SALES = []; // array of data returned by /sale/create
@@ -607,40 +607,43 @@ const shipmentsCreateTestDfm = async function (conf, sender) {
 
     const whs = WSH1;
     const pha = PHA1;
-    
-    const gtin1 = sender.products[0].gtin;
-    const batch1 = sender.batches[gtin1][0];
-    const batchNumber1 = batch1.batchNumber;
-    const quantity1 = batch1.quantity;
 
-    const shipment1MahToWhs = {
-        "orderId": whs.id.secret + "-" + (new Date()).toISOString(),
-        "requesterId": whs.id.secret,
-        "shipmentLines": [
-            {
-                "gtin": gtin1,
-                "batch": batchNumber1,
-                "quantity": quantity1
-            }        
-        ]
-    };
+    for (const product of sender.products) { // ship all DFM products
+        const gtin = product.gtin;
+        for (const batch of sender.batches[gtin]) { // ship all DFM batches
+            const batchNumber = batch.batchNumber;
+            const quantity = batch.quantity;
 
-    await shipmentCreateAndDeliver(conf, sender, whs, shipment1MahToWhs);
+            const shipment1MahToWhs = {
+                "orderId": whs.id.secret + "-" + (new Date()).toISOString(),
+                "requesterId": whs.id.secret,
+                "shipmentLines": [
+                    {
+                        "gtin": gtin,
+                        "batch": batchNumber,
+                        "quantity": quantity
+                    }
+                ]
+            };
 
-    const shipment2WhsToPha = {
-        "orderId": pha.id.secret + "-" + (new Date()).toISOString(),
-        "requesterId": pha.id.secret,
-        "shipmentLines": [
-            {
-                "gtin": gtin1,
-                "batch": batchNumber1,
-                "quantity": quantity1
-            }
-        ]
-    };
+            await shipmentCreateAndDeliver(conf, sender, whs, shipment1MahToWhs);
 
-    const resShipToPha = await shipmentCreateAndDeliver(conf, whs, pha, shipment2WhsToPha);
-    SHIPMENTS_ON_PHA.push(resShipToPha);
+            const shipment2WhsToPha = {
+                "orderId": pha.id.secret + "-" + (new Date()).toISOString(),
+                "requesterId": pha.id.secret,
+                "shipmentLines": [
+                    {
+                        "gtin": gtin,
+                        "batch": batchNumber,
+                        "quantity": quantity
+                    }
+                ]
+            };
+
+            const resShipToPha = await shipmentCreateAndDeliver(conf, whs, pha, shipment2WhsToPha);
+            SHIPMENTS_ON_PHA.push(resShipToPha);
+        }
+    }
 }
 
 const shipmentsCreateTestDefault = async function (conf, sender) {
@@ -794,42 +797,47 @@ const salesCreateTestDfm = async function (conf, manufActor, sellerActor, mySale
     if (!SHIPMENTS_ON_PHA.length) {
         throw new Error("No shipments on pharmacies on this run!");
     }
-    if (!SHIPMENTS_ON_PHA[0].shipmentLines.length) {
-        throw new Error("No shipmentLines on pharmacies on this run!");
-    }
-    const shipmentLine0 = SHIPMENTS_ON_PHA[0].shipmentLines[0];
-    const gtin = shipmentLine0.gtin;
-    const batchNumber = shipmentLine0.batch;
-    const batch = findMahOriginalBatch(gtin, batchNumber);
-    //console.log("batch", batch);
-
-    let i=0;
-    while (i<batch.quantity) { // sell all the batch
-        const saleSerialNumber = batch.serialNumbers[i];
-        const saleData = { // see body of http://swagger-pha1.localhost:8080/#/sale/post_sale_create
-            "id": sellerActor.id.secret + "-" + (new Date()).toISOString(),
-            "productList": [
-                {
-                    "gtin": gtin,
-                    "batchNumber": batch.batchNumber,
-                    "serialNumber": saleSerialNumber
-                }
-            ]
-        };
-
-        const resSale = await jsonPost(conf, sellerActor, {
-            path: `/traceability/sale/create`,
-            body: saleData
-        });
-        //console.log("Sale", resSale);
-        if (!resSale || !resSale.productList) {
-            throw new Error("sale/create "+batch.batchNumber+" at "+sellerActor.id.secret+" reply has no productList: "+JSON.stringify(resSale));
+    for (const shipment of SHIPMENTS_ON_PHA) {
+        if (!shipment.shipmentLines.length) {
+            throw new Error("No shipmentLines on pharmacies on this run!");
         }
-        mySales.push(resSale);
+        if (shipment.shipmentLines.length != 1) {
+            throw new Error("DFM only supports shipments with 1 line each!");
+        }
+        const shipmentLine0 = shipment.shipmentLines[0];
+        const gtin = shipmentLine0.gtin;
+        const batchNumber = shipmentLine0.batch;
+        const batch = findMahOriginalBatch(gtin, batchNumber);
+        //console.log("batch", batch);
 
-        await sleep(SLEEP_MS);
+        let i = 0;
+        while (i < batch.quantity) { // sell all the batch
+            const saleSerialNumber = batch.serialNumbers[i];
+            const saleData = { // see body of http://swagger-pha1.localhost:8080/#/sale/post_sale_create
+                "id": sellerActor.id.secret + "-" + (new Date()).toISOString(),
+                "productList": [
+                    {
+                        "gtin": gtin,
+                        "batchNumber": batch.batchNumber,
+                        "serialNumber": saleSerialNumber
+                    }
+                ]
+            };
 
-        i++;
+            const resSale = await jsonPost(conf, sellerActor, {
+                path: `/traceability/sale/create`,
+                body: saleData
+            });
+            //console.log("Sale", resSale);
+            if (!resSale || !resSale.productList) {
+                throw new Error("sale/create " + batch.batchNumber + " at " + sellerActor.id.secret + " reply has no productList: " + JSON.stringify(resSale));
+            }
+            mySales.push(resSale);
+
+            await sleep(SLEEP_MS);
+
+            i++;
+        }
     }
 }
 

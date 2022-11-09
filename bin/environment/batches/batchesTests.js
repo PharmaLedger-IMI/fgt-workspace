@@ -419,14 +419,6 @@ const DFM_BATCHES1 = {
             ]
         },
         {
-            batchNumber: "WB5208",
-            quantity: 1,
-            expiry: "2030/12/31",
-            serialNumbers: [
-                'VQ8911LQ7'
-            ]
-        },
-        {
             batchNumber: "WO6983",
             quantity: 1,
             expiry: "2030/12/31",
