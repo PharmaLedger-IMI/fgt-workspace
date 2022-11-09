@@ -8,19 +8,7 @@
       "$ORIGIN"
     ]
   },
-    "traceability": {
-      "replicas": [],
-      "brickStorages": [
-        "$ORIGIN"
-      ],
-      "mqEndpoints": [
-        "$ORIGIN"
-      ],
-      "anchoringServices": [
-        "$ORIGIN"
-      ]
-    },
-  "epi": {
+  "vault": {
     "replicas": [],
     "brickStorages": [
       "$ORIGIN"
@@ -29,27 +17,180 @@
       "$ORIGIN"
     ]
   },
-    "epidev": {
-      "replicas": [],
-      "brickStorages": [
-        "$ORIGIN"
-      ],
-      "anchoringServices": [
-        "$ORIGIN"
-      ]
-    },
-    "epiqa": {
-      "replicas": [],
-      "brickStorages": [
-        "$ORIGIN"
-      ],
-      "anchoringServices": [
-        "$ORIGIN"
-      ]
-    },
-  "vault": {
+  "traceability": {
     "replicas": [],
     "brickStorages": [
+      "$ORIGIN"
+    ],
+    "mqEndpoints": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  },
+  "traceability.mah-roche": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "mqEndpoints": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  },
+  "traceability.mah-bayer": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "mqEndpoints": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  },
+  "traceability.mah-gsk": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "mqEndpoints": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  },
+  "traceability.mah-msd": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "mqEndpoints": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  },
+  "traceability.mah-novo-nordisk": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "mqEndpoints": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  },
+  "traceability.mah-pfizer": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "mqEndpoints": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  },
+  "traceability.mah-takeda": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "mqEndpoints": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  },
+  "traceability.mah-sanofi": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "mqEndpoints": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  },
+  "traceability.whs-1": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "mqEndpoints": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  },
+  "traceability.whs-2": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "mqEndpoints": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  },
+  "traceability.whs-takeda": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "mqEndpoints": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  },
+  "traceability.whs-zuellig": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "mqEndpoints": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  },
+  "traceability.pha-1": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "mqEndpoints": [
+      "$ORIGIN"
+    ],
+    "anchoringServices": [
+      "$ORIGIN"
+    ]
+  },
+  "traceability.pha-2": {
+    "replicas": [],
+    "brickStorages": [
+      "$ORIGIN"
+    ],
+    "mqEndpoints": [
       "$ORIGIN"
     ],
     "anchoringServices": [
