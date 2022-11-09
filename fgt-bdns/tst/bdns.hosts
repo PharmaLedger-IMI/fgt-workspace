@@ -1,5 +1,6 @@
 {
   "traceability": {
+    "_comment": "When editing this file, please try to keep the traceability.domains sorted alphabetically",
     "anchoringServices": [
       "https://fgt.pharmaledger.pdmfc.com"
     ],
@@ -8,17 +9,6 @@
     ],
     "notifications": [
       "https://fgt.pharmaledger.pdmfc.com"
-    ]
-  },
-  "traceability.mah-roche": {
-    "brickStorages": [
-      "https://mah-roche-fgt.pharmaledger.pdmfc.com"
-    ],
-    "anchoringServices": [
-      "https://mah-roche-fgt.pharmaledger.pdmfc.com"
-    ],
-    "notifications": [
-      "https://mah-roche-fgt.pharmaledger.pdmfc.com"
     ]
   },
   "traceability.mah-bayer": {
@@ -76,15 +66,15 @@
       "https://mah-pfizer-fgt.pharmaledger.pdmfc.com"
     ]
   },
-  "traceability.mah-takeda": {
+  "traceability.mah-roche": {
     "brickStorages": [
-      "https://mah-takeda-fgt.pharmaledger.pdmfc.com"
+      "https://mah-roche-fgt.pharmaledger.pdmfc.com"
     ],
     "anchoringServices": [
-      "https://mah-takeda-fgt.pharmaledger.pdmfc.com"
+      "https://mah-roche-fgt.pharmaledger.pdmfc.com"
     ],
     "notifications": [
-      "https://mah-takeda-fgt.pharmaledger.pdmfc.com"
+      "https://mah-roche-fgt.pharmaledger.pdmfc.com"
     ]
   },
   "traceability.mah-sanofi": {
@@ -96,6 +86,39 @@
     ],
     "notifications": [
       "https://mah-sanofi-fgt.pharmaledger.pdmfc.com"
+    ]
+  },
+  "traceability.mah-takeda": {
+    "brickStorages": [
+      "https://mah-takeda-fgt.pharmaledger.pdmfc.com"
+    ],
+    "anchoringServices": [
+      "https://mah-takeda-fgt.pharmaledger.pdmfc.com"
+    ],
+    "notifications": [
+      "https://mah-takeda-fgt.pharmaledger.pdmfc.com"
+    ]
+  },
+  "traceability.pha-1": {
+    "brickStorages": [
+      "https://pha1-fgt.pharmaledger.pdmfc.com"
+    ],
+    "anchoringServices": [
+      "https://pha1-fgt.pharmaledger.pdmfc.com"
+    ],
+    "notifications": [
+      "https://pha1-fgt.pharmaledger.pdmfc.com"
+    ]
+  },
+  "traceability.pha-2": {
+    "brickStorages": [
+      "https://pha2-fgt.pharmaledger.pdmfc.com"
+    ],
+    "anchoringServices": [
+      "https://pha2-fgt.pharmaledger.pdmfc.com"
+    ],
+    "notifications": [
+      "https://pha2-fgt.pharmaledger.pdmfc.com"
     ]
   },
   "traceability.whs-1": {
@@ -140,28 +163,6 @@
     ],
     "notifications": [
       "https://whs-zuellig-fgt.pharmaledger.pdmfc.com"
-    ]
-  },
-  "traceability.pha-1": {
-    "brickStorages": [
-      "https://pha1-fgt.pharmaledger.pdmfc.com"
-    ],
-    "anchoringServices": [
-      "https://pha1-fgt.pharmaledger.pdmfc.com"
-    ],
-    "notifications": [
-      "https://pha1-fgt.pharmaledger.pdmfc.com"
-    ]
-  },
-  "traceability.pha-2": {
-    "brickStorages": [
-      "https://pha2-fgt.pharmaledger.pdmfc.com"
-    ],
-    "anchoringServices": [
-      "https://pha2-fgt.pharmaledger.pdmfc.com"
-    ],
-    "notifications": [
-      "https://pha2-fgt.pharmaledger.pdmfc.com"
     ]
   }
 }
