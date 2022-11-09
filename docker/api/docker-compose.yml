@@ -1,8 +1,7 @@
 version: "2.3"
 x-participant-def:
   &participant-def
-  restart: "no"
-#  restart: "unless-stopped"
+  restart: "unless-stopped"
   # Uncomment build+context to build from git master.
   # Uncomment image to use pre-built image. See also fgt-workspace below (which may share the same image).
   build:
