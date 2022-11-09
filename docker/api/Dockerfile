@@ -1,7 +1,7 @@
 #
 # Docker image build for Finished Goods Traceability (FGT)
 #
-# docker build --build-arg GIT_BRANCH=v0.10.0 -t fgt:v0.10.0 --rm=false --pull --network host -f=Dockerfile .
+# docker build --build-arg GIT_BRANCH=v0.10.0 --build-arg BUILD_ENV=dev -t fgt:v0.10.0 --rm=false --pull --network host -f=Dockerfile .
 #
 FROM node:16.14.2-alpine
 
@@ -22,6 +22,12 @@ WORKDIR /fgt-workspace
 # Build the software - Note: Clone by specific tag or branch
 RUN git clone -b ${GIT_BRANCH} --single-branch --depth 1 https://github.com/PharmaLedger-IMI/fgt-workspace.git . && \
     npm ci && npm cache clean --force
+
+# The environment we're meant to replicate (local/dev/tst)
+ARG BUILD_ENV
+ENV BUILD_ENV=${BUILD_ENV:-local}
+
+RUN cp ./fgt-bdns/${BUILD_ENV}/apihub.jon ./apihub-root/external-volume/config/apihub.json
 
 RUN npm run install-dsu-explorer
 

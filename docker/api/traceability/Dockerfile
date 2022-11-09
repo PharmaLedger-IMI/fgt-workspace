@@ -25,6 +25,12 @@ WORKDIR /fgt-workspace
 RUN git clone -b ${GIT_BRANCH} --single-branch --depth 1 https://github.com/PharmaLedger-IMI/fgt-workspace.git . && \
     npm install --unsafe-perm
 
+# The environment we're meant to replicate (local/dev/tst)
+ARG BUILD_ENV
+ENV BUILD_ENV=${BUILD_ENV:-local}
+
+RUN cp ./fgt-bdns/${BUILD_ENV}/apihub.jon ./apihub-root/external-volume/config/apihub.json
+
 RUN npm run install-dsu-explorer
 
 # Remove all Git related files and directories - see https://gist.github.com/facelordgists/80e868ff5e315878ecd6
