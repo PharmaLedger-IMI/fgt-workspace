@@ -130,8 +130,8 @@ const updateConfigsToMatchEnvironment = async function(){
         const environment = ENVIRONMENT || "local";
         console.log(`Updating environment configurations for the ${environment} environment ${bricksDomain ? `using bricksDomain: ${bricksDomain}` : ""}`)
         try {
-            fs.copyFileSync(path.join(currentPath, `./fgt-bdns/${environment}/apihub.json`),
-                path.join(currentPath, `./apihub-root/external-volume/config/apihub.json`))
+            fs.copyFileSync(path.join(currentPath, `../fgt-bdns/${environment}/apihub.json`),
+                path.join(currentPath, `../apihub-root/external-volume/config/apihub.json`))
         } catch (e) {
             return reject(e);
         }
