@@ -1,13 +1,13 @@
 {
   "traceability": {
     "anchoringServices": [
-      "https://https://fgt.pharmaledger.pdmfc.com"
+      "https://fgt.pharmaledger.pdmfc.com"
     ],
     "brickStorages": [
-      "https://https://fgt.pharmaledger.pdmfc.com"
+      "https://fgt.pharmaledger.pdmfc.com"
     ],
     "notifications": [
-      "https://https://fgt.pharmaledger.pdmfc.com"
+      "https://fgt.pharmaledger.pdmfc.com"
     ]
   },
   "traceability.mah-roche": {
