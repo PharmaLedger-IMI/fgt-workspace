@@ -109,6 +109,8 @@ services:
       # The config files are handled by distincat startup-script.sh.
     #image: joaoluispdm/pharmaledger-imi-fgt:v0.9.6
     hostname: fgt-workspace
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-local}
     restart: "unless-stopped"
     labels:
       - "traefik.enable=true"
@@ -146,6 +148,8 @@ services:
       FGT_API_CREDENTIALS: "{\"name\":{\"secret\":\"Roche AG\",\"public\":true},\"id\":{\"secret\":\"MAH116267986\",\"public\":true},\"email\":{\"secret\":\"roche@mah.pharmaledger.com\",\"public\":true},\"address\":{\"public\":true,\"secret\":\" k Switzerland\"},\"pass\":{\"secret\":\"This1sSuchAS3curePassw0rd\"},\"passrepeat\":{\"secret\":\"This1sSuchAS3curePassw0rd\"}}"
       CREDENTIALS_FILE: mah-roche.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-roche${SWAGGER}/traceability
+      ENVIRONMENT: ${ENVIRONMENT:-local}
+      BRICKS_DOMAIN: traceability.mah-roche
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-roche.rule=Host(`mah-roche${DOMAIN}`)"
@@ -181,6 +185,8 @@ services:
       ROLE: mah
       CREDENTIALS_FILE: mah-bayer.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-bayer${SWAGGER}/traceability
+      ENVIRONMENT: ${ENVIRONMENT:-local}
+      BRICKS_DOMAIN: traceability.mah-bayer
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-bayer.rule=Host(`mah-bayer${DOMAIN}`)"
@@ -216,6 +222,8 @@ services:
       ROLE: mah
       CREDENTIALS_FILE: mah-gsk.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-gsk${SWAGGER}/traceability
+      ENVIRONMENT: ${ENVIRONMENT:-local}
+      BRICKS_DOMAIN: traceability.mah-gsk
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-gsk.rule=Host(`mah-gsk${DOMAIN}`)"
@@ -253,6 +261,8 @@ services:
       # FGT_API_CREDENTIALS: "{\"name\":{\"secret\":\"Merck & Co., Inc.\",\"public\":true},\"id\":{\"secret\":\"MAH0000000\",\"public\":true},\"email\":{\"secret\":\"merck@mah.pharmaledger.com\",\"public\":true},\"address\":{\"public\":true,\"secret\":\"Kenilworth, New Jersey, USA\"},\"pass\":{\"secret\":\"This1sSuchAS3curePassw0rd\"},\"passrepeat\":{\"secret\":\"This1sSuchAS3curePassw0rd\"}}"
       CREDENTIALS_FILE: mah-msd.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-msd${SWAGGER}/traceability
+      ENVIRONMENT: ${ENVIRONMENT:-local}
+      BRICKS_DOMAIN: traceability.mah-msd
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-msd.rule=Host(`mah-msd${DOMAIN}`)"
@@ -288,6 +298,8 @@ services:
       ROLE: mah
       CREDENTIALS_FILE: mah-novo-nordisk.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-novo-nordisk${SWAGGER}/traceability
+      ENVIRONMENT: ${ENVIRONMENT:-local}
+      BRICKS_DOMAIN: traceability.mah-novo-nordisk
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-novo-nordisk.rule=Host(`mah-novo-nordisk${DOMAIN}`)"
@@ -323,6 +335,8 @@ services:
       ROLE: mah
       CREDENTIALS_FILE: mah-pfizer.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-pfizer${SWAGGER}/traceability
+      ENVIRONMENT: ${ENVIRONMENT:-local}
+      BRICKS_DOMAIN: traceability.mah-pfizer
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-pfizer.rule=Host(`mah-pfizer${DOMAIN}`)"
@@ -358,6 +372,8 @@ services:
       ROLE: mah
       CREDENTIALS_FILE: mah-takeda.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-takeda${SWAGGER}/traceability
+      ENVIRONMENT: ${ENVIRONMENT:-local}
+      BRICKS_DOMAIN: traceability.mah-takeda
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-takeda.rule=Host(`mah-takeda${DOMAIN}`)"
@@ -393,6 +409,8 @@ services:
       ROLE: mah
       CREDENTIALS_FILE: mah-sanofi.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-sanofi${SWAGGER}/traceability
+      ENVIRONMENT: ${ENVIRONMENT:-local}
+      BRICKS_DOMAIN: traceability.mah-sanofi
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-sanofi.rule=Host(`mah-sanofi${DOMAIN}`)"
@@ -429,6 +447,8 @@ services:
       ROLE: whs
       CREDENTIALS_FILE: whs-1.json
       SWAGGER_SERVER: ${PROTOCOL}://api-whs1${SWAGGER}/traceability
+      ENVIRONMENT: ${ENVIRONMENT:-local}
+      BRICKS_DOMAIN: traceability.whs-1
     labels:
       - "traefik.enable=true"
 
@@ -466,6 +486,8 @@ services:
       ROLE: whs
       CREDENTIALS_FILE: whs-2.json
       SWAGGER_SERVER: ${PROTOCOL}://api-whs2${SWAGGER}/traceability
+      ENVIRONMENT: ${ENVIRONMENT:-local}
+      BRICKS_DOMAIN: traceability.whs-2
     labels:
       - "traefik.enable=true"
 
@@ -502,6 +524,8 @@ services:
       ROLE: whs
       CREDENTIALS_FILE: whs-takeda.json
       SWAGGER_SERVER: ${PROTOCOL}://api-whs-takeda${SWAGGER}/traceability
+      ENVIRONMENT: ${ENVIRONMENT:-local}
+      BRICKS_DOMAIN: traceability.whs-takeda
     labels:
       - "traefik.enable=true"
 
@@ -538,6 +562,8 @@ services:
       ROLE: whs
       CREDENTIALS_FILE: whs-zuellig.json
       SWAGGER_SERVER: ${PROTOCOL}://api-whs-zuellig${SWAGGER}/traceability
+      ENVIRONMENT: ${ENVIRONMENT:-local}
+      BRICKS_DOMAIN: traceability.whs-zuellig
     labels:
       - "traefik.enable=true"
 
@@ -575,6 +601,8 @@ services:
       ROLE: pha
       CREDENTIALS_FILE: pha-1.json
       SWAGGER_SERVER: ${PROTOCOL}://api-pha1${SWAGGER}/traceability
+      ENVIRONMENT: ${ENVIRONMENT:-local}
+      BRICKS_DOMAIN: traceability.pha-1
     labels:
       - "traefik.enable=true"
 
@@ -611,6 +639,8 @@ services:
       ROLE: pha
       CREDENTIALS_FILE: pha-2.json
       SWAGGER_SERVER: ${PROTOCOL}://api-pha2${SWAGGER}/traceability
+      ENVIRONMENT: ${ENVIRONMENT:-local}
+      BRICKS_DOMAIN: traceability.pha-2
     labels:
       - "traefik.enable=true"
 
