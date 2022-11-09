@@ -8,6 +8,8 @@
  * @namespace Server
  */
 
+const path = require("path");
+
 /**
  * iterates through all the commands in the command folder and registers them
  * Is called by the apihub via the server.json
@@ -18,8 +20,12 @@ function Init(server){
 	require('fs').readdir(cmdsDir, (err, files) => {
 		if (err)
 			throw err;
-		files.filter(f => f !== 'setSSI.js' && f !== 'index.js').forEach(f => {
-			require(path.join(cmdsDir, f)).command(server);
+		files.filter(f => f !== 'setSSI.js' && f !== 'index.js' && f !== "environment.js").forEach(f => {
+			try {
+				require(path.join(cmdsDir, f)).command(server);
+			} catch (e) {
+				console.error(`Failed to boot ${f} api`)
+			}
 		});
 	});
 }
