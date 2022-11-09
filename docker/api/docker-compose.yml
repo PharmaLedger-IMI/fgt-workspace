@@ -149,7 +149,7 @@ services:
       CREDENTIALS_FILE: mah-roche.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-roche${SWAGGER}/traceability
       ENVIRONMENT: ${ENVIRONMENT:-local}
-      BRICKS_DOMAIN: traceability.mah-roche
+      bricksDomain: traceability.mah-roche
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-roche.rule=Host(`mah-roche${DOMAIN}`)"
@@ -186,7 +186,7 @@ services:
       CREDENTIALS_FILE: mah-bayer.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-bayer${SWAGGER}/traceability
       ENVIRONMENT: ${ENVIRONMENT:-local}
-      BRICKS_DOMAIN: traceability.mah-bayer
+      bricksDomain: traceability.mah-bayer
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-bayer.rule=Host(`mah-bayer${DOMAIN}`)"
@@ -223,7 +223,7 @@ services:
       CREDENTIALS_FILE: mah-gsk.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-gsk${SWAGGER}/traceability
       ENVIRONMENT: ${ENVIRONMENT:-local}
-      BRICKS_DOMAIN: traceability.mah-gsk
+      bricksDomain: traceability.mah-gsk
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-gsk.rule=Host(`mah-gsk${DOMAIN}`)"
@@ -262,7 +262,7 @@ services:
       CREDENTIALS_FILE: mah-msd.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-msd${SWAGGER}/traceability
       ENVIRONMENT: ${ENVIRONMENT:-local}
-      BRICKS_DOMAIN: traceability.mah-msd
+      bricksDomain: traceability.mah-msd
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-msd.rule=Host(`mah-msd${DOMAIN}`)"
@@ -299,7 +299,7 @@ services:
       CREDENTIALS_FILE: mah-novo-nordisk.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-novo-nordisk${SWAGGER}/traceability
       ENVIRONMENT: ${ENVIRONMENT:-local}
-      BRICKS_DOMAIN: traceability.mah-novo-nordisk
+      bricksDomain: traceability.mah-novo-nordisk
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-novo-nordisk.rule=Host(`mah-novo-nordisk${DOMAIN}`)"
@@ -336,7 +336,7 @@ services:
       CREDENTIALS_FILE: mah-pfizer.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-pfizer${SWAGGER}/traceability
       ENVIRONMENT: ${ENVIRONMENT:-local}
-      BRICKS_DOMAIN: traceability.mah-pfizer
+      bricksDomain: traceability.mah-pfizer
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-pfizer.rule=Host(`mah-pfizer${DOMAIN}`)"
@@ -373,7 +373,7 @@ services:
       CREDENTIALS_FILE: mah-takeda.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-takeda${SWAGGER}/traceability
       ENVIRONMENT: ${ENVIRONMENT:-local}
-      BRICKS_DOMAIN: traceability.mah-takeda
+      bricksDomain: traceability.mah-takeda
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-takeda.rule=Host(`mah-takeda${DOMAIN}`)"
@@ -410,7 +410,7 @@ services:
       CREDENTIALS_FILE: mah-sanofi.json
       SWAGGER_SERVER: ${PROTOCOL}://api-mah-sanofi${SWAGGER}/traceability
       ENVIRONMENT: ${ENVIRONMENT:-local}
-      BRICKS_DOMAIN: traceability.mah-sanofi
+      bricksDomain: traceability.mah-sanofi
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mah-sanofi.rule=Host(`mah-sanofi${DOMAIN}`)"
@@ -448,7 +448,7 @@ services:
       CREDENTIALS_FILE: whs-1.json
       SWAGGER_SERVER: ${PROTOCOL}://api-whs1${SWAGGER}/traceability
       ENVIRONMENT: ${ENVIRONMENT:-local}
-      BRICKS_DOMAIN: traceability.whs-1
+      bricksDomain: traceability.whs-1
     labels:
       - "traefik.enable=true"
 
@@ -487,7 +487,7 @@ services:
       CREDENTIALS_FILE: whs-2.json
       SWAGGER_SERVER: ${PROTOCOL}://api-whs2${SWAGGER}/traceability
       ENVIRONMENT: ${ENVIRONMENT:-local}
-      BRICKS_DOMAIN: traceability.whs-2
+      bricksDomain: traceability.whs-2
     labels:
       - "traefik.enable=true"
 
@@ -525,7 +525,7 @@ services:
       CREDENTIALS_FILE: whs-takeda.json
       SWAGGER_SERVER: ${PROTOCOL}://api-whs-takeda${SWAGGER}/traceability
       ENVIRONMENT: ${ENVIRONMENT:-local}
-      BRICKS_DOMAIN: traceability.whs-takeda
+      bricksDomain: traceability.whs-takeda
     labels:
       - "traefik.enable=true"
 
@@ -563,7 +563,7 @@ services:
       CREDENTIALS_FILE: whs-zuellig.json
       SWAGGER_SERVER: ${PROTOCOL}://api-whs-zuellig${SWAGGER}/traceability
       ENVIRONMENT: ${ENVIRONMENT:-local}
-      BRICKS_DOMAIN: traceability.whs-zuellig
+      bricksDomain: traceability.whs-zuellig
     labels:
       - "traefik.enable=true"
 
@@ -602,7 +602,7 @@ services:
       CREDENTIALS_FILE: pha-1.json
       SWAGGER_SERVER: ${PROTOCOL}://api-pha1${SWAGGER}/traceability
       ENVIRONMENT: ${ENVIRONMENT:-local}
-      BRICKS_DOMAIN: traceability.pha-1
+      bricksDomain: traceability.pha-1
     labels:
       - "traefik.enable=true"
 
@@ -640,7 +640,7 @@ services:
       CREDENTIALS_FILE: pha-2.json
       SWAGGER_SERVER: ${PROTOCOL}://api-pha2${SWAGGER}/traceability
       ENVIRONMENT: ${ENVIRONMENT:-local}
-      BRICKS_DOMAIN: traceability.pha-2
+      bricksDomain: traceability.pha-2
     labels:
       - "traefik.enable=true"
 
