@@ -80,6 +80,8 @@ function overWriteCredentialsByRole(){
 }
 
 async function bootAPIServer(){
+    if (bricksDomain)
+        console.log("Booting FGT API server with bricksDomain: " + bricksDomain)
     require(path.join(currentPath, "participants", ROLE, "index.js"));
 }
 
