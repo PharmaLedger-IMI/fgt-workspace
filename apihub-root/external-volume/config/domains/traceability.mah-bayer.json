@@ -1,0 +1,15 @@
+{
+  "anchoring": {
+    "type": "FS",
+    "option": {
+      "enableBricksLedger": false
+    },
+    "commands": {
+      "addAnchor": "anchor"
+    }
+  },
+  "enable": ["mq"],
+  "skipOAuth": [
+    "/bricking/traceability.mah-bayer/get-brick"
+  ]
+}
