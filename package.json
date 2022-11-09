@@ -44,7 +44,8 @@
     "build-api-whs-dashboard": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-api-whs-dashboard\"",
     "build-api-pha-dashboard": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-api-pha-dashboard\"",
     "deploy-test-chain": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run deploy-chain\"",
-    "export-api-credentials": "node ./dashboard-wizard/identity-export.js --role=mah"
+    "export-api-credentials": "node ./dashboard-wizard/identity-export.js --role=mah",
+    "update-docker-apihub-config": "cd fgt-api && node ./updateDockerConfigs.js"
   },
   "repository": {
     "type": "git",

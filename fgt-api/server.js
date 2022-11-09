@@ -1,4 +1,4 @@
-let {ROLE, CREDENTIALS_FILE, SWAGGER_SERVER, FGT_API_CREDENTIALS, ENVIRONMENT, bricksDomain} = process.env;
+let {ROLE, CREDENTIALS_FILE, SWAGGER_SERVER, FGT_API_CREDENTIALS, bricksDomain} = process.env;
 const fs = require('fs');
 const path = require('path');
 
@@ -142,30 +142,13 @@ const setDashboard = async function(){
     })
 }
 
-const updateConfigsToMatchEnvironment = async function(){
-    return new Promise((resolve, reject) => {
-        const environment = ENVIRONMENT || "local";
-        console.log(`Updating environment configurations for the ${environment} environment ${bricksDomain ? `using bricksDomain: ${bricksDomain}` : ""}`)
-        try {
-            fs.copyFileSync(path.join(currentPath, `../fgt-bdns/${environment}/apihub.json`),
-                path.join(currentPath, `../apihub-root/external-volume/config/apihub.json`))
-        } catch (e) {
-            return reject(e);
-        }
-        resolve();
-    })
-}
-
-
 try {
     overWriteCredentialsByRole();
-    updateConfigsToMatchEnvironment().then(_ =>
-        setDashboard().then(_ => {
-            Promise.all([bootAPIServer(), bootSwagger()])
-                .then(_ => console.log(`Completed Boot`))
-                .catch(e => failServerBoot(e.message));
-        }).catch(e => failServerBoot(e.message))
-    ).catch(e => failServerBoot(e.message));
+    setDashboard().then(_ => {
+        Promise.all([bootAPIServer(), bootSwagger()])
+            .then(_ => console.log(`Completed Boot`))
+            .catch(e => failServerBoot(e.message));
+    }).catch(e => failServerBoot(e.message))
 } catch (e){
     failServerBoot(e.message);
 }
