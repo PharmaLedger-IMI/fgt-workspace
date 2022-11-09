@@ -126,11 +126,6 @@
             Pharmacy) according to need to know basis.
             This ensures that each company operates as usual as they already do today.</p>
 
-        <h2>As of version <strong>v0.10.0</strong>:</h2>
-        <p>The wallets are no longer compatible with the previous versions, since the place in the DSU where the
-            database is stored had to be changed due to a <span href="https://github.com/PharmaLedger-IMI/fgt-workspace/issues/90#issuecomment-1185765751">breaking change</span>
-            (from our architecture's perspective) on OpenDSU's code.</p>
-
         <div id="traceability" style="display:block;">
             <h3>Traceability workspace</h3>
             <p>This is the 'traceability' domain workspace. All DSU anchoring under the traceability domain happens here. You can use the DSu Explorer to inspect any DSUs</p>
@@ -167,7 +162,16 @@
                     </li>
                 </ul>
             </p>
-            <p><span style="font-weight: bold;">Important for self-provisioned participants</span> DID / ID notice - the identifier string of each participant should start with MAH, WHS or PHA accordingly to the desired role. For example, an MAH should have a DID name like "MAH8946130" or "MAH-Bayer".</p>
+            <p><span style="font-weight: bold;">Important for self-provisioned participants</span> DID / ID notice - the identifier
+                string of each participant should start with MAH, WHS or PHA accordingly to the desired role. For example, an
+                MAH should have a DID name like "MAH8946130" or "MAH-Bayer".</p>
+            <p>As of version <strong>v0.11.0</strong>, the data storage and OpenDSU technology are no longer compatible with
+                the previous versions. Please <span style="font-weight: bold;">rebuild</span> your system using the latest image
+                provided, and also make sure your system has a <span style="font-weight: bold;">traceability.subomains</span>
+                part of the BDNS for the desired environment
+                (<a href="https://github.com/PharmaLedger-IMI/fgt-workspace/blob/master/fgt-bdns/dev/bdns.hosts">DEV</a>
+                and/or
+                <a href="https://github.com/PharmaLedger-IMI/fgt-workspace/blob/master/fgt-bdns/tst/bdns.hosts"></a>TST</a>).</p> 
             <script>
                 const traceabilityDiv = document.body.querySelector('div[id="traceability"]');
                 const url = window.location.hostname;
@@ -433,11 +437,12 @@
 
         <p><span style="font-weight: bold;">WARNING:</span> Unstable software and environments. Use at your own risk! Data persistence at risk of unexpected reset!</p>
 
-
-        <h2>v0.10.8 Release Notes 2022-??-??</h2>
+        <h2>v0.11.0 Release Notes 2022-11-15</h2>
         <ul>
+            <li>Centralised BDNS (Blockchain Domain Naming Service) for distributed brick storage configuration <a href="https://github.com/PharmaLedger-IMI/fgt-workspace/issues/123">#123</a>.</li>
             <li>OpenDSU technology stack upgraded to <a href="https://github.com/PrivateSky/psk-release/tree/be8027202d04032bed93fb8de74253d61ec6a3b9">psk-release 2022-Oct-04</a>.
                 Motivated by <a href="https://github.com/PharmaLedger-IMI/blockchain-node-workspace/issues/5">#5 - (GoQuorum) ethAdapter eventually fails with Error: Transaction has been reverted by the EVM</a>, <a href="https://github.com/PharmaLedger-IMI/epi-workspace/issues/670">PharmaLedger-IMI/epi-workspace#670</a>, <a href="https://github.com/PharmaLedger-IMI/fgt-workspace/issues/30">#30</a>).</li>
+            <li><span style="font-weight: bold;">Attention:</span>This release is not backwards with data and code from previous releases. For participation in Stage 5 testing, please contribute your data to the and <span style="font-weight: bold;">re-build you solution using v0.11.x or higher!</span></li>
         </ul>
 
         <h2>v0.10.7 Release Notes 2022-09-16</h2>
