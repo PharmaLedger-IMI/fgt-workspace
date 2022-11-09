@@ -1,4 +1,4 @@
-const {ROLE, SWAGGER_SERVER, ENVIRONMENT} = process.env;
+const {ROLE, SWAGGER_SERVER, ENVIRONMENT, bricksDomain} = process.env;
 const fs = require('fs');
 const path = require('path');
 
@@ -126,10 +126,10 @@ const setDashboard = async function(){
 const updateConfigsToMatchEnvironment = async function(){
     return new Promise((resolve, reject) => {
         const environment = ENVIRONMENT || "local";
-        console.log(`Updating environment configurations for the ${environment} environment`)
+        console.log(`Updating environment configurations for the ${environment} environment ${bricksDomain ? `using bricksDomain: ${bricksDomain}` : ""}`)
         try {
-            fs.copyFileSync(path.join(process.cwd(), `./fgt-bdns/${environment}/apihub.json`),
-                path.join(process.cwd(), `./apihub-root/external-volume/config/apihub.json`))
+            fs.copyFileSync(path.join(currentPath, `./fgt-bdns/${environment}/apihub.json`),
+                path.join(currentPath, `./apihub-root/external-volume/config/apihub.json`))
         } catch (e) {
             return reject(e);
         }
