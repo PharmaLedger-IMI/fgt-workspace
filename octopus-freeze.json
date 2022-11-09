@@ -283,7 +283,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd themes/pdm-theme && npm run build-dossier"
+                    "cmd": "cd themes/pdm-theme && npm run build-dossier -- --domain=traceability"
                 }
             ]
         },
@@ -333,7 +333,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd fgt-mah-ssapp && npm run build"
+                    "cmd": "cd fgt-mah-ssapp && npm run build -- --domain=traceability"
                 }
             ]
         },
@@ -343,7 +343,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd fgt-wholesaler-ssapp && npm run build"
+                    "cmd": "cd fgt-wholesaler-ssapp && npm run build -- --domain=traceability"
                 }
             ]
         },
@@ -353,7 +353,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd fgt-pharmacy-ssapp && npm run build"
+                    "cmd": "cd fgt-pharmacy-ssapp && npm run build -- --domain=traceability"
                 }
             ]
         }
@@ -378,7 +378,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd cardinal && npm run build-dossier"
+                    "cmd": "cd cardinal && npm run build-dossier -- --domain=traceability"
                 }
             ]
         },
@@ -388,7 +388,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd dossier-explorer-wallet-prototype && npm run build"
+                    "cmd": "cd dossier-explorer-wallet-prototype && npm run build -- --domain=traceability"
                 },
                 {
                     "type": "copy",
@@ -406,7 +406,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd dossier-explorer-ssapp && npm run build"
+                    "cmd": "cd dossier-explorer-ssapp && npm run build -- --domain=traceability"
                 },
                 {
                     "type": "copy",
@@ -435,7 +435,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd webcardinal && npm run build-dossier"
+                    "cmd": "cd webcardinal && npm run build-dossier -- --domain=traceability"
                 }
             ]
         },
@@ -445,7 +445,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
+                    "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier -- --domain=traceability"
                 }
             ]
         },
@@ -455,7 +455,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd themes/clear-sky-theme && npm run build-dossier"
+                    "cmd": "cd themes/clear-sky-theme && npm run build-dossier -- --domain=traceability"
                 }
             ]
         },

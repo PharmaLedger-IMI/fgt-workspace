@@ -21,7 +21,7 @@
   ],
   "componentsConfig": {
     "bdns": {
-      "url": "https://raw.githubusercontent.com/PharmaLedger-IMI/fgt-workspace/master/fgt-bdns/dev/bdns.hosts"
+      "url": "https://raw.githubusercontent.com/PharmaLedger-IMI/fgt-workspace/master/fgt-bdns/local/bdns.hosts"
     },
     "pdm-dsu-toolkit-app-commands": {
       "module": "./../../pdm-dsu-toolkit",
