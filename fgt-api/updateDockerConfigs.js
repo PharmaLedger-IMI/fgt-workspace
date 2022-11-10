@@ -11,6 +11,25 @@ const updateConfigsToMatchEnvironment = async function(){
         try {
             fs.copyFileSync(path.join(currentPath, `../fgt-bdns/${environment}/apihub.json`),
                 path.join(currentPath, `../apihub-root/external-volume/config/apihub.json`))
+
+            if (!bricksDomain)
+                console.log("No 'bricksDomain' variable defined. assuming none")
+            else
+                fs.writeFileSync(path.join(currentPath, `../apihub-root/external-volume/config/domains/${environment}.json`), JSON.stringify({
+                    "anchoring": {
+                    "type": "FS",
+                        "option": {
+                        "enableBricksLedger": false
+                    },
+                    "commands": {
+                        "addAnchor": "anchor"
+                    }
+                    },
+                        "enable": ["mq"],
+                        "skipOAuth": [
+                        `/bricking/${bricksDomain}/get-brick`
+                    ]
+                }))
         } catch (e) {
             return reject(e);
         }
