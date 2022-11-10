@@ -8,7 +8,8 @@
       "addAnchor": "anchor"
     }
   },
+  "enable": ["mq"],
   "skipOAuth": [
-    "/bricking/default/get-brick"
+    "/bricking/traceability.whs-2/get-brick"
   ]
 }
