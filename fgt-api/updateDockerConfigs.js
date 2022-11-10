@@ -15,7 +15,7 @@ const updateConfigsToMatchEnvironment = async function(){
             if (!bricksDomain)
                 console.log("No 'bricksDomain' variable defined. assuming none")
             else
-                fs.writeFileSync(path.join(currentPath, `../apihub-root/external-volume/config/domains/${environment}.json`), JSON.stringify({
+                fs.writeFileSync(path.join(currentPath, `../apihub-root/external-volume/config/domains/${bricksDomain}.json`), JSON.stringify({
                     "anchoring": {
                     "type": "FS",
                         "option": {
