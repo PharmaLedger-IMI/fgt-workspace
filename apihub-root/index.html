@@ -164,7 +164,10 @@
             </p>
             <p><span style="font-weight: bold;">Important for self-provisioned participants</span> DID / ID notice - the identifier
                 string of each participant should start with MAH, WHS or PHA accordingly to the desired role. For example, an
-                MAH should have a DID name like "MAH8946130" or "MAH-Bayer".</p>
+                MAH should have a DID name like "MAH8946130" or "MAH-Bayer".<br>
+                An additional environment variable called 'bricksDomain' should be injected into the system for data decentralization.
+                For this demonstrator that variables should be set to the lowercase version of your did: "MAH-Bayer" -> "mah-bayer"
+            </p>
             <p>As of version <strong>v0.11.0</strong>, the data storage and OpenDSU technology are no longer compatible with
                 the previous versions. Please <span style="font-weight: bold;">rebuild</span> your system using the latest image
                 provided, and also make sure your system has a <span style="font-weight: bold;">traceability.subomains</span>
@@ -440,6 +443,7 @@
         <h2>v0.11.0 Release Notes 2022-11-15</h2>
         <ul>
             <li>Centralised BDNS (Blockchain Domain Naming Service) for distributed brick storage configuration <a href="https://github.com/PharmaLedger-IMI/fgt-workspace/issues/123">#123</a>.</li>
+            <li>Decentralized Brick Storage (Each participant's data is stored on their own servers);</li>
             <li>OpenDSU technology stack upgraded to <a href="https://github.com/PrivateSky/psk-release/tree/be8027202d04032bed93fb8de74253d61ec6a3b9">psk-release 2022-Oct-04</a>.
                 Motivated by <a href="https://github.com/PharmaLedger-IMI/blockchain-node-workspace/issues/5">#5 - (GoQuorum) ethAdapter eventually fails with Error: Transaction has been reverted by the EVM</a>, <a href="https://github.com/PharmaLedger-IMI/epi-workspace/issues/670">PharmaLedger-IMI/epi-workspace#670</a>, <a href="https://github.com/PharmaLedger-IMI/fgt-workspace/issues/30">#30</a>).</li>
             <li><span style="font-weight: bold;">Attention:</span>This release is not backwards with data and code from previous releases. For participation in Stage 5 testing, please contribute your data to the and <span style="font-weight: bold;">re-build you solution using v0.11.x or higher!</span></li>
