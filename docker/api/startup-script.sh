@@ -6,4 +6,4 @@ cp -r docker/api/config apihub-root/external-volume/config
 
 echo "Starting server and building under ${ROLE}, ${FGT_API_CREDENTIALS}, ${SWAGGER_SERVER}"
 
-npm update-docker-apihub-config && npm run server & ( sleep 5s ; npm run build-all ; npm run build-dsu-explorer ; cd fgt-api ; npm run boot-api )
+npm run update-docker-apihub-config && npm run server & ( sleep 5s ; npm run build-all ; npm run build-dsu-explorer ; cd fgt-api ; npm run boot-api )
