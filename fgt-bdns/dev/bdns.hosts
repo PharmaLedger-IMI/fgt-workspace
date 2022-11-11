@@ -25,6 +25,18 @@
       "https://mah-bayer-fgt-dev.pharmaledger.pdmfc.com"
     ]
   },
+  "traceability.mah-bayer-dev": {
+    "_comment": "Added to DEV only on 2022-11-11 by joao.luis based on email 2022-11-08",
+    "brickStorages": [
+      "https://fgt-dev.cloud.bayer.com"
+    ],
+    "anchoringServices": [
+      "https://fgt-dev.cloud.bayer.com"
+    ],
+    "notifications": [
+      "https://fgt-dev.cloud.bayer.com"
+    ]
+  },
   "traceability.mah-gsk": {
     "brickStorages": [
       "https://mah-gsk-fgt-dev.pharmaledger.pdmfc.com"
