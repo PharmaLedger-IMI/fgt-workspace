@@ -102,6 +102,18 @@
       "https://mah-takeda-fgt-dev.pharmaledger.pdmfc.com"
     ]
   },
+  "traceability.mymah011": {
+    "_comment": "This exists only for consistency with helm-charts example-config-mymah.yaml / deployment.yaml bricksDomain. These servers do not actually exist.",
+    "brickStorages": [
+      "http://mah-mymah"
+    ],
+    "anchoringServices": [
+      "http://mah-mymah"
+    ],
+    "notifications": [
+      "http://mah-mymah"
+    ]
+  },
   "traceability.pha-1": {
     "brickStorages": [
       "https://pha1-fgt-dev.pharmaledger.pdmfc.com"
