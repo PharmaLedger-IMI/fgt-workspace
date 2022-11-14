@@ -7,6 +7,9 @@
     "brickStorages": [
       "https://fgt.pharmaledger.pdmfc.com"
     ],
+    "mqEndpoints": [
+       "https://fgt.pharmaledger.pdmfc.com"
+    ],
     "notifications": [
       "https://fgt.pharmaledger.pdmfc.com"
     ]
