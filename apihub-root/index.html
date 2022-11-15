@@ -440,12 +440,37 @@
 
         <p><span style="font-weight: bold;">WARNING:</span> Unstable software and environments. Use at your own risk! Data persistence at risk of unexpected reset!</p>
 
-        <h2>v0.11.2 Release Notes 2022-11-15</h2>
+        <h2>v0.11.3 Release Notes 2022-11-15</h2>
         <ul>
-            <li>Centralised BDNS (Blockchain Domain Naming Service) for distributed brick storage configuration <a href="https://github.com/PharmaLedger-IMI/fgt-workspace/issues/123">#123</a>.</li>
-            <li>Decentralized Brick Storage (Each participant's data is stored on their own servers);</li>
-            <li>OpenDSU technology stack upgraded to <a href="https://github.com/PrivateSky/psk-release/tree/be8027202d04032bed93fb8de74253d61ec6a3b9">psk-release 2022-Oct-04</a>.
-                Motivated by <a href="https://github.com/PharmaLedger-IMI/blockchain-node-workspace/issues/5">#5 - (GoQuorum) ethAdapter eventually fails with Error: Transaction has been reverted by the EVM</a>, <a href="https://github.com/PharmaLedger-IMI/epi-workspace/issues/670">PharmaLedger-IMI/epi-workspace#670</a>, <a href="https://github.com/PharmaLedger-IMI/fgt-workspace/issues/30">#30</a>).</li>
+            <li>Decentralized Brick Storage (Each participant's data is stored on their own servers), with centralised BDNS (Blockchain Domain Naming Service) for distributed brick storage configuration <a href="https://github.com/PharmaLedger-IMI/fgt-workspace/issues/123">#123</a>.
+                The running environment now has an additional pre-startup script <code>npm run update-docker-apihub-config</code>, that needs 2 additional environment variables:
+                <ul>
+                    <li>ENVIRONMENT - can be <code>local</code>, <code>dev</code> or <code>tst</code>. Used to overwrite <code>fgt-workspace/apihub-root/external-volume/config/apihub.json</code> with extra-content:
+                        <pre>
+                    ...
+                      "componentsConfig": {
+                        "bdns": {
+                          "url": "https://raw.githubusercontent.com/PharmaLedger-IMI/fgt-workspace/master/fgt-bdns/dev/bdns.hosts"
+                        },
+                    ...</pre>
+                    The <code>dev</code> in the link above is extracted from the ENVIRONMENT variable.
+                    </li>
+                    <li>bricksDomain - a BDNS traceability domain where to store private DSUs. Example: <code>traceability.mah-0381</code>.
+                        Used to generate a file <code>fgt-workspace/apihub-root/external-volume/config/domains/${bricksDomain}.json</code> with content:
+                        <pre>
+                            {"anchoring":{
+                                "type":"FS",
+                                "option":{"enableBricksLedger":false},
+                                "commands":{"addAnchor":"anchor"}
+                              },
+                              "enable":["mq"],
+                              "skipOAuth":["/bricking/traceability.${bricksDomain}/get-brick"]}
+</pre>
+                    </li>
+                </ul>
+            </li>
+            <li>OpenDSU technology stack upgraded to <a href="https://github.com/PrivateSky/psk-release/tree/2f1d49f168cdad784008a610b4c48cea311b755c">psk-release 2022-Nov-15</a>.
+                Motivated by <a href="https://github.com/PharmaLedger-IMI/blockchain-node-workspace/issues/126">#126 apihub restarts</a>, <a href="https://github.com/PharmaLedger-IMI/blockchain-node-workspace/issues/5">#5 - (GoQuorum) ethAdapter eventually fails with Error: Transaction has been reverted by the EVM</a>, <a href="https://github.com/PharmaLedger-IMI/epi-workspace/issues/670">PharmaLedger-IMI/epi-workspace#670</a>, <a href="https://github.com/PharmaLedger-IMI/fgt-workspace/issues/30">#30</a>).</li>
             <li><span style="font-weight: bold;">Attention:</span>This release is not backwards with data and code from previous releases. For participation in Stage 5 testing, please contribute your data to the and <span style="font-weight: bold;">re-build you solution using v0.11.x or higher!</span></li>
         </ul>
 
@@ -812,7 +837,7 @@
         <br>
         This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 853992
         <br>&nbsp;<br>
-        v<!-- VERSION_START -->0.10.8-gd3c20889<!-- VERSION_END --> &copy;&nbsp;2021 <a href="http://pharmaledger.eu">Pharmaledger.eu</a> - All Rights Reserved.
+        v<!-- VERSION_START -->0.11.3-gb1499506<!-- VERSION_END --> &copy;&nbsp;2021 <a href="http://pharmaledger.eu">Pharmaledger.eu</a> - All Rights Reserved.
     </footer>
 
     <script type="application/javascript">
