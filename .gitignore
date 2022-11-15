@@ -112,7 +112,7 @@ pdm-web-components/docs
 blockchain-node
 /apihub-root/external-volume/mq_*
 
-privatesky
+/privatesky
 themes
 
 !ionic-core/dist
