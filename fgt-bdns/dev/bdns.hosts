@@ -105,13 +105,13 @@
   },
   "traceability.mah-sanofi-poc": {
     "brickStorages": [
-      "https://fgt-mah-app.sanofi.com"
+      "https://fgt-mah-app.pharmaledger-sanofi.com"
     ],
     "anchoringServices": [
-      "https://fgt-mah-app.sanofi.com"
+      "https://fgt-mah-app.pharmaledger-sanofi.com"
     ],
     "notifications": [
-      "https://fgt-mah-app.sanofi.com"
+      "https://fgt-mah-app.pharmaledger-sanofi.com"
     ]
   },
   "traceability.mah-takeda": {
