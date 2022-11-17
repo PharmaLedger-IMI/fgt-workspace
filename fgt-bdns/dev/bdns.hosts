@@ -26,7 +26,7 @@
     ]
   },
   "traceability.mah-bayer-dev": {
-    "_comment": "Added to DEV only on 2022-11-11 by j.luis based on email 2022-11-08",
+    "_comment": "Added to DEV on 2022-11-11 and to TST on 2022-11-17 by j.luis based on email 2022-11-08",
     "brickStorages": [
       "https://fgt-dev.cloud.bayer.com"
     ],
