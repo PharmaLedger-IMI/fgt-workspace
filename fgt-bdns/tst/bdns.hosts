@@ -103,7 +103,8 @@
       "https://mah-sanofi-fgt.pharmaledger.pdmfc.com"
     ]
   },
-  "traceability.mah-sanofi-poc": {
+  "traceability.mah-sanofi-tst": {
+    "_comment": "Changed traceability.mah-sanofi-poc to traceability.mah-sanofi-tst 2022-12-09",
     "brickStorages": [
       "https://fgt-mah-app.pharmaledger-sanofi.com"
     ],
